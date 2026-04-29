@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -18,92 +18,20 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { logger } from '../../../common/logger';
+import { LocalPageStorage } from '../../common/storage';
 
 /**
  * Module used to keep options page settings, which do not need extension level persistence
  */
-export class OptionsStorage {
+export class OptionsStorage extends LocalPageStorage {
     KEYS = {
         /**
          * Allowlist editor wrap setting
          */
         ALLOWLIST_EDITOR_WRAP: 'allowlist-editor-wrap',
-
-        /**
-         * Filtering log columns widths
-         */
-        COLUMNS_WIDTHS_PX: 'columns-widths-px',
-
-        /**
-         * Filtering log columns widths
-         */
-        COLUMNS_DATA: 'columns-data',
-
-        /**
-         * Request modal width
-         */
-        REQUEST_INFO_MODAL_WIDTH: 'request-info-modal-width',
-
-        /**
-         * Show preserve log modal state
-         */
-        SHOW_PRESERVE_LOG_MODAL: 'show-preserve-log-modal',
     };
 
-    DEFAULTS = {
+    protected DEFAULTS = {
         [this.KEYS.ALLOWLIST_EDITOR_WRAP]: false,
-        [this.KEYS.REQUEST_INFO_MODAL_WIDTH]: null,
-        [this.KEYS.COLUMNS_DATA]: {
-            status: { width: 260 },
-            url: { width: 260 },
-            type: { width: 100 },
-            rule: { width: 260 },
-            filter: { width: 260 },
-            source: { width: 200 },
-        },
-        [this.KEYS.SHOW_PRESERVE_LOG_MODAL]: true,
     };
-
-    /**
-     * Storage object
-     */
-    private storage: Storage;
-
-    constructor() {
-        this.storage = localStorage;
-    }
-
-    /**
-     * Set item to storage.
-     *
-     * @param key Key
-     * @param value Value
-     */
-    setItem(key: string, value: any): void {
-        try {
-            this.storage.setItem(key, JSON.stringify(value));
-        } catch (e) {
-            logger.error('[ext.OptionsStorage.setItem]: error: ', e);
-        }
-    }
-
-    /**
-     * Get item from storage.
-     *
-     * @param key Key
-     */
-    getItem(key: string): any {
-        let storedValue = null;
-        const item = this.storage.getItem(key);
-        if (item !== null) {
-            try {
-                storedValue = JSON.parse(item);
-            } catch (e) {
-                logger.error('[ext.OptionsStorage.getItem]: error: ', e);
-            }
-        }
-
-        return storedValue === null ? this.DEFAULTS[key] : storedValue;
-    }
 }

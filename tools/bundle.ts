@@ -152,15 +152,19 @@ const mainBuild = async (options: CommanderOptions) => {
     await runSingleTask(copyExternals, options);
 
     // Step 2: Prepare Firefox Standalone update.json (needed before its build)
-    await buildUpdateJson();
+    // Firefox Standalone is not built for release
+    if (BUILD_ENV !== BuildTargetEnv.Release) {
+        await buildUpdateJson();
+    }
 
     // Step 3: Run all browser builds in parallel
-    // MV2 builds: Chrome, Firefox AMO, Firefox Standalone, Edge, Opera
+    // MV2 builds: Chrome, Firefox AMO, Edge, Opera
+    //   (Firefox Standalone is included for dev/beta but not release)
     // MV3 builds: Chrome MV3, Opera MV3
     const mv2Builds = [
         bundleChrome,
         bundleFirefoxAmo,
-        bundleFirefoxStandaloneOnly,
+        ...(BUILD_ENV !== BuildTargetEnv.Release ? [bundleFirefoxStandaloneOnly] : []),
         bundleEdge,
         bundleOpera,
     ];
@@ -190,6 +194,8 @@ const mainBuild = async (options: CommanderOptions) => {
 
 /**
  * Firefox Standalone build without the update.json step (for parallel execution).
+ *
+ * @param options Commander options.
  */
 const bundleFirefoxStandaloneOnly = (options: CommanderOptions) => {
     const rspackConfig = getRspackConfig(Browser.FirefoxStandalone, getBuildOptions(options));
@@ -218,6 +224,8 @@ const chrome = async (options: CommanderOptions) => {
  * Runs CRX build of Chrome MV2 for mobile testing
  * should be run separately since it takes too much time
  * so it is better to run as a separate (parallel) job in test specs.
+ *
+ * @param options The commander options.
  */
 const chromeCrx = async (options: CommanderOptions) => {
     try {

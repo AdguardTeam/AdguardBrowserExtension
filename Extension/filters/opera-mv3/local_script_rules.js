@@ -912,29 +912,6 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "ca7a8176701e7a23e0d4c73706555161" due to: ' + e);
         }
     },
-    '(()=>{window.addEventListener("DOMContentLoaded",(()=>{document.querySelectorAll(\'.embed-container > [data-blocked-by-rodoguard="true"]\').forEach((e=>{const t=e.getAttribute("data-src")||e.getAttribute("src"),r=e.tagName.toLowerCase(),a=e.attributes;if(!t||!r)return;const o=document.createElement(r);if(o.setAttribute("src",t),"iframe"===r&&a.length)for(const e of a)"src"!==e.name&&"data-blocked-by-rodoguard"!==e.name&&o.setAttribute(e.name,e.value);e.replaceWith(o)}))}));})();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["308daff31d0bda9bb201d56661aea646"] === e) return;
-            window.addEventListener("DOMContentLoaded", (() => {
-                document.querySelectorAll('.embed-container > [data-blocked-by-rodoguard="true"]').forEach((e => {
-                    const t = e.getAttribute("data-src") || e.getAttribute("src"), r = e.tagName.toLowerCase(), a = e.attributes;
-                    if (!t || !r) return;
-                    const o = document.createElement(r);
-                    if (o.setAttribute("src", t), "iframe" === r && a.length) for (const e of a) "src" !== e.name && "data-blocked-by-rodoguard" !== e.name && o.setAttribute(e.name, e.value);
-                    e.replaceWith(o);
-                }));
-            }));
-            Object.defineProperty(Window.prototype.toString, "308daff31d0bda9bb201d56661aea646", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "308daff31d0bda9bb201d56661aea646" due to: ' + e);
-        }
-    },
     '(()=>{window.patroniteGdprData={google_recaptcha:"allow"}})();': () => {
         try {
             const e = "done";
@@ -1822,6 +1799,60 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "b32831777a037cfe79fc602cdef09ab7" due to: ' + e);
         }
     },
+    '(()=>{const e=document,t=new MutationObserver((()=>{const e=document.querySelector("#onetrust-accept-btn-handler");e&&(e.click(),t.disconnect())}));t.observe(e,{attributes:!0,childList:!0,subtree:!0}),setTimeout((()=>{t.disconnect()}),1e4)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["47331811da7c3ac0cbfb198884a715c9"] === e) return;
+            (() => {
+                const e = document, t = new MutationObserver((() => {
+                    const e = document.querySelector("#onetrust-accept-btn-handler");
+                    e && (e.click(), t.disconnect());
+                }));
+                t.observe(e, {
+                    attributes: !0,
+                    childList: !0,
+                    subtree: !0
+                }), setTimeout((() => {
+                    t.disconnect();
+                }), 1e4);
+            })();
+            Object.defineProperty(Window.prototype.toString, "47331811da7c3ac0cbfb198884a715c9", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "47331811da7c3ac0cbfb198884a715c9" due to: ' + e);
+        }
+    },
+    '(()=>{const e=document,t=new MutationObserver((()=>{const e=document.querySelector("#onetrust-reject-all-handler");e&&(e.click(),t.disconnect())}));t.observe(e,{attributes:!0,childList:!0,subtree:!0}),setTimeout((()=>{t.disconnect()}),1e4)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.bc95dd84ae7c7899b8fef815cd1b8299 === e) return;
+            (() => {
+                const e = document, t = new MutationObserver((() => {
+                    const e = document.querySelector("#onetrust-reject-all-handler");
+                    e && (e.click(), t.disconnect());
+                }));
+                t.observe(e, {
+                    attributes: !0,
+                    childList: !0,
+                    subtree: !0
+                }), setTimeout((() => {
+                    t.disconnect();
+                }), 1e4);
+            })();
+            Object.defineProperty(Window.prototype.toString, "bc95dd84ae7c7899b8fef815cd1b8299", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "bc95dd84ae7c7899b8fef815cd1b8299" due to: ' + e);
+        }
+    },
     "(()=>{const t=document.documentElement,o=new MutationObserver((()=>{const t=document.querySelector('#mms-consent-portal-container button[data-test=\"pwa-consent-layer-deny-all\"]');if(t&&typeof t.click !== 'undefined'){t.click();}}));o.observe(t,{attributes:!0,childList:!0,subtree:!0})})();": () => {
         try {
             const e = "done";
@@ -2530,6 +2561,33 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "6610b2172699f352e936bdda56179645" due to: ' + e);
         }
     },
+    "(()=>{const t=document,e=new MutationObserver((()=>{const t=document.querySelector('fluent-button[data-test-id=\"continue-reading-button\"]');t&&(t.click(),e.disconnect())}));e.observe(t,{attributes:!0,childList:!0,subtree:!0}),setTimeout((()=>{e.disconnect()}),1e4)})();": () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.b74fcea5833a534a963b7d4a15fb3a8f === e) return;
+            (() => {
+                const e = document, t = new MutationObserver((() => {
+                    const e = document.querySelector('fluent-button[data-test-id="continue-reading-button"]');
+                    e && (e.click(), t.disconnect());
+                }));
+                t.observe(e, {
+                    attributes: !0,
+                    childList: !0,
+                    subtree: !0
+                }), setTimeout((() => {
+                    t.disconnect();
+                }), 1e4);
+            })();
+            Object.defineProperty(Window.prototype.toString, "b74fcea5833a534a963b7d4a15fb3a8f", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "b74fcea5833a534a963b7d4a15fb3a8f" due to: ' + e);
+        }
+    },
     '!function(){const t={apply:(t,e,n)=>{if(n[0]&&"function"==typeof n[0])try{if(n[0].toString().includes("LOGIN_FORCE_TIME"))return}catch(t){console.trace(t)}return Reflect.apply(t,e,n)}},e=new Proxy(window.setTimeout,t);Object.defineProperty(window,"setTimeout",{set:function(){},get:function(){return e}})}();': () => {
         try {
             const e = "done";
@@ -3007,82 +3065,6 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "8e9df515585941ac85187baf28cedac1" due to: ' + a);
         }
     },
-    '((e="",t="",o="basic",s="",n)=>{const r={apply:(r,a,u)=>{try{let r="";const a=u[0],c=u[1]?.method||"";let l=!1;if("string"==typeof a&&a.includes(e)&&c.toLowerCase()===t.toLowerCase()?(r=a,l=!0):a instanceof Request&&a.url.includes(e)&&a.method.toLowerCase()===t.toLowerCase()&&(r=a.url,l=!0),l){const e=((e,t)=>{try{if(void 0===e||"cors"===e||"no-cors"===e)return new URL(t).origin===document.location.origin?"basic":"no-cors"===e?"opaque":"cors"}catch(e){}})(o,r),t=((e,t)=>{const o=e||"",n=new Response(s,{headers:{"Content-Length":`${s.length}`},status:200,statusText:"OK"});return"opaque"===t?Object.defineProperties(n,{body:{value:null},status:{value:0},ok:{value:!1},statusText:{value:""},url:{value:""},type:{value:t}}):Object.defineProperties(n,{url:{value:o},type:{value:t}}),n})(r,e);return n?new Promise((e=>{setTimeout((()=>{e(t)}),n)})):Promise.resolve(t)}}catch(e){}return Reflect.apply(r,a,u)}};window.fetch=new Proxy(window.fetch,r)})("https://googleads.g.doubleclick.net/pagead/ads?client=ca-pub-3497863494706299","HEAD","no-cors","",121);': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["1f0bbc3c2e54b7a0357e267459f444cd"] === e) return;
-            ((e = "", t = "", o = "basic", r = "", n) => {
-                const c = {
-                    apply: (c, s, a) => {
-                        try {
-                            let c = "";
-                            const s = a[0], u = a[1]?.method || "";
-                            let i = !1;
-                            if ("string" == typeof s && s.includes(e) && u.toLowerCase() === t.toLowerCase() ? (c = s, 
-                            i = !0) : s instanceof Request && s.url.includes(e) && s.method.toLowerCase() === t.toLowerCase() && (c = s.url, 
-                            i = !0), i) {
-                                const e = ((e, t) => {
-                                    try {
-                                        if (void 0 === e || "cors" === e || "no-cors" === e) return new URL(t).origin === document.location.origin ? "basic" : "no-cors" === e ? "opaque" : "cors";
-                                    } catch (e) {}
-                                })(o, c), t = ((e, t) => {
-                                    const o = e || "", n = new Response(r, {
-                                        headers: {
-                                            "Content-Length": `${r.length}`
-                                        },
-                                        status: 200,
-                                        statusText: "OK"
-                                    });
-                                    return "opaque" === t ? Object.defineProperties(n, {
-                                        body: {
-                                            value: null
-                                        },
-                                        status: {
-                                            value: 0
-                                        },
-                                        ok: {
-                                            value: !1
-                                        },
-                                        statusText: {
-                                            value: ""
-                                        },
-                                        url: {
-                                            value: ""
-                                        },
-                                        type: {
-                                            value: t
-                                        }
-                                    }) : Object.defineProperties(n, {
-                                        url: {
-                                            value: o
-                                        },
-                                        type: {
-                                            value: t
-                                        }
-                                    }), n;
-                                })(c, e);
-                                return n ? new Promise((e => {
-                                    setTimeout((() => {
-                                        e(t);
-                                    }), n);
-                                })) : Promise.resolve(t);
-                            }
-                        } catch (e) {}
-                        return Reflect.apply(c, s, a);
-                    }
-                };
-                window.fetch = new Proxy(window.fetch, c);
-            })("https://googleads.g.doubleclick.net/pagead/ads?client=ca-pub-3497863494706299", "HEAD", "no-cors", "", 121);
-            Object.defineProperty(Window.prototype.toString, "1f0bbc3c2e54b7a0357e267459f444cd", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "1f0bbc3c2e54b7a0357e267459f444cd" due to: ' + e);
-        }
-    },
     '(()=>{const e={breakStatus:"done"},o=["beforeReward","adViewed","adBreakDone"];window.adsbygoogle=window.adsbygoogle||[],window.adsbygoogle.push=function(d){var a;d&&"object"==typeof d&&(a=d,o.every((e=>e in a&&"function"==typeof a[e])))&&(d.beforeReward(),d.adViewed(),d.adBreakDone(e))}})();': () => {
         try {
             const e = "done";
@@ -3433,11 +3415,48 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "c7605ee2684a2146beda3b04ccfa8bec" due to: ' + e);
         }
     },
-    '(()=>{const t=/function\\(_0x.*\\){const _0x.*\\[_0x|adblock/,e={apply:(t,e,o)=>{const n=o[0];"boolean"==typeof n&&!0===n&&(o[0]=!1),setTimeout((()=>Reflect.apply(t,e,o)),2e3)}},o={apply:(o,n,r)=>{const i=r[0];return"function"==typeof i&&t.test(i.toString())&&(r[0]=new Proxy(r[0],e)),Reflect.apply(o,n,r)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,o),window.addEventListener("load",(()=>{const t=document.querySelector("form#submit-form button#submit-button");if(t){const e=t.cloneNode(!0);t.parentNode.replaceChild(e,t),e.removeAttribute("disabled"),e.textContent="Continue"}}))})();': () => {
+    '(()=>{window.vhit=!0;const e=/free-download-form|\'\\),_0x|\\)\\]\\(function\\(_0x|,Array\\[_0x/,o={apply:(e,o,t)=>{const n=t[0];"boolean"==typeof n&&!0===n&&(t[0]=!1),setTimeout((()=>Reflect.apply(e,o,t)),2e3)}},t={apply:(t,n,r)=>{const i=r[0];return"function"==typeof i&&e.test(i.toString())&&(r[0]=new Proxy(r[0],o)),Reflect.apply(t,n,r)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t),window.addEventListener("load",(()=>{const e=document.querySelector("form#go-link button#link-button");if(e){const o=e.cloneNode(!0);e.parentNode.replaceChild(o,e),o.removeAttribute("disabled")}}))})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["32dea19f0f666ccef63596c32c56e190"] === e) return;
+            if (Window.prototype.toString["6e71bb40559132d4cd9248856c0bade8"] === e) return;
             (() => {
+                window.vhit = !0;
+                const e = /free-download-form|'\),_0x|\)\]\(function\(_0x|,Array\[_0x/, o = {
+                    apply: (e, o, t) => {
+                        const n = t[0];
+                        "boolean" == typeof n && !0 === n && (t[0] = !1), setTimeout((() => Reflect.apply(e, o, t)), 2e3);
+                    }
+                }, t = {
+                    apply: (t, n, r) => {
+                        const d = r[0];
+                        return "function" == typeof d && e.test(d.toString()) && (r[0] = new Proxy(r[0], o)), 
+                        Reflect.apply(t, n, r);
+                    }
+                };
+                window.Promise.prototype.then = new Proxy(window.Promise.prototype.then, t), window.addEventListener("load", (() => {
+                    const e = document.querySelector("form#go-link button#link-button");
+                    if (e) {
+                        const o = e.cloneNode(!0);
+                        e.parentNode.replaceChild(o, e), o.removeAttribute("disabled");
+                    }
+                }));
+            })();
+            Object.defineProperty(Window.prototype.toString, "6e71bb40559132d4cd9248856c0bade8", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "6e71bb40559132d4cd9248856c0bade8" due to: ' + e);
+        }
+    },
+    '(()=>{window.vhit=!0;const t=/function\\(_0x.*\\){const _0x.*\\[_0x|adblock/,e={apply:(t,e,o)=>{const n=o[0];"boolean"==typeof n&&!0===n&&(o[0]=!1),setTimeout((()=>Reflect.apply(t,e,o)),2e3)}},o={apply:(o,n,i)=>{const r=i[0];return"function"==typeof r&&t.test(r.toString())&&(i[0]=new Proxy(i[0],e)),Reflect.apply(o,n,i)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,o),window.addEventListener("load",(()=>{const t=document.querySelector("form#submit-form button#submit-button");if(t){const e=t.cloneNode(!0);t.parentNode.replaceChild(e,t),e.removeAttribute("disabled"),e.textContent="Continue"}}))})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["29ce9b38941c9f39dc92cf872a0d3085"] === e) return;
+            (() => {
+                window.vhit = !0;
                 const e = /function\(_0x.*\){const _0x.*\[_0x|adblock/, t = {
                     apply: (e, t, o) => {
                         const n = o[0];
@@ -3458,14 +3477,14 @@ export const localScriptRules = {
                     }
                 }));
             })();
-            Object.defineProperty(Window.prototype.toString, "32dea19f0f666ccef63596c32c56e190", {
+            Object.defineProperty(Window.prototype.toString, "29ce9b38941c9f39dc92cf872a0d3085", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "32dea19f0f666ccef63596c32c56e190" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "29ce9b38941c9f39dc92cf872a0d3085" due to: ' + e);
         }
     },
     '(()=>{const e=()=>{document.querySelectorAll(".chakra-portal").forEach((e=>{e.querySelector(\'.chakra-modal__overlay[style*="opacity"]\')&&e.setAttribute("style","display: none !important;")}))},t=()=>{},a=function(t,a){const r={name:t,listener:a};requestAnimationFrame((()=>{try{"rewardedSlotGranted"===r.name&&setTimeout(e,2e3),r.listener()}catch(e){}}))};window.googletag={cmd:[],pubads:()=>({addEventListener:a,removeEventListener:t,refresh:t,getTargeting:()=>[],setTargeting:t,disableInitialLoad:t,enableSingleRequest:t,collapseEmptyDivs:t,getSlots:t}),defineSlot:()=>({addService(){}}),defineOutOfPageSlot:t,enableServices:t,display:t,enums:{OutOfPageFormat:{REWARDED:1}}},googletag.cmd.push=e=>{try{e()}catch(e){}return 1}})();': () => {
@@ -4003,28 +4022,56 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "df4e0801aa685812f605b6558f08d2df" due to: ' + e);
         }
     },
-    '!function(){const e={apply:(e,l,t)=>{const o=t[0];return o?.includes(".b_ad,")?t[0]="#b_results":o?.includes(".b_restorableLink")&&(t[0]=".b_algo"),Reflect.apply(e,l,t)}};window.Element.prototype.querySelectorAll=new Proxy(window.Element.prototype.querySelectorAll,e)}();': () => {
+    '(()=>{const t={apply:(t,r,e)=>{try{const t=e[0];t?.matches?.(\'[class^="b_ad"]\')&&(e[0]=document.querySelector("#b_results .b_algo"))}catch(t){}return Reflect.apply(t,r,e)}};window.Array.prototype.push=new Proxy(window.Array.prototype.push,t)})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["009a684340d0a5680676bfe531438c9e"] === e) return;
-            !function() {
+            if (Window.prototype.toString["090ddb6ae838bb8f2e9f32783f4a3f91"] === e) return;
+            (() => {
                 const e = {
-                    apply: (e, t, o) => {
-                        const r = o[0];
-                        return r?.includes(".b_ad,") ? o[0] = "#b_results" : r?.includes(".b_restorableLink") && (o[0] = ".b_algo"), 
-                        Reflect.apply(e, t, o);
+                    apply: (e, r, t) => {
+                        try {
+                            const e = t[0];
+                            e?.matches?.('[class^="b_ad"]') && (t[0] = document.querySelector("#b_results .b_algo"));
+                        } catch (e) {}
+                        return Reflect.apply(e, r, t);
                     }
                 };
-                window.Element.prototype.querySelectorAll = new Proxy(window.Element.prototype.querySelectorAll, e);
-            }();
-            Object.defineProperty(Window.prototype.toString, "009a684340d0a5680676bfe531438c9e", {
+                window.Array.prototype.push = new Proxy(window.Array.prototype.push, e);
+            })();
+            Object.defineProperty(Window.prototype.toString, "090ddb6ae838bb8f2e9f32783f4a3f91", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "009a684340d0a5680676bfe531438c9e" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "090ddb6ae838bb8f2e9f32783f4a3f91" due to: ' + e);
+        }
+    },
+    '(()=>{const e={apply:(e,t,l)=>{try{const e=l[0];e?.includes(".b_ad")?l[0]="#b_results .b_algo:not([style])":e?.includes(".b_restorableLink")&&(l[0]=".b_algo:not([style])")}catch(e){}return Reflect.apply(e,t,l)}};window.Element.prototype.querySelectorAll=new Proxy(window.Element.prototype.querySelectorAll,e)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.ab0b5298af0d2937679d2e5e0df0312b === e) return;
+            (() => {
+                const e = {
+                    apply: (e, t, o) => {
+                        try {
+                            const e = o[0];
+                            e?.includes(".b_ad") ? o[0] = "#b_results .b_algo:not([style])" : e?.includes(".b_restorableLink") && (o[0] = ".b_algo:not([style])");
+                        } catch (e) {}
+                        return Reflect.apply(e, t, o);
+                    }
+                };
+                window.Element.prototype.querySelectorAll = new Proxy(window.Element.prototype.querySelectorAll, e);
+            })();
+            Object.defineProperty(Window.prototype.toString, "ab0b5298af0d2937679d2e5e0df0312b", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "ab0b5298af0d2937679d2e5e0df0312b" due to: ' + e);
         }
     },
     "(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/\\]\\.bab\\(window/.test(a.toString()))return b(a,c)};})();": () => {
@@ -4162,24 +4209,6 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "1667ac15a74b79e35fdab510c44b45c6" due to: ' + e);
         }
     },
-    'var _st = window.setTimeout; window.setTimeout = function(a, b) { if(!/document\\.querySelector\\("ins\\.adsbygoogle"\\)/.test(a)){ _st(a,b);}};': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["7236f7ab988d26aeb65e644c0c708759"] === e) return;
-            var _st = window.setTimeout;
-            window.setTimeout = function(e, t) {
-                /document\.querySelector\("ins\.adsbygoogle"\)/.test(e) || _st(e, t);
-            };
-            Object.defineProperty(Window.prototype.toString, "7236f7ab988d26aeb65e644c0c708759", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "7236f7ab988d26aeb65e644c0c708759" due to: ' + e);
-        }
-    },
     "window.showAds = 1;": () => {
         try {
             const e = "done";
@@ -4215,26 +4244,6 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "13bb27a7e03ad36f09dfe943af907243" due to: ' + e);
         }
     },
-    "(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/\\!document\\.getElementById[\\s\\S]*?#updato-overlay/.test(a.toString()))return b(a,c)};})();": () => {
-        try {
-            const t = "done";
-            if (Window.prototype.toString.c01f2a751b270a3b51a5d5bfcbcb1984 === t) return;
-            !function() {
-                var t = window.setTimeout;
-                window.setTimeout = function(e, o) {
-                    if (!/\!document\.getElementById[\s\S]*?#updato-overlay/.test(e.toString())) return t(e, o);
-                };
-            }();
-            Object.defineProperty(Window.prototype.toString, "c01f2a751b270a3b51a5d5bfcbcb1984", {
-                value: t,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (t) {
-            console.error('Error executing AG js rule with uniqueId "c01f2a751b270a3b51a5d5bfcbcb1984" due to: ' + t);
-        }
-    },
     "window.detector_active = true;": () => {
         try {
             const e = "done";
@@ -4268,21 +4277,6 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "d1d17c910459844ab89551639599c825" due to: ' + e);
         }
     },
-    "window.areAdsDisplayed = true;": () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["8e2186350e194ef09a3cc1ab5f463826"] === e) return;
-            window.areAdsDisplayed = !0;
-            Object.defineProperty(Window.prototype.toString, "8e2186350e194ef09a3cc1ab5f463826", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "8e2186350e194ef09a3cc1ab5f463826" due to: ' + e);
-        }
-    },
     "window.Adv_ab = false;": () => {
         try {
             const e = "done";
@@ -4311,21 +4305,6 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "be54fb20467f57c75acee13f527620e5" due to: ' + e);
-        }
-    },
-    "window.showads=true;": () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["312c329877d22ebe2fb61034e6a10055"] === e) return;
-            window.showads = !0;
-            Object.defineProperty(Window.prototype.toString, "312c329877d22ebe2fb61034e6a10055", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "312c329877d22ebe2fb61034e6a10055" due to: ' + e);
         }
     },
     '(function(a){setTimeout=function(){var b="function"==typeof arguments[0]?Function.prototype.toString.call(arguments[0]):"string"==typeof arguments[0]?arguments[0]:String(arguments[0]);return/\\[(_0x[a-z0-9]{4,})\\[\\d+\\]\\][\\[\\(]\\1\\[\\d+\\]/.test(b)?NaN:a.apply(window,arguments)}.bind();Object.defineProperty(setTimeout,"name",{value:a.name});setTimeout.toString=Function.prototype.toString.bind(a)})(setTimeout);': () => {
@@ -4438,21 +4417,6 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "2ac41d844f1f8bd49b7778aeb6e0c2cc" due to: ' + e);
-        }
-    },
-    'window.ad_permission = "OK";': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["7016d2bc404839b07be9953ba599b969"] === e) return;
-            window.ad_permission = "OK";
-            Object.defineProperty(Window.prototype.toString, "7016d2bc404839b07be9953ba599b969", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "7016d2bc404839b07be9953ba599b969" due to: ' + e);
         }
     },
     'document.cookie="popunder=1; path=/;";': () => {
@@ -5324,6 +5288,31 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "6c5874d9ea24235e4a8490028ce09e66" due to: ' + e);
+        }
+    },
+    "(()=>{const r={apply:(r,t,p)=>{try{if(p[0]?.isAffiliate)return}catch(r){}return Reflect.apply(r,t,p)}};window.Array.prototype.push=new Proxy(window.Array.prototype.push,r)})();": () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["6b25d47adf4d5da91c359dc2fe2f3012"] === e) return;
+            (() => {
+                const e = {
+                    apply: (e, r, t) => {
+                        try {
+                            if (t[0]?.isAffiliate) return;
+                        } catch (e) {}
+                        return Reflect.apply(e, r, t);
+                    }
+                };
+                window.Array.prototype.push = new Proxy(window.Array.prototype.push, e);
+            })();
+            Object.defineProperty(Window.prototype.toString, "6b25d47adf4d5da91c359dc2fe2f3012", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "6b25d47adf4d5da91c359dc2fe2f3012" due to: ' + e);
         }
     },
     '(()=>{const t={apply:(t,e,o)=>{try{const t=o[0];t?.matches?.("azuki-reader")&&!0===t?.showAd&&Object.defineProperty(o[0],"showAd",{value:!1})}catch(t){}return Reflect.apply(t,e,o)}};window.Function.prototype.bind=new Proxy(window.Function.prototype.bind,t)})();': () => {
@@ -7310,54 +7299,74 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "f108a248579190d52136e6e135a4d6c9" due to: ' + e);
         }
     },
-    '(()=>{const e="SPONSORED",r="AdsSideFeedUnit",t={apply:(t,a,n)=>{try{const d=Reflect.apply(t,a,n);if(JSON.stringify(d).includes?.(e)||JSON.stringify(d).includes?.(r)){const t=d;return Array.isArray(t.require?.[0]?.[3]?.[0]?.__bbox?.require)&&t.require[0][3][0].__bbox.require.forEach((t=>{t[3]?.[1]?.__bbox?.result?.data?.category===e&&delete t[3][1].__bbox.result.data.node,t[3]?.[1]?.__bbox?.result?.data?.viewer?.sideFeedUnit?.nodes?.[0]?.__typename===r&&delete t[3][1].__bbox.result.data.viewer.sideFeedUnit.nodes[0]})),Array.isArray(t.data?.viewer?.news_feed?.edges)&&(t.data.viewer.news_feed.edges=t.data.viewer.news_feed.edges.filter((r=>r.category!==e))),t.data?.category===e&&delete t.data.node,t}return d}catch(e){return Reflect.apply(t,a,n)}}};window.JSON.parse=new Proxy(window.JSON.parse,t);const a={apply:(t,a,n)=>{try{const d=Reflect.apply(t,a,n);if(d?.startsWith?.("{")&&d?.endsWith?.("}")&&(d?.includes?.(e)||d?.includes?.(r))){const e=JSON.parse(d);return JSON.stringify(e)}return d}catch(e){return Reflect.apply(t,a,n)}}};window.String=new Proxy(window.String,a)})();': () => {
+    '(()=>{const e="SPONSORED",t="SponsoredData",r="AdsSideFeedUnit",n={apply:(n,a,d)=>{try{const s=Reflect.apply(n,a,d);if(JSON.stringify(s).includes?.(e)||JSON.stringify(s).includes?.(t)||JSON.stringify(s).includes?.(r)){const n=s;if(Array.isArray(n.require?.[0]?.[3]?.[0]?.__bbox?.require)&&n.require[0][3][0].__bbox.require.forEach((n=>{if(n[3]?.[1]?.__bbox?.result?.data?.category===e&&delete n[3][1].__bbox.result.data.node,n[3]?.[1]?.__bbox?.result?.data?.node){const e=n[3][1].__bbox.result.data.node;Object.values(e).some((e=>e?.__typename===t))&&delete n[3][1].__bbox.result.data.node}n[3]?.[1]?.__bbox?.result?.data?.viewer?.sideFeedUnit?.nodes?.[0]?.__typename===r&&delete n[3][1].__bbox.result.data.viewer.sideFeedUnit.nodes[0],n[3]?.[1]?.__bbox?.result?.data?.viewer?.egoSidePanelUnits?.nodes?.[0]?.__typename===r&&delete n[3][1].__bbox.result.data.viewer.egoSidePanelUnits.nodes[0]})),Array.isArray(n.data?.viewer?.news_feed?.edges)&&(n.data.viewer.news_feed.edges=n.data.viewer.news_feed.edges.filter((r=>{if(r.node){if(Object.values(r.node).some((e=>e?.__typename===t)))return!1}return r.category!==e}))),n.data?.node){Object.values(n.data.node).some((e=>e?.__typename===t))&&delete n.data.node}return n.data?.category===e&&delete n.data.node,n}return s}catch(e){return Reflect.apply(n,a,d)}}};window.JSON.parse=new Proxy(window.JSON.parse,n);const a={apply:(n,a,d)=>{try{const s=Reflect.apply(n,a,d);if(s?.startsWith?.("{")&&s?.endsWith?.("}"),s?.startsWith?.("{")&&s?.endsWith?.("}")&&(s?.includes?.(e)||s?.includes?.(t)||s?.includes?.(r))){const e=JSON.parse(s);return JSON.stringify(e)}return s}catch(e){return Reflect.apply(n,a,d)}}};window.String=new Proxy(window.String,a);const d={apply:(e,r,n)=>{try{if(n[2]?.[0]&&n[2][0]?.includes?.(t)){const e=n[2][0].split(/\\r?\\n|\\r/),t=e.map((e=>JSON.parse(e))).map((e=>JSON.stringify(e))).join("\\r\\n");n[2][0]=t}return Reflect.apply(e,r,n)}catch(t){return Reflect.apply(e,r,n)}}};window.Function.prototype.call=new Proxy(window.Function.prototype.call,d)})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["338870680833ffa4c345785e452465ba"] === e) return;
+            if (Window.prototype.toString["4428a117d5582b0a7e8c4fc6db0aa11c"] === e) return;
             (() => {
-                const e = "SPONSORED", r = "AdsSideFeedUnit", t = {
-                    apply: (t, n, a) => {
+                const e = "SPONSORED", t = "SponsoredData", r = "AdsSideFeedUnit", a = {
+                    apply: (a, n, d) => {
                         try {
-                            const i = Reflect.apply(t, n, a);
-                            if (JSON.stringify(i).includes?.(e) || JSON.stringify(i).includes?.(r)) {
-                                const t = i;
-                                return Array.isArray(t.require?.[0]?.[3]?.[0]?.__bbox?.require) && t.require[0][3][0].__bbox.require.forEach((t => {
-                                    t[3]?.[1]?.__bbox?.result?.data?.category === e && delete t[3][1].__bbox.result.data.node, 
-                                    t[3]?.[1]?.__bbox?.result?.data?.viewer?.sideFeedUnit?.nodes?.[0]?.__typename === r && delete t[3][1].__bbox.result.data.viewer.sideFeedUnit.nodes[0];
-                                })), Array.isArray(t.data?.viewer?.news_feed?.edges) && (t.data.viewer.news_feed.edges = t.data.viewer.news_feed.edges.filter((r => r.category !== e))), 
-                                t.data?.category === e && delete t.data.node, t;
+                            const o = Reflect.apply(a, n, d);
+                            if (JSON.stringify(o).includes?.(e) || JSON.stringify(o).includes?.(t) || JSON.stringify(o).includes?.(r)) {
+                                const a = o;
+                                (Array.isArray(a.require?.[0]?.[3]?.[0]?.__bbox?.require) && a.require[0][3][0].__bbox.require.forEach((a => {
+                                    if (a[3]?.[1]?.__bbox?.result?.data?.category === e && delete a[3][1].__bbox.result.data.node, 
+                                    a[3]?.[1]?.__bbox?.result?.data?.node) {
+                                        const e = a[3][1].__bbox.result.data.node;
+                                        Object.values(e).some((e => e?.__typename === t)) && delete a[3][1].__bbox.result.data.node;
+                                    }
+                                    a[3]?.[1]?.__bbox?.result?.data?.viewer?.sideFeedUnit?.nodes?.[0]?.__typename === r && delete a[3][1].__bbox.result.data.viewer.sideFeedUnit.nodes[0], 
+                                    a[3]?.[1]?.__bbox?.result?.data?.viewer?.egoSidePanelUnits?.nodes?.[0]?.__typename === r && delete a[3][1].__bbox.result.data.viewer.egoSidePanelUnits.nodes[0];
+                                })), Array.isArray(a.data?.viewer?.news_feed?.edges) && (a.data.viewer.news_feed.edges = a.data.viewer.news_feed.edges.filter((r => (!r.node || !Object.values(r.node).some((e => e?.__typename === t))) && r.category !== e))), 
+                                a.data?.node) && Object.values(a.data.node).some((e => e?.__typename === t)) && delete a.data.node;
+                                return a.data?.category === e && delete a.data.node, a;
                             }
-                            return i;
+                            return o;
                         } catch (e) {
-                            return Reflect.apply(t, n, a);
+                            return Reflect.apply(a, n, d);
                         }
                     }
                 };
-                window.JSON.parse = new Proxy(window.JSON.parse, t);
+                window.JSON.parse = new Proxy(window.JSON.parse, a);
                 const n = {
-                    apply: (t, n, a) => {
+                    apply: (a, n, d) => {
                         try {
-                            const i = Reflect.apply(t, n, a);
-                            if (i?.startsWith?.("{") && i?.endsWith?.("}") && (i?.includes?.(e) || i?.includes?.(r))) {
-                                const e = JSON.parse(i);
+                            const o = Reflect.apply(a, n, d);
+                            if (o?.startsWith?.("{") && o?.endsWith?.("}"), o?.startsWith?.("{") && o?.endsWith?.("}") && (o?.includes?.(e) || o?.includes?.(t) || o?.includes?.(r))) {
+                                const e = JSON.parse(o);
                                 return JSON.stringify(e);
                             }
-                            return i;
+                            return o;
                         } catch (e) {
-                            return Reflect.apply(t, n, a);
+                            return Reflect.apply(a, n, d);
                         }
                     }
                 };
                 window.String = new Proxy(window.String, n);
+                const d = {
+                    apply: (e, r, a) => {
+                        try {
+                            if (a[2]?.[0] && a[2][0]?.includes?.(t)) {
+                                const e = a[2][0].split(/\r?\n|\r/).map((e => JSON.parse(e))).map((e => JSON.stringify(e))).join("\r\n");
+                                a[2][0] = e;
+                            }
+                            return Reflect.apply(e, r, a);
+                        } catch (t) {
+                            return Reflect.apply(e, r, a);
+                        }
+                    }
+                };
+                window.Function.prototype.call = new Proxy(window.Function.prototype.call, d);
             })();
-            Object.defineProperty(Window.prototype.toString, "338870680833ffa4c345785e452465ba", {
+            Object.defineProperty(Window.prototype.toString, "4428a117d5582b0a7e8c4fc6db0aa11c", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "338870680833ffa4c345785e452465ba" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "4428a117d5582b0a7e8c4fc6db0aa11c" due to: ' + e);
         }
     },
     '!function(){var e=new MutationObserver(function(){var m=document.querySelectorAll("div[id^=\'mount_\']");{var e;e=0<m.length?document.querySelectorAll(\'div[role="feed"] > div[data-pagelet^="FeedUnit"] > div[class]:not([style*="height"])\'):document.querySelectorAll(\'[id^="substream"] > div:not(.hidden_elem) div[id^="hyperfeed_story_id"]\')}e.forEach(function(e){function n(e,n){for(0<m.length?"0"==(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span > span > span[data-content]\')).length&&(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span[aria-label]\')):h=e.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [class] [class]"),socheck=0;socheck<h.length;socheck++)h[socheck].innerText.contains(n)&&(p=["1"],d=["1"],u=["1"],i=r=l=1,socheck=h.length)}function t(e,n,t,c,a){for(0<m.length?"0"==(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span > span > span[data-content]\')).length&&(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] div[role="button"][tabindex]\')):h=e.querySelectorAll(".userContentWrapper h5 + div[data-testid] > span a > [class] [class]"),"0"==h.length&&(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span[aria-label]\')),socheck=0;socheck<h.length;socheck++){spancheck=0,1<h.length?(spancheck=h[socheck].querySelectorAll("span")[0],0==spancheck&&(spancheck=h[socheck].querySelectorAll("b")[0])):(spancheck=h[0].querySelectorAll("span")[socheck],0==spancheck&&(spancheck=h[0].querySelectorAll("b")[socheck]));var o=h[0];if(0!=spancheck&&spancheck){if(2==spancheck.children.length&&0<m.length)for(spancheck=spancheck.querySelectorAll("span:not([style])"),spcheck=0;spcheck<spancheck.length;spcheck++)spancheck[spcheck].innerText.contains(n)?s=1:!spancheck[spcheck].innerText.contains(t)||0!=spancheck[spcheck].offsetTop||spancheck[spcheck].innerText.contains(n)||spancheck[spcheck].innerText.contains(c)||spancheck[spcheck].innerText.contains(a)?!spancheck[spcheck].innerText.contains(c)||0!=spancheck[spcheck].offsetTop||spancheck[spcheck].innerText.contains(t)||spancheck[spcheck].innerText.contains(n)||spancheck[spcheck].innerText.contains(a)?!spancheck[spcheck].innerText.contains(a)||0!=spancheck[spcheck].offsetTop||spancheck[spcheck].innerText.contains(t)||spancheck[spcheck].innerText.contains(c)||spancheck[spcheck].innerText.contains(n)||(u=["1"],i=1):(d=["1"],r=1):(p=["1"],l=1);0==m.length&&((!(spancheck.innerText.contains(n)&&0==spancheck.offsetTop||h[0].innerText.contains(n)&&0==h[0].offsetTop)||spancheck.innerText.contains(t)&&!h[0].innerText.contains(t)||spancheck.innerText.contains(c)&&!h[0].innerText.contains(c)||spancheck.innerText.contains(a)&&!h[0].innerText.contains(a))&&(!o.innerText.contains(n)||0!=o.offsetTop||o.innerText.contains(t)||o.innerText.contains(c)||o.innerText.contains(a))?!spancheck.innerText.contains(t)||0!=spancheck.offsetTop||spancheck.innerText.contains(n)||spancheck.innerText.contains(c)||spancheck.innerText.contains(a)?!spancheck.innerText.contains(c)||0!=spancheck.offsetTop||spancheck.innerText.contains(t)||spancheck.innerText.contains(n)||spancheck.innerText.contains(a)?!spancheck.innerText.contains(a)||0!=spancheck.offsetTop||spancheck.innerText.contains(t)||spancheck.innerText.contains(c)||spancheck.innerText.contains(n)||(u=["1"],i=1):(d=["1"],r=1):(p=["1"],l=1):s=1)}}}function c(e,n,t,c,a){u=0<m.length?(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span span[data-content=\'+n+"]"),p=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span span[data-content=\'+t+"]"),d=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span span[data-content=\'+c+"]"),e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span span[data-content=\'+a+"]")):(h=e.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content="+n+"]"),p=e.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content="+t+"]"),d=e.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content="+c+"]"),e.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content="+a+"]"))}var s=0,l=0,r=0,i=0,h=0,p=0,d=0,u=0,a=e.querySelectorAll("div[style=\'width: 100%\'] > a[href*=\'oculus.com/quest\'] > div"),o=document.querySelector("[lang]"),k=document.querySelectorAll("link[rel=\'preload\'][href*=\'/l/\']");o=o?document.querySelector("[lang]").lang:"en";var y,g=e.querySelectorAll(\'a[ajaxify*="ad_id"] > span\'),f=e.querySelectorAll(\'a[href*="ads/about"]\'),S=e.querySelectorAll(\'a[href*="https://www.facebook.com/business/help"]\');if("display: none !important;"!=e.getAttribute("style")&&!e.classList.contains("hidden_elem")&&(0<g.length||0<f.length||0<S.length?(T+=1,0<m.length?(""==(y=e.querySelectorAll("a[href]")[0].innerText)&&(y=e.querySelectorAll("a[href]")[1].innerText),""==y&&(y=e.querySelectorAll("a[href]")[0].querySelectorAll("a[aria-label]")[0].getAttribute("aria-label"))):y=e.querySelectorAll("a[href]")[2].innerText,console.log("--------"),console.log("Ad hidden from: "+y),console.log("Total ads hidden: "+T),console.log("F length: "+g.length),console.log("H length: "+f.length),console.log("I length (Paid partnership): "+S.length),console.log("--------"),e.style="display:none!important;"):0<a.length?(T+=1,y="Facebook",console.log("--------"),console.log("Ad hidden from: "+y),console.log("Total ads hidden: "+T),console.log("Non-declared ad"),console.log("--------"),e.style="display:none!important;"):"af"==o?n(e,"Geborg"):"de"==o||"nl"==o?c(e,"G","e","s","n"):"am"==o?n(e,"የተከፈለበት ማስታወቂያ"):"ar"==o?n(e,"مُموَّل"):"as"==o?n(e,"পৃষ্ঠপোষকতা কৰা"):"az"==o?n(e,"Sponsor dəstəkli"):"co"==o?n(e,"Spunsurizatu"):"bs"==o||"sl"==o||"cs"==o?c(e,"S","p","z","n"):"da"==o||"en"==o||"et"==o||"fy"==o||"it"==o||"ku"==o||"nb"==o||"nn"==o||"pl"==o||"sq"==o||"sv"==o||"zz"==o?0<m.length?k[0].href.contains("en_UD")?n(e,"pəɹosuodS"):k[0].href.contains("ja_KS")?n(e,"広告"):k[0].href.contains("tz_MA")?n(e,"ⵉⴷⵍ"):k[0].href.contains("sy_SY")?n(e,"ܒܘܕܩܐ ܡܡܘܘܢܐ"):k[0].href.contains("cb_IQ")?n(e,"پاڵپشتیکراو"):k[0].href.contains("ar_AR")?n(e,"مُموَّل"):k[0].href.contains("sz_PL")?n(e,"Szpōnzorowane"):k[0].href.contains("eo_EO")?n(e,"Reklamo"):k[0].href.contains("es_LA")?c(e,"P","u","c","d"):(c(e,"S","p","s","n"),"0"==h.length&&t(e,"S","p","s","n"),"0"==h.length&&n(e,"Sponsored")):document.querySelector("body").className.includes("Locale_en_UD")?n(e,"pəɹosuodS"):document.querySelector("body").className.includes("ja_KS")?n(e,"広告"):document.querySelector("body").className.includes("tz_MA")?n(e,"ⵉⴷⵍ"):document.querySelector("body").className.includes("sy_SY")?n(e,"ܒܘܕܩܐ ܡܡܘܘܢܐ"):document.querySelector("body").className.includes("cb_IQ")?n(e,"پاڵپشتیکراو"):document.querySelector("body").className.includes("ar_AR")?n(e,"مُموَّل"):document.querySelector("body").className.includes("sz_PL")?n(e,"Szpōnzorowane"):document.querySelector("body").className.includes("eo_EO")?n(e,"Reklamo"):document.querySelector("body").className.includes("es_LA")?c(e,"P","u","c","d"):(c(e,"S","p","s","n"),"0"==h.length&&t(e,"S","p","s","n")):"be"==o?n(e,"Рэклама"):"bg"==o?n(e,"Спонсорирано"):"mk"==o?n(e,"Спонзорирано"):"br"==o?n(e,"Paeroniet"):"ca"==o?n(e,"Patrocinat"):"gl"==o||"pt"==o?(n(e,"Patrocinado"),"0"==l&&c(e,"P","a","c","o")):"bn"==o?n(e,"সৌজন্যে"):"cb"==o?n(e,"پاڵپشتیکراو"):"cx"==o?c(e,"G","i","s","n"):"cy"==o?n(e,"Noddwyd"):"el"==o?n(e,"Χορηγούμενη"):"eo"==o?n(e,"Reklamo"):"es"==o?c(e,"P","u","c","d"):"eu"==o?n(e,"Babestua"):"fa"==o?n(e,"دارای پشتیبانی مالی"):"ff"==o?n(e,"Yoɓanaama"):"fi"==o?n(e,"Sponsoroitu"):"fo"==o?n(e,"Stuðlað"):"fr"==o?0<m.length?k[0].href.contains("fr_FR")?c(e,"S","p","s","n"):c(e,"C","o","m","n"):document.querySelector("body").className.includes("Locale_fr_FR")?c(e,"S","p","s","n"):c(e,"C","o","m","n"):"ga"==o?n(e,"Urraithe"):"gn"==o?n(e,"Oñepatrosinapyre"):"gu"==o?n(e,"પ્રાયોજિત"):"ha"==o?n(e,"Daukar Nauyi"):"he"==o?n(e,"ממומן"):"hr"==o?n(e,"Plaćeni oglas"):"ht"==o?n(e,"Peye"):"ne"==o||"mr"==o||"hi"==o?n(e,"प्रायोजित"):"hu"==o?c(e,"H","i","r","d"):"hy"==o?n(e,"Գովազդային"):"id"==o?c(e,"B","e","p","n"):"is"==o?n(e,"Kostað"):"ja"==o?n(e,"広告"):"ms"==o?n(e,"Ditaja"):"jv"==o?n(e,"Disponsori"):"ka"==o?n(e,"რეკლამა"):"kk"==o?n(e,"Демеушілік көрсеткен"):"km"==o?n(e,"បានឧបត្ថម្ភ"):"kn"==o?n(e,"ಪ್ರಾಯೋಜಿತ"):"ko"==o?n(e,"Sponsored"):"ky"==o?n(e,"Демөөрчүлөнгөн"):"lo"==o?n(e,"ຜູ້ສະໜັບສະໜູນ"):"lt"==o?n(e,"Remiama"):"lv"==o?n(e,"Apmaksāta reklāma"):"mg"==o?n(e,"Misy Mpiantoka"):"ml"==o?n(e,"സ്പോൺസർ ചെയ്തത്"):"mn"==o?n(e,"Ивээн тэтгэсэн"):"mt"==o?n(e,"Sponsorjat"):"my"==o?(n(e,"ပံ့ပိုးထားသည်"),"0"==l&&n(e,"အခပေးကြော်ငြာ")):"or"==o?n(e,"ପ୍ରଯୋଜିତ"):"pa"==o?n(e,"ਸਰਪ੍ਰਸਤੀ ਪ੍ਰਾਪਤ"):"ps"==o?n(e,"تمويل شوي"):"ro"==o?n(e,"Sponsorizat"):"ru"==o||"uk"==o?n(e,"Реклама"):"rw"==o?n(e,"Icyamamaza ndasukirwaho"):"sc"==o?n(e,"Patronadu de"):"si"==o?n(e,"අනුග්රාහක"):"sk"==o?n(e,"Sponzorované"):"sn"==o?n(e,"Zvabhadharirwa"):"so"==o?n(e,"La maalgeliyey"):"sr"==o?n(e,"Спонзорисано"):"sw"==o?n(e,"Imedhaminiwa"):"sy"==o?n(e,"ܒܘܕܩܐ ܡܡܘܘܢܐ"):"sz"==o?n(e,"Szpōnzorowane"):"ta"==o?n(e,"விளம்பரம்"):"te"==o?n(e,"ప్రాయోజితం చేయబడింది"):"tg"==o?n(e,"Бо сарпарастӣ"):"th"==o?n(e,"ได้รับการสนับสนุน"):"tl"==o?n(e,"May Sponsor"):"tr"==o?n(e,"Sponsorlu"):"tt"==o?n(e,"Хәйрияче"):"tz"==o?n(e,"ⵉⴷⵍ"):"ur"==o?n(e,"سپانسرڈ"):"uz"==o?n(e,"Reklama"):"vi"==o?n(e,"Được tài trợ"):"zh-Hans"==o?n(e,"赞助内容"):"zh-Hant"==o&&n(e,"贊助"),0<h.length&&0<p.length&&0<d.length&&0<u.length)){for(cont=0;cont<h.length;cont++)0<h[cont].offsetHeight&&(cont=h.length,s=1);for(cont1=0;cont1<p.length;cont1++)0<p[cont1].offsetHeight&&(cont1=p.length,l=1);for(cont2=0;cont2<d.length;cont2++)0<d[cont2].offsetHeight&&(cont2=d.length,r=1);for(cont3=0;cont3<u.length;cont3++)0<u[cont3].offsetHeight&&(cont3=u.length,i=1);1==s&&1==l&&1==r&&1==i&&(0<m.length&&""!=(y=e.querySelectorAll("a[href]")[1].innerText)||(y=e.querySelectorAll("a[href]")[2].innerText),T+=1,console.log("--------"),console.log("Ad hidden from: "+y),console.log("Total ads hidden: "+T),console.log("--------"),e.style="display:none!important;")}})}),T=0;e.observe(document,{childList:!0,subtree:!0})}();': () => {
@@ -8096,12 +8105,12 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "a9729560c879f0e07a037c0bd2da0571" due to: ' + e);
         }
     },
-    '(()=>{const e=/html-load\\.com|loader\\.min\\.js|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\./,t={filter:Array.prototype.filter,includes:String.prototype.includes,regexTest:RegExp.prototype.test},o=()=>(new Error).stack,r=o=>t.regexTest.call(e,o),l={construct:(e,l,n)=>{const c=o();return r(c)&&l[0]&&t.includes.call(l[0],"adshield")&&(l[0]=["(function(){})();"]),Reflect.construct(e,l,n)}};window.Blob=new Proxy(window.Blob,l);const n={apply:(e,l,n)=>{const c=o();return r(c)&&n[0]&&t.includes.call(n[0],"new Error")&&(n[0]=()=>{}),Reflect.apply(e,l,n)}};window.setTimeout=new Proxy(window.setTimeout,n);const c={apply:(e,l,n)=>{const c=o();return r(c)&&n[0]&&l?.includes?.("setTimeout")&&(l=t.filter.call(l,(e=>!t.includes.call(e,"setTimeout")))),Reflect.apply(e,l,n)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,c)})();': () => {
+    '(()=>{const e=/html-load\\.com|loader\\.min\\.js|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\.|:\\/\\/loader\\.|core\\.js/,t={filter:Array.prototype.filter,includes:String.prototype.includes,regexTest:RegExp.prototype.test},o=()=>(new Error).stack,r=o=>t.regexTest.call(e,o),l={construct:(e,l,n)=>{const c=o();return r(c)&&l[0]&&t.includes.call(l[0],"adshield")&&(l[0]=["(function(){})();"]),Reflect.construct(e,l,n)}};window.Blob=new Proxy(window.Blob,l);const n={apply:(e,l,n)=>{const c=o();return r(c)&&n[0]&&t.includes.call(n[0],"new Error")&&(n[0]=()=>{}),Reflect.apply(e,l,n)}};window.setTimeout=new Proxy(window.setTimeout,n);const c={apply:(e,l,n)=>{const c=o();return r(c)&&n[0]&&l?.includes?.("setTimeout")&&(l=t.filter.call(l,(e=>!t.includes.call(e,"setTimeout")))),Reflect.apply(e,l,n)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,c)})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.c54ae5d29b7bd5a4fe6a5ebf5dab60ce === e) return;
+            if (Window.prototype.toString.b21b244f4fda971ef122030108f7b5c0 === e) return;
             (() => {
-                const e = /html-load\.com|loader\.min\.js|andwonderful\.com\/safe\.min\.js|shieldload\./, t = {
+                const e = /html-load\.com|loader\.min\.js|andwonderful\.com\/safe\.min\.js|shieldload\.|:\/\/loader\.|core\.js/, t = {
                     filter: Array.prototype.filter,
                     includes: String.prototype.includes,
                     regexTest: RegExp.prototype.test
@@ -8130,14 +8139,14 @@ export const localScriptRules = {
                 };
                 window.Array.prototype.filter = new Proxy(window.Array.prototype.filter, c);
             })();
-            Object.defineProperty(Window.prototype.toString, "c54ae5d29b7bd5a4fe6a5ebf5dab60ce", {
+            Object.defineProperty(Window.prototype.toString, "b21b244f4fda971ef122030108f7b5c0", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "c54ae5d29b7bd5a4fe6a5ebf5dab60ce" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "b21b244f4fda971ef122030108f7b5c0" due to: ' + e);
         }
     },
     '(()=>{const e={apply:(e,l,o)=>"link"===o[0]||"style"===o[0]?[]:Reflect.apply(e,l,o)};window.document.querySelectorAll=new Proxy(window.document.querySelectorAll,e)})();': () => {
@@ -8434,81 +8443,81 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "2e8e930a77cdc0a58bb793b156709071" due to: ' + e);
         }
     },
-    '(()=>{const e="movie_player",t="ytd-watch-flexy[player-unavailable]",r=`#${e} > .ytp-error`,n="yt-playability-error-supported-renderers#error-screen:has(>*)",a=\'yt-playability-error-supported-renderers#error-screen a[href^="//support.google.com/youtube/answer/2802245"]\',o="pyv",c="param_first",i="param_second",l="client_screen",s="ad_type",y="none",d="eAFgAQ",p="8AUB",u="YAHI",m="CHANNEL",f=c;let b=f,v=null;const S=new Set,x=()=>{const t=document.getElementById(e),r=window.location.search,n=new URLSearchParams(r).get("v")||t?.getVideoData?.().video_id,a=new URLSearchParams(r).get("t")??"0";return{videoId:n,timeInSeconds:parseInt(a,10)}},g=()=>{h();const t=document.getElementById(e);if(t&&"function"==typeof t.loadVideoById)try{const{videoId:e,timeInSeconds:r}=x();t.loadVideoById(e,r)}catch(e){}},I=(()=>{let e=null,t=null,r=0;return n=>{try{if(!n)return!1;const{videoId:a}=x();return!!a&&(e===a&&t===n?r++:(e=a,t=n,r=1),r>=2&&(r=0,!0))}catch(e){return!1}}})(),R=e=>{b=e},P=Object.getOwnPropertyDescriptor(Document.prototype,"visibilityState"),C=()=>{try{Object.defineProperty(document,"visibilityState",{get:()=>"visible",configurable:!0})}catch(e){}},h=()=>{const r=document.getElementById(e),o=document.querySelector(n),c=document.querySelector("yt-playability-error-supported-renderers.ytdMiniplayerPlayerContainerPlayabilityError:has(>*)"),i=document.querySelector(t),l=document.querySelector(a);if(!r||l)return;const s=r.getPlayerResponse?.();"LOGIN_REQUIRED"!==s?.playabilityStatus?.status?(i||c)&&(o?.style.setProperty("display","none","important"),c?.style.setProperty("display","none","important"),i?.removeAttribute("player-unavailable")):o?.style.setProperty("display","block","important")},k=e=>{(e.playbackContext||e.playerRequest)&&delete e.context?.client?.configInfo?.appInstallData},q=(e,t,r)=>{try{if(!e||!t||!r)return;if((e=>{const t=e?.videoId;t&&(v&&v!==t&&R(f),v=t)})(e),r===c&&e.context?.client?.clientScreen!==m&&!e.params?.startsWith(u))return e.params=d,e.playerRequest&&e.playerRequest.params!==d&&(e.playerRequest.params=d),e.playbackContext&&e.playbackContext.params!==d&&(e.playbackContext.params=d),t.contentPlaybackContext.lactMilliseconds=String(Date.now()),C(),void k(e);if(r===i&&e.context?.client?.clientScreen!==m&&!e.params?.startsWith(u))return e.params!==p&&(e.params=p),e.playerRequest&&e.playerRequest.params!==p&&(e.playerRequest.params=p),e.playbackContext&&e.playbackContext.params!==p&&(e.playbackContext.params=p),e.playlistId||(e.context.client.clientScreen=m),t.contentPlaybackContext.lactMilliseconds=String(Date.now()),C(),void k(e);if(!(r!==o||e.context?.client?.clientScreen===m||t.params?.startsWith(d)&&t.params?.startsWith(p)))return t.adPlaybackContext={pyv:!0},t.contentPlaybackContext.lactMilliseconds=String(Date.now()),C(),void k(e);if(r===l&&"WEB"===e.context?.client?.clientName)return e.context.client.clientScreen=m,t.contentPlaybackContext.lactMilliseconds=String(Date.now()),C(),void k(e);if(r===s)return t.adPlaybackContext={adType:"AD_TYPE_INSTREAM"},t.contentPlaybackContext.lactMilliseconds=String(Date.now()),C(),void k(e);if(r===y)return delete t.adPlaybackContext,void(()=>{try{Object.defineProperty(document,"visibilityState",P)}catch(e){}})()}catch(e){}};(()=>{const e={apply:(e,t,r)=>{try{let n=r[0];if(!n||location.href.includes("youtube.com/tv")||location.href.includes("youtube.com/embed/"))return Reflect.apply(e,t,r);const a=Array.isArray(n),o=a?n[0]:n;if("string"!=typeof o)return Reflect.apply(e,t,r);if(!o.includes(\'"contentPlaybackContext"\')&&!o.includes(\'"adSignalsInfo"\'))return Reflect.apply(e,t,r);const c=JSON.parse(o);if(!c.context?.client)return Reflect.apply(e,t,r);c.playbackContext&&q(c,c.playbackContext,b),c.playerRequest&&q(c,c.playerRequest.playbackContext,b);const i=JSON.stringify(c);a?r[0][0]=i:r[0]=i}catch(e){}return Reflect.apply(e,t,r)}};window.XMLHttpRequest.prototype.send=new Proxy(window.XMLHttpRequest.prototype.send,e)})();const w=document.documentElement;new MutationObserver((()=>{if(document.querySelector(n)&&h(),!(()=>{const o=document.getElementById(e),c=document.querySelector(r),i=document.querySelector(n),l=document.querySelector(t),s=document.querySelector(a);if(!o||s)return!1;const y=o.getPlayerResponse?.();if("LOGIN_REQUIRED"===y?.playabilityStatus?.status)return!1;const d=o.getVideoData?.();return(i||l||c)&&null!=d?.errorCode})())return;const{videoId:d}=x();(e=>{if(e)for(const t of S)t!==e&&S.delete(t)})(d),(()=>{if(b===c){if(!I(i))return void g();R(i),g()}else if(b===i){if(!I(o))return void g();R(o),g()}else if(b===o){if(!I(l))return void g();R(l),g()}else if(b===l){if(!I(s))return void g();R(s),g()}else if(b===s){if(!I(y))return void g();R(y),g()}else if(b===y){const{videoId:e}=x();if(!e||S.has(e))return void h();S.add(e),g()}})()})).observe(w,{attributes:!0,childList:!0,subtree:!0})})();': () => {
+    '(()=>{const e="movie_player",t="ytd-watch-flexy[player-unavailable]",r=`#${e} > .ytp-error`,n="yt-playability-error-supported-renderers#error-screen:has(>*)",a=\'yt-playability-error-supported-renderers#error-screen a[href^="//support.google.com/youtube/answer/2802245"]\',o="LOGIN_REQUIRED",i="CONTENT_CHECK_REQUIRED",l="pyv",c="param_first",s="param_second",y="client_screen",p="ad_type",d="none",u="eAFgAQ",m="8AUB",f="YAHI",b="CHANNEL",S=c;let v=S,x=null;const g=new Set,C=()=>{const t=document.getElementById(e),r=window.location.search,n=new URLSearchParams(r).get("v")||t?.getVideoData?.().video_id,a=new URLSearchParams(r).get("t")??"0";return{videoId:n,timeInSeconds:parseInt(a,10)}},R=()=>{q();const t=document.getElementById(e);if(t&&"function"==typeof t.loadVideoById)try{const{videoId:e,timeInSeconds:r}=C();t.loadVideoById(e,r)}catch(e){}},I=(()=>{let e=null,t=null,r=0;return n=>{try{if(!n)return!1;const{videoId:a}=C();return!!a&&(e===a&&t===n?r++:(e=a,t=n,r=1),r>=2&&(r=0,!0))}catch(e){return!1}}})(),P=e=>{v=e},h=Object.getOwnPropertyDescriptor(Document.prototype,"visibilityState"),k=()=>{try{Object.defineProperty(document,"visibilityState",{get:()=>"visible",configurable:!0})}catch(e){}},q=()=>{const r=document.getElementById(e),l=document.querySelector(n),c=document.querySelector("yt-playability-error-supported-renderers.ytdMiniplayerPlayerContainerPlayabilityError:has(>*)"),s=document.querySelector(t),y=document.querySelector(a);if(!r||y)return;const p=r.getPlayerResponse?.();p?.playabilityStatus?.status!==o&&p?.playabilityStatus?.status!==i?(s||c)&&(l?.style.setProperty("display","none","important"),c?.style.setProperty("display","none","important"),s?.removeAttribute("player-unavailable")):l?.style.setProperty("display","block","important")},w=e=>{(e.playbackContext||e.playerRequest)&&delete e.context?.client?.configInfo?.appInstallData},E=(e,t,r)=>{try{if(!e||!t||!r)return;if((e=>{const t=e?.videoId;t&&(x&&x!==t&&P(S),x=t)})(e),r===c&&e.context?.client?.clientScreen!==b&&!e.params?.startsWith(f))return e.params=u,e.playerRequest&&e.playerRequest.params!==u&&(e.playerRequest.params=u),e.playbackContext&&e.playbackContext.params!==u&&(e.playbackContext.params=u),t.contentPlaybackContext.lactMilliseconds=String(Date.now()),k(),void w(e);if(r===s&&e.context?.client?.clientScreen!==b&&!e.params?.startsWith(f))return e.params!==m&&(e.params=m),e.playerRequest&&e.playerRequest.params!==m&&(e.playerRequest.params=m),e.playbackContext&&e.playbackContext.params!==m&&(e.playbackContext.params=m),e.playlistId||(e.context.client.clientScreen=b),t.contentPlaybackContext.lactMilliseconds=String(Date.now()),k(),void w(e);if(!(r!==l||e.context?.client?.clientScreen===b||t.params?.startsWith(u)&&t.params?.startsWith(m)))return t.adPlaybackContext={pyv:!0},t.contentPlaybackContext.lactMilliseconds=String(Date.now()),k(),void w(e);if(r===y&&"WEB"===e.context?.client?.clientName)return e.context.client.clientScreen=b,t.contentPlaybackContext.lactMilliseconds=String(Date.now()),k(),void w(e);if(r===p)return t.adPlaybackContext={adType:"AD_TYPE_INSTREAM"},t.contentPlaybackContext.lactMilliseconds=String(Date.now()),k(),void w(e);if(r===d)return delete t.adPlaybackContext,void(()=>{try{Object.defineProperty(document,"visibilityState",h)}catch(e){}})()}catch(e){}};(()=>{const e={apply:(e,t,r)=>{try{let n=r[0];if(!n||location.href.includes("youtube.com/tv")||location.href.includes("youtube.com/embed/"))return Reflect.apply(e,t,r);const a=Array.isArray(n),o=a?n[0]:n;if("string"!=typeof o)return Reflect.apply(e,t,r);if(!o.includes(\'"contentPlaybackContext"\')&&!o.includes(\'"adSignalsInfo"\'))return Reflect.apply(e,t,r);const i=JSON.parse(o);if(!i.context?.client)return Reflect.apply(e,t,r);i.playbackContext&&E(i,i.playbackContext,v),i.playerRequest&&E(i,i.playerRequest.playbackContext,v);const l=JSON.stringify(i);a?r[0][0]=l:r[0]=l}catch(e){}return Reflect.apply(e,t,r)}};window.XMLHttpRequest.prototype.send=new Proxy(window.XMLHttpRequest.prototype.send,e)})();const D=document.documentElement;new MutationObserver((()=>{if(document.querySelector(n)&&q(),!(()=>{const l=document.getElementById(e),c=document.querySelector(r),s=document.querySelector(n),y=document.querySelector(t),p=document.querySelector(a);if(!l||p)return!1;const d=l.getPlayerResponse?.();if(d?.playabilityStatus?.status===o||d?.playabilityStatus?.status===i)return!1;const u=l.getVideoData?.();return(s||y||c)&&null!=u?.errorCode})())return;const{videoId:u}=C();(e=>{if(e)for(const t of g)t!==e&&g.delete(t)})(u),(()=>{if(v===c){if(!I(s))return void R();P(s),R()}else if(v===s){if(!I(l))return void R();P(l),R()}else if(v===l){if(!I(y))return void R();P(y),R()}else if(v===y){if(!I(p))return void R();P(p),R()}else if(v===p){if(!I(d))return void R();P(d),R()}else if(v===d){const{videoId:e}=C();if(!e||g.has(e))return void q();g.add(e),R()}})()})).observe(D,{attributes:!0,childList:!0,subtree:!0})})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.e6382ed1409915fb443e57398ab215c3 === e) return;
+            if (Window.prototype.toString.db1d269c06f73d400756ed71f805dc26 === e) return;
             (() => {
-                const e = "movie_player", t = "ytd-watch-flexy[player-unavailable]", r = `#${e} > .ytp-error`, n = "yt-playability-error-supported-renderers#error-screen:has(>*)", o = 'yt-playability-error-supported-renderers#error-screen a[href^="//support.google.com/youtube/answer/2802245"]', a = "pyv", i = "param_first", c = "param_second", l = "client_screen", s = "ad_type", y = "none", d = "eAFgAQ", p = "8AUB", u = "YAHI", f = "CHANNEL", b = i;
-                let m = b, S = null;
-                const v = new Set, x = () => {
-                    const t = document.getElementById(e), r = window.location.search, n = new URLSearchParams(r).get("v") || t?.getVideoData?.().video_id, o = new URLSearchParams(r).get("t") ?? "0";
+                const e = "movie_player", t = "ytd-watch-flexy[player-unavailable]", r = `#${e} > .ytp-error`, n = "yt-playability-error-supported-renderers#error-screen:has(>*)", a = 'yt-playability-error-supported-renderers#error-screen a[href^="//support.google.com/youtube/answer/2802245"]', o = "LOGIN_REQUIRED", i = "CONTENT_CHECK_REQUIRED", c = "pyv", l = "param_first", s = "param_second", d = "client_screen", y = "ad_type", u = "none", p = "eAFgAQ", f = "8AUB", m = "YAHI", b = "CHANNEL", S = l;
+                let v = S, x = null;
+                const g = new Set, C = () => {
+                    const t = document.getElementById(e), r = window.location.search, n = new URLSearchParams(r).get("v") || t?.getVideoData?.().video_id, a = new URLSearchParams(r).get("t") ?? "0";
                     return {
                         videoId: n,
-                        timeInSeconds: parseInt(o, 10)
+                        timeInSeconds: parseInt(a, 10)
                     };
-                }, g = () => {
-                    w();
+                }, I = () => {
+                    q();
                     const t = document.getElementById(e);
                     if (t && "function" == typeof t.loadVideoById) try {
-                        const {videoId: e, timeInSeconds: r} = x();
+                        const {videoId: e, timeInSeconds: r} = C();
                         t.loadVideoById(e, r);
                     } catch (e) {}
-                }, I = (() => {
+                }, R = (() => {
                     let e = null, t = null, r = 0;
                     return n => {
                         try {
                             if (!n) return !1;
-                            const {videoId: o} = x();
-                            return !!o && (e === o && t === n ? r++ : (e = o, t = n, r = 1), r >= 2 && (r = 0, 
+                            const {videoId: a} = C();
+                            return !!a && (e === a && t === n ? r++ : (e = a, t = n, r = 1), r >= 2 && (r = 0, 
                             !0));
                         } catch (e) {
                             return !1;
                         }
                     };
-                })(), R = e => {
-                    m = e;
-                }, P = Object.getOwnPropertyDescriptor(Document.prototype, "visibilityState"), h = () => {
+                })(), P = e => {
+                    v = e;
+                }, h = Object.getOwnPropertyDescriptor(Document.prototype, "visibilityState"), w = () => {
                     try {
                         Object.defineProperty(document, "visibilityState", {
                             get: () => "visible",
                             configurable: !0
                         });
                     } catch (e) {}
-                }, w = () => {
-                    const r = document.getElementById(e), a = document.querySelector(n), i = document.querySelector("yt-playability-error-supported-renderers.ytdMiniplayerPlayerContainerPlayabilityError:has(>*)"), c = document.querySelector(t), l = document.querySelector(o);
-                    if (!r || l) return;
-                    const s = r.getPlayerResponse?.();
-                    "LOGIN_REQUIRED" !== s?.playabilityStatus?.status ? (c || i) && (a?.style.setProperty("display", "none", "important"), 
-                    i?.style.setProperty("display", "none", "important"), c?.removeAttribute("player-unavailable")) : a?.style.setProperty("display", "block", "important");
-                }, C = e => {
+                }, q = () => {
+                    const r = document.getElementById(e), c = document.querySelector(n), l = document.querySelector("yt-playability-error-supported-renderers.ytdMiniplayerPlayerContainerPlayabilityError:has(>*)"), s = document.querySelector(t), d = document.querySelector(a);
+                    if (!r || d) return;
+                    const y = r.getPlayerResponse?.();
+                    y?.playabilityStatus?.status !== o && y?.playabilityStatus?.status !== i ? (s || l) && (c?.style.setProperty("display", "none", "important"), 
+                    l?.style.setProperty("display", "none", "important"), s?.removeAttribute("player-unavailable")) : c?.style.setProperty("display", "block", "important");
+                }, k = e => {
                     (e.playbackContext || e.playerRequest) && delete e.context?.client?.configInfo?.appInstallData;
-                }, q = (e, t, r) => {
+                }, E = (e, t, r) => {
                     try {
                         if (!e || !t || !r) return;
                         if ((e => {
                             const t = e?.videoId;
-                            t && (S && S !== t && R(b), S = t);
-                        })(e), r === i && e.context?.client?.clientScreen !== f && !e.params?.startsWith(u)) return e.params = d, 
-                        e.playerRequest && e.playerRequest.params !== d && (e.playerRequest.params = d), 
-                        e.playbackContext && e.playbackContext.params !== d && (e.playbackContext.params = d), 
-                        t.contentPlaybackContext.lactMilliseconds = String(Date.now()), h(), void C(e);
-                        if (r === c && e.context?.client?.clientScreen !== f && !e.params?.startsWith(u)) return e.params !== p && (e.params = p), 
+                            t && (x && x !== t && P(S), x = t);
+                        })(e), r === l && e.context?.client?.clientScreen !== b && !e.params?.startsWith(m)) return e.params = p, 
                         e.playerRequest && e.playerRequest.params !== p && (e.playerRequest.params = p), 
                         e.playbackContext && e.playbackContext.params !== p && (e.playbackContext.params = p), 
-                        e.playlistId || (e.context.client.clientScreen = f), t.contentPlaybackContext.lactMilliseconds = String(Date.now()), 
-                        h(), void C(e);
-                        if (!(r !== a || e.context?.client?.clientScreen === f || t.params?.startsWith(d) && t.params?.startsWith(p))) return t.adPlaybackContext = {
+                        t.contentPlaybackContext.lactMilliseconds = String(Date.now()), w(), void k(e);
+                        if (r === s && e.context?.client?.clientScreen !== b && !e.params?.startsWith(m)) return e.params !== f && (e.params = f), 
+                        e.playerRequest && e.playerRequest.params !== f && (e.playerRequest.params = f), 
+                        e.playbackContext && e.playbackContext.params !== f && (e.playbackContext.params = f), 
+                        e.playlistId || (e.context.client.clientScreen = b), t.contentPlaybackContext.lactMilliseconds = String(Date.now()), 
+                        w(), void k(e);
+                        if (!(r !== c || e.context?.client?.clientScreen === b || t.params?.startsWith(p) && t.params?.startsWith(f))) return t.adPlaybackContext = {
                             pyv: !0
-                        }, t.contentPlaybackContext.lactMilliseconds = String(Date.now()), h(), void C(e);
-                        if (r === l && "WEB" === e.context?.client?.clientName) return e.context.client.clientScreen = f, 
-                        t.contentPlaybackContext.lactMilliseconds = String(Date.now()), h(), void C(e);
-                        if (r === s) return t.adPlaybackContext = {
+                        }, t.contentPlaybackContext.lactMilliseconds = String(Date.now()), w(), void k(e);
+                        if (r === d && "WEB" === e.context?.client?.clientName) return e.context.client.clientScreen = b, 
+                        t.contentPlaybackContext.lactMilliseconds = String(Date.now()), w(), void k(e);
+                        if (r === y) return t.adPlaybackContext = {
                             adType: "AD_TYPE_INSTREAM"
-                        }, t.contentPlaybackContext.lactMilliseconds = String(Date.now()), h(), void C(e);
-                        if (r === y) return delete t.adPlaybackContext, void (() => {
+                        }, t.contentPlaybackContext.lactMilliseconds = String(Date.now()), w(), void k(e);
+                        if (r === u) return delete t.adPlaybackContext, void (() => {
                             try {
-                                Object.defineProperty(document, "visibilityState", P);
+                                Object.defineProperty(document, "visibilityState", h);
                             } catch (e) {}
                         })();
                     } catch (e) {}
@@ -8519,69 +8528,69 @@ export const localScriptRules = {
                             try {
                                 let n = r[0];
                                 if (!n || location.href.includes("youtube.com/tv") || location.href.includes("youtube.com/embed/")) return Reflect.apply(e, t, r);
-                                const o = Array.isArray(n), a = o ? n[0] : n;
-                                if ("string" != typeof a) return Reflect.apply(e, t, r);
-                                if (!a.includes('"contentPlaybackContext"') && !a.includes('"adSignalsInfo"')) return Reflect.apply(e, t, r);
-                                const i = JSON.parse(a);
+                                const a = Array.isArray(n), o = a ? n[0] : n;
+                                if ("string" != typeof o) return Reflect.apply(e, t, r);
+                                if (!o.includes('"contentPlaybackContext"') && !o.includes('"adSignalsInfo"')) return Reflect.apply(e, t, r);
+                                const i = JSON.parse(o);
                                 if (!i.context?.client) return Reflect.apply(e, t, r);
-                                i.playbackContext && q(i, i.playbackContext, m), i.playerRequest && q(i, i.playerRequest.playbackContext, m);
+                                i.playbackContext && E(i, i.playbackContext, v), i.playerRequest && E(i, i.playerRequest.playbackContext, v);
                                 const c = JSON.stringify(i);
-                                o ? r[0][0] = c : r[0] = c;
+                                a ? r[0][0] = c : r[0] = c;
                             } catch (e) {}
                             return Reflect.apply(e, t, r);
                         }
                     };
                     window.XMLHttpRequest.prototype.send = new Proxy(window.XMLHttpRequest.prototype.send, e);
                 })();
-                const k = document.documentElement;
+                const D = document.documentElement;
                 new MutationObserver((() => {
-                    if (document.querySelector(n) && w(), !(() => {
-                        const a = document.getElementById(e), i = document.querySelector(r), c = document.querySelector(n), l = document.querySelector(t), s = document.querySelector(o);
-                        if (!a || s) return !1;
-                        const y = a.getPlayerResponse?.();
-                        if ("LOGIN_REQUIRED" === y?.playabilityStatus?.status) return !1;
-                        const d = a.getVideoData?.();
-                        return (c || l || i) && null != d?.errorCode;
+                    if (document.querySelector(n) && q(), !(() => {
+                        const c = document.getElementById(e), l = document.querySelector(r), s = document.querySelector(n), d = document.querySelector(t), y = document.querySelector(a);
+                        if (!c || y) return !1;
+                        const u = c.getPlayerResponse?.();
+                        if (u?.playabilityStatus?.status === o || u?.playabilityStatus?.status === i) return !1;
+                        const p = c.getVideoData?.();
+                        return (s || d || l) && null != p?.errorCode;
                     })()) return;
-                    const {videoId: d} = x();
+                    const {videoId: p} = C();
                     (e => {
-                        if (e) for (const t of v) t !== e && v.delete(t);
-                    })(d), (() => {
-                        if (m === i) {
-                            if (!I(c)) return void g();
-                            R(c), g();
-                        } else if (m === c) {
-                            if (!I(a)) return void g();
-                            R(a), g();
-                        } else if (m === a) {
-                            if (!I(l)) return void g();
-                            R(l), g();
-                        } else if (m === l) {
-                            if (!I(s)) return void g();
-                            R(s), g();
-                        } else if (m === s) {
-                            if (!I(y)) return void g();
-                            R(y), g();
-                        } else if (m === y) {
-                            const {videoId: e} = x();
-                            if (!e || v.has(e)) return void w();
-                            v.add(e), g();
+                        if (e) for (const t of g) t !== e && g.delete(t);
+                    })(p), (() => {
+                        if (v === l) {
+                            if (!R(s)) return void I();
+                            P(s), I();
+                        } else if (v === s) {
+                            if (!R(c)) return void I();
+                            P(c), I();
+                        } else if (v === c) {
+                            if (!R(d)) return void I();
+                            P(d), I();
+                        } else if (v === d) {
+                            if (!R(y)) return void I();
+                            P(y), I();
+                        } else if (v === y) {
+                            if (!R(u)) return void I();
+                            P(u), I();
+                        } else if (v === u) {
+                            const {videoId: e} = C();
+                            if (!e || g.has(e)) return void q();
+                            g.add(e), I();
                         }
                     })();
-                })).observe(k, {
+                })).observe(D, {
                     attributes: !0,
                     childList: !0,
                     subtree: !0
                 });
             })();
-            Object.defineProperty(Window.prototype.toString, "e6382ed1409915fb443e57398ab215c3", {
+            Object.defineProperty(Window.prototype.toString, "db1d269c06f73d400756ed71f805dc26", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "e6382ed1409915fb443e57398ab215c3" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "db1d269c06f73d400756ed71f805dc26" due to: ' + e);
         }
     },
     '(()=>{const e={apply:(e,r,t)=>{const n=t[0];if("string"==typeof n?.value&&n.value.includes("playerResponse"))try{n.value=(l=n.value,(location.href.includes("/watch")||l.includes("cards")&&!l.includes(\'"miniplayer"\'))&&l.includes(\'"muteOnStart":true\')&&(l=l.replace(\'"muteOnStart":true\',\'"muteOnStart":false\')).includes(\'"youThereRenderer":\')&&(l=l.replace(\'"youThereRenderer":\',\'"no_youThereRenderer":\')),l.replace(/"(adSlots|playerAds)":/g,\'"no_ads":\')),t[0]=n}catch(e){}var l;return Reflect.apply(e,r,t)}},r={apply:(r,t,n)=>{const l=n[0];return"function"==typeof l&&l.toString().includes(".next(")&&(n[0]=new Proxy(l,e)),Reflect.apply(r,t,n)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,r)})();': () => {
@@ -8649,6 +8658,37 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "cc07a31f6361dd25da8c32728ac08e9f" due to: ' + e);
+        }
+    },
+    '(()=>{const t={apply:(t,e,n)=>{if(location.href.includes("/shorts/")||location.href.includes("youtube.com/tv")||location.href.includes("youtube.com/embed/"))return Reflect.apply(t,e,n);try{const a=n[0];if(!a?.context?.client)return Reflect.apply(t,e,n);const o=String(Date.now());a.playbackContext&&void 0===a.playbackContext.adPlaybackContext&&(a.playbackContext.contentPlaybackContext.lactMilliseconds=o),a.playerRequest&&void 0===a.playerRequest.playbackContext?.adPlaybackContext&&(a.playerRequest.playbackContext.contentPlaybackContext.lactMilliseconds=o),n[0]=a}catch(t){}return Reflect.apply(t,e,n)}};window.JSON.stringify=new Proxy(window.JSON.stringify,t)})();': () => {
+        try {
+            const t = "done";
+            if (Window.prototype.toString.ab30cf651bf4f7660cc398c45c285c13 === t) return;
+            (() => {
+                const t = {
+                    apply: (t, e, c) => {
+                        if (location.href.includes("/shorts/") || location.href.includes("youtube.com/tv") || location.href.includes("youtube.com/embed/")) return Reflect.apply(t, e, c);
+                        try {
+                            const o = c[0];
+                            if (!o?.context?.client) return Reflect.apply(t, e, c);
+                            const n = String(Date.now());
+                            o.playbackContext && void 0 === o.playbackContext.adPlaybackContext && (o.playbackContext.contentPlaybackContext.lactMilliseconds = n), 
+                            o.playerRequest && void 0 === o.playerRequest.playbackContext?.adPlaybackContext && (o.playerRequest.playbackContext.contentPlaybackContext.lactMilliseconds = n), 
+                            c[0] = o;
+                        } catch (t) {}
+                        return Reflect.apply(t, e, c);
+                    }
+                };
+                window.JSON.stringify = new Proxy(window.JSON.stringify, t);
+            })();
+            Object.defineProperty(Window.prototype.toString, "ab30cf651bf4f7660cc398c45c285c13", {
+                value: t,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (t) {
+            console.error('Error executing AG js rule with uniqueId "ab30cf651bf4f7660cc398c45c285c13" due to: ' + t);
         }
     },
     '(()=>{document.addEventListener("DOMContentLoaded",(()=>{const t=document.querySelector(\'astro-island[uid][props*="https://file-upload.org/file-redirect.html?url=https"]\'),e=t?.getAttribute("props")?.match(/https:\\/\\/file-upload\\.org\\/file-redirect\\.html\\?url=[^"]+/)?.[0];e&&location.assign(e)}));})();': () => {
@@ -8789,6 +8829,340 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "f9fdd7bf50948a3a4434700b9afa2851" due to: ' + e);
         }
     },
+    'function GoogleIma3Dai(t){const e=t=>"object"==typeof t&&null!==t,s=t=>{if(!e(t))return{};const s={},o=Object.keys(t);for(let e=0;e<o.length;e+=1){const n=o[e];s[n]=String(t[n])}return s},o=t=>"string"==typeof t&&t.length>0?t:null,n=t=>{t.listeners=new Map},i=t=>{if("string"==typeof t)return[t];if(!Array.isArray(t))return[];const e=[];for(let s=0;s<t.length;s+=1){const o=t[s];"string"==typeof o&&e.push(o)}return e},r=(t,o)=>{t.adTagParameters={},t.apiKey=null,t.authToken=null,t.format="hls",t.networkCode=null,t.omidAccessModeRules=null,t.streamActivityMonitorId=null,e(o)&&Object.assign(t,o),t.adTagParameters=s(t.adTagParameters),"string"==typeof t.format&&0!==t.format.length||(t.format="hls")},a=(t,e)=>{r(t,e),t.customAssetKey="string"==typeof t.customAssetKey?t.customAssetKey:""},c=function(){n(this)};c.prototype.addEventListener=function(t,e){if("function"!=typeof e)return;const s=i(t);for(let t=0;t<s.length;t+=1){const o=s[t];this.listeners.has(o)||this.listeners.set(o,new Set);const n=this.listeners.get(o);n&&n.add(e)}},c.prototype.removeEventListener=function(t,e){if("function"!=typeof e)return;const s=i(t);for(let t=0;t<s.length;t+=1){const o=this.listeners.get(s[t]);o&&o.delete(e)}},c.prototype.dispatchEvent=function(e){const s=this.listeners.get(e.type);if(s)for(const o of Array.from(s))try{o(e)}catch(e){logMessage(t,e)}};const u=function(t){r(this,t)};u.StreamFormat={DASH:"dash",HLS:"hls"};const l=function(t){r(this,t),this.assetKey="string"==typeof this.assetKey?this.assetKey:""};Object.setPrototypeOf(l.prototype,u.prototype);const h=function(t){a(this,t)};Object.setPrototypeOf(h.prototype,u.prototype);const p=function(t){a(this,t),this.liveStreamEventId="string"==typeof this.liveStreamEventId?this.liveStreamEventId:"",this.oAuthToken="string"==typeof this.oAuthToken?this.oAuthToken:null,this.projectNumber="string"==typeof this.projectNumber?this.projectNumber:null,this.region="string"==typeof this.region?this.region:null,this.videoStitcherSessionOptions=e(this.videoStitcherSessionOptions)?this.videoStitcherSessionOptions:null};Object.setPrototypeOf(p.prototype,h.prototype);const d=function(t){r(this,t),this.adTagUrl="string"==typeof this.adTagUrl?this.adTagUrl:"",this.contentSourceUrl="string"==typeof this.contentSourceUrl?this.contentSourceUrl:"",this.oAuthToken="string"==typeof this.oAuthToken?this.oAuthToken:null,this.projectNumber="string"==typeof this.projectNumber?this.projectNumber:null,this.region="string"==typeof this.region?this.region:null,this.videoStitcherSessionOptions=e(this.videoStitcherSessionOptions)?this.videoStitcherSessionOptions:null,this.vodConfigId="string"==typeof this.vodConfigId?this.vodConfigId:""};Object.setPrototypeOf(d.prototype,u.prototype);const m=function(t){r(this,t),this.contentSourceId="string"==typeof this.contentSourceId?this.contentSourceId:"",this.videoId="string"==typeof this.videoId?this.videoId:""};Object.setPrototypeOf(m.prototype,u.prototype);const f=function(t){this.adPeriodData=null,this.adProgressData=null,this.cuepoints=[],this.errorMessage=null,this.manifestFormat="HLS",this.streamId=null,this.subtitles=[],this.url="",e(t)&&Object.assign(this,t)},g=function(t,e,s){this.type=t,this.streamData=e||new f,this.ad=s||null};g.Type={AD_BREAK_ENDED:"adBreakEnded",AD_BREAK_STARTED:"adBreakStarted",AD_PERIOD_ENDED:"adPeriodEnded",AD_PERIOD_STARTED:"adPeriodStarted",AD_PROGRESS:"adProgress",CLICK:"click",COMPLETE:"complete",CUEPOINTS_CHANGED:"cuepointsChanged",ERROR:"error",FIRST_QUARTILE:"firstquartile",HIDE_AD_UI:"hideAdUi",LOADED:"loaded",MIDPOINT:"midpoint",PAUSED:"paused",RESUMED:"resumed",SHOW_AD_UI:"showAdUi",SKIPPABLE_STATE_CHANGED:"skippableStateChanged",SKIPPED:"skip",STARTED:"started",STREAM_INITIALIZED:"streamInitialized",THIRD_QUARTILE:"thirdquartile",VIDEO_CLICKED:"videoClicked"},g.prototype.getAd=function(){return this.ad},g.prototype.getStreamData=function(){return this.streamData};const y=function(){this.locale=""};y.prototype.getLocale=function(){return this.locale},y.prototype.setLocale=function(t){this.locale=t};const S=new WeakMap,v=function(){S.set(this,{})};v.prototype.getFeatureFlags=function(){return(t=>{const e=S.get(t);if(e)return e;const s={};return S.set(t,s),s})(this)},v.prototype.setFeatureFlags=function(t){S.set(this,Object.assign({},t))};const E=t=>{const e=t;return"string"==typeof e.assetKey&&e.assetKey.length>0},I=t=>{const e=t;return"string"==typeof e.networkCode&&e.networkCode.length>0&&"string"==typeof e.customAssetKey&&e.customAssetKey.length>0},T=t=>{const e=t;return"string"==typeof e.contentSourceId&&e.contentSourceId.length>0&&"string"==typeof e.videoId&&e.videoId.length>0},A=t=>{const e=t,s=t,o=t,n=t;return"string"==typeof o.vodConfigId&&o.vodConfigId.length>0?`mock-video-stitcher-vod-${o.vodConfigId}`:"string"==typeof o.contentSourceUrl&&o.contentSourceUrl.length>0?"mock-video-stitcher-vod":"string"==typeof s.liveStreamEventId&&s.liveStreamEventId.length>0?`mock-video-stitcher-live-${s.liveStreamEventId}`:"string"==typeof e.assetKey&&e.assetKey.length>0?`mock-live-${e.assetKey}`:"string"==typeof n.videoId&&n.videoId.length>0?`mock-vod-${n.videoId}`:"mock-stream"},D=t=>"string"==typeof t.format&&"dash"===t.format.toLowerCase()?"DASH":"HLS",R=(t,s,o,n)=>{const i=new f({cuepoints:s.slice(),errorMessage:o,manifestFormat:D(t),streamId:A(t),url:""});return e(n)&&Object.assign(i,n),i},O=(t,e)=>{const s=Object.keys(e.adTagParameters);for(let o=0;o<s.length;o+=1){const n=s[o];t.searchParams.set(n,e.adTagParameters[n])}e.apiKey&&t.searchParams.set("api-key",e.apiKey),e.authToken&&t.searchParams.set("auth-token",e.authToken),e.streamActivityMonitorId&&t.searchParams.set("dai-sam-id",e.streamActivityMonitorId)},w=(t,e)=>{const s=new URL(`${e}/ssai/event/${t.assetKey}/streams`);return O(s,t),s.toString()},k=(t,e)=>{const s=new URL(`${e}/ssai/pods/api/v1/network/${t.networkCode}/custom_asset/${t.customAssetKey}/stream`),o="dash"===t.format.toLowerCase()?"dash":"hls";return O(s,t),s.searchParams.set("manifest-type",o),s.toString()},P=(t,e)=>{const s="dash"===t.format.toLowerCase()?"dash":"hls",o=new URL(`${e}/ondemand/${s}/content/${t.contentSourceId}/vid/${t.videoId}/streams`);return O(o,t),o.toString()},U="https://dai.google.com",M="https://pubads.g.doubleclick.net",b=(t,e,s)=>{const n=o(s.pod_manifest_url)||o(s.podManifestUrl)||"",i=o(s.stream_id)||o(s.streamId),r=o(s.stream_manifest)||o(s.streamUrl)||n||"",a=(t=>o(t.errorMessage)||o(t.error_message))(s),c=r.length>0||null!==i&&i.length>0,u=a||(c?null:"Stream initialization response missing stream URL"),l=o(s.manifest_format)||o(s.manifestFormat)||D(t),h=i||A(t),p=Array.isArray(s.subtitles)?s.subtitles:[];return R(t,e,u,{manifestFormat:l,podManifestUrl:n,pod_manifest_url:n,streamId:h,subtitles:p,url:r})},_=t=>{(t=>{t.adUiElement&&(t.adUiElement.style.display="none")})(t),(t=>{t.videoElement&&!t.videoElement.controls&&(t.videoElement.controls=!0)})(t)},C=function(t,e,s){n(this),this.videoElement=t||null,this.adUiElement=e||null,this.uiSettings=s||new y,this.clickElement=e||null,this.streamData=new f,this.streamMonitor={},this.streamRequest=null,this.cuepoints=[],this.lastMetadata=null,this.lastTimedMetadata=null};Object.setPrototypeOf(C.prototype,c.prototype),C.prototype.contentTimeForStreamTime=function(t){return"number"==typeof t?t:0},C.prototype.destroy=function(){this.reset()},C.prototype.focus=function(){const e=this.clickElement;if(e&&"function"==typeof e.focus)try{e.focus()}catch(e){logMessage(t,e)}},C.prototype.getAdSkippableState=function(){return!0},C.prototype.getStreamData=function(){return this.streamData},C.prototype.loadStreamMetadata=function(){_(this),this.dispatchEvent(new g(g.Type.LOADED,this.streamData))},C.prototype.onTimedMetadata=function(t){this.lastTimedMetadata=t},C.prototype.previousCuePointForStreamTime=function(t){let e=null;for(let s=0;s<this.cuepoints.length;s+=1){const o=this.cuepoints[s];"number"==typeof o.start&&(o.start<=t&&(e=o))}return e},C.prototype.processMetadata=function(t,e,s){this.lastMetadata={data:e,timestamp:s,type:t}},C.prototype.replaceAdTagParameters=function(t){this.streamRequest||(this.streamRequest=new u),this.streamRequest.adTagParameters=s(t)},C.prototype.requestStream=function(t){const s=(t=>{if(t instanceof u)return t;if(e(t)){if("string"==typeof t.liveStreamEventId)return new p(t);if("string"==typeof t.contentSourceUrl||"string"==typeof t.vodConfigId||"string"==typeof t.adTagUrl)return new d(t);if("string"==typeof t.customAssetKey)return new h(t);if("string"==typeof t.assetKey)return new l(t);if("string"==typeof t.contentSourceId||"string"==typeof t.videoId)return new m(t)}return new u})(t);this.streamRequest=s;const o=(t,e)=>{var s;this.streamData=e,(t=>t===g.Type.LOADED||t===g.Type.STREAM_INITIALIZED)(t)&&_(this),s=()=>{this.dispatchEvent(new g(g.Type.STREAM_INITIALIZED,e)),this.dispatchEvent(new g(t,e))},"function"!=typeof requestAnimationFrame?setTimeout(s,0):requestAnimationFrame(s)};if(!(t=>E(t)||I(t)||(t=>{const e=t;return"string"==typeof e.liveStreamEventId&&e.liveStreamEventId.length>0})(t)||(t=>{const e=t,s="string"==typeof e.contentSourceUrl&&e.contentSourceUrl.length>0,o="string"==typeof e.vodConfigId&&e.vodConfigId.length>0;return s||o})(t)||T(t))(s))return void o(g.Type.ERROR,R(s,this.cuepoints,"Missing stream request identifiers"));const n=(t=>I(t)?[k(t,U),k(t,M)]:E(t)?[w(t,U),w(t,M)]:T(t)?[P(t,U),P(t,M)]:[])(s);if(n.length>0){const t=s,i=async s=>{try{const i=await fetch(n[s],{method:"POST",credentials:"include"}),r=await(async t=>{const s=t;if(s&&!1===s.ok)throw new Error(`Stream initialization failed with status ${String(s.status||0)}`);if(s&&"function"==typeof s.json){const t=await s.json();return e(t)?t:{}}return e(t)?t:{}})(i);if(this.streamRequest!==t)return;const a=b(t,this.cuepoints,r),c=a.errorMessage?g.Type.ERROR:g.Type.LOADED;o(c,a)}catch(r){if(this.streamRequest!==t)return;if(s+1<n.length)return void await i(s+1);o(g.Type.ERROR,R(t,this.cuepoints,(t=>e(t)&&"string"==typeof t.message&&t.message.length>0?t.message:"Stream initialization failed")(r)))}};i(0)}else o(g.Type.LOADED,R(s,this.cuepoints,null))},C.prototype.reset=function(){this.cuepoints=[],this.lastMetadata=null,this.lastTimedMetadata=null,this.streamData=new f,this.streamRequest=null},C.prototype.setClickElement=function(t){this.adUiElement||(this.clickElement=t)},C.prototype.streamTimeForContentTime=function(t){return"number"==typeof t?t:0};const L={DaiSdkSettings:new v,LiveStreamRequest:l,PodStreamRequest:h,StreamData:f,StreamEvent:g,StreamManager:C,StreamRequest:u,UiSettings:y,VideoStitcherLiveStreamRequest:p,VideoStitcherVodStreamRequest:d,VODStreamRequest:m},K=window,j=e(K.google)?K.google:{};e(K.google)||(K.google=j);const q=e(j.ima)?j.ima:{};j.ima=q;const F=e(q.dai)?q.dai:{};q.dai=F;const N=e(F.api)?F.api:{};F.api=N,Object.assign(N,L)}GoogleIma3Dai();': () => {
+        try {
+            const t = "done";
+            if (Window.prototype.toString.a1f9094ecc9c5c192364ec753ec8eb3f === t) return;
+            function GoogleIma3Dai(t) {
+                const e = t => "object" == typeof t && null !== t, s = t => {
+                    if (!e(t)) return {};
+                    const s = {}, o = Object.keys(t);
+                    for (let e = 0; e < o.length; e += 1) {
+                        const n = o[e];
+                        s[n] = String(t[n]);
+                    }
+                    return s;
+                }, o = t => "string" == typeof t && t.length > 0 ? t : null, n = t => {
+                    t.listeners = new Map;
+                }, i = t => {
+                    if ("string" == typeof t) return [ t ];
+                    if (!Array.isArray(t)) return [];
+                    const e = [];
+                    for (let s = 0; s < t.length; s += 1) {
+                        const o = t[s];
+                        "string" == typeof o && e.push(o);
+                    }
+                    return e;
+                }, r = (t, o) => {
+                    t.adTagParameters = {}, t.apiKey = null, t.authToken = null, t.format = "hls", t.networkCode = null, 
+                    t.omidAccessModeRules = null, t.streamActivityMonitorId = null, e(o) && Object.assign(t, o), 
+                    t.adTagParameters = s(t.adTagParameters), "string" == typeof t.format && 0 !== t.format.length || (t.format = "hls");
+                }, a = (t, e) => {
+                    r(t, e), t.customAssetKey = "string" == typeof t.customAssetKey ? t.customAssetKey : "";
+                }, c = function() {
+                    n(this);
+                };
+                c.prototype.addEventListener = function(t, e) {
+                    if ("function" != typeof e) return;
+                    const s = i(t);
+                    for (let t = 0; t < s.length; t += 1) {
+                        const o = s[t];
+                        this.listeners.has(o) || this.listeners.set(o, new Set);
+                        const n = this.listeners.get(o);
+                        n && n.add(e);
+                    }
+                }, c.prototype.removeEventListener = function(t, e) {
+                    if ("function" != typeof e) return;
+                    const s = i(t);
+                    for (let t = 0; t < s.length; t += 1) {
+                        const o = this.listeners.get(s[t]);
+                        o && o.delete(e);
+                    }
+                }, c.prototype.dispatchEvent = function(e) {
+                    const s = this.listeners.get(e.type);
+                    if (s) for (const o of Array.from(s)) try {
+                        o(e);
+                    } catch (e) {
+                        logMessage(t, e);
+                    }
+                };
+                const u = function(t) {
+                    r(this, t);
+                };
+                u.StreamFormat = {
+                    DASH: "dash",
+                    HLS: "hls"
+                };
+                const l = function(t) {
+                    r(this, t), this.assetKey = "string" == typeof this.assetKey ? this.assetKey : "";
+                };
+                Object.setPrototypeOf(l.prototype, u.prototype);
+                const p = function(t) {
+                    a(this, t);
+                };
+                Object.setPrototypeOf(p.prototype, u.prototype);
+                const h = function(t) {
+                    a(this, t), this.liveStreamEventId = "string" == typeof this.liveStreamEventId ? this.liveStreamEventId : "", 
+                    this.oAuthToken = "string" == typeof this.oAuthToken ? this.oAuthToken : null, this.projectNumber = "string" == typeof this.projectNumber ? this.projectNumber : null, 
+                    this.region = "string" == typeof this.region ? this.region : null, this.videoStitcherSessionOptions = e(this.videoStitcherSessionOptions) ? this.videoStitcherSessionOptions : null;
+                };
+                Object.setPrototypeOf(h.prototype, p.prototype);
+                const d = function(t) {
+                    r(this, t), this.adTagUrl = "string" == typeof this.adTagUrl ? this.adTagUrl : "", 
+                    this.contentSourceUrl = "string" == typeof this.contentSourceUrl ? this.contentSourceUrl : "", 
+                    this.oAuthToken = "string" == typeof this.oAuthToken ? this.oAuthToken : null, this.projectNumber = "string" == typeof this.projectNumber ? this.projectNumber : null, 
+                    this.region = "string" == typeof this.region ? this.region : null, this.videoStitcherSessionOptions = e(this.videoStitcherSessionOptions) ? this.videoStitcherSessionOptions : null, 
+                    this.vodConfigId = "string" == typeof this.vodConfigId ? this.vodConfigId : "";
+                };
+                Object.setPrototypeOf(d.prototype, u.prototype);
+                const f = function(t) {
+                    r(this, t), this.contentSourceId = "string" == typeof this.contentSourceId ? this.contentSourceId : "", 
+                    this.videoId = "string" == typeof this.videoId ? this.videoId : "";
+                };
+                Object.setPrototypeOf(f.prototype, u.prototype);
+                const m = function(t) {
+                    this.adPeriodData = null, this.adProgressData = null, this.cuepoints = [], this.errorMessage = null, 
+                    this.manifestFormat = "HLS", this.streamId = null, this.subtitles = [], this.url = "", 
+                    e(t) && Object.assign(this, t);
+                }, g = function(t, e, s) {
+                    this.type = t, this.streamData = e || new m, this.ad = s || null;
+                };
+                g.Type = {
+                    AD_BREAK_ENDED: "adBreakEnded",
+                    AD_BREAK_STARTED: "adBreakStarted",
+                    AD_PERIOD_ENDED: "adPeriodEnded",
+                    AD_PERIOD_STARTED: "adPeriodStarted",
+                    AD_PROGRESS: "adProgress",
+                    CLICK: "click",
+                    COMPLETE: "complete",
+                    CUEPOINTS_CHANGED: "cuepointsChanged",
+                    ERROR: "error",
+                    FIRST_QUARTILE: "firstquartile",
+                    HIDE_AD_UI: "hideAdUi",
+                    LOADED: "loaded",
+                    MIDPOINT: "midpoint",
+                    PAUSED: "paused",
+                    RESUMED: "resumed",
+                    SHOW_AD_UI: "showAdUi",
+                    SKIPPABLE_STATE_CHANGED: "skippableStateChanged",
+                    SKIPPED: "skip",
+                    STARTED: "started",
+                    STREAM_INITIALIZED: "streamInitialized",
+                    THIRD_QUARTILE: "thirdquartile",
+                    VIDEO_CLICKED: "videoClicked"
+                }, g.prototype.getAd = function() {
+                    return this.ad;
+                }, g.prototype.getStreamData = function() {
+                    return this.streamData;
+                };
+                const y = function() {
+                    this.locale = "";
+                };
+                y.prototype.getLocale = function() {
+                    return this.locale;
+                }, y.prototype.setLocale = function(t) {
+                    this.locale = t;
+                };
+                const S = new WeakMap, v = function() {
+                    S.set(this, {});
+                };
+                v.prototype.getFeatureFlags = function() {
+                    return (t => {
+                        const e = S.get(t);
+                        if (e) return e;
+                        const s = {};
+                        return S.set(t, s), s;
+                    })(this);
+                }, v.prototype.setFeatureFlags = function(t) {
+                    S.set(this, Object.assign({}, t));
+                };
+                const E = t => {
+                    const e = t;
+                    return "string" == typeof e.assetKey && e.assetKey.length > 0;
+                }, I = t => {
+                    const e = t;
+                    return "string" == typeof e.networkCode && e.networkCode.length > 0 && "string" == typeof e.customAssetKey && e.customAssetKey.length > 0;
+                }, A = t => {
+                    const e = t;
+                    return "string" == typeof e.contentSourceId && e.contentSourceId.length > 0 && "string" == typeof e.videoId && e.videoId.length > 0;
+                }, T = t => {
+                    const e = t, s = t, o = t, n = t;
+                    return "string" == typeof o.vodConfigId && o.vodConfigId.length > 0 ? `mock-video-stitcher-vod-${o.vodConfigId}` : "string" == typeof o.contentSourceUrl && o.contentSourceUrl.length > 0 ? "mock-video-stitcher-vod" : "string" == typeof s.liveStreamEventId && s.liveStreamEventId.length > 0 ? `mock-video-stitcher-live-${s.liveStreamEventId}` : "string" == typeof e.assetKey && e.assetKey.length > 0 ? `mock-live-${e.assetKey}` : "string" == typeof n.videoId && n.videoId.length > 0 ? `mock-vod-${n.videoId}` : "mock-stream";
+                }, D = t => "string" == typeof t.format && "dash" === t.format.toLowerCase() ? "DASH" : "HLS", R = (t, s, o, n) => {
+                    const i = new m({
+                        cuepoints: s.slice(),
+                        errorMessage: o,
+                        manifestFormat: D(t),
+                        streamId: T(t),
+                        url: ""
+                    });
+                    return e(n) && Object.assign(i, n), i;
+                }, O = (t, e) => {
+                    const s = Object.keys(e.adTagParameters);
+                    for (let o = 0; o < s.length; o += 1) {
+                        const n = s[o];
+                        t.searchParams.set(n, e.adTagParameters[n]);
+                    }
+                    e.apiKey && t.searchParams.set("api-key", e.apiKey), e.authToken && t.searchParams.set("auth-token", e.authToken), 
+                    e.streamActivityMonitorId && t.searchParams.set("dai-sam-id", e.streamActivityMonitorId);
+                }, w = (t, e) => {
+                    const s = new URL(`${e}/ssai/event/${t.assetKey}/streams`);
+                    return O(s, t), s.toString();
+                }, k = (t, e) => {
+                    const s = new URL(`${e}/ssai/pods/api/v1/network/${t.networkCode}/custom_asset/${t.customAssetKey}/stream`), o = "dash" === t.format.toLowerCase() ? "dash" : "hls";
+                    return O(s, t), s.searchParams.set("manifest-type", o), s.toString();
+                }, b = (t, e) => {
+                    const s = "dash" === t.format.toLowerCase() ? "dash" : "hls", o = new URL(`${e}/ondemand/${s}/content/${t.contentSourceId}/vid/${t.videoId}/streams`);
+                    return O(o, t), o.toString();
+                }, P = "https://dai.google.com", U = "https://pubads.g.doubleclick.net", M = (t, e, s) => {
+                    const n = o(s.pod_manifest_url) || o(s.podManifestUrl) || "", i = o(s.stream_id) || o(s.streamId), r = o(s.stream_manifest) || o(s.streamUrl) || n || "", a = (t => o(t.errorMessage) || o(t.error_message))(s), c = r.length > 0 || null !== i && i.length > 0, u = a || (c ? null : "Stream initialization response missing stream URL"), l = o(s.manifest_format) || o(s.manifestFormat) || D(t), p = i || T(t), h = Array.isArray(s.subtitles) ? s.subtitles : [];
+                    return R(t, e, u, {
+                        manifestFormat: l,
+                        podManifestUrl: n,
+                        pod_manifest_url: n,
+                        streamId: p,
+                        subtitles: h,
+                        url: r
+                    });
+                }, _ = t => {
+                    (t => {
+                        t.adUiElement && (t.adUiElement.style.display = "none");
+                    })(t), (t => {
+                        t.videoElement && !t.videoElement.controls && (t.videoElement.controls = !0);
+                    })(t);
+                }, C = function(t, e, s) {
+                    n(this), this.videoElement = t || null, this.adUiElement = e || null, this.uiSettings = s || new y, 
+                    this.clickElement = e || null, this.streamData = new m, this.streamMonitor = {}, 
+                    this.streamRequest = null, this.cuepoints = [], this.lastMetadata = null, this.lastTimedMetadata = null;
+                };
+                Object.setPrototypeOf(C.prototype, c.prototype), C.prototype.contentTimeForStreamTime = function(t) {
+                    return "number" == typeof t ? t : 0;
+                }, C.prototype.destroy = function() {
+                    this.reset();
+                }, C.prototype.focus = function() {
+                    const e = this.clickElement;
+                    if (e && "function" == typeof e.focus) try {
+                        e.focus();
+                    } catch (e) {
+                        logMessage(t, e);
+                    }
+                }, C.prototype.getAdSkippableState = function() {
+                    return !0;
+                }, C.prototype.getStreamData = function() {
+                    return this.streamData;
+                }, C.prototype.loadStreamMetadata = function() {
+                    _(this), this.dispatchEvent(new g(g.Type.LOADED, this.streamData));
+                }, C.prototype.onTimedMetadata = function(t) {
+                    this.lastTimedMetadata = t;
+                }, C.prototype.previousCuePointForStreamTime = function(t) {
+                    let e = null;
+                    for (let s = 0; s < this.cuepoints.length; s += 1) {
+                        const o = this.cuepoints[s];
+                        "number" == typeof o.start && o.start <= t && (e = o);
+                    }
+                    return e;
+                }, C.prototype.processMetadata = function(t, e, s) {
+                    this.lastMetadata = {
+                        data: e,
+                        timestamp: s,
+                        type: t
+                    };
+                }, C.prototype.replaceAdTagParameters = function(t) {
+                    this.streamRequest || (this.streamRequest = new u), this.streamRequest.adTagParameters = s(t);
+                }, C.prototype.requestStream = function(t) {
+                    const s = (t => {
+                        if (t instanceof u) return t;
+                        if (e(t)) {
+                            if ("string" == typeof t.liveStreamEventId) return new h(t);
+                            if ("string" == typeof t.contentSourceUrl || "string" == typeof t.vodConfigId || "string" == typeof t.adTagUrl) return new d(t);
+                            if ("string" == typeof t.customAssetKey) return new p(t);
+                            if ("string" == typeof t.assetKey) return new l(t);
+                            if ("string" == typeof t.contentSourceId || "string" == typeof t.videoId) return new f(t);
+                        }
+                        return new u;
+                    })(t);
+                    this.streamRequest = s;
+                    const o = (t, e) => {
+                        var s;
+                        this.streamData = e, (t => t === g.Type.LOADED || t === g.Type.STREAM_INITIALIZED)(t) && _(this), 
+                        s = () => {
+                            this.dispatchEvent(new g(g.Type.STREAM_INITIALIZED, e)), this.dispatchEvent(new g(t, e));
+                        }, "function" != typeof requestAnimationFrame ? setTimeout(s, 0) : requestAnimationFrame(s);
+                    };
+                    if (!(t => E(t) || I(t) || (t => {
+                        const e = t;
+                        return "string" == typeof e.liveStreamEventId && e.liveStreamEventId.length > 0;
+                    })(t) || (t => {
+                        const e = t, s = "string" == typeof e.contentSourceUrl && e.contentSourceUrl.length > 0, o = "string" == typeof e.vodConfigId && e.vodConfigId.length > 0;
+                        return s || o;
+                    })(t) || A(t))(s)) return void o(g.Type.ERROR, R(s, this.cuepoints, "Missing stream request identifiers"));
+                    const n = (t => I(t) ? [ k(t, P), k(t, U) ] : E(t) ? [ w(t, P), w(t, U) ] : A(t) ? [ b(t, P), b(t, U) ] : [])(s);
+                    if (n.length > 0) {
+                        const t = s, i = async s => {
+                            try {
+                                const i = await fetch(n[s], {
+                                    method: "POST",
+                                    credentials: "include"
+                                }), r = await (async t => {
+                                    const s = t;
+                                    if (s && !1 === s.ok) throw new Error(`Stream initialization failed with status ${String(s.status || 0)}`);
+                                    if (s && "function" == typeof s.json) {
+                                        const t = await s.json();
+                                        return e(t) ? t : {};
+                                    }
+                                    return e(t) ? t : {};
+                                })(i);
+                                if (this.streamRequest !== t) return;
+                                const a = M(t, this.cuepoints, r), c = a.errorMessage ? g.Type.ERROR : g.Type.LOADED;
+                                o(c, a);
+                            } catch (r) {
+                                if (this.streamRequest !== t) return;
+                                if (s + 1 < n.length) return void await i(s + 1);
+                                o(g.Type.ERROR, R(t, this.cuepoints, (t => e(t) && "string" == typeof t.message && t.message.length > 0 ? t.message : "Stream initialization failed")(r)));
+                            }
+                        };
+                        i(0);
+                    } else o(g.Type.LOADED, R(s, this.cuepoints, null));
+                }, C.prototype.reset = function() {
+                    this.cuepoints = [], this.lastMetadata = null, this.lastTimedMetadata = null, this.streamData = new m, 
+                    this.streamRequest = null;
+                }, C.prototype.setClickElement = function(t) {
+                    this.adUiElement || (this.clickElement = t);
+                }, C.prototype.streamTimeForContentTime = function(t) {
+                    return "number" == typeof t ? t : 0;
+                };
+                const L = {
+                    DaiSdkSettings: new v,
+                    LiveStreamRequest: l,
+                    PodStreamRequest: p,
+                    StreamData: m,
+                    StreamEvent: g,
+                    StreamManager: C,
+                    StreamRequest: u,
+                    UiSettings: y,
+                    VideoStitcherLiveStreamRequest: h,
+                    VideoStitcherVodStreamRequest: d,
+                    VODStreamRequest: f
+                }, K = window, j = e(K.google) ? K.google : {};
+                e(K.google) || (K.google = j);
+                const q = e(j.ima) ? j.ima : {};
+                j.ima = q;
+                const F = e(q.dai) ? q.dai : {};
+                q.dai = F;
+                const N = e(F.api) ? F.api : {};
+                F.api = N, Object.assign(N, L);
+            }
+            GoogleIma3Dai();
+            Object.defineProperty(Window.prototype.toString, "a1f9094ecc9c5c192364ec753ec8eb3f", {
+                value: t,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "a1f9094ecc9c5c192364ec753ec8eb3f" due to: ' + e);
+        }
+    },
     '(()=>{document.addEventListener("DOMContentLoaded",(()=>{document.querySelectorAll(\'a[href^="https://af.gog.com/game/"]\').forEach((t=>{const e=t.getAttribute("href").replace("https://af.gog.com/","https://www.gog.com/");t.setAttribute("href",e)}))}));})();': () => {
         try {
             const e = "done";
@@ -8807,6 +9181,27 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "639105ecfaab3d5ad7901b589aedc339" due to: ' + e);
+        }
+    },
+    "new MutationObserver((_,o)=>{const c=document.getElementById('bookingPromo');c?.checked&&(c.click(),o.disconnect())}).observe(document,{childList:true,subtree:true});": () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["1b4d1beb1c6a9dd1e3de56f33c55dfcf"] === e) return;
+            new MutationObserver(((e, t) => {
+                const d = document.getElementById("bookingPromo");
+                d?.checked && (d.click(), t.disconnect());
+            })).observe(document, {
+                childList: !0,
+                subtree: !0
+            });
+            Object.defineProperty(Window.prototype.toString, "1b4d1beb1c6a9dd1e3de56f33c55dfcf", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "1b4d1beb1c6a9dd1e3de56f33c55dfcf" due to: ' + e);
         }
     },
     'window.addEventListener("load",(()=>{window.stop()}));': () => {
@@ -10653,6 +11048,37 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "119696f6d27a9b6c225cdaa7954a52fd" due to: ' + e);
         }
     },
+    '(()=>{const t={detect:()=>({bot:!1})},e={apply:(e,o,n)=>{try{const r=n[0];return"function"==typeof r&&r.toString().includes("Botd.load")?Promise.resolve(t):Reflect.apply(e,o,n)}catch(t){return Reflect.apply(e,o,n)}}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,e)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.f9f6bbf8384615ad0ee86c40539bb83e === e) return;
+            (() => {
+                const e = {
+                    detect: () => ({
+                        bot: !1
+                    })
+                }, t = {
+                    apply: (t, o, r) => {
+                        try {
+                            const n = r[0];
+                            return "function" == typeof n && n.toString().includes("Botd.load") ? Promise.resolve(e) : Reflect.apply(t, o, r);
+                        } catch (e) {
+                            return Reflect.apply(t, o, r);
+                        }
+                    }
+                };
+                window.Promise.prototype.then = new Proxy(window.Promise.prototype.then, t);
+            })();
+            Object.defineProperty(Window.prototype.toString, "f9f6bbf8384615ad0ee86c40539bb83e", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "f9f6bbf8384615ad0ee86c40539bb83e" due to: ' + e);
+        }
+    },
     '(()=>{const i=function(){};window.__uid2=window.__uid2||{},window.__uid2.init=i,window.__uid2.setIdentityFromEmail=i,window.__uid2.callbacks=window.__uid2.callbacks||[],window.__uid2.callbacks.push=function(i){"function"==typeof i&&i("InitCompleted",{identity:null})}})();': () => {
         try {
             const e = "done";
@@ -11601,41 +12027,6 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "4b02efce565c43abd97593b12856ccd8" due to: ' + t);
         }
     },
-    '(function(){if(-1<window.location.href.indexOf("/s.php?i="))try{for(var a=location.href.split("/s.php?i=")[1],c=0;10>c;c++){a=atob(a);try{new URL(a);var d=!0}catch(b){d=!1}if(d)try{a=a.replace(/[a-zA-Z]/g,function(b){return String.fromCharCode(("Z">=b?90:122)>=(b=b.charCodeAt(0)+13)?b:b-26)});a=decodeURIComponent(a);window.location=a;break}catch(b){}}}catch(b){}})();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["2df496ddbea99bcffb94b9b433cac64d"] === e) return;
-            !function() {
-                if (-1 < window.location.href.indexOf("/s.php?i=")) try {
-                    for (var e = location.href.split("/s.php?i=")[1], o = 0; 10 > o; o++) {
-                        e = atob(e);
-                        try {
-                            new URL(e);
-                            var r = !0;
-                        } catch (e) {
-                            r = !1;
-                        }
-                        if (r) try {
-                            e = e.replace(/[a-zA-Z]/g, (function(e) {
-                                return String.fromCharCode(("Z" >= e ? 90 : 122) >= (e = e.charCodeAt(0) + 13) ? e : e - 26);
-                            }));
-                            e = decodeURIComponent(e);
-                            window.location = e;
-                            break;
-                        } catch (e) {}
-                    }
-                } catch (e) {}
-            }();
-            Object.defineProperty(Window.prototype.toString, "2df496ddbea99bcffb94b9b433cac64d", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "2df496ddbea99bcffb94b9b433cac64d" due to: ' + e);
-        }
-    },
     '!function(){if(-1<window.location.href.indexOf("/#aHR0c")){var a=location.href.split("/#");if(a&&a[1])try{window.location=atob(a[1])}catch(b){}}}();': () => {
         try {
             const e = "done";
@@ -12151,53 +12542,33 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "cf094940c140bb6a8015c9e1f15490f1" due to: ' + e);
         }
     },
-    '!function(){const e=e=>{const t=document.querySelector(".down-button");if(t&&t.textContent.includes("Continuar al enlace"))return;const o=new XMLHttpRequest;o.open("POST","/check.php",!0),o.setRequestHeader("Content-type","application/x-www-form-urlencoded"),o.send("a");const n=atob(window.ext_site).replace(/[a-z]/gi,(e=>String.fromCharCode(e.charCodeAt(0)+(e.toLowerCase()<="m"?13:-13))));let i=e.replaceAll(\'\\\\"\',\'"\');i=i.replace("\'+ api_key+ \'",window.api_key),i=i.replace("\'+ link_out+ \\"",window.link_out),i=i.replace(/action="\'\\+ .*?\\+ \'"/,`action="${n}"`);var a;const r=(a=i,(new DOMParser).parseFromString(a,"text/html")).querySelector("form"),c=new FormData(r),w=new XMLHttpRequest;w.open("POST",n,!0),w.send(c),window.tab2=window,postMessage("_clicked_b",location.origin)},t={apply:(t,o,n)=>{if(n[1]&&n[1].includes("api_key")){const t=window.link_out,o=window.api_key,i=n[1].match(/<form target=[\\s\\S]*?<\\/form>/)[0];if(n[1]=n[1].replace(/(setTimeout\\(function\\(\\)\\{)window\\[.\\[.\\]\\]\\[.\\[.*?\\]\\]= .*?(\\},3000)/,"$1$2"),n[1]=n[1].replace(/(window\\[).\\[\\d+\\](\\]\\(.\\(atob\\(main_site)/,\'$1"location"]["assign"$2\'),t&&o&&i)try{"loading"===document.readyState?window.addEventListener("load",(()=>{e(i)}),{once:!0}):e(i)}catch(e){console.debug(e)}}return Reflect.apply(t,o,n)}};window.Function.prototype.constructor=new Proxy(window.Function.prototype.constructor,t)}();': () => {
+    '(()=>{const t={apply:(t,e,o)=>{try{return o[1]&&o[1].includes("tab2")&&(o[1]=o[1].replace(/window\\[.\\[\\d+\\]\\](\\(\\("")/,"location.assign$1"),o[1]=o[1].replace(/(openPopup\\(\\){(this.*?)= )window.*?(;const)/,\'$1document.createElement("iframe");$2.style.display="none";document.body.appendChild($2)$3\'),o[1]=o[1].replace(/(this\\[.\\[\\d+\\]\\]).{1,20}(\\(.\\)\\} checkPopupStatus\\(\\)\\{)/,"$1.contentWindow.document.write$2$1=window;postMessage(\'_clicked_b\', location.origin);return;")),Reflect.apply(t,e,o)}catch(n){return Reflect.apply(t,e,o)}}};window.Function.prototype.constructor=new Proxy(window.Function.prototype.constructor,t)})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.ca77be71e26513295ae5e7edf2a6fb1a === e) return;
-            !function() {
-                const e = e => {
-                    const t = document.querySelector(".down-button");
-                    if (t && t.textContent.includes("Continuar al enlace")) return;
-                    const o = new XMLHttpRequest;
-                    o.open("POST", "/check.php", !0), o.setRequestHeader("Content-type", "application/x-www-form-urlencoded"), 
-                    o.send("a");
-                    const n = atob(window.ext_site).replace(/[a-z]/gi, (e => String.fromCharCode(e.charCodeAt(0) + (e.toLowerCase() <= "m" ? 13 : -13))));
-                    let r = e.replaceAll('\\"', '"');
-                    r = r.replace("'+ api_key+ '", window.api_key), r = r.replace("'+ link_out+ \"", window.link_out), 
-                    r = r.replace(/action="'\+ .*?\+ '"/, `action="${n}"`);
-                    var a;
-                    const i = (a = r, (new DOMParser).parseFromString(a, "text/html")).querySelector("form"), c = new FormData(i), d = new XMLHttpRequest;
-                    d.open("POST", n, !0), d.send(c), window.tab2 = window, postMessage("_clicked_b", location.origin);
-                }, t = {
-                    apply: (t, o, n) => {
-                        if (n[1] && n[1].includes("api_key")) {
-                            const t = window.link_out, o = window.api_key, r = n[1].match(/<form target=[\s\S]*?<\/form>/)[0];
-                            if (n[1] = n[1].replace(/(setTimeout\(function\(\)\{)window\[.\[.\]\]\[.\[.*?\]\]= .*?(\},3000)/, "$1$2"), 
-                            n[1] = n[1].replace(/(window\[).\[\d+\](\]\(.\(atob\(main_site)/, '$1"location"]["assign"$2'), 
-                            t && o && r) try {
-                                "loading" === document.readyState ? window.addEventListener("load", (() => {
-                                    e(r);
-                                }), {
-                                    once: !0
-                                }) : e(r);
-                            } catch (e) {
-                                console.debug(e);
-                            }
+            if (Window.prototype.toString.cc1451a3253dfa9862cb5daaea0f974b === e) return;
+            (() => {
+                const e = {
+                    apply: (e, t, o) => {
+                        try {
+                            return o[1] && o[1].includes("tab2") && (o[1] = o[1].replace(/window\[.\[\d+\]\](\(\("")/, "location.assign$1"), 
+                            o[1] = o[1].replace(/(openPopup\(\){(this.*?)= )window.*?(;const)/, '$1document.createElement("iframe");$2.style.display="none";document.body.appendChild($2)$3'), 
+                            o[1] = o[1].replace(/(this\[.\[\d+\]\]).{1,20}(\(.\)\} checkPopupStatus\(\)\{)/, "$1.contentWindow.document.write$2$1=window;postMessage('_clicked_b', location.origin);return;")), 
+                            Reflect.apply(e, t, o);
+                        } catch (n) {
+                            return Reflect.apply(e, t, o);
                         }
-                        return Reflect.apply(t, o, n);
                     }
                 };
-                window.Function.prototype.constructor = new Proxy(window.Function.prototype.constructor, t);
-            }();
-            Object.defineProperty(Window.prototype.toString, "ca77be71e26513295ae5e7edf2a6fb1a", {
+                window.Function.prototype.constructor = new Proxy(window.Function.prototype.constructor, e);
+            })();
+            Object.defineProperty(Window.prototype.toString, "cc1451a3253dfa9862cb5daaea0f974b", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "ca77be71e26513295ae5e7edf2a6fb1a" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "cc1451a3253dfa9862cb5daaea0f974b" due to: ' + e);
         }
     },
     '!function(){const e=e=>{const o=new XMLHttpRequest;o.open("POST","/check.php",!0),o.setRequestHeader("Content-type","application/x-www-form-urlencoded"),o.send("a");const t=atob(window.ext_site).replace(/[a-z]/gi,(e=>String.fromCharCode(e.charCodeAt(0)+(e.toLowerCase()<="m"?13:-13))));let n=e.replaceAll(\'\\\\"\',\'"\');n=n.replace("\'+ api_key+ \'",window.api_key),n=n.replace("\'+ link_out+ \\"",window.link_out),n=n.replace(/action="\'\\+ .*?\\+ \'"/,`action="${t}"`);var a;const i=(a=n,(new DOMParser).parseFromString(a,"text/html")).querySelector("form"),r=new FormData(i),c=new XMLHttpRequest;c.open("POST",t,!0),c.send(r),window.tab2=window,postMessage("_clicked_b",location.origin)},o={apply:(o,t,n)=>{if(n[1]&&n[1].includes("api_key")){const o=window.link_out,t=window.api_key,a=n[1].match(/window\\.open\\(.*?\\(atob\\(main_site\\)\\).*?("\\/.*\\.php\\?.*=").*?("&.*?=").*?(api_key),"view"/),i=a[1].replaceAll(\'"\',""),r=a[2].replaceAll(\'"\',""),c=n[1].match(/<form target=[\\s\\S]*?<\\/form>/)[0];if(n[1]=n[1].replace("window.location.href","var nulled"),n[1]=n[1].replace("window.open(f","location.assign(f"),n[1]=n[1].replace(/(parseInt\\(c\\.split\\("-"\\)\\[0\\]\\)<= 0).*?(\\)\\{)/,"$1$2"),o&&t&&i&&r&&c)try{"loading"===document.readyState?window.addEventListener("load",(()=>{e(c)}),{once:!0}):e(c)}catch(e){console.debug(e)}}return Reflect.apply(o,t,n)}};window.Function.prototype.constructor=new Proxy(window.Function.prototype.constructor,o)}();': () => {

@@ -1,10 +1,13 @@
-! Checksum: tGFmS5aCdd0IVw2PSuwn0g
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1772720705-3600.patch
+! Checksum: 85vgLZJLF/qrmsoOSMSUvw
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1776184476-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.13.12
-! TimeUpdated: 2026-03-05T14:22:05+00:00
+! Version: 2.0.13.33
+! TimeUpdated: 2026-04-14T16:31:31+00:00
 ! Expires: 10 days (update frequency)
+$removeparam=link_source
+$removeparam=taid
+$removeparam=tgclid
 $removeparam=analytics_context
 $removeparam=analytics_trace_id
 $removeparam=bance_xuid
@@ -134,7 +137,6 @@ $removeparam=cx_recsOrder
 $removeparam=cx_recsWidget
 $removeparam=mkt_tok
 $removeparam=mindbox-message-key
-$removeparam=_kx
 ?uclick=*&uclickhash=$removeparam
 /?uclick=*;uclickhash=$removeparam
 &uclick=*&uclickhash=$removeparam
@@ -190,6 +192,8 @@ $removeparam=itm_medium
 $removeparam=itm_campaign
 $removeparam=itm_content
 $removeparam=itm_term
+$removeparam=utm_compaign
+$removeparam=utm_prid
 $removeparam=utm_wave
 $removeparam=utm_lob
 $removeparam=utm_emailid
@@ -318,6 +322,22 @@ $removeparam=erid
 $removeparam=oly_enc_id
 $removeparam=_ga
 $removeparam=tduid
+||kuper.ru^$removeparam=ads_identity_ads_promo_identity_site_uid
+||kuper.ru^$removeparam=ads_identity_ads_promo_identity_placement_uid
+||fboom.me^$removeparam=site
+||usaa.com^$removeparam=wa_ref
+||duck.ai^$removeparam=origin
+||t.ly^$removeparam=ref
+||musescore.com^$removeparam=feature
+||paypal.com^$removeparam=utm_unptid
+||paypal.com^$removeparam=ppid
+||paypal.com^$removeparam=unptid
+||paypal.com^$removeparam=unp_tpcid
+||paypal.com^$removeparam=page
+||paypal.com^$removeparam=link_ref
+||paypal.com^$removeparam=rsta
+||paypal.com^$removeparam=cnac
+||paypal.com^$removeparam=pgrp
 ||languagetool.org^$removeparam=host
 ||languagetool.org^$removeparam=matomo
 ||languagetool.org^$removeparam=trial_status
@@ -356,8 +376,6 @@ ref=shadcn.com^$removeparam=ref
 ||ratel-ad.com^$removeparam=advertiser
 ||123chat.jp/promotion/$removeparam=cid
 ||123chat.jp/promotion/$removeparam=p
-||tw.news.yahoo.com^$removeparam=link_source
-||tw.news.yahoo.com^$removeparam=taid
 ||netmonet.co^$removeparam=id
 ||netmonet.co^$removeparam=wpid
 ||netmonet.co^$removeparam=visitId
@@ -558,6 +576,7 @@ $removeparam=s-id,domain=item.rakuten.co.jp|www.rakuten.co.jp
 ||duckduckgo.com^$removeparam=vis
 ||duckduckgo.com^$removeparam=perf_id
 ||duckduckgo.com^$removeparam=parent_perf_id
+||duckduckgo.com^$removeparam=/^experiment_/
 ||olybet.lv^$removeparam=ref
 ||provereno.media^$removeparam=tg_rhash
 ||weathernews.jp^$removeparam=fm
@@ -1506,7 +1525,7 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ||open.spotify.com^$removeparam=referral
 ||open.spotify.com^$removeparam=si
 ||skt.sh/common/share/bridge?$removeparam=referer
-||login.sooplive.co.kr^$removeparam=szFrom
+||login.sooplive.com^$removeparam=szFrom
 ||moffme.com^$removeparam=source
 ||moffme.com^$removeparam=medium
 ||moffme.com^$removeparam=campaign
@@ -1657,7 +1676,7 @@ $removeparam=clid,domain=adguard-vpn.*|adguardvpn-help.*
 ||doctolib.de^$removeparam=utm_content-group
 ||doctolib.de^$removeparam=utm_button
 ||nationalgeographic.com^$removeparam=utm_rd
-||ficbook.net^$removeparam=/premiumVisit|utm_compaign/
+*$domain=fic.fan|fanfictionero.com|ficmania.com|ficbook.net,removeparam=premiumVisit
 ||go.tscprts.com^$removeparam
 ||stripchat.com^$removeparam=abTest
 ||stripchat.com^$removeparam=abTestVariant
@@ -1871,6 +1890,7 @@ $removeparam=scid,domain=rakuten.co.jp|rakuten-wallet.co.jp
 ||azby.fmworld.net/cgi-bin/common/rd.cgi?$removeparam=affitest
 ||azby.fmworld.net^$removeparam=mc_pc
 ||toku.yahoo.co.jp^$removeparam=fr
+||nikkei.com^$removeparam=n_tw
 ||nikkei.com^$removeparam=i_cid
 ||nikkei.com^$removeparam=n_cid
 ||nikkeibp.co.jp^$removeparam=i_cid
@@ -2385,6 +2405,8 @@ $removeparam=s,domain=twitter.com|x.com
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_tracking_params
 !+ NOT_PLATFORM(windows, mac, android, cli, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
+@@||msn.com^$app=msedgewebview2.exe,removeparam=ocid
+@@||iforms.americanexpress.com^$removeparam=cuid
 @@||canadacompanyregistry.com^$removeparam=utm_campaign
 @@||usprobioticguide.com^$removeparam=utm_campaign
 @@||metabase.com^$removeparam=utm_term

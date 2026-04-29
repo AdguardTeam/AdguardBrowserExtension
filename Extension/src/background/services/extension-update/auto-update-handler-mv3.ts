@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -248,7 +248,11 @@ export class AutoUpdateHandler {
 
     /**
      * Applies automatic update and reloads extension.
+     *
      * Clears state and removes manual update markers to avoid collisions.
+     *
+     * Note: Custom filters are updated post-reload in App.asyncInit(), not here,
+     * to cover all update paths including an update triggered from chrome://extensions.
      */
     private async applyUpdate(): Promise<void> {
         this.onUpdateApplyStart();

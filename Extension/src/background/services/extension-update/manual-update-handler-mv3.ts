@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -185,6 +185,17 @@ export class ManualUpdateHandler {
             return;
         }
 
+        // Update custom filters even if no extension update is available,
+        // so that "Check for Updates" always refreshes custom filters.
+        // NOTE: no need to update custom filters before the previous condition,
+        // because if extension update is present,
+        // custom filters will be updated _after_ the extension reload.
+        try {
+            await FilterUpdateApi.updateCustomFilters();
+        } catch (e) {
+            logger.error('[ext.ManualUpdateHandler.check]: Failed to update custom filters:', e);
+        }
+
         // Notify that update is not available
         this.onUpdateCheckComplete(false);
 
@@ -232,12 +243,14 @@ export class ManualUpdateHandler {
      * Applies manual update for extension and reloads extension.
      *
      * Flow:
-     * 1. Updates custom filters before reload.
-     * 2. Stores manual update data (initVersion, pageToOpenAfterReload).
-     * 3. Sets content script update flag to prevent double injection.
-     * 4. Clears auto update state.
-     * 5. Reloads extension via chrome.runtime.reload().
-     * 6. Handles update failure and notifies via callback.
+     * 1. Stores manual update data (initVersion, pageToOpenAfterReload).
+     * 2. Sets content script update flag to prevent double injection.
+     * 3. Clears auto update state.
+     * 4. Reloads extension via chrome.runtime.reload().
+     * 5. Handles update failure and notifies via callback.
+     *
+     * Note: Custom filters are updated post-reload in App.asyncInit(), not here,
+     * to cover all update paths including an update triggered from chrome://extensions.
      *
      * @param from Page from which update was initiated.
      * @param clearAutoUpdateState Callback to clear auto update state.
@@ -251,12 +264,6 @@ export class ManualUpdateHandler {
         this.onUpdateApplyStart();
 
         let isExtensionUpdated = false;
-
-        try {
-            await FilterUpdateApi.updateCustomFilters();
-        } catch (e) {
-            logger.error('[ext.ManualUpdateHandler.applyUpdate]: Failed to update custom filters before extension reload, updating extension will continue. Origin error:', e);
-        }
 
         try {
             const { currentAppVersion } = await getRunInfo();

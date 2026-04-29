@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -25,20 +25,23 @@ import { type DeclarativeRuleInfo } from 'tswebextension';
 import { type UIFilteringLogEvent } from '../../background/api';
 
 /**
- * @typedef {object} StatusMode
- * @property {string} REGULAR
- * @property {string} MODIFIED
- * @property {string} BLOCKED
- * @property {string} ALLOWED
+ * Status mode for filtering log events.
  */
-export const StatusMode = {
-    REGULAR: 'regular',
-    MODIFIED: 'modified',
-    BLOCKED: 'blocked',
-    ALLOWED: 'allowed',
-    ALLOWED_STEALTH: 'allowed-stealth',
-};
+export enum StatusMode {
+    Regular = 'regular',
+    Modified = 'modified',
+    Blocked = 'blocked',
+    Allowed = 'allowed',
+    AllowedStealth = 'allowed-stealth',
+}
 
+/**
+ * Returns status mode for declarative rule.
+ *
+ * @param declarativeRuleInfo Declarative rule information.
+ *
+ * @returns Status mode.
+ */
 export const getDeclarativeStatusMode = (declarativeRuleInfo: DeclarativeRuleInfo) => {
     const { sourceRules, declarativeRuleJson } = declarativeRuleInfo;
     const rule = JSON.parse(declarativeRuleJson) as DeclarativeRule;
@@ -50,37 +53,37 @@ export const getDeclarativeStatusMode = (declarativeRuleInfo: DeclarativeRuleInf
             || sourceRule.includes(',redirect=')
         ))
     ) {
-        return StatusMode.BLOCKED;
+        return StatusMode.Blocked;
     }
 
     switch (rule.action.type) {
         case RuleActionType.BLOCK: {
-            return StatusMode.BLOCKED;
+            return StatusMode.Blocked;
         }
 
         case RuleActionType.MODIFY_HEADERS:
         case RuleActionType.REDIRECT: {
-            return StatusMode.MODIFIED;
+            return StatusMode.Modified;
         }
 
         case RuleActionType.ALLOW_ALL_REQUESTS:
         case RuleActionType.UPGRADE_SCHEME:
         case RuleActionType.ALLOW: {
-            return StatusMode.ALLOWED;
+            return StatusMode.Allowed;
         }
 
         default: {
-            return StatusMode.REGULAR;
+            return StatusMode.Regular;
         }
     }
 };
 
 /**
- * Returns filtering log status
+ * Returns filtering log status.
  *
- * @param {object} event - filtering log event
+ * @param event Filtering log event.
  *
- * @returns {string}
+ * @returns Status mode.
  */
 export const getStatusMode = (event: UIFilteringLogEvent) => {
     const {
@@ -98,19 +101,19 @@ export const getStatusMode = (event: UIFilteringLogEvent) => {
         return getDeclarativeStatusMode(declarativeRuleInfo);
     }
 
-    let mode = StatusMode.REGULAR;
+    let mode = StatusMode.Regular;
 
     if (cspReportBlocked) {
-        mode = StatusMode.BLOCKED;
+        mode = StatusMode.Blocked;
         return mode;
     }
 
     if (replaceRules) {
-        mode = StatusMode.MODIFIED;
+        mode = StatusMode.Modified;
     }
 
     if (stealthAllowlistRules) {
-        mode = StatusMode.ALLOWED_STEALTH;
+        mode = StatusMode.AllowedStealth;
     }
 
     if (requestRule && !replaceRules) {
@@ -131,19 +134,19 @@ export const getStatusMode = (event: UIFilteringLogEvent) => {
         if (allowlistRule) {
             // $stealth allowlist rules are not being marked as allowed
             // to prevent log cluttering and conform with desktop applications
-            mode = StatusMode.ALLOWED;
+            mode = StatusMode.Allowed;
         } else if (cssRule || scriptRule || removeParam || removeHeader) {
-            mode = StatusMode.MODIFIED;
+            mode = StatusMode.Modified;
         } else if (cookieRule) {
             if (isModifyingCookieRule) {
-                mode = StatusMode.MODIFIED;
+                mode = StatusMode.Modified;
             } else {
-                mode = StatusMode.BLOCKED;
+                mode = StatusMode.Blocked;
             }
         } else if (cspRule || permissionsRule) {
-            mode = StatusMode.MODIFIED;
+            mode = StatusMode.Modified;
         } else {
-            mode = StatusMode.BLOCKED;
+            mode = StatusMode.Blocked;
         }
     }
 

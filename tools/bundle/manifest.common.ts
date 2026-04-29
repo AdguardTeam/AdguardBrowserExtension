@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -21,6 +21,8 @@ import {
     CONTENT_SCRIPT_END_OUTPUT,
     CONTENT_SCRIPT_START_OUTPUT,
     SUBSCRIBE_OUTPUT,
+    IMPORT_CONFIGURATION_OUTPUT,
+    IMPORT_CONFIGURATION_HOSTNAMES,
     THANKYOU_OUTPUT,
 } from '../../constants';
 
@@ -83,6 +85,14 @@ export const commonManifest = {
                 '*://*.adguard.app/*/thankyou.html*',
             ],
             'run_at': 'document_start',
+        },
+        {
+            'all_frames': false,
+            'js': [
+                `${IMPORT_CONFIGURATION_OUTPUT}.js`,
+            ],
+            'matches': IMPORT_CONFIGURATION_HOSTNAMES.map((hostname) => `*://${hostname}/*`),
+            'run_at': 'document_end',
         },
     ],
 };

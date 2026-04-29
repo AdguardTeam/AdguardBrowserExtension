@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -21,15 +21,20 @@
 // TODO remove no-explicit-any disabling
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/ban-ts-comment */
 
-import React, { useContext, useRef } from 'react';
+import React, {
+    useContext,
+    useRef,
+    useState,
+} from 'react';
 import { observer } from 'mobx-react';
+
+import browser from 'webextension-polyfill';
 
 import { useTelemetryPageViewEvent } from '../../../common/telemetry';
 import { TelemetryScreenName } from '../../../../common/telemetry';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { SettingsSetCheckbox } from '../Settings/SettingsSetCheckbox';
 import { SettingSetSelect } from '../Settings/SettingSetSelect';
-import { SETTINGS_TYPES } from '../Settings/Setting';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
 import { handleFileUpload } from '../../../helpers';
@@ -51,6 +56,9 @@ import { Unknown } from '../../../../common/unknown';
 import { AppearanceTheme, FiltersUpdateTime } from '../../../../common/constants';
 import { StaticFiltersLimitsWarning } from '../Warnings';
 import { logger } from '../../../../common/logger';
+import { ExtensionUsageDataModal } from '../Miscellaneous/ExtensionUsageDataModal/ExtensionUsageDataModal';
+
+import { DesktopAppPromo } from './DesktopAppPromo';
 
 const filtersUpdatePeriodOptions = [
     {
@@ -104,6 +112,8 @@ const AllowAcceptableAds = 'allowAcceptableAds';
  * We need to handle privacy permission on user action.
  * That is why we check for privacy permission on the UI.
  *
+ * @param content JSON string content to parse.
+ *
  * @throws error if privacy permission is required, but it wasn't given
  */
 const handlePrivacyPermissionForWebRtc = (content: string): Promise<boolean> => {
@@ -130,6 +140,7 @@ export const General = observer(() => {
     const { settings, allowAcceptableAds }: any = settingsStore;
 
     const importInputRef = useRef<HTMLInputElement>(null);
+    const [isUsageDataModalOpen, setIsUsageDataModalOpen] = useState(false);
 
     if (!settings) {
         return null;
@@ -137,6 +148,15 @@ export const General = observer(() => {
 
     const handleExportSettings = () => {
         exportData(ExportTypes.Settings);
+    };
+
+    const handleShareSettings = async () => {
+        try {
+            const url = await messenger.generateShareUrl();
+            await browser.tabs.create({ url, active: true });
+        } catch (e) {
+            logger.error('[ext.General]: ', e);
+        }
     };
 
     const handleImportSettings = () => {
@@ -236,6 +256,7 @@ export const General = observer(() => {
         FiltersUpdatePeriod,
         DisableSafebrowsing,
         AppearanceTheme,
+        AllowAnonymizedUsageData,
     } = settings.names;
 
     return (
@@ -252,13 +273,9 @@ export const General = observer(() => {
                     handler={appearanceChangeHandler}
                 />
                 <SettingsSetCheckbox
-                    // TODO: fix type error when SettingsSetCheckbox be rewritten in typescript
-                    // @ts-ignore
                     title={translator.getMessage('options_block_acceptable_ads')}
                     description={reactTranslator.getMessage('options_block_acceptable_ads_desc', {
-                        // TODO: fix type error when SettingsSetCheckbox be rewritten in typescript
-                        // @ts-ignore
-                        a: (chunks) => (
+                        a: (chunks: string) => (
                             <a
                                 href={ACCEPTABLE_ADS_LEARN_MORE_URL}
                                 target="_blank"
@@ -270,20 +287,33 @@ export const General = observer(() => {
                     })}
                     disabled={allowAcceptableAds}
                     id={AllowAcceptableAds}
-                    type={SETTINGS_TYPES.CHECKBOX}
                     value={!allowAcceptableAds}
                     label={translator.getMessage('options_block_acceptable_ads')}
                     handler={allowAcceptableAdsChangeHandler}
                 />
+                <SettingsSetCheckbox
+                    title={translator.getMessage('options_anonymized_usage_data_title')}
+                    description={reactTranslator.getMessage('options_anonymized_usage_data_description', {
+                        button: (chunks: string) => (
+                            <button
+                                type="button"
+                                className="button button--link button--link--underlined button--link--green"
+                                onClick={() => setIsUsageDataModalOpen(true)}
+                            >
+                                {chunks}
+                            </button>
+                        ),
+                    })}
+                    id={AllowAnonymizedUsageData}
+                    label={translator.getMessage('options_anonymized_usage_data_title')}
+                    value={settings.values[AllowAnonymizedUsageData]}
+                    handler={settingChangeHandler}
+                />
                 {!__IS_MV3__ && (
                     <SettingsSetCheckbox
-                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                        // @ts-ignore
                         title={translator.getMessage('options_safebrowsing_enabled')}
                         description={reactTranslator.getMessage('options_safebrowsing_enabled_desc', {
-                            // TODO: fix type error when SettingsSetCheckbox be rewritten in typescript
-                            // @ts-ignore
-                            a: (chunks) => (
+                            a: (chunks: string) => (
                                 <a
                                     href={SAFEBROWSING_LEARN_MORE_URL}
                                     target="_blank"
@@ -295,7 +325,6 @@ export const General = observer(() => {
                         })}
                         disabled={settings.values[DisableSafebrowsing]}
                         id={DisableSafebrowsing}
-                        type={SETTINGS_TYPES.CHECKBOX}
                         inverted
                         label={translator.getMessage('options_safebrowsing_enabled')}
                         value={settings.values[DisableSafebrowsing]}
@@ -304,13 +333,10 @@ export const General = observer(() => {
                 )}
                 {!__IS_MV3__ && (
                     <SettingsSetCheckbox
-                        // TODO fix type error when SettingsSetCheckbox be rewritten in typescript
-                        // @ts-ignore
                         title={translator.getMessage('options_enable_autodetect_filter')}
                         description={translator.getMessage('options_enable_autodetect_filter_desc')}
                         disabled={settings.values[DisableDetectFilters]}
                         id={DisableDetectFilters}
-                        type={SETTINGS_TYPES.CHECKBOX}
                         inverted
                         label={translator.getMessage('options_enable_autodetect_filter')}
                         handler={settingChangeHandler}
@@ -329,7 +355,18 @@ export const General = observer(() => {
                     />
                 )}
             </SettingsSection>
+            <ExtensionUsageDataModal
+                closeModalHandler={() => setIsUsageDataModalOpen(false)}
+                isOpen={isUsageDataModalOpen}
+            />
             <div className="links-menu links-menu--section">
+                <button
+                    type="button"
+                    className="links-menu__item button--link--green"
+                    onClick={handleShareSettings}
+                >
+                    {translator.getMessage('options_share_settings')}
+                </button>
                 <button
                     type="button"
                     className="links-menu__item button--link--green"
@@ -368,6 +405,7 @@ export const General = observer(() => {
                     {translator.getMessage('options_leave_feedback')}
                 </button>
             </div>
+            {settingsStore.showGeneralSettingsPromo && <DesktopAppPromo />}
         </>
     );
 });

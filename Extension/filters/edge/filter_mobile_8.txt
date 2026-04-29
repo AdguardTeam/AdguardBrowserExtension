@@ -1,9 +1,9 @@
-! Checksum: klRiuBRHyb40ThvS5PXDGA
-! Diff-Path: ../patches/8_optimized/8_optimized-s-1771729831-3600.patch
+! Checksum: 4737nA7eSswJM+Zw+YMQQw
+! Diff-Path: ../patches/8_optimized/8_optimized-s-1776940771-3600.patch
 ! Title: AdGuard Dutch filter (Optimized)
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.9.2
-! TimeUpdated: 2026-02-22T03:07:11+00:00
+! Version: 2.0.9.13
+! TimeUpdated: 2026-04-23T10:36:36+00:00
 ! Expires: 10 days (update frequency)
 -reclameplaatjes/
 /adbron.
@@ -849,6 +849,7 @@ autowereld.nl,sexjobs.nl##.banner-wrapper
 opwindend.net##.banner468x60
 motocrossplanet.nl##.banner540
 rtvdordrecht.nl##.bannerContainer
+2dehands.be,marktplaats.nl##.bannerContainerLoading
 meetingmagazine.nl##.bannerLine
 iexprofs.nl##.banner__article
 tostrams.nl##.banner__articleside
@@ -1038,6 +1039,7 @@ autosport.nl##.horizontal
 autosport.nl##.horizontal-logo
 retailtrends.nl##.href-a-b
 racesport.nl##.hthb-notification
+2dehands.be,marktplaats.nl##.hz-Banner
 atletiekkrant.be,autosportkrant.be,basketbalkrant.be,handbalkrant.be,hockeykrant.be,sport-planet.eu,tenniskrant.be,voetbalkrant.com,volleybalkrant.be,vrouwenvoetbalkrant.be,wielerkrant.be##.imu
 rd.nl##.infotainment
 dansendeberen.be##.inhype-bb-block-header
@@ -1470,17 +1472,19 @@ ah.nl##.product-card-portrait_root__ZiRpZ:has(.promotion_root__pAAlu)
 tvgids.nl##.square-item:has( > .banner)
 plus.nl##a[data-link]:has(.sponsored-product)
 agconnect.nl#?#.c-teaser:has(.c-pill--partner)
+mediamarkt.*##aside[class="sc-a2fcee8-0 fmYGst"]:has(button[aria-label="Lees meer over productsponsoring"])
 delhaize.be#?#.product-item:contains(Gesponsord)
 androidplanet.nl##div[data-name="post"]:has(div[data-name="sponsor-logo"])
 krefel.be#?#div[class^="Flex-styled__StyledFlex-"]:has(h3:contains(Gesponsorde producten))
 bol.com##li.js_item_root:has(.dsa__list-padding)
 marktplaats.nl#?#.hz-Listing--list-item:contains(Topadvertentie)
 feijenoordnieuws.nl##.cv-table-left > a:not([target="_blank"]):not([rel="nofollow"]):not(a[href^="https://feijenoordnieuws.nl/"])
+autobahn.eu##.d-none.d-md-block.mb-3:has(a[target="_blank"][rel="noopener"])
+weer.nl##.shadow-lvl-2:has(a[href^="https://www.voordeeluitjes.nl/"])
 2dehands.be#?#.hz-Listing--list-item:has(.hz-Listing-priority:contains(Topadvertentie))
 mediamarkt.be,mediamarkt.nl##[data-test="mms-product-card"]:has(div[data-test="mms-plp-sponsored"])
 almere-nieuws.nl#?#.wpb_wrapper:has(.section-heading:contains(partners))
 amstelveensnieuwsblad.nl,baarnschecourant.nl,barneveldsekrant.nl,bennekomsnieuwsblad.nl,biltschecourant.nl,deputtenaer.nl,derijnpost.nl,destadamersfoort.nl,destadgorinchem.nl,dewoudenberger.nl,edestad.nl,ermelosweekblad.nl,harderwijkercourant.nl,hcnieuws.nl,hetkompashardinxveld-giessendam.nl,hetkompassliedrecht.nl,houtensnieuws.nl,huisaanhuiselburg.nl,huisaanhuisoldebroek.nl,leusderkrant.nl,nieuwsbladdekaap.nl,nunspeethuisaanhuis.nl,recreatiekrantveluwe.nl,regiosportveenendaal.nl,rijnenveluwe.nl,scherpenzeelsekrant.nl,soestercourant.nl,stadnijkerk.nl,stadwageningen.nl,weekbladvoorouderamstel.nl,wijksnieuws.nl#?#.component__plugin:has(h6:contains(advertentie))
-autobahn.eu#?#.d-none.d-md-block.mb-3:has(a[target="_blank"][rel="noopener"])
 bol.com#?#[data-bltgi*="ProductList_"]:contains(Gesponsord)
 buienradar.nl#?#.linklist:has(h1:contains(Lekker Dichtbij Deals))
 businessinsider.nl#?#.widget_custom_html:has(h2:contains(Beter Beleggen))
@@ -1503,7 +1507,6 @@ tostrams.nl#?#section.network:has(.contentheader.contentheader--network:contains
 tvvisie.be,tvvisie.nl#?#.side:contains(Aanbiedingen)
 vi.nl#?#.c-articles-list__item.c-articles-list__item--highlight:has(.c-tag.c-articles-list__label:contains(Advertorial))
 voetbalcentraal.nl#?#.blok:has(h3:contains(Partners))
-weer.nl#?#.shadow-lvl-2:has(a[href^="https://www.voordeeluitjes.nl/"])
 wielerflits.nl#?#.widget-container:has(.h3.mb-4:contains(Wielerdeals))
 wielerflits.nl#?#li.list-item.list-item-aside:has(.badge:contains(Ad))
 wielerflits.nl#?#li.list-item.list-item-default:has(span:contains(Ad))
@@ -1528,6 +1531,8 @@ vakantieplaats.nl#@#.topAds
 ||cdn.optoutadvertising.com^
 ||pexi.nl^$third-party
 ||adconfigproxy.azurewebsites.net^$third-party
+||zsp1.ah.be^
+||zsp1.ah.nl^
 ||h3v9p8x2q1r7-agckaeh6g2ehcaes.*.azurewebsites.net^
 ||x9t7g4m2qk2.azurewebsites.net^
 ||kjdsfjisdfjr23.azurewebsites.net^
@@ -1563,7 +1568,7 @@ tweakers.net#$##b_re { display: block !important; min-height: 2px !important; }
 tweakers.net#$?#.widebnr > * { remove: true; }
 tweakers.net#$#.widebnr { display: block !important; min-height: 2px !important; }
 tweakers.net#%#//scriptlet('prevent-fetch', '/a[ab]\.tweakers\.nl/')
-!+ NOT_PLATFORM(windows, mac, android, ext_chromium)
+!+ NOT_PLATFORM(windows, mac, android, cli, ext_chromium)
 @@||aa.tweakers.nl/json$domain=tweakers.net
 @@||assets.prod.webx.talpa.digital/ad/view/$domain=kijk.nl
 kijk.nl#@##topbanner_ad
@@ -1613,6 +1618,18 @@ gpblog.com#$#aside[class^="Ad_"] { position: absolute !important; left: -3000px 
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
 handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
+||cdn.optoutadvertising.com^$domain=ad.nl
+security.nl##.content_right > div.posting:has(> div.sidebar a[href^="https://www.security.nl/"])
+trouw.nl##aside[data-test-id="temptation-PAGE_TOP"] + div.h1-container
+trouw.nl###r1
+trouw.nl###r2
+trouw.nl###b1
+trouw.nl###h0
+trouw.nl###h1
+iex.nl##.banner
+iex.nl##.native_positie
+volkskrant.nl#?#.h1-container:has(> div[class]:matches-css(before, content: /Advertentie/))
+volkskrant.nl#?#div[id][class][tabindex]:matches-css(before, content: /Advertentie/)
 f1maximaal.nl###article-blocks > .raw-html-component
 ||resources.planetnine.com/scripts/f1maximaal.nl.js
 fok.nl###r89-mobile-rectangle-low-0-wrapper
@@ -1805,6 +1822,7 @@ buienradar.nl###adholderContainerHeader
 trouw.nl,parool.nl##.ad--section
 nnieuws.be##.banner-silver
 ah.nl##.ad-lane
+ah.nl##div[data-testid="spotlight-ahrms"]
 forum.fok.nl###wa_web_headertofloor
 nu.nl###header > .zone
 telegraaf.nl##.VideoArticlePage__banner

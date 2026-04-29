@@ -119,6 +119,9 @@
     "options_add_custom_filter_modal_error_subtitle": {
         "message": "もう一度試すか、サポートにご連絡ください。"
     },
+    "options_add_custom_filter_modal_error_html_content": {
+        "message": "URLはフィルタリストではなくウェブページを返しました。フィルタファイルへの直接リンクを指定してください。"
+    },
     "options_add_custom_filter_modal_add_button": {
         "message": "追加する"
     },
@@ -150,7 +153,7 @@
         "message": "ホームページ："
     },
     "options_popup_filter_url": {
-        "message": "URL："
+        "message": "URL"
     },
     "options_popup_subscribe_button": {
         "message": "サブスクライブする"
@@ -187,16 +190,19 @@
         "message": "AdGuardはこのリストに入っているウェブサイトで広告やトラッカーをブロックしません"
     },
     "options_allowlist_invert": {
-        "message": "ホワイトリストを逆転する"
+        "message": "ホワイトリストを反転する"
     },
     "options_allowlist_invert_desc": {
-        "message": "ホワイトリストに登録されたウェブサイトのみで広告および追跡者をブロックします。"
+        "message": "ホワイトリストに登録されたウェブサイトでのみ広告とトラッカーをブロックします。"
     },
     "options_allowlist_alert_invert": {
         "message": "ホワイトリスト逆転中（リストにあるサイトでのみ広告をブロック）。<a>逆転をオフにする<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "ホワイトリストへの変更は失われます"
+    },
+    "options_allowlist_invalid_entries": {
+        "message": "保存するには、ドメインまたはURLのみを保持してください。これらは修正が必要です： %entries%"
     },
     "options_userfilter": {
         "message": "ユーザールール"
@@ -250,7 +256,10 @@
         "message": "フィルタ"
     },
     "options_antibanner_rules_count": {
-        "message": "フィルタルール数: %rules_count%"
+        "message": "ルール: %rules_count%件"
+    },
+    "options_antibanner_updated": {
+        "message": "最終更新日時: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "カスタム"
@@ -293,6 +302,9 @@
     },
     "options_editor_indicator_saved": {
         "message": "保存完了"
+    },
+    "options_editor_save_error": {
+        "message": "変更の保存に失敗しました。再度お試しいただくか、 サポートまでご連絡ください。"
     },
     "options_popup_import_error_required_privacy_permission": {
         "message": "この設定ファイルをインポートするには、AdGuardにプライバシー関連設定の変更を許可してください。"
@@ -442,7 +454,7 @@
         "message": "フィルタの更新中にエラーが発生しました"
     },
     "options_popup_update_not_found": {
-        "message": "アップデートはありません"
+        "message": "ご利用のフィルタは最新状態になっています。"
     },
     "options_popup_update_error": {
         "message": "アップデート失敗しました。しばらく経ってからもう一度試してください。"
@@ -553,7 +565,7 @@
         "message": "フィルタリングログ"
     },
     "filtering_log_search_string": {
-        "message": "ログ記録を絞り込む"
+        "message": "検索"
     },
     "filtering_log_search_tabs_placeholder": {
         "message": "タブで検索"
@@ -566,6 +578,12 @@
     },
     "filtering_refresh_tab_short": {
         "message": "更新する"
+    },
+    "filtering_refresh_tab_short_mobile": {
+        "message": "ページを更新する"
+    },
+    "filtering_menu_open_filters": {
+        "message": "カスタマイズ"
     },
     "filtering_clear_log_events": {
         "message": "ログをクリアする"
@@ -607,10 +625,10 @@
         "message": "プレビュー"
     },
     "filtering_modal_type": {
-        "message": "種類:"
+        "message": "種類"
     },
     "filtering_modal_source": {
-        "message": "発行元:"
+        "message": "ソース"
     },
     "filtering_modal_rule": {
         "message": "ルール:"
@@ -619,10 +637,10 @@
         "message": "ルール:"
     },
     "filtering_modal_privacy": {
-        "message": "トラッキング防止:"
+        "message": "トラッキング防止"
     },
     "filtering_modal_filter": {
-        "message": "フィルタ名:"
+        "message": "フィルタ"
     },
     "filtering_modal_block": {
         "message": "ブロックする"
@@ -642,11 +660,14 @@
     "filtering_modal_remove_allowlist": {
         "message": "ホワイトリストから削除する"
     },
-    "filtering_modal_add_title": {
-        "message": "ルールの追加"
+    "filtering_modal_block_title": {
+        "message": "ブロックルールの追加"
+    },
+    "filtering_modal_allow_title": {
+        "message": "許可ルールの追加"
     },
     "filtering_modal_status_text_desc": {
-        "message": "ステータス:"
+        "message": "ステータス"
     },
     "filtering_modal_status_text_error": {
         "message": "プレビューを読み込めませんでした。もう一度お試しください。"
@@ -655,19 +676,22 @@
         "message": "読み込み中…"
     },
     "filtering_modal_filtering_status_text_desc": {
-        "message": "フィルタリングステータス:"
+        "message": "フィルタリングステータス"
     },
     "filtering_modal_rule_text_desc": {
-        "message": "ルールテキスト:"
+        "message": "ルール"
     },
-    "filtering_modal_patterns_desc": {
-        "message": "パターン:"
+    "filtering_modal_patterns_desc_block": {
+        "message": "ブロックされるべきもの"
+    },
+    "filtering_modal_patterns_desc_allow": {
+        "message": "許可されるべきもの"
     },
     "filtering_modal_options_desc": {
-        "message": "オプション: "
+        "message": "オプション"
     },
     "filtering_modal_apply_domains": {
-        "message": "全てのウェブサイトにこのルールを適用"
+        "message": "全ウェブサイトに適用する"
     },
     "filtering_modal_third_party": {
         "message": "サードパーティのリクエストのみに適用"
@@ -676,7 +700,7 @@
         "message": "クエリパラメータを削除"
     },
     "filtering_modal_add_rule": {
-        "message": "ルールを追加する"
+        "message": "追加する"
     },
     "filtering_modal_exception_title": {
         "message": "例外の追加"
@@ -779,6 +803,9 @@
     },
     "options_export_settings": {
         "message": "設定をエクスポート"
+    },
+    "options_share_settings": {
+        "message": "設定を共有する"
     },
     "options_import_settings": {
         "message": "設定をインポート"
@@ -994,6 +1021,9 @@
     },
     "options_show_adguard_full_version_title": {
         "message": "AdGuardフルバージョンの情報を表示する"
+    },
+    "options_clear_stats_confirm_modal_subtitle": {
+        "message": "データ通信量の統計情報がすべて永久に削除されます。"
     },
     "options_show_app_updated_notification": {
         "message": "拡張機能のアップデートについて通知を受け取る"
@@ -1217,6 +1247,24 @@
     "options_nav_compare": {
         "message": "比較を見る"
     },
+    "options_desktop_app_promo_title": {
+        "message": "拡張機能はブラウザのみを保護します"
+    },
+    "options_desktop_app_promo_description": {
+        "message": "Spotify、Discord、Zoomのようなアプリではそのまま広告が表示されたり、アクティビティが追跡されたりします。"
+    },
+    "options_desktop_app_promo_subdescription": {
+        "message": "デスクトップ版アプリなら、それらのアプリでもあなたを守れます。"
+    },
+    "options_desktop_app_promo_button_windows": {
+        "message": "AdGuard for Windows を手に入れる"
+    },
+    "options_desktop_app_promo_button_mac": {
+        "message": "AdGuard for Mac を手に入れる"
+    },
+    "options_desktop_app_promo_button_linux": {
+        "message": "AdGuard for Linux を手に入れる"
+    },
     "options_filters_search": {
         "message": "検索"
     },
@@ -1277,11 +1325,56 @@
     "options_reset_settings_confirm_modal_title": {
         "message": "設定をリセット（初期化）しますか?"
     },
+    "options_reset_settings_confirm_modal_subtitle": {
+        "message": "すべてのアプリの設定がデフォルト値にリセットされます。"
+    },
     "options_reset_settings_confirm_modal_clear_button": {
         "message": "リセット"
     },
+    "options_invert_allowlist_confirm_modal_title": {
+        "message": "ホワイトリストを反転しますか？"
+    },
+    "options_invert_allowlist_confirm_modal_subtitle": {
+        "message": "広告とトラッカーはホワイトリストに入っているウェブサイトでのみブロックされるようになります。"
+    },
+    "options_invert_allowlist_confirm_modal_confirm_button": {
+        "message": "反転"
+    },
     "options_confirm_modal_cancel_button": {
         "message": "キャンセル"
+    },
+    "options_import_configuration_confirm_title": {
+        "message": "設定をインポート…"
+    },
+    "options_import_configuration_confirm_subtitle": {
+        "message": "インポートされた設定は、現在の設定に置き換わります。その他の設定は影響を受けません。"
+    },
+    "options_import_configuration_confirm_button": {
+        "message": "インポート"
+    },
+    "options_import_configuration_applying_title": {
+        "message": "インポート中..."
+    },
+    "options_import_configuration_applying_subtitle": {
+        "message": "現在の設定をインポート設定に置き換え中です。※インポートしている間、フィルタリング（広告ブロック）は無効です。"
+    },
+    "options_import_configuration_success_title": {
+        "message": "完了"
+    },
+    "options_import_configuration_success_subtitle": {
+        "message": "設定が正常にインポートされました。"
+    },
+    "options_import_configuration_success_button": {
+        "message": "閉じる"
+    },
+    "options_import_configuration_error_title": {
+        "message": "設定をインポートできませんでした"
+    },
+    "options_import_configuration_error_subtitle": {
+        "message": "インポート用リンクをご確認の上、再度お試しください。それでも解決しない場合は、サポートまでご連絡ください。"
+    },
+    "options_import_configuration_error_button": {
+        "message": "閉じる"
     },
     "filtering_log_details_modal_beautify_button": {
         "message": "見やすくする"
@@ -1293,7 +1386,7 @@
         "message": "再試行する"
     },
     "filtering_log_tag_request_source": {
-        "message": "リクエストのソース"
+        "message": "リクエスト元"
     },
     "filtering_log_tag_tooltip_first_party": {
         "message": "ファーストパーティリクエスト"
@@ -1302,7 +1395,7 @@
         "message": "サードパーティリクエスト"
     },
     "filtering_log_tag_request_status": {
-        "message": "リクエストステータス"
+        "message": "フィルタリングステータス"
     },
     "filtering_log_tag_tooltip_regular": {
         "message": "フィルタリングを適用せずに処理されたリクエスト"
@@ -1455,7 +1548,7 @@
         "message": "再試行する"
     },
     "filtering_modal_applied_rules": {
-        "message": "適用ルール: | 適用ルール:",
+        "message": "適用済みルール | 適用済みルール",
         "description": "WARNING: correct number of plural forms is required"
     },
     "filtering_modal_assumed_rules": {
@@ -1468,5 +1561,14 @@
     },
     "filtering_modal_declarative_rule": {
         "message": "DNRルール:"
+    },
+    "opera_search_permission_warning": {
+        "message": "検索広告をブロックするには、ブラウザの設定で検索結果ページへのアクセスを許可してください。"
+    },
+    "opera_search_permission_go_to_settings": {
+        "message": "「設定」へ移動する"
+    },
+    "opera_search_permission_dont_show": {
+        "message": "今後この通知を表示しない"
     }
 }

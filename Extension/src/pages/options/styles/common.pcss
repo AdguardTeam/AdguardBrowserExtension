@@ -102,12 +102,13 @@ label.checkbox-label {
 
 .content {
     position: relative;
-    padding: 40px 16px;
+    padding: 65px 0;
     width: 100%;
     max-width: 100%;
 
     @media (min-width: 640px) {
         max-width: 672px;
+        padding: 40px 16px;
     };
 
     &__btn {
@@ -165,12 +166,15 @@ label.checkbox-label {
         line-height: 21px;
         font-weight: 600;
         cursor: pointer;
-    }
-}
 
-.footer {
-    width: 100%;
-    flex: 0 0 auto;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+
+        @media (min-width: 640px) {
+            width: auto;
+        }
+    }
 }
 
 .disabled {
@@ -192,25 +196,43 @@ label.checkbox-label {
         position: relative;
         display: flex;
         justify-content: space-between;
-        padding: 32px 16px 16px;
+        padding: 32px 16px 8px;
 
-        &--sub > .title__inner {
-            padding-top: 0;
+        &--sub {
+            padding-top: 24px;
         }
 
         &--control {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            grid-template-rows: auto auto;
             border-radius: 8px;
             cursor: pointer;
             transition: var(--t3) background-color;
-
-            & .checkbox__label:hover {
-                background-color: transparent;
-            }
 
             &:hover {
                 @media (hover: hover) {
                     background-color: var(--fills-backgrounds-page-background-hovered);
                 }
+            }
+
+            & .title__inner {
+                display: contents;
+            }
+
+            & .title {
+                grid-column: 1;
+                grid-row: 1;
+            }
+
+            & .title__desc {
+                grid-column: 1 / -1;
+                grid-row: 2;
+            }
+
+            & .setting__inline-control {
+                grid-column: 2;
+                grid-row: 1;
             }
         }
 
@@ -230,28 +252,16 @@ label.checkbox-label {
             }
 
             &--back {
-                padding: 0 16px 16px 16px;
-
-                & .title__inner {
-                    padding-top: 16px;
-                }
+                padding: 16px;
 
                 & .checkbox__in {
                     /* 16px (label padding) - 3px (default margin) */
                     top: 13px;
                 }
-
-                & .checkbox__label {
-                    padding: 16px;
-
-                    &:before {
-                        top: 0;
-                    }
-                }
             }
 
-            &--sub > .title__inner {
-                padding-top: 0;
+            &--sub {
+                padding-top: 48px;
             }
 
             &--about {
@@ -268,11 +278,13 @@ label.checkbox-label {
         font-size: 16px;
         font-weight: 400;
         line-height: 1.3;
-        padding-top: 12px;
+        padding-top: 16px;
         color: var(--text-description-description-default);
 
         &--back {
             cursor: pointer;
+            padding-left: 0;
+            padding-top: 12px;
         }
     }
 
@@ -283,11 +295,14 @@ label.checkbox-label {
         background-color: transparent;
         border: 0;
         cursor: pointer;
+
+        &--icon {
+            margin-top: 1px;
+        }
     }
 
     &--sub {
         font-size: 20px;
-        padding-top: 32px;
     }
 }
 
@@ -353,6 +368,10 @@ label.checkbox-label {
     display: inline-block;
     align-items: center;
 
+    @media (max-width: 640px) {
+        padding-right: 16px;
+    }
+
     &--grid {
         display: grid;
         grid-gap: 16px;
@@ -360,27 +379,27 @@ label.checkbox-label {
 
     &--buttons {
         grid-template-columns: 1fr 1fr 1fr;
+
+        @media (max-width: 640px) {
+            grid-template-columns: 1fr;
+        }
     }
 
     &--icons {
         grid-template-columns: 1fr 1fr;
-    }
-
-    &--allowlist {
-        width: 618px;
 
         @media (max-width: 640px) {
-            width: 100%;
+            display: none;
         }
     }
 
     &--user-rules {
         grid-gap: 32px;
-        grid-template-columns: 504px 64px;
+        grid-template-columns: 7.875fr 1fr;
 
         @media (max-width: 640px) {
             width: 100%;
-            grid-template-columns: 6fr 1fr;
+            grid-template-columns: 1fr;
         }
     }
 
@@ -503,4 +522,5 @@ select:focus {
 
 .custom-group-warning {
     font-size: 14px;
+    padding-top: 4px;
 }

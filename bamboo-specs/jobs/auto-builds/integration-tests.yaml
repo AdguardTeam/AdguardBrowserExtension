@@ -31,9 +31,11 @@ tasks:
           export DOCKER_BUILDKIT=1
 
           # Run integration tests for release.
+          # TODO: remove --no-cache-filter after AG-46639
           docker build \
             --file Dockerfile \
             --progress plain \
+            --no-cache-filter=integration-tests \
             --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
             --build-arg BUILD_TYPE=release \
             --build-context tsurlfilter=../tsurlfilter \
@@ -42,9 +44,11 @@ tasks:
             .
 
           # Run integration tests for beta.
+          # TODO: remove --no-cache-filter after AG-46639
           docker build \
             --file Dockerfile \
             --progress plain \
+            --no-cache-filter=integration-tests \
             --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
             --build-arg BUILD_TYPE=beta \
             --build-context tsurlfilter=../tsurlfilter \
@@ -56,6 +60,13 @@ tasks:
           mkdir -p output/tests-reports
           find output-release/tests-reports -name '*.xml' -exec cp {} output/tests-reports/ \; 2>/dev/null || true
           find output-beta/tests-reports -name '*.xml' -exec cp {} output/tests-reports/ \; 2>/dev/null || true
+
+          # Touch XML test reports to reset mtime to now.
+          # --output type=local preserves container mtimes, so extracted XML files
+          # retain the timestamp from when they were written inside the container.
+          # This can happen on cache hits (reruns) and causes the Bamboo JUnit parser
+          # to reject them with "file was modified before task started".
+          find output/tests-reports -name '*.xml' -exec touch {} + 2>/dev/null || true
   - script:
       interpreter: SHELL
       scripts:

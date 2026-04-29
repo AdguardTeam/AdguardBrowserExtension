@@ -19,7 +19,6 @@ ls -la
 # Parse command line arguments
 LINK_AGTREE=false
 LINK_TSURLFILTER=false
-LINK_DNR_RULESETS=false
 
 while [ $# -gt 0 ]; do
     case $1 in
@@ -31,13 +30,9 @@ while [ $# -gt 0 ]; do
             LINK_TSURLFILTER=true
             shift
             ;;
-        --with-dnr-rulesets)
-            LINK_DNR_RULESETS=true
-            shift
-            ;;
         *)
             echo "Unknown option: $1"
-            echo "Available options: --with-agtree, --with-tsurlfilter, --with-dnr-rulesets"
+            echo "Available options: --with-agtree, --with-tsurlfilter"
             exit 1
             ;;
     esac
@@ -75,11 +70,6 @@ link_packages() {
     if [ "$LINK_AGTREE" = true ] || [ "$LINK_TSURLFILTER" = true ]; then
         echo "Linking css-tokenizer package to main project..."
         pnpm link ${TSURLFILTER_DIR}/packages/css-tokenizer
-    fi
-
-    if [ "$LINK_DNR_RULESETS" = true ]; then
-        echo "Linking dnr-rulesets package to main project..."
-        pnpm link ${TSURLFILTER_DIR}/packages/dnr-rulesets
     fi
 
     echo "Package linking completed successfully"

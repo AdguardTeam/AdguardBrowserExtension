@@ -119,6 +119,9 @@
     "options_add_custom_filter_modal_error_subtitle": {
         "message": "Yritä uudelleen tai ota yhteyttä asiakaspalveluun."
     },
+    "options_add_custom_filter_modal_error_html_content": {
+        "message": "URL-osoite palautti verkkosivun suodatinluettelon sijaan. Anna suora linkki suodatintiedostoon."
+    },
     "options_add_custom_filter_modal_add_button": {
         "message": "Lisää"
     },
@@ -150,7 +153,7 @@
         "message": "Verkkosivusto:"
     },
     "options_popup_filter_url": {
-        "message": "URL:"
+        "message": "URL-osoite"
     },
     "options_popup_subscribe_button": {
         "message": "Tilaa"
@@ -197,6 +200,9 @@
     },
     "options_allowlist_leave_subtitle": {
         "message": "Muutokset sallittujen luetteloon menetetään"
+    },
+    "options_allowlist_invalid_entries": {
+        "message": "Tallenna vain verkkotunnukset tai URL-osoitteet. Nämä täytyy korjata: %entries%"
     },
     "options_userfilter": {
         "message": "Käyttäjän säännöt"
@@ -250,7 +256,10 @@
         "message": "Suodattimet"
     },
     "options_antibanner_rules_count": {
-        "message": "Suodatussääntöjen määrä: %rules_count%"
+        "message": "Säännöt: %rules_count%"
+    },
+    "options_antibanner_updated": {
+        "message": "Päivitetty: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Mukautettu"
@@ -293,6 +302,9 @@
     },
     "options_editor_indicator_saved": {
         "message": "Säästetty"
+    },
+    "options_editor_save_error": {
+        "message": "Muutosten tallentaminen epäonnistui. Yritä uudelleen tai ota yhteyttä tukeen"
     },
     "options_popup_import_error_required_privacy_permission": {
         "message": "Tuodaksesi tämän asetustiedoston, salli AdGuardin muuttaa tietosuojaan liittyviä asetuksiasi."
@@ -442,7 +454,7 @@
         "message": "Virhe päivitettäessä suodattimia"
     },
     "options_popup_update_not_found": {
-        "message": "Päivityksiä ei löytynyt"
+        "message": "Suodattimesi ovat ajan tasalla"
     },
     "options_popup_update_error": {
         "message": "Päivtysten nouto epäonnistui. Yritä myöhemmin uudelleen."
@@ -553,7 +565,7 @@
         "message": "Suodatushistoria"
     },
     "filtering_log_search_string": {
-        "message": "Suodata lokitietoja"
+        "message": "Haku"
     },
     "filtering_log_search_tabs_placeholder": {
         "message": "Etsi välilehdistä"
@@ -566,6 +578,12 @@
     },
     "filtering_refresh_tab_short": {
         "message": "Päivitä"
+    },
+    "filtering_refresh_tab_short_mobile": {
+        "message": "Pävitä sivu"
+    },
+    "filtering_menu_open_filters": {
+        "message": "Mukauta"
     },
     "filtering_clear_log_events": {
         "message": "Tyhjennä historia"
@@ -598,7 +616,7 @@
         "message": "Avaa tiedot"
     },
     "filtering_table_empty_reload_page_desc": {
-        "message": "Ei löytynyt mitään. <reset>Poista käytöstä suodattimet<\/reset> tai <refresh>käynnistä sivu uudelleen<\/refresh> nähdäksesi lokimerkinnät."
+        "message": "Mitään ei löytynyt. <reset>Poista suodattimet käytöstä<\/reset> tai <refresh>lataa sivu uudelleen<\/refresh> nähdäksesi lokitietueet"
     },
     "filtering_modal_info_title": {
         "message": "Pyynnön tiedot"
@@ -607,10 +625,10 @@
         "message": "Preview"
     },
     "filtering_modal_type": {
-        "message": "Tyyppi:"
+        "message": "Tyyppi"
     },
     "filtering_modal_source": {
-        "message": "Lähde:"
+        "message": "Lähde"
     },
     "filtering_modal_rule": {
         "message": "Sääntö:"
@@ -619,10 +637,10 @@
         "message": "Säännöt:"
     },
     "filtering_modal_privacy": {
-        "message": "Seurannan esto:"
+        "message": "Seurantaesto"
     },
     "filtering_modal_filter": {
-        "message": "Suodatin:"
+        "message": "Suodatin"
     },
     "filtering_modal_block": {
         "message": "Estä"
@@ -642,11 +660,14 @@
     "filtering_modal_remove_allowlist": {
         "message": "Poistettu sallituista"
     },
-    "filtering_modal_add_title": {
-        "message": "Lisätään sääntöä"
+    "filtering_modal_block_title": {
+        "message": "Lisää estosääntö"
+    },
+    "filtering_modal_allow_title": {
+        "message": "Lisää salliva sääntö"
     },
     "filtering_modal_status_text_desc": {
-        "message": "Tila:"
+        "message": "Tila"
     },
     "filtering_modal_status_text_error": {
         "message": "Sovelluksen esikatselun lataaminen epäonnistui. Yritä uudelleen"
@@ -655,19 +676,22 @@
         "message": "Ladataan..."
     },
     "filtering_modal_filtering_status_text_desc": {
-        "message": "Suodatuksen tila:"
+        "message": "Suodatuksen tila"
     },
     "filtering_modal_rule_text_desc": {
-        "message": "Sääntöteksti:"
+        "message": "Sääntö"
     },
-    "filtering_modal_patterns_desc": {
-        "message": "Kaavat:"
+    "filtering_modal_patterns_desc_block": {
+        "message": "Mitä tulee estää"
+    },
+    "filtering_modal_patterns_desc_allow": {
+        "message": "Mitä tulee sallia"
     },
     "filtering_modal_options_desc": {
-        "message": "Valinnat:"
+        "message": "Valinnat"
     },
     "filtering_modal_apply_domains": {
-        "message": "Käytä kaikilla sivustoilla"
+        "message": "Käytä kaikille sivustoille"
     },
     "filtering_modal_third_party": {
         "message": "Käytä vain kolmansien osapuolten pyynnöille"
@@ -676,7 +700,7 @@
         "message": "Poista pyyntöparametrit"
     },
     "filtering_modal_add_rule": {
-        "message": "Lisää sääntö"
+        "message": "Lisää"
     },
     "filtering_modal_exception_title": {
         "message": "Lisää poikkeus"
@@ -779,6 +803,9 @@
     },
     "options_export_settings": {
         "message": "Vie asetukset"
+    },
+    "options_share_settings": {
+        "message": "Jaa asetuksesi"
     },
     "options_import_settings": {
         "message": "Tuo asetukset"
@@ -994,6 +1021,9 @@
     },
     "options_show_adguard_full_version_title": {
         "message": "Näytä tietoja AdGuardin täysversiosta"
+    },
+    "options_clear_stats_confirm_modal_subtitle": {
+        "message": "Kaikki datan käyttöä koskevat tilastot poistetaan pysyvästi"
     },
     "options_show_app_updated_notification": {
         "message": "Ilmoita laajennuksen päivityksistä"
@@ -1217,6 +1247,24 @@
     "options_nav_compare": {
         "message": "Vertaile"
     },
+    "options_desktop_app_promo_title": {
+        "message": "Laajennus suojaa vain selainta"
+    },
+    "options_desktop_app_promo_description": {
+        "message": "Sovellukset kuten Spotify, Discord tai Zoom voivat edelleen näyttää mainoksia ja seurata aktiivisuuttasi"
+    },
+    "options_desktop_app_promo_subdescription": {
+        "message": "Työpöytäsovelluksemme voi suojata sinua niiltä"
+    },
+    "options_desktop_app_promo_button_windows": {
+        "message": "Hanki AdGuard Windowsille"
+    },
+    "options_desktop_app_promo_button_mac": {
+        "message": "Hanki AdGuard Macille"
+    },
+    "options_desktop_app_promo_button_linux": {
+        "message": "Hanki AdGuard Linuxille"
+    },
     "options_filters_search": {
         "message": "Haku"
     },
@@ -1277,11 +1325,56 @@
     "options_reset_settings_confirm_modal_title": {
         "message": "Palautetaanko asetukset?"
     },
+    "options_reset_settings_confirm_modal_subtitle": {
+        "message": "Kaikki asetukset palautetaan oletusarvoihinsa"
+    },
     "options_reset_settings_confirm_modal_clear_button": {
         "message": "Palauta"
     },
+    "options_invert_allowlist_confirm_modal_title": {
+        "message": "Käänteinen sallittu lista?"
+    },
+    "options_invert_allowlist_confirm_modal_subtitle": {
+        "message": "Mainokset ja seurannat estetään vain sallittujen listassa olevilla verkkosivustoilla"
+    },
+    "options_invert_allowlist_confirm_modal_confirm_button": {
+        "message": "Käännä"
+    },
     "options_confirm_modal_cancel_button": {
         "message": "Peruuta"
+    },
+    "options_import_configuration_confirm_title": {
+        "message": "Tuo asetukset"
+    },
+    "options_import_configuration_confirm_subtitle": {
+        "message": "Tuodut asetukset korvaavat nykyiset asetukset. Tämä ei vaikuta muihin asetuksiin"
+    },
+    "options_import_configuration_confirm_button": {
+        "message": "Tuo"
+    },
+    "options_import_configuration_applying_title": {
+        "message": "Tuodaan..."
+    },
+    "options_import_configuration_applying_subtitle": {
+        "message": "Korvaa nykyiset asetukset tuoduilla asetuksilla. Suodatus on poistettu käytöstä tuonnin aikana"
+    },
+    "options_import_configuration_success_title": {
+        "message": "Kaikki kunnossa"
+    },
+    "options_import_configuration_success_subtitle": {
+        "message": "Asetusten tuonti onnistui"
+    },
+    "options_import_configuration_success_button": {
+        "message": "Sulje"
+    },
+    "options_import_configuration_error_title": {
+        "message": "Asetusten tuonti epäonnistui"
+    },
+    "options_import_configuration_error_subtitle": {
+        "message": "Tarkista tuontilinkki ja yritä uudelleen. Jos se ei auta, ota yhteyttä asiakaspalveluun"
+    },
+    "options_import_configuration_error_button": {
+        "message": "Sulje"
     },
     "filtering_log_details_modal_beautify_button": {
         "message": "Kaunista"
@@ -1293,7 +1386,7 @@
         "message": "Yritä uudelleen"
     },
     "filtering_log_tag_request_source": {
-        "message": "Pyynnön lähde"
+        "message": "Pyynnön alkuperä"
     },
     "filtering_log_tag_tooltip_first_party": {
         "message": "Ensimmäisen osapuolen pyynnöt"
@@ -1302,7 +1395,7 @@
         "message": "Kolmannen osapuolen pyynnöt"
     },
     "filtering_log_tag_request_status": {
-        "message": "Pyynnön tila"
+        "message": "Suodatuksen tila"
     },
     "filtering_log_tag_tooltip_regular": {
         "message": "Ilman suodatusta käsitellyt pyynnöt"
@@ -1455,7 +1548,7 @@
         "message": "Yritä uudelleen"
     },
     "filtering_modal_applied_rules": {
-        "message": "| Sovellettu sääntö: | Sovelletut säännöt:",
+        "message": "| Sovellettu sääntö | Sovellettavat säännöt",
         "description": "WARNING: correct number of plural forms is required"
     },
     "filtering_modal_assumed_rules": {
@@ -1468,5 +1561,14 @@
     },
     "filtering_modal_declarative_rule": {
         "message": "DNR sääntö:"
+    },
+    "opera_search_permission_warning": {
+        "message": "Estääksesi hakumainoksia, salli pääsy hakusivun tuloksiin selaimen asetuksista"
+    },
+    "opera_search_permission_go_to_settings": {
+        "message": "Siirry asetuksiin"
+    },
+    "opera_search_permission_dont_show": {
+        "message": "Älä näytä uudelleen"
     }
 }

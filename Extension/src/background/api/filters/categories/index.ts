@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -17,9 +17,10 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
+export { Categories } from 'categories-api';
 export {
     type CategoriesFilterData,
     type CategoriesGroupData,
     type CategoriesData,
-    Categories,
-} from 'filter-categories-api';
+} from './categories-common';

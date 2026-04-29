@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -18,6 +18,9 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser from 'webextension-polyfill';
+import { configurationImportApi } from 'configuration-import-api';
+
+import { RulesLimitsService } from 'rules-limits-service';
 
 import {
     tabsApi as tsWebExtTabsApi,
@@ -31,6 +34,7 @@ import {
     MessageType,
     type OpenAbuseTabMessage,
     type OpenSiteReportTabMessage,
+    type ImportConfigurationMessage,
 } from '../../../common/messages';
 import { UserAgent } from '../../../common/user-agent';
 import { engine } from '../../engine';
@@ -48,6 +52,8 @@ import {
     ContextMenuApi,
     UiApi,
     PageStatsApi,
+    ConfigurationImportApi,
+    type ImportConfiguration,
 } from '../../api';
 import { ContextMenuAction, contextMenuEvents } from '../../events';
 import { ForwardFrom } from '../../../common/forward';
@@ -105,6 +111,15 @@ export class UiService {
     private static blockedCountIncrement = 1;
 
     /**
+     * Pending import configuration, set when a content script sends
+     * {@link MessageType.ImportConfiguration} and cleared after apply or cancel.
+     *
+     * Stored as a parsed object (not passed via URL like subscribe)
+     * because the import config is too complex for URL parameters.
+     */
+    private static pendingImportConfig: ImportConfiguration | null = null;
+
+    /**
      * Initializes **sync** UI services and registers listeners.
      *
      * For MV3, handlers should be registered on the top level in sync functions,
@@ -158,6 +173,24 @@ export class UiService {
             pagesApi.openSettingsPageWithCustomFilterModal,
         );
 
+        messageHandler.addListener(MessageType.ImportConfiguration, UiService.handleImportConfiguration);
+        messageHandler.addListener(
+            MessageType.IsPendingForImport,
+            UiService.getIsImportPending,
+        );
+        messageHandler.addListener(
+            MessageType.GetPendingImportBlockWebrtc,
+            UiService.getPendingImportBlockWebrtc,
+        );
+        messageHandler.addListener(
+            MessageType.ApplyImportConfiguration,
+            UiService.handleApplyImportConfiguration,
+        );
+        messageHandler.addListener(
+            MessageType.CancelImportConfiguration,
+            UiService.handleCancelImportConfiguration,
+        );
+
         messageHandler.addListener(MessageType.OpenAssistant, AssistantApi.openAssistant);
 
         messageHandler.addListener(MessageType.OpenRulesLimitsTab, PagesApi.openRulesLimitsPage);
@@ -171,6 +204,97 @@ export class UiService {
         tsWebExtTabsApi.onActivate.subscribe(UiApi.update);
 
         defaultFilteringLog.addEventListener(FilteringEventType.ApplyBasicRule, UiService.onBasicRuleApply);
+    }
+
+    /**
+     * Handles {@link ImportConfigurationMessage}: parses the query string, stores the
+     * pending config, and opens the Settings page so the import dialog can be shown.
+     *
+     * @param message Incoming {@link ImportConfigurationMessage}.
+     * @param message.data Message data containing the query string.
+     */
+    private static async handleImportConfiguration({ data }: ImportConfigurationMessage): Promise<void> {
+        const { queryString } = data;
+
+        try {
+            const config = ConfigurationImportApi.parseUrl(queryString);
+
+            if (!configurationImportApi.hasApplicableSettings(config)) {
+                logger.warn('[ext.UiService.handleImportConfiguration]: no applicable settings found in import URL');
+                return;
+            }
+
+            UiService.pendingImportConfig = config;
+
+            await PagesApi.openSettingsPage();
+        } catch (e) {
+            logger.error('[ext.UiService.handleImportConfiguration]: failed to handle import URL:', e);
+        }
+    }
+
+    /**
+     * Returns whether there is a pending import configuration.
+     *
+     * @returns `true` if there is a pending import config, `false` otherwise.
+     */
+    private static getIsImportPending(): boolean {
+        return UiService.pendingImportConfig !== null;
+    }
+
+    /**
+     * Returns whether the pending import configuration requests WebRTC blocking.
+     * The UI uses this to request the optional `privacy` permission before
+     * applying the import, because permissions can only be requested from a
+     * user-gesture handler on the options page.
+     *
+     * @returns `true` if the pending config sets `blockWebrtc` to `true`.
+     */
+    private static getPendingImportBlockWebrtc(): boolean {
+        return UiService.pendingImportConfig?.stealth.blockWebrtc === true;
+    }
+
+    /**
+     * Applies the pending import configuration and clears it.
+     * On failure the pre-apply state is restored (rollback) so the user is
+     * not left with a broken partial configuration.
+     *
+     * @returns `true` if successful, `false` otherwise.
+     */
+    private static async handleApplyImportConfiguration(): Promise<boolean> {
+        const config = UiService.pendingImportConfig;
+
+        if (!config) {
+            logger.warn('[ext.UiService.handleApplyImportConfiguration]: no pending import config to apply');
+            return false;
+        }
+
+        const snapshot = await SettingsApi.export();
+
+        const success = await configurationImportApi.applyConfig(config);
+
+        await engine.update();
+
+        const limitsExceeded = success && await RulesLimitsService.areFilterLimitsExceeded();
+
+        if (!success || limitsExceeded) {
+            logger.error('[ext.UiService.handleApplyImportConfiguration]: import failed — rolling back');
+            await SettingsApi.import(snapshot);
+            await RulesLimitsService.clearRulesLimitsWarning();
+            await engine.update();
+            UiService.pendingImportConfig = null;
+            return false;
+        }
+
+        UiService.pendingImportConfig = null;
+
+        return true;
+    }
+
+    /**
+     * Cancels the pending import configuration by clearing it.
+     */
+    private static handleCancelImportConfiguration(): void {
+        UiService.pendingImportConfig = null;
     }
 
     /**

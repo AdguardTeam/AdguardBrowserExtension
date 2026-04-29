@@ -1,6 +1,6 @@
 /* eslint-disable no-restricted-syntax, no-console */
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -19,21 +19,39 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import path from 'node:path';
+import { readdirSync } from 'node:fs';
+
 import { scanner } from './scanner';
 import { SafetyChecker } from './safety-checker';
 
 const FILTERS_PATH = './Extension/filters';
 
+const MV3_DIR_NAME_SUFFIX = '-mv3';
+
 /**
  * Validator function to check for potentially dangerous rules.
  *
- * @param openAiKey - OpenAI API key.
+ * @param openAiKey OpenAI API key.
+ * @param isMV3 When true, only filter directories whose names end with `-mv3` are scanned.
  *
  * @throws Error if dangerous rules are found.
  */
-export const findDangerousRules = async (openAiKey: string): Promise<void> => {
+export const findDangerousRules = async (openAiKey: string, isMV3 = false): Promise<void> => {
     const safetyChecker = new SafetyChecker(openAiKey);
-    const potentialDangerousRules = await scanner(FILTERS_PATH);
+
+    let potentialDangerousRules;
+    if (isMV3) {
+        const mv3Dirs = readdirSync(FILTERS_PATH, { withFileTypes: true })
+            .filter((entry) => entry.isDirectory() && entry.name.endsWith(MV3_DIR_NAME_SUFFIX))
+            .map((entry) => entry.name);
+        const scanResults = await Promise.all(
+            mv3Dirs.map((dir) => scanner(path.join(FILTERS_PATH, dir))),
+        );
+        potentialDangerousRules = scanResults.flat();
+    } else {
+        potentialDangerousRules = await scanner(FILTERS_PATH);
+    }
 
     // Extracting script text from each rule for analysis with the OpenAI API
     const scriptTexts = potentialDangerousRules

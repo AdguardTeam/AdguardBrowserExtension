@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -33,13 +33,56 @@ import { About } from '../About';
 import { OptionsPageSections } from '../../../../common/nav';
 import type UiStore from '../../stores/UiStore';
 import { logger } from '../../../../common/logger';
+import { type LongLivedConnectionCallbackMessage } from '../../../services/messenger';
+import type { RootStore } from '../../stores/RootStore';
+import { eventPauseController } from '../../../services/EventPauseController-mv2';
 
 import { OptionsLayout } from './Options-layout';
+import { createCommonMessageHandler } from './Options-common';
 
 export {
-    createCommonMessageHandler as createMessageHandler,
     COMMON_EVENTS as EVENTS,
 } from './Options-common';
+
+export {
+    // Rename for MV3 compatibility
+    createMessageHandlerWithPause as createMessageHandler,
+};
+
+/**
+ * MV2-specific message handler that wraps the common handler
+ * with event pause logic to prevent toggle reversion.
+ *
+ * @param settingsStore Settings store instance.
+ * @param uiStore UI store instance.
+ */
+const createMessageHandlerWithPause = (
+    settingsStore: RootStore['settingsStore'],
+    uiStore: RootStore['uiStore'],
+) => {
+    const commonHandler = createCommonMessageHandler(settingsStore, uiStore);
+
+    return async (message: LongLivedConnectionCallbackMessage) => {
+        const { type } = message;
+
+        if (eventPauseController.shouldSkipEvent(type)) {
+            logger.debug(
+                '[ext.Options-mv2]: Skipping event due to pending user changes:',
+                type,
+            );
+            return;
+        }
+
+        await commonHandler(message);
+    };
+};
+
+/**
+ * Cleanup function for MV2 - disposes the event pause controller.
+ */
+export const disposeEventPauseController = (): void => {
+    eventPauseController.dispose();
+};
 
 /**
  * Initializes options page by loading options data
