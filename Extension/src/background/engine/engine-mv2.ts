@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -144,7 +144,7 @@ export class Engine implements TsWebExtensionEngine {
 
         await Promise.all(tasks);
 
-        const settings = SettingsApi.getTsWebExtConfiguration(false);
+        const settings = SettingsApi.getTsWebExtConfiguration();
 
         let allowlist: string[] = [];
 

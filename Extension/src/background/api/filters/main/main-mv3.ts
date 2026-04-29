@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -46,6 +46,20 @@ export class FiltersApi extends FiltersApiCommon {
     }
 
     /**
+     * @inheritdoc
+     */
+    protected static override async afterLoadAndEnable(
+        loadedFilters: number[],
+        alreadyLoadedFilterIds: number[],
+        remote: boolean,
+        enableGroups: boolean,
+    ): Promise<void> {
+        if (enableGroups) {
+            FiltersApiCommon.enableGroupsWereNotTouched(loadedFilters);
+        }
+    }
+
+    /**
      * Reload filters and their metadata from local storage.
      *
      * Needed only in MV3 version because we don't update filters from remote,
@@ -60,6 +74,9 @@ export class FiltersApi extends FiltersApiCommon {
         } catch (e) {
             logger.error('[ext.FiltersApi.reloadFiltersFromLocal]: cannot load local metadata due to:', getZodErrorMessage(e));
         }
+
+        // Update DNR rulesets version after reloading metadata from local files.
+        Prefs.libVersions.dnrRulesets = metadataStorage.getDnrRulesetsVersion();
 
         FiltersApiCommon.loadFilteringStates();
 

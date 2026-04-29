@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -26,7 +26,7 @@ import {
 import { SettingOption } from '../../../schema';
 import { settingsStorage } from '../../../storages';
 
-import { PagesApiCommon } from './pages-common';
+import { PagesApiCommon, type CookieStealthOption } from './pages-common';
 
 /**
  * Pages API provides methods for managing browser pages.
@@ -60,6 +60,23 @@ export class PagesApi extends PagesApiCommon {
     // eslint-disable-next-line class-methods-use-this
     protected getBrowserSecurityParams(): { [key: string]: string } {
         const isEnabled = !settingsStorage.get(SettingOption.DisableSafebrowsing);
-        return { 'browsing_security.enabled': String(isEnabled) };
+        return { 'browsing_security.enabled': isEnabled ? '1' : '0' };
+    }
+
+    /** @inheritdoc */
+    // eslint-disable-next-line class-methods-use-this
+    protected getCookieStealthOptions(): CookieStealthOption[] {
+        return [
+            {
+                queryKey: 'stealth.third_party_cookies_min',
+                settingKey: SettingOption.SelfDestructThirdPartyCookies,
+                settingValueKey: SettingOption.SelfDestructThirdPartyCookiesTime,
+            },
+            {
+                queryKey: 'stealth.first_party_cookies_min',
+                settingKey: SettingOption.SelfDestructFirstPartyCookies,
+                settingValueKey: SettingOption.SelfDestructFirstPartyCookiesTime,
+            },
+        ];
     }
 }

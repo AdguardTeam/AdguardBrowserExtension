@@ -122,6 +122,8 @@ const getEnvPolicy = (env: BuildTargetEnv, browser: Browser) => {
  * The expected version format is: `major.minor.patch+increment.build.dnrVersion`
  * (e.g., "5.3.0+88.build.20251001150205").
  *
+ * @param version The version string to parse and validate.
+ *
  * @returns Parsed version object.
  *
  * @throws Error if package version cannot be parsed.

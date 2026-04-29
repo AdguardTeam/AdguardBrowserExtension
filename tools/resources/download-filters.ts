@@ -26,6 +26,8 @@ import fs from 'node:fs';
 
 import fse from 'fs-extra';
 import axios from 'axios';
+import pMap from 'p-map';
+import cliProgress from 'cli-progress';
 
 import { AssetsLoader } from '@adguard/dnr-rulesets';
 
@@ -67,6 +69,11 @@ type DownloadResourceData = {
     fileName: string;
 
     /**
+     * Target browser for the resource.
+     */
+    browser: AssetsFiltersBrowser;
+
+    /**
      * Whether to validate the checksum of the downloaded resource.
      */
     validate?: boolean;
@@ -76,6 +83,7 @@ const getFiltersMetadataDownloadData = (browser: AssetsFiltersBrowser): Download
     return {
         url: METADATA_DOWNLOAD_URL_FORMAT.replace('%browser', browser),
         fileName: LOCAL_METADATA_FILE_NAME,
+        browser,
     };
 };
 
@@ -83,6 +91,7 @@ const getFiltersI18nMetadataDownloadData = (browser: AssetsFiltersBrowser): Down
     return {
         url: METADATA_I18N_DOWNLOAD_URL_FORMAT.replace('%browser', browser),
         fileName: LOCAL_I18N_METADATA_FILE_NAME,
+        browser,
     };
 };
 
@@ -110,12 +119,14 @@ const getUrlsOfFiltersResources = (browser: AssetsFiltersBrowser): DownloadResou
         filters.push({
             url: FILTER_DOWNLOAD_URL_FORMAT.replace('%browser', browser).replace('%filter', String(filterId)),
             fileName: `filter_${filterId}.txt`,
+            browser,
             validate: true,
         });
 
         filtersMobile.push({
             url: OPTIMIZED_FILTER_DOWNLOAD_URL_FORMAT.replace('%browser', browser).replace('%s', String(filterId)),
             fileName: `filter_mobile_${filterId}.txt`,
+            browser,
             validate: true,
         });
     }
@@ -128,60 +139,96 @@ const getUrlsOfFiltersResources = (browser: AssetsFiltersBrowser): DownloadResou
 };
 
 /**
+ * Result of checksum validation.
+ */
+export type ChecksumValidationResult = {
+    /**
+     * Whether the checksum is valid.
+     */
+    valid: boolean;
+
+    /**
+     * Error message if the checksum is invalid.
+     */
+    message?: string;
+};
+
+/**
  * Validates filter rules checksum.
  * See https://adblockplus.org/en/filters#special-comments for details.
  *
- * Logs an error if checksum is invalid.
- *
- * @param resourceData Resource data.
+ * @param url URL the content was downloaded from (used in error messages).
  * @param body Filter rules response.
+ *
+ * @returns Validation result with `valid` flag and optional error message.
  */
-const validateChecksum = (resourceData: DownloadResourceData, body: string): void => {
+export const validateChecksum = (url: string, body: string): ChecksumValidationResult => {
     const partOfResponse = body.substring(0, 200);
     const checksumMatch = partOfResponse.match(CHECKSUM_PATTERN);
 
     if (!checksumMatch || !checksumMatch[1]) {
-        cliLog.error(`Filter rules from ${resourceData.url} does not contain a checksum ${partOfResponse}`);
-        return;
+        return {
+            valid: false,
+            message: `Filter rules from ${url} does not contain a checksum ${partOfResponse}`,
+        };
     }
 
     const bodyChecksum = calculateChecksum(body);
 
     if (bodyChecksum !== checksumMatch[1]) {
-        cliLog.error(`Wrong checksum: found ${bodyChecksum}, expected ${checksumMatch[1]}`);
+        return {
+            valid: false,
+            message: `Wrong checksum: found ${bodyChecksum}, expected ${checksumMatch[1]}`,
+        };
     }
 
-    cliLog.info('Checksum is valid');
+    return { valid: true };
 };
+
+/**
+ * Default concurrency for parallel downloads.
+ */
+const DEFAULT_CONCURRENCY = 10;
+
+/**
+ * HTTP request timeout in milliseconds.
+ */
+const REQUEST_TIMEOUT_MS = 30_000;
 
 /**
  * Downloads a filter resource, saves it to the filters directory, and returns its content.
  *
- * @param resourceData Data for downloading a resource.
- * @param browser Browser assets filters directory name.
+ * @param task Data for downloading a resource (includes browser).
  *
  * @returns Response content as a string.
  */
-const downloadFilter = async (resourceData: DownloadResourceData, browser: AssetsFiltersBrowser): Promise<string> => {
-    const { url, fileName, validate } = resourceData;
+const downloadFilter = async (task: DownloadResourceData): Promise<string> => {
+    const {
+        url,
+        fileName,
+        browser,
+        validate,
+    } = task;
 
     const filtersDir = FILTERS_DEST.replace('%browser', browser);
 
     fse.ensureDirSync(filtersDir);
 
-    cliLog.info(`Downloading ${url}...`);
-
-    const response = await axios.get(url, { responseType: 'arraybuffer' });
+    const response = await axios.get(url, {
+        responseType: 'arraybuffer',
+        timeout: REQUEST_TIMEOUT_MS,
+    });
 
     const content = response.data.toString();
 
     if (validate) {
-        validateChecksum(resourceData, content);
+        const result = validateChecksum(url, content);
+        if (!result.valid) {
+            cliLog.error(result.message!);
+        }
     }
 
     await fs.promises.writeFile(path.join(filtersDir, fileName), response.data);
-
-    cliLog.info('Done');
 
     return content;
 };
@@ -214,27 +261,78 @@ export const downloadAndPrepareMv3Filters = async (
 };
 
 /**
- * Downloads filters for the specified browser
- *
- * @param browser Browser assets filters directory name
+ * MV2 browsers that need filter downloads.
  */
-const startDownload = async (browser: AssetsFiltersBrowser): Promise<void> => {
-    const urls = getUrlsOfFiltersResources(browser);
-    for (let i = 0; i < urls.length; i += 1) {
-        const url = urls[i];
-        if (!url) {
-            continue;
-        }
-        // eslint-disable-next-line no-await-in-loop
-        await downloadFilter(url, browser);
-    }
+const MV2_BROWSERS: AssetsFiltersBrowser[] = [
+    AssetsFiltersBrowser.Chromium,
+    AssetsFiltersBrowser.Edge,
+    AssetsFiltersBrowser.Firefox,
+    AssetsFiltersBrowser.Opera,
+];
+
+/**
+ * Collects download tasks for all MV2 browsers into a single flat array.
+ *
+ * @returns Flat array of all download tasks across all browsers.
+ */
+export const getAllDownloadTasks = (): DownloadResourceData[] => {
+    return MV2_BROWSERS.flatMap((browser) => getUrlsOfFiltersResources(browser));
 };
 
-export const downloadFilters = async () => {
-    await startDownload(AssetsFiltersBrowser.Chromium);
-    await startDownload(AssetsFiltersBrowser.Edge);
-    await startDownload(AssetsFiltersBrowser.Firefox);
-    await startDownload(AssetsFiltersBrowser.Opera);
+/**
+ * Downloads all filter resources in parallel with bounded concurrency
+ * and a progress bar.
+ *
+ * @param concurrency Maximum number of concurrent downloads.
+ *
+ * @returns Number of successfully downloaded files.
+ */
+export const downloadAllFilters = async (concurrency = DEFAULT_CONCURRENCY): Promise<number> => {
+    const tasks = getAllDownloadTasks();
+    const total = tasks.length;
+
+    const isTTY = process.stdout.isTTY;
+
+    let bar: cliProgress.SingleBar | null = null;
+    let completed = 0;
+
+    if (isTTY) {
+        bar = new cliProgress.SingleBar({
+            format: ' {bar} {percentage}% | {value}/{total} files',
+            barCompleteChar: '\u2588',
+            barIncompleteChar: '\u2591',
+            hideCursor: true,
+        });
+        bar.start(total, 0);
+    }
+
+    await pMap(tasks, async (task) => {
+        await downloadFilter(task);
+
+        completed += 1;
+
+        if (isTTY && bar) {
+            bar.increment();
+        } else if (!isTTY && completed % Math.max(1, Math.floor(total / 10)) === 0) {
+            cliLog.info(`Downloaded ${completed}/${total} files (${Math.round((completed / total) * 100)}%)`);
+        }
+    }, { concurrency });
+
+    if (bar) {
+        bar.stop();
+    }
+
+    return total;
+};
+
+/**
+ * Downloads all MV2 filter resources and prepares MV3 filters.
+ *
+ * @returns Number of MV2 filter files downloaded.
+ */
+export const downloadFilters = async (): Promise<number> => {
+    const count = await downloadAllFilters();
     await downloadAndPrepareMv3Filters(AssetsFiltersBrowser.ChromiumMv3);
     await downloadAndPrepareMv3Filters(AssetsFiltersBrowser.OperaMv3);
+    return count;
 };

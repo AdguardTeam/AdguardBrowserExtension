@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -22,7 +22,7 @@ import Modal from 'react-modal';
 
 import cn from 'classnames';
 
-import { ModalContentWrapper } from '../../Filters/AddCustomModal/ModalContentWrapper';
+import { ModalContentWrapper } from '../../../../common/components/ModalContentWrapper/ModalContentWrapper';
 import { PRIVACY_URL } from '../../../constants';
 import { translator } from '../../../../../common/translators/translator';
 import theme from '../../../../common/styles/theme';

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -54,6 +54,11 @@ type WarningProps = {
     onClickReactivateFilters: () => void;
 
     /**
+     * Function to handle get the app link click.
+     */
+    onClickGetTheApp: () => void;
+
+    /**
      * Function to close the warning.
      */
     onClickCloseWarning: () => void;
@@ -67,12 +72,14 @@ type WarningProps = {
  * @param $0.actuallyEnabledFilterNames String with names of filters that are enabled.
  * @param $0.expectedEnabledFilterNames String with names of filters that were expected to be enabled.
  * @param $0.onClickReactivateFilters Function to reactivate filters.
+ * @param $0.onClickGetTheApp Function to handle get the app link click.
  * @param $0.onClickCloseWarning Function to close the warning.
  */
 export const Warning = ({
     actuallyEnabledFilterNames,
     expectedEnabledFilterNames,
     onClickReactivateFilters,
+    onClickGetTheApp,
     onClickCloseWarning,
 }: WarningProps) => {
     const getTheAppUrl = Forward.get({
@@ -153,6 +160,7 @@ export const Warning = ({
                                     rel="noreferrer"
                                     href={getTheAppUrl}
                                     className="rules-limits__group-option-link rules-limits__text--gray"
+                                    onClick={onClickGetTheApp}
                                 >
                                     {chunks}
                                 </a>

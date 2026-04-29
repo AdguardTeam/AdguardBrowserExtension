@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -25,6 +25,8 @@ import { translator } from '../../../common/translators/translator';
 import { type PageStatsDataItem, pageStatsValidator } from '../../schema';
 import { PageStatsStorage, pageStatsStorage } from '../../storages/page-stats';
 import { getZodErrorMessage } from '../../../common/error';
+
+import { normalizeStatsData } from './normalize-stats';
 
 /**
  * Statistics data.
@@ -252,9 +254,10 @@ export class PageStatsApi {
             statsCategoryId = PopupStatsCategories.Other;
         }
 
-        const stats = pageStatsStorage.getStatisticsData();
+        const rawStats = pageStatsStorage.getStatisticsData();
 
-        if (stats) {
+        if (rawStats) {
+            const stats = normalizeStatsData(rawStats, Date.now());
             const updated = PageStatsStorage.updateStatsData(statsCategoryId, blocked, stats);
             return pageStatsStorage.setStatisticsData(updated);
         }
@@ -269,7 +272,12 @@ export class PageStatsApi {
      * @returns Full statistics data record.
      */
     public static getStatisticsData(): GetStatisticsDataResponse {
-        const stats = pageStatsStorage.getStatisticsData();
+        const rawStats = pageStatsStorage.getStatisticsData();
+        const stats = normalizeStatsData(rawStats, Date.now());
+
+        if (stats.updated !== rawStats.updated) {
+            pageStatsStorage.setStatisticsData(stats);
+        }
 
         return {
             today: stats.hours,

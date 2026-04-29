@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -30,6 +30,7 @@ import 'ace-builds/src-noconflict/mode-text.js';
 
 import { logger } from '../../../../common/logger';
 import { UserAgent } from '../../../../common/user-agent';
+import { MOBILE_BREAKPOINT_PX } from '../../constants';
 
 import './mode-adguard.js';
 
@@ -51,6 +52,8 @@ const DEFAULT_EDITOR_SIZE = {
 
 const EDITOR_PADDING = 26;
 
+const EDITOR_PLACEHOLDER = 'example.com';
+
 const Editor = ({
     name,
     value,
@@ -67,6 +70,7 @@ const Editor = ({
     const SIZE_STORAGE_KEY = `${name}_editor-size`;
     const editorStorageSize = localStorage.getItem(SIZE_STORAGE_KEY);
     const [size, setSize] = useState(JSON.parse(editorStorageSize) || DEFAULT_EDITOR_SIZE);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT_PX);
 
     useEffect(() => {
         if (editorStorageSize) {
@@ -99,6 +103,7 @@ const Editor = ({
                 width: width + EDITOR_PADDING, height,
             }));
             editorRef.current.editor.resize();
+            setIsMobile(window.innerWidth < MOBILE_BREAKPOINT_PX);
         };
 
     const editorClassName = cn(
@@ -129,6 +134,7 @@ const Editor = ({
         <div style={editorStyles} className={editorClassName}>
             <AceEditor
                 ref={editorRef}
+                placeholder={isMobile ? EDITOR_PLACEHOLDER : undefined}
                 width="100%"
                 height="100%"
                 mode={editorMode}
@@ -141,6 +147,8 @@ const Editor = ({
                 commands={mergedShortcuts}
                 onChange={onChange}
                 readOnly={readOnly}
+                showGutter={!isMobile}
+                highlightActiveLine={!isMobile}
             />
             <ReactResizeDetector
                 skipOnMount

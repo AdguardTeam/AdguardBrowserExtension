@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -97,6 +97,9 @@ export class PopupStoreCommon {
     url: string | null = null;
 
     @observable
+    isPopupDataReceived = false;
+
+    @observable
     viewState = ViewState.Actions;
 
     @observable
@@ -142,6 +145,9 @@ export class PopupStoreCommon {
 
     @observable
     hasUserRulesToReset = false;
+
+    @observable
+    showSearchAccessWarning = false;
 
     @observable
     settings: SettingsData | null = null;
@@ -269,6 +275,7 @@ export class PopupStoreCommon {
         this.promoNotification = options.notification;
         this.hasUserRulesToReset = options.hasUserRulesToReset;
         this.showAlternativeProtectionButton = options.showAlternativeProtectionButton;
+        this.showSearchAccessWarning = options.showSearchAccessWarning;
 
         // stats
         this.stats = stats;
@@ -353,6 +360,11 @@ export class PopupStoreCommon {
     setViewState = (state: ViewState) => {
         this.viewState = state;
     };
+
+    @action
+    setIsPopupDataReceived(value: boolean): void {
+        this.isPopupDataReceived = value;
+    }
 
     /**
      * Returns the current site URL or domain name.
@@ -592,4 +604,12 @@ export class PopupStoreCommon {
 
         return this.settings.values[this.settings.names.AppearanceTheme];
     }
+
+    @action
+    dismissSearchAccessWarning = async () => {
+        await messenger.dismissSearchPageAccessNotification();
+        runInAction(() => {
+            this.showSearchAccessWarning = false;
+        });
+    };
 }

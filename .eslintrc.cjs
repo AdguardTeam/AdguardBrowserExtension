@@ -220,7 +220,20 @@ module.exports = {
         'jsdoc/require-property-description': 'off',
         'jsdoc/require-returns-description': 'off',
         'jsdoc/require-returns': 'off',
-        'jsdoc/require-param': 'off',
+        'jsdoc/require-param': ['error', {
+            // To prevent documenting each destructured item with root0.*
+            // This fields are documented inside destructured type anyway.
+            checkDestructured: false,
+            // To disable checks for inline anonymous functions.
+            contexts: [
+                'FunctionDeclaration',
+                'FunctionExpression',
+                'MethodDefinition',
+            ],
+        }],
+        'jsdoc/check-param-names': ['error', {
+            checkDestructured: false,
+        }],
         'jsdoc/no-undefined-types': 'off',
         'jsdoc/require-returns-check': 'off',
         'jsdoc/require-jsdoc': 'off',
@@ -304,10 +317,8 @@ module.exports = {
         // This override needed to allow mv2/mv3 imports inside mv2/mv3 specific files.
         {
             files: [
-                '**/*-mv2.{ts,tsx,js,jsx}',
-                '**/*-mv3.{ts,tsx,js,jsx}',
-                '**/*-mv2.test.{ts,tsx,js,jsx}',
-                '**/*-mv3.test.{ts,tsx,js,jsx}',
+                '**/*-mv2?(.test).{ts,tsx,js,jsx}',
+                '**/*-mv3?(.test).{ts,tsx,js,jsx}',
             ],
             rules: {
                 'no-restricted-imports': 'off',

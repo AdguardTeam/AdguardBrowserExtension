@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -30,7 +30,7 @@ import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
 import { TelemetryEventName, TelemetryScreenName } from '../../../../../common/telemetry';
 
-import './filters-update.pcss';
+import styles from './extension-update.module.pcss';
 
 export const FiltersUpdate = observer(() => {
     const { settingsStore, telemetryStore } = useContext(rootStore);
@@ -61,8 +61,8 @@ export const FiltersUpdate = observer(() => {
 
     if (settingsStore.isExtensionCheckingUpdateOrUpdating) {
         return (
-            <div className="extension-update">
-                <div className="extension-update__info">
+            <div className={styles.extensionUpdate}>
+                <div className={styles.info}>
                     <Icon
                         id="#reload"
                         className="icon--24 icon--green-default"
@@ -70,8 +70,8 @@ export const FiltersUpdate = observer(() => {
                         animationClassName="icon--loading"
                         aria-hidden="true"
                     />
-                    <div className="extension-update__text">
-                        <div className="extension-update__title">
+                    <div className={styles.text}>
+                        <div className={styles.title}>
                             {translator.getMessage('update_checking_in_progress')}
                         </div>
                     </div>
@@ -82,20 +82,20 @@ export const FiltersUpdate = observer(() => {
 
     if (isUpdating) {
         return (
-            <div className="extension-update">
-                <div className="extension-update__info">
+            <div className={styles.extensionUpdate}>
+                <div className={styles.info}>
                     <Icon
                         id="#loading"
-                        className="icon--24"
+                        className="icon--24 icon--green-default"
                         animationCondition
                         animationClassName="icon--loading"
                         aria-hidden="true"
                     />
-                    <div className="extension-update__text">
-                        <div className="extension-update__title">
+                    <div className={styles.text}>
+                        <div className={styles.title}>
                             {translator.getMessage('update_installing_in_progress_title')}
                         </div>
-                        <div className="extension-update__desc">
+                        <div className={styles.desc}>
                             {translator.getMessage('update_installing_in_progress_desc')}
                         </div>
                     </div>
@@ -106,23 +106,23 @@ export const FiltersUpdate = observer(() => {
 
     if (settingsStore.isExtensionUpdateAvailable) {
         return (
-            <div className="extension-update">
-                <div className="extension-update__info">
+            <div className={styles.extensionUpdate}>
+                <div className={styles.info}>
                     <Icon
                         id="#update-available"
                         className="icon--24 icon--green-default"
                         aria-hidden="true"
                     />
-                    <div className="extension-update__text">
-                        <div className="extension-update__title">
+                    <div className={styles.text}>
+                        <div className={styles.title}>
                             {translator.getMessage('update_available_title')}
                         </div>
-                        <div className="extension-update__desc">
+                        <div className={styles.desc}>
                             {translator.getMessage('update_available_desc')}
                         </div>
                     </div>
                 </div>
-                <div className="extension-update__update-btn">
+                <div className={styles.updateBtn}>
                     <button
                         type="button"
                         onClick={updateClickHandler}
@@ -138,11 +138,11 @@ export const FiltersUpdate = observer(() => {
 
     // default case - check updates button
     return (
-        <div className="extension-update">
+        <div className={styles.extensionUpdate}>
             <button
                 type="button"
                 onClick={checkUpdatesClickHandler}
-                className="extension-update__info extension-update__check-btn"
+                className={`${styles.info} ${styles.checkBtn}`}
                 title={checkUpdatesTitle}
             >
                 <Icon
@@ -150,8 +150,8 @@ export const FiltersUpdate = observer(() => {
                     className="icon--24 icon--green-default"
                     aria-hidden="true"
                 />
-                <div className="extension-update__text">
-                    <div className="extension-update__title">
+                <div className={styles.text}>
+                    <div className={styles.title}>
                         {checkUpdatesTitle}
                     </div>
                 </div>

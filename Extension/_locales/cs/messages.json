@@ -119,6 +119,9 @@
     "options_add_custom_filter_modal_error_subtitle": {
         "message": "Zkuste to znovu nebo kontaktujte podporu"
     },
+    "options_add_custom_filter_modal_error_html_content": {
+        "message": "URL vrátila stránka webu místo seznamu filtrů. Zadejte prosím přímý odkaz na soubor filtru."
+    },
     "options_add_custom_filter_modal_add_button": {
         "message": "Přidat"
     },
@@ -150,7 +153,7 @@
         "message": "Domovská stránka:"
     },
     "options_popup_filter_url": {
-        "message": "URL:"
+        "message": "URL"
     },
     "options_popup_subscribe_button": {
         "message": "Odebírat"
@@ -184,7 +187,7 @@
         "message": "Seznam povolených"
     },
     "options_allowlist_desc": {
-        "message": "AdGuard neblokuje reklamy a slídiče na webových stránkách ze seznamu"
+        "message": "AdGuard neblokuje reklamy a slídiče na webových stránkách ze seznamu"
     },
     "options_allowlist_invert": {
         "message": "Invertovat seznam povolených"
@@ -197,6 +200,9 @@
     },
     "options_allowlist_leave_subtitle": {
         "message": "Vaše změny v seznamu povolených budou ztraceny"
+    },
+    "options_allowlist_invalid_entries": {
+        "message": "Pro uložení ponechte pouze domény nebo URL. Tyto je třeba opravit: %entries%"
     },
     "options_userfilter": {
         "message": "Uživatelská pravidla"
@@ -250,7 +256,10 @@
         "message": "Filtry"
     },
     "options_antibanner_rules_count": {
-        "message": "Počet pravidel filtrování: %rules_count%"
+        "message": "Pravidla: %rules_count%"
+    },
+    "options_antibanner_updated": {
+        "message": "Aktualizováno: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Vlastní"
@@ -293,6 +302,9 @@
     },
     "options_editor_indicator_saved": {
         "message": "Uloženo"
+    },
+    "options_editor_save_error": {
+        "message": "Nepodařilo se uložit změny. Zkuste to znovu nebo kontaktujte podporu"
     },
     "options_popup_import_error_required_privacy_permission": {
         "message": "Chcete-li importovat tento soubor s nastavením, povolte AdGuardu změnit nastavení týkající se ochrany osobních údajů."
@@ -442,7 +454,7 @@
         "message": "Chyba při aktualizaci filtrů"
     },
     "options_popup_update_not_found": {
-        "message": "Žádné aktualizace nenalezeny"
+        "message": "Vaše filtry jsou aktuální"
     },
     "options_popup_update_error": {
         "message": "Nepovedlo se získat aktualizace. Prosím opakujte později."
@@ -553,7 +565,7 @@
         "message": "Záznam filtrování"
     },
     "filtering_log_search_string": {
-        "message": "Filtrovat záznamy"
+        "message": "Hledat"
     },
     "filtering_log_search_tabs_placeholder": {
         "message": "Hledat v kartách"
@@ -566,6 +578,12 @@
     },
     "filtering_refresh_tab_short": {
         "message": "Obnovit"
+    },
+    "filtering_refresh_tab_short_mobile": {
+        "message": "Obnovit stránka"
+    },
+    "filtering_menu_open_filters": {
+        "message": "Přizpůsobit"
     },
     "filtering_clear_log_events": {
         "message": "Vyčistit záznam"
@@ -598,7 +616,7 @@
         "message": "Otevřít podrobnosti"
     },
     "filtering_table_empty_reload_page_desc": {
-        "message": "Nic nebylo nalezeno. <reset>Vypněte filtry<\/reset> nebo <refresh>znovu načtěte stránku<\/refresh> a zobrazte záznamy protokolu."
+        "message": "Nic nenalezeno. <reset>Zakázat filtry<\/reset> nebo <refresh>znovu načíst stránku<\/refresh> pro zobrazení záznamů logu"
     },
     "filtering_modal_info_title": {
         "message": "Detaily požadavku"
@@ -607,10 +625,10 @@
         "message": "Náhled"
     },
     "filtering_modal_type": {
-        "message": "Typ:"
+        "message": "Typ"
     },
     "filtering_modal_source": {
-        "message": "Zdroj:"
+        "message": "Zdroj"
     },
     "filtering_modal_rule": {
         "message": "Pravidlo:"
@@ -619,10 +637,10 @@
         "message": "Pravidla:"
     },
     "filtering_modal_privacy": {
-        "message": "Ochrana před sledováním:"
+        "message": "Ochrana před sledováním"
     },
     "filtering_modal_filter": {
-        "message": "Filtr:"
+        "message": "Filtr"
     },
     "filtering_modal_block": {
         "message": "Blokovat"
@@ -642,11 +660,14 @@
     "filtering_modal_remove_allowlist": {
         "message": "Odebrat ze seznamu povolených"
     },
-    "filtering_modal_add_title": {
-        "message": "Přiřadit pravidlo"
+    "filtering_modal_block_title": {
+        "message": "Přidat pravidlo pro blokování"
+    },
+    "filtering_modal_allow_title": {
+        "message": "Přidat pravidlo pro povolení"
     },
     "filtering_modal_status_text_desc": {
-        "message": "Stav:"
+        "message": "Stav"
     },
     "filtering_modal_status_text_error": {
         "message": "Náhled se nepodařilo načíst. Zkuste to prosím znovu"
@@ -655,19 +676,22 @@
         "message": "Načítání..."
     },
     "filtering_modal_filtering_status_text_desc": {
-        "message": "Stav filtrování:"
+        "message": "Stav filtrování"
     },
     "filtering_modal_rule_text_desc": {
-        "message": "Text pravidla:"
+        "message": "Pravidlo"
     },
-    "filtering_modal_patterns_desc": {
-        "message": "Šablony:"
+    "filtering_modal_patterns_desc_block": {
+        "message": "Co by mělo být blokováno"
+    },
+    "filtering_modal_patterns_desc_allow": {
+        "message": "Co by mělo být povoleno"
     },
     "filtering_modal_options_desc": {
-        "message": "Možnosti:"
+        "message": "Možnosti"
     },
     "filtering_modal_apply_domains": {
-        "message": "Aplikovat pravidlo na všechny webové stránky"
+        "message": "Použít pro všechny webové stránky"
     },
     "filtering_modal_third_party": {
         "message": "Aplikovat pouze na požadavky třetích stran"
@@ -676,7 +700,7 @@
         "message": "Odebrat parametry dotazu"
     },
     "filtering_modal_add_rule": {
-        "message": "Přidat pravidlo"
+        "message": "Přidat"
     },
     "filtering_modal_exception_title": {
         "message": "Přidat výjimku."
@@ -779,6 +803,9 @@
     },
     "options_export_settings": {
         "message": "Uložit nastavení"
+    },
+    "options_share_settings": {
+        "message": "Sdílet nastavení"
     },
     "options_import_settings": {
         "message": "Načíst nastavení"
@@ -994,6 +1021,9 @@
     },
     "options_show_adguard_full_version_title": {
         "message": "Zobrazit informace o plné verzi AdGuard"
+    },
+    "options_clear_stats_confirm_modal_subtitle": {
+        "message": "Všechny statistiky o využití dat budou trvale smazány"
     },
     "options_show_app_updated_notification": {
         "message": "Upozornit na aktualizace rozšíření"
@@ -1217,6 +1247,24 @@
     "options_nav_compare": {
         "message": "Porovnat"
     },
+    "options_desktop_app_promo_title": {
+        "message": "Rozšíření chrání pouze prohlížeč"
+    },
+    "options_desktop_app_promo_description": {
+        "message": "Aplikace jako Spotify, Discord nebo Zoom mohou stále zobrazovat reklamy a sledovat vaši aktivitu"
+    },
+    "options_desktop_app_promo_subdescription": {
+        "message": "Naše desktop aplikace vás před nimi může chránit"
+    },
+    "options_desktop_app_promo_button_windows": {
+        "message": "Získat AdGuard pro Windows"
+    },
+    "options_desktop_app_promo_button_mac": {
+        "message": "Získat AdGuard pro Mac"
+    },
+    "options_desktop_app_promo_button_linux": {
+        "message": "Získat AdGuard pro Linux"
+    },
     "options_filters_search": {
         "message": "Hledat"
     },
@@ -1277,11 +1325,56 @@
     "options_reset_settings_confirm_modal_title": {
         "message": "Resetovat nastavení?"
     },
+    "options_reset_settings_confirm_modal_subtitle": {
+        "message": "Všechna nastavení budou reset na výchozí hodnoty"
+    },
     "options_reset_settings_confirm_modal_clear_button": {
         "message": "Resetovat"
     },
+    "options_invert_allowlist_confirm_modal_title": {
+        "message": "Invertovat seznam povolených?"
+    },
+    "options_invert_allowlist_confirm_modal_subtitle": {
+        "message": "Reklamy a slídiče budou blokování pouze na webových stránkách ze seznamu povolených"
+    },
+    "options_invert_allowlist_confirm_modal_confirm_button": {
+        "message": "Invertovat"
+    },
     "options_confirm_modal_cancel_button": {
         "message": "Zrušit"
+    },
+    "options_import_configuration_confirm_title": {
+        "message": "Import nastavení"
+    },
+    "options_import_configuration_confirm_subtitle": {
+        "message": "Importovaná nastavení nahradí vaše aktuální. Ostatní nastavení nebudou ovlivněna"
+    },
+    "options_import_configuration_confirm_button": {
+        "message": "Importovat"
+    },
+    "options_import_configuration_applying_title": {
+        "message": "Importování..."
+    },
+    "options_import_configuration_applying_subtitle": {
+        "message": "Nahrazení aktuálního nastavení importovaným nastavením. Filtrování je během importu vypnuto"
+    },
+    "options_import_configuration_success_title": {
+        "message": "Vše je hotovo"
+    },
+    "options_import_configuration_success_subtitle": {
+        "message": "Nastavení byla úspěšně importována"
+    },
+    "options_import_configuration_success_button": {
+        "message": "Zavřít"
+    },
+    "options_import_configuration_error_title": {
+        "message": "Nastavení se nepodařilo importovat"
+    },
+    "options_import_configuration_error_subtitle": {
+        "message": "Zkontrolujte prosím odkaz pro import a zkuste to znovu. Pokud to nepomůže, kontaktujte podporu"
+    },
+    "options_import_configuration_error_button": {
+        "message": "Zavřít"
     },
     "filtering_log_details_modal_beautify_button": {
         "message": "Vylepšit"
@@ -1293,7 +1386,7 @@
         "message": "Zkusit znovu"
     },
     "filtering_log_tag_request_source": {
-        "message": "Zdroj požadavku"
+        "message": "Původ požadavku"
     },
     "filtering_log_tag_tooltip_first_party": {
         "message": "Vlastní požadavky"
@@ -1302,7 +1395,7 @@
         "message": "Požadavky třetích stran"
     },
     "filtering_log_tag_request_status": {
-        "message": "Stav požadavku"
+        "message": "Stav filtrování"
     },
     "filtering_log_tag_tooltip_regular": {
         "message": "Požadavky zpracované bez filtrování"
@@ -1455,7 +1548,7 @@
         "message": "Zkusit znovu"
     },
     "filtering_modal_applied_rules": {
-        "message": "| Použité pravidlo: | Použitá pravidla: | Použitá pravidla:",
+        "message": "| Použité pravidlo | Použitá pravidla | Použitých pravidel",
         "description": "WARNING: correct number of plural forms is required"
     },
     "filtering_modal_assumed_rules": {
@@ -1468,5 +1561,14 @@
     },
     "filtering_modal_declarative_rule": {
         "message": "DNR pravidlo:"
+    },
+    "opera_search_permission_warning": {
+        "message": "Pro blokování reklam ve vyhledávání povolit přístup k výsledkům vyhledávání v nastavení prohlížeče"
+    },
+    "opera_search_permission_go_to_settings": {
+        "message": "Přejít do Nastavení"
+    },
+    "opera_search_permission_dont_show": {
+        "message": "Znovu nezobrazovat"
     }
 }

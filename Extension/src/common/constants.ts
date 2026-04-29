@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -39,7 +39,6 @@ export const SB_LRU_CACHE_KEY = 'sb-lru-cache';
 export const SB_SUSPENDED_CACHE_KEY = 'safebrowsing-suspended-from';
 export const VIEWED_NOTIFICATIONS_KEY = 'viewed-notifications';
 export const LAST_NOTIFICATION_TIME_KEY = 'viewed-notification-time';
-export const FILTERING_LOG_WINDOW_STATE = 'filtering-log-window-state';
 export const HIT_STATISTIC_KEY = 'filters-hit-count';
 export const ANNOYANCES_CONSENT_KEY = 'annoyances-consent';
 export const RULES_LIMITS_KEY = 'rules-limits';
@@ -59,9 +58,20 @@ export const AUTO_UPDATE_STATE_KEY_MV3 = 'auto-update-state-mv3';
 export const AUTO_UPDATE_CONFIG_KEY_MV3 = 'auto-update-config-mv3';
 
 /**
+ * Storage key for filtering log window state (position and size),
+ * persisted in browser.storage.local.
+ */
+export const FILTERING_LOG_WINDOW_STATE_KEY = 'filtering-log-window-state';
+
+/**
  * Storage key for telemetry synthetic ID.
  */
 export const TELEMETRY_SYNTHETIC_ID_KEY = 'telemetry-synthetic-id';
+
+/**
+ * Storage key for search page access state.
+ */
+export const SEARCH_PAGE_ACCESS_KEY = 'search-page-access-state';
 
 /**
  * Filter ids used in the code on the background page and filtering log page.
@@ -225,6 +235,11 @@ export const EXTENSION_INITIALIZED_EVENT = 'initialized';
 export const CHROME_EXTENSIONS_SETTINGS_URL = 'chrome://extensions';
 
 /**
+ * Opera's extensions settings page url.
+ */
+export const OPERA_EXTENSIONS_SETTINGS_URL = 'opera://extensions';
+
+/**
  * Time-to-live for notifications in milliseconds.
  */
 export const NOTIFICATION_TTL_MS = 4000;
@@ -360,3 +375,13 @@ export const enum AppearanceTheme {
     Dark = 'dark',
     Light = 'light',
 }
+
+/**
+ * Wildcard prefix for subdomains matching.
+ */
+export const WILDCARD_SUBDOMAIN_PREFIX = '*.';
+
+/**
+ * Wildcard suffix for top-level domains matching.
+ */
+export const WILDCARD_TLD_SUFFIX = '.*';

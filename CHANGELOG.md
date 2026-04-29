@@ -5,7 +5,72 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [5.3 patch 1] <!-- TODO: Add release date -->
+## [5.4]
+
+### Added
+
+- Added beta suffix to the version in issue reports [#3330].
+- Handling speculative prerender requests.
+- Confirmation modal for inverting allowlist.
+- Independent update of custom filters in MV3
+  without waiting for the extension update availability [#2944].
+- Warning notification for Opera when "Allow access to search page results" permission is not granted [#2485].
+- Import settings from `adguard:import_user_configuration` links on reports.adguard.com.
+- Use HTTP `Last-Modified` header as fallback for custom filter update timestamps
+  when `TimeUpdated` metadata is missing [#3407].
+- `ROList` filter list in MV3 [#3473].
+- Share settings button on General page.
+
+### Changed
+
+- Issue report URL updated to v4 scheme: comma-separated filter IDs, stealth values
+  as `1`/`0`, `ext.manifest_version` parameter, normalized browser name, ISO 8601
+  timestamp for `filters_last_update`, custom filters include title and URL.
+- Cookie self-destruct stealth params (`stealth.third_party_cookies_min`,
+  `stealth.first_party_cookies_min`) are now MV2-only in issue report URLs (not
+  supported on MV3).
+- Updated [@adguard/agtree] to v4.1.1.
+- Updated [@adguard/dnr-rulesets] to v4.2.1.
+- Updated [@adguard/filters-downloader] to v2.4.4.
+- Updated [@adguard/scriptlets] to v2.4.2.
+- Updated [@adguard/tsurlfilter] to v5.0.1.
+- Updated [@adguard/tswebextension] to v4.1.1.
+
+### Fixed
+
+- Update indicator arrow flickers when opening the popup [#3351].
+- $badfilter incorrectly negates rules with different $denyallow values [#3428].
+- Filtering log window size/pos not restored with zoom [#3255].
+- Blocking page incorrectly displayed for search results [#3414].
+- Allowlist editor now normalizes entries by extracting domains from URLs, so entries with protocols, paths, or trailing slashes work correctly [#3430].
+- Use of invalid CSS selectors in element hiding rules affects all injected styles [#3329].
+- "Hide Referer from third parties" stealth option now sets correct referrer value with trailing slash [#3393].
+- `$removeparam` rules not stripping all tracking parameters when multiple rules match the same URL in MV3 [#3444].
+- "Block ads manual" doesn't work on tabs opened before the update [#3452].
+- The extension doesn't always update filters after starting the browser [#3280].
+- Blocked requests in cross-domain iframes were not counted in the extension badge [#3446].
+- Custom filter subscription accepts URLs that return HTML pages instead of filter lists [#3501].
+
+[5.4]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.3.1.7...HEAD
+[#2485]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2485
+[#2944]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2944
+[#3255]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3255
+[#3280]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3280
+[#3329]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3329
+[#3330]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3330
+[#3351]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3351
+[#3393]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3393
+[#3407]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3407
+[#3414]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3414
+[#3428]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3428
+[#3430]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3430
+[#3444]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3444
+[#3446]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3446
+[#3452]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3452
+[#3473]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3473
+[#3501]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3501
+
+## [5.3 patch 1] - 2026-03-30
 
 ### Added
 
@@ -23,7 +88,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated [@adguard/tsurlfilter] to v4.0.2.
 - Updated [@adguard/tswebextension] to v4.0.2.
 
-[5.3 patch 1]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.3.0.8...HEAD
+[5.3 patch 1]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.3.0.8...v5.3.1.7
 [#3449]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3449
 [#3400]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3400
 
@@ -973,6 +1038,7 @@ The extension is now fully compatible with MV3.
 
 [@adguard/agtree]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/agtree/CHANGELOG.md
 [@adguard/assistant]: https://github.com/AdguardTeam/AdguardAssistant/blob/master/CHANGELOG.md
+[@adguard/dnr-rulesets]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/dnr-rulesets/CHANGELOG.md
 [@adguard/filters-downloader]: https://github.com/AdguardTeam/FiltersDownloader/blob/master/CHANGELOG.md
 [@adguard/logger]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/logger/CHANGELOG.md
 [@adguard/scriptlets]: https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md

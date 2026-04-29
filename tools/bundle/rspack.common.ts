@@ -62,6 +62,7 @@ import {
     MIN_SUPPORTED_VERSION,
     INDEX_HTML_FILE_NAME,
     SUBSCRIBE_OUTPUT,
+    IMPORT_CONFIGURATION_OUTPUT,
     BuildTargetEnv,
 } from '../../constants';
 
@@ -79,6 +80,7 @@ import {
     POPUP_PATH,
     POST_INSTALL_PATH,
     SUBSCRIBE_PATH,
+    IMPORT_CONFIGURATION_PATH,
     THANKYOU_PATH,
 } from './common-constants';
 import { getEnvConf, isBrowserMv3 } from './helpers';
@@ -169,16 +171,15 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
         'app': path.resolve(__dirname, `../../Extension/src/background/app/app-mv${manifestVersion}.ts`),
         'engine': path.resolve(__dirname, `../../Extension/src/background/engine/engine-mv${manifestVersion}.ts`),
         'scripting-service': path.resolve(__dirname, `../../Extension/src/background/services/scripting/scripting-service-mv${manifestVersion}.ts`),
-        'settings-service': path.resolve(__dirname, `../../Extension/src/background/services/settings/settings-service-mv${manifestVersion}.ts`),
+        'settings-service': path.resolve(__dirname, `../../Extension/src/background/services/settings/settings/settings-service-mv${manifestVersion}.ts`),
         'filters-service': path.resolve(__dirname, `../../Extension/src/background/services/filters/filters-service-mv${manifestVersion}.ts`),
         'custom-filters-service': path.resolve(__dirname, `../../Extension/src/background/services/custom-filters/custom-filters-service-mv${manifestVersion}.ts`),
         'allowlist-service': path.resolve(__dirname, `../../Extension/src/background/services/allowlist/allowlist-mv${manifestVersion}.ts`),
         'content-script': path.resolve(__dirname, `../../Extension/pages/content-script-start/mv${manifestVersion}.ts`),
-        'network-api': path.resolve(__dirname, `../../Extension/src/background/api/network/network-mv${manifestVersion}.ts`),
-        'network-api-settings': path.resolve(__dirname, `../../Extension/src/background/api/network/settings-mv${manifestVersion}.ts`),
+        'network-api': path.resolve(__dirname, `../../Extension/src/background/api/network/network/network-mv${manifestVersion}.ts`),
+        'network-api-settings': path.resolve(__dirname, `../../Extension/src/background/api/network/settings/settings-mv${manifestVersion}.ts`),
         'filters-update-api': path.resolve(__dirname, `../../Extension/src/background/api/filters/update/update-mv${manifestVersion}.ts`),
         'common-filter-api': path.resolve(__dirname, `../../Extension/src/background/api/filters/common/common-mv${manifestVersion}.ts`),
-        'filter-categories-api': path.resolve(__dirname, `../../Extension/src/background/api/filters/categories/categories-mv${manifestVersion}.ts`),
         'settings-api': path.resolve(__dirname, `../../Extension/src/background/api/settings/settings-mv${manifestVersion}.ts`),
         'filter-update-service': path.resolve(__dirname, `../../Extension/src/background/services/filter-update/filter-update-mv${manifestVersion}.ts`),
         'browser-action': path.resolve(__dirname, `../../Extension/src/background/api/ui/browser-action/browser-action-mv${manifestVersion}.ts`),
@@ -195,14 +196,21 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
         'userrules': path.resolve(__dirname, `../../Extension/src/background/services/userrules/userrules-mv${manifestVersion}.ts`),
         'messenger': path.resolve(__dirname, `../../Extension/src/pages/services/messenger/messenger-mv${manifestVersion}.ts`),
         'user-scripts-api': path.resolve(__dirname, `../../Extension/src/common/user-scripts-api/user-scripts-api-mv${manifestVersion}.ts`),
-        'popup-layout': path.resolve(__dirname, `../../Extension/src/pages/popup/components/Popup/Popup-mv${manifestVersion}.tsx`),
+        'notifications': path.resolve(__dirname, `../../Extension/src/pages/popup/components/Notifications/Notifications-mv${manifestVersion}.tsx`),
         'filters-update': path.resolve(__dirname, `../../Extension/src/pages/options/components/Filters/FiltersUpdate/FiltersUpdate-mv${manifestVersion}.tsx`),
         'filters-adapter': path.resolve(__dirname, `../../Extension/src/background/storages/filters-adapter/filters-adapter-mv${manifestVersion}.ts`),
         'prefs': path.resolve(__dirname, `../../Extension/src/background/prefs/prefs-mv${manifestVersion}.ts`),
-        'settings-types': path.resolve(__dirname, `../../Extension/src/background/services/settings/types-mv${manifestVersion}.ts`),
+        'settings-types': path.resolve(__dirname, `../../Extension/src/background/services/settings/types/types-mv${manifestVersion}.ts`),
         'options': path.resolve(__dirname, `../../Extension/src/pages/options/components/Options/Options-mv${manifestVersion}.tsx`),
         'settings-store': path.resolve(__dirname, `../../Extension/src/pages/options/stores/SettingsStore/SettingsStore-mv${manifestVersion}.ts`),
         'update-button': path.resolve(__dirname, `../../Extension/src/pages/popup/components/Header/Buttons/UpdateButton/UpdateButton-mv${manifestVersion}.tsx`),
+        'update-button-mobile': path.resolve(__dirname, `../../Extension/src/pages/options/components/Sidebar/UpdateButtonMobile/UpdateButtonMobile-mv${manifestVersion}.tsx`),
+        'categories-api': path.resolve(__dirname, `../../Extension/src/background/api/filters/categories/categories-mv${manifestVersion}.ts`),
+        'search-page-access-service': path.resolve(__dirname, `../../Extension/src/background/services/searchPageAccessService/SearchPageAccessService-mv${manifestVersion}.ts`),
+        'rules-limits-service': path.resolve(__dirname, `../../Extension/src/background/services/rules-limits/rules-limits-service-mv${manifestVersion}.ts`),
+        'configuration-import-api': path.resolve(__dirname, `../../Extension/src/background/api/settings/configuration-import/configuration-import-api-mv${manifestVersion}.ts`),
+        'configuration-export-api': path.resolve(__dirname, `../../Extension/src/background/api/settings/configuration-export/configuration-export-api-mv${manifestVersion}.ts`),
+        'fullscreen-user-rules-store': path.resolve(__dirname, `../../Extension/src/pages/fullscreen-user-rules/stores/FullscreenUserRulesStore-mv${manifestVersion}.ts`),
     };
 
     const configuration: Configuration = {
@@ -264,6 +272,10 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
             },
             [SUBSCRIBE_OUTPUT]: {
                 import: SUBSCRIBE_PATH,
+                runtime: false,
+            },
+            [IMPORT_CONFIGURATION_OUTPUT]: {
+                import: IMPORT_CONFIGURATION_PATH,
                 runtime: false,
             },
             // Library vendors

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -318,6 +318,8 @@ export async function writeSizesFile(sizesData: SizesFile): Promise<void> {
 
 /**
  * Format a file size in human-readable format.
+ *
+ * @param bytes Size in bytes to format.
  *
  * @returns Formatted size string.
  */

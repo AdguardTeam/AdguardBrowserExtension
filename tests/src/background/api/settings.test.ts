@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -155,7 +155,7 @@ describe('Settings Api', () => {
                     false,
                 );
 
-            expect(SettingsApi.getTsWebExtConfiguration(__IS_MV3__)).toStrictEqual(expected);
+            expect(SettingsApi.getTsWebExtConfiguration()).toStrictEqual(expected);
         });
     });
 

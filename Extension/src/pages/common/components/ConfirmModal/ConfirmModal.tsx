@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -94,11 +94,6 @@ export const ConfirmModal = ({
     const confirmTitle = customConfirmTitle || 'OK';
     const cancelTitle = customCancelTitle || translator.getMessage('options_confirm_modal_cancel_button');
 
-    const subtitleClassName = cn(
-        theme.modal.subtitle,
-        !isConsent && theme.modal.subtitleOneLine,
-    );
-
     const okBtnClassName = cn(`button button--l ${theme.modal.btn} button--green-bg`, {
         'button--red-bg': !isConsent,
     });
@@ -135,22 +130,22 @@ export const ConfirmModal = ({
                 )}
             >
                 <div className={theme.modal.content}>
+                    <button
+                        type="button"
+                        className={`button ${theme.modal.btnClose}`}
+                        title={translator.getMessage('close_button_title')}
+                        onClick={handleCancel}
+                    >
+                        <Icon id="#cross" aria-hidden="true" />
+                    </button>
                     <div className={theme.modal.header}>
                         <div className={theme.modal.title}>
                             {title}
                         </div>
-                        <button
-                            type="button"
-                            className={`button ${theme.modal.btnClose}`}
-                            title={translator.getMessage('close_button_title')}
-                            onClick={handleCancel}
-                        >
-                            <Icon id="#cross" aria-hidden="true" />
-                        </button>
                     </div>
                     {subtitle && (
                         <div
-                            className={subtitleClassName}
+                            className={theme.modal.subtitle}
                         >
                             {subtitle}
                         </div>
@@ -166,7 +161,7 @@ export const ConfirmModal = ({
                         {confirmTitle}
                     </button>
                     <button
-                        className={`button button--l button--transparent ${theme.modal.btn} ${theme.modal.btnConfirm}`}
+                        className={`button button--l button--transparent ${theme.modal.btn}`}
                         type="button"
                         onClick={handleCancel}
                         title={cancelTitle}

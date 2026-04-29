@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -45,5 +45,6 @@ export {
     TelemetryPageTracker,
     Theme,
 } from './telemetry';
+export { SearchPageAccessService } from './searchPageAccessService';
 // Do not export SafebrowsingService here, because it will break MV3 build
 // because of dependencies with window object.

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -25,8 +25,13 @@ import React, {
 } from 'react';
 import { observer } from 'mobx-react';
 
-import { PopupLayout } from 'popup-layout';
+import { Notifications } from 'notifications';
 
+import { Tabs } from '../Tabs';
+import { Header } from '../Header';
+import { Footer } from '../Footer';
+import { MainContainer } from '../MainContainer';
+import { PromoNotification } from '../PromoNotification';
 import { Icons } from '../ui/Icons';
 import { popupStore } from '../../stores/PopupStore';
 import {
@@ -62,6 +67,7 @@ export const Popup = observer(() => {
         isAndroidBrowser,
         isFilteringPossible,
         telemetryStore,
+        isPopupDataReceived,
     } = useContext(popupStore);
 
     useAppearanceTheme(appearanceTheme);
@@ -188,7 +194,21 @@ export const Popup = observer(() => {
             <CommonIcons />
             <Icons />
             <AnimatedLoader isLoading={!isAppInitialized}>
-                <PopupLayout />
+                {/* We need to wait for popupData to prevent flicker */}
+                {/* of ui that depend on it on popup opening. */}
+                {/* This check is done here since AnimatedLoader */}
+                {/* is not used while popupData is loading */}
+                {isPopupDataReceived ? (
+                    <>
+                        <Header />
+                        <MainContainer />
+                        <Tabs />
+                        <Footer />
+                        {/* Promo should be rendered in top of other notifications */}
+                        <PromoNotification />
+                        <Notifications />
+                    </>
+                ) : null}
             </AnimatedLoader>
         </>
     );
