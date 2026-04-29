@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -30,7 +30,7 @@ import { NotifierType, ExtensionUpdateFSMState } from '../../../../common/consta
 import { translator } from '../../../../common/translators/translator';
 import { NotificationType } from '../../../common/types';
 
-import { Notification } from './Notification-mv3';
+import { Notification } from './Notification';
 
 /**
  * The component needed to show a notification about the extension update check
@@ -78,10 +78,10 @@ export const UpdateNotification = observer(() => {
                 store.setUpdateNotification({
                     type: NotificationType.Error,
                     text: translator.getMessage('update_failed_text'),
-                    button: {
+                    buttons: [{
                         title: translator.getMessage('update_failed_try_again_btn'),
                         onClick: store.checkUpdates,
-                    },
+                    }],
                 });
                 break;
             default:
@@ -112,7 +112,7 @@ export const UpdateNotification = observer(() => {
         type,
         animationCondition,
         text,
-        button,
+        buttons,
         closeManually,
     } = updateNotification;
 
@@ -122,7 +122,7 @@ export const UpdateNotification = observer(() => {
             type={type}
             animationCondition={animationCondition}
             text={text}
-            button={button}
+            buttons={buttons}
             closeManually={closeManually}
         />
     );

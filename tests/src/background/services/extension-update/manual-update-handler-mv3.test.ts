@@ -27,6 +27,7 @@ import {
     afterEach,
 } from 'vitest';
 
+import { FilterUpdateApi } from '../../../../../Extension/src/background/api/filters/update/update-mv3';
 import {
     ManualUpdateHandler,
 } from '../../../../../Extension/src/background/services/extension-update/manual-update-handler-mv3';
@@ -48,6 +49,16 @@ vi.mock(
     }),
 );
 
+// Mock FilterUpdateApi
+vi.mock(
+    '../../../../../Extension/src/background/api/filters/update/update-mv3',
+    () => ({
+        FilterUpdateApi: {
+            updateCustomFilters: vi.fn(),
+        },
+    }),
+);
+
 // Mock sleepIfNecessary to avoid real delays in tests
 vi.mock(
     '../../../../../Extension/src/common/sleep-utils',
@@ -56,14 +67,49 @@ vi.mock(
     }),
 );
 
-// Mock chrome.runtime.requestUpdateCheck
+// Mock getRunInfo
+vi.mock(
+    '../../../../../Extension/src/background/utils/run-info',
+    () => ({
+        getRunInfo: vi.fn().mockResolvedValue({ currentAppVersion: '5.2.0.1' }),
+    }),
+);
+
+// Mock browserStorage
+vi.mock(
+    '../../../../../Extension/src/background/storages',
+    () => ({
+        browserStorage: {
+            set: vi.fn().mockResolvedValue(undefined),
+            remove: vi.fn().mockResolvedValue(undefined),
+        },
+    }),
+);
+
+// Mock ContentScriptInjector
+vi.mock(
+    '../../../../../Extension/src/background/content-script-injector',
+    () => ({
+        ContentScriptInjector: {
+            setUpdateFlag: vi.fn().mockResolvedValue(undefined),
+        },
+    }),
+);
+
+// Mock chrome.runtime.requestUpdateCheck and chrome.runtime.reload
 const mockRequestUpdateCheck = vi.fn();
+const mockReload = vi.fn();
 const globalChrome = (global as Record<string, unknown>).chrome;
 if (globalChrome && typeof globalChrome === 'object') {
     const runtime = (globalChrome as Record<string, unknown>).runtime;
     if (runtime && typeof runtime === 'object') {
         Object.defineProperty(runtime, 'requestUpdateCheck', {
             value: mockRequestUpdateCheck,
+            writable: true,
+            configurable: true,
+        });
+        Object.defineProperty(runtime, 'reload', {
+            value: mockReload,
             writable: true,
             configurable: true,
         });
@@ -137,6 +183,34 @@ describe('ManualUpdateHandler', () => {
 
             expect(BackendUpdateChecker.checkUpdate).toHaveBeenCalledTimes(1);
             expect(mockRequestUpdateCheck).not.toHaveBeenCalled();
+            expect(onUpdateCheckComplete).toHaveBeenCalledWith(false);
+        });
+    });
+
+    describe.skipIf(!__IS_MV3__)('check() — custom filters update when no extension update', () => {
+        it('calls updateCustomFilters when no extension update is found', async () => {
+            vi.spyOn(FilterUpdateApi, 'updateCustomFilters').mockResolvedValue(undefined);
+
+            // Backend says no update
+            vi.mocked(BackendUpdateChecker.checkUpdate).mockResolvedValue({
+                status: UpdateCheckStatus.NoContent,
+            });
+
+            await handler.check();
+
+            expect(FilterUpdateApi.updateCustomFilters).toHaveBeenCalledTimes(1);
+            expect(onUpdateCheckComplete).toHaveBeenCalledWith(false);
+        });
+
+        it('still completes check when updateCustomFilters fails', async () => {
+            vi.spyOn(FilterUpdateApi, 'updateCustomFilters').mockRejectedValue(new Error('network'));
+
+            vi.mocked(BackendUpdateChecker.checkUpdate).mockResolvedValue({
+                status: UpdateCheckStatus.NoContent,
+            });
+
+            await handler.check();
+
             expect(onUpdateCheckComplete).toHaveBeenCalledWith(false);
         });
     });

@@ -25,9 +25,8 @@ import {
     observable,
     runInAction,
 } from 'mobx';
-import { type CategoriesGroupData, type CategoriesFilterData } from 'filter-categories-api';
-import { type SettingsData } from 'settings-api';
 
+import { type SettingsData } from '../../../../background/api/settings';
 import {
     AntibannerGroupsId,
     AntiBannerFiltersId,
@@ -42,6 +41,7 @@ import { type SettingOption, type Settings } from '../../../../background/schema
 import { type GetOptionsDataResponse } from '../../../../background/services/settings';
 import { type CustomFilterSubscriptionData } from '../../../../common/messages/constants';
 import { type FilterMetadata } from '../../../../background/api/filters/main';
+import { type CategoriesFilterData, type CategoriesGroupData } from '../../../../background/api/filters/categories';
 import {
     createSavingService,
     SavingFSMEvent,
@@ -49,7 +49,7 @@ import {
     type SavingFSMStateType,
 } from '../../../common/components/Editor/savingFSM';
 import { messenger } from '../../../services/messenger';
-import { SEARCH_FILTERS } from '../../components/Filters/Search/constants';
+import { SearchFilters } from '../../components/Filters/Search/constants';
 import {
     sortFilters,
     updateFilters,
@@ -213,7 +213,7 @@ export abstract class SettingsStoreCommon {
     searchInput = '';
 
     @observable
-    searchSelect = SEARCH_FILTERS.ALL;
+    searchSelect = SearchFilters.All;
 
     @observable
     allowlistEditorContentChanged = false;
@@ -223,6 +223,12 @@ export abstract class SettingsStoreCommon {
 
     @observable
     fullscreenUserRulesEditorIsOpen = false;
+
+    /**
+     * Whether the General Settings promo A/B test B-variant is active (AG-52622).
+     */
+    @observable
+    showGeneralSettingsPromo = false;
 
     @observable
     allowlistSizeReset = false;
@@ -257,19 +263,16 @@ export abstract class SettingsStoreCommon {
         });
     }
 
+    /**
+     * Checks MV3 rule limitations and updates UI warnings.
+     * No-op on MV2; overridden in SettingsStore-mv3.
+     */
+    /* eslint-disable class-methods-use-this */
     @action
-    async checkLimitations() {
-        const currentLimitsMv3 = await messenger.getCurrentLimits();
-
-        this.uiStore.setStaticFiltersLimitsWarning(currentLimitsMv3.staticFiltersData);
-        this.uiStore.setDynamicRulesLimitsWarning(currentLimitsMv3.dynamicRulesData);
-
-        if (this.uiStore.dynamicRulesLimitsWarning) {
-            this.uiStore.addRuleLimitsNotification(this.uiStore.dynamicRulesLimitsWarning);
-        }
-
-        return currentLimitsMv3;
+    async checkLimitations(): Promise<void> {
+        // No-op. Overridden in MV3 subclass.
     }
+    /* eslint-enable class-methods-use-this */
 
     @action
     async getFullscreenUserRulesData() {
@@ -348,6 +351,7 @@ export abstract class SettingsStoreCommon {
         this.setStripTrackingParameters(data.filtersMetadata.filters);
         this.isChrome = data.environmentOptions.isChrome;
         this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
+        this.showGeneralSettingsPromo = data.showGeneralSettingsPromo;
         this.optionsReadyToRender = true;
     }
 
@@ -572,6 +576,19 @@ export abstract class SettingsStoreCommon {
         }
     }
 
+    /**
+     * Fetches only the filter data with timestamps from the backend
+     * and merges them into the store. Lightweight alternative to
+     * {@link requestOptionsData} when only filter timestamps need
+     * to be refreshed.
+     */
+    async refreshFilterTimestamps(): Promise<void> {
+        const filters = await messenger.getCategoriesFilters();
+        runInAction(() => {
+            this.setFilters(updateFilters(this.filters, filters));
+        });
+    }
+
     @action
     refreshFilter(filter: Partial<CategoriesFilterData>): void {
         if (!filter || typeof filter.filterId !== 'number') {
@@ -683,8 +700,8 @@ export abstract class SettingsStoreCommon {
             if (!this.filters.some((f) => f.filterId === newFilter.filterId)) {
                 this.filters.push(newFilter);
             }
-            if (this.searchSelect !== SEARCH_FILTERS.ALL) {
-                this.setSearchSelect(SEARCH_FILTERS.ALL);
+            if (this.searchSelect !== SearchFilters.All) {
+                this.setSearchSelect(SearchFilters.All);
             }
         });
 
@@ -745,7 +762,7 @@ export abstract class SettingsStoreCommon {
     };
 
     @action
-    setSearchSelect = (value: string): void => {
+    setSearchSelect = (value: SearchFilters): void => {
         this.searchSelect = value;
         this.sortFilters();
         this.sortSearchGroups();
@@ -754,7 +771,7 @@ export abstract class SettingsStoreCommon {
 
     @computed
     get isSearching() {
-        return this.searchSelect !== SEARCH_FILTERS.ALL || this.searchInput;
+        return this.searchSelect !== SearchFilters.All || this.searchInput;
     }
 
     /**
@@ -801,10 +818,10 @@ export abstract class SettingsStoreCommon {
         this.visibleFilters = this.filters.filter((filter) => {
             let searchMod;
             switch (this.searchSelect) {
-                case SEARCH_FILTERS.ENABLED:
+                case SearchFilters.Enabled:
                     searchMod = filter.enabled;
                     break;
-                case SEARCH_FILTERS.DISABLED:
+                case SearchFilters.Disabled:
                     searchMod = !filter.enabled;
                     break;
                 default:
@@ -911,6 +928,7 @@ export abstract class SettingsStoreCommon {
             logger.debug('[ext.SettingsStoreCommon.footerRateShowState]: settings is not initialized yet');
             return false;
         }
+
         return !this.settings.values[this.settings.names.HideRateBlock];
     }
 
@@ -1013,6 +1031,9 @@ export abstract class SettingsStoreCommon {
     /**
      * Type-safe method to update object properties for MobX reactivity.
      * Updates each property individually to ensure MobX observers are triggered.
+     *
+     * @param target Target object to update.
+     * @param source Source object with new values.
      */
     private static updateObjectProperties<T extends Record<string, any>>(
         target: T,

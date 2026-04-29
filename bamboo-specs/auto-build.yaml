@@ -6,7 +6,7 @@ plan:
   name: browser extension - auto-build
 variables:
   # Stable branch name for auto-update only filters.
-  stableBranchName: stable/v5.3
+  stableBranchName: stable/v5.4
 
 # Since auto-builds are being run only for a stable branch now (specified in
 # `bamboo.stableBranchName`) we should skip the build stage for other branches.
@@ -36,7 +36,7 @@ other:
 branch-overrides:
   -
     # Note: it should be equal with `bamboo.stableBranchName`
-    stable/v5.3:
+    stable/v5.4:
       # Job definitions for auto-builds
       Check CWS Availability: !include 'jobs/auto-builds/check-cws-availability.yaml'
       Lint: !include 'jobs/auto-builds/lint.yaml'

@@ -1,0 +1,111 @@
+.container {
+    width: 100vw;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.virtualList {
+    width: 100%;
+    position: relative;
+}
+
+.virtualItem {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.row {
+    display: flex;
+    padding: 8px 16px 10px 16px;
+    border: 0;
+    border-bottom: 1px solid var(--gray-30);
+    font-size: 14px;
+    width: 100%;
+    background: transparent;
+    text-align: left;
+
+    &:active {
+        background: var(--fills-backgrounds-page-background-hovered);
+    }
+
+    /* blocked */
+    &.red {
+        background-color: var(--fills-backgrounds-recent-activity-request-blocked-default);
+
+        &:active {
+            background-color: var(--fills-backgrounds-recent-activity-request-blocked-hovered);
+        }
+    }
+
+    /* stealth exceptions */
+    &.green {
+        background-color: var(--fills-backgrounds-recent-activity-request-allowlisted-default);
+
+        &:active {
+            background-color: var(--fills-backgrounds-recent-activity-request-allowlisted-hovered);
+        }
+    }
+
+    /* allowlist (non-stealth) exceptions */
+    &.lightGreen {
+        background-color: var(--fills-backgrounds-recent-activity-request-allowlisted-default);
+
+        &:active {
+            background-color: var(--fills-backgrounds-recent-activity-request-allowlisted-hovered);
+        }
+    }
+
+    /* modified */
+    &.yellow {
+        background-color: var(--fills-backgrounds-recent-activity-request-changed-default);
+
+        &:active {
+            background-color: var(--fills-backgrounds-recent-activity-request-changed-hovered);
+        }
+    }
+}
+
+.requestStatusIcon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    margin-right: 12px;
+}
+
+.content {
+    overflow: hidden;
+    padding-right: 16px;
+}
+
+.url, .metaParts {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-break: break-all;
+    overflow: hidden;
+}
+
+.url {
+    font-weight: 600;
+    color: var(--gray-80);
+}
+
+.metaParts {
+    padding-top: 4px;
+    font-weight: 400;
+    color: var(--gray-70);
+}
+
+.time {
+    flex-shrink: 0;
+    margin-left: auto;
+    color: var(--gray-80);
+    font-weight: 400;
+    width: 72px;
+    text-align: right;
+    border-left: 1px solid var(--gray-30);
+    align-self: stretch;
+}

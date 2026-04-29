@@ -21,11 +21,7 @@
             }
 
             &:before {
-                transform: translate(22px, 2px);
-
-                @media (min-width: 640px) {
-                    transform: translate(38px, 18px);
-                }
+                transform: translate(38px, 18px);
             }
         }
     }
@@ -36,45 +32,25 @@
         align-items: flex-start;
         justify-content: flex-end;
         position: relative;
-        width: 40px;
-        height: 20px;
+        width: 72px;
+        height: 100%;
         font-size: 0;
+        padding: 0 16px;
         border-radius: 8px;
         transition: 0.3s ease background-color;
-
-        @media (min-width: 640px) {
-            width: 72px;
-            height: 100%;
-            padding: 0 16px;
-        }
-
-        &:hover {
-            background-color: var(--fills-backgrounds-page-background-hovered);
-        }
-
-        &--actions {
-            &:hover {
-                background-color: transparent !important;
-            }
-        }
 
         &:before {
             content: "";
             position: absolute;
-            top: 0;
+            top: -16px;
             left: 0;
-            transform: translate(2px, 2px);
+            transform: translate(18px, 18px);
             z-index: 1;
             width: 16px;
             height: 16px;
             border-radius: 50%;
             background-color: var(--gray-0);
             transition: var(--t3) transform;
-
-            @media (min-width: 640px) {
-                top: -16px;
-                transform: translate(18px, 18px);
-            }
         }
 
         &:after {

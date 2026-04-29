@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -30,10 +30,24 @@ import { translator } from '../../../common/translators/translator';
 import { NotificationType, type NotificationParams } from '../../common/types';
 import { messenger } from '../../services/messenger';
 // TODO: Maybe not import from components folder here?
-import { getDynamicWarningMessage, getStaticWarningMessage } from '../components/Warnings/messages';
-import { type NotificationParamsWithId } from '../components/Notifications/Notification';
+import { getDynamicWarningMessage, getStaticWarningMessage } from '../../common/utils/rules-limits-messages';
+import { type NotificationParamsWithId } from '../../common/components/Notification';
 
 import { type RootStore } from './RootStore';
+
+export enum SidebarMenuId {
+    ImportUserRules = 'import_user_rules',
+    ExportUserRules = 'export_user_rules',
+    ImportAllowlist = 'import_allowlist',
+    ExportAllowlist = 'export_allowlist',
+}
+
+type MenuOption = {
+    id: string;
+    title: string;
+    onClick: () => void;
+    disabled?: boolean;
+};
 
 class UiStore {
     /**
@@ -81,6 +95,12 @@ class UiStore {
     @observable
     isSidebarOpen = false;
 
+    @observable sidebarMenuOptions: MenuOption[] = [];
+
+    @action setSidebarMenuOptions(options: MenuOption[]) {
+        this.sidebarMenuOptions = options;
+    }
+
     @action
     addNotification(params: NotificationParams) {
         const isNotificationAlreadyPresent = this.notifications
@@ -109,14 +129,14 @@ class UiStore {
      */
     @action
     addRuleLimitsNotification(text: string) {
-        const button = {
+        const buttons = [{
             title: translator.getMessage('options_rule_limits'),
             onClick: messenger.openRulesLimitsTab,
-        };
+        }];
         this.addNotification({
             type: NotificationType.Error,
             text,
-            button,
+            buttons,
         });
     }
 

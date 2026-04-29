@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -24,10 +24,13 @@ import React, {
     useCallback,
 } from 'react';
 
+import cn from 'classnames';
+
 import { Actions } from '../Actions';
 import { Icon } from '../../../common/components/ui/Icon';
 import { isVerticalScroll } from '../../../helpers';
 import { useResizeObserver } from '../../../common/hooks/useResizeObserver';
+import theme from '../../../common/styles/theme';
 
 import { MiscellaneousFilters } from './MiscellaneousFilters';
 import { EventsTypeFilter } from './EventsTypeFilter';
@@ -106,7 +109,7 @@ const Filters = () => {
                 <Actions />
             </div>
 
-            <div className="filters__events-tags">
+            <div className={cn('filters__events-tags', theme.common.hideOnMobile)}>
                 <div
                     ref={ref}
                     onScroll={scrollTags}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -23,6 +23,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+import pMap from 'p-map';
+
 import {
     CosmeticRuleParser,
     RuleCategory,
@@ -31,6 +33,16 @@ import {
 
 import type { Testcase } from '../browser-test/testcase';
 import { TESTCASES_BASE_URL } from '../browser-test/test-constants';
+
+/**
+ * Default concurrency limit for parallel testcase downloads.
+ */
+export const DEFAULT_CONCURRENCY = 10;
+
+/**
+ * HTTP request timeout in milliseconds.
+ */
+const REQUEST_TIMEOUT_MS = 30_000;
 
 /**
  * Base URL for testcases data API.
@@ -61,7 +73,9 @@ type ProcessedTestcaseInfo = {
  * @returns Array of testcase objects.
  */
 const fetchTestcasesData = async (): Promise<Testcase[]> => {
-    const response = await fetch(TESTCASES_DATA_URL);
+    const response = await fetch(TESTCASES_DATA_URL, {
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+    });
     if (!response.ok) {
         throw new Error(`Failed to fetch testcases data: ${response.statusText}`);
     }
@@ -80,7 +94,9 @@ const fetchTestcasesData = async (): Promise<Testcase[]> => {
  * @returns Rules content as string.
  */
 const downloadRules = async (rulesUrl: string): Promise<string> => {
-    const response = await fetch(rulesUrl);
+    const response = await fetch(rulesUrl, {
+        signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+    });
     if (!response.ok) {
         throw new Error(`Failed to download rules from ${rulesUrl}: ${response.statusText}`);
     }
@@ -142,14 +158,10 @@ const processTestcase = async (testcase: Testcase): Promise<ProcessedTestcaseInf
     try {
         const url = `${TESTCASES_BASE_URL}/${testcase.rulesUrl}`;
 
-        console.log(`Downloading rules from ${url}`);
-
         const rulesText = await downloadRules(url);
         const jsRules = extractScriptRules(rulesText);
 
         if (jsRules.length > 0) {
-            console.log(`  Found ${jsRules.length} script rules`);
-
             return {
                 id: testcase.id,
                 title: testcase.title,
@@ -237,47 +249,30 @@ const updateTestcasesRulesInFile = async (
  * Updates testcases script rules by fetching all testcases data and updating
  * the TESTCASES_RULES array in the target file.
  */
-export const updateTestcasesScriptRules = async (): Promise<void> => {
+export const updateTestcasesScriptRules = async (
+    concurrency = DEFAULT_CONCURRENCY,
+): Promise<void> => {
     console.log('Downloading testcases data...');
     const testcasesData = await fetchTestcasesData();
 
-    console.log(`Found ${testcasesData.length} testcases, processing rules...`);
+    const withRules = testcasesData.filter((tc) => tc.rulesUrl);
+    console.log(`Found ${testcasesData.length} testcases (${withRules.length} with rules), processing...`);
 
-    const processedTestcases: ProcessedTestcaseInfo[] = [];
+    const startTime = Date.now();
 
-    for (const testcase of testcasesData) {
-        console.log('\n');
+    const results = await pMap(withRules, processTestcase, { concurrency });
 
-        if (!testcase.rulesUrl) {
-            console.log(`Skipping testcase #${testcase.id}: no rulesUrl`);
-            continue;
-        }
-
-        try {
-            console.log(`Processing testcase #${testcase.id}: ${testcase.title}`);
-
-            const processed = await processTestcase(testcase);
-
-            if (!processed) {
-                console.log(`Processed testcase #${testcase.id} (${testcase.rulesUrl}): no script rules found.`);
-                continue;
-            }
-
-            processedTestcases.push(processed);
-
-            console.log(`Processed testcase #${testcase.id} (${testcase.rulesUrl}), found ${processed.jsRules.length} script rules.`);
-        } catch (error) {
-            console.error(`Failed to process testcase #${testcase.id}:`, error);
-        }
-    }
+    const processedTestcases = results.filter(
+        (r): r is ProcessedTestcaseInfo => r !== null,
+    );
 
     // Update the TESTCASES_RULES array in the target file
     await updateTestcasesRulesInFile(processedTestcases);
 
-    const allJsRules = new Set<string>(processedTestcases.flatMap((testcase) => testcase.jsRules));
+    const allJsRules = new Set<string>(processedTestcases.flatMap((tc) => tc.jsRules));
+    const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
 
-    console.log('\n');
-    console.log(`✓ Successfully processed ${testcasesData.length} testcases`);
+    console.log(`✓ Processed ${withRules.length} testcases in ${elapsed}s`);
     console.log(`✓ Found ${allJsRules.size} unique JS rules`);
     console.log(`✓ Updated TESTCASES_RULES array in ${TARGET_FILE_PATH}`);
 };

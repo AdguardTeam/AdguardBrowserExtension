@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -26,6 +26,7 @@ import React, {
 import { observer } from 'mobx-react';
 
 import { throttle } from 'lodash-es';
+import browser from 'webextension-polyfill';
 
 import { Filters } from '../Filters';
 import {
@@ -39,10 +40,13 @@ import { rootStore } from '../../stores/RootStore';
 import { RequestModal } from '../RequestWizard/RequestModal';
 import { Icons as CommonIcons } from '../../../common/components/ui/Icons';
 import { NotifierType } from '../../../../common/constants';
+import { FULLSCREEN_STATE } from '../../../../common/messages/constants';
 import { useAppearanceTheme } from '../../../common/hooks/useAppearanceTheme';
 import { FilteringEvents } from '../FilteringEvents';
 import { Icons } from '../ui/Icons';
 import { PreserveLogModal } from '../PreserveLogModal/PreserveLogModal';
+import { CustomizeModal } from '../CustomizeModal';
+import { Sidebar } from '../Sidebar';
 import { TelemetryScreenName } from '../../../../common/telemetry';
 import { SettingOption } from '../../../../background/schema';
 
@@ -50,8 +54,9 @@ import '../../styles/styles.pcss';
 
 const FilteringLog = observer(() => {
     const { wizardStore, logStore, telemetryStore } = useContext(rootStore);
+    const RESIZE_THROTTLE_MS = 500;
+    const POSITION_POLL_INTERVAL_MS = 500;
     const pageIdRef = useRef<string | null>(null);
-    const RESIZE_THROTTLE = 500;
 
     useAppearanceTheme(logStore.appearanceTheme);
 
@@ -186,49 +191,67 @@ const FilteringLog = observer(() => {
     }, [logStore, telemetryStore, wizardStore]);
 
     useEffect(() => {
-        const windowStateHandler = () => {
-            const {
-                outerWidth,
-                outerHeight,
-                screenTop,
-                screenLeft,
-                screen,
-            } = window;
+        const saveWindowState = async () => {
+            try {
+                const win = await browser.windows.getCurrent();
 
-            const isFullscreen = outerWidth === screen.width && outerHeight === screen.height;
+                const {
+                    state,
+                    width,
+                    height,
+                    top,
+                    left,
+                } = win;
 
-            if (isFullscreen) {
-                messenger.setFilteringLogWindowState({
-                    state: 'fullscreen',
-                });
-            } else {
-                messenger.setFilteringLogWindowState({
-                    width: outerWidth,
-                    height: outerHeight,
-                    top: screenTop,
-                    left: screenLeft,
-                });
+                if (state === FULLSCREEN_STATE) {
+                    await messenger.saveFilteringLogWindowState({ state: FULLSCREEN_STATE });
+                } else if (
+                    width !== undefined
+                    && height !== undefined
+                    && top !== undefined
+                    && left !== undefined
+                ) {
+                    await messenger.saveFilteringLogWindowState({
+                        width,
+                        height,
+                        top,
+                        left,
+                    });
+                }
+            } catch (e: unknown) {
+                logger.debug('[ext.FilteringLog]: failed to save window state:', e);
             }
         };
 
-        const throttledWindowStateHandler = throttle(windowStateHandler, RESIZE_THROTTLE);
+        const throttledSaveWindowState = throttle(saveWindowState, RESIZE_THROTTLE_MS);
 
-        window.addEventListener('beforeunload', windowStateHandler);
-        window.addEventListener('resize', throttledWindowStateHandler);
+        window.addEventListener('resize', throttledSaveWindowState, { passive: true });
+
+        let lastScreenX = window.screenX;
+        let lastScreenY = window.screenY;
+
+        const positionPollId = setInterval(() => {
+            if (window.screenX !== lastScreenX || window.screenY !== lastScreenY) {
+                lastScreenX = window.screenX;
+                lastScreenY = window.screenY;
+                saveWindowState();
+            }
+        }, POSITION_POLL_INTERVAL_MS);
 
         return () => {
-            window.removeEventListener('beforeunload', windowStateHandler);
-            window.removeEventListener('resize', throttledWindowStateHandler);
+            window.removeEventListener('resize', throttledSaveWindowState);
+            clearInterval(positionPollId);
         };
-    }, [logStore]);
+    }, []);
 
     return (
         <>
-            {logStore.isPreserveLogModalOpen && <PreserveLogModal />}
             <CommonIcons />
             <Icons />
-            {wizardStore.isModalOpen
-                && <RequestModal />}
+            {logStore.isPreserveLogModalOpen && <PreserveLogModal />}
+            {wizardStore.isModalOpen && <RequestModal />}
+            {logStore.isCustomizeModalOpen && <CustomizeModal />}
+            <Sidebar />
             <Filters />
             <FilteringEvents />
         </>

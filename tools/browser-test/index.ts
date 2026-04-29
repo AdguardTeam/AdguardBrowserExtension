@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -570,21 +570,21 @@ const runTestsCommand = async (
 
 program
     .command('dev')
-    .option('-d, --debug <TEST_ID>', 'enable debug mode with pause for specified id')
+    .option('-d, --debug-test-id <TEST_ID>', 'enable debug mode with pause for specified id')
     .option('-u, --userscripts-mode <MODE>', 'userscripts mode: `enabled` or `disabled` (default: both)')
     .description('run tests in dev mode')
     .action((options?: Partial<TestRunOptions>) => runTestsCommand(BuildTargetEnv.Dev, options));
 
 program
     .command('beta')
-    .option('-d, --debug <TEST_ID>', 'enable debug mode with pause for specified id')
+    .option('-d, --debug-test-id <TEST_ID>', 'enable debug mode with pause for specified id')
     .option('-u, --userscripts-mode <MODE>', 'userscripts mode: `enabled` or `disabled` (default: both)')
     .description('run tests in beta mode')
     .action((options?: Partial<TestRunOptions>) => runTestsCommand(BuildTargetEnv.Beta, options));
 
 program
     .command('release')
-    .option('-d, --debug <TEST_ID>', 'enable debug mode with pause for specified id')
+    .option('-d, --debug-test-id <TEST_ID>', 'enable debug mode with pause for specified id')
     .option('-u, --userscripts-mode <MODE>', 'userscripts mode: `enabled` or `disabled` (default: both)')
     .description('run tests in release mode')
     .action((options?: Partial<TestRunOptions>) => runTestsCommand(BuildTargetEnv.Release, options));

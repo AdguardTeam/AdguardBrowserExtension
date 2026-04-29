@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -46,13 +46,12 @@ import { handleFileUpload } from '../../../helpers';
 import { logger } from '../../../../common/logger';
 import { exportData, ExportTypes } from '../../utils/export';
 import { addMinDelayLoader } from '../helpers';
-// TODO: Continue to remove dependency on the root store via adding loader and
-// notifications to own 'user-rules-editor' store. AG-48937
-import { rootStore } from '../../../options/stores/RootStore';
 import { FILE_WRONG_EXTENSION_CAUSE } from '../../constants';
 import { usePreventUnload } from '../../hooks/usePreventUnload';
 import { NotificationType } from '../../types';
 import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../Editor/savingFSM';
+import { SavingErrorMessage } from '../SavingButton';
+import theme from '../../styles/theme';
 
 import { ToggleWrapButton } from './ToggleWrapButton';
 import { ToggleFullscreenButton } from './ToggleFullscreenButton';
@@ -60,18 +59,42 @@ import { UserRulesSavingButton } from './UserRulesSavingButton';
 import { userRulesEditorStore } from './UserRulesEditorStore';
 
 /**
- * This module is placed in the common directory because it is used in the options page
- * and fullscreen-user-rules page
+ * Keys identifying sidebar menu options emitted by UserRulesEditor.
  */
-export const UserRulesEditor = observer(({ fullscreen }) => {
+export const UserRulesMenuKey = {
+    Import: 'import',
+    Export: 'export',
+};
+
+/**
+ * This module is placed in the common directory because it is used in the options page
+ * and fullscreen-user-rules page.
+ *
+ * @param {object} props Component props.
+ * @param {boolean} [props.fullscreen] Whether the editor is in fullscreen mode.
+ * @param {Function} props.setShowLoader Callback to toggle the loader overlay.
+ * @param {Function} props.addNotification Callback to add a notification.
+ * @param {Function} props.updateSetting Callback to update a setting.
+ * @param {Function} props.checkLimitations Callback to check MV3 rule limitations.
+ * @param {Function} props.sendTelemetryCustomEvent Callback to send a telemetry event.
+ * @param {Function} [props.setSidebarMenuOptions] Optional callback to set sidebar menu (options page only).
+ */
+export const UserRulesEditor = observer(({
+    fullscreen,
+    setShowLoader,
+    addNotification,
+    updateSetting,
+    checkLimitations,
+    sendTelemetryCustomEvent,
+    setSidebarMenuOptions = null,
+}) => {
     const store = useContext(userRulesEditorStore);
-    const { uiStore, settingsStore, telemetryStore } = useContext(rootStore);
 
     const editorRef = useRef(null);
     const inputRef = useRef(null);
     const actionsRef = useRef(null);
 
-    const switchId = settingsStore.userFilterEnabledSettingId;
+    const switchId = store.userFilterEnabledSettingId;
     const switchTitleId = `${switchId}-title`;
 
     let shouldResetSize = false;
@@ -244,7 +267,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
      * @param userRules User rules content.
      */
     const saveUserRules = async (userRules) => {
-        telemetryStore.sendCustomEvent(
+        sendTelemetryCustomEvent(
             TelemetryEventName.UserRulesSaveClick,
             TelemetryScreenName.UserRulesScreen,
         );
@@ -254,15 +277,14 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         }
         store.setCursorPosition(editorRef.current.editor.getCursorPosition());
 
-        // For MV2 version we don't show loader and don't check limits.
-        if (!__IS_MV3__) {
+        setShowLoader(true);
+        try {
             await store.saveUserRules(userRules);
-        } else {
-            uiStore.setShowLoader(true);
-            await store.saveUserRules(userRules);
-            await settingsStore.checkLimitations();
-            uiStore.setShowLoader(false);
+            await checkLimitations();
+        } finally {
+            setShowLoader(false);
         }
+
         store.setUserRulesEditorContentChangedState(false);
         store.setCursorPosition(null);
     };
@@ -304,12 +326,12 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         } catch (e) {
             logger.debug('[ext.UserRulesEditor]: import error:', e);
             if (e instanceof Error && e.cause === FILE_WRONG_EXTENSION_CAUSE) {
-                uiStore.addNotification({
+                addNotification({
                     type: NotificationType.Error,
                     text: e.message,
                 });
             } else {
-                uiStore.addNotification({
+                addNotification({
                     type: NotificationType.Error,
                     text: translator('options_popup_import_error_file_description'),
                 });
@@ -320,10 +342,10 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         event.target.value = '';
     };
 
-    const importClickHandler = (e) => {
+    const importClickHandler = useCallback((e) => {
         e.preventDefault();
 
-        telemetryStore.sendCustomEvent(
+        sendTelemetryCustomEvent(
             TelemetryEventName.UserRulesImportClick,
             TelemetryScreenName.UserRulesScreen,
         );
@@ -333,7 +355,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         }
 
         inputRef.current.click();
-    };
+    }, [sendTelemetryCustomEvent]);
 
     const saveClickHandler = async () => {
         if (!store.userRulesEditorContentChanged) {
@@ -401,16 +423,35 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
         exportData(ExportTypes.UserFilter);
     };
 
+    useEffect(() => {
+        if (!setSidebarMenuOptions) {
+            return undefined;
+        }
+
+        setSidebarMenuOptions([
+            {
+                key: UserRulesMenuKey.Import,
+                title: translator.getMessage('options_userfilter_import'),
+                onClick: importClickHandler,
+            },
+            {
+                key: UserRulesMenuKey.Export,
+                title: translator.getMessage('options_userfilter_export'),
+                onClick: exportClickHandler,
+                disabled: !store.userRulesExportAvailable,
+            },
+        ]);
+
+        return () => setSidebarMenuOptions([]);
+    }, [importClickHandler, store.userRulesExportAvailable, setSidebarMenuOptions]);
+
     // We set wrap mode directly in order to avoid editor re-rendering
     // Otherwise editor would remove all unsaved content
     const toggleWrap = async () => {
         const toggledWrapMode = !store.userRulesEditorWrapState;
         editorRef.current.editor.session.setUseWrapMode(toggledWrapMode);
         await store.toggleUserRulesEditorWrapMode(toggledWrapMode);
-
-        if (__IS_MV3__) {
-            await settingsStore.checkLimitations();
-        }
+        await checkLimitations();
     };
 
     const toggleFullscreen = async () => {
@@ -442,15 +483,13 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
     };
 
     const updateSettingWithLimitCheck = async (settingId, value) => {
-        await settingsStore.updateSetting(settingId, value);
-        if (__IS_MV3__) {
-            await settingsStore.checkLimitations();
-        }
+        await updateSetting(settingId, value);
+        await checkLimitations();
     };
 
     const handleUserRulesToggle = async ({ id, data }) => {
         await addMinDelayLoader(
-            uiStore.setShowLoader,
+            setShowLoader,
             updateSettingWithLimitCheck,
         )(id, data);
     };
@@ -478,6 +517,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                     subtitle={unsavedChangesSubtitle}
                 />
             )}
+            <SavingErrorMessage savingState={store.savingUserRulesState} />
             <div
                 ref={actionsRef}
                 className={cn('actions actions--grid', {
@@ -517,7 +557,7 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                     />
                     <button
                         type="button"
-                        className="button button--l button--transparent actions__btn"
+                        className={cn('button button--l button--transparent actions__btn', theme.common.hideOnMobile)}
                         onClick={importClickHandler}
                         title={translator.getMessage('options_userfilter_import')}
                     >
@@ -525,7 +565,11 @@ export const UserRulesEditor = observer(({ fullscreen }) => {
                     </button>
                     <button
                         type="button"
-                        className="button button--l button--transparent actions__btn"
+                        className={cn(
+                            'button button--l',
+                            'button--transparent actions__btn',
+                            theme.common.hideOnMobile,
+                        )}
                         onClick={exportClickHandler}
                         disabled={!store.userRulesExportAvailable}
                         title={translator.getMessage('options_userfilter_export')}

@@ -208,7 +208,7 @@ export class Engine implements TsWebExtensionEngine {
         const staticFiltersIds = FiltersApi.getEnabledFilters()
             .filter((filterId) => CommonFilterUtils.isCommonFilter(filterId));
 
-        const settings = SettingsApi.getTsWebExtConfiguration(true);
+        const settings = SettingsApi.getTsWebExtConfiguration();
 
         let allowlist: string[] = [];
 

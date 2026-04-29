@@ -1,0 +1,40 @@
+.container {
+    width: 100%;
+    flex: 0 0 auto;
+    padding: 12px 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    background-color: var(--fills-backgrounds-page-background-additional-default);
+
+    @media (--from-tablet) {
+        flex-direction: row;
+    }
+
+    @media (--to-mobile) {
+        padding: 24px;
+    }
+}
+
+.description {
+    margin-bottom: 16px;
+
+    @media (--from-tablet) {
+        margin: 0 16px 0 0;
+    }
+}
+
+.close {
+    position: absolute;
+    cursor: pointer;
+    background-color: transparent;
+    right: 16px;
+    border: 0;
+    padding: 0;
+
+    @media (--to-mobile) {
+        top: 0;
+    }
+}

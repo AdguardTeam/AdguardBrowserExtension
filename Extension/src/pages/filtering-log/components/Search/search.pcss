@@ -2,13 +2,13 @@
     display: flex;
     align-items: center;
     position: relative;
-    z-index: 20;
+    z-index: var(--z-idx-filtering-log-search);
     width: 100%;
     background-color: var(--fills-inputs-input-background-disabled);
     border: 1px solid var(--stroke-inputs-inactive-input-stroke-default);
     border-radius: 8px;
 
-    @media (max-width: 640px) {
+    @media (--to-mobile) {
         margin-right: 0;
     }
 
@@ -26,6 +26,12 @@
         &:placeholder {
             opacity: 1;
             color: var(--text-placeholder-placeholder-default);
+        }
+
+        @media (--to-mobile) {
+            padding-left: 16px;
+            height: 56px;
+            font-size: 16px;
         }
     }
 
@@ -61,5 +67,11 @@
         background-color: transparent;
         border: 0;
         padding: 0;
+    }
+
+    &__control {
+        @media (--to-mobile) {
+            display: none;
+        }
     }
 }

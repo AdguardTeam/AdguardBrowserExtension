@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2015-2025 Adguard Software Ltd.
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
@@ -31,6 +31,7 @@ import './footer.pcss';
 
 export const Footer = observer(() => {
     const store = useContext(popupStore);
+    const { isAndroidBrowser } = store;
 
     const handleAppleClick = () => {
         store.telemetryStore.sendCustomEvent(
@@ -87,7 +88,7 @@ export const Footer = observer(() => {
         </>
     );
 
-    if (store.isEdgeBrowser) {
+    if (store.isEdgeBrowser || isAndroidBrowser) {
         const currentYear = new Date().getFullYear();
         const footerText = `© 2009-${currentYear} Adguard Software Ltd`;
         footerContent = <div className="footer__text">{footerText}</div>;
