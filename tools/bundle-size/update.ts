@@ -50,10 +50,19 @@ import { getCurrentBuildStats, saveBuildStats } from './utils';
 async function updateBundleSize(buildEnv: BuildTargetEnv, targetBrowser?: Browser): Promise<void> {
     console.log(`Updating bundle size for "${buildEnv}" "${targetBrowser}"...\n`);
 
+    const filteredTargets = Object.values(Browser).filter((browser) => {
+        if (browser.toLowerCase().endsWith('crx')) {
+            return false;
+        }
+        if (buildEnv === BuildTargetEnv.Release && browser === Browser.FirefoxStandalone) {
+            return false;
+        }
+        return true;
+    });
     const targets = targetBrowser
         ? [targetBrowser]
-        // filter out chrome-crx
-        : Object.values(Browser).filter((browser) => !browser.toLowerCase().endsWith('crx'));
+        // filter out chrome-crx and firefox-standalone for release
+        : filteredTargets;
 
     for (let i = 0; i < targets.length; i += 1) {
         const target = targets[i]!;

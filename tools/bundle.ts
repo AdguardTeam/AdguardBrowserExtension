@@ -152,15 +152,19 @@ const mainBuild = async (options: CommanderOptions) => {
     await runSingleTask(copyExternals, options);
 
     // Step 2: Prepare Firefox Standalone update.json (needed before its build)
-    await buildUpdateJson();
+    // Firefox Standalone is not built for release
+    if (BUILD_ENV !== BuildTargetEnv.Release) {
+        await buildUpdateJson();
+    }
 
     // Step 3: Run all browser builds in parallel
-    // MV2 builds: Chrome, Firefox AMO, Firefox Standalone, Edge, Opera
+    // MV2 builds: Chrome, Firefox AMO, Edge, Opera
+    //   (Firefox Standalone is included for dev/beta but not release)
     // MV3 builds: Chrome MV3, Opera MV3
     const mv2Builds = [
         bundleChrome,
         bundleFirefoxAmo,
-        bundleFirefoxStandaloneOnly,
+        ...(BUILD_ENV !== BuildTargetEnv.Release ? [bundleFirefoxStandaloneOnly] : []),
         bundleEdge,
         bundleOpera,
     ];
