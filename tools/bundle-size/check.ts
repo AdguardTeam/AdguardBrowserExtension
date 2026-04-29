@@ -372,7 +372,10 @@ async function checkFirefoxAmoUnpackedSize(
  * @returns True if some files exceed 4MB, else false.
  */
 async function checkFirefoxJsFileSizes(buildType: BuildTargetEnv): Promise<boolean> {
-    const FIREFOX_TARGETS = [Browser.FirefoxAmo, Browser.FirefoxStandalone];
+    // Firefox Standalone is not built for release
+    const FIREFOX_TARGETS = buildType === BuildTargetEnv.Release
+        ? [Browser.FirefoxAmo]
+        : [Browser.FirefoxAmo, Browser.FirefoxStandalone];
 
     console.log('\n\nChecking Firefox Add-ons Store file sizes (.js, .css, .json)...');
 
@@ -428,10 +431,19 @@ async function checkFirefoxJsFileSizes(buildType: BuildTargetEnv): Promise<boole
  */
 async function checkBundleSizes({ buildEnv, targetBrowser, threshold }: CheckBundleSizesParams): Promise<void> {
     // Define all possible targets to check
+    const filteredTargets = Object.values(Browser).filter((browser) => {
+        if (browser.toLowerCase().endsWith('crx')) {
+            return false;
+        }
+        if (buildEnv === BuildTargetEnv.Release && browser === Browser.FirefoxStandalone) {
+            return false;
+        }
+        return true;
+    });
     const targets = targetBrowser
         ? [targetBrowser]
-        // filter out chrome-crx
-        : Object.values(Browser).filter((browser) => !browser.toLowerCase().endsWith('crx'));
+        // filter out chrome-crx and firefox-standalone for release
+        : filteredTargets;
     const sizesData = await readSizesFile();
     let hasSizeIssues = false;
 
