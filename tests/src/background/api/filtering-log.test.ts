@@ -214,5 +214,241 @@ describe('FilteringLogApi', () => {
             expect(infoAfter?.domain).toBe('example.com');
             expect(infoAfter?.isExtensionTab).toBe(false);
         });
+
+        // Calling createTabInfo for a normal tab must not touch the pre-seeded
+        // background tab entry (BACKGROUND_TAB_ID guard was removed from createTabInfo
+        // in the $popup fix — verify the removal does not corrupt background tab).
+        it('does not overwrite background tab entry when called for a normal tab', () => {
+            const BACKGROUND_TAB_ID = -1;
+            const filteringLogApi = new FilteringLogApi();
+
+            const bgInfoBefore = filteringLogApi.getFilteringInfoByTabId(BACKGROUND_TAB_ID);
+            expect(bgInfoBefore).toBeDefined();
+
+            filteringLogApi.createTabInfo({
+                id: 30,
+                url: 'https://example.com',
+                title: 'Example',
+                index: 0,
+                highlighted: false,
+                active: false,
+                pinned: false,
+                incognito: false,
+            });
+
+            // Background tab entry must be the exact same object — untouched.
+            expect(filteringLogApi.getFilteringInfoByTabId(BACKGROUND_TAB_ID)).toBe(bgInfoBefore);
+            expect(filteringLogApi.getFilteringInfoByTabId(BACKGROUND_TAB_ID)?.tabId).toBe(BACKGROUND_TAB_ID);
+        });
+    });
+
+    describe('updateTabInfo', () => {
+        // Calling updateTabInfo for a normal tab must not touch the pre-seeded
+        // background tab entry (BACKGROUND_TAB_ID guard was removed from updateTabInfo
+        // in the $popup fix — verify the removal does not corrupt background tab).
+        it('does not corrupt background tab entry when called for a normal tab', () => {
+            const BACKGROUND_TAB_ID = -1;
+            const filteringLogApi = new FilteringLogApi();
+            filteringLogApi.onOpenFilteringLogPage();
+
+            // Seed an event into the background tab.
+            filteringLogApi.addEventData(BACKGROUND_TAB_ID, { eventId: 'bg-event-1' });
+            expect(filteringLogApi.getFilteringInfoByTabId(BACKGROUND_TAB_ID)?.filteringEvents)
+                .toHaveLength(1);
+
+            // Create and then update a normal tab.
+            filteringLogApi.createTabInfo({
+                id: 40,
+                url: '',
+                title: '',
+                index: 0,
+                highlighted: false,
+                active: false,
+                pinned: false,
+                incognito: false,
+            });
+            filteringLogApi.updateTabInfo({
+                id: 40,
+                url: 'https://example.com',
+                title: 'Example',
+                index: 0,
+                highlighted: false,
+                active: false,
+                pinned: false,
+                incognito: false,
+            });
+
+            // Background tab must be completely untouched.
+            const bgInfo = filteringLogApi.getFilteringInfoByTabId(BACKGROUND_TAB_ID);
+            expect(bgInfo).toBeDefined();
+            expect(bgInfo?.tabId).toBe(BACKGROUND_TAB_ID);
+            expect(bgInfo?.filteringEvents).toHaveLength(1);
+            expect(bgInfo?.filteringEvents[0]).toEqual({ eventId: 'bg-event-1' });
+        });
+
+        it('called with BACKGROUND_TAB_ID and does not clear its filtering events', () => {
+            const BACKGROUND_TAB_ID = -1;
+            const filteringLogApi = new FilteringLogApi();
+            filteringLogApi.onOpenFilteringLogPage();
+
+            // Seed an event into the background tab.
+            filteringLogApi.addEventData(BACKGROUND_TAB_ID, { eventId: 'bg-event-2' });
+
+            filteringLogApi.updateTabInfo({
+                id: BACKGROUND_TAB_ID,
+                url: 'chrome-extension://abc/background.html',
+                title: 'Background Page',
+                index: 0,
+                highlighted: false,
+                active: false,
+                pinned: false,
+                incognito: false,
+            });
+
+            const bgInfo = filteringLogApi.getFilteringInfoByTabId(BACKGROUND_TAB_ID);
+            // filteringEvents must not have been wiped by the update call.
+            expect(bgInfo?.filteringEvents).toHaveLength(1);
+            expect(bgInfo?.filteringEvents[0]).toEqual({ eventId: 'bg-event-2' });
+        });
+    });
+
+    describe('updateEventData', () => {
+        it('updates event when tabId matches the tab that holds the event', async () => {
+            const filteringLogApi = new FilteringLogApi();
+            await filteringLogApi.synchronizeOpenTabs(); // registers tab 1
+            filteringLogApi.onOpenFilteringLogPage();
+
+            filteringLogApi.addEventData(tabId, { eventId });
+            expect(filteringLogApi.getFilteringInfoByTabId(tabId)?.filteringEvents)
+                .toEqual([{ eventId }]);
+
+            await filteringLogApi.updateEventData(tabId, eventId, { requestUrl: 'https://example.com' });
+
+            expect(filteringLogApi.getFilteringInfoByTabId(tabId)?.filteringEvents)
+                .toEqual([{ eventId, requestUrl: 'https://example.com' }]);
+        });
+
+        it('does nothing when the eventId is not found in the target tab', async () => {
+            const filteringLogApi = new FilteringLogApi();
+            await filteringLogApi.synchronizeOpenTabs();
+            filteringLogApi.onOpenFilteringLogPage();
+
+            const BACKGROUND_TAB_ID = -1;
+            await filteringLogApi.updateEventData(BACKGROUND_TAB_ID, 'nonexistent-id', { requestUrl: 'https://x.com' });
+
+            expect(filteringLogApi.getFilteringInfoByTabId(BACKGROUND_TAB_ID)?.filteringEvents)
+                .toHaveLength(0);
+        });
+    });
+
+    // Used by the `$popup` filtering log fix to re-attach the original
+    // SendRequest event from the popup tab (which is being closed) to the
+    // pre-seeded background tab.
+    // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1686
+    describe('moveEventToBackgroundTab', () => {
+        const BACKGROUND_TAB_ID = -1;
+
+        it('moves a previously recorded event from a popup tab to the background tab and merges data', async () => {
+            const filteringLogApi = new FilteringLogApi();
+            await filteringLogApi.synchronizeOpenTabs(); // registers tab 1
+            filteringLogApi.onOpenFilteringLogPage();
+
+            // SendRequest landed under the popup's real tabId.
+            filteringLogApi.addEventData(tabId, { eventId });
+            expect(filteringLogApi.getFilteringInfoByTabId(tabId)?.filteringEvents)
+                .toHaveLength(1);
+
+            await filteringLogApi.moveEventToBackgroundTab(tabId, eventId, {
+                requestUrl: 'http://evilsite.com/',
+            });
+
+            // Event must have been removed from the popup tab.
+            expect(filteringLogApi.getFilteringInfoByTabId(tabId)?.filteringEvents)
+                .toHaveLength(0);
+
+            // And present (with the merged update) under the background tab.
+            const bgEvents = filteringLogApi.getFilteringInfoByTabId(BACKGROUND_TAB_ID)?.filteringEvents;
+            expect(bgEvents).toHaveLength(1);
+            expect(bgEvents?.[0]).toEqual({ eventId, requestUrl: 'http://evilsite.com/' });
+        });
+
+        it('appends the moved event next to existing background tab events', async () => {
+            const filteringLogApi = new FilteringLogApi();
+            await filteringLogApi.synchronizeOpenTabs(); // registers tab 1
+            filteringLogApi.onOpenFilteringLogPage();
+
+            // Pre-existing background event (e.g. earlier service-worker request).
+            filteringLogApi.addEventData(BACKGROUND_TAB_ID, { eventId: 'earlier-bg-event' });
+
+            // Popup SendRequest under the real popup tab id.
+            const popupEventId = 'popup-event';
+            filteringLogApi.addEventData(tabId, { eventId: popupEventId });
+
+            await filteringLogApi.moveEventToBackgroundTab(tabId, popupEventId, {
+                requestUrl: 'https://popup.example.com/',
+            });
+
+            expect(filteringLogApi.getFilteringInfoByTabId(tabId)?.filteringEvents)
+                .toHaveLength(0);
+
+            const bgEvents = filteringLogApi.getFilteringInfoByTabId(BACKGROUND_TAB_ID)?.filteringEvents;
+            expect(bgEvents).toHaveLength(2);
+            expect(bgEvents?.find((e) => e.eventId === 'earlier-bg-event')).toBeDefined();
+            expect(bgEvents?.find((e) => e.eventId === popupEventId)).toEqual({
+                eventId: popupEventId,
+                requestUrl: 'https://popup.example.com/',
+            });
+        });
+
+        it('does nothing when no event with the given id was recorded under the source tab', async () => {
+            const filteringLogApi = new FilteringLogApi();
+            await filteringLogApi.synchronizeOpenTabs();
+            filteringLogApi.onOpenFilteringLogPage();
+
+            await filteringLogApi.moveEventToBackgroundTab(tabId, 'unknown-id', {
+                requestUrl: 'https://example.com',
+            });
+
+            expect(filteringLogApi.getFilteringInfoByTabId(BACKGROUND_TAB_ID)?.filteringEvents)
+                .toHaveLength(0);
+        });
+    });
+
+    describe('removeTabInfo', () => {
+        it('does not remove the background tab entry when called with BACKGROUND_TAB_ID', () => {
+            const BACKGROUND_TAB_ID = -1;
+            const filteringLogApi = new FilteringLogApi();
+
+            // Background tab is pre-seeded in the map
+            expect(filteringLogApi.getFilteringInfoByTabId(BACKGROUND_TAB_ID)).toBeDefined();
+
+            filteringLogApi.removeTabInfo(BACKGROUND_TAB_ID);
+
+            // Must still be present
+            expect(filteringLogApi.getFilteringInfoByTabId(BACKGROUND_TAB_ID)).toBeDefined();
+        });
+
+        it('preserves background tab entry after synchronizeOpenTabs', async () => {
+            const BACKGROUND_TAB_ID = -1;
+            const filteringLogApi = new FilteringLogApi();
+
+            // synchronizeOpenTabs iterates all tabsInfoMap keys, including -1,
+            // and calls removeTabInfo for IDs not returned by TabsApi.getAll().
+            // BACKGROUND_TAB_ID must survive.
+            await filteringLogApi.synchronizeOpenTabs();
+
+            expect(filteringLogApi.getFilteringInfoByTabId(BACKGROUND_TAB_ID)).toBeDefined();
+        });
+
+        it('removes a normal tab entry', async () => {
+            const filteringLogApi = new FilteringLogApi();
+            await filteringLogApi.synchronizeOpenTabs(); // registers tab 1
+
+            expect(filteringLogApi.getFilteringInfoByTabId(tabId)).toBeDefined();
+
+            filteringLogApi.removeTabInfo(tabId);
+
+            expect(filteringLogApi.getFilteringInfoByTabId(tabId)).toBeUndefined();
+        });
     });
 });

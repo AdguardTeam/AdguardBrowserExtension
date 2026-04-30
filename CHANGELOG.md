@@ -9,9 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- "Send ad filters usage" option with CSS rules containing `::before` or `::after` causes visible content on the page [#1486].
+- Filtering log events for tabs closed by `$popup` modifier rules are now displayed
+  as linked to the background page [#1686].
+- "Send ad filters usage" option with CSS rules containing `::before` or `::after`
+  causes visible content on the page [#1486].
 
 [#1486]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1486
+[#1686]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1686
 
 ## [5.4]
 

@@ -40,6 +40,7 @@ import {
     getDomain,
     type ApplyPermissionsRuleEvent,
     type DeclarativeRuleEvent,
+    type PopupBlockedEvent,
     type RuleInfo,
 } from 'tswebextension';
 
@@ -104,6 +105,7 @@ export class FilteringLogService {
         defaultFilteringLog.addEventListener(FilteringEventType.TabReload, FilteringLogService.onTabReload);
         defaultFilteringLog.addEventListener(FilteringEventType.ReceiveResponse, FilteringLogService.onReceiveResponse);
         defaultFilteringLog.addEventListener(FilteringEventType.ApplyBasicRule, FilteringLogService.onApplyBasicRule);
+        defaultFilteringLog.addEventListener(FilteringEventType.PopupBlocked, FilteringLogService.onPopupBlocked);
         defaultFilteringLog.addEventListener(FilteringEventType.ApplyCspRule, FilteringLogService.onApplyCspRule);
         defaultFilteringLog.addEventListener(FilteringEventType.ApplyPermissionsRule, FilteringLogService.onApplyPermissionsRule);
         defaultFilteringLog.addEventListener(FilteringEventType.ApplyCosmeticRule, FilteringLogService.onApplyCosmeticRule);
@@ -178,6 +180,61 @@ export class FilteringLogService {
         }
 
         filteringLogApi.updateEventData(tabId, eventId, {
+            requestRule: {
+                filterId,
+                ruleIndex,
+                // fallback should never happen during normal operation
+                appliedRuleText: appliedRuleText ?? `<rule text is not specified> (${filterId}:${ruleIndex})`,
+                originalRuleText: originalRuleText ?? undefined,
+                allowlistRule: isAllowlist,
+                isImportant,
+                documentLevelRule: isDocumentLevel,
+                isStealthModeRule: filterId === AntiBannerFiltersId.StealthModeFilterId,
+                cspRule: isCsp,
+                cookieRule: isCookie,
+                modifierValue: advancedModifier ?? undefined,
+            },
+        });
+
+        if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
+            HitStatsApi.addRuleHit(filterId, ruleIndex);
+        }
+    }
+
+    /**
+     * Records the application of a `$popup` modifier rule that closes a tab.
+     *
+     * The original `SendRequest` event is recorded under the popup tab's id,
+     * but that tab is removed immediately after the rule is applied. To keep
+     * the entry visible in the filtering log we move the event from the
+     * popup tab to the background tab and merge the applied rule info into
+     * it. See https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1686.
+     *
+     * @param ruleEvent Item of {@link PopupBlockedEvent}.
+     * @param ruleEvent.data Data for this event: tabId (the popup tab being
+     * closed), eventId and applied rule info.
+     */
+    private static async onPopupBlocked({ data }: PopupBlockedEvent): Promise<void> {
+        const {
+            tabId,
+            eventId,
+            filterId,
+            ruleIndex,
+            appliedRuleText,
+            originalRuleText,
+            isAllowlist,
+            isImportant,
+            isDocumentLevel,
+            isCsp,
+            isCookie,
+            advancedModifier,
+        } = data;
+
+        if (filterId === null || ruleIndex === null) {
+            return;
+        }
+
+        await filteringLogApi.moveEventToBackgroundTab(tabId, eventId, {
             requestRule: {
                 filterId,
                 ruleIndex,
