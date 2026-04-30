@@ -119,6 +119,9 @@
     "options_add_custom_filter_modal_error_subtitle": {
         "message": "Спробуйте ще раз або напишіть у службу підтримки"
     },
+    "options_add_custom_filter_modal_error_html_content": {
+        "message": "URL повернув вебсторінку замість списку фільтрів. Будь ласка, надайте пряме посилання на файл фільтра."
+    },
     "options_add_custom_filter_modal_add_button": {
         "message": "Додати"
     },
@@ -150,7 +153,7 @@
         "message": "Домашня сторінка:"
     },
     "options_popup_filter_url": {
-        "message": "URL-адреса:"
+        "message": "URL"
     },
     "options_popup_subscribe_button": {
         "message": "Додати"
@@ -184,7 +187,7 @@
         "message": "Список дозволів"
     },
     "options_allowlist_desc": {
-        "message": "AdGuard не блокує рекламу та трекери на сайтах із цього списку"
+        "message": "AdGuard не блокує рекламу і трекери на сайтах зі списку"
     },
     "options_allowlist_invert": {
         "message": "Інвертувати Список дозволів"
@@ -197,6 +200,9 @@
     },
     "options_allowlist_leave_subtitle": {
         "message": "Ваші зміни списку дозволів буде втрачено"
+    },
+    "options_allowlist_invalid_entries": {
+        "message": "Щоб зберегти, залиште лише домени або URL. Потрібно виправити: %entries%"
     },
     "options_userfilter": {
         "message": "Правила користувача"
@@ -250,7 +256,10 @@
         "message": "Фільтри"
     },
     "options_antibanner_rules_count": {
-        "message": "Кількість правил фільтрування: %rules_count%"
+        "message": "Правила: %rules_count%"
+    },
+    "options_antibanner_updated": {
+        "message": "Оновлено: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Власні"
@@ -293,6 +302,9 @@
     },
     "options_editor_indicator_saved": {
         "message": "Збережено"
+    },
+    "options_editor_save_error": {
+        "message": "Не вдалося зберегти зміни. Спробуйте знову або зверніться до служби підтримки"
     },
     "options_popup_import_error_required_privacy_permission": {
         "message": "Щоб імпортувати цей файл налаштувань, дозвольте AdGuard змінити ваші налаштування конфіденційності."
@@ -442,7 +454,7 @@
         "message": "Помилка оновлення фільтрів"
     },
     "options_popup_update_not_found": {
-        "message": "Оновлень не знайдено"
+        "message": "Ваші фільтри актуальні"
     },
     "options_popup_update_error": {
         "message": "Не вдалося отримати оновлення. Будь ласка, спробуйте ще раз пізніше."
@@ -553,7 +565,7 @@
         "message": "Журнал фільтрування"
     },
     "filtering_log_search_string": {
-        "message": "Фільтрувати записи журналу"
+        "message": "Пошук"
     },
     "filtering_log_search_tabs_placeholder": {
         "message": "Пошук серед вкладок"
@@ -566,6 +578,12 @@
     },
     "filtering_refresh_tab_short": {
         "message": "Оновити"
+    },
+    "filtering_refresh_tab_short_mobile": {
+        "message": "Оновити сторінку"
+    },
+    "filtering_menu_open_filters": {
+        "message": "Налаштувати"
     },
     "filtering_clear_log_events": {
         "message": "Очистити журнал"
@@ -598,7 +616,7 @@
         "message": "Докладніше"
     },
     "filtering_table_empty_reload_page_desc": {
-        "message": "Нічого не знайдено. <reset>Вимкніть фільтри<\/reset> або <refresh>перезавантажте сторінку<\/refresh>, щоб переглянути записи журналу."
+        "message": "Нічого не знайдено. <reset>Скинути фільтри<\/reset> або <refresh>оновити сторінку<\/refresh>, щоб переглянути записи журналу"
     },
     "filtering_modal_info_title": {
         "message": "Інформація про блокування"
@@ -607,10 +625,10 @@
         "message": "Попередній перегляд"
     },
     "filtering_modal_type": {
-        "message": "Тип:"
+        "message": "Тип"
     },
     "filtering_modal_source": {
-        "message": "Джерело:"
+        "message": "Джерело"
     },
     "filtering_modal_rule": {
         "message": "Правило:"
@@ -619,10 +637,10 @@
         "message": "Правила:"
     },
     "filtering_modal_privacy": {
-        "message": "Захист від стеження:"
+        "message": "Захист від стеження"
     },
     "filtering_modal_filter": {
-        "message": "Фільтр:"
+        "message": "Фільтр"
     },
     "filtering_modal_block": {
         "message": "Заблокувати"
@@ -642,11 +660,14 @@
     "filtering_modal_remove_allowlist": {
         "message": "Вилучити зі Списку дозволів"
     },
-    "filtering_modal_add_title": {
-        "message": "Додавання правила"
+    "filtering_modal_block_title": {
+        "message": "Додавання правила блокування"
+    },
+    "filtering_modal_allow_title": {
+        "message": "Додавання правила дозволу"
     },
     "filtering_modal_status_text_desc": {
-        "message": "Статус:"
+        "message": "Статус"
     },
     "filtering_modal_status_text_error": {
         "message": "Не вдалося завантажити попередній перегляд. Будь ласка, спробуйте ще раз"
@@ -655,19 +676,22 @@
         "message": "Завантаження..."
     },
     "filtering_modal_filtering_status_text_desc": {
-        "message": "Статус фільтрування:"
+        "message": "Стан фільтрації"
     },
     "filtering_modal_rule_text_desc": {
-        "message": "Правило:"
+        "message": "Правило"
     },
-    "filtering_modal_patterns_desc": {
-        "message": "Зразки:"
+    "filtering_modal_patterns_desc_block": {
+        "message": "Що слід заблокувати"
+    },
+    "filtering_modal_patterns_desc_allow": {
+        "message": "Що слід дозволити"
     },
     "filtering_modal_options_desc": {
-        "message": "Параметри:"
+        "message": "Опції"
     },
     "filtering_modal_apply_domains": {
-        "message": "Застосувати правило для всіх сайтів"
+        "message": "Застосувати до всіх вебсайтів"
     },
     "filtering_modal_third_party": {
         "message": "Застосувати тільки для сторонніх запитів"
@@ -676,7 +700,7 @@
         "message": "Видалити параметри запиту"
     },
     "filtering_modal_add_rule": {
-        "message": "Додати правило"
+        "message": "Додати"
     },
     "filtering_modal_exception_title": {
         "message": "Додавання винятку"
@@ -779,6 +803,9 @@
     },
     "options_export_settings": {
         "message": "Експорт налаштувань"
+    },
+    "options_share_settings": {
+        "message": "Поділіться налаштуваннями"
     },
     "options_import_settings": {
         "message": "Імпорт налаштувань"
@@ -994,6 +1021,9 @@
     },
     "options_show_adguard_full_version_title": {
         "message": "Показувати інформацію про повну версію AdGuard"
+    },
+    "options_clear_stats_confirm_modal_subtitle": {
+        "message": "Уся статистика використання даних буде назавжди Видалено"
     },
     "options_show_app_updated_notification": {
         "message": "Сповіщати про оновлення розширення"
@@ -1217,6 +1247,24 @@
     "options_nav_compare": {
         "message": "Порівняти"
     },
+    "options_desktop_app_promo_title": {
+        "message": "Розширення захищає лише браузер"
+    },
+    "options_desktop_app_promo_description": {
+        "message": "Додатки як-от Spotify, Discord або Zoom все ще можуть показувати рекламу та відстежувати вашу активність"
+    },
+    "options_desktop_app_promo_subdescription": {
+        "message": "Наш додаток для настільного ПК може захистити вас від них"
+    },
+    "options_desktop_app_promo_button_windows": {
+        "message": "Отримати AdGuard для Windows"
+    },
+    "options_desktop_app_promo_button_mac": {
+        "message": "Отримати AdGuard для Mac"
+    },
+    "options_desktop_app_promo_button_linux": {
+        "message": "Отримати AdGuard для Linux"
+    },
     "options_filters_search": {
         "message": "Пошук"
     },
@@ -1277,11 +1325,56 @@
     "options_reset_settings_confirm_modal_title": {
         "message": "Скинути налаштування?"
     },
+    "options_reset_settings_confirm_modal_subtitle": {
+        "message": "Усі налаштування буде скинуто до значень за замовчуванням"
+    },
     "options_reset_settings_confirm_modal_clear_button": {
         "message": "Скинути"
     },
+    "options_invert_allowlist_confirm_modal_title": {
+        "message": "Інвертувати список дозволених?"
+    },
+    "options_invert_allowlist_confirm_modal_subtitle": {
+        "message": "Реклама і трекери будуть заблоковано лише на сайтах з allowlist"
+    },
+    "options_invert_allowlist_confirm_modal_confirm_button": {
+        "message": "Інвертувати"
+    },
     "options_confirm_modal_cancel_button": {
         "message": "Скасувати"
+    },
+    "options_import_configuration_confirm_title": {
+        "message": "Імпорт налаштувань"
+    },
+    "options_import_configuration_confirm_subtitle": {
+        "message": "Імпортовані налаштування замінять ваші поточні. Це не вплине на інші налаштування"
+    },
+    "options_import_configuration_confirm_button": {
+        "message": "Імпорт"
+    },
+    "options_import_configuration_applying_title": {
+        "message": "Імпорт..."
+    },
+    "options_import_configuration_applying_subtitle": {
+        "message": "Замінення ваших поточних налаштувань на імпортовані. Під час імпорту фільтрування вимкнено"
+    },
+    "options_import_configuration_success_title": {
+        "message": "Готово"
+    },
+    "options_import_configuration_success_subtitle": {
+        "message": "Налаштування успішно імпортовано"
+    },
+    "options_import_configuration_success_button": {
+        "message": "Закрити"
+    },
+    "options_import_configuration_error_title": {
+        "message": "Не вдалося імпортувати параметри"
+    },
+    "options_import_configuration_error_subtitle": {
+        "message": "Перевірте посилання для імпорту і спробуйте ще раз. Якщо це не допоможе, зверніться до служби підтримки"
+    },
+    "options_import_configuration_error_button": {
+        "message": "Закрити"
     },
     "filtering_log_details_modal_beautify_button": {
         "message": "Покращити вигляд"
@@ -1302,7 +1395,7 @@
         "message": "Сторонні запити"
     },
     "filtering_log_tag_request_status": {
-        "message": "Статус запиту"
+        "message": "Стан фільтрації"
     },
     "filtering_log_tag_tooltip_regular": {
         "message": "Запити без фільтрування"
@@ -1455,7 +1548,7 @@
         "message": "Спробувати знову"
     },
     "filtering_modal_applied_rules": {
-        "message": "| Застосоване правило: | Застосовані правила: | Застосовані: правила:",
+        "message": "| Застосоване правило | Застосовані правила | Застосовані правила",
         "description": "WARNING: correct number of plural forms is required"
     },
     "filtering_modal_assumed_rules": {
@@ -1468,5 +1561,14 @@
     },
     "filtering_modal_declarative_rule": {
         "message": "Правило DNR:"
+    },
+    "opera_search_permission_warning": {
+        "message": "Щоб блокувати рекламу в пошуку, дозволити доступ до результатів сторінки пошуку в налаштуваннях браузера"
+    },
+    "opera_search_permission_go_to_settings": {
+        "message": "Відкрити Налаштування"
+    },
+    "opera_search_permission_dont_show": {
+        "message": "Не показувати знову"
     }
 }

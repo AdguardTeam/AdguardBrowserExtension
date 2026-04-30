@@ -119,6 +119,9 @@
     "options_add_custom_filter_modal_error_subtitle": {
         "message": "Prašome bandyti dar kartą arba susisiekti su palaikymo tarnyba."
     },
+    "options_add_custom_filter_modal_error_html_content": {
+        "message": "URL grąžino tinklalapį vietoje filtrų sąrašo. Pateikite tiesioginę nuorodą į filtrų failą."
+    },
     "options_add_custom_filter_modal_add_button": {
         "message": "PRIDĖTI"
     },
@@ -150,7 +153,7 @@
         "message": "Svetainė:"
     },
     "options_popup_filter_url": {
-        "message": "URL:"
+        "message": "URL"
     },
     "options_popup_subscribe_button": {
         "message": "Užsiprenumeruoti"
@@ -184,7 +187,7 @@
         "message": "Baltasis sąrašas"
     },
     "options_allowlist_desc": {
-        "message": "AdGuard neblokuoja reklamų ir seklių svetainėse iš sąrašo"
+        "message": "AdGuard neblokuoja reklamų ir seklių svetainėse iš sąrašo"
     },
     "options_allowlist_invert": {
         "message": "Invertuoti baltąjį sąrašą"
@@ -197,6 +200,9 @@
     },
     "options_allowlist_leave_subtitle": {
         "message": "Jūsų pakeitimai į Leidimų sąrašą bus prarasti"
+    },
+    "options_allowlist_invalid_entries": {
+        "message": "Norint Įrašyti, palikite tik domenus arba URL. Šiuos reikia pataisyti: %entries%"
     },
     "options_userfilter": {
         "message": "Naudotojo filtras"
@@ -250,7 +256,10 @@
         "message": "Filtrai"
     },
     "options_antibanner_rules_count": {
-        "message": "Filtrų skaičius: %rules_count%"
+        "message": "Taisyklės: %rules_count%"
+    },
+    "options_antibanner_updated": {
+        "message": "Atnaujinta: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Nuosavi"
@@ -293,6 +302,9 @@
     },
     "options_editor_indicator_saved": {
         "message": "Išsaugota"
+    },
+    "options_editor_save_error": {
+        "message": "Nepavyko išsaugoti pakeitimų. Pabandykite dar kartą arba susisiekite su palaikymu"
     },
     "options_popup_import_error_required_privacy_permission": {
         "message": "Kad importuotumėte šį nustatymų failą, leiskite AdGuard pakeisti Jūsų privatumo nustatymus."
@@ -442,7 +454,7 @@
         "message": "Klaida atnaujinant filtrus"
     },
     "options_popup_update_not_found": {
-        "message": "Nerasta jokių naujinių"
+        "message": "Jūsų filtrai yra atnaujinti"
     },
     "options_popup_update_error": {
         "message": "Nepavyko gauti naujinių. Pabandykite dar kartą vėliau."
@@ -553,7 +565,7 @@
         "message": "Filtravimo logas"
     },
     "filtering_log_search_string": {
-        "message": "Įveskite paieškos eilutę"
+        "message": "Paieška"
     },
     "filtering_log_search_tabs_placeholder": {
         "message": "Ieškoti skirtukuose"
@@ -566,6 +578,12 @@
     },
     "filtering_refresh_tab_short": {
         "message": "Atnaujinti"
+    },
+    "filtering_refresh_tab_short_mobile": {
+        "message": "Atnaujinti puslapį"
+    },
+    "filtering_menu_open_filters": {
+        "message": "Nustatyti"
     },
     "filtering_clear_log_events": {
         "message": "Išvalyti žurnalą"
@@ -598,7 +616,7 @@
         "message": "Atverti išsamią informaciją"
     },
     "filtering_table_empty_reload_page_desc": {
-        "message": "Nieko nerasta. <reset>Išjungti filtrus<\/reset> arba <refresh>atidaryti puslapį<\/refresh> norėdami peržiūrėti žurnalo įrašus."
+        "message": "Nieko nerasta. <reset>Išjungti filtrus<\/reset> arba <refresh>iš naujo įkelti puslapį<\/refresh>, kad peržiūrėtumėte žurnalo įrašus"
     },
     "filtering_modal_info_title": {
         "message": "Užklausos detalės"
@@ -607,10 +625,10 @@
         "message": "Peržiūra"
     },
     "filtering_modal_type": {
-        "message": "Tipas:"
+        "message": "Tipas"
     },
     "filtering_modal_source": {
-        "message": "Šaltinis:"
+        "message": "Šaltinis"
     },
     "filtering_modal_rule": {
         "message": "Taisyklė:"
@@ -619,10 +637,10 @@
         "message": "Taisyklės:"
     },
     "filtering_modal_privacy": {
-        "message": "Sekimo apsauga:"
+        "message": "Sekimo apsauga"
     },
     "filtering_modal_filter": {
-        "message": "Filtras:"
+        "message": "Filtras"
     },
     "filtering_modal_block": {
         "message": "Užblokuoti"
@@ -642,11 +660,14 @@
     "filtering_modal_remove_allowlist": {
         "message": "Pašalinti iš baltojo sąrašo"
     },
-    "filtering_modal_add_title": {
-        "message": "Taisyklės pridėjimas"
+    "filtering_modal_block_title": {
+        "message": "Pridėti blokavimo taisyklę"
+    },
+    "filtering_modal_allow_title": {
+        "message": "Pridėti leidimo taisyklę"
     },
     "filtering_modal_status_text_desc": {
-        "message": "Būsena:"
+        "message": "Būsena"
     },
     "filtering_modal_status_text_error": {
         "message": "Nepavyko įkelti peržiūros. Prašome bandyti dar kartą"
@@ -655,19 +676,22 @@
         "message": "Įkeliama..."
     },
     "filtering_modal_filtering_status_text_desc": {
-        "message": "Filtravimo būsena:"
+        "message": "Filtravimo būsena"
     },
     "filtering_modal_rule_text_desc": {
-        "message": "Taisyklės tekstas:"
+        "message": "Taisyklė"
     },
-    "filtering_modal_patterns_desc": {
-        "message": "Šablonai:"
+    "filtering_modal_patterns_desc_block": {
+        "message": "Ką reikia blokuoti"
+    },
+    "filtering_modal_patterns_desc_allow": {
+        "message": "Ką reikia leisti"
     },
     "filtering_modal_options_desc": {
-        "message": "Parinktys:"
+        "message": "Parinktys"
     },
     "filtering_modal_apply_domains": {
-        "message": "Pritaikyti taisyklę visoms svetainėms"
+        "message": "Taikyti visoms svetainėms"
     },
     "filtering_modal_third_party": {
         "message": "Taikyti tik trečiųjų šalių užklausoms"
@@ -676,7 +700,7 @@
         "message": "Ištrinti užklausos parametrus"
     },
     "filtering_modal_add_rule": {
-        "message": "Pridėti taisyklę"
+        "message": "PRIDĖTI"
     },
     "filtering_modal_exception_title": {
         "message": "Pridėti išimtį"
@@ -779,6 +803,9 @@
     },
     "options_export_settings": {
         "message": "Eksportuoti nustatymus"
+    },
+    "options_share_settings": {
+        "message": "Bendrinti nustatymus"
     },
     "options_import_settings": {
         "message": "Importuoti nustatymus"
@@ -994,6 +1021,9 @@
     },
     "options_show_adguard_full_version_title": {
         "message": "Rodyti informaciją AdGuard pilnoje versijoje"
+    },
+    "options_clear_stats_confirm_modal_subtitle": {
+        "message": "Visa duomenų naudojimo statistika bus visam laikui ištrinta"
     },
     "options_show_app_updated_notification": {
         "message": "Pranešti apie plėtinių naujinius"
@@ -1217,6 +1247,24 @@
     "options_nav_compare": {
         "message": "Palyginti"
     },
+    "options_desktop_app_promo_title": {
+        "message": "Plėtinys saugo tik naršyklę"
+    },
+    "options_desktop_app_promo_description": {
+        "message": "Programėlės, tokios kaip Spotify, Discord ar Zoom, vis dar gali rodyti reklamas ir sekti jūsų veiklą"
+    },
+    "options_desktop_app_promo_subdescription": {
+        "message": "Mūsų darbalaukio programa gali jus apsaugoti nuo jų"
+    },
+    "options_desktop_app_promo_button_windows": {
+        "message": "Gaukite AdGuard for Windows"
+    },
+    "options_desktop_app_promo_button_mac": {
+        "message": "Gaukite AdGuard for Mac"
+    },
+    "options_desktop_app_promo_button_linux": {
+        "message": "Gaukite AdGuard for Linux"
+    },
     "options_filters_search": {
         "message": "Paieška"
     },
@@ -1277,11 +1325,56 @@
     "options_reset_settings_confirm_modal_title": {
         "message": "Atstatyti nustatymus?"
     },
+    "options_reset_settings_confirm_modal_subtitle": {
+        "message": "Visi nustatymai bus atkurti į numatytąsias reikšmes"
+    },
     "options_reset_settings_confirm_modal_clear_button": {
         "message": "Atstatyti"
     },
+    "options_invert_allowlist_confirm_modal_title": {
+        "message": "Apversti leidžiamųjų sąrašą?"
+    },
+    "options_invert_allowlist_confirm_modal_subtitle": {
+        "message": "Reklamos ir seklys bus blokuojami tik svetainėse iš allowlist"
+    },
+    "options_invert_allowlist_confirm_modal_confirm_button": {
+        "message": "Apversti"
+    },
     "options_confirm_modal_cancel_button": {
         "message": "Atšaukti"
+    },
+    "options_import_configuration_confirm_title": {
+        "message": "Importo nustatymai"
+    },
+    "options_import_configuration_confirm_subtitle": {
+        "message": "Importuotos nustatymai pakeis dabartinius. Kiti nustatymai nebus keičiami"
+    },
+    "options_import_configuration_confirm_button": {
+        "message": "Importas"
+    },
+    "options_import_configuration_applying_title": {
+        "message": "Importuojama..."
+    },
+    "options_import_configuration_applying_subtitle": {
+        "message": "Pakeisti esamus nustatymus importuotais. Importo metu filtravimas išjungiamas"
+    },
+    "options_import_configuration_success_title": {
+        "message": "Viskas padaryta"
+    },
+    "options_import_configuration_success_subtitle": {
+        "message": "Nustatymai sėkmingai importuoti"
+    },
+    "options_import_configuration_success_button": {
+        "message": "Uždaryti"
+    },
+    "options_import_configuration_error_title": {
+        "message": "Nepavyko importuoti nustatymų"
+    },
+    "options_import_configuration_error_subtitle": {
+        "message": "Patikrinkite importavimo nuorodą ir bandykite dar kartą. Jei nepadeda, kreipkitės į palaikymą"
+    },
+    "options_import_configuration_error_button": {
+        "message": "Uždaryti"
     },
     "filtering_log_details_modal_beautify_button": {
         "message": "Gražinti"
@@ -1302,7 +1395,7 @@
         "message": "Trečiųjų šalių užklausos"
     },
     "filtering_log_tag_request_status": {
-        "message": "Užklausos būsena"
+        "message": "Filtravimo būsena"
     },
     "filtering_log_tag_tooltip_regular": {
         "message": "Užklausos, apdorotos be filtravimo"
@@ -1455,7 +1548,7 @@
         "message": "Pabandyti iš naujo"
     },
     "filtering_modal_applied_rules": {
-        "message": "| Taikoma taisyklė: | Taikomos taisyklės: | Taikomos taisyklės:",
+        "message": "| Taikoma taisyklė | Taikomos taisyklės | Taikomos taisyklės",
         "description": "WARNING: correct number of plural forms is required"
     },
     "filtering_modal_assumed_rules": {
@@ -1468,5 +1561,14 @@
     },
     "filtering_modal_declarative_rule": {
         "message": "DNR taisyklė:"
+    },
+    "opera_search_permission_warning": {
+        "message": "Norint blokuoti paieškos reklamas, leisti prieigą prie paieškos rezultatų puslapio naršyklės nustatymuose"
+    },
+    "opera_search_permission_go_to_settings": {
+        "message": "Eiti į nustatymus"
+    },
+    "opera_search_permission_dont_show": {
+        "message": "Daugiau nerodyti"
     }
 }

@@ -1,9 +1,9 @@
-! Checksum: jHBZgyFPXRjkNbPNyqvCxQ
-! Diff-Path: ../patches/8/8-s-1774027323-3600.patch
+! Checksum: XRq96jPSiiX3i5QaENKWRA
+! Diff-Path: ../patches/8/8-s-1776940774-3600.patch
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.9.5
-! TimeUpdated: 2026-03-20T17:18:42+00:00
+! Version: 2.0.9.13
+! TimeUpdated: 2026-04-23T10:36:36+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1476,6 +1476,7 @@ ah.nl##.product-card-portrait_root__ZiRpZ:has(.promotion_root__pAAlu)
 tvgids.nl##.square-item:has( > .banner)
 plus.nl##a[data-link]:has(.sponsored-product)
 agconnect.nl#?#.c-teaser:has(.c-pill--partner)
+mediamarkt.*##aside[class="sc-a2fcee8-0 fmYGst"]:has(button[aria-label="Lees meer over productsponsoring"])
 delhaize.be#?#.product-item:contains(Gesponsord)
 androidplanet.nl##div[data-name="post"]:has(div[data-name="sponsor-logo"])
 krefel.be#?#div[class^="Flex-styled__StyledFlex-"]:has(h3:contains(Gesponsorde producten))
@@ -1555,6 +1556,8 @@ vakantieplaats.nl#@#.topAds
 ! Bad: ||legitwebsite.com^$third-party (should be in adservers.txt)
 !
 !
+||zsp1.ah.be^
+||zsp1.ah.nl^
 ||h3v9p8x2q1r7-agckaeh6g2ehcaes.*.azurewebsites.net^
 ||x9t7g4m2qk2.azurewebsites.net^
 ||kjdsfjisdfjr23.azurewebsites.net^
@@ -1780,6 +1783,18 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ! Good: example.org###rek; ||example.com/ads/
 ! Bad: example.org#@##banner_ad (for instance, should be in allowlist.txt or in antiadblock.txt)
 !
+||cdn.optoutadvertising.com^$domain=ad.nl
+security.nl##.content_right > div.posting:has(> div.sidebar a[href^="https://www.security.nl/"])
+trouw.nl##aside[data-test-id="temptation-PAGE_TOP"] + div.h1-container
+trouw.nl###r1
+trouw.nl###r2
+trouw.nl###b1
+trouw.nl###h0
+trouw.nl###h1
+iex.nl##.banner
+iex.nl##.native_positie
+volkskrant.nl#?#.h1-container:has(> div[class]:matches-css(before, content: /Advertentie/))
+volkskrant.nl#?#div[id][class][tabindex]:matches-css(before, content: /Advertentie/)
 f1maximaal.nl###article-blocks > .raw-html-component
 ||resources.planetnine.com/scripts/f1maximaal.nl.js
 fok.nl###r89-mobile-rectangle-low-0-wrapper
@@ -1972,6 +1987,7 @@ buienradar.nl###adholderContainerHeader
 trouw.nl,parool.nl##.ad--section
 nnieuws.be##.banner-silver
 ah.nl##.ad-lane
+ah.nl##div[data-testid="spotlight-ahrms"]
 forum.fok.nl###wa_web_headertofloor
 nu.nl###header > .zone
 telegraaf.nl##.VideoArticlePage__banner
