@@ -6,7 +6,7 @@ env:
   # Forks do not have access to our vars
   VARS_PNPM: ${{ vars.VARS_PNPM || '--silent --ignore-scripts' }}
 
-on: push
+on: pull_request
 
 jobs:
   test:
@@ -33,7 +33,7 @@ jobs:
         run: pnpm test
 
   notify:
-    needs: test
+    needs: pnpm test
     # Run this job only if the previous job failed and the event was triggered from the original repository
     # Note: 'always()' is needed to run the notify job even if the test job was failed
     if:
@@ -57,7 +57,7 @@ jobs:
           payload: |
             text: "❌ Tests failed"
             attachments:
-              - color: "danger"
+              - color: "red"
                 fields:
                   - title: "Workflow"
                     value: "${{ github.workflow }}"
