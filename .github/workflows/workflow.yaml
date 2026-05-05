@@ -12,15 +12,15 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Install pnpm
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v5
         with:
           version: ${{ env.PNPM_VERSION }}
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           registry-url: https://registry.npmjs.org
@@ -50,11 +50,36 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Send Slack notification
-        uses: 8398a7/action-slack@v3
+        uses: slackapi/slack-github-action@v3
         with:
-          status: failure
-          fields: workflow, repo, message, commit, author, eventName, ref, job
-          job_name: test
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: "❌ Tests failed"
+            attachments:
+              - color: "danger"
+                fields:
+                  - title: "Workflow"
+                    value: "${{ github.workflow }}"
+                    short: true
+                  - title: "Repo"
+                    value: "<${{ github.server_url }}/${{ github.repository }}|${{ github.repository }}>"
+                    short: true
+                  - title: "Message"
+                    value: ${{ toJSON(github.event.head_commit.message || format('Manual trigger by {0}', github.actor)) }}
+                    short: false
+                  - title: "Commit"
+                    value: "<${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}|${{ github.sha }}>"
+                    short: true
+                  - title: "Author"
+                    value: "${{ github.actor }}"
+                    short: true
+                  - title: "Event"
+                    value: "${{ github.event_name }}"
+                    short: true
+                  - title: "Ref"
+                    value: "${{ github.ref }}"
+                    short: true
+                  - title: "Job"
+                    value: "test"
+                    short: true
