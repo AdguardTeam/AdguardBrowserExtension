@@ -42,6 +42,8 @@ export const IMPORT_CONFIGURATION_OUTPUT = 'pages/import-configuration';
  */
 export const IMPORT_CONFIGURATION_HOSTNAMES = [
     'reports.adguard.com',
+    'reports.adguard.info',
+    'reports.adguard.app',
 ];
 
 export const CONTENT_SCRIPT_START_OUTPUT = 'pages/content-script-start';
