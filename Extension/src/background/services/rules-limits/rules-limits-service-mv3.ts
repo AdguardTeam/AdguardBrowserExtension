@@ -471,10 +471,9 @@ export class RulesLimitsService {
             return false;
         }
 
+        const cachedEnabledFilters = RulesLimitsService.getExpectedEnabledFilters();
+        const expectedEnabledFilters = RulesLimitsService.getCurrentConfigurationEnabledFilters();
         const actuallyEnabledFilters = await RulesLimitsService.getActuallyEnabledFilters();
-        if (actuallyEnabledFilters.length === 0) {
-            return false;
-        }
 
         // If there are some filters in storage - it means, that last used
         // configuration is damaged and we should notify user about them until
@@ -482,16 +481,13 @@ export class RulesLimitsService {
         // This case needed to save warning if service worker will restart and
         // after successful configuration update we will not notify user about
         // changed configuration or user paused and resumed protection.
-        const cachedEnabledFilters = RulesLimitsService.getExpectedEnabledFilters();
         if (cachedEnabledFilters.length > 0 && !arraysAreEqual(actuallyEnabledFilters, cachedEnabledFilters)) {
             return true;
         }
 
-        // Else we do a full check of the current configuration: if filters from
+        // Do a full check of the current configuration: if filters from
         // configuration are not same as enabled filters - it means that browser
         // declined update of the configuration and we should notify user about it.
-        const expectedEnabledFilters = RulesLimitsService.getCurrentConfigurationEnabledFilters();
-
         return !arraysAreEqual(actuallyEnabledFilters, expectedEnabledFilters);
     }
 
