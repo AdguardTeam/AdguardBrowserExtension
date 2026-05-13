@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Fixed
+
+- Fixed false-negative CSS selector validation for comma-containing selectors
+  (e.g., `IMG[alt="Reklama"], .l-box--99.l-box > .text-center`). The browser's
+  `CSS.supports('selector(A, B)')` fails for top-level commas; the validator now
+  splits such selectors and validates each part individually [AG-54266].
+
 ## [5.4 patch 1]
 
 ### Fixed
