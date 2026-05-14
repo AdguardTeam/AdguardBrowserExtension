@@ -7,7 +7,7 @@ RUN apt-get update \
     && apt-get install -y git curl zip \
     # clean up
     && rm -rf /var/lib/apt/lists/* \
-    && npm install -g pnpm@10.7.1
+    && npm install -g pnpm@10.33.4
 
 # Prevent "dubious ownership" error in git
 RUN git config --global --add safe.directory '*'
