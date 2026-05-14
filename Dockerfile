@@ -394,7 +394,7 @@ COPY --from=firefox-beta-build /out/ /
 # Expects artifacts via named build context: --build-context firefox-artifacts=artifacts
 # Uses adguard/extension-builder image which has go-webext pre-installed
 # ============================================================================
-FROM adguard/extension-builder:22.17--0.4.1--0 AS firefox-beta-sign
+FROM adguard/extension-builder:22.22--0.4.1--0 AS firefox-beta-sign
 
 WORKDIR /sign
 
@@ -494,7 +494,7 @@ COPY --from=release-build /out/ /
 # Checks Chrome Web Store availability for beta and release channels
 # Uses adguard/extension-builder which has go-webext pre-installed
 # ============================================================================
-FROM adguard/extension-builder:22.17--0.3.0--0 AS check-cws
+FROM adguard/extension-builder:22.22--0.4.1--0 AS check-cws
 
 WORKDIR /check
 
