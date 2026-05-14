@@ -1,9 +1,9 @@
-! Checksum: nE2lT9NrBd5DgCIQttpZ4w
-! Diff-Path: ../patches/20/20-s-1777286897-3600.patch
+! Checksum: 5moReIQj31by6N99FS4p+A
+! Diff-Path: ../patches/20/20-s-1778691410-3600.patch
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.28.73
-! TimeUpdated: 2026-04-27T10:45:12+00:00
+! Version: 2.0.29.6
+! TimeUpdated: 2026-05-13T16:53:43+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -60,6 +60,33 @@ rxgo.com,alfastrah.ru,turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepe
 !
 !
 !
+shop-apotheke.com#$#.base-Modal-root:has(> div[class^="ErxModal"]) { display: none !important; }
+shop-apotheke.com#$#body { overflow: auto !important; }
+m.glassesusa.com##.aHF3La
+m.glassesusa.com##.hHF3La
+goal.com##.fco-app-promo-modal
+||buy-eu.piano.io/checkout/template/cacheableShow.html*&offerId=fakeOfferId&experienceId=$subdocument,domain=kathimerini.gr
+kathimerini.gr##.app-holder
+myacgmall.com.tw,olhelmets.com#?##root > .container-component .slide-push-menu ~ div[class^="sc-"]:contains(Try the App)
+vamprivet.ru##section[class^="styles-module__download_"]
+people.com##.promo-unit
+joysound.com##.jp-cmp-topics-ad-001
+joysound.com##.flex > div.w-full:has(> ul > li > a[data-app-id="karaoke"])
+jobs.meinestadt.de##.ms-promos-teaser
+fangraphs.com##div[class^="sidebar-mobile-app_"]
+google.com###js-qr-popup
+bandsintown.com##header > div > div:has(> svg > path[d^="M19.5 12.5V"])
+espncricinfo.com##div.ds-text-tight-m:has(> a[href^="https://play.google.com/store/"])
+pw.live##div[class^="appBanner_"]
+downdetector.com##div[data-testid="card"] > div > div.mx-auto:has(> div > div > a[href^="https://play.google.com/store/apps/details?id="])
+wallpics.app##body > div.fixed:has(> div.w-full a[href^="https://play.google.com/store/apps/"])
+m.soundcloud.com##div[class^="Header_RightContainer"] > button:not([data-testid="sign-in-button"])
+m.soundcloud.com##div[class^="FooterStoreSection"]
+quicksigorta.com##body > header > div.MuiBox-root:has(> div > div > img[src^="https://quicksigorta.com/img/logos"])
+korusigorta.com.tr#$#.mobile-popup { display: none !important; }
+korusigorta.com.tr#$#.Header { top: 0 !important; }
+raysigorta.com.tr##.mobileapp-rayconnect
+online.anadolusigorta.com.tr##div[data-testid*="main-content"] > div[class]:has(> div[class] > img[alt="download_banner_logo"])
 trhaber.com#%#//scriptlet('set-session-storage-item', 'trhaber_app_banner_dismissed', 'true')
 jkanime.net##.appGlobalMsj
 stremio.com##section[id^="stremio-on-tv"]
@@ -1812,7 +1839,7 @@ map.baidu.com###fis_elm__6
 map.baidu.com##.common-widget-bottom-banner-changeId
 map.baidu.com#?#body > div[id]:has(> div#downloadnativepopupUlink)
 map.baidu.com#?##page-wrapper > div#common-bottombanner-widget-fis:has(> div.common-widget-bottom-banner-changeId > div.bottom-banner-float)
-m.economictimes.com,www-crictracker-com.cdn.ampproject.org###downloadApp
+alternatifbank.com.tr,m.economictimes.com,www-crictracker-com.cdn.ampproject.org###downloadApp
 m.economictimes.com###float_app_ET
 yay.space##.AppDownloadAds
 goo-net.com#$#.appBingWeb { display: none !important; }
@@ -3792,6 +3819,9 @@ ya.ru,yandex.*##.serp-list__page > div.serp-item:has(a[noredirecturl^="https://p
 !
 ! Yandex.Disk
 disk.360.yandex.*##div[class^="download-mobile-qr-"]
+!
+! Yandex.Dostavka
+dostavka.yandex.ru##.RumObservableRoot div[class]:has(> a[href^="https://8jxm.adj.st/route?"][href*="&adj_deep_link=yandextaxi"])
 !
 ! Yandex.Messenger
 yandex.*##.yamb-chat-not-selected__download-app-section > a.yamb-desktop-app-link ~ *

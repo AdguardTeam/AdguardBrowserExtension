@@ -3281,9 +3281,19 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{const e=/html-load\\.com|loader\\.min\\.js|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\.|:\\/\\/loader\\.|core\\.js/,t={filter:Array.prototype.filter,includes:String.prototype.includes,regexTest:RegExp.prototype.test},o=()=>(new Error).stack,l=o=>t.regexTest.call(e,o),r={construct:(e,r,n)=>{const c=o();return l(c)&&r[0]&&t.includes.call(r[0],\"adshield\")&&(r[0]=[\"(function(){})();\"]),Reflect.construct(e,r,n)}};window.Blob=new Proxy(window.Blob,r);const n={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&(t.includes.call(n[0],\"new Error\")||t.includes.call(n[0],\".apply(this\"))&&(n[0]=()=>{}),Reflect.apply(e,r,n)}};window.setTimeout=new Proxy(window.setTimeout,n);const c={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&r?.includes?.(\"setTimeout\")&&(r=t.filter.call(r,(e=>!t.includes.call(e,\"setTimeout\")))),Reflect.apply(e,r,n)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,c)})();": [
+        "(()=>{const e={apply:(e,t,o)=>{try{o[0].src?.includes?.(\"html-load.com\")&&(o[0]=document.createElement(\"script\"))}catch(e){}return Reflect.apply(e,t,o)}};window.Node.prototype.insertBefore=new Proxy(window.Node.prototype.insertBefore,e)})();": [
             {
                 "permittedDomains": [
+                    "index.hr"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "(()=>{const e=/html-load\\.com|loader\\.min\\.js|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\.|:\\/\\/loader\\.|core\\.js|\\/sdk\\.js/,t={filter:Array.prototype.filter,includes:String.prototype.includes,regexTest:RegExp.prototype.test},o=()=>(new Error).stack,l=o=>t.regexTest.call(e,o),r={construct:(e,r,n)=>{const c=o();return l(c)&&r[0]&&t.includes.call(r[0],\"adshield\")&&(r[0]=[\"(function(){})();\"]),Reflect.construct(e,r,n)}};window.Blob=new Proxy(window.Blob,r);const n={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&(t.includes.call(n[0],\"new Error\")||t.includes.call(n[0],\".apply(this\"))&&(n[0]=()=>{}),Reflect.apply(e,r,n)}};window.setTimeout=new Proxy(window.setTimeout,n);const c={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&r?.includes?.(\"setTimeout\")&&(r=t.filter.call(r,(e=>!t.includes.call(e,\"setTimeout\")))),Reflect.apply(e,r,n)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,c)})();": [
+            {
+                "permittedDomains": [
+                    "index.hr",
+                    "automobile-catalog.com",
                     "trafficnews.jp",
                     "tvtv.us",
                     "taycanforum.com",

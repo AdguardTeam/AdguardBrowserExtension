@@ -1,9 +1,9 @@
-! Checksum: DmYpKH7ceFpOPTO/vcq0Rw
-! Diff-Path: ../patches/17/17-s-1776184471-3600.patch
+! Checksum: w0nNDbVxhIeUHkpVaJ0i/A
+! Diff-Path: ../patches/17/17-s-1778680254-3600.patch
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.13.33
-! TimeUpdated: 2026-04-14T16:31:31+00:00
+! Version: 2.0.13.42
+! TimeUpdated: 2026-05-13T13:48:12+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -22,6 +22,11 @@
 !
 ! NOTE: Generic rules
 !
+! Not identified, popular in emails
+$removeparam=eml-name
+$removeparam=eml-mediaplan
+$removeparam=eml-publisher
+$removeparam=eurl
 ! True Anthem
 ! https://github.com/AdguardTeam/AdguardFilters/issues/228929
 ! https://github.com/AdguardTeam/AdguardFilters/issues/222986
@@ -35,13 +40,6 @@ $removeparam=analytics_context
 $removeparam=analytics_trace_id
 ! Bance
 $removeparam=bance_xuid
-! Oracle Eloqua
-$removeparam=elqTrackId
-$removeparam=elq
-$removeparam=elqaid
-$removeparam=elqat
-$removeparam=elqCampaignId
-$removeparam=elqak
 ! Winfluencer
 $removeparam=winflncrtag
 ! FastFlow
@@ -464,6 +462,14 @@ $removeparam=fb_source
 !
 ! Move original rules to this directive if you can confirm the problem
 !
+! Oracle Eloqua
+$removeparam=elqTrackId
+$removeparam=elq
+$removeparam=elqaid
+$removeparam=elqat
+$removeparam=elqCampaignId
+$removeparam=elqak
+!
 $removeparam=cmpid
 ! adjust.com tracking
 $removeparam=adj_t
@@ -506,6 +512,29 @@ $removeparam=tduid
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! taboolanews.com
+||taboolanews.com^$removeparam=dc_data
+! https://github.com/AdguardTeam/AdguardFilters/issues/231019
+||bubilet.com.tr^$removeparam=ref
+! https://github.com/AdguardTeam/AdguardFilters/issues/230335
+! nte.onelink.me
+||onelink.me^$removeparam=af_sub1
+||onelink.me^$removeparam=c
+||onelink.me^$removeparam=shortlink
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-16774089
+||t.info.telus.com^$removeparam=s
+! ridibooks.com - book detail page reference tracker
+||ridibooks.com^$removeparam=_rdt_sid
+||ridibooks.com^$removeparam=_rdt_idx
+||ridibooks.com^$removeparam=_rdt_arg
+! 777.ua
+||777casino.top^$removeparam
+||uatracer.link^$removeparam
+||blogostoks.com$removeparam
+! https://github.com/AdguardTeam/AdguardFilters/issues/230239
+||change.org^$removeparam=recruited_by_id
+||change.org^$removeparam=recruiter
+||change.org^$removeparam=share_id
 ! https://github.com/AdguardTeam/AdguardFilters/issues/228812
 ||kuper.ru^$removeparam=ads_identity_ads_promo_identity_site_uid
 ||kuper.ru^$removeparam=ads_identity_ads_promo_identity_placement_uid
@@ -3503,6 +3532,12 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/230641
+@@/e/er?$removeparam=elqTrackId,domain=s1740541080.t.eloqua.com|app.econnect.utexas.edu|clk.texaslonghorns.com
+@@/e/er?$removeparam=elq,domain=s1740541080.t.eloqua.com|app.econnect.utexas.edu|clk.texaslonghorns.com
+@@/e/er?$removeparam=elqaid,domain=s1740541080.t.eloqua.com|app.econnect.utexas.edu|clk.texaslonghorns.com
+@@/e/er?$removeparam=elqat,domain=s1740541080.t.eloqua.com|app.econnect.utexas.edu|clk.texaslonghorns.com
+@@/e/er?$removeparam=elqak,domain=s1740541080.t.eloqua.com|app.econnect.utexas.edu|clk.texaslonghorns.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/227699
 @@||msn.com^$app=msedgewebview2.exe,removeparam=ocid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/227175
