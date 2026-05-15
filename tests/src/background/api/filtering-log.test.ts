@@ -111,10 +111,10 @@ describe('FilteringLogApi', () => {
             expect(info?.isExtensionTab).toBe(false);
         });
 
-        // Edge creates a hidden prerendered NTP tab (ntp.msn.com) with a url
+        // Edge creates a hidden prerendered new-tab page (ntp.msn.com) with a url
         // but empty title. Without this guard it appeared as a phantom tab
         // in the filtering log.
-        it('skips tab with url but no title (Edge prerendered NTP)', () => {
+        it('skips tab with url but no title (Edge prerendered new-tab page)', () => {
             const filteringLogApi = new FilteringLogApi();
             const tab: Tabs.Tab = {
                 id: 11,
@@ -133,7 +133,7 @@ describe('FilteringLogApi', () => {
         });
 
         // pendingUrl with no title should be treated the same as url with no title.
-        it('skips tab with pendingUrl but no title', () => {
+        it('skips tab with pendingUrl but no title (Edge prerendered new-tab page)', () => {
             const filteringLogApi = new FilteringLogApi();
             const tab: Tabs.Tab = {
                 id: 12,

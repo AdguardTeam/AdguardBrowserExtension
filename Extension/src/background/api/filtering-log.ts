@@ -263,7 +263,7 @@ export class FilteringLogApi {
             return;
         }
 
-        // Skip tabs that have a URL but no title yet (e.g. Edge prerendered NTP);
+        // Skip tabs that have a URL but no title yet (e.g. Edge prerendered new-tab page);
         // tabs with empty URL (window.open redirect) pass through to capture early events.
         const url = tab.pendingUrl || tab.url || '';
 
