@@ -332,6 +332,9 @@ Descriptions must be complete sentences.
   `custom-filters/`). Exception: React component files use `PascalCase`
   (e.g., `Options.tsx`), and manifest-version suffixes follow the
   `-mv2`/`-mv3` convention (e.g., `engine-mv2.ts`)
+- Avoid magic strings and numbers for repeated or domain-specific values. Use
+  named constants, enums, or existing shared types instead. Local one-off UI
+  text, log messages, and test fixture values may stay inline when clearer.
 - Use `classnames` (`cn`) for dynamic class names instead of template literals
 
 
