@@ -92,6 +92,7 @@ Ensure that the following software is installed on your computer:
 | `pnpm test:mv2` | Run MV2 unit tests only |
 | `pnpm test:mv3` | Run MV3 unit tests only |
 | `pnpm test:integration <target>` | Run integration tests |
+| `pnpm test:e2e <env>` | Run extension browser E2E tests for a build env |
 | `pnpm lint` | Run all linters (ESLint + TypeScript) |
 | `pnpm lint:code` | Run ESLint only |
 | `pnpm lint:types` | Run TypeScript type checking (MV2 + MV3) |
@@ -145,6 +146,47 @@ pnpm test:integration <TARGET> [-d|--debug-test-id <TEST_ID>] [-u <USERSCRIPTS_M
 # TEST_ID can be extracted from https://testcases.agrd.dev/data.json
 # USERSCRIPTS_MODE can be 'enabled' or 'disabled' (default: both modes)
 ```
+
+Browser E2E tests open popup, options, and filtering log pages for Chrome MV2,
+Chrome MV3, and Firefox MV2. They also include a background diagnostics check.
+They fail on page load failures, error-level console messages, and unhandled
+JavaScript exceptions from UI pages or the extension background context. Build
+required zip artifacts before running them:
+
+```shell
+pnpm dev chrome --zip
+pnpm dev chrome-mv3 --zip
+pnpm dev firefox-standalone --zip
+pnpm test:e2e dev
+```
+
+Run one matrix entry while debugging:
+
+```shell
+pnpm test:e2e dev --matrix chrome-mv3
+```
+
+Browser E2E runs through Vitest, so native Vitest filters work. Matrix `describe`
+titles are `chrome-mv2`, `chrome-mv3`, and `firefox-mv2`; current `it` titles
+are `popup`, `options`, `filtering-log`, and `background`:
+
+```shell
+pnpm test:e2e dev --matrix chrome-mv2 -t "chrome-mv2 filtering-log"
+pnpm test:e2e dev -t "filtering-log"
+```
+
+E2E checks run headless by default. Use `E2E_HEADLESS=false` for headed
+local debugging.
+
+Chrome MV2 support is disabled in newer Chromium builds. The E2E runner adds
+MV2 compatibility flags, but local runs may still need an older Chromium binary:
+
+```shell
+E2E_CHROMIUM_EXECUTABLE_PATH=/path/to/chromium pnpm test:e2e dev --matrix chrome-mv2
+```
+
+Browser E2E tests are wired to a separate Bamboo plan because they run slower than
+unit and integration tests.
 
 <a name="dev-linter"></a>
 
