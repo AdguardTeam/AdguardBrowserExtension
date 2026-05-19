@@ -98,6 +98,16 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     ./bamboo-specs/scripts/link-tsurlfilter.sh --with-agtree --with-tsurlfilter
 
 # ============================================================================
+# Stage: linked-deps-playwright
+# Installs Playwright browsers once; all test stages inherit from here.
+# ============================================================================
+FROM linked-deps AS linked-deps-playwright
+
+RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    pnpm config set store-dir /pnpm-store && \
+    pnpm exec playwright install
+
+# ============================================================================
 # Stage: dev-build
 # Creates dev build with zip files for CI artifacts
 # ============================================================================
@@ -204,7 +214,7 @@ COPY --from=unit-tests /out/ /
 # Runs integration tests for a given BUILD_TYPE (dev, beta, release)
 # Expects artifacts/chrome-mv3-<BUILD_TYPE>.zip in build context
 # ============================================================================
-FROM linked-deps AS integration-tests
+FROM linked-deps-playwright AS integration-tests
 
 ARG BUILD_TYPE
 
@@ -218,8 +228,6 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     mkdir -p build/${BUILD_TYPE} && \
     # Move artifact to build directory, because integration tests expect it there.
     mv /extension/artifacts/chrome-mv3-${BUILD_TYPE}.zip /extension/build/${BUILD_TYPE}/chrome-mv3.zip && \
-    # For correct link playwright browsers.
-    pnpm exec playwright install && \
     mkdir -p /out/tests-reports && \
     set +e; \
     # Run integration tests.
@@ -244,7 +252,7 @@ COPY --from=integration-tests /out/ /
 # internally, without requiring pre-built artifacts from another job.
 # Used by the tests plan where all jobs run in a single parallel stage.
 # ============================================================================
-FROM linked-deps AS integration-tests-standalone
+FROM linked-deps-playwright AS integration-tests-standalone
 
 ARG TEST_RUN_ID
 
@@ -253,8 +261,6 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
     # Build only chrome-mv3 dev extension with zip.
     pnpm dev chrome-mv3 --zip && \
-    # For correct link playwright browsers.
-    pnpm exec playwright install && \
     mkdir -p /out/tests-reports && \
     set +e; \
     # Run integration tests.
@@ -272,6 +278,36 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
 
 FROM scratch AS integration-tests-standalone-output
 COPY --from=integration-tests-standalone /out/ /
+
+# ============================================================================
+# Stage: e2e-tests-standalone
+# Self-contained E2E tests that build Chrome MV2, Chrome MV3, and Firefox
+# MV2 dev extensions internally, without requiring artifacts from another job.
+# ============================================================================
+FROM linked-deps-playwright AS e2e-tests-standalone
+
+ARG TEST_RUN_ID
+
+RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    # Bust build cache so test stages always rerun.
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
+    # Build only E2E target dev extensions with zip artifacts.
+    pnpm dev chrome --zip && \
+    pnpm dev chrome-mv3 --zip && \
+    pnpm dev firefox-standalone --zip && \
+    mkdir -p /out/tests-reports && \
+    set +e; \
+    # Run E2E tests.
+    E2E_HEADLESS=true pnpm test:e2e dev; \
+    EXIT_CODE=$?; \
+    if [ -d tests-reports ]; then \
+        cp -R tests-reports/. /out/tests-reports/; \
+    fi; \
+    echo ${EXIT_CODE} > /out/exit-code.txt; \
+    exit 0
+
+FROM scratch AS e2e-tests-standalone-output
+COPY --from=e2e-tests-standalone /out/ /
 
 # ============================================================================
 # Stage: beta-build
