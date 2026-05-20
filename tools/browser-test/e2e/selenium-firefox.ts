@@ -29,7 +29,7 @@ import {
 import type { ConsoleLogEntry, JavascriptLogEntry } from 'selenium-webdriver/bidi/logEntries';
 import firefox from 'selenium-webdriver/firefox';
 
-import { MessageType } from '../../../Extension/src/common/messages/constants';
+import { APP_MESSAGE_HANDLER_NAME, MessageType } from '../../../Extension/src/common/messages/constants';
 
 import {
     E2EErrorCollector,
@@ -148,7 +148,8 @@ const waitForFirefoxAppInitialized = async (driver: firefox.Driver): Promise<voi
     await driver.wait(async () => {
         const result = await driver.executeAsyncScript(
             'var cb = arguments[arguments.length - 1];'
-            + `browser.runtime.sendMessage({ type: "${MessageType.GetIsAppInitialized}" })`
+            + 'browser.runtime.sendMessage('
+            + `{ handlerName: "${APP_MESSAGE_HANDLER_NAME}", type: "${MessageType.GetIsAppInitialized}" })`
             + '.then(function(r) { cb(r === true); })'
             + '.catch(function() { cb(false); });',
         );
