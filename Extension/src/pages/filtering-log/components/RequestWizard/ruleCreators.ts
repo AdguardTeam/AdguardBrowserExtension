@@ -300,6 +300,19 @@ export const createExceptionRemoveHeaderRules = (event: FilteringLogEvent): stri
     return patterns;
 };
 
+export const createExceptionUrlTransformRules = (event: FilteringLogEvent): string[] => {
+    const { frameDomain, requestRule } = event;
+    const patterns = [];
+
+    if (requestRule && requestRule.modifierValue) {
+        patterns.push(getUnblockDomainRule(frameDomain, `${NetworkRule.OPTIONS.URLTRANSFORM}=${requestRule.modifierValue}`));
+    }
+
+    patterns.push(getUnblockDomainRule(frameDomain, NetworkRule.OPTIONS.URLTRANSFORM));
+
+    return patterns;
+};
+
 export const createExceptionCspRules = (event: FilteringLogEvent): string[] => {
     const { frameDomain, requestRule } = event;
     const patterns = [];

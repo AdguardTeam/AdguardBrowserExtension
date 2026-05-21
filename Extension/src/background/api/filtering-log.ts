@@ -75,6 +75,7 @@ export type FilteringLogEvent = {
     requestRule?: FilteringEventRuleData;
     removeParam?: boolean;
     removeHeader?: boolean;
+    urlTransform?: boolean;
     headerName?: string;
     element?: string;
     script?: boolean;

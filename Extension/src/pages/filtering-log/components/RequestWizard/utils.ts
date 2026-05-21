@@ -108,6 +108,7 @@ export const getRequestEventType = (event: FilteringLogEvent): string => {
         cspReportBlocked,
         removeHeader,
         removeParam,
+        urlTransform,
         isModifyingCookieRule,
     } = event;
 
@@ -125,6 +126,8 @@ export const getRequestEventType = (event: FilteringLogEvent): string => {
         return 'REMOVEHEADER';
     } else if (removeParam) {
         return 'REMOVEPARAM';
+    } else if (urlTransform) {
+        return 'URLTRANSFORM';
     }
 
     switch (requestEventType) {
