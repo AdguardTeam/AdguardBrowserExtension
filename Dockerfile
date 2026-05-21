@@ -416,6 +416,8 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     mv build/beta/build.txt /out/artifacts/ && \
     # Rename firefox-standalone.zip to firefox.zip (AG-41656 workaround).
     mv build/beta/firefox-standalone.zip /out/artifacts/firefox.zip && \
+    # Copy update.json for Firefox standalone self-distribution.
+    mv build/beta/update.json /out/artifacts/ && \
     # Archive source files for AMO publishing.
     ./bamboo-specs/scripts/archive-source.sh beta && \
     mv build/beta/source.zip /out/artifacts/ && \
@@ -439,6 +441,7 @@ COPY --from=firefox-artifacts firefox.zip /sign/firefox.zip
 COPY --from=firefox-artifacts source.zip /sign/source.zip
 COPY --from=firefox-artifacts build.txt /sign/build.txt
 COPY --from=firefox-artifacts approval-notes.txt /sign/approval-notes.txt
+COPY --from=firefox-artifacts update.json /sign/update.json
 
 # AMO credentials passed as build args (non-sensitive) and secrets (sensitive)
 ARG FIREFOX_CLIENT_ID
