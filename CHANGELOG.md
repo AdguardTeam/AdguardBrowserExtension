@@ -17,10 +17,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - WebRTC IP handling policy changed from `disable_non_proxied_udp` to
   `default_public_interface_only` to reduce VoIP breakage while still
   preventing IP leaks.
+- Expanded wildcard TLD domains in DNR conversion for `$domain` and `$to`
+  modifiers [AdguardTeam/tsurlfilter#189].
 
 [#1486]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1486
 [#1686]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1686
 [#2701]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2701
+[AdguardTeam/tsurlfilter#189]: https://github.com/AdguardTeam/tsurlfilter/issues/189
 
 ## [5.4 patch 1] - 2026-05-08
 
