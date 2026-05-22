@@ -1,9 +1,9 @@
-! Checksum: XPh2as4zeS6eFWb4gzHURQ
-! Diff-Path: ../patches/8/8-s-1776940768-3600.patch
+! Checksum: 74oxknxDEXC4kydTBpe+iQ
+! Diff-Path: ../patches/8/8-s-1778742715-3600.patch
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.9.13
-! TimeUpdated: 2026-04-23T10:36:36+00:00
+! Version: 2.0.9.20
+! TimeUpdated: 2026-05-14T07:08:58+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1476,7 +1476,7 @@ ah.nl##.product-card-portrait_root__ZiRpZ:has(.promotion_root__pAAlu)
 tvgids.nl##.square-item:has( > .banner)
 plus.nl##a[data-link]:has(.sponsored-product)
 agconnect.nl#?#.c-teaser:has(.c-pill--partner)
-mediamarkt.*##aside[class="sc-a2fcee8-0 fmYGst"]:has(button[aria-label="Lees meer over productsponsoring"])
+mediamarkt.*##aside[class="sc-3e143820-0 erAlUN"]:has(button[aria-label="Lees meer over productsponsoring"])
 delhaize.be#?#.product-item:contains(Gesponsord)
 androidplanet.nl##div[data-name="post"]:has(div[data-name="sponsor-logo"])
 krefel.be#?#div[class^="Flex-styled__StyledFlex-"]:has(h3:contains(Gesponsorde producten))
@@ -1775,6 +1775,13 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ! Good: example.org###rek; ||example.com/ads/
 ! Bad: example.org#@##banner_ad (for instance, should be in allowlist.txt or in antiadblock.txt)
 !
+telegraaf.nl##div[class^="page-layout_leadingAdContainer"]
+demorgen.be##.h1-container:has(> #h1:only-child)
+demorgen.be###main div[style*="--zone-column-"] > #r1
+demorgen.be###main div[style*="--zone-column-"] > #r2
+||static.fd.nl/assets/fdmg-ads/
+noorderland.nl##center:has(> div[data-aa-adunit])
+noorderland.nl##body > div:has(> div[data-aa-adunit])
 ||cdn.optoutadvertising.com^$domain=ad.nl
 security.nl##.content_right > div.posting:has(> div.sidebar a[href^="https://www.security.nl/"])
 trouw.nl##aside[data-test-id="temptation-PAGE_TOP"] + div.h1-container
@@ -1798,8 +1805,8 @@ mijnwoordenboek.nl##div[style="min-height:270px"]
 ||ssl.p.jwpcdn.com/player/v/*/vast.js$domain=matele.be
 f1maximaal.nl##.raw-html-component:has(>div.Pnvp__ad)
 telegraaf.nl##.tik4-extension--inline-ad
-||ssl.p.jwpcdn.com/player/v/*/freewheel.js$domain=kijk.nl
-kijk.nl#%#//scriptlet('prevent-element-src-loading', 'script', '/freewheel.js')
+||ssl.p.jwpcdn.com/player/v/*/freewheel.js$domain=kijk.nl|hartvannederland.nl|538.nl|vandaaginside.nl
+kijk.nl,hartvannederland.nl,538.nl,vandaaginside.nl#%#//scriptlet('prevent-element-src-loading', 'script', '/freewheel.js')
 f1maximaal.nl##.w-full[class*="flex"]:has(> .flex_component > .raw-html-component > .Pnvp__ad)
 ||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=google-ima3,domain=player.vrt.be
 ||zeilen.nl/builds/zeilen/assets/taboola-page-view-id-*.js
@@ -1894,6 +1901,7 @@ iphoned.nl##div[data-name="featured-header-container"] > header[data-campaign]
 iphoned.nl##article > .no-content-styles:has(> div[data-nosnippet] > div[data-name="dynamic-content-injected"][data-campaign])
 rtl.nl##div[data-adslot-variant]
 bright.nl##html > body .ad:not(#style_important)
+nieuwsblad.be##.mh-ad-label
 nieuwsblad.be##.cba_container_grid
 dumpert.nl##div[class^="css-"]:has(> div[class^="css-"]:only-child > .ad)
 402online.com##.bannerblock

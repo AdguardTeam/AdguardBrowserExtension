@@ -1,9 +1,9 @@
-! Checksum: NM/vP8Wh4JOyGFEb61ERCQ
-! Diff-Path: ../patches/22/22-s-1776951673-3600.patch
+! Checksum: 2+0+9d59yUyzG7c+m41E+w
+! Diff-Path: ../patches/22/22-s-1778569823-3600.patch
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.13.93
-! TimeUpdated: 2026-04-23T13:38:39+00:00
+! Version: 2.0.13.99
+! TimeUpdated: 2026-05-12T07:07:51+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1564,6 +1564,7 @@ blog.livedoor.jp##div[id^="shitarss_title_"]
 !
 !   SECTION: Widgets - Marketing (specific)
 !
+marks.com###kampyleButtonContainer
 ||ipbd.ru/34122*.js
 ||assets.bouyguestelecom.fr/Palpatine_Omnikit/omnikit@1/widget.init.js
 karrierewelt.golem.de###widget-chat-container
@@ -2027,12 +2028,15 @@ freestreams-live.my###custom_html-9
 daddyhd.com##.sidebar__inner
 !
 ! Blocking these chat widgets if they are really annoying
+||webagent.bedore.jp^$domain=ajinomoto.co.jp
 ||zoom.us/*/web-sdk/zcc-sdk.js$domain=fullcompass.com
 ||widget.intercom.io^$domain=appmaster.io|internxt.com|mainwp.com
 ||helpdeskeddy.com//js/contact-widget.js$domain=litres.ru
 ||static.zdassets.com/web_widget/messenger/$domain=op.gg|p2pb2b.com|revouninstaller.com
 litres.ru###call_support
 !
+godaddy.com##.ai-chatbot-tab
+study.iitm.ac.in##.chatbot-toggler
 business.linkedin.com##.persistent-assistant-container
 ||app.qualified.com/*/messenger?$domain=cloudflare.com
 iport.ru##div[class^="layout_chat_widgets_wrap__"]
@@ -2453,6 +2457,7 @@ habr.com#?#.tm-article-blocks > section:has(> div.tm-block__body > div.tm-vacanc
 !
 !   NOTE: Exchange rates widgets
 !
+mynet.com##.finance-bar
 wallstreetjournal.postimees.ee##.stock-highlights
 happycoin.club##.currency-social
 rbc.ru##.js-forecast
@@ -2510,6 +2515,7 @@ subbota.ua##aside.sidebar > div[id^="custom_html-"]
 !   NOTE: Donation widgets
 !   Really annoying only
 !
+bentopdf.com###donation-ribbon
 phys.org##.support-note
 phys.org##.article-main__support
 20minut.ua##.thx-block

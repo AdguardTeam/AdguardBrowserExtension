@@ -29,6 +29,7 @@ import {
     FIREFOX_UPDATE_TEMPLATE,
 } from '../../constants';
 import { version } from '../../../package.json';
+import { getFormattedVersion } from '../../helpers';
 import { getEnvConf } from '../helpers';
 
 export const buildUpdateJson = async () => {
@@ -39,6 +40,7 @@ export const buildUpdateJson = async () => {
 
     // create update.json
     let updateJsonTemplate = (await fs.readFile(FIREFOX_UPDATE_TEMPLATE)).toString();
-    updateJsonTemplate = updateJsonTemplate.replace(/\%VERSION\%/g, version);
+    const formattedVersion = getFormattedVersion(version);
+    updateJsonTemplate = updateJsonTemplate.replace(/\%VERSION\%/g, formattedVersion);
     await fs.writeFile(path.join(buildDir, 'update.json'), updateJsonTemplate);
 };
