@@ -74,7 +74,7 @@ const exec = promisify(execCallback);
  *
  * @returns True if the rule node is a JS injection rule.
  */
-const isJsRule = (
+export const isJsRule = (
     ruleNode: AnyRule | null,
 ): ruleNode is JsInjectionRule => {
     return !!ruleNode
@@ -100,7 +100,7 @@ const LOCAL_SCRIPT_RULES_FILE_NAME = 'local_script_rules.js';
  *
  * @returns Function name or null if not found.
  */
-const extractAgFunctionName = (code: string): string | null => {
+export const extractAgFunctionName = (code: string): string | null => {
     const match = code.match(AG_FUNCTION_REGEX);
 
     if (!match) {
@@ -117,7 +117,7 @@ const extractAgFunctionName = (code: string): string | null => {
  *
  * @returns Array of AG_ function names.
  */
-const findAgFunctionUsages = (code: string): string[] => {
+export const findAgFunctionUsages = (code: string): string[] => {
     const matches = code.match(AG_USAGE_REGEX) || [];
     return [...new Set(matches)];
 };
@@ -239,7 +239,7 @@ ${rawComment.split(LF).map((line) => (line ? ` * ${line}` : ' *')).join(LF)}
  *
  * @returns Unique ID.
  */
-const calculateUniqueId = (text: string): string => {
+export const calculateUniqueId = (text: string): string => {
     return crypto.createHash('md5').update(text).digest('hex');
 };
 
@@ -251,7 +251,7 @@ const calculateUniqueId = (text: string): string => {
  *
  * @returns Wrapped script code.
  */
-const wrapScriptCode = (uniqueId: string, code: string): string => {
+export const wrapScriptCode = (uniqueId: string, code: string): string => {
     return `
         try {
             const flag = 'done';

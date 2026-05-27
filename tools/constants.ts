@@ -191,8 +191,9 @@ export const ANALYZE_REPORTS_DIR = path.resolve(__dirname, '../build/analyze-rep
 // filters constants
 export const EXTENSION_FILTERS_SERVER_URL_FORMAT = 'https://filters.adtidy.org/extension/%browser';
 export const METADATA_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/${REMOTE_METADATA_FILE_NAME}`;
-export const FILTERS_DEST = 'Extension/filters/%browser';
-export const DECLARATIVE_FILTERS_DEST = 'Extension/filters/%browser/declarative';
+export const EXTENSION_FILTERS_SUBDIR = 'filters';
+export const FILTERS_DEST = `Extension/${EXTENSION_FILTERS_SUBDIR}/%browser`;
+export const DECLARATIVE_FILTERS_DEST = `Extension/${EXTENSION_FILTERS_SUBDIR}/%browser/declarative`;
 export const METADATA_I18N_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/${REMOTE_I18N_METADATA_FILE_NAME}`;
 export const FILTER_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/filters/%filter.txt`;
 export const OPTIMIZED_FILTER_DOWNLOAD_URL_FORMAT = `${EXTENSION_FILTERS_SERVER_URL_FORMAT}/filters/%s_optimized.txt`;
