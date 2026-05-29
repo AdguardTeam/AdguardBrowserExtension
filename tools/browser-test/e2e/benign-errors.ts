@@ -40,6 +40,9 @@ export const BENIGN_ERROR_PATTERNS: RegExp[] = [
     /DNS resolution failed/i,
     /Connection refused/i,
     /ECONNREFUSED/,
+
+    // Firefox throws this when intercepting requests on about:blank pages
+    /Invalid request url: about:blank/,
 ];
 
 /**
