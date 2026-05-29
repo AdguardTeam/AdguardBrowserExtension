@@ -37,6 +37,7 @@ import {
     createUnknownError,
     isErrorConsoleType,
 } from './error-collector';
+import { BENIGN_ERROR_PATTERNS, filterBenignErrors } from './benign-errors';
 import { type E2EPageHandle } from './page-handle';
 import { createExtensionPageUrl } from './surfaces';
 import {
@@ -288,7 +289,8 @@ export const openFirefoxE2ESurface = async (
             return collectPageErrors(session.driver, entry.id, surface.id);
         },
         async getBackgroundErrors(): Promise<E2EError[]> {
-            return session.backgroundErrors.sliceFrom(backgroundCursor);
+            const errors = session.backgroundErrors.sliceFrom(backgroundCursor);
+            return filterBenignErrors(errors, BENIGN_ERROR_PATTERNS);
         },
         async close(): Promise<void> {
             // Firefox uses a single driver window; no separate page to close.
