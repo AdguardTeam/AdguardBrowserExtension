@@ -130,16 +130,18 @@ export const Notification = ({
                     <p>
                         {text}
                     </p>
-                    {buttons?.map((btn) => (
-                        <button
-                            key={btn.title}
-                            type="button"
-                            onClick={btn.onClick}
-                            title={btn.title}
-                        >
-                            {btn.title}
-                        </button>
-                    ))}
+                    <div className="notification__buttons">
+                        {buttons?.map((btn) => (
+                            <button
+                                key={btn.title}
+                                type="button"
+                                onClick={btn.onClick}
+                                title={btn.title}
+                            >
+                                {btn.title}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
             <button
