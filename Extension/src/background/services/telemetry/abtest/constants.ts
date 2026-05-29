@@ -40,10 +40,7 @@ export type ExperimentRegistry = Readonly<VariantCache>;
  * Example: { experiment_1: 'AG-47804-trial-a_def' }.
  */
 export const EXPERIMENT_REGISTRY: ExperimentRegistry = {
-    experiment_1: 'AG-51010-limitations-browser',
     experiment_2: 'AG-52622-general-settings-promo',
 };
-
-export const AG_51010_LIMITATIONS_BROWSER_B = 'AG-51010-limitations-browser-b';
 
 export const AG_52622_GENERAL_SETTINGS_PROMO_B = 'AG-52622-general-settings-promo-b';
