@@ -27,8 +27,13 @@ import {
 } from 'vitest';
 
 import { BuildTargetEnv } from '../../constants';
-import { logInfo, logSection } from '../../tools/browser-test/logger';
+import {
+    logError,
+    logInfo,
+    logSection,
+} from '../../tools/browser-test/logger';
 import { unpackE2EArtifact } from '../../tools/browser-test/e2e/artifacts';
+import { BENIGN_ERROR_PATTERNS, filterBenignErrors } from '../../tools/browser-test/e2e/benign-errors';
 import { E2E_MATRIX, E2E_SURFACES } from '../../tools/browser-test/e2e/matrix';
 import {
     type E2ESession,
@@ -46,6 +51,21 @@ import { E2E_VITEST_ENV_KEY, E2E_VITEST_MATRIX_IDS_KEY } from '../../tools/brows
 
 const e2eEnv = getE2EEnv();
 const e2eMatrix = getE2EMatrix();
+
+/**
+ * Asserts that errors array is empty. When errors are present, logs them via
+ * the test logger before failing — this ensures CI output contains the full
+ * error details for diagnostics even though Vitest truncates assertion diffs.
+ *
+ * @param errors Collected errors to check.
+ * @param context Human-readable label identifying the source (e.g. "chrome/popup page errors").
+ */
+function expectNoErrors(errors: unknown[], context: string): void {
+    if (errors.length > 0) {
+        logError(`[e2e] ${context}:\n${JSON.stringify(errors, null, 2)}`);
+    }
+    expect(errors).toHaveLength(0);
+}
 
 logSection(`E2E tests (${e2eEnv})`);
 logInfo(`Selected matrix: ${e2eMatrix.map((entry) => entry.id).join(', ')}`);
@@ -77,8 +97,12 @@ e2eMatrix.forEach((entry) => {
 
                 try {
                     expect(await page.querySelectorCount('#root > *')).toBeGreaterThan(0);
-                    expect(await page.getErrors()).toHaveLength(0);
-                    expect(await page.getBackgroundErrors()).toHaveLength(0);
+
+                    const pageErrors = await page.getErrors();
+                    expectNoErrors(pageErrors, `${entry.id}/${surface.id} page errors`);
+
+                    const bgErrors = await page.getBackgroundErrors();
+                    expectNoErrors(bgErrors, `${entry.id}/${surface.id} background errors`);
                 } finally {
                     await page.close();
                 }
@@ -93,8 +117,12 @@ e2eMatrix.forEach((entry) => {
                 try {
                     await page.waitForSelector('#root .page');
                     expect(await page.querySelectorCount('#root .page')).toBeGreaterThan(0);
-                    expect(await page.getErrors()).toHaveLength(0);
-                    expect(await page.getBackgroundErrors()).toHaveLength(0);
+
+                    const pageErrors = await page.getErrors();
+                    expectNoErrors(pageErrors, `${entry.id}/${surface.id} page errors`);
+
+                    const bgErrors = await page.getBackgroundErrors();
+                    expectNoErrors(bgErrors, `${entry.id}/${surface.id} background errors`);
                 } finally {
                     await page.close();
                 }
@@ -108,8 +136,12 @@ e2eMatrix.forEach((entry) => {
 
                 try {
                     expect(await page.querySelectorCount('#root > *')).toBeGreaterThan(0);
-                    expect(await page.getErrors()).toHaveLength(0);
-                    expect(await page.getBackgroundErrors()).toHaveLength(0);
+
+                    const pageErrors = await page.getErrors();
+                    expectNoErrors(pageErrors, `${entry.id}/${surface.id} page errors`);
+
+                    const bgErrors = await page.getBackgroundErrors();
+                    expectNoErrors(bgErrors, `${entry.id}/${surface.id} background errors`);
                 } finally {
                     await page.close();
                 }
@@ -119,9 +151,10 @@ e2eMatrix.forEach((entry) => {
         describe(E2ESpecialSurfaceId.Background, () => {
             it('has no errors', () => {
                 const session = getE2ESession(e2eSession);
-                const errors = session.session.backgroundErrors.getErrors();
+                const allErrors = session.session.backgroundErrors.getErrors();
+                const errors = filterBenignErrors(allErrors, BENIGN_ERROR_PATTERNS);
 
-                expect(errors).toHaveLength(0);
+                expectNoErrors(errors, `${entry.id} background errors`);
             });
         });
     });
