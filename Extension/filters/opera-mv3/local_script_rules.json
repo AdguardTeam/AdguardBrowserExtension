@@ -772,15 +772,6 @@
                 "restrictedDomains": []
             }
         ],
-        "(function(){if(!document.cookie.includes(\"trackingPermissionConsentsValue=\")){var a=encodeURIComponent('\"cookies_analytics\":false,\"cookies_personalization\":false,\"cookies_advertisement\":false');document.cookie=\"trackingPermissionConsentsValue={\"+a+\"}; path=/;\"}})();": [
-            {
-                "permittedDomains": [
-                    "al.to",
-                    "x-kom.pl"
-                ],
-                "restrictedDomains": []
-            }
-        ],
         "document.cookie=\"allowTracking=false; path=/;\"; document.cookie=\"trackingSettings={%22ads%22:false%2C%22performance%22:false}; path=/;\";": [
             {
                 "permittedDomains": [
@@ -1602,7 +1593,7 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{if(!location.href.includes(\"://embed.wcostream.com/inc/embed/index.php?file=\"))return;const e=`/inc/embed/video-js.php${location.search}`;location.href=e})();": [
+        "(()=>{if(!location.href.includes(\"://embed.wcostream.com/inc/embed/index.php?file=\"))return;const e=window.location.search,n=new URLSearchParams(e).get(\"pid\")||\"\",o=(()=>{const e=new Uint8Array(16);return(window.crypto||window.msCrypto).getRandomValues(e),Array.from(e).map((e=>e.toString(16).padStart(2,\"0\"))).join(\"\")})(),t=JSON.stringify({nonce:o,status:\"clear\",id:n});(async()=>{try{await fetch(\"/ad-verify\",{method:\"POST\",body:t,keepalive:!0,headers:{\"Content-Type\":\"application/json\"}})}catch(e){console.error(\"Error sending beacon:\",e)}})(),setTimeout((()=>{const n=`/inc/embed/video-js.php${e}&n=${o}`;location.href=n}),10)})();": [
             {
                 "permittedDomains": [
                     "embed.wcostream.com"
@@ -1774,20 +1765,6 @@
                 "restrictedDomains": []
             }
         ],
-        "(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/\\]\\.bab\\(window/.test(a.toString()))return b(a,c)};})();": [
-            {
-                "permittedDomains": [
-                    "british-birdsongs.uk"
-                ],
-                "restrictedDomains": []
-            },
-            {
-                "permittedDomains": [
-                    "deutsche-vogelstimmen.de"
-                ],
-                "restrictedDomains": []
-            }
-        ],
         "(function(){var b=window.setInterval;window.setInterval=function(a,c){if(!/e\\.display=='hidden'[\\s\\S]*?e\\.visibility=='none'/.test(a.toString()))return b(a,c)}.bind(window)})();": [
             {
                 "permittedDomains": [
@@ -1814,14 +1791,6 @@
             {
                 "permittedDomains": [
                     "mega-debrid.eu"
-                ],
-                "restrictedDomains": []
-            }
-        ],
-        "(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/getAdIFrameCount/.test(a.toString()))return b(a,c)};})();": [
-            {
-                "permittedDomains": [
-                    "rim-world.com"
                 ],
                 "restrictedDomains": []
             }
@@ -2161,9 +2130,79 @@
                 "restrictedDomains": []
             }
         ],
+        "(()=>{const t={apply:(t,p,e)=>{try{e.length>0&&(\"visibility\"===e[0]||e[0]?.startsWith?.(\"shim:\"))&&1===e[1]&&(e[1]=0)}catch(t){}return Reflect.apply(t,p,e)}};window.Map.prototype.set=new Proxy(window.Map.prototype.set,t)})();": [
+            {
+                "permittedDomains": [
+                    "benchmark.pl",
+                    "select.wp.pl",
+                    "so-magazyn.pl",
+                    "kafeteria.pl",
+                    "informacje.wp.pl",
+                    "wplatform.media",
+                    "pcformat.pl",
+                    "staszownews.pl",
+                    "zdrowienews.pl",
+                    "kurierostrowiecki.pl",
+                    "ostrowiec24.info",
+                    "kielce112.pl",
+                    "lublinnews.pl",
+                    "lovelifestyle.pl",
+                    "telefan24.pl",
+                    "marketing-zone.pl",
+                    "panoramaplock.pl",
+                    "ipolska24.pl",
+                    "dzieckopoznan.pl",
+                    "historiapoznania.pl",
+                    "sportpoznan.pl",
+                    "pysznosci.pl",
+                    "kultura.wp.pl",
+                    "jastrzabpost.pl",
+                    "wirtualnemedia.pl",
+                    "open.fm",
+                    "deliciousmagazine.pl",
+                    "poczta.wp.pl",
+                    "pilot.wp.pl",
+                    "polygamia.pl",
+                    "abczdrowie.pl",
+                    "money.pl",
+                    "dobreprogramy.pl",
+                    "o2.pl",
+                    "gadzetomania.pl",
+                    "komorkomania.pl",
+                    "autocentrum.pl",
+                    "pudelek.pl",
+                    "vpolshchi.pl",
+                    "parenting.pl",
+                    "autokult.pl",
+                    "fotoblogia.pl",
+                    "dom.wp.pl",
+                    "pogoda.wp.pl",
+                    "gry.wp.pl",
+                    "wroclaw.wp.pl",
+                    "moto.wp.pl",
+                    "wideo.wp.pl",
+                    "kuchnia.wp.pl",
+                    "facet.wp.pl",
+                    "sportowefakty.wp.pl",
+                    "turystyka.wp.pl",
+                    "magazyn.wp.pl",
+                    "kobieta.wp.pl",
+                    "ksiazki.wp.pl",
+                    "tech.wp.pl",
+                    "opinie.wp.pl",
+                    "teleshow.wp.pl",
+                    "gwiazdy.wp.pl",
+                    "film.wp.pl",
+                    "wiadomosci.wp.pl",
+                    "finanse.wp.pl"
+                ],
+                "restrictedDomains": []
+            }
+        ],
         "(()=>{const t={apply:(t,r,e)=>{let o=r;try{const t=o?.length;t&&t>10&&t<30&&(n=o,Array.isArray(n)&&0!==n.length&&n.some((t=>\"function\"==typeof t&&!!t.toString().includes(\"ABDetector\"))))&&(o=[])}catch(t){}var n;return Reflect.apply(t,o,e)}};window.Array.prototype.map=new Proxy(window.Array.prototype.map,t)})();": [
             {
                 "permittedDomains": [
+                    "benchmark.pl",
                     "select.wp.pl",
                     "so-magazyn.pl",
                     "kafeteria.pl",
@@ -2232,6 +2271,7 @@
         "(()=>{const t=new Set([\"VP\",\"w3\",\"JW\"]),e=/\\{return\\(.{1,5}\\)\\(\\)===.\\..\\}/,n={apply:(t,n,r)=>{if(\"function\"!=typeof t)return Reflect.apply(t,n,r);const p=t.toString();return e.test(p)&&(t=function(){return!1}),Reflect.apply(t,n,r)}},r={apply:(t,e,r)=>{let p=Reflect.apply(t,e,r);return\"function\"==typeof p&&(p=new Proxy(p,n)),p}},p={apply:(e,n,p)=>{try{const o=p[1],c=p[2]?.get;if(!o||\"function\"!=typeof c)return Reflect.apply(e,n,p);t.has(o)&&/^\\(\\)=>.$/.test(c.toString())?p[2].get=function(){return function(){return!1}}:\"A\"===o&&c.toString().includes(\"()=>i\")&&(p[2].get=new Proxy(p[2].get,r))}catch(t){}return Reflect.apply(e,n,p)}};Object.defineProperty=new Proxy(Object.defineProperty,p)})();": [
             {
                 "permittedDomains": [
+                    "benchmark.pl",
                     "select.wp.pl",
                     "so-magazyn.pl",
                     "kafeteria.pl",
@@ -2340,6 +2380,7 @@
         "(()=>{const t={apply:(t,e,o)=>{try{const t=e;t&&\"object\"==typeof t&&t.context?.bidRequestId&&(e={})}catch(t){}return Reflect.apply(t,e,o)}};window.Object.prototype.hasOwnProperty=new Proxy(window.Object.prototype.hasOwnProperty,t)})();": [
             {
                 "permittedDomains": [
+                    "benchmark.pl",
                     "dobreprogramy.pl",
                     "so-magazyn.pl",
                     "parenting.pl",
@@ -2379,6 +2420,7 @@
         "!function(){const r={apply:(r,o,e)=>(e[0]?.includes?.(\"</VAST>\")&&(e[0]=\"\"),Reflect.apply(r,o,e))};window.DOMParser.prototype.parseFromString=new Proxy(window.DOMParser.prototype.parseFromString,r)}();": [
             {
                 "permittedDomains": [
+                    "benchmark.pl",
                     "wirtualnemedia.pl",
                     "jastrzabpost.pl",
                     "pysznosci.pl",
@@ -2544,6 +2586,14 @@
                     "uploadrar.com",
                     "gogoplay2.com",
                     "goload.*"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "(()=>{const t={apply:(t,e,n)=>{try{const t=n[0];7e3===n[1]&&\"function\"==typeof t&&t.toString().includes(\"[native code]\")&&(n[1]=0)}catch(t){}return Reflect.apply(t,e,n)}};window.setTimeout=new Proxy(window.setTimeout,t);const e=window.EventTarget.prototype.addEventListener,n={apply:(t,n,o)=>{try{if(\"DOMContentLoaded\"===o[0]){const t=document.querySelector('body > iframe[src=\"javascript:false\"]');t&&(t.contentWindow.setTimeout=window.setTimeout,EventTarget.prototype.addEventListener=e)}}catch(t){}return Reflect.apply(t,n,o)}};window.EventTarget.prototype.addEventListener=new Proxy(window.EventTarget.prototype.addEventListener,n)})();": [
+            {
+                "permittedDomains": [
+                    "nypost.com"
                 ],
                 "restrictedDomains": []
             }
@@ -3081,7 +3131,7 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{const e={apply:(e,t,n)=>{const o=Reflect.apply(e,t,n);try{o instanceof HTMLIFrameElement&&\"\"===o.src&&o.contentWindow&&(o.contentWindow.String=window.String,o.contentWindow.Function.prototype.call=window.Function.prototype.call,o.contentWindow.JSON.parse=window.JSON.parse)}catch(e){}return o}};Node.prototype.appendChild=new Proxy(Node.prototype.appendChild,e)})();": [
+        "(()=>{const e={apply:(e,t,n)=>{const o=Reflect.apply(e,t,n);try{o instanceof HTMLIFrameElement&&(\"\"===o.src||\"about:blank\"===o.src)&&o.contentWindow&&(o.contentWindow.String=window.String,o.contentWindow.Function.prototype.call=window.Function.prototype.call,o.contentWindow.JSON.parse=window.JSON.parse)}catch(e){}return o}};Node.prototype.appendChild=new Proxy(Node.prototype.appendChild,e)})();": [
             {
                 "permittedDomains": [
                     "facebook.com",
@@ -3351,6 +3401,13 @@
         "(()=>{const e=/html-load\\.com|loader\\.min\\.js|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\.|:\\/\\/loader\\.|core\\.js|\\/sdk\\.js/,t={filter:Array.prototype.filter,includes:String.prototype.includes,regexTest:RegExp.prototype.test},o=()=>(new Error).stack,l=o=>t.regexTest.call(e,o),r={construct:(e,r,n)=>{const c=o();return l(c)&&r[0]&&t.includes.call(r[0],\"adshield\")&&(r[0]=[\"(function(){})();\"]),Reflect.construct(e,r,n)}};window.Blob=new Proxy(window.Blob,r);const n={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&(t.includes.call(n[0],\"new Error\")||t.includes.call(n[0],\".apply(this\"))&&(n[0]=()=>{}),Reflect.apply(e,r,n)}};window.setTimeout=new Proxy(window.setTimeout,n);const c={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&r?.includes?.(\"setTimeout\")&&(r=t.filter.call(r,(e=>!t.includes.call(e,\"setTimeout\")))),Reflect.apply(e,r,n)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,c)})();": [
             {
                 "permittedDomains": [
+                    "dreadcentral.com",
+                    "portsmouth.co.uk",
+                    "chunkbase.com",
+                    "tacoma4g.com",
+                    "mavericktruckclub.com",
+                    "f150gen14.com",
+                    "4runner6g.com",
                     "lfpress.com",
                     "index.hr",
                     "automobile-catalog.com",
@@ -4251,6 +4308,7 @@
         "window.addEventListener(\"contextmenu\",function(a){a.stopPropagation()},!0);": [
             {
                 "permittedDomains": [
+                    "savefiles.com",
                     "mangaplus.shueisha.co.jp",
                     "otakuhg.site",
                     "megaplay.buzz",
@@ -4485,440 +4543,18 @@
                 "restrictedDomains": []
             }
         ],
-        "window.yaCounter27017517 ={ reachGoal: function() {} };": [
-            {
-                "permittedDomains": [
-                    "mebelkmk.ru"
-                ],
-                "restrictedDomains": []
-            }
-        ],
         "var _gaq = []; var _gat = { _getTracker: function() { return { _initData: function(){}, _trackPageview: function(){}, _trackEvent: function(){}, _setAllowLinker: function() {}, _setCustomVar: function() {} } }, _createTracker: function() { return this._getTracker(); }, _anonymizeIp: function() {} };": [
             {
-                "permittedDomains": [],
-                "restrictedDomains": [
-                    "svsound.com",
-                    "realmadrid.com",
-                    "google.com",
-                    "google.ad",
-                    "google.ae",
-                    "google.com.af",
-                    "google.com.ag",
-                    "google.com.ai",
-                    "google.al",
-                    "google.am",
-                    "google.co.ao",
-                    "google.com.ar",
-                    "google.as",
-                    "google.at",
-                    "google.com.au",
-                    "google.az",
-                    "google.ba",
-                    "google.com.bd",
-                    "google.be",
-                    "google.bf",
-                    "google.bg",
-                    "google.com.bh",
-                    "google.bi",
-                    "google.bj",
-                    "google.com.bn",
-                    "google.com.bo",
-                    "google.com.br",
-                    "google.bs",
-                    "google.bt",
-                    "google.co.bw",
-                    "google.by",
-                    "google.com.bz",
-                    "google.ca",
-                    "google.cd",
-                    "google.cf",
-                    "google.cg",
-                    "google.ch",
-                    "google.ci",
-                    "google.co.ck",
-                    "google.cl",
-                    "google.cm",
-                    "google.cn",
-                    "google.com.co",
-                    "google.co.cr",
-                    "google.com.cu",
-                    "google.cv",
-                    "google.com.cy",
-                    "google.cz",
-                    "google.de",
-                    "google.dj",
-                    "google.dk",
-                    "google.dm",
-                    "google.com.do",
-                    "google.dz",
-                    "google.com.ec",
-                    "google.ee",
-                    "google.com.eg",
-                    "google.es",
-                    "google.com.et",
-                    "google.fi",
-                    "google.com.fj",
-                    "google.fm",
-                    "google.fr",
-                    "google.ga",
-                    "google.ge",
-                    "google.gg",
-                    "google.com.gh",
-                    "google.com.gi",
-                    "google.gl",
-                    "google.gm",
-                    "google.gp",
-                    "google.gr",
-                    "google.com.gt",
-                    "google.gy",
-                    "google.com.hk",
-                    "google.hn",
-                    "google.hr",
-                    "google.ht",
-                    "google.hu",
-                    "google.co.id",
-                    "google.ie",
-                    "google.co.il",
-                    "google.im",
-                    "google.co.in",
-                    "google.iq",
-                    "google.is",
-                    "google.it",
-                    "google.je",
-                    "google.com.jm",
-                    "google.jo",
-                    "google.co.jp",
-                    "google.co.ke",
-                    "google.com.kh",
-                    "google.ki",
-                    "google.kg",
-                    "google.co.kr",
-                    "google.com.kw",
-                    "google.kz",
-                    "google.la",
-                    "google.com.lb",
-                    "google.li",
-                    "google.lk",
-                    "google.co.ls",
-                    "google.lt",
-                    "google.lu",
-                    "google.lv",
-                    "google.com.ly",
-                    "google.co.ma",
-                    "google.md",
-                    "google.me",
-                    "google.mg",
-                    "google.mk",
-                    "google.ml",
-                    "google.com.mm",
-                    "google.mn",
-                    "google.ms",
-                    "google.com.mt",
-                    "google.mu",
-                    "google.mv",
-                    "google.mw",
-                    "google.com.mx",
-                    "google.com.my",
-                    "google.co.mz",
-                    "google.com.na",
-                    "google.com.nf",
-                    "google.com.ng",
-                    "google.com.ni",
-                    "google.ne",
-                    "google.nl",
-                    "google.no",
-                    "google.com.np",
-                    "google.nr",
-                    "google.nu",
-                    "google.co.nz",
-                    "google.com.om",
-                    "google.com.pa",
-                    "google.com.pe",
-                    "google.com.pg",
-                    "google.com.ph",
-                    "google.com.pk",
-                    "google.pl",
-                    "google.pn",
-                    "google.com.pr",
-                    "google.ps",
-                    "google.pt",
-                    "google.com.py",
-                    "google.com.qa",
-                    "google.ro",
-                    "google.ru",
-                    "google.rw",
-                    "google.com.sa",
-                    "google.com.sb",
-                    "google.sc",
-                    "google.se",
-                    "google.com.sg",
-                    "google.sh",
-                    "google.si",
-                    "google.sk",
-                    "google.com.sl",
-                    "google.sn",
-                    "google.so",
-                    "google.sm",
-                    "google.sr",
-                    "google.st",
-                    "google.com.sv",
-                    "google.td",
-                    "google.tg",
-                    "google.co.th",
-                    "google.com.tj",
-                    "google.tk",
-                    "google.tl",
-                    "google.tm",
-                    "google.tn",
-                    "google.to",
-                    "google.com.tr",
-                    "google.tt",
-                    "google.com.tw",
-                    "google.co.tz",
-                    "google.com.ua",
-                    "google.co.ug",
-                    "google.co.uk",
-                    "google.com.uy",
-                    "google.co.uz",
-                    "google.com.vc",
-                    "google.co.ve",
-                    "google.vg",
-                    "google.co.vi",
-                    "google.com.vn",
-                    "google.vu",
-                    "google.ws",
-                    "google.rs",
-                    "google.co.za",
-                    "google.co.zm",
-                    "google.co.zw",
-                    "google.cat",
-                    "maximonline.ru",
-                    "minecraft.net",
-                    "softkey.ru",
-                    "softkey.ua"
-                ]
+                "permittedDomains": [
+                    "design.penpot.app"
+                ],
+                "restrictedDomains": []
             }
         ],
         "function urchinTracker() {};": [
             {
-                "permittedDomains": [],
-                "restrictedDomains": [
-                    "google.com",
-                    "google.ad",
-                    "google.ae",
-                    "google.com.af",
-                    "google.com.ag",
-                    "google.com.ai",
-                    "google.al",
-                    "google.am",
-                    "google.co.ao",
-                    "google.com.ar",
-                    "google.as",
-                    "google.at",
-                    "google.com.au",
-                    "google.az",
-                    "google.ba",
-                    "google.com.bd",
-                    "google.be",
-                    "google.bf",
-                    "google.bg",
-                    "google.com.bh",
-                    "google.bi",
-                    "google.bj",
-                    "google.com.bn",
-                    "google.com.bo",
-                    "google.com.br",
-                    "google.bs",
-                    "google.bt",
-                    "google.co.bw",
-                    "google.by",
-                    "google.com.bz",
-                    "google.ca",
-                    "google.cd",
-                    "google.cf",
-                    "google.cg",
-                    "google.ch",
-                    "google.ci",
-                    "google.co.ck",
-                    "google.cl",
-                    "google.cm",
-                    "google.cn",
-                    "google.com.co",
-                    "google.co.cr",
-                    "google.com.cu",
-                    "google.cv",
-                    "google.com.cy",
-                    "google.cz",
-                    "google.de",
-                    "google.dj",
-                    "google.dk",
-                    "google.dm",
-                    "google.com.do",
-                    "google.dz",
-                    "google.com.ec",
-                    "google.ee",
-                    "google.com.eg",
-                    "google.es",
-                    "google.com.et",
-                    "google.fi",
-                    "google.com.fj",
-                    "google.fm",
-                    "google.fr",
-                    "google.ga",
-                    "google.ge",
-                    "google.gg",
-                    "google.com.gh",
-                    "google.com.gi",
-                    "google.gl",
-                    "google.gm",
-                    "google.gp",
-                    "google.gr",
-                    "google.com.gt",
-                    "google.gy",
-                    "google.com.hk",
-                    "google.hn",
-                    "google.hr",
-                    "google.ht",
-                    "google.hu",
-                    "google.co.id",
-                    "google.ie",
-                    "google.co.il",
-                    "google.im",
-                    "google.co.in",
-                    "google.iq",
-                    "google.is",
-                    "google.it",
-                    "google.je",
-                    "google.com.jm",
-                    "google.jo",
-                    "google.co.jp",
-                    "google.co.ke",
-                    "google.com.kh",
-                    "google.ki",
-                    "google.kg",
-                    "google.co.kr",
-                    "google.com.kw",
-                    "google.kz",
-                    "google.la",
-                    "google.com.lb",
-                    "google.li",
-                    "google.lk",
-                    "google.co.ls",
-                    "google.lt",
-                    "google.lu",
-                    "google.lv",
-                    "google.com.ly",
-                    "google.co.ma",
-                    "google.md",
-                    "google.me",
-                    "google.mg",
-                    "google.mk",
-                    "google.ml",
-                    "google.com.mm",
-                    "google.mn",
-                    "google.ms",
-                    "google.com.mt",
-                    "google.mu",
-                    "google.mv",
-                    "google.mw",
-                    "google.com.mx",
-                    "google.com.my",
-                    "google.co.mz",
-                    "google.com.na",
-                    "google.com.nf",
-                    "google.com.ng",
-                    "google.com.ni",
-                    "google.ne",
-                    "google.nl",
-                    "google.no",
-                    "google.com.np",
-                    "google.nr",
-                    "google.nu",
-                    "google.co.nz",
-                    "google.com.om",
-                    "google.com.pa",
-                    "google.com.pe",
-                    "google.com.pg",
-                    "google.com.ph",
-                    "google.com.pk",
-                    "google.pl",
-                    "google.pn",
-                    "google.com.pr",
-                    "google.ps",
-                    "google.pt",
-                    "google.com.py",
-                    "google.com.qa",
-                    "google.ro",
-                    "google.ru",
-                    "google.rw",
-                    "google.com.sa",
-                    "google.com.sb",
-                    "google.sc",
-                    "google.se",
-                    "google.com.sg",
-                    "google.sh",
-                    "google.si",
-                    "google.sk",
-                    "google.com.sl",
-                    "google.sn",
-                    "google.so",
-                    "google.sm",
-                    "google.sr",
-                    "google.st",
-                    "google.com.sv",
-                    "google.td",
-                    "google.tg",
-                    "google.co.th",
-                    "google.com.tj",
-                    "google.tk",
-                    "google.tl",
-                    "google.tm",
-                    "google.tn",
-                    "google.to",
-                    "google.com.tr",
-                    "google.tt",
-                    "google.com.tw",
-                    "google.co.tz",
-                    "google.com.ua",
-                    "google.co.ug",
-                    "google.co.uk",
-                    "google.com.uy",
-                    "google.co.uz",
-                    "google.com.vc",
-                    "google.co.ve",
-                    "google.vg",
-                    "google.co.vi",
-                    "google.com.vn",
-                    "google.vu",
-                    "google.ws",
-                    "google.rs",
-                    "google.co.za",
-                    "google.co.zm",
-                    "google.co.zw",
-                    "google.cat"
-                ]
-            }
-        ],
-        "window.yaCounter9890803 = { reachGoal: function() {} };": [
-            {
                 "permittedDomains": [
-                    "citypizza.ru"
-                ],
-                "restrictedDomains": []
-            }
-        ],
-        "window.yaCounter14913877={ reachGoal: function() {} };": [
-            {
-                "permittedDomains": [
-                    "apteka.ru"
-                ],
-                "restrictedDomains": []
-            }
-        ],
-        "window.ga = function(){var a = arguments[5];a&&a.hitCallback&&a.hitCallback();}": [
-            {
-                "permittedDomains": [
-                    "accountkiller.com"
+                    "design.penpot.app"
                 ],
                 "restrictedDomains": []
             }
@@ -4967,6 +4603,14 @@
             {
                 "permittedDomains": [
                     "zappn.tv"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/\\]\\.bab\\(window/.test(a.toString()))return b(a,c)};})();": [
+            {
+                "permittedDomains": [
+                    "deutsche-vogelstimmen.de"
                 ],
                 "restrictedDomains": []
             }
