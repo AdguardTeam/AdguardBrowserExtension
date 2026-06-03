@@ -1,9 +1,9 @@
-! Checksum: Bc080HEW6zxe0yJl7ng1Jg
-! Diff-Path: ../patches/1/1-s-1777301373-3600.patch
+! Checksum: mekmM75e45FmqnKnrAztdA
+! Diff-Path: ../patches/1/1-s-1778691398-3600.patch
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.1.5.54
-! TimeUpdated: 2026-04-27T14:45:43+00:00
+! Version: 2.1.5.82
+! TimeUpdated: 2026-05-13T16:52:12+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -18,7 +18,14 @@
 ! Good: .org/ads/
 ! Bad: .org/ads/$domain=example.org (for instance, should be in speficic.txt)
 !
+! etarg.network
+/strong/object.xml?*&mode=vast
+! https://github.com/AdguardTeam/AdguardFilters/issues/230427
+||com/services/?rt=$script,third-party
+||com/services/?fx=$script,third-party
 ! Kinogo player
+! BASE64 = 'scope":"VAST"}'
+?token=*c2NvcGUiOiJWQVNUIn0
 /kinogo/js/ads/*
 ! https://github.com/AdguardTeam/AdguardFilters/issues/205747
 /code/video-steam/?id=*&vast=
@@ -364,6 +371,7 @@ http://*.ru/leftunit.pl?
 /kadam.base.min.js?
 !
 mpg.com/movie/files/episodes/*-RU.mp4|
+/api-integration/fluxline?view=
 /api-integration/player/vast1.xml?view=
 ||vst.*/*?subid=
 /vast.php?partner_id=
@@ -940,7 +948,6 @@ ucoz.ru/informer/
 ###b_top-banner
 ###ban_zone_4
 ###banerHead
-###banner-container
 ###banner-container-240x400
 ###banner-header-bottom
 ###banner-placeholder
@@ -1438,6 +1445,12 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||hello.vipapi.org^
+||wishgofox.com^
+||tallertorn.com^
+||deltarockme.com^
+||beesratyou.com^
+||trorqeok.com^
 ||merilrise.com^$third-party
 ||elonreptiloid.pw^$third-party
 ||roomgome.com^
@@ -3548,6 +3561,8 @@ http://w7.ru^$third-party
 ||zorkabiz.ru^$third-party
 ||zqmwf.xyz^$third-party
 !
+! etarg.network
+!
 ! https://github.com/AdguardTeam/AdguardFilters/issues/200915
 ! t.setAttribute("data-mrmn-tag"
 ! AD Factor
@@ -3578,6 +3593,7 @@ http://w7.ru^$third-party
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||legitwebsite.com^$third-party (should be in adservers.txt)
 !
+||kinogo-may.vipapi.org^
 ||adfox.yandex.ru^$domain=~yandex.by|~yandex.cloud|~yandex.com|~yandex.com.am|~yandex.com.tr|~yandex.kz|~yandex.net|~yandex.ru|~yandex.uz
 ||ad.cub.red^
 ||exad.smi2.ru^
@@ -3790,6 +3806,9 @@ newsyou.info,4mama.ua,autoua.net,censor.net,eurointegration.com.ua,gagadget.com,
 ! NOTE: UA rules copied to Ukrainian filter
 ! TODO: Remove not multi lang rules with .ua tld after splitting the filter (look at the end of file)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/230714
+evribiont.ru#%#//scriptlet('prevent-setTimeout', 'offsetHeight')
+evribiont.ru#@#.AdSense
 ! https://github.com/AdguardTeam/AdguardFilters/issues/229281
 @@||sovcombank.ru^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/225801
@@ -4506,6 +4525,7 @@ dzen.ru##.news-app__content div[class*="__column_myTarget mg-grid__item"] div[cl
 [$path=/pogoda]dzen.ru##.adv_type_rtb
 !
 ! Ad in Dzen articles
+dzen.ru##div[class^="content--article-item__advertDoc2Doc-"]
 dzen.ru##div[class^="content--mascot-banner__"]
 dzen.ru##div[class^="content--dzen-pro-article-banner"]
 [$path]dzen.ru##.feed__item article[class*="_is"]:not([class*="__card"]):not(:has(> div.short-video-carousel-view))
@@ -4974,6 +4994,7 @@ yandex.*#?#.business-card-title-view__actions > div.business-card-title-view__ad
 ! Yandex.Pogoda
 !
 ! Yandex.Market
+market.yandex.*##div[data-apiary-widget-name^="@monetize/UrbanAds"]
 market.yandex.*##div[data-apiary-widget-name="@monetize/CreativeBanner"]
 market.yandex.*##div[data-apiary-widget-name="@monetize/MadvHeaderPromoStreamer"]
 market.yandex.*##div[data-apiary-widget-name="@marketfront/CreativeBanner"]
@@ -5033,6 +5054,8 @@ mail.yandex.*##div[class*="disableAdsContainer"]
 mail.yandex.*##.DirectLine
 !
 ! Yandex.Raspisanie
+rasp.yandex.*##.PartnerPromoHeaderLogo
+rasp.yandex.*##.TariffsList__segmentPartnerPromo
 rasp.yandex.*##.Direct
 rasp.yandex.*##.ThreadLayout__topDirect
 rasp.yandex.*##.Personal__vtbPromoBadge
@@ -6585,7 +6608,7 @@ yandex-video.naydex.net#%#//scriptlet('trusted-replace-xhr-response', '/(<VAST[\
 /script.js^$third-party,domain=rus-km.ru|progorodnn.ru|vestiprim.ru|4mlhn1ocg4.com|koolinar.ru|kyiv.media|pershij.com.ua|u-news.com.ua|crashplane.ru|cin-24.com|vikingi-online.info|hi-blog.ru|lifedon.com.ua|skuky.net|365news.biz|tv-show.live|pt0zhwhc26.ru|gadget-apple.ru|kinovideo.cc|tarifec.com|amazingfacts.ru|womanvip.ru|evo-rus.com|kraj.by|shematok.ru|bargu.by|rivnepost.rv.ua|sobesednik.ru|comments.ua|pln-pskov.ru|lyricsonline.ru|amperof.ru|kapital-rus.ru|sport24tv.ru|militariorg.ucoz.ru|pravda-tv.ru|ianed.ru|solenka.info|inforuss.info|ufanotes.ru|togliatti24.ru|storinka.com.ua|moskva-obl.ru|reporter64.ru|gastrot.ru|yadelus.ru|telegraf.news|bnkomi.ru|myslo.ru
 !
 ! ##.ad
-ru.citaty.net,liga.net,appstorrent.ru,graniru.org,3dnews.ru,zaks.ru,ukranews.com,mr-7.ru,ferra.ru,cont.ws,riavrn.ru,maanimo.com,begaem.com,passion.ru,gq.ru,agravery.com,appsgames.ru,buhgalteria.ru,dumskaya.net,hotcharts.xyz,klops.ru,mmovote.ru,molnet.ru,news.pn,newsru.co.il##.ad
+thebell.io,ru.citaty.net,liga.net,appstorrent.ru,graniru.org,3dnews.ru,zaks.ru,ukranews.com,mr-7.ru,ferra.ru,cont.ws,riavrn.ru,maanimo.com,begaem.com,passion.ru,gq.ru,agravery.com,appsgames.ru,buhgalteria.ru,dumskaya.net,hotcharts.xyz,klops.ru,mmovote.ru,molnet.ru,news.pn,newsru.co.il##.ad
 ! ##.adv
 news.novyny.live,posylka.net,progroshi.news,thepage.ua,newsru.co.il,freetone.org,infox.ru,internet-technologies.ru,xcadr.tv,dota2.ru,newkaliningrad.ru,reestr.rublacklist.net,ringon.site,glavcom.ua,qna.center,afanasy.biz,happymonday.ua,xcadr.org,dugtor.ru,trud.ru,amic.ru,dugtor.org,kinoafisha.info,niknews.mk.ua,sovety.net,vesti.uz,wotsite.net##.adv
 ! ##center > a[rel="nofollow"] > img
@@ -6619,6 +6642,11 @@ mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,tolknews.ru,
 !
 ! NOTE: Specific rules
 !
+||spdmpgcdn.com^$media,domain=temptcdn.com
+||cinemar.cc/api/player/vast
+||spdmpgcdn.com/*bet.mp4
+||vipapi.org/vast.xml
+||vipapi.org/vast/ad-rotator/
 technopark.ru##.catalog-banner
 tsn.ua##[data-ad-container]
 telegraf.ua##.tgr-ads
@@ -6931,7 +6959,7 @@ kodik*/adv-vast/
 ! Bad: example.org#@##banner_ad (for instance, should be in allowlist.txt or in antiadblock.txt)
 !
 ! ##.banner
-nhike.ru,bankinform.ru,championat.ru,prufy.ru,kostroma.today,fnvolga.ru,menunedeli.ru,sfera.fm,frankmedia.ru,cisoclub.ru,trafficcardinal.com,kursiv.media,moskvichmag.ru,netex.co.il,in-scale.ru,ukraina.ru,mipped.com,diapazon.kz,bloknot.ru##.banner
+thebell.io,nhike.ru,bankinform.ru,championat.ru,prufy.ru,kostroma.today,fnvolga.ru,menunedeli.ru,sfera.fm,frankmedia.ru,cisoclub.ru,trafficcardinal.com,kursiv.media,moskvichmag.ru,netex.co.il,in-scale.ru,ukraina.ru,mipped.com,diapazon.kz,bloknot.ru##.banner
 ! `/upload/rk/` - URL and element hiding rule
 /upload/rk/*$domain=ivanovonews.ru|gorodn.ru|bits.media|devyatka.ru|gazeta-n1.ru|gorod48.ru|hi-fi.ru|innov.ru|k1news.ru|ktostroit.ru|likeni.ru|meteo-tv.ru|mos.news|newkaliningrad.ru|newsroom24.ru|nta-nn.ru|openbusiness.ru|personalaudio.ru|podrobno.uz|portamur.ru|radugaskidok.ru|rigma.info|securitylab.ru|seonews.ru|shoes-report.ru|sportfm.ru|tvcom-tv.ru|ural56.ru|vladtv.ru|wotafaq.com|zebra-tv.ru|skisport.ru|rabochy-put.ru|vegetarian.ru|gorodarmavir.ru|estetmedicina.ru|afanasy.biz|itmed.org|actualcomment.ru|pushkino.tv|olimpfm.ru|vn.ru|buzulukinform.ru|prado-club.su|tvr.by|fomag.ru|eg-online.ru|ng58.ru|mediaryazan.ru|m-strana.ru|tvknews.ru
 ivanovonews.ru,gorodn.ru,bits.media,devyatka.ru,gazeta-n1.ru,gorod48.ru,hi-fi.ru,innov.ru,k1news.ru,ktostroit.ru,likeni.ru,meteo-tv.ru,mos.news,newkaliningrad.ru,newsroom24.ru,nta-nn.ru,openbusiness.ru,personalaudio.ru,podrobno.uz,portamur.ru,radugaskidok.ru,rigma.info,securitylab.ru,seonews.ru,shoes-report.ru,sportfm.ru,tvcom-tv.ru,ural56.ru,vladtv.ru,wotafaq.com,zebra-tv.ru,skisport.ru,rabochy-put.ru,vegetarian.ru,gorodarmavir.ru,estetmedicina.ru,afanasy.biz,itmed.org,actualcomment.ru,pushkino.tv,olimpfm.ru,vn.ru,buzulukinform.ru,prado-club.su,tvr.by,fomag.ru,eg-online.ru,ng58.ru,mediaryazan.ru,m-strana.ru,tvknews.ru##img[src^="/upload/rk/"]
@@ -6940,6 +6968,23 @@ gorod24.online,vedomosti.ru,kommersant.ru,rg.ru,glavbukh.ru,chehov-vid.ru,161.ru
 !
 ! NOTE: Specific rules
 !
+||kichkas.biz/templates/kic/images/baner.png
+habr.com##.block-wrapper:has(> div[data-test-id^="HalfPageAdvertising_"])
+cinemar.cc,player.kinoton.cc#%#//scriptlet('trusted-replace-argument', 'String.prototype.indexOf', '0', '"none"', 'VAST')
+a1.ru.muzon.plus##.related
+kto-zvonili.com##.sticky-container
+kto-zvonili.com#?#h5:contains(Индивидуальные подборки:)
+callfilter.app##.vpn-banner-shell
+||mloads.com/sm/script5.js
+mloads.com##a[href^="https://get1soft.ru/"]
+ex-fs.net#%#//scriptlet("abort-current-inline-script", "document.createElement", "'script'")
+russeeders.top##a[href*="https://download.cdn.yandex.net/"]
+||habr.com/img/u-shaped-*.webp
+habr.com#$#.p-shaped { display: none !important; }
+habr.com#$#.tm-page.has-p-shaped { padding-top: 0 !important; }
+thebell.io##app-ad-banner
+zoneofgames.ru##a[href^="https://yandex.ru/adfox/"]
+||img.zoneofgames.ru*/branding/
 bcs-express.ru##div[style^="background-color:"]:has(> picture > img[src*="/promo-image/"])
 check.lenta.com##.banner_promo_wrapper
 profitcentr.com###baner-serf
@@ -7070,7 +7115,9 @@ vedomosti.ru##.article__metrics
 ||netmonet.co/api/banner/vpn
 ||netmonet.co/api/general/adfox
 ||netmonet.co/last-page-banner-modal.
-||api.rstprgapipt.com/vast.xml$xmlhttprequest,third-party
+||rstprgapipt.com/api-integration/fluxline
+||temptcdn.com/api-integration/fluxline?view=
+||rstprgapipt.com/*.xml
 *$script,third-party,denyallow=gstatic.com,domain=kinogo.ec|kinogo.tours|kinogo.wales
 kinogo.*#%#//scriptlet('remove-node-text', 'script', 'tryScriptLoader')
 comss.ru##div[align="center"] > div[style="width:300px;"] > a > img
@@ -7520,7 +7567,9 @@ vuzopedia.ru###vsplyvokno
 vuzopedia.ru###nulol
 vuzopedia.ru##.mainReclame
 ||repack.me/uploads/posts/2025-02/1503.webp
-repack.me##.col-xs-12 > div.panel:has(> div.panel-body > div > div > p > a[href^="https://aeza.net/"])
+repack.me##.col-xs-12 > div.panel:has(> div.panel-body > a[href^="https://repack.me/waicore"])
+repack.me##.col-xs-12 > div.panel:has(> div.panel-body > p > a[href^="/neo"])
+repack.me#$#main > .container1 { padding-top: 0px !important; margin-top: 0px !important; }
 daily.afisha.ru##div[class^="PartnersNewsBlock_Block__"]
 russian.rt.com##.js-setka-media
 ysia.ru##.theme-ads
@@ -16834,7 +16883,7 @@ webware.ru/*/clients/
 ||youhack.ru/stz/
 ||youpk.ru/wp-content/uploads/2015/01/wm.jpg
 ||yourlifestyle.ru/ads*.js
-||youtube.com/embed/$domain=trashbox.mobi|simpsonsua.tv|androeed.ru|168.ru
+||youtube.com/embed/$domain=trashbox.mobi|simpsonsua.tv|168.ru
 ||youtube.com/embed/ygJTKDZPhCo$domain=7days-ua.com
 ||youtube.com/embed/d6rVjyAegA8?rel=$domain=sadikionline.ru
 ||youtube.com^$domain=kinotochka.club|topserial.online|kinorezka.com
@@ -17143,6 +17192,8 @@ passion.ru##.sideColumn[style*="width: 300px"]
 passion.ru##.sideColumn[style*="width:300px"]
 !
 ! fastpic.ru
+fastpic.org##nav > div:not(:has(*))
+fastpic.org#%#//scriptlet('set-constant', 'Element.prototype.attachShadow', 'noopFunc')
 ||fastpic.org/n/
 ||static.fastpic.org/css/exo.css
 ||fastpic.org/zzz/cache/
@@ -18228,6 +18279,7 @@ rg.ru##div[class^="PageIndexContentFirst_spiegelWrapper"] > div[class^="PageInde
 rg.ru##div[class^="NewsFeedList_banner"]
 !
 ! ficbook.net
+||ficbook.net/promo/
 ||assets.ficbook.net/assets/dist/advertisement.*.js
 ||fbassets.teinon.net/assets/dist/advertisement.*.js
 ficbook.net##body .fb-ads-block
@@ -18303,8 +18355,6 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/228513
 @@||mirait-one.com/xj/$domain=mirait-one.com,important
-! https://github.com/AdguardTeam/AdguardFilters/issues/223191
-mush-e.com#@##banner-container
 ! https://github.com/AdguardTeam/AdguardFilters/issues/220247
 @@||player.bidmatic.io/microplayer/*/stream.es.js$domain=play.tavr.media
 @@||files.bidmatic.io/microplayer/configs/*.jsonp|$domain=play.tavr.media

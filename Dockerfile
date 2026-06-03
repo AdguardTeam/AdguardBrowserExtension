@@ -7,7 +7,7 @@ RUN apt-get update \
     && apt-get install -y git curl zip \
     # clean up
     && rm -rf /var/lib/apt/lists/* \
-    && npm install -g pnpm@10.7.1
+    && npm install -g pnpm@10.33.4
 
 # Prevent "dubious ownership" error in git
 RUN git config --global --add safe.directory '*'
@@ -416,6 +416,8 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     mv build/beta/build.txt /out/artifacts/ && \
     # Rename firefox-standalone.zip to firefox.zip (AG-41656 workaround).
     mv build/beta/firefox-standalone.zip /out/artifacts/firefox.zip && \
+    # Copy update.json for Firefox standalone self-distribution.
+    mv build/beta/update.json /out/artifacts/ && \
     # Archive source files for AMO publishing.
     ./bamboo-specs/scripts/archive-source.sh beta && \
     mv build/beta/source.zip /out/artifacts/ && \
@@ -430,7 +432,7 @@ COPY --from=firefox-beta-build /out/ /
 # Expects artifacts via named build context: --build-context firefox-artifacts=artifacts
 # Uses adguard/extension-builder image which has go-webext pre-installed
 # ============================================================================
-FROM adguard/extension-builder:22.17--0.4.1--0 AS firefox-beta-sign
+FROM adguard/extension-builder:22.22--0.4.1--0 AS firefox-beta-sign
 
 WORKDIR /sign
 
@@ -439,6 +441,7 @@ COPY --from=firefox-artifacts firefox.zip /sign/firefox.zip
 COPY --from=firefox-artifacts source.zip /sign/source.zip
 COPY --from=firefox-artifacts build.txt /sign/build.txt
 COPY --from=firefox-artifacts approval-notes.txt /sign/approval-notes.txt
+COPY --from=firefox-artifacts update.json /sign/update.json
 
 # AMO credentials passed as build args (non-sensitive) and secrets (sensitive)
 ARG FIREFOX_CLIENT_ID
@@ -530,7 +533,7 @@ COPY --from=release-build /out/ /
 # Checks Chrome Web Store availability for beta and release channels
 # Uses adguard/extension-builder which has go-webext pre-installed
 # ============================================================================
-FROM adguard/extension-builder:22.17--0.3.0--0 AS check-cws
+FROM adguard/extension-builder:22.22--0.4.1--0 AS check-cws
 
 WORKDIR /check
 
