@@ -29,7 +29,7 @@ import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
 import { messenger } from '../../../../services/messenger';
 import { logger } from '../../../../../common/logger';
-import { getCtaByOs } from '../../General/DesktopAppPromo/DesktopAppPromo';
+import { getCtaByOs } from '../../../../../common/desktop-app-cta';
 
 import styles from './warning-variant-b.module.pcss';
 
