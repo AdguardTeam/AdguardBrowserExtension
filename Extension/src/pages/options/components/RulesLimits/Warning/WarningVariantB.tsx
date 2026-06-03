@@ -28,9 +28,10 @@ import { OptionsPageSections } from '../../../../../common/nav';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
 import { messenger } from '../../../../services/messenger';
+import { logger } from '../../../../../common/logger';
 import { getCtaByOs } from '../../General/DesktopAppPromo/DesktopAppPromo';
 
-import styles from './waring-variant-b.module.pcss';
+import styles from './warning-variant-b.module.pcss';
 
 /**
  * Props for the WarningVariantB component.
@@ -55,7 +56,11 @@ export const WarningVariantB = ({ onClickCloseWarning }: WarningVariantBProps) =
     } = settingsStore.rulesLimits;
 
     const handleManageExtensions = async () => {
-        await messenger.openChromeExtensionsPage();
+        try {
+            await messenger.openChromeExtensionsPage();
+        } catch (e) {
+            logger.warn('[ext.WarningVariantB]: Failed to open extensions page:', e);
+        }
     };
 
     if (!isLimitLowered && !areFilterLimitsExceeded) {
