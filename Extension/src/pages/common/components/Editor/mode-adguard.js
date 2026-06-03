@@ -861,13 +861,13 @@ ace.define('ace/mode/adguard_highlight_rules', [], (require, exports, module) =>
                     token: 'invalid',
                 },
                 {
-                    regex: /(redirect|redirect-rule|removeparam|removeheader|cookie)=/,
+                    regex: /(redirect|redirect-rule|removeparam|removeheader|urltransform|cookie)=/,
                     token: 'keyword.control',
                     next: 'options_redirect_removeparam_removeheader_cookie',
                 },
                 // without specified value
                 {
-                    regex: /redirect|redirect-rule|removeparam|removeheader|cookie/,
+                    regex: /redirect|redirect-rule|removeparam|removeheader|urltransform|cookie/,
                     token: 'keyword.control',
                 },
                 {

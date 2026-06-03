@@ -24,6 +24,30 @@ import { type FilteringLogEvent, type FilterMetadata } from '../../../../backgro
 import { getFilterName } from '../../../helpers';
 
 /**
+ * Request event type display names.
+ */
+enum RequestEventTypeDisplayName {
+    RemoveHeader = 'REMOVEHEADER',
+    RemoveParam = 'REMOVEPARAM',
+    UrlTransform = 'URLTRANSFORM',
+    Html = 'HTML',
+    Css = 'CSS',
+    JavaScript = 'JavaScript',
+    Xhr = 'XHR',
+    Image = 'Image',
+    Media = 'Media',
+    Font = 'Font',
+    WebSocket = 'WebSocket',
+    WebRtc = 'WebRTC',
+    Csp = 'CSP',
+    CspReport = 'CSP report',
+    PermissionsPolicy = 'Permissions Policy',
+    Cookie = 'Cookie',
+    Ping = 'Ping',
+    Other = 'Other',
+}
+
+/**
  * Url utils
  *
  * @type {{getUrlWithoutScheme, isHierarchicUrl, getProtocol, getCookieDomain}}
@@ -108,6 +132,7 @@ export const getRequestEventType = (event: FilteringLogEvent): string => {
         cspReportBlocked,
         removeHeader,
         removeParam,
+        urlTransform,
         isModifyingCookieRule,
     } = event;
 
@@ -122,44 +147,46 @@ export const getRequestEventType = (event: FilteringLogEvent): string => {
         // we consider such request to have "CSP report" type
         requestEventType = RequestType.CspReport;
     } else if (removeHeader) {
-        return 'REMOVEHEADER';
+        return RequestEventTypeDisplayName.RemoveHeader;
     } else if (removeParam) {
-        return 'REMOVEPARAM';
+        return RequestEventTypeDisplayName.RemoveParam;
+    } else if (urlTransform) {
+        return RequestEventTypeDisplayName.UrlTransform;
     }
 
     switch (requestEventType) {
         case RequestType.Document:
         case RequestType.Subdocument:
-            return 'HTML';
+            return RequestEventTypeDisplayName.Html;
         case RequestType.Stylesheet:
-            return 'CSS';
+            return RequestEventTypeDisplayName.Css;
         case RequestType.Script:
-            return 'JavaScript';
+            return RequestEventTypeDisplayName.JavaScript;
         case RequestType.XmlHttpRequest:
-            return 'XHR';
+            return RequestEventTypeDisplayName.Xhr;
         case RequestType.Image:
-            return 'Image';
+            return RequestEventTypeDisplayName.Image;
         case RequestType.Object:
         case RequestType.Media:
-            return 'Media';
+            return RequestEventTypeDisplayName.Media;
         case RequestType.Font:
-            return 'Font';
+            return RequestEventTypeDisplayName.Font;
         case RequestType.Websocket:
-            return 'WebSocket';
+            return RequestEventTypeDisplayName.WebSocket;
         case RequestType.WebRtc:
-            return 'WebRTC';
+            return RequestEventTypeDisplayName.WebRtc;
         case RequestType.Csp:
-            return 'CSP';
+            return RequestEventTypeDisplayName.Csp;
         case RequestType.CspReport:
-            return 'CSP report';
+            return RequestEventTypeDisplayName.CspReport;
         case RequestType.PermissionsPolicy:
-            return 'Permissions Policy';
+            return RequestEventTypeDisplayName.PermissionsPolicy;
         case RequestType.Cookie:
-            return 'Cookie';
+            return RequestEventTypeDisplayName.Cookie;
         case RequestType.Ping:
-            return 'Ping';
+            return RequestEventTypeDisplayName.Ping;
         case RequestType.Other:
-            return 'Other';
+            return RequestEventTypeDisplayName.Other;
         default:
             return '';
     }

@@ -42,6 +42,7 @@ import {
     type DeclarativeRuleEvent,
     type PopupBlockedEvent,
     type RuleInfo,
+    type UrlTransformEvent,
 } from 'tswebextension';
 
 import { messageHandler } from '../message-handler';
@@ -110,6 +111,7 @@ export class FilteringLogService {
         defaultFilteringLog.addEventListener(FilteringEventType.ApplyPermissionsRule, FilteringLogService.onApplyPermissionsRule);
         defaultFilteringLog.addEventListener(FilteringEventType.ApplyCosmeticRule, FilteringLogService.onApplyCosmeticRule);
         defaultFilteringLog.addEventListener(FilteringEventType.RemoveParam, FilteringLogService.onRemoveParam);
+        defaultFilteringLog.addEventListener(FilteringEventType.UrlTransform, FilteringLogService.onUrlTransform);
         defaultFilteringLog.addEventListener(FilteringEventType.RemoveHeader, FilteringLogService.onRemoveheader);
         defaultFilteringLog.addEventListener(FilteringEventType.Cookie, FilteringLogService.onCookie);
         defaultFilteringLog.addEventListener(FilteringEventType.JsInject, FilteringLogService.onScriptInjection);
@@ -396,6 +398,52 @@ export class FilteringLogService {
                 isStealthModeRule: filterId === AntiBannerFiltersId.StealthModeFilterId,
                 cspRule: isCsp,
                 permissionsRule: true,
+                cookieRule: isCookie,
+                modifierValue: advancedModifier ?? undefined,
+            },
+        });
+
+        if (!SettingsApi.getSetting(SettingOption.DisableCollectHits)) {
+            HitStatsApi.addRuleHit(filterId, ruleIndex);
+        }
+    }
+
+    /**
+     * Records the application of the rule with $urltransform modifier.
+     *
+     * @param ruleEvent Item of {@link UrlTransformEvent}.
+     * @param ruleEvent.data Data for this event.
+     */
+    private static async onUrlTransform({ data }: UrlTransformEvent): Promise<void> {
+        const {
+            tabId,
+            filterId,
+            ruleIndex,
+            appliedRuleText,
+            originalRuleText,
+            isAllowlist,
+            isImportant,
+            isDocumentLevel,
+            isCsp,
+            isCookie,
+            advancedModifier,
+            ...eventData
+        } = data;
+
+        filteringLogApi.addEventData(tabId, {
+            ...eventData,
+            urlTransform: true,
+            requestDomain: getDomain(eventData.requestUrl) ?? undefined,
+            requestRule: {
+                filterId,
+                ruleIndex,
+                appliedRuleText,
+                originalRuleText: originalRuleText ?? undefined,
+                allowlistRule: isAllowlist,
+                isImportant,
+                documentLevelRule: isDocumentLevel,
+                isStealthModeRule: filterId === AntiBannerFiltersId.StealthModeFilterId,
+                cspRule: isCsp,
                 cookieRule: isCookie,
                 modifierValue: advancedModifier ?? undefined,
             },

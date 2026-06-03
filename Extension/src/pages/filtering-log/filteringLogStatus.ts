@@ -93,6 +93,7 @@ export const getStatusMode = (event: UIFilteringLogEvent) => {
         requestRule,
         removeParam,
         removeHeader,
+        urlTransform,
         isModifyingCookieRule,
         declarativeRuleInfo,
     } = event;
@@ -135,7 +136,7 @@ export const getStatusMode = (event: UIFilteringLogEvent) => {
             // $stealth allowlist rules are not being marked as allowed
             // to prevent log cluttering and conform with desktop applications
             mode = StatusMode.Allowed;
-        } else if (cssRule || scriptRule || removeParam || removeHeader) {
+        } else if (cssRule || scriptRule || removeParam || removeHeader || urlTransform) {
             mode = StatusMode.Modified;
         } else if (cookieRule) {
             if (isModifyingCookieRule) {

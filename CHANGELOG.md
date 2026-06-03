@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased 5.5
 
+### Added
+
+- `$urltransform` modifier support [tsurlfilter#111].
+
 ### Fixed
 
 - Filtering log loses events during `window.open()` tab redirects [#2701].
@@ -25,8 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#1486]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1486
 [#1686]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1686
 [#2701]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2701
-[tsurlfilter#189]: https://github.com/AdguardTeam/tsurlfilter/issues/189
 [#3533]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3533
+[tsurlfilter#111]: https://github.com/AdguardTeam/tsurlfilter/issues/111
+[tsurlfilter#189]: https://github.com/AdguardTeam/tsurlfilter/issues/189
 
 ## [5.4 patch 2] - 2026-05-14
 
