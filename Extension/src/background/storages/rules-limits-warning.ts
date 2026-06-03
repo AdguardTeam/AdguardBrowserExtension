@@ -118,15 +118,15 @@ class RulesLimitsWarningStorage extends StringStorage<
             return true;
         }
 
-        return state.dismissedAtStaticRulesMax !== staticRulesMaximumCount;
-    }
+        if (state.dismissedAtStaticRulesMax !== staticRulesMaximumCount) {
+            await this.setData({
+                isDismissed: false,
+                dismissedAtStaticRulesMax: staticRulesMaximumCount,
+            });
+            return true;
+        }
 
-    /**
-     * Resets the dismissal state so the warning will be shown again.
-     */
-    public async reset(): Promise<void> {
-        const defaults = rulesLimitsWarningStorageDataValidator.parse(undefined);
-        await this.setData(defaults);
+        return false;
     }
 }
 
