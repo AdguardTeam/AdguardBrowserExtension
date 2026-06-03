@@ -30,6 +30,7 @@ import { rootStore } from '../../../stores/RootStore';
 import { messenger } from '../../../../services/messenger';
 import { logger } from '../../../../../common/logger';
 import { getCtaByOs } from '../../General/DesktopAppPromo/DesktopAppPromo';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../common/telemetry';
 
 import styles from './warning-variant-b.module.pcss';
 
@@ -48,7 +49,7 @@ type WarningVariantBProps = {
  * Displays a simplified warning with actionable steps.
  */
 export const WarningVariantB = ({ onClickCloseWarning }: WarningVariantBProps) => {
-    const { settingsStore } = useContext(rootStore);
+    const { settingsStore, telemetryStore } = useContext(rootStore);
 
     const {
         areFilterLimitsExceeded,
@@ -56,11 +57,29 @@ export const WarningVariantB = ({ onClickCloseWarning }: WarningVariantBProps) =
     } = settingsStore.rulesLimits;
 
     const handleManageExtensions = async () => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.ManageExtensionsClick,
+            TelemetryScreenName.RulesLimitsError,
+        );
         try {
             await messenger.openChromeExtensionsPage();
         } catch (e) {
             logger.warn('[ext.WarningVariantB]: Failed to open extensions page:', e);
         }
+    };
+
+    const handleGoToFilters = () => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.ReactivateFiltersClick,
+            TelemetryScreenName.RulesLimitsError,
+        );
+    };
+
+    const handleGetTheApp = () => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.GetTheAppClick,
+            TelemetryScreenName.RulesLimitsError,
+        );
     };
 
     if (!isLimitLowered && !areFilterLimitsExceeded) {
@@ -156,6 +175,7 @@ export const WarningVariantB = ({ onClickCloseWarning }: WarningVariantBProps) =
                                 <Link
                                     to={`/${OptionsPageSections.filters}`}
                                     className={styles.link}
+                                    onClick={handleGoToFilters}
                                 >
                                     {translator.getMessage('options_rule_limits_warning_variant_b_go_to_filters')}
                                 </Link>
@@ -184,6 +204,7 @@ export const WarningVariantB = ({ onClickCloseWarning }: WarningVariantBProps) =
                                 target="_blank"
                                 rel="noreferrer"
                                 className={cn('button button--green-bg button--m', styles.getAppButton)}
+                                onClick={handleGetTheApp}
                             >
                                 {desktopAppButtonLabel}
                             </a>
