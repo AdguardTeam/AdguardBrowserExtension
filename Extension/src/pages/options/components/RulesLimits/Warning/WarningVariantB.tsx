@@ -164,32 +164,30 @@ export const WarningVariantB = ({ onClickCloseWarning }: WarningVariantBProps) =
                     )}
                 </div>
 
-                {(areFilterLimitsExceeded || isLimitLowered) && (
-                    <div className={cn(styles.section, styles.getAppSection)}>
-                        <Icon
-                            id="#quality"
-                            className="icon--24 icon--green-default"
-                            aria-hidden="true"
-                        />
+                <div className={cn(styles.section, styles.getAppSection)}>
+                    <Icon
+                        id="#quality"
+                        className="icon--24 icon--green-default"
+                        aria-hidden="true"
+                    />
 
-                        <div>
-                            <div className={styles.sectionTitle}>
-                                {translator.getMessage('options_rule_limits_warning_variant_b_desktop_app_title')}
-                            </div>
-                            <div className={styles.sectionDescription}>
-                                {translator.getMessage('options_rule_limits_warning_variant_b_desktop_app_description')}
-                            </div>
-                            <a
-                                href={desktopAppUrl}
-                                target="_blank"
-                                rel="noreferrer"
-                                className={cn('button button--green-bg button--m', styles.getAppButton)}
-                            >
-                                {desktopAppButtonLabel}
-                            </a>
+                    <div>
+                        <div className={styles.sectionTitle}>
+                            {translator.getMessage('options_rule_limits_warning_variant_b_desktop_app_title')}
                         </div>
+                        <div className={styles.sectionDescription}>
+                            {translator.getMessage('options_rule_limits_warning_variant_b_desktop_app_description')}
+                        </div>
+                        <a
+                            href={desktopAppUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className={cn('button button--green-bg button--m', styles.getAppButton)}
+                        >
+                            {desktopAppButtonLabel}
+                        </a>
                     </div>
-                )}
+                </div>
             </div>
         </div>
     );
