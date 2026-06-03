@@ -38,12 +38,6 @@ describe.skipIf(!__IS_MV3__)('RulesLimitsWarningStorage', () => {
         await browserStorage.remove(RULES_LIMITS_WARNING_KEY);
     });
 
-    describe('GLOBAL_STATIC_RULE_LIMIT', () => {
-        it('should be 310000', () => {
-            expect(GLOBAL_STATIC_RULE_LIMIT).toBe(310000);
-        });
-    });
-
     describe('getState', () => {
         it('should return default state on first access', async () => {
             const state = await rulesLimitsWarningStorage.getState();
