@@ -18,6 +18,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { RULE_INDEX_NONE } from '@adguard/tsurlfilter';
+
 import {
     getDomain,
     isHttpRequest,
@@ -150,13 +152,30 @@ export class FramesApi {
                        || filterId === AntiBannerFiltersId.AllowlistFilterId;
 
                 const ruleIndex = mainFrameRule.getIndex();
-                let ruleText = engine.api.retrieveRuleText(filterId, ruleIndex);
+
+                // Resolve the human-readable rule text.
+                //
+                // `@adguard/tsurlfilter` stores rule text in one of two places,
+                // depending on whether the rule has a source position in a filter list
+                // (see the `NetworkRule`/`CosmeticRule` constructor contract):
+                // - Indexed rules (`ruleIndex !== RULE_INDEX_NONE`) do not keep their text
+                //   inline to save memory, so it must be retrieved from the engine by index.
+                // - Synthetic rules (`ruleIndex === RULE_INDEX_NONE`), such as the
+                //   document-level allowlist rules generated at runtime in inverted allowlist
+                //   mode, have no source position and expose their text via `getText()`.
+                let ruleText = ruleIndex !== RULE_INDEX_NONE
+                    ? engine.api.retrieveRuleText(filterId, ruleIndex)
+                    : mainFrameRule.getText();
 
                 if (!ruleText) {
-                    // should never happen during normal operation
                     ruleText = `<cannot retrieve rule text: ${filterId}:${ruleIndex}>`;
 
-                    logger.error(`[ext.FramesApi.getMainFrameData]: Cannot retrieve rule text: ${filterId}:${ruleIndex}`);
+                    // Only an indexed rule that fails to resolve is unexpected. A synthetic
+                    // rule without inline text is not an error and must not be logged, since
+                    // it occurs on normal page loads and would otherwise flood the log.
+                    if (ruleIndex !== RULE_INDEX_NONE) {
+                        logger.error(`[ext.FramesApi.getMainFrameData]: Cannot retrieve rule text: ${filterId}:${ruleIndex}`);
+                    }
                 }
 
                 frameRule = {
