@@ -1,9 +1,9 @@
-! Checksum: pjpYW8opVB1C0mFCyPyNRA
-! Diff-Path: ../patches/23/23-s-1777134037-3600.patch
+! Checksum: 8v2OvbJhKxnOYw5ys+984A
+! Diff-Path: ../patches/23/23-s-1778691401-3600.patch
 ! Title: AdGuard Ukrainian filter
 ! Description: Filter that enables ad blocking on websites in Ukrainian language.
-! Version: 2.0.8.4
-! TimeUpdated: 2026-04-25T16:17:54+00:00
+! Version: 2.0.8.15
+! TimeUpdated: 2026-05-13T16:53:48+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -18,7 +18,14 @@
 ! Good: .org/ads/
 ! Bad: .org/ads/$domain=example.org (for instance, should be in speficic.txt)
 !
+! etarg.network
+/strong/object.xml?*&mode=vast
+! https://github.com/AdguardTeam/AdguardFilters/issues/230427
+||com/services/?rt=$script,third-party
+||com/services/?fx=$script,third-party
 ! Kinogo player
+! BASE64 = 'scope":"VAST"}'
+?token=*c2NvcGUiOiJWQVNUIn0
 /kinogo/js/ads/*
 ! https://github.com/AdguardTeam/AdguardFilters/issues/205747
 /code/video-steam/?id=*&vast=
@@ -364,6 +371,7 @@ http://*.ru/leftunit.pl?
 /kadam.base.min.js?
 !
 mpg.com/movie/files/episodes/*-RU.mp4|
+/api-integration/fluxline?view=
 /api-integration/player/vast1.xml?view=
 ||vst.*/*?subid=
 /vast.php?partner_id=
@@ -940,7 +948,6 @@ ucoz.ru/informer/
 ###b_top-banner
 ###ban_zone_4
 ###banerHead
-###banner-container
 ###banner-container-240x400
 ###banner-header-bottom
 ###banner-placeholder
@@ -1438,6 +1445,12 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||hello.vipapi.org^
+||wishgofox.com^
+||tallertorn.com^
+||deltarockme.com^
+||beesratyou.com^
+||trorqeok.com^
 ||merilrise.com^$third-party
 ||elonreptiloid.pw^$third-party
 ||roomgome.com^
@@ -3548,6 +3561,8 @@ http://w7.ru^$third-party
 ||zorkabiz.ru^$third-party
 ||zqmwf.xyz^$third-party
 !
+! etarg.network
+!
 ! https://github.com/AdguardTeam/AdguardFilters/issues/200915
 ! t.setAttribute("data-mrmn-tag"
 ! AD Factor
@@ -3578,6 +3593,7 @@ http://w7.ru^$third-party
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||legitwebsite.com^$third-party (should be in adservers.txt)
 !
+||kinogo-may.vipapi.org^
 ||adfox.yandex.ru^$domain=~yandex.by|~yandex.cloud|~yandex.com|~yandex.com.am|~yandex.com.tr|~yandex.kz|~yandex.net|~yandex.ru|~yandex.uz
 ||ad.cub.red^
 ||exad.smi2.ru^
@@ -3973,7 +3989,7 @@ unian.net#$#.social-shares { visibility: hidden!important; }
 /script.js^$third-party,domain=rus-km.ru|progorodnn.ru|vestiprim.ru|4mlhn1ocg4.com|koolinar.ru|kyiv.media|pershij.com.ua|u-news.com.ua|crashplane.ru|cin-24.com|vikingi-online.info|hi-blog.ru|lifedon.com.ua|skuky.net|365news.biz|tv-show.live|pt0zhwhc26.ru|gadget-apple.ru|kinovideo.cc|tarifec.com|amazingfacts.ru|womanvip.ru|evo-rus.com|kraj.by|shematok.ru|bargu.by|rivnepost.rv.ua|sobesednik.ru|comments.ua|pln-pskov.ru|lyricsonline.ru|amperof.ru|kapital-rus.ru|sport24tv.ru|militariorg.ucoz.ru|pravda-tv.ru|ianed.ru|solenka.info|inforuss.info|ufanotes.ru|togliatti24.ru|storinka.com.ua|moskva-obl.ru|reporter64.ru|gastrot.ru|yadelus.ru|telegraf.news|bnkomi.ru|myslo.ru
 !
 ! ##.ad
-ru.citaty.net,liga.net,appstorrent.ru,graniru.org,3dnews.ru,zaks.ru,ukranews.com,mr-7.ru,ferra.ru,cont.ws,riavrn.ru,maanimo.com,begaem.com,passion.ru,gq.ru,agravery.com,appsgames.ru,buhgalteria.ru,dumskaya.net,hotcharts.xyz,klops.ru,mmovote.ru,molnet.ru,news.pn,newsru.co.il##.ad
+thebell.io,ru.citaty.net,liga.net,appstorrent.ru,graniru.org,3dnews.ru,zaks.ru,ukranews.com,mr-7.ru,ferra.ru,cont.ws,riavrn.ru,maanimo.com,begaem.com,passion.ru,gq.ru,agravery.com,appsgames.ru,buhgalteria.ru,dumskaya.net,hotcharts.xyz,klops.ru,mmovote.ru,molnet.ru,news.pn,newsru.co.il##.ad
 ! ##.adv
 news.novyny.live,posylka.net,progroshi.news,thepage.ua,newsru.co.il,freetone.org,infox.ru,internet-technologies.ru,xcadr.tv,dota2.ru,newkaliningrad.ru,reestr.rublacklist.net,ringon.site,glavcom.ua,qna.center,afanasy.biz,happymonday.ua,xcadr.org,dugtor.ru,trud.ru,amic.ru,dugtor.org,kinoafisha.info,niknews.mk.ua,sovety.net,vesti.uz,wotsite.net##.adv
 ! ##center > a[rel="nofollow"] > img
@@ -4007,6 +4023,11 @@ mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,tolknews.ru,
 !
 ! NOTE: Specific rules
 !
+||spdmpgcdn.com^$media,domain=temptcdn.com
+||cinemar.cc/api/player/vast
+||spdmpgcdn.com/*bet.mp4
+||vipapi.org/vast.xml
+||vipapi.org/vast/ad-rotator/
 technopark.ru##.catalog-banner
 tsn.ua##[data-ad-container]
 telegraf.ua##.tgr-ads
@@ -5684,8 +5705,6 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/228513
 @@||mirait-one.com/xj/$domain=mirait-one.com,important
-! https://github.com/AdguardTeam/AdguardFilters/issues/223191
-mush-e.com#@##banner-container
 ! https://github.com/AdguardTeam/AdguardFilters/issues/220247
 @@||player.bidmatic.io/microplayer/*/stream.es.js$domain=play.tavr.media
 @@||files.bidmatic.io/microplayer/configs/*.jsonp|$domain=play.tavr.media

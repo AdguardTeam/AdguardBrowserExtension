@@ -1,9 +1,9 @@
-! Checksum: yR6UNkJxB6Thp57e7c+wtA
-! Diff-Path: ../patches/20/20-s-1777286893-3600.patch
+! Checksum: uZDyZipjnRouZMldHzryrA
+! Diff-Path: ../patches/20/20-s-1778691405-3600.patch
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.28.73
-! TimeUpdated: 2026-04-27T10:45:12+00:00
+! Version: 2.0.29.6
+! TimeUpdated: 2026-05-13T16:53:43+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -60,6 +60,33 @@ rxgo.com,alfastrah.ru,turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepe
 !
 !
 !
+shop-apotheke.com#$#.base-Modal-root:has(> div[class^="ErxModal"]) { display: none !important; }
+shop-apotheke.com#$#body { overflow: auto !important; }
+m.glassesusa.com##.aHF3La
+m.glassesusa.com##.hHF3La
+goal.com##.fco-app-promo-modal
+||buy-eu.piano.io/checkout/template/cacheableShow.html*&offerId=fakeOfferId&experienceId=$subdocument,domain=kathimerini.gr
+kathimerini.gr##.app-holder
+myacgmall.com.tw,olhelmets.com#?##root > .container-component .slide-push-menu ~ div[class^="sc-"]:contains(Try the App)
+vamprivet.ru##section[class^="styles-module__download_"]
+people.com##.promo-unit
+joysound.com##.jp-cmp-topics-ad-001
+joysound.com##.flex > div.w-full:has(> ul > li > a[data-app-id="karaoke"])
+jobs.meinestadt.de##.ms-promos-teaser
+fangraphs.com##div[class^="sidebar-mobile-app_"]
+google.com###js-qr-popup
+bandsintown.com##header > div > div:has(> svg > path[d^="M19.5 12.5V"])
+espncricinfo.com##div.ds-text-tight-m:has(> a[href^="https://play.google.com/store/"])
+pw.live##div[class^="appBanner_"]
+downdetector.com##div[data-testid="card"] > div > div.mx-auto:has(> div > div > a[href^="https://play.google.com/store/apps/details?id="])
+wallpics.app##body > div.fixed:has(> div.w-full a[href^="https://play.google.com/store/apps/"])
+m.soundcloud.com##div[class^="Header_RightContainer"] > button:not([data-testid="sign-in-button"])
+m.soundcloud.com##div[class^="FooterStoreSection"]
+quicksigorta.com##body > header > div.MuiBox-root:has(> div > div > img[src^="https://quicksigorta.com/img/logos"])
+korusigorta.com.tr#$#.mobile-popup { display: none !important; }
+korusigorta.com.tr#$#.Header { top: 0 !important; }
+raysigorta.com.tr##.mobileapp-rayconnect
+online.anadolusigorta.com.tr##div[data-testid*="main-content"] > div[class]:has(> div[class] > img[alt="download_banner_logo"])
 trhaber.com#%#//scriptlet('set-session-storage-item', 'trhaber_app_banner_dismissed', 'true')
 jkanime.net##.appGlobalMsj
 stremio.com##section[id^="stremio-on-tv"]
@@ -1812,7 +1839,7 @@ map.baidu.com###fis_elm__6
 map.baidu.com##.common-widget-bottom-banner-changeId
 map.baidu.com#?#body > div[id]:has(> div#downloadnativepopupUlink)
 map.baidu.com#?##page-wrapper > div#common-bottombanner-widget-fis:has(> div.common-widget-bottom-banner-changeId > div.bottom-banner-float)
-m.economictimes.com,www-crictracker-com.cdn.ampproject.org###downloadApp
+alternatifbank.com.tr,m.economictimes.com,www-crictracker-com.cdn.ampproject.org###downloadApp
 m.economictimes.com###float_app_ET
 yay.space##.AppDownloadAds
 goo-net.com#$#.appBingWeb { display: none !important; }
@@ -3798,6 +3825,9 @@ apteki.yandex.ru##div[data-qa="HomePage"] > div[class]:has(> div > a[href="https
 ! Yandex.Disk
 disk.360.yandex.*##div[class^="download-mobile-qr-"]
 !
+! Yandex.Dostavka
+dostavka.yandex.ru##.RumObservableRoot div[class]:has(> a[href^="https://8jxm.adj.st/route?"][href*="&adj_deep_link=yandextaxi"])
+!
 ! Yandex.Messenger
 yandex.*##.yamb-chat-not-selected__download-app-section > a.yamb-desktop-app-link ~ *
 !
@@ -4122,6 +4152,19 @@ m.tokopedia.com#$#div[data-testid="divOverlay"] { display: none!important; }
 ! Limit it to mobile versions only
 ! causes some issues: https://github.com/AdguardTeam/AdguardForMac/issues/550
 !
+yamap.com###yamap-app-root > div[class^="css-"] > section[class^="css-"]:has(> img[src*="/smart_app_banner/"])
+greg.app###download-banner-wrapper
+greg.app###download-modal
+yamap.com##.DownloadBanner
+www.kinopoisk.ru#%#//scriptlet('set-cookie', 'kp_mobile_app_sheet', 'true')
+etsy.com##div[data-appears-component-name="app_download"]
+jobs.meinestadt.de##.o-smartBanner
+zalando.de##div[style="display:contents"]:has(> div[style] > div.EKabf7 > div[class][style] > div[class] > div[class] > button:is([aria-label^="Zur App Dieser Link öffnet die Zalando App"], [aria-label^="Use app This link will open the Zalando app"]))
+fishingmax.co.jp##header > .wrap > #app
+service.sim.de###appStoererMobil
+sp.netkeiba.com##.sec-app__container
+axiom.trade#?#body > .bg-backgroundSecondary:has(> h3:contains(Install WebApp))
+ndtv.com##.RdInAp_wr
 distill.io###appPrompt
 vodafone.com.tr##div[data-region-id^="header--smart-link"]
 navitime.co.jp##.js-appli-japan-travel
@@ -4218,7 +4261,7 @@ m.yahoo.co.jp##div[class^="RichSmartAppBanner"]
 hotelscombined.jp,kayak.com,momondo.com###mobile-app-promo-banner
 okinawatimes.co.jp##.deeplink_txt_color
 fedex.com##trk-shared-simplified-mobile-app-banner
-willmusic.com.tw,shop.showba.com.tw,mart.family.com.tw#%#//scriptlet('set-session-storage-item', 'AdHide', 'true')
+store.apujan.com,bodyvine.store,buy.artso.com.tw,buy.gugugoo.com,candybox.com.tw,petshop.tw.virbac.com,shop.coffeebox.tw,shop.goodyoung.info,shop.kky.com.tw,shop.klight.com.tw,shop.singen.com.tw,shop.sstandc.com,shopping.hands.com.tw,store.barftaiwan.com,1966go.com.tw,aigle-taiwan.com.tw,aingyea.com.tw,ajiangshi.com,alasha.com.tw,aroma-housewares.tw,asics.com.tw,aura-cosmetics.com.tw,blueway-jeans.com,byhue-official.com,celesteterry.com.tw,chensmochi.com.tw,columbiasportswear.com.tw,dk-shoes.com.tw,drmay.com.tw,eat120.com.tw,eatbliss.com.tw,eelee.com.tw,eglaf.com.my,ehobby.com.tw,ewear.com.tw,fansfassiii.com,fbshop.com.tw,fevrier.com.tw,footer.com.tw,ftvmall.com.tw,ganso.com.tw,ginkgolin.com,guwang.com.tw,hjfood.com.tw,iqueen.com.tw,jacklinghair.com.tw,jasonfood.com.tw,kipling.com.tw,kurumira.com.tw,kyosho.tw,ladies.tw,lichuan.tw,lottosport.com.tw,manfair-se.com,myselect.com.tw,mysimply.tw,opitaiwan.com,poyabuy.com.tw,premierfood.com.hk,profi46.com,puzzleplanet.com.my,sasa.com.hk,shingfangpastry.com,shop0315.com.tw,sky-blue.com.tw,so-nice.com.tw,soloneshop.com.tw,spp.com.tw,starbeauty.com.tw,takoda-active.com,tcsb.com.tw,tgtg.com.tw,thenorthface.com.tw,timberland.com.tw,tokuyo.com,tomor.com,touched.com.tw,well-come.com.tw,woawoa.com.tw,wyteshop.com,xexymix.com.tw,easycard.suhul.com.tw,hunter.brandedlifestyle.com,mall.e-muse.com.tw,shop.5soap.com,shop.atunas.com.tw,shop.seamild.com.tw,shop.skechers-twn.com,shop.wacoal.com.tw,store.2ndstreet.com.tw,store.eurocafe.com.tw,abyssebeauty.com.tw,arnoldpalmer-apparel.com,ausupreme.com,cipu.com.tw,ctbcflyingoyster.com,deya.tw,discovery-expedition.com.hk,doga.com.tw,dot-st.tw,e-hilltop.com,efuji.com.tw,elleactive.com.tw,esnie.com.tw,fet.com.tw,hoihome.tw,hwccoffee-shop.com,ispo.com.tw,joyce-mall.com,kaldi.tw,kedstaiwan.com,kokko.com.tw,kuaiche.com.tw,larrieconceptstore.com,lbd.com.tw,levis.com.tw,mlb-korea.com.tw,nushoptw.com,obdesign.com.tw,peachjohn.com.hk,ps-company.com.tw,ricians.tw,roots.com.tw,stand-collection.com,stripe-club.com.tw,tiaratiara.com.tw,tkfood.com.tw,truu.tw,trygogo.com,my.melvita.com,cafein.com.tw,app.arwin.com.tw,tw.puma.com,adidas.com.tw,beldora.com.tw,boardriders.com.tw,combi.com.tw,hh-taiwan.com.tw,itsuworldhk.com,jsstore.com.tw,m2.com.tw,medfirst.com.tw,onitsukatiger.com.tw,saime.com.tw,underarmour.tw,whose-books.com,willmusic.com.tw,shop.showba.com.tw,mart.family.com.tw#%#//scriptlet('set-session-storage-item', 'AdHide', 'true')
 hotpepper.jp#$#.app-bottom-modal-container { display: none !important; }
 hotpepper.jp#$#body.fixed-body { overflow: auto !important }
 baito.line.me##div[class^="AppDownloadLinkBar"]
@@ -4534,7 +4577,7 @@ temu.com###main > .loadable-container > div[role="main"] > div > div:not([class]
 reclameaqui.com.br#$#div[data-testid="complete-header"] > div[data-testid="banner-container"] { display: none !important; }
 reclameaqui.com.br#$#div[data-testid="complete-header"] > div[data-testid="banner-container"] + header > div[style="top:90px"] { top: 0 !important; }
 my-best.com###__next > div.css-1pcjl0n > a[href="https://mybest.go.link/924F7"]
-teremok.ru,prioritypass.com,domainanalysis.io,finance.yahoo.com##.app-banner
+tsurihack.com,teremok.ru,prioritypass.com,domainanalysis.io,finance.yahoo.com##.app-banner
 theinformation.com##a[data-testid="download-app"]
 quora.com#?#a[href="https://www.quora.com/"][target="_top"] + div[class] > button:has(> div > div > div:contains(App))
 fantasi.one#?##app > div.background:has(> div:only-child > .close + .content > p:contains(App))
@@ -4791,7 +4834,8 @@ novel.prcm.jp##.w2a-banner
 twidropper.com##.downBg
 pikabu.ru#%#//scriptlet('set-local-storage-item', 'pkb_mobappsh', 'true')
 xfollow.com##div[class^="index-module__iosPrompt"]
-snapedit.app,soulgen.net##.fixed.bottom-0
+tr.investing.com##.fixed.inset-0
+tr.investing.com,snapedit.app,soulgen.net##.fixed.bottom-0
 mobalytics.gg##main > div > div:has(> a[href^="https://mobalytics.gg/lol/glp/download-welcome"])
 ||crai-supermercati.it/wp-content/themes/craitheme/js/vendor/smart-app-banner/
 cloudtempmail.com##.InstallAppAllStore
@@ -5044,7 +5088,6 @@ smartnews.com##.default-banner-interrupt
 bonprix.de#%#//scriptlet('set-cookie-reload', 'customAppBannerClosed', 'true')
 baur.de##div[data-testid="app-banner"]
 lotteon.com#?#div[data-modal].v--modal-overlay:has(.appReviewBox)
-m.yahoo.co.jp###log-rsab
 cycomi.com##.app-lead-image-on-title
 apfelpage.de###appful-overlay-banner
 recotripp.com##.btn-sticky-area
@@ -5186,6 +5229,8 @@ scoopzapp.com#%#//scriptlet('trusted-create-element', 'head', 'script', '', '(()
 ! shkulev media holding
 116.ru,14.ru,161.ru,164.ru,173.ru,26.ru,29.ru,35.ru,43.ru,45.ru,48.ru,51.ru,53.ru,56.ru,59.ru,60.ru,63.ru,68.ru,71.ru,72.ru,74.ru,76.ru,86.ru,89.ru,93.ru,chita.ru,e1.ru,fontanka.ru,ircity.ru,izh1.ru,mgorsk.ru,msk1.ru,ngs.ru,ngs22.ru,ngs24.ru,ngs42.ru,ngs55.ru,ngs70.ru,nn.ru,sochi1.ru,sterlitamak1.ru,tolyatty.ru,ufa1.ru,v1.ru,vladivostok1.ru,voronezh1.ru##article > div[class^="wrapper_"]:has(> a[href^="https://redirect.appmetrica.yandex.com/"])
 !
+!+ NOT_OPTIMIZED
+m.yahoo.co.jp###log-rsab
 !+ NOT_OPTIMIZED
 hepsiburada.com###hyd-adx
 !+ NOT_OPTIMIZED

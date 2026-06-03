@@ -81,7 +81,7 @@ You can build the release version by running a single command:
 docker run --rm \
     -v "$(pwd)":/workspace \
     -w /workspace \
-    adguard/extension-builder:22.17--0.4.1--0 \
+    adguard/extension-builder:22.22--0.4.1--0 \
     bash -c "pnpm install && pnpm release firefox-amo"
 ```
 
@@ -98,7 +98,7 @@ To build the beta extension with ID `adguardadblockeramobeta@adguard.com`:
 docker run --rm \
   -v "$(pwd)":/workspace \
   -w /workspace \
-  adguard/extension-builder:22.17--0.4.1--0 \
+  adguard/extension-builder:22.22--0.4.1--0 \
   bash -c "pnpm install && pnpm beta firefox-amo"
 ```
 
@@ -111,7 +111,7 @@ To build the beta extension with ID `adguardadblockerbeta@adguard.com`:
 docker run --rm \
   -v "$(pwd)":/workspace \
   -w /workspace \
-  adguard/extension-builder:22.17--0.4.1--0 \
+  adguard/extension-builder:22.22--0.4.1--0 \
   bash -c "pnpm install && pnpm beta firefox-standalone"
 ```
 
@@ -142,7 +142,7 @@ To build the RELEASE version:
 docker run --rm \
     -v "$(pwd)":/workspace \
     -w /workspace \
-    adguard/extension-builder:22.17--0.4.1--0 \
+    adguard/extension-builder:22.22--0.4.1--0 \
     bash -c "pnpm install && pnpm release firefox-amo"
 ```
 
@@ -155,7 +155,7 @@ To build the beta extension with ID adguardadblockeramobeta@adguard.com:
 docker run --rm \
     -v "$(pwd)":/workspace \
     -w /workspace \
-    adguard/extension-builder:22.17--0.4.1--0 \
+    adguard/extension-builder:22.22--0.4.1--0 \
     bash -c "pnpm install && pnpm beta firefox-amo"
 ```
 
@@ -168,7 +168,7 @@ To build the beta extension with ID adguardadblockerbeta@adguard.com:
 docker run --rm \
     -v "$(pwd)":/workspace \
     -w /workspace \
-    adguard/extension-builder:22.17--0.4.1--0 \
+    adguard/extension-builder:22.22--0.4.1--0 \
     bash -c "pnpm install && pnpm beta firefox-standalone"
 ```
 
