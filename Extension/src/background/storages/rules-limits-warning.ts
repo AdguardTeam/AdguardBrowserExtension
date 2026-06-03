@@ -18,28 +18,13 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { RULES_LIMITS_WARNING_KEY } from '../../common/constants';
+import { RULES_LIMITS_WARNING_KEY, GLOBAL_STATIC_RULE_LIMIT } from '../../common/constants';
 import { logger } from '../../common/logger';
 import { getZodErrorMessage } from '../../common/error';
 import { rulesLimitsWarningStorageDataValidator, type RulesLimitsWarningStorageData } from '../schema/rules-limits';
 import { StringStorage } from '../utils/string-storage';
 
 import { browserStorage } from './shared-instances';
-
-/**
- * Global static DNR rule pool limit threshold for the "limit lowered" warning.
- *
- * Chrome provides 300,000 shared pool + 30,000 guaranteed per extension = 330,000 max.
- * In practice, Chrome's own component extensions (Safe Browsing, Safety Check, etc.)
- * consume rules from the shared pool, so the real available maximum is always lower
- * than 330,000.
- *
- * We set the threshold to 310,000 to tolerate this overhead and only trigger the
- * warning when other user-installed DNR extensions are consuming a significant
- * portion of the pool. Below 310k it's likely not just our own metadata or Chrome
- * components — something else is eating the pool.
- */
-export const GLOBAL_STATIC_RULE_LIMIT = 310000;
 
 /**
  * Storage for the rules limits warning dismissal state.
