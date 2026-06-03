@@ -1022,6 +1022,16 @@ export abstract class MessengerCommon {
     };
 
     /**
+     * Sends a message to the background page to dismiss the "limit lowered by other extensions" warning.
+     *
+     * @returns Promise that resolves after the message is sent.
+     */
+    dismissLimitLoweredWarningMv3 = async ()
+    : Promise<ExtractMessageResponse<MessageType.DismissLimitLoweredWarningMv3>> => {
+        return this.sendMessage(MessageType.DismissLimitLoweredWarningMv3);
+    };
+
+    /**
      * Sends a message to the background page to get the allowlist domains.
      *
      * @returns Promise that resolves with the allowlist domains.

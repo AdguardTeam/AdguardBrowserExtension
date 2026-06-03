@@ -55,6 +55,7 @@ const DEFAULT_RULES_LIMITS: IRulesLimits = {
     expectedEnabledFilters: [],
     actuallyEnabledFilters: [],
     areFilterLimitsExceeded: false,
+    shouldShowLimitLoweredWarning: false,
 };
 
 export class SettingsStore extends SettingsStoreCommon {

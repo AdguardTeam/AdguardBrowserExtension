@@ -42,16 +42,27 @@ export const LAST_NOTIFICATION_TIME_KEY = 'viewed-notification-time';
 export const HIT_STATISTIC_KEY = 'filters-hit-count';
 export const ANNOYANCES_CONSENT_KEY = 'annoyances-consent';
 export const RULES_LIMITS_KEY = 'rules-limits';
+
+/**
+ * Storage key for the rules limits warning dismissal state.
+ * Persists whether the user dismissed the warning and at what
+ * pool consumption level, so the warning can be re-shown if
+ * the situation changes (e.g. other extensions appear/disappear).
+ */
+export const RULES_LIMITS_WARNING_KEY = 'rules-limits-warning';
 export const MANUAL_EXTENSION_UPDATE_KEY = 'manual-extension-update';
+
 /**
  * Storage key to prevent double injection of content scripts after extension update.
  * Set before extension reload, checked and cleared after reload.
  */
 export const CONTENT_SCRIPT_INJECTION_FLAG = 'content-script-injection-flag';
+
 /**
  * Storage key for auto-update state data, used only in MV3.
  */
 export const AUTO_UPDATE_STATE_KEY_MV3 = 'auto-update-state-mv3';
+
 /**
  * Storage key for auto-update configuration override, used only in MV3 for testing.
  */

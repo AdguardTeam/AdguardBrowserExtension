@@ -34,9 +34,8 @@ import { messenger } from '../../../services/messenger';
 import { OptionsPageSections } from '../../../../common/nav';
 import { shouldShowUserScriptsApiWarning } from '../../../../common/user-scripts-api';
 import { addMinDelayLoader } from '../../../common/components/helpers';
-import { type IRulesLimits } from '../../../../background/services/rules-limits/interface';
 
-import { Warning } from './Warning';
+import { Warning, WarningVariantB } from './Warning';
 
 import './rules-limits.pcss';
 
@@ -56,7 +55,7 @@ export const RulesLimits = observer(() => {
         settingsStore.getRulesLimitsCounters();
     }, [settingsStore]);
 
-    const rulesLimits: IRulesLimits = settingsStore.rulesLimits;
+    const { rulesLimits, showRuleLimitsVariantB } = settingsStore;
 
     const {
         dynamicRulesEnabledCount,
@@ -116,6 +115,7 @@ export const RulesLimits = observer(() => {
             TelemetryScreenName.RulesLimitsError,
         );
         await messenger.clearRulesLimitsWarningMv3();
+        await messenger.dismissLimitLoweredWarningMv3();
         await settingsStore.getRulesLimitsCounters();
         await settingsStore.checkLimitations();
     };
@@ -203,7 +203,7 @@ export const RulesLimits = observer(() => {
             title={translator.getMessage('options_rule_limits')}
             description={translator.getMessage('options_rule_limits_description')}
         >
-            {areFilterLimitsExceeded && (
+            {areFilterLimitsExceeded && !showRuleLimitsVariantB && (
                 <Warning
                     actuallyEnabledFilterNames={getFiltersNames(rulesLimits.actuallyEnabledFilters).join(', ')}
                     expectedEnabledFilterNames={getFiltersNames(rulesLimits.expectedEnabledFilters).join(', ')}
@@ -212,6 +212,14 @@ export const RulesLimits = observer(() => {
                     onClickCloseWarning={handleCloseWarningWrapper}
                 />
             )}
+
+            {
+                showRuleLimitsVariantB && (
+                    <WarningVariantB
+                        onClickCloseWarning={handleCloseWarningWrapper}
+                    />
+                )
+            }
             <div className="rules-limits">
                 <div className="rules-limits__section">
                     <div

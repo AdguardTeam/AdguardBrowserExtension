@@ -51,6 +51,7 @@ import { messageHandler } from '../../message-handler';
 import { arraysAreEqual } from '../../utils/arrays-are-equal';
 import { SettingOption } from '../../schema/settings/enum';
 import { getZodErrorMessage } from '../../../common/error';
+import { rulesLimitsWarningStorage } from '../../storages/rules-limits-warning';
 
 import {
     type StaticLimitsCheckResult,
@@ -121,6 +122,12 @@ export class RulesLimitsService {
             RulesLimitsService.clearRulesLimitsWarning,
         );
 
+        // Dismiss "limit lowered by other extensions" warning.
+        messageHandler.addListener(
+            MessageType.DismissLimitLoweredWarningMv3,
+            this.dismissLimitLoweredWarning.bind(this),
+        );
+
         // First read from storage and set data to cache.
         await RulesLimitsService.initStorage();
     }
@@ -146,6 +153,25 @@ export class RulesLimitsService {
         // Force update the icon state immediately
         // to ensure it reflects the current status without waiting for user actions.
         await iconsApi.update();
+    }
+
+    /**
+     * Dismisses the "limit lowered by other extensions" warning.
+     * Saves the current staticRulesMaximumCount so the warning can be
+     * re-shown if the situation changes.
+     */
+    private async dismissLimitLoweredWarning(): Promise<void> {
+        const result = this.configurationResult;
+        if (!result) {
+            return;
+        }
+
+        const filters = FiltersApi.getEnabledFiltersWithMetadata();
+        const staticRulesEnabledCount = RulesLimitsService.getStaticRulesEnabledCount(result, filters);
+        const availableStaticRulesCount = await browser.declarativeNetRequest.getAvailableStaticRuleCount();
+        const staticRulesMaximumCount = staticRulesEnabledCount + availableStaticRulesCount;
+
+        await rulesLimitsWarningStorage.dismiss(staticRulesMaximumCount);
     }
 
     /**
@@ -453,6 +479,7 @@ export class RulesLimitsService {
             actuallyEnabledFilters: await RulesLimitsService.getActuallyEnabledFilters(),
             expectedEnabledFilters: RulesLimitsService.getExpectedEnabledFilters(),
             areFilterLimitsExceeded: await RulesLimitsService.areFilterLimitsExceeded(),
+            shouldShowLimitLoweredWarning: await rulesLimitsWarningStorage.shouldShowWarning(staticRulesMaximumCount),
         };
     }
 

@@ -157,6 +157,7 @@ export enum MessageType {
     CanEnableStaticFilterMv3 = 'canEnableStaticFilterMv3',
     CanEnableStaticGroupMv3 = 'canEnableStaticGroupMv3',
     ClearRulesLimitsWarningMv3 = 'clearRulesLimitsWarningMv3',
+    DismissLimitLoweredWarningMv3 = 'dismissLimitLoweredWarningMv3',
     RestoreFiltersMv3 = 'restoreFiltersMv3',
     CurrentLimitsMv3 = 'currentLimitsMv3',
     GetExtensionStatusForPopupMV3 = 'getExtensionStatusForPopupMV3',
@@ -703,6 +704,10 @@ export type ClearRulesLimitsWarningMv3Message = {
     type: MessageType.ClearRulesLimitsWarningMv3;
 };
 
+export type DismissLimitLoweredWarningMv3Message = {
+    type: MessageType.DismissLimitLoweredWarningMv3;
+};
+
 export type GetRulesLimitsCountersMv3Message = {
     type: MessageType.GetRulesLimitsCountersMv3;
 };
@@ -1078,6 +1083,10 @@ export type MessageMap = {
     };
     [MessageType.ClearRulesLimitsWarningMv3]: {
         message: ClearRulesLimitsWarningMv3Message;
+        response: void;
+    };
+    [MessageType.DismissLimitLoweredWarningMv3]: {
+        message: DismissLimitLoweredWarningMv3Message;
         response: void;
     };
     [MessageType.GetExtensionStatusForPopupMV3]: {

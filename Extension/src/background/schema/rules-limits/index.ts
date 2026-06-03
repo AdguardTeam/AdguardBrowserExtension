@@ -21,3 +21,4 @@
 // Rules limits schema entry point
 
 export { rulesLimitsStorageDataValidator, type RulesLimitsStorageData } from './rules-limits';
+export { rulesLimitsWarningStorageDataValidator, type RulesLimitsWarningStorageData } from './rules-limits-warning';

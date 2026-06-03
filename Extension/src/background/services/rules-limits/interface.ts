@@ -96,6 +96,14 @@ export interface IRulesLimits {
      * Whether the limits are exceeded and browser has changed list of enabled filters.
      */
     areFilterLimitsExceeded: boolean;
+
+    /**
+     * Whether the "limit lowered by other extensions" warning should be shown.
+     * True when the global static rules pool is reduced by other extensions
+     * and the user hasn't dismissed the warning (or the situation has changed
+     * since dismissal).
+     */
+    shouldShowLimitLoweredWarning: boolean;
 }
 
 /**
