@@ -19,7 +19,7 @@
  */
 import zod from 'zod';
 
-import { GLOBAL_STATIC_RULE_LIMIT } from '../../storages/rules-limits-warning';
+import { GLOBAL_STATIC_RULE_LIMIT } from '../../../common/constants';
 
 export const rulesLimitsWarningStorageDataValidator = zod.object({
     /**
