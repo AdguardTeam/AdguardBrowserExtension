@@ -60,6 +60,17 @@ import {
     type Mv3LimitsCheckResult,
 } from './interface';
 
+/**
+ * Result of static rules budget calculation.
+ */
+interface RulesBudget {
+    availableStaticRulesCount: number;
+    enabledRuleSets: string[];
+    sessionRulesCount: number;
+    dynamicRulesCount: number;
+    staticRulesMaximumCount: number;
+}
+
 const {
     MAX_NUMBER_OF_DYNAMIC_RULES,
     MAX_NUMBER_OF_REGEX_RULES,
@@ -153,6 +164,36 @@ export class RulesLimitsService {
         // Force update the icon state immediately
         // to ensure it reflects the current status without waiting for user actions.
         await iconsApi.update();
+    }
+
+    /**
+     * Calculates the static rules budget.
+     * Chrome's `getAvailableStaticRuleCount()` accounts for static, session, dynamic
+     * rules and the metadata rule (id=1) per enabled ruleset in the same 330,000
+     * global limit. This method queries all of them and returns the true total budget.
+     *
+     * @returns Rules budget object.
+     */
+    private static async getRulesBudget(): Promise<RulesBudget> {
+        const availableStaticRulesCount = await browser.declarativeNetRequest.getAvailableStaticRuleCount();
+        const enabledRuleSets = await browser.declarativeNetRequest.getEnabledRulesets();
+        const sessionRules = await browser.declarativeNetRequest.getSessionRules();
+        const dynamicRules = await browser.declarativeNetRequest.getDynamicRules();
+        const sessionRulesCount = sessionRules.length;
+        const dynamicRulesCount = dynamicRules.length;
+
+        const staticRulesMaximumCount = availableStaticRulesCount
+            + sessionRulesCount
+            + dynamicRulesCount
+            + enabledRuleSets.length;
+
+        return {
+            availableStaticRulesCount,
+            enabledRuleSets,
+            sessionRulesCount,
+            dynamicRulesCount,
+            staticRulesMaximumCount,
+        };
     }
 
     /**
@@ -460,8 +501,7 @@ export class RulesLimitsService {
         const filters = FiltersApi.getEnabledFiltersWithMetadata();
 
         const staticRulesEnabledCount = RulesLimitsService.getStaticRulesEnabledCount(result, filters);
-        const availableStaticRulesCount = await browser.declarativeNetRequest.getAvailableStaticRuleCount();
-        const staticRulesMaximumCount = staticRulesEnabledCount + availableStaticRulesCount;
+        const { staticRulesMaximumCount } = await RulesLimitsService.getRulesBudget();
 
         return {
             dynamicRulesEnabledCount: RulesLimitsService.getDynamicRulesEnabledCount(result),
@@ -690,7 +730,7 @@ export class RulesLimitsService {
                     rulesCount: {
                         // return number of all rules (enabled + excluded)
                         // to show how many rules a user is trying to enable
-                        current: dynamicRulesEnabledCount + dynamicRulesExcludedCount,
+                        current: allRulesCount,
                         maximum: dynamicRulesMaximumCount,
                     },
                 },
