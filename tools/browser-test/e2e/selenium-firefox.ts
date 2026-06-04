@@ -65,6 +65,9 @@ const FIREFOX_BIDI_SETUP_TIMEOUT_MS = 10_000;
 
 const FIREFOX_APP_INIT_TIMEOUT_MS = 30_000;
 
+/** HTTP tab used by filtering-log E2E instead of about:blank (avoids Firefox script-load noise on CI). */
+const FIREFOX_FILTERING_LOG_TAB_URL = 'https://example.com/';
+
 type FirefoxE2ESession = {
     driver: firefox.Driver;
     backgroundErrors: E2EErrorCollector;
@@ -134,8 +137,36 @@ export const createFirefoxExtensionUrl = (pagePath: string): string => {
 const createFirefoxE2ETab = async (driver: firefox.Driver): Promise<void> => {
     await driver.executeAsyncScript(
         'var cb = arguments[arguments.length - 1];'
-        + 'browser.tabs.create({ url: "about:blank" })'
+        + `browser.tabs.create({ url: "${FIREFOX_FILTERING_LOG_TAB_URL}" })`
         + '.then(function(tab) { document.location.hash = String(tab.id); cb(); })'
+        + '.catch(function() { cb(); });',
+    );
+};
+
+/**
+ * Closes first-install tabs (post-install, welcome thankyou) that trigger manifest
+ * content-script injection. On Linux CI Firefox those injections raise BiDi
+ * "Unable to load script" exceptions while E2E pages under test still render.
+ *
+ * @param driver Selenium WebDriver instance.
+ *
+ * @returns Nothing.
+ */
+const closeFirefoxInstallFlowTabs = async (driver: firefox.Driver): Promise<void> => {
+    await driver.executeAsyncScript(
+        'var cb = arguments[arguments.length - 1];'
+        + 'browser.tabs.query({})'
+        + '.then(function(tabs) {'
+        + '  var ids = tabs.filter(function(t) {'
+        + '    if (!t.url) { return false; }'
+        + '    return t.url.indexOf("/pages/post-install.html") !== -1'
+        + '      || t.url.indexOf("welcome.adguard.com") !== -1'
+        + '      || /\\/thankyou\\.html/i.test(t.url);'
+        + '  }).map(function(t) { return t.id; });'
+        + '  if (ids.length === 0) { return []; }'
+        + '  return browser.tabs.remove(ids);'
+        + '})'
+        + '.then(function() { cb(); })'
         + '.catch(function() { cb(); });',
     );
 };
@@ -206,8 +237,9 @@ export const launchFirefoxE2ESession = async (
 
     await driver.installAddon(extensionPath, true);
     await waitForFirefoxAppInitialized(driver);
+    await closeFirefoxInstallFlowTabs(driver);
     await logFirefoxEnvironmentDiagnostics(entry.id, driver, extensionId, extensionPath);
-    await logFirefoxOpenTabsDiagnostics(entry.id, driver, 'after-app-init');
+    await logFirefoxOpenTabsDiagnostics(entry.id, driver, 'after-close-install-flow-tabs');
 
     const backgroundErrors = new E2EErrorCollector();
     await bindFirefoxBackgroundErrorListeners(driver, backgroundErrors, entry.id);
@@ -266,6 +298,8 @@ export const openFirefoxE2ESurface = async (
     entry: E2EMatrixEntry,
     surface: E2ESurface,
 ): Promise<E2EPageHandle> => {
+    await closeFirefoxInstallFlowTabs(session.driver);
+
     const backgroundCursor = session.backgroundErrors.getCursor();
 
     await withTimeout(
