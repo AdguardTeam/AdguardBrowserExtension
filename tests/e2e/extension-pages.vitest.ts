@@ -34,7 +34,6 @@ import {
 } from '../../tools/browser-test/logger';
 import { unpackE2EArtifact } from '../../tools/browser-test/e2e/artifacts';
 import { BENIGN_ERROR_PATTERNS, filterBenignErrors } from '../../tools/browser-test/e2e/benign-errors';
-import { logBackgroundErrorsDiagnostics } from '../../tools/browser-test/e2e/diagnostics';
 import { E2E_MATRIX, E2E_SURFACES } from '../../tools/browser-test/e2e/matrix';
 import {
     type E2ESession,
@@ -154,14 +153,6 @@ e2eMatrix.forEach((entry) => {
                 const session = getE2ESession(e2eSession);
                 const allErrors = session.session.backgroundErrors.getErrors();
                 const errors = filterBenignErrors(allErrors, BENIGN_ERROR_PATTERNS);
-
-                logBackgroundErrorsDiagnostics(
-                    entry.id,
-                    'background/has-no-errors',
-                    0,
-                    allErrors,
-                    errors,
-                );
 
                 expectNoErrors(errors, `${entry.id} background errors`);
             });
