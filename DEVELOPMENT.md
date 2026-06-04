@@ -178,10 +178,6 @@ pnpm test:e2e dev -t "filtering-log"
 E2E checks run headless by default. Use `E2E_HEADLESS=false` for headed
 local debugging.
 
-Firefox E2E emits structured `[e2e-debug]` JSON lines (artifact file stats, Firefox
-capabilities, open tabs, BiDi exceptions, benign-error filtering). They are on by
-default; set `E2E_DEBUG=false` to disable. In Bamboo logs, search for `[e2e-debug]`.
-
 Chrome MV2 support is disabled in newer Chromium builds. The E2E runner adds
 MV2 compatibility flags, but local runs may still need an older Chromium binary:
 

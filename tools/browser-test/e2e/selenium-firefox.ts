@@ -38,13 +38,6 @@ import {
     isErrorConsoleType,
 } from './error-collector';
 import { BENIGN_ERROR_PATTERNS, filterBenignErrors } from './benign-errors';
-import {
-    logBackgroundErrorsDiagnostics,
-    logExtensionArtifactDiagnostics,
-    logFirefoxEnvironmentDiagnostics,
-    logFirefoxJavascriptExceptionDiagnostic,
-    logFirefoxOpenTabsDiagnostics,
-} from './diagnostics';
 import { type E2EPageHandle } from './page-handle';
 import { createExtensionPageUrl } from './surfaces';
 import {
@@ -208,8 +201,6 @@ export const launchFirefoxE2ESession = async (
     entry: E2EMatrixEntry,
     extensionPath: string,
 ): Promise<FirefoxE2ESession> => {
-    logExtensionArtifactDiagnostics(entry.id, extensionPath);
-
     const options = new firefox.Options();
     const extensionId = getFirefoxExtensionId(extensionPath);
     const prefs = createFirefoxPrefs(extensionId);
@@ -238,8 +229,6 @@ export const launchFirefoxE2ESession = async (
     await driver.installAddon(extensionPath, true);
     await waitForFirefoxAppInitialized(driver);
     await closeFirefoxInstallFlowTabs(driver);
-    await logFirefoxEnvironmentDiagnostics(entry.id, driver, extensionId, extensionPath);
-    await logFirefoxOpenTabsDiagnostics(entry.id, driver, 'after-close-install-flow-tabs');
 
     const backgroundErrors = new E2EErrorCollector();
     await bindFirefoxBackgroundErrorListeners(driver, backgroundErrors, entry.id);
@@ -311,10 +300,8 @@ export const openFirefoxE2ESurface = async (
 
     if (surface.id === E2ESurfaceId.FilteringLog) {
         await createFirefoxE2ETab(session.driver);
-        await logFirefoxOpenTabsDiagnostics(entry.id, session.driver, 'after-filtering-log-blank-tab');
     }
 
-    await logFirefoxOpenTabsDiagnostics(entry.id, session.driver, `after-open-${surface.id}`);
     await injectPageErrorCollector(session.driver);
 
     return {
@@ -337,17 +324,7 @@ export const openFirefoxE2ESurface = async (
         },
         async getBackgroundErrors(): Promise<E2EError[]> {
             const rawErrors = session.backgroundErrors.sliceFrom(backgroundCursor);
-            const filteredErrors = filterBenignErrors(rawErrors, BENIGN_ERROR_PATTERNS);
-
-            logBackgroundErrorsDiagnostics(
-                entry.id,
-                `${surface.id}/getBackgroundErrors`,
-                backgroundCursor,
-                rawErrors,
-                filteredErrors,
-            );
-
-            return filteredErrors;
+            return filterBenignErrors(rawErrors, BENIGN_ERROR_PATTERNS);
         },
         async close(): Promise<void> {
             // Firefox uses a single driver window; no separate page to close.
@@ -477,7 +454,6 @@ const bindFirefoxBackgroundErrorListeners = async (
 
         await withTimeout(
             logInspector.onJavascriptException((entry: JavascriptLogEntry): void => {
-                logFirefoxJavascriptExceptionDiagnostic(matrixId, entry.text, entry.source.realmId);
                 errors.add(createFirefoxLogError(
                     matrixId,
                     E2ESpecialSurfaceId.Background,
