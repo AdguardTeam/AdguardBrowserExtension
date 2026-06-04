@@ -130,7 +130,7 @@ export class Engine implements TsWebExtensionEngine {
         const result = await this.api.start(configuration);
 
         rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
-        UserRulesService.checkUserRulesRegexpErrors(result);
+        UserRulesService.checkUserRulesErrors(result);
 
         await Engine.checkAppliedStealthSettings(configuration.settings, result.stealthResult);
 
@@ -178,7 +178,7 @@ export class Engine implements TsWebExtensionEngine {
         const result = await this.api.configure(configuration);
 
         rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
-        UserRulesService.checkUserRulesRegexpErrors(result);
+        UserRulesService.checkUserRulesErrors(result);
 
         await Engine.checkAppliedStealthSettings(configuration.settings, result.stealthResult);
 

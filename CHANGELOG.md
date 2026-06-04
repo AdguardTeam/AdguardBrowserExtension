@@ -11,6 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `$urltransform` modifier support [tsurlfilter#111].
 - `$removeparam` support for SPA navigations [tsurlfilter#188].
+- Filter rule conversion error logging in MV2.
+
+### Changed
+
+- User rules error reporting in MV3 now logs dynamic rule conversion errors.
 
 ### Fixed
 

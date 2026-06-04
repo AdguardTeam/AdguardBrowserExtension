@@ -92,7 +92,7 @@ export class FiltersStoragesAdapterCommon {
             conversionData = FilterList.createEmptyConversionData();
         }
 
-        return new FilterList(filterContent, conversionData);
+        return new FilterList(filterContent, filterId, conversionData);
     }
 
     /**
