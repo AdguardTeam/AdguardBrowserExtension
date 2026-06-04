@@ -54,6 +54,7 @@ import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rul
 import { CommonFilterUtils } from '../../common/common-filter-utils';
 import { FiltersStoragesAdapter } from '../storages/filters-adapter';
 import { isUserScriptsApiSupported } from '../../common/user-scripts-api/user-scripts-api-mv3';
+import { PersistentScriptsService } from '../services/persistent-scripts/persistent-scripts-service-mv3';
 
 import { type TsWebExtensionEngine } from './interface';
 
@@ -160,6 +161,11 @@ export class Engine implements TsWebExtensionEngine {
          *   - Default filters (IDs: 2, 10) are pending enablement.
          */
         await iconsApi.update();
+
+        // Sync persistent domain scripts with the current enabled-filter set.
+        const enabledFilterIds = FiltersApi.getEnabledFilters()
+            .filter((id) => CommonFilterUtils.isCommonFilter(id));
+        await PersistentScriptsService.sync(enabledFilterIds);
     }
 
     /**
@@ -197,6 +203,11 @@ export class Engine implements TsWebExtensionEngine {
         }
         // Updates extension icon state to reflect current filtering status.
         await iconsApi.update();
+
+        // Keep persistent domain scripts in sync with the updated filter set.
+        const enabledFilterIds = FiltersApi.getEnabledFilters()
+            .filter((id) => CommonFilterUtils.isCommonFilter(id));
+        await PersistentScriptsService.sync(enabledFilterIds);
     }
 
     /**

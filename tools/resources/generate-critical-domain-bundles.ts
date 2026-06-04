@@ -22,15 +22,14 @@
 
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
-import crypto from 'node:crypto';
-import { exec as execCallback } from 'node:child_process';
-import { promisify } from 'node:util';
+import vm from 'node:vm';
 
 import { minify } from 'terser';
 
 import { type AnyRule } from '@adguard/agtree';
 import { FilterListParser, defaultParserOptions } from '@adguard/agtree/parser';
 import { CosmeticRuleBodyGenerator } from '@adguard/agtree/generator';
+import { extractRuleSetId } from '@adguard/tsurlfilter/es/declarative-converter-utils';
 
 import {
     FILTERS_DEST,
@@ -38,6 +37,7 @@ import {
     EXTENSION_FILTERS_SUBDIR,
     type Mv3AssetsFiltersBrowser,
 } from '../constants';
+import { NEWLINE_CHAR_UNIX } from '../../Extension/src/common/constants';
 
 import { extractPreprocessedRawFilterList, readMetadataRuleSet } from './filter-extractor';
 import {
@@ -48,53 +48,31 @@ import {
     findAgFunctionUsages,
 } from './update-local-script-rules';
 
-const exec = promisify(execCallback);
-
 /**
  * Subdirectory within the filters output folder where critical-domain bundles are written.
  */
 const CRITICAL_SCRIPTS_DIR = 'critical-scripts';
 
-/**
- * File that records the content_scripts entries to inject into manifest.json.
- */
-const CONTENT_SCRIPTS_MANIFEST_FILE = 'content-scripts.json';
+const CRITICAL_DOMAINS = ['youtube.com'];
 
 /**
- * Absolute path to the critical-domains configuration file.
+ * Per-domain entry in the persistent scripts registry.
+ *
+ * `js` paths are relative to the extension root.
+ * `filterIds` lists every AdGuard filter that contributes rules to this domain's bundle.
  */
-const CRITICAL_DOMAINS_CONFIG_PATH = './critical-domains.txt';
-
-const LF = '\n';
-
-/**
- * Represents a manifest content_scripts entry for a critical-domain bundle.
- */
-export type ContentScriptEntry = {
+export type DomainScriptEntry = {
     js: string[];
     matches: string[];
-    run_at: 'document_start';
-    world: 'MAIN';
+    filterIds: number[];
 };
-
-// ---------------------------------------------------------------------------
-// Pure helpers (exported for unit tests)
-// ---------------------------------------------------------------------------
 
 /**
- * Parses the raw text of the critical-domains config file into a list of
- * domain strings. Strips comment lines (`#`) and blank lines.
+ * Registry of critical-domain persistent content scripts, keyed by apex domain.
  *
- * @param content Raw text content of the config file.
- *
- * @returns Array of domain strings.
+ * Generated at build time by {@link buildPersistentScriptsRegistry}.
  */
-export const parseCriticalDomainsFile = (content: string): string[] => {
-    return content
-        .split('\n')
-        .map((line) => line.replace(/#.*/, '').trim())
-        .filter((line) => line.length > 0);
-};
+type PersistentScriptsRegistry = Record<string, DomainScriptEntry>;
 
 /**
  * Returns `true` if the rule's permitted domains include the given critical
@@ -108,10 +86,7 @@ export const parseCriticalDomainsFile = (content: string): string[] => {
  *
  * @returns Whether the rule targets the critical domain.
  */
-export const ruleTargetsDomain = (
-    ruleNode: AnyRule | null,
-    criticalDomain: string,
-): boolean => {
+const jsRuleTargetsDomain = (ruleNode: AnyRule | null, criticalDomain: string): boolean => {
     if (!isJsRule(ruleNode)) {
         return false;
     }
@@ -140,7 +115,7 @@ export const ruleTargetsDomain = (
  *
  * @returns Whether the rule is a generic (domain-less) JS rule.
  */
-export const isGenericJsRule = (ruleNode: AnyRule | null): boolean => {
+const isGenericJsRule = (ruleNode: AnyRule | null): boolean => {
     if (!isJsRule(ruleNode)) {
         return false;
     }
@@ -162,7 +137,7 @@ export const isGenericJsRule = (ruleNode: AnyRule | null): boolean => {
  *
  * @returns Array of two match pattern strings.
  */
-export const domainToMatchPatterns = (domain: string): string[] => {
+const domainToMatchPatterns = (domain: string): string[] => {
     return [`*://${domain}/*`, `*://*.${domain}/*`];
 };
 
@@ -173,24 +148,55 @@ export const domainToMatchPatterns = (domain: string): string[] => {
  *
  * @returns Filename string, e.g. `"youtube.com.js"`.
  */
-export const buildBundleFileName = (domain: string): string => {
+const getBundleFileName = (domain: string): string => {
     return `${domain}.js`;
 };
 
-// ---------------------------------------------------------------------------
-// I/O helpers
-// ---------------------------------------------------------------------------
+/**
+ * Builds the persistent-scripts registry from the set of successfully bundled
+ * domains and the filter-to-domain mapping collected during ruleset iteration.
+ *
+ * Domains that were parsed but yielded no compilable rules (absent from
+ * `domainsBundled`) are silently omitted.
+ *
+ * @param domainFilters Map of filter ID -> set of domains found in that filter.
+ * @param extensionFilterSubdir Extension-relative prefix for filter assets (e.g. `"filters"`).
+ *
+ * @returns Registry object.
+ */
+const buildPersistentScriptsRegistry = (
+    domainFilters: Map<string, Set<number>>,
+    extensionFilterSubdir: string,
+): PersistentScriptsRegistry => {
+    const registry: PersistentScriptsRegistry = {};
+
+    domainFilters.forEach((filterIds, domain) => {
+        registry[domain] = {
+            js: [`${extensionFilterSubdir}/${CRITICAL_SCRIPTS_DIR}/${getBundleFileName(domain)}`],
+            matches: domainToMatchPatterns(domain),
+            filterIds: [...filterIds].sort((a, b) => a - b),
+        };
+    });
+
+    return registry;
+};
 
 /**
- * Reads and parses the critical-domains configuration file.
+ * Validates JavaScript syntax using the Node.js `vm` module.
  *
- * @param configPath Absolute path to `critical-domains.txt`.
+ * @param code JavaScript code to validate.
+ * @param description Optional description for error messages (e.g., filename).
  *
- * @returns Array of domain strings.
+ * @throws If the code has syntax errors.
  */
-const readCriticalDomains = async (configPath: string): Promise<string[]> => {
-    const content = await fs.readFile(configPath, 'utf-8');
-    return parseCriticalDomainsFile(content);
+const validateJavaScriptSyntax = (code: string, description?: string): void => {
+    try {
+        // eslint-disable-next-line no-new
+        new vm.Script(code);
+    } catch (error) {
+        const prefix = description ? `Syntax error in ${description}` : 'Syntax error';
+        throw new Error(`${prefix}: ${error instanceof Error ? error.message : String(error)}`);
+    }
 };
 
 /**
@@ -240,7 +246,7 @@ const compileRulesToBundle = async (jsRules: Set<string>): Promise<string | null
                     }
                 });
 
-                processedCode = `${requiredFunctions.join(LF)}${LF}${rule}`;
+                processedCode = `${requiredFunctions.join(NEWLINE_CHAR_UNIX)}${NEWLINE_CHAR_UNIX}${rule}`;
             }
 
             const uniqueId = calculateUniqueId(rule);
@@ -274,12 +280,12 @@ const compileRulesToBundle = async (jsRules: Set<string>): Promise<string | null
         return null;
     }
 
-    return `(function () {${LF}${compiledStatements.join(LF)}${LF}})();${LF}`;
+    return `(function () {${NEWLINE_CHAR_UNIX}${compiledStatements.join(NEWLINE_CHAR_UNIX)}${NEWLINE_CHAR_UNIX}})();${NEWLINE_CHAR_UNIX}`;
 };
 
 /**
  * Writes a compiled bundle string to disk and validates its syntax using
- * `node --check`.
+ * the Node.js `vm` module.
  *
  * @param bundleContent Compiled JavaScript string.
  * @param outputPath Absolute path for the output `.js` file.
@@ -287,22 +293,35 @@ const compileRulesToBundle = async (jsRules: Set<string>): Promise<string | null
  * @throws If the file fails syntax validation.
  */
 const writeBundleFile = async (bundleContent: string, outputPath: string): Promise<void> => {
+    validateJavaScriptSyntax(bundleContent, `bundle ${path.basename(outputPath)}`);
     await fs.writeFile(outputPath, bundleContent, 'utf-8');
-
-    const result = await exec(`node --check ${outputPath}`);
-
-    if (result.stderr.trim()) {
-        throw new Error(`Syntax error in bundle ${path.basename(outputPath)}:\n${result.stderr}`);
-    }
 };
 
-// ---------------------------------------------------------------------------
-// Main orchestrator
-// ---------------------------------------------------------------------------
+/**
+ * Serializes and writes the persistent-scripts registry as an ES module.
+ *
+ * Validates the output with the Node.js `vm` module.
+ *
+ * @param registry Registry object returned by {@link buildPersistentScriptsRegistry}.
+ * @param outputPath Absolute path for the output `.js` file.
+ *
+ * @throws If the file fails syntax validation.
+ */
+const writePersistentScriptsRegistry = async (
+    registry: PersistentScriptsRegistry,
+    outputPath: string,
+): Promise<void> => {
+    const content = `// AUTO-GENERATED — do not edit manually. Re-run pnpm resources:mv3 to update.
+export const criticalDomainScripts = ${JSON.stringify(registry, null, 4)};${NEWLINE_CHAR_UNIX}`;
+
+    validateJavaScriptSyntax(content, `registry ${path.basename(outputPath)}`);
+
+    await fs.writeFile(outputPath, content, 'utf-8');
+};
 
 /**
  * Generates static JS bundles for each critical domain from the pre-built MV3
- * filter lists and writes a `content-scripts.json` manifest metadata file.
+ * filter lists.
  *
  * This is called from `tools/resources-mv3.ts` during `pnpm resources:mv3`.
  *
@@ -311,30 +330,22 @@ const writeBundleFile = async (bundleContent: string, outputPath: string): Promi
 export const generateCriticalDomainBundles = async (
     browser: Mv3AssetsFiltersBrowser,
 ): Promise<void> => {
-    const configPath = new URL(CRITICAL_DOMAINS_CONFIG_PATH, import.meta.url).pathname;
-    const criticalDomains = await readCriticalDomains(configPath);
-
-    if (criticalDomains.length === 0) {
-        console.log('[generate-critical-domain-bundles] No critical domains configured, skipping.');
-        return;
-    }
-
     const filtersFolder = FILTERS_DEST.replace('%browser', browser);
     const declarativeFolder = DECLARATIVE_FILTERS_DEST.replace('%browser', browser);
     const outputDir = path.join(filtersFolder, CRITICAL_SCRIPTS_DIR);
 
     await fs.mkdir(outputDir, { recursive: true });
 
-    // Collect all JS rules per domain from every ruleset
-    const domainRules: Map<string, Set<string>> = new Map(
-        criticalDomains.map((d) => [d, new Set<string>()]),
-    );
+    const domainRules = new Map(CRITICAL_DOMAINS.map((d) => [d, new Set<string>()]));
+    const domainFilters = new Map(CRITICAL_DOMAINS.map((d) => [d, new Set<number>()]));
 
     const metadataRuleSet = await readMetadataRuleSet(declarativeFolder);
     const ruleSetIds = metadataRuleSet.getRuleSetIds();
 
     // eslint-disable-next-line no-restricted-syntax
     for (const ruleSetId of ruleSetIds) {
+        const filterId = extractRuleSetId(ruleSetId);
+
         // eslint-disable-next-line no-await-in-loop
         const rawFilterList = await extractPreprocessedRawFilterList(ruleSetId, declarativeFolder);
         const filterListNode = FilterListParser.parse(rawFilterList, {
@@ -353,30 +364,35 @@ export const generateCriticalDomainBundles = async (
 
             if (isGenericJsRule(ruleNode)) {
                 // Generic rules (no domain specifier) apply to every critical-domain bundle
-                criticalDomains.forEach((domain) => {
+                CRITICAL_DOMAINS.forEach((domain) => {
                     domainRules.get(domain)!.add(rawBody);
                 });
             } else {
-                criticalDomains.forEach((domain) => {
-                    if (ruleTargetsDomain(ruleNode, domain)) {
-                        domainRules.get(domain)!.add(rawBody);
+                CRITICAL_DOMAINS.forEach((domain) => {
+                    if (!jsRuleTargetsDomain(ruleNode, domain)) {
+                        return;
                     }
+
+                    domainRules.get(domain)!.add(rawBody);
+
+                    if (filterId === null) {
+                        return;
+                    }
+
+                    domainFilters.get(domain)!.add(filterId);
                 });
             }
         });
     }
 
-    // Compile each domain's rules and write bundle + metadata
-    const manifestEntries: ContentScriptEntry[] = [];
-
     // eslint-disable-next-line no-restricted-syntax
     for (const [domain, jsRules] of domainRules) {
-        console.log(
-            `[generate-critical-domain-bundles] ${domain}: ${jsRules.size} unique rules`,
-        );
+        console.log(`[generate-critical-domain-bundles] ${domain}: ${jsRules.size} unique rules`);
 
         if (jsRules.size === 0) {
-            console.log(`[generate-critical-domain-bundles] No rules for ${domain}, skipping bundle.`);
+            console.log(
+                `[generate-critical-domain-bundles] No rules for ${domain}, skipping bundle.`,
+            );
             // eslint-disable-next-line no-continue
             continue;
         }
@@ -385,12 +401,14 @@ export const generateCriticalDomainBundles = async (
         const bundleContent = await compileRulesToBundle(jsRules);
 
         if (!bundleContent) {
-            console.warn(`[generate-critical-domain-bundles] No compilable rules for ${domain}, skipping bundle.`);
+            console.warn(
+                `[generate-critical-domain-bundles] No compilable rules for ${domain}, skipping bundle.`,
+            );
             // eslint-disable-next-line no-continue
             continue;
         }
 
-        const fileName = buildBundleFileName(domain);
+        const fileName = getBundleFileName(domain);
         const outputPathLocal = path.join(outputDir, fileName);
 
         // eslint-disable-next-line no-await-in-loop
@@ -398,50 +416,19 @@ export const generateCriticalDomainBundles = async (
 
         const sizeKb = (Buffer.byteLength(bundleContent, 'utf-8') / 1024).toFixed(1);
         console.log(`[generate-critical-domain-bundles] Wrote ${fileName} (${sizeKb} KB)`);
-
-        const extensionRelativePath = `${EXTENSION_FILTERS_SUBDIR}/${CRITICAL_SCRIPTS_DIR}/${fileName}`;
-
-        manifestEntries.push({
-            js: [extensionRelativePath],
-            matches: domainToMatchPatterns(domain),
-            run_at: 'document_start',
-            world: 'MAIN',
-        });
     }
 
-    // Deduplicate entries with identical JS content
-    const seenHashes: Map<string, number> = new Map();
-
-    const deduplicatedEntries: ContentScriptEntry[] = [];
-
-    // eslint-disable-next-line no-restricted-syntax
-    for (const entry of manifestEntries) {
-        const entryPath = entry.js[0]!.replace(`${EXTENSION_FILTERS_SUBDIR}/`, '');
-        const filePathToRead = path.join(filtersFolder, entryPath);
-        // eslint-disable-next-line no-await-in-loop
-        const fileContent = await fs.readFile(filePathToRead, 'utf-8');
-        const hash = crypto.createHash('sha256').update(fileContent).digest('hex');
-        const existingIdx = seenHashes.get(hash);
-
-        if (existingIdx !== undefined) {
-            // Merge match patterns into the existing entry rather than creating a duplicate file
-            deduplicatedEntries[existingIdx]!.matches.push(...entry.matches);
-        } else {
-            seenHashes.set(hash, deduplicatedEntries.length);
-            deduplicatedEntries.push(entry);
-        }
-    }
-
-    // Write manifest metadata file
-    const manifestFilePath = path.join(outputDir, CONTENT_SCRIPTS_MANIFEST_FILE);
-
-    await fs.writeFile(
-        manifestFilePath,
-        JSON.stringify(deduplicatedEntries, null, 4),
-        'utf-8',
+    // Build and write the persistent-scripts registry
+    const registry = buildPersistentScriptsRegistry(
+        domainFilters,
+        EXTENSION_FILTERS_SUBDIR,
     );
 
+    const registryPath = path.join(outputDir, 'persistent-scripts-registry.js');
+    await writePersistentScriptsRegistry(registry, registryPath);
+
+    const domainCount = Object.keys(registry).length;
     console.log(
-        `[generate-critical-domain-bundles] Wrote ${CONTENT_SCRIPTS_MANIFEST_FILE} with ${deduplicatedEntries.length} entries`,
+        `[generate-critical-domain-bundles] Wrote persistent-scripts-registry.js with ${domainCount} domain(s)`,
     );
 };
