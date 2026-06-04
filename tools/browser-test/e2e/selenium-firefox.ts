@@ -65,8 +65,8 @@ const FIREFOX_BIDI_SETUP_TIMEOUT_MS = 10_000;
 
 const FIREFOX_APP_INIT_TIMEOUT_MS = 30_000;
 
-/** HTTP tab used by filtering-log E2E instead of about:blank (avoids Firefox script-load noise on CI). */
-const FIREFOX_FILTERING_LOG_TAB_URL = 'https://example.com/';
+// Internal tab for filtering-log E2E (no manifest content_scripts on about: pages).
+const FIREFOX_FILTERING_LOG_TAB_URL = 'about:newtab';
 
 type FirefoxE2ESession = {
     driver: firefox.Driver;
