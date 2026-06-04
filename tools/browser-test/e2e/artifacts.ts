@@ -27,6 +27,7 @@ import { type BuildTargetEnv } from '../../../constants';
 import { type BrowserConfig, BROWSERS_CONF } from '../../bundle/common-constants';
 import { BUILD_PATH } from '../../constants';
 
+import { logExtensionArtifactDiagnostics } from './diagnostics';
 import { type E2EMatrixEntry } from './types';
 
 /**
@@ -91,6 +92,8 @@ export const unpackE2EArtifact = async (entry: E2EMatrixEntry, env: BuildTargetE
     await fs.createReadStream(zipPath)
         .pipe(unzipper.Extract({ path: unpackedPath }))
         .promise();
+
+    logExtensionArtifactDiagnostics(entry.id, unpackedPath, zipPath);
 
     return unpackedPath;
 };
