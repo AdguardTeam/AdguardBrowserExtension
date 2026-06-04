@@ -1,22 +1,20 @@
-! Checksum: cPMtlclzrsZRYZ7jU+fqrQ
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1776184480-3600.patch
+! Checksum: 5rQb0Uv8rALy7WaznETvHg
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1778680264-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.13.33
-! TimeUpdated: 2026-04-14T16:31:31+00:00
+! Version: 2.0.13.42
+! TimeUpdated: 2026-05-13T13:48:12+00:00
 ! Expires: 10 days (update frequency)
+$removeparam=eml-name
+$removeparam=eml-mediaplan
+$removeparam=eml-publisher
+$removeparam=eurl
 $removeparam=link_source
 $removeparam=taid
 $removeparam=tgclid
 $removeparam=analytics_context
 $removeparam=analytics_trace_id
 $removeparam=bance_xuid
-$removeparam=elqTrackId
-$removeparam=elq
-$removeparam=elqaid
-$removeparam=elqat
-$removeparam=elqCampaignId
-$removeparam=elqak
 $removeparam=winflncrtag
 $removeparam=ftag
 $removeparam=janet
@@ -306,6 +304,12 @@ $removeparam=fb_action_types
 $removeparam=fb_comment_id
 $removeparam=fb_ref
 $removeparam=fb_source
+$removeparam=elqTrackId
+$removeparam=elq
+$removeparam=elqaid
+$removeparam=elqat
+$removeparam=elqCampaignId
+$removeparam=elqak
 $removeparam=cmpid
 $removeparam=adj_t
 $removeparam=cuid
@@ -322,6 +326,21 @@ $removeparam=erid
 $removeparam=oly_enc_id
 $removeparam=_ga
 $removeparam=tduid
+||taboolanews.com^$removeparam=dc_data
+||bubilet.com.tr^$removeparam=ref
+||onelink.me^$removeparam=af_sub1
+||onelink.me^$removeparam=c
+||onelink.me^$removeparam=shortlink
+||t.info.telus.com^$removeparam=s
+||ridibooks.com^$removeparam=_rdt_sid
+||ridibooks.com^$removeparam=_rdt_idx
+||ridibooks.com^$removeparam=_rdt_arg
+||777casino.top^$removeparam
+||uatracer.link^$removeparam
+||blogostoks.com$removeparam
+||change.org^$removeparam=recruited_by_id
+||change.org^$removeparam=recruiter
+||change.org^$removeparam=share_id
 ||kuper.ru^$removeparam=ads_identity_ads_promo_identity_site_uid
 ||kuper.ru^$removeparam=ads_identity_ads_promo_identity_placement_uid
 ||fboom.me^$removeparam=site
@@ -2403,6 +2422,11 @@ $removeparam=s,domain=twitter.com|x.com
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_tracking_params
 !+ NOT_PLATFORM(windows, mac, android, cli, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
+@@/e/er?$removeparam=elqTrackId,domain=s1740541080.t.eloqua.com|app.econnect.utexas.edu|clk.texaslonghorns.com
+@@/e/er?$removeparam=elq,domain=s1740541080.t.eloqua.com|app.econnect.utexas.edu|clk.texaslonghorns.com
+@@/e/er?$removeparam=elqaid,domain=s1740541080.t.eloqua.com|app.econnect.utexas.edu|clk.texaslonghorns.com
+@@/e/er?$removeparam=elqat,domain=s1740541080.t.eloqua.com|app.econnect.utexas.edu|clk.texaslonghorns.com
+@@/e/er?$removeparam=elqak,domain=s1740541080.t.eloqua.com|app.econnect.utexas.edu|clk.texaslonghorns.com
 @@||msn.com^$app=msedgewebview2.exe,removeparam=ocid
 @@||iforms.americanexpress.com^$removeparam=cuid
 @@||canadacompanyregistry.com^$removeparam=utm_campaign

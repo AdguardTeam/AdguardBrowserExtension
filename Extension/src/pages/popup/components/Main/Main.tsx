@@ -88,7 +88,6 @@ export const Main = observer(() => {
         toggleAllowlisted,
         resumeApplicationFiltering,
         telemetryStore,
-        showAlternativeProtectionButton,
     } = store;
 
     const classes = classNames('main', {
@@ -214,12 +213,7 @@ export const Main = observer(() => {
         }
 
         return (
-            <div className={
-                showAlternativeProtectionButton
-                    ? 'main__cta main__cta_alternative'
-                    : 'main__cta'
-            }
-            >
+            <div className="main__cta">
                 <a
                     href={COMPARE_URL}
                     target="_blank"
@@ -227,9 +221,7 @@ export const Main = observer(() => {
                     className="main__cta--link"
                     onClick={handleHowToEnhanceClick}
                 >
-                    {showAlternativeProtectionButton
-                        ? translator.getMessage('popup_get_system_wide_protection')
-                        : translator.getMessage('popup_header_cta_link')}
+                    {translator.getMessage('popup_get_system_wide_protection')}
                 </a>
             </div>
         );

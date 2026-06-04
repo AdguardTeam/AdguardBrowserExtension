@@ -37,6 +37,7 @@ import {
     createUnknownError,
     isErrorConsoleType,
 } from './error-collector';
+import { BENIGN_ERROR_PATTERNS, filterBenignErrors } from './benign-errors';
 import { type E2EPageHandle } from './page-handle';
 import { createExtensionPageUrl } from './surfaces';
 import {
@@ -56,6 +57,9 @@ const FIREFOX_PAGE_LOAD_TIMEOUT_MS = 20_000;
 const FIREFOX_BIDI_SETUP_TIMEOUT_MS = 10_000;
 
 const FIREFOX_APP_INIT_TIMEOUT_MS = 30_000;
+
+// Internal tab for filtering-log E2E (no manifest content_scripts on about: pages).
+const FIREFOX_FILTERING_LOG_TAB_URL = 'about:newtab';
 
 type FirefoxE2ESession = {
     driver: firefox.Driver;
@@ -126,8 +130,36 @@ export const createFirefoxExtensionUrl = (pagePath: string): string => {
 const createFirefoxE2ETab = async (driver: firefox.Driver): Promise<void> => {
     await driver.executeAsyncScript(
         'var cb = arguments[arguments.length - 1];'
-        + 'browser.tabs.create({ url: "about:blank" })'
+        + `browser.tabs.create({ url: "${FIREFOX_FILTERING_LOG_TAB_URL}" })`
         + '.then(function(tab) { document.location.hash = String(tab.id); cb(); })'
+        + '.catch(function() { cb(); });',
+    );
+};
+
+/**
+ * Closes first-install tabs (post-install, welcome thankyou) that trigger manifest
+ * content-script injection. On Linux CI Firefox those injections raise BiDi
+ * "Unable to load script" exceptions while E2E pages under test still render.
+ *
+ * @param driver Selenium WebDriver instance.
+ *
+ * @returns Nothing.
+ */
+const closeFirefoxInstallFlowTabs = async (driver: firefox.Driver): Promise<void> => {
+    await driver.executeAsyncScript(
+        'var cb = arguments[arguments.length - 1];'
+        + 'browser.tabs.query({})'
+        + '.then(function(tabs) {'
+        + '  var ids = tabs.filter(function(t) {'
+        + '    if (!t.url) { return false; }'
+        + '    return t.url.indexOf("/pages/post-install.html") !== -1'
+        + '      || t.url.indexOf("welcome.adguard.com") !== -1'
+        + '      || /\\/thankyou\\.html/i.test(t.url);'
+        + '  }).map(function(t) { return t.id; });'
+        + '  if (ids.length === 0) { return []; }'
+        + '  return browser.tabs.remove(ids);'
+        + '})'
+        + '.then(function() { cb(); })'
         + '.catch(function() { cb(); });',
     );
 };
@@ -196,6 +228,7 @@ export const launchFirefoxE2ESession = async (
 
     await driver.installAddon(extensionPath, true);
     await waitForFirefoxAppInitialized(driver);
+    await closeFirefoxInstallFlowTabs(driver);
 
     const backgroundErrors = new E2EErrorCollector();
     await bindFirefoxBackgroundErrorListeners(driver, backgroundErrors, entry.id);
@@ -254,6 +287,8 @@ export const openFirefoxE2ESurface = async (
     entry: E2EMatrixEntry,
     surface: E2ESurface,
 ): Promise<E2EPageHandle> => {
+    await closeFirefoxInstallFlowTabs(session.driver);
+
     const backgroundCursor = session.backgroundErrors.getCursor();
 
     await withTimeout(
@@ -288,7 +323,8 @@ export const openFirefoxE2ESurface = async (
             return collectPageErrors(session.driver, entry.id, surface.id);
         },
         async getBackgroundErrors(): Promise<E2EError[]> {
-            return session.backgroundErrors.sliceFrom(backgroundCursor);
+            const rawErrors = session.backgroundErrors.sliceFrom(backgroundCursor);
+            return filterBenignErrors(rawErrors, BENIGN_ERROR_PATTERNS);
         },
         async close(): Promise<void> {
             // Firefox uses a single driver window; no separate page to close.

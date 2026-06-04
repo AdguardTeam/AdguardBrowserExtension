@@ -270,7 +270,9 @@ const Allowlist = observer(() => {
                     : (
                         <div>
                             <span className="setting__alert-desc">
-                                {reactTranslator.getMessage('options_allowlist_alert_invert', {
+                                {translator.getMessage('options_allowlist_alert_invert')}
+                                <br />
+                                {reactTranslator.getMessage('options_allowlist_alert_invert_stop', {
                                     a: (chunks) => (
                                         <Link
                                             className="setting__alert-link"

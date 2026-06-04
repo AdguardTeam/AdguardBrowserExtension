@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased 5.5
 
+### Added
+
+- `$urltransform` modifier support [tsurlfilter#111].
+- `$removeparam` support for SPA navigations [tsurlfilter#188].
+
 ### Fixed
 
 - Filtering log loses events during `window.open()` tab redirects [#2701].
@@ -18,12 +23,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `default_public_interface_only` to reduce VoIP breakage while still
   preventing IP leaks.
 - Expanded wildcard TLD domains in DNR conversion for `$domain` and `$to`
-  modifiers [AdguardTeam/tsurlfilter#189].
+  modifiers [tsurlfilter#189].
+- Scriptlet exception rules with comma-containing arguments now work correctly
+  ([#3533]).
 
 [#1486]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1486
 [#1686]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1686
 [#2701]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2701
-[AdguardTeam/tsurlfilter#189]: https://github.com/AdguardTeam/tsurlfilter/issues/189
+[#3533]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3533
+[tsurlfilter#111]: https://github.com/AdguardTeam/tsurlfilter/issues/111
+[tsurlfilter#188]: https://github.com/AdguardTeam/tsurlfilter/issues/188
+[tsurlfilter#189]: https://github.com/AdguardTeam/tsurlfilter/issues/189
+
+## [5.4 patch 2] - 2026-05-14
+
+### Fixed
+
+- False-negative CSS selector validation for comma-containing selectors
+  (e.g., `IMG[alt="Reklama"], .l-box--99.l-box > .text-center`). The browser's
+  `CSS.supports('selector(A, B)')` fails for top-level commas; the validator now
+  splits such selectors and validates each part individually.
+
+[5.4 patch 2]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.4.2.0...v5.4.3.0
 
 ## [5.4 patch 1] - 2026-05-08
 
@@ -31,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Importing settings from shared URL doesn't work [#3517].
 
-[5.4 patch 1]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.4.2.0...HEAD
+[5.4 patch 1]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.4.1.3...v5.4.2.0
 [#3517]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3517
 
 ## [5.4] - 2026-05-07
@@ -80,7 +101,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Blocked requests in cross-domain iframes were not counted in the extension badge [#3446].
 - Custom filter subscription accepts URLs that return HTML pages instead of filter lists [#3501].
 
-[5.4]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.3.1.7...v5.4.1.4
+[5.4]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.3.1.7...v5.4.1.3
 [#2485]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2485
 [#2944]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2944
 [#3255]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3255

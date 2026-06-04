@@ -49,7 +49,7 @@ Edge, and Opera. Licensed under GPL-3.0.
 
 ## Technical Context
 
-- **Language/Version**: TypeScript 5.6, Node.js v22, pnpm v10
+- **Language/Version**: TypeScript 5.6, Node.js v22, pnpm v10 (latest available)
 - **Primary Dependencies**: React 17, MobX 6, XState 5, `@adguard/tsurlfilter`,
   `@adguard/tswebextension`, `@adguard/scriptlets`, Zod 3
 - **Bundler**: Rspack (via `@rspack/core`)
