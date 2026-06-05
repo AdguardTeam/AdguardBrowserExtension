@@ -92,7 +92,7 @@ try {
 }
 try {
     const e = "done";
-    if (Window.prototype.toString["44880ffb9eb9254b1d06b92aaa4a78d0"] === e) return;
+    if (Window.prototype.toString["2e8e930a77cdc0a58bb793b156709071"] === e) return;
     (() => {
         const e = "pyv", t = "param_first", a = "param_second", n = "client_screen", o = "ad_type", c = "none", r = "eAFgAQ", l = "8AUB", i = "YAHI", s = "CHANNEL", y = t;
         let p = y, u = null;
@@ -103,7 +103,7 @@ try {
                     configurable: !0
                 });
             } catch (e) {}
-        }, f = window.JSON.stringify, m = e => {
+        }, m = window.JSON.stringify, f = e => {
             p = e;
         };
         (() => {
@@ -124,35 +124,35 @@ try {
                 }
             };
             window.String.prototype.replace = new Proxy(window.String.prototype.replace, e);
-        })(), m(n));
+        })(), f(n));
         const x = e => {
             (e.playbackContext || e.playerRequest) && delete e.context?.client?.configInfo?.appInstallData;
-        }, C = (p, f, C) => {
+        }, C = (p, m, C) => {
             try {
-                if (!p || !f || !C) return;
+                if (!p || !m || !C) return;
                 (e => {
                     const t = e?.videoId;
-                    t && (u && u !== t && m(y), u = t);
+                    t && (u && u !== t && f(y), u = t);
                 })(p);
                 const R = document.getElementById("movie_player")?.getPlayerResponse()?.playabilityStatus?.status;
                 if ("LOGIN_REQUIRED" !== R && "CONTENT_CHECK_REQUIRED" !== R || (C = c), C === t && p.context?.client?.clientScreen !== s && !p.params?.startsWith(i)) return p.params = r, 
                 p.playerRequest && p.playerRequest.params !== r && (p.playerRequest.params = r), 
                 p.playbackContext && p.playbackContext.params !== r && (p.playbackContext.params = r), 
-                f.contentPlaybackContext.lactMilliseconds = String(Date.now()), b(), void x(p);
+                m.contentPlaybackContext.lactMilliseconds = String(Date.now()), b(), void x(p);
                 if (C === a && p.context?.client?.clientScreen !== s && !p.params?.startsWith(i)) return p.params !== l && (p.params = l), 
                 p.playerRequest && p.playerRequest.params !== l && (p.playerRequest.params = l), 
                 p.playbackContext && p.playbackContext.params !== l && (p.playbackContext.params = l), 
-                p.playlistId || (p.context.client.clientScreen = s), f.contentPlaybackContext.lactMilliseconds = String(Date.now()), 
+                p.playlistId || (p.context.client.clientScreen = s), m.contentPlaybackContext.lactMilliseconds = String(Date.now()), 
                 b(), void x(p);
-                if (!(C !== e || p.context?.client?.clientScreen === s || f.params?.startsWith(r) && f.params?.startsWith(l))) return f.adPlaybackContext = {
+                if (!(C !== e || p.context?.client?.clientScreen === s || m.params?.startsWith(r) && m.params?.startsWith(l))) return m.adPlaybackContext = {
                     pyv: !0
-                }, f.contentPlaybackContext.lactMilliseconds = String(Date.now()), void x(p);
+                }, m.contentPlaybackContext.lactMilliseconds = String(Date.now()), void x(p);
                 if (C === n && "WEB" === p.context?.client?.clientName) return p.context.client.clientScreen = s, 
-                f.contentPlaybackContext.lactMilliseconds = String(Date.now()), b(), void x(p);
-                if (C === o) return f.adPlaybackContext = {
+                m.contentPlaybackContext.lactMilliseconds = String(Date.now()), b(), void x(p);
+                if (C === o) return m.adPlaybackContext = {
                     adType: "AD_TYPE_INSTREAM"
-                }, f.contentPlaybackContext.lactMilliseconds = String(Date.now()), b(), void x(p);
-                if (C === c) return delete f.adPlaybackContext, void (() => {
+                }, m.contentPlaybackContext.lactMilliseconds = String(Date.now()), b(), void x(p);
+                if (C === c) return delete m.adPlaybackContext, void (() => {
                     try {
                         Object.defineProperty(document, "visibilityState", d);
                     } catch (e) {}
@@ -164,13 +164,13 @@ try {
                 let s;
                 try {
                     if (s = Reflect.apply(r, l, i), !s.responseContext && !s.playabilityStatus) return s;
-                    const y = f(s);
-                    return R.some((e => y.includes(e))) && !y.includes("CONTENT_CHECK_REQUIRED") ? p === t ? (m(a), 
-                    s) : p === a ? (m(e), s) : p === e ? (m(n), s) : p === n ? (m(o), s) : (m(c), s) : (p === t && s.playerConfig?.audioConfig?.muteOnStart && (location.href.includes("/watch") || s.cards && !s.playabilityStatus?.miniplayer) && (delete s.playerConfig.audioConfig.muteOnStart, 
-                    s.messages?.[0]?.youThereRenderer && delete s.messages[0].youThereRenderer), p === o && s.playerConfig?.granularVariableSpeedConfig && (s.playerConfig.granularVariableSpeedConfig.maximumPlaybackRate = 200, 
+                    const y = m(s);
+                    return R.some((e => y.includes(e))) && !y.includes("CONTENT_CHECK_REQUIRED") ? p === t ? (f(a), 
+                    s) : p === a ? (f(e), s) : p === e ? (f(n), s) : p === n ? (f(o), s) : (f(c), s) : (p === t && s.playerConfig?.audioConfig?.muteOnStart && (location.href.includes("/watch") || s.cards && !s.playabilityStatus?.miniplayer) && (delete s.playerConfig.audioConfig.muteOnStart, 
+                    s.messages[0]?.youThereRenderer && delete s.messages[0].youThereRenderer), p === o && s.playerConfig?.granularVariableSpeedConfig && (s.playerConfig.granularVariableSpeedConfig.maximumPlaybackRate = 200, 
                     s.playerConfig.granularVariableSpeedConfig.minimumPlaybackRate = 25), s);
                 } catch (e) {}
-                return Reflect.apply(r, l, i);
+                return s;
             }
         };
         window.JSON.parse = new Proxy(window.JSON.parse, w);
@@ -183,7 +183,7 @@ try {
                         const o = JSON.parse(n);
                         if (!o.context?.client) return Reflect.apply(e, t, a);
                         o.playbackContext && C(o, o.playbackContext, p), o.playerRequest && C(o, o.playerRequest.playbackContext, p), 
-                        n = f(o), a[0] = n;
+                        n = m(o), a[0] = n;
                     }
                 } catch (e) {}
                 return Reflect.apply(e, t, a);
@@ -214,7 +214,7 @@ try {
                         const n = JSON.parse(o);
                         if (!n.context?.client) return Reflect.construct(e, t, a);
                         n.playbackContext && C(n, n.playbackContext, p), n.playerRequest && C(n, n.playerRequest.playbackContext, p), 
-                        o = f(n), t[1].body = o;
+                        o = m(n), t[1].body = o;
                     }
                 } catch (e) {}
                 return Reflect.construct(e, t, a);
@@ -222,14 +222,14 @@ try {
         };
         window.Request = new Proxy(window.Request, S);
     })();
-    Object.defineProperty(Window.prototype.toString, "44880ffb9eb9254b1d06b92aaa4a78d0", {
+    Object.defineProperty(Window.prototype.toString, "2e8e930a77cdc0a58bb793b156709071", {
         value: e,
         enumerable: !1,
         writable: !1,
         configurable: !1
     });
 } catch (e) {
-    console.error('Error executing AG js rule with uniqueId "44880ffb9eb9254b1d06b92aaa4a78d0" due to: ' + e);
+    console.error('Error executing AG js rule with uniqueId "2e8e930a77cdc0a58bb793b156709071" due to: ' + e);
 }
 try {
     const e = "done";
