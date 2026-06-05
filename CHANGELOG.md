@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `$urltransform` modifier support [tsurlfilter#111].
 - `$removeparam` support for SPA navigations [tsurlfilter#188].
 - Filter rule conversion error logging in MV2.
+- Default registered script is always added to local script rules [tsurlfilter#167].
 
 ### Changed
 
@@ -37,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2701]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2701
 [#3533]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3533
 [tsurlfilter#111]: https://github.com/AdguardTeam/tsurlfilter/issues/111
+[tsurlfilter#167]: https://github.com/AdguardTeam/tsurlfilter/issues/167
 [tsurlfilter#188]: https://github.com/AdguardTeam/tsurlfilter/issues/188
 [tsurlfilter#189]: https://github.com/AdguardTeam/tsurlfilter/issues/189
 
