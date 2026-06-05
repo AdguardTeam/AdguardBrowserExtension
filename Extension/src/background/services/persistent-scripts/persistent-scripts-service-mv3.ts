@@ -88,15 +88,17 @@ export class PersistentScriptsService {
     static async sync(enabledFilterIds: number[]): Promise<void> {
         const enabledSet = new Set(enabledFilterIds.map(String));
 
-        // Build the set of (scriptId → RegisteredContentScript) that should be active
+        // Build the set of (scriptId -> RegisteredContentScript) that should be active
         const shouldBeActive = new Map<string, chrome.scripting.RegisteredContentScript>();
 
         Object.entries(criticalDomainScripts).forEach(([domain, filterIds]) => {
-            (filterIds as string[]).forEach((filterId) => {
+            filterIds.forEach((filterId) => {
                 if (!enabledSet.has(filterId)) {
                     return;
                 }
+
                 const id = scriptIdForDomainFilter(domain, filterId);
+
                 shouldBeActive.set(id, {
                     id,
                     js: [buildScriptPath(domain, filterId)],
@@ -109,9 +111,9 @@ export class PersistentScriptsService {
         });
 
         // Current registrations that belong to this service
-        const allRegistered = await chrome.scripting.getRegisteredContentScripts();
+        const registeredScripts = await chrome.scripting.getRegisteredContentScripts();
         const currentIds = new Set(
-            allRegistered
+            registeredScripts
                 .map((s) => s.id)
                 .filter((id) => id.startsWith(SCRIPT_ID_PREFIX)),
         );
@@ -120,16 +122,12 @@ export class PersistentScriptsService {
         const toRegister = [...shouldBeActive.values()].filter((s) => !currentIds.has(s.id));
 
         if (toRemoveIds.length > 0) {
-            logger.debug(
-                `[ext.PersistentScriptsService.sync]: Unregistering ${toRemoveIds.length} script(s): ${toRemoveIds.join(', ')}`,
-            );
+            logger.debug(`[ext.PersistentScriptsService.sync]: Unregistering ${toRemoveIds.length} script(s): ${toRemoveIds.join(', ')}`);
             await chrome.scripting.unregisterContentScripts({ ids: toRemoveIds });
         }
 
         if (toRegister.length > 0) {
-            logger.debug(
-                `[ext.PersistentScriptsService.sync]: Registering ${toRegister.length} script(s): ${toRegister.map((s) => s.id).join(', ')}`,
-            );
+            logger.debug(`[ext.PersistentScriptsService.sync]: Registering ${toRegister.length} script(s): ${toRegister.map((s) => s.id).join(', ')}`);
             await chrome.scripting.registerContentScripts(toRegister);
         }
     }
