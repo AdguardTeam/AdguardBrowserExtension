@@ -111,8 +111,15 @@ export class Alerts {
         }
 
         return `<div class="adguard-popup-alert">
-                    ${titleBlock}
-                    ${descBlock}
+                    <div class="adguard-popup-alert__content">
+                        ${titleBlock}
+                        ${descBlock}
+                    </div>
+                    <button
+                        type="button"
+                        class="adguard-popup-alert__close"
+                        aria-label="close"
+                    ></button>
                 </div>`;
     }
 }

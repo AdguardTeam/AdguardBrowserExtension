@@ -79,6 +79,10 @@ export type AppendPopupProps = {
 export class Popups {
     private static triesCount = 10;
 
+    private static ALERT_CLOSE_ANIMATION_MS = 300;
+
+    private static alertDismissTimeoutId: number | null = null;
+
     /**
      * Time to live for alert popup.
      */
@@ -302,6 +306,17 @@ export class Popups {
         }
 
         if (document.body) {
+            const existingAlert = document.body.querySelector('.adguard-alert-iframe');
+
+            if (existingAlert instanceof HTMLIFrameElement) {
+                const isAppended = Popups.appendAlertToExistingIframe(existingAlert, props.html);
+
+                if (isAppended) {
+                    Popups.scheduleAlertDismiss(existingAlert);
+                    return;
+                }
+            }
+
             const alertElement = Alerts.appendAlertElement({
                 ...props,
                 target: document.body,
@@ -310,12 +325,15 @@ export class Popups {
             alertElement.classList.add('adguard-alert-iframe');
             alertElement.onload = () => {
                 alertElement.style.visibility = 'visible';
-            };
-            setTimeout(() => {
-                if (alertElement && alertElement.parentNode) {
-                    alertElement.parentNode.removeChild(alertElement);
+
+                if (alertElement instanceof HTMLIFrameElement) {
+                    Popups.registerAlertCloseHandlers(alertElement);
                 }
-            }, Popups.HIDE_TIMEOUT_MS);
+            };
+
+            if (alertElement instanceof HTMLIFrameElement) {
+                Popups.scheduleAlertDismiss(alertElement);
+            }
         } else {
             setTimeout(() => {
                 Popups.appendAlertPopup(
@@ -324,6 +342,111 @@ export class Popups {
                 );
             }, Popups.retryTimeoutMs);
         }
+    }
+
+    /**
+     * Appends a new alert into an already mounted alert iframe.
+     *
+     * @param iframe Existing alert iframe.
+     * @param html New alert HTML.
+     *
+     * @returns True if alert was appended, false otherwise.
+     */
+    private static appendAlertToExistingIframe(iframe: HTMLIFrameElement, html: string): boolean {
+        const iframeDocument = iframe.contentDocument || iframe.contentWindow?.document;
+
+        if (!iframeDocument?.body) {
+            return false;
+        }
+
+        const template = iframeDocument.createElement('template');
+        template.innerHTML = html.trim();
+
+        const nextAlert = template.content.firstElementChild;
+
+        if (!nextAlert) {
+            return false;
+        }
+
+        iframeDocument.body.append(nextAlert);
+        iframe.style.visibility = 'visible';
+        Popups.registerAlertCloseHandlers(iframe);
+
+        return true;
+    }
+
+    /**
+     * Clears currently scheduled alert dismiss timeout.
+     */
+    private static clearAlertDismissTimeout(): void {
+        if (Popups.alertDismissTimeoutId !== null) {
+            window.clearTimeout(Popups.alertDismissTimeoutId);
+            Popups.alertDismissTimeoutId = null;
+        }
+    }
+
+    /**
+     * Schedules iframe auto-dismiss and resets previous timer when stacking alerts.
+     *
+     * @param iframe Alert iframe element.
+     */
+    private static scheduleAlertDismiss(iframe: HTMLIFrameElement): void {
+        Popups.clearAlertDismissTimeout();
+
+        Popups.alertDismissTimeoutId = window.setTimeout(() => {
+            if (iframe.parentNode) {
+                iframe.parentNode.removeChild(iframe);
+            }
+
+            Popups.alertDismissTimeoutId = null;
+        }, Popups.HIDE_TIMEOUT_MS);
+    }
+
+    /**
+     * Registers close handlers for alert cards inside the alert iframe.
+     *
+     * @param iframe Alert iframe element.
+     */
+    private static registerAlertCloseHandlers(iframe: HTMLIFrameElement): void {
+        const iframeDocument = iframe.contentDocument || iframe.contentWindow?.document;
+
+        if (!iframeDocument) {
+            return;
+        }
+
+        const closeButtons = iframeDocument.querySelectorAll<HTMLButtonElement>('.adguard-popup-alert__close');
+
+        closeButtons.forEach((button) => {
+            if (button.dataset.bound === 'true') {
+                return;
+            }
+
+            button.dataset.bound = 'true';
+
+            button.addEventListener('click', () => {
+                const alertCard = button.closest('.adguard-popup-alert');
+
+                if (!alertCard) {
+                    return;
+                }
+
+                if (alertCard.classList.contains('adguard-popup-alert--closing')) {
+                    return;
+                }
+
+                alertCard.classList.add('adguard-popup-alert--closing');
+
+                window.setTimeout(() => {
+                    alertCard.remove();
+
+                    const hasRemainingAlerts = iframeDocument.querySelector('.adguard-popup-alert');
+                    if (!hasRemainingAlerts) {
+                        Popups.clearAlertDismissTimeout();
+                        iframe.remove();
+                    }
+                }, Popups.ALERT_CLOSE_ANIMATION_MS);
+            });
+        });
     }
 
     /**
