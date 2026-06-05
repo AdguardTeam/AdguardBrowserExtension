@@ -376,7 +376,7 @@ export class UpdateApi {
 
                     // Step 2: Process the original filter list with the new FilterList class.
                     // FilterList will handle rule conversion and generate its own conversion metadata.
-                    const convertedFilterList = new FilterList(originalFilterList);
+                    const convertedFilterList = new FilterList(originalFilterList, id);
 
                     // Step 3: Save in the new format.
                     // We use direct hybridStorage calls instead of FiltersStorage.set()
