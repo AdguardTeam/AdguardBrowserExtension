@@ -48,6 +48,7 @@ import { asyncWrapper } from '../../../filtering-log/stores/helpers';
 import { TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../../common/constants';
 import { UserAgent } from '../../../../common/user-agent';
 import { TelemetryStore } from '../../../common/telemetry';
+import { type NotificationParams } from '../../../common/types';
 
 type BlockedStatsInfo = {
     tabId: number;
@@ -143,6 +144,12 @@ export class PopupStoreCommon {
 
     @observable
     settings: SettingsData | null = null;
+
+    /**
+     * Notification about update result to display in popup.
+     */
+    @observable
+    updateNotification: NotificationParams | null = null;
 
     currentTabId?: number | null = null;
 
@@ -603,4 +610,14 @@ export class PopupStoreCommon {
             this.showSearchAccessWarning = false;
         });
     };
+
+    /**
+     * Sets the update notification to display in popup.
+     *
+     * @param notification Notification parameters or null to clear.
+     */
+    @action
+    setUpdateNotification(notification: NotificationParams | null): void {
+        this.updateNotification = notification;
+    }
 }

@@ -25,6 +25,7 @@ import React, {
 } from 'react';
 
 import { MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../../../../common/constants';
+import { logger } from '../../../../../../common/logger';
 import { translator } from '../../../../../../common/translators/translator';
 import { addMinDurationTime } from '../../../../../../common/sleep-utils';
 import { messenger } from '../../../../../services/messenger';
@@ -48,11 +49,19 @@ export const UpdateButton = () => {
         setFiltersUpdating(true);
         setUpdateMessage('');
 
-        const updatedFilters = await updateFiltersWithMinDuration();
-        const { text } = getFiltersUpdateResultMessage(true, updatedFilters);
+        try {
+            const updatedFilters = await updateFiltersWithMinDuration();
+            const { text } = getFiltersUpdateResultMessage(true, updatedFilters);
 
-        setUpdateMessage(text);
-        setFiltersUpdating(false);
+            setUpdateMessage(text);
+        } catch (e) {
+            logger.error('[ext.UpdateButton-mv2]: Filter update failed:', e);
+            const { text } = getFiltersUpdateResultMessage(false);
+
+            setUpdateMessage(text);
+        } finally {
+            setFiltersUpdating(false);
+        }
 
         // Hack used here: previously we updated content of aria-live with message
         // which Screen Readers will announce to user after that we will remove it

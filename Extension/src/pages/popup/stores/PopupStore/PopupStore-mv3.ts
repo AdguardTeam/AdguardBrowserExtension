@@ -31,16 +31,12 @@ import { MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../../common/constants';
 import { logger } from '../../../../common/logger';
 import { sleepIfNecessary } from '../../../../common/sleep-utils';
 import { NotificationType } from '../../../common/types';
-import { type NotificationParams } from '../../../common/types';
 
 import { PopupStoreCommon } from './PopupStore-common';
 
 export class PopupStore extends PopupStoreCommon {
     @observable
     areFilterLimitsExceeded = false;
-
-    @observable
-    updateNotification: NotificationParams | null = null;
 
     @observable
     isExtensionUpdateAvailable: boolean = false;
@@ -128,11 +124,6 @@ export class PopupStore extends PopupStoreCommon {
         // Ensure minimum duration for smooth UI experience
         await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
     };
-
-    @action
-    setUpdateNotification(notification: NotificationParams | null): void {
-        this.updateNotification = notification;
-    }
 
     @action
     setIsExtensionUpdateAvailable(isUpdateAvailable: boolean): void {
