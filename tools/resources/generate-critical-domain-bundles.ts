@@ -48,16 +48,20 @@ import {
 } from './update-local-script-rules';
 
 /**
+ * List of critical domains to generate bundles for.
+ */
+const CRITICAL_DOMAINS = ['youtube.com'];
+
+/**
  * Subdirectory within the filters output folder where critical-domain bundles are written.
  */
 const CRITICAL_SCRIPTS_DIR = 'critical-scripts';
 
-const CRITICAL_DOMAINS = ['youtube.com'];
-
 /**
  * Registry of critical-domain persistent content scripts.
- * Key: apex domain. Value: sorted array of filter ID strings that contribute
- * rules to that domain.
+ *
+ * Key: domain.
+ * Value: array of filter ID.
  *
  * Generated at build time by {@link buildPersistentScriptsRegistry}.
  *
@@ -83,7 +87,7 @@ const getRuleSet = (
  * domain (exact match) or any of its subdomains.
  *
  * Generic rules (no domain list) return `false` — use `isGenericJsRule` to
- * identify those; they are added to every bundle separately.
+ * identify those; they are added to each domain's per-filter bundles.
  *
  * @param ruleNode Parsed rule AST node.
  * @param criticalDomain Apex domain to match against, e.g. `"youtube.com"`.
@@ -112,8 +116,8 @@ const jsRuleTargetsDomain = (ruleNode: AnyRule | null, criticalDomain: string): 
 
 /**
  * Returns `true` if the rule is a generic JS injection rule with no domain
- * specifier. Generic rules apply universally and are included in every
- * domain bundle.
+ * specifier. Generic rules apply universally and are included in each
+ * domain's per-filter bundles so they can be selectively disabled.
  *
  * @param ruleNode Parsed rule AST node.
  *
@@ -206,7 +210,7 @@ const compileRulesToBundle = async (jsRules: Set<string>): Promise<string | null
     const agFunctions: Map<string, string> = new Map();
     const remainingRules: Set<string> = new Set();
 
-    // First pass: collect AG_ utility functions
+    // AG_ utility functions
     jsRules.forEach((rule) => {
         const agFunctionName = extractAgFunctionName(rule);
 
@@ -220,8 +224,7 @@ const compileRulesToBundle = async (jsRules: Set<string>): Promise<string | null
     const compiledStatements: string[] = [];
     const errors: string[] = [];
 
-    // Second pass: compile each rule with required AG_ dependencies
-    // eslint-disable-next-line no-restricted-syntax
+    // compile each rule with required AG_ dependencies
     for (const rule of remainingRules) {
         try {
             let processedCode = rule;
@@ -393,9 +396,7 @@ export const generateCriticalDomainBundles = async (
             const bundleContent = await compileRulesToBundle(jsRules);
 
             if (!bundleContent) {
-                console.warn(
-                    `[generate-critical-domain-bundles] No compilable rules for ${domain}-${filterId}, skipping bundle.`,
-                );
+                console.warn(`[generate-critical-domain-bundles] No compilable rules for ${domain}-${filterId}, skipping bundle.`);
                 // eslint-disable-next-line no-continue
                 continue;
             }
@@ -420,7 +421,5 @@ export const generateCriticalDomainBundles = async (
     await writePersistentScriptsRegistry(registry, registryPath);
 
     const domainCount = Object.keys(registry).length;
-    console.log(
-        `[generate-critical-domain-bundles] Wrote registry.js with ${domainCount} domain(s)`,
-    );
+    console.log(`[generate-critical-domain-bundles] Wrote registry.js with ${domainCount} domain(s)`);
 };
