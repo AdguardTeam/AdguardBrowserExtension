@@ -18,21 +18,54 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { type DomainScriptEntry } from '../../../../../tools/resources/generate-critical-domain-bundles';
-import { criticalDomainScripts } from '../../../../filters/chromium-mv3/critical-scripts/persistent-scripts-registry';
+import { criticalDomainScripts } from '../../../../filters/chromium-mv3/critical-scripts/registry.js';
 import { logger } from '../../../common/logger';
 
 /** Stable ID prefix for all critical-domain content script registrations. */
 const SCRIPT_ID_PREFIX = 'critical_';
+const SCRIPT_ID_SEPARATOR = '_';
+
+/** Subdirectory within the filters folder where critical-domain bundles live. */
+const CRITICAL_SCRIPTS_DIR = 'critical-scripts';
+
+/** Extension-relative prefix for filter assets. */
+const EXTENSION_FILTERS_SUBDIR = 'filters';
 
 /**
- * Derives the stable `chrome.scripting` registration ID for a given domain.
+ * Converts a domain string into the two URL match patterns used in
+ * `content_scripts.matches`.
  *
- * @param domain Apex domain string.
+ * @param domain Domain string, e.g. `"youtube.com"`.
  *
- * @returns Registration ID string.
+ * @returns Array of two match pattern strings.
  */
-const scriptIdForDomain = (domain: string): string => `${SCRIPT_ID_PREFIX}${domain}`;
+const domainToMatchPatterns = (domain: string): string[] => {
+    return [`*://${domain}/*`, `*://*.${domain}/*`];
+};
+
+/**
+ * Returns the extension-relative script path for a (domain, filterId) bundle.
+ *
+ * @param domain Apex domain string, e.g. `"youtube.com"`.
+ * @param filterId Filter ID as a string, e.g. `"14"`.
+ *
+ * @returns Extension-relative path, e.g. `"filters/critical-scripts/youtube.com-14.js"`.
+ */
+const buildScriptPath = (domain: string, filterId: string): string => {
+    return `${EXTENSION_FILTERS_SUBDIR}/${CRITICAL_SCRIPTS_DIR}/${domain}-${filterId}.js`;
+};
+
+/**
+ * Derives the stable `chrome.scripting` registration ID for a (domain, filterId) pair.
+ *
+ * @param domain Apex domain string, e.g. `"youtube.com"`.
+ * @param filterId Filter ID as a string, e.g. `"14"`.
+ *
+ * @returns Registration ID string, e.g. `"critical_youtube.com_14"`.
+ */
+const scriptIdForDomainFilter = (domain: string, filterId: string): string => {
+    return `${SCRIPT_ID_PREFIX}${domain}${SCRIPT_ID_SEPARATOR}${filterId}`;
+};
 
 /**
  * Manages persistent content-script registrations for critical domains.
@@ -45,27 +78,37 @@ export class PersistentScriptsService {
      * Synchronises registered critical-domain content scripts with the given
      * set of enabled filter IDs.
      *
-     * A domain script is active when at least one of its associated filter IDs
-     * appears in `enabledFilterIds`. Scripts that should no longer be active
-     * are unregistered; newly-active scripts are registered.
-     * Already-correct registrations are left untouched.
+     * Each (domain, filterId) pair maps to its own `chrome.scripting`
+     * registration, so disabling a single filter unregisters only that
+     * filter's scripts — other filters' scripts for the same domain are
+     * left untouched.
      *
      * @param enabledFilterIds Array of currently-enabled AdGuard filter IDs.
      */
     static async sync(enabledFilterIds: number[]): Promise<void> {
-        const enabledSet = new Set(enabledFilterIds);
+        const enabledSet = new Set(enabledFilterIds.map(String));
 
-        // Determine which domains should have active scripts
-        const shouldBeActive = new Set<string>();
+        // Build the set of (scriptId → RegisteredContentScript) that should be active
+        const shouldBeActive = new Map<string, chrome.scripting.RegisteredContentScript>();
 
-        const scripts = criticalDomainScripts as Record<string, DomainScriptEntry>;
-
-        Object.entries(scripts).forEach(([domain, entry]) => {
-            if (entry.filterIds.some((id) => enabledSet.has(id))) {
-                shouldBeActive.add(domain);
-            }
+        Object.entries(criticalDomainScripts).forEach(([domain, filterIds]) => {
+            (filterIds as string[]).forEach((filterId) => {
+                if (!enabledSet.has(filterId)) {
+                    return;
+                }
+                const id = scriptIdForDomainFilter(domain, filterId);
+                shouldBeActive.set(id, {
+                    id,
+                    js: [buildScriptPath(domain, filterId)],
+                    matches: domainToMatchPatterns(domain),
+                    runAt: 'document_start',
+                    world: 'MAIN',
+                    persistAcrossSessions: true,
+                });
+            });
         });
 
+        // Current registrations that belong to this service
         const allRegistered = await chrome.scripting.getRegisteredContentScripts();
         const currentIds = new Set(
             allRegistered
@@ -73,42 +116,20 @@ export class PersistentScriptsService {
                 .filter((id) => id.startsWith(SCRIPT_ID_PREFIX)),
         );
 
-        const toRegister: chrome.scripting.RegisteredContentScript[] = [];
-
-        shouldBeActive.forEach((domain) => {
-            const id = scriptIdForDomain(domain);
-
-            if (!currentIds.has(id)) {
-                const entry = scripts[domain]!;
-                toRegister.push({
-                    id,
-                    js: entry.js,
-                    matches: entry.matches,
-                    runAt: 'document_start',
-                    world: 'MAIN',
-                    persistAcrossSessions: true,
-                });
-            }
-        });
-
-        // Script IDs to remove (currently registered but should not be active)
-        const toRemoveIds: string[] = [];
-
-        currentIds.forEach((id) => {
-            const domain = id.slice(SCRIPT_ID_PREFIX.length);
-
-            if (!shouldBeActive.has(domain)) {
-                toRemoveIds.push(id);
-            }
-        });
+        const toRemoveIds = [...currentIds].filter((id) => !shouldBeActive.has(id));
+        const toRegister = [...shouldBeActive.values()].filter((s) => !currentIds.has(s.id));
 
         if (toRemoveIds.length > 0) {
-            logger.debug(`[ext.PersistentScriptsService.sync]: Unregistering ${toRemoveIds.length} domain script(s): ${toRemoveIds.join(', ')}`);
+            logger.debug(
+                `[ext.PersistentScriptsService.sync]: Unregistering ${toRemoveIds.length} script(s): ${toRemoveIds.join(', ')}`,
+            );
             await chrome.scripting.unregisterContentScripts({ ids: toRemoveIds });
         }
 
         if (toRegister.length > 0) {
-            logger.debug(`[ext.PersistentScriptsService.sync]: Registering ${toRegister.length} domain script(s): ${toRegister.map((s) => s.id).join(', ')}`);
+            logger.debug(
+                `[ext.PersistentScriptsService.sync]: Registering ${toRegister.length} script(s): ${toRegister.map((s) => s.id).join(', ')}`,
+            );
             await chrome.scripting.registerContentScripts(toRegister);
         }
     }

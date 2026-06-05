@@ -34,7 +34,6 @@ import { extractRuleSetId } from '@adguard/tsurlfilter/es/declarative-converter-
 import {
     FILTERS_DEST,
     DECLARATIVE_FILTERS_DEST,
-    EXTENSION_FILTERS_SUBDIR,
     type Mv3AssetsFiltersBrowser,
 } from '../constants';
 import { NEWLINE_CHAR_UNIX } from '../../Extension/src/common/constants';
@@ -56,23 +55,28 @@ const CRITICAL_SCRIPTS_DIR = 'critical-scripts';
 const CRITICAL_DOMAINS = ['youtube.com'];
 
 /**
- * Per-domain entry in the persistent scripts registry.
- *
- * `js` paths are relative to the extension root.
- * `filterIds` lists every AdGuard filter that contributes rules to this domain's bundle.
- */
-export type DomainScriptEntry = {
-    js: string[];
-    matches: string[];
-    filterIds: number[];
-};
-
-/**
- * Registry of critical-domain persistent content scripts, keyed by apex domain.
+ * Registry of critical-domain persistent content scripts.
+ * Key: apex domain. Value: sorted array of filter ID strings that contribute
+ * rules to that domain.
  *
  * Generated at build time by {@link buildPersistentScriptsRegistry}.
+ *
+ * Example: `{ "youtube.com": ["2", "5"] }`
  */
-type PersistentScriptsRegistry = Record<string, DomainScriptEntry>;
+export type PersistentScriptsRegistry = Record<string, string[]>;
+
+/** Ensures the inner Map<filterId, Set> entry exists and returns the Set. */
+const getRuleSet = (
+    domainFilterRules: Map<string, Map<number, Set<string>>>,
+    domain: string,
+    filterId: number,
+): Set<string> => {
+    const filterMap = domainFilterRules.get(domain)!;
+    if (!filterMap.has(filterId)) {
+        filterMap.set(filterId, new Set());
+    }
+    return filterMap.get(filterId)!;
+};
 
 /**
  * Returns `true` if the rule's permitted domains include the given critical
@@ -128,54 +132,42 @@ const isGenericJsRule = (ruleNode: AnyRule | null): boolean => {
 };
 
 /**
- * Converts a domain string into the two URL match patterns used in
- * `content_scripts.matches`:
- * - apex domain: `*://domain/*`
- * - subdomains:  `*://*.domain/*`
+ * Returns the output filename for a (domain, filterId) compiled bundle.
  *
  * @param domain Domain string, e.g. `"youtube.com"`.
+ * @param filterId Filter ID number.
  *
- * @returns Array of two match pattern strings.
+ * @returns Filename string, e.g. `"youtube.com-14.js"`.
  */
-const domainToMatchPatterns = (domain: string): string[] => {
-    return [`*://${domain}/*`, `*://*.${domain}/*`];
+const getBundleFileName = (domain: string, filterId: number): string => {
+    return `${domain}-${filterId}.js`;
 };
 
 /**
- * Returns the output filename for a domain's compiled bundle.
+ * Builds the persistent-scripts registry from the collected ruleset data.
  *
- * @param domain Domain string, e.g. `"youtube.com"`.
+ * @param domainFilterRules Map of domain -> filterId -> set of raw JS rule bodies.
  *
- * @returns Filename string, e.g. `"youtube.com.js"`.
- */
-const getBundleFileName = (domain: string): string => {
-    return `${domain}.js`;
-};
-
-/**
- * Builds the persistent-scripts registry from the set of successfully bundled
- * domains and the filter-to-domain mapping collected during ruleset iteration.
- *
- * Domains that were parsed but yielded no compilable rules (absent from
- * `domainsBundled`) are silently omitted.
- *
- * @param domainFilters Map of filter ID -> set of domains found in that filter.
- * @param extensionFilterSubdir Extension-relative prefix for filter assets (e.g. `"filters"`).
- *
- * @returns Registry object.
+ * @returns Registry object — flat {@link PersistentScriptsRegistry} mapping domain to filter ID array.
  */
 const buildPersistentScriptsRegistry = (
-    domainFilters: Map<string, Set<number>>,
-    extensionFilterSubdir: string,
+    domainFilterRules: Map<string, Map<number, Set<string>>>,
 ): PersistentScriptsRegistry => {
     const registry: PersistentScriptsRegistry = {};
 
-    domainFilters.forEach((filterIds, domain) => {
-        registry[domain] = {
-            js: [`${extensionFilterSubdir}/${CRITICAL_SCRIPTS_DIR}/${getBundleFileName(domain)}`],
-            matches: domainToMatchPatterns(domain),
-            filterIds: [...filterIds].sort((a, b) => a - b),
-        };
+    domainFilterRules.forEach((filterMap, domain) => {
+        const filterIds: string[] = [];
+
+        filterMap.forEach((jsRules, filterId) => {
+            if (jsRules.size > 0) {
+                filterIds.push(String(filterId));
+            }
+        });
+
+        if (filterIds.length > 0) {
+            filterIds.sort((a, b) => Number(a) - Number(b));
+            registry[domain] = filterIds;
+        }
     });
 
     return registry;
@@ -314,8 +306,6 @@ const writePersistentScriptsRegistry = async (
     const content = `// AUTO-GENERATED — do not edit manually. Re-run pnpm resources:mv3 to update.
 export const criticalDomainScripts = ${JSON.stringify(registry, null, 4)};${NEWLINE_CHAR_UNIX}`;
 
-    validateJavaScriptSyntax(content, `registry ${path.basename(outputPath)}`);
-
     await fs.writeFile(outputPath, content, 'utf-8');
 };
 
@@ -336,8 +326,10 @@ export const generateCriticalDomainBundles = async (
 
     await fs.mkdir(outputDir, { recursive: true });
 
-    const domainRules = new Map(CRITICAL_DOMAINS.map((d) => [d, new Set<string>()]));
-    const domainFilters = new Map(CRITICAL_DOMAINS.map((d) => [d, new Set<number>()]));
+    // Map<domain, Map<filterId, Set<ruleBody>>>
+    const domainFilterRules = new Map<string, Map<number, Set<string>>>(
+        CRITICAL_DOMAINS.map((d) => [d, new Map()]),
+    );
 
     const metadataRuleSet = await readMetadataRuleSet(declarativeFolder);
     const ruleSetIds = metadataRuleSet.getRuleSetIds();
@@ -363,72 +355,72 @@ export const generateCriticalDomainBundles = async (
             const rawBody = CosmeticRuleBodyGenerator.generate(ruleNode);
 
             if (isGenericJsRule(ruleNode)) {
-                // Generic rules (no domain specifier) apply to every critical-domain bundle
-                CRITICAL_DOMAINS.forEach((domain) => {
-                    domainRules.get(domain)!.add(rawBody);
-                });
+                // Generic rules (no domain specifier) apply to every critical domain,
+                // tracked per-filter so they can be selectively disabled
+                if (filterId !== null) {
+                    CRITICAL_DOMAINS.forEach((domain) => {
+                        getRuleSet(domainFilterRules, domain, filterId).add(rawBody);
+                    });
+                }
             } else {
                 CRITICAL_DOMAINS.forEach((domain) => {
                     if (!jsRuleTargetsDomain(ruleNode, domain)) {
                         return;
                     }
 
-                    domainRules.get(domain)!.add(rawBody);
-
                     if (filterId === null) {
                         return;
                     }
 
-                    domainFilters.get(domain)!.add(filterId);
+                    getRuleSet(domainFilterRules, domain, filterId).add(rawBody);
                 });
             }
         });
     }
 
     // eslint-disable-next-line no-restricted-syntax
-    for (const [domain, jsRules] of domainRules) {
-        console.log(`[generate-critical-domain-bundles] ${domain}: ${jsRules.size} unique rules`);
+    for (const [domain, filterMap] of domainFilterRules) {
+        // eslint-disable-next-line no-restricted-syntax
+        for (const [filterId, jsRules] of filterMap) {
+            if (jsRules.size === 0) {
+                // eslint-disable-next-line no-continue
+                continue;
+            }
 
-        if (jsRules.size === 0) {
-            console.log(
-                `[generate-critical-domain-bundles] No rules for ${domain}, skipping bundle.`,
-            );
-            // eslint-disable-next-line no-continue
-            continue;
+            console.log(`[generate-critical-domain-bundles] ${domain}-${filterId}: ${jsRules.size} unique rules`);
+
+            // eslint-disable-next-line no-await-in-loop
+            const bundleContent = await compileRulesToBundle(jsRules);
+
+            if (!bundleContent) {
+                console.warn(
+                    `[generate-critical-domain-bundles] No compilable rules for ${domain}-${filterId}, skipping bundle.`,
+                );
+                // eslint-disable-next-line no-continue
+                continue;
+            }
+
+            const fileName = getBundleFileName(domain, filterId);
+            const outputPathLocal = path.join(outputDir, fileName);
+
+            // eslint-disable-next-line no-await-in-loop
+            await writeBundleFile(bundleContent, outputPathLocal);
+
+            const sizeKb = (Buffer.byteLength(bundleContent, 'utf-8') / 1024).toFixed(1);
+            console.log(`[generate-critical-domain-bundles] Wrote ${fileName} (${sizeKb} KB)`);
         }
-
-        // eslint-disable-next-line no-await-in-loop
-        const bundleContent = await compileRulesToBundle(jsRules);
-
-        if (!bundleContent) {
-            console.warn(
-                `[generate-critical-domain-bundles] No compilable rules for ${domain}, skipping bundle.`,
-            );
-            // eslint-disable-next-line no-continue
-            continue;
-        }
-
-        const fileName = getBundleFileName(domain);
-        const outputPathLocal = path.join(outputDir, fileName);
-
-        // eslint-disable-next-line no-await-in-loop
-        await writeBundleFile(bundleContent, outputPathLocal);
-
-        const sizeKb = (Buffer.byteLength(bundleContent, 'utf-8') / 1024).toFixed(1);
-        console.log(`[generate-critical-domain-bundles] Wrote ${fileName} (${sizeKb} KB)`);
     }
 
     // Build and write the persistent-scripts registry
     const registry = buildPersistentScriptsRegistry(
-        domainFilters,
-        EXTENSION_FILTERS_SUBDIR,
+        domainFilterRules,
     );
 
-    const registryPath = path.join(outputDir, 'persistent-scripts-registry.js');
+    const registryPath = path.join(outputDir, 'registry.js');
     await writePersistentScriptsRegistry(registry, registryPath);
 
     const domainCount = Object.keys(registry).length;
     console.log(
-        `[generate-critical-domain-bundles] Wrote persistent-scripts-registry.js with ${domainCount} domain(s)`,
+        `[generate-critical-domain-bundles] Wrote registry.js with ${domainCount} domain(s)`,
     );
 };
