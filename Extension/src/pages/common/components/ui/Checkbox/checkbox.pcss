@@ -65,3 +65,35 @@
         }
     }
 }
+
+@media (forced-colors: active) {
+    .checkbox {
+        &__label {
+            &:before {
+                forced-color-adjust: none;
+                background-color: CanvasText;
+                border: 1px solid Canvas;
+            }
+
+            &:after {
+                forced-color-adjust: none;
+                background-color: Canvas;
+                border: 1px solid CanvasText;
+            }
+        }
+
+        &__in {
+            &:checked + .checkbox__label {
+                &:before {
+                    background-color: HighlightText;
+                    border-color: Highlight;
+                }
+
+                &:after {
+                    background-color: Highlight;
+                    border-color: Highlight;
+                }
+            }
+        }
+    }
+}
