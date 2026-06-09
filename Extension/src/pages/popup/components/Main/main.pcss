@@ -258,6 +258,72 @@
     }
 }
 
+@media (forced-colors: active) {
+    .switcher {
+        &__track {
+            forced-color-adjust: none;
+            background-color: Highlight;
+            border: 1px solid Highlight;
+
+            &--disabled {
+                background-color: Canvas;
+                border-color: CanvasText;
+            }
+        }
+
+        &__handle {
+            forced-color-adjust: none;
+            background-color: Canvas;
+            border: 1px solid CanvasText;
+
+            &:before {
+                background-color: Canvas;
+            }
+
+            &--disabled {
+                background-color: CanvasText;
+                border-color: Canvas;
+
+                &:before {
+                    background-color: CanvasText;
+                }
+            }
+        }
+
+        &__icon {
+            forced-color-adjust: none;
+
+            &--on {
+                color: CanvasText;
+            }
+
+            &--off {
+                color: Canvas;
+            }
+        }
+
+        &:hover {
+            & .switcher__track {
+                background-color: Highlight;
+
+                &--disabled {
+                    background-color: Canvas;
+                }
+            }
+
+            & .switcher__icon {
+                &--on {
+                    color: CanvasText;
+                }
+
+                &--off {
+                    color: Canvas;
+                }
+            }
+        }
+    }
+}
+
 .resume {
     &__wrapper{
         padding: 8px 16px;
