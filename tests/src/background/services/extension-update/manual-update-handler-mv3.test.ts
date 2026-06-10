@@ -59,14 +59,6 @@ vi.mock(
     }),
 );
 
-// Mock sleepIfNecessary to avoid real delays in tests
-vi.mock(
-    '../../../../../Extension/src/common/sleep-utils',
-    () => ({
-        sleepIfNecessary: vi.fn(),
-    }),
-);
-
 // Mock getRunInfo
 vi.mock(
     '../../../../../Extension/src/background/utils/run-info',
@@ -76,10 +68,14 @@ vi.mock(
 );
 
 // Mock browserStorage
+const { mockBrowserStorageGet } = vi.hoisted(() => ({
+    mockBrowserStorageGet: vi.fn().mockResolvedValue(undefined),
+}));
 vi.mock(
     '../../../../../Extension/src/background/storages',
     () => ({
         browserStorage: {
+            get: mockBrowserStorageGet,
             set: vi.fn().mockResolvedValue(undefined),
             remove: vi.fn().mockResolvedValue(undefined),
         },
@@ -239,6 +235,55 @@ describe('ManualUpdateHandler', () => {
 
             // The handler should still notify completion — analytics failure is swallowed
             expect(onUpdateCheckComplete).toHaveBeenCalledWith(true);
+        });
+    });
+
+    describe('peekUpdateData() — non-destructive read', () => {
+        it('returns data when it exists in storage', async () => {
+            const testData = {
+                initVersion: '5.2.0.1',
+                pageToOpenAfterReload: 'options_screen',
+                isOk: true,
+            };
+            mockBrowserStorageGet.mockResolvedValue(JSON.stringify(testData));
+
+            const result = await ManualUpdateHandler.peekUpdateData();
+
+            expect(result).toEqual(testData);
+            expect(mockBrowserStorageGet).toHaveBeenCalled();
+        });
+
+        it('returns null when storage is empty', async () => {
+            mockBrowserStorageGet.mockResolvedValue(undefined);
+
+            const result = await ManualUpdateHandler.peekUpdateData();
+
+            expect(result).toBeNull();
+        });
+
+        it('does NOT remove data from storage after reading', async () => {
+            const testData = {
+                initVersion: '5.2.0.1',
+                pageToOpenAfterReload: 'options_screen',
+                isOk: true,
+            };
+            mockBrowserStorageGet.mockResolvedValue(JSON.stringify(testData));
+
+            await ManualUpdateHandler.peekUpdateData();
+
+            // Verify that browserStorage.remove was NOT called
+            const { browserStorage } = await import(
+                '../../../../../Extension/src/background/storages'
+            );
+            expect(browserStorage.remove).not.toHaveBeenCalled();
+        });
+
+        it('returns null when data is invalid JSON', async () => {
+            mockBrowserStorageGet.mockResolvedValue('not valid json');
+
+            const result = await ManualUpdateHandler.peekUpdateData();
+
+            expect(result).toBeNull();
         });
     });
 });

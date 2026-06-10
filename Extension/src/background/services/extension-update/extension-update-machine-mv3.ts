@@ -48,6 +48,11 @@ type EventType = {
      * Whether the extension was reloaded after an update.
      */
     isReloadedOnUpdate?: boolean;
+
+    /**
+     * Whether the extension reload after update failed.
+     */
+    isReloadFailed?: boolean;
 };
 
 const EXTENSION_UPDATE_MACHINE_ID = 'extensionUpdate';
@@ -55,7 +60,7 @@ const EXTENSION_UPDATE_MACHINE_ID = 'extensionUpdate';
 /**
  * Extension update state machine.
  */
-const extensionUpdateMachine = setup({
+export const extensionUpdateMachine = setup({
     types: {} as { events: EventType },
     delays: {
         NOTIFICATION_DELAY: MIN_UPDATE_DISPLAY_DURATION_MS,
@@ -66,11 +71,24 @@ const extensionUpdateMachine = setup({
     states: {
         [ExtensionUpdateFSMState.Idle]: {
             on: {
+                /**
+                 * Init event guards implement conditional transitions from Idle
+                 * based on the persisted state loaded during service worker startup.
+                 * Guards are evaluated in order; the first matching guard wins:
+                 *
+                 * - isUpdateAvailable: Pending auto-update exists → Available;
+                 * - isReloadFailed: Extension reloaded but update failed → Failed;
+                 * - isReloadedOnUpdate: Extension reloaded after successful update → Success;
+                 * - No guard matches: Stay in Idle (no pending update state).
+                 */
                 [ExtensionUpdateFSMEvent.Init]: [
                     {
-                        // TODO: check if it is still needed. AG-47075
                         guard: ({ event }: { event: EventType }): boolean => !!event.isUpdateAvailable,
                         target: ExtensionUpdateFSMState.Available,
+                    },
+                    {
+                        guard: ({ event }: { event: EventType }): boolean => !!event.isReloadFailed,
+                        target: ExtensionUpdateFSMState.Failed,
                     },
                     {
                         guard: ({ event }: { event: EventType }): boolean => !!event.isReloadedOnUpdate,

@@ -18,9 +18,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { MANUAL_EXTENSION_UPDATE_KEY, MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../common/constants';
+import { MANUAL_EXTENSION_UPDATE_KEY } from '../../../common/constants';
 import { logger } from '../../../common/logger';
-import { sleepIfNecessary } from '../../../common/sleep-utils';
 import { ForwardFrom } from '../../../common/forward';
 import { FilterUpdateApi, PagesApi } from '../../api';
 import { browserStorage } from '../../storages';
@@ -147,8 +146,6 @@ export class ManualUpdateHandler {
         // Mark this as manual check
         this.stateManager.set(AutoUpdateStateField.isManualCheck, true);
 
-        const start = Date.now();
-
         // We set timeout for the whole update check operation since it consists
         // of multiple steps with not-determined duration.
         // eslint-disable-next-line no-restricted-globals
@@ -172,11 +169,6 @@ export class ManualUpdateHandler {
         if (isUpdateAvailable) {
             shouldWaitForUpdateEvent = await ManualUpdateHandler.requestUpdateCheck();
         }
-
-        // Wait for more smooth user experience
-        // NOTE: it has to be done here and not in the UI components
-        // because UI notifications strictly depend on the state machine states
-        await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
 
         // Here we should wait for onUpdateAvailable event from Chrome when
         // browser will download the update in background.
@@ -259,8 +251,6 @@ export class ManualUpdateHandler {
         from: ForwardFrom.Options | ForwardFrom.Popup,
         clearAutoUpdateState: () => Promise<void>,
     ): Promise<void> {
-        const start = Date.now();
-
         this.onUpdateApplyStart();
 
         let isExtensionUpdated = false;
@@ -282,11 +272,6 @@ export class ManualUpdateHandler {
             // `isManualCheck` flag which should be reset after update.
             await clearAutoUpdateState();
 
-            // wait for more smooth user experience
-            // NOTE: it has to be done here and not in the UI components
-            // because UI notifications strictly depend on the state machine states
-            await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
-
             ManualUpdateHandler.reloadExtension();
             isExtensionUpdated = true;
         } catch (e) {
@@ -299,10 +284,6 @@ export class ManualUpdateHandler {
         // since its success is handled after the extension reload
         if (!isExtensionUpdated) {
             logger.debug('[ext.ManualUpdateHandler.applyUpdate]: Extension update failed');
-            // wait for more smooth user experience
-            // NOTE: it has to be done here and not in the UI components
-            // because UI notifications strictly depend on the state machine states
-            await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
             this.onUpdateApplyFailed();
         }
     }
@@ -367,6 +348,33 @@ export class ManualUpdateHandler {
             logger.info('[ext.ManualUpdateHandler.handleReload]: Opening popup...');
             await PagesApi.openExtensionPopup();
         }
+    }
+
+    /**
+     * Checks whether manual update data exists in storage without reading or removing it.
+     * Used during background startup to determine if the extension was reloaded after an update.
+     *
+     * @returns True if manual extension update data exists in storage, false otherwise.
+     */
+    public static async hasUpdateData(): Promise<boolean> {
+        const manualExtensionUpdateStr = await browserStorage.get(MANUAL_EXTENSION_UPDATE_KEY);
+        return typeof manualExtensionUpdateStr === 'string';
+    }
+
+    /**
+     * Reads manual update data from storage without removing it.
+     *
+     * Unlike {@link ManualUpdateHandler.getUpdateData}, this method does not consume
+     * the data, so it can still be retrieved later by {@link ManualUpdateHandler.handleReload}
+     * or the UI layer.
+     *
+     * Intended for background startup FSM initialization where the data must be
+     * inspected but preserved for subsequent handlers.
+     *
+     * @returns Manual extension update data or null if not found or invalid.
+     */
+    public static async peekUpdateData(): Promise<ManualUpdateMetadata | null> {
+        return ManualUpdateHandler.retrieveUpdateData();
     }
 
     /**
