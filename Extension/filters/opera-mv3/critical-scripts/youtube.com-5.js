@@ -1,76 +1,70 @@
 (function () {
+var _b = new Set(), _c = {};
 try {
-    const e = "done";
-    if (Window.prototype.toString["5b9872087d5e72503ae69e868973c51c"] === e) return;
+    var _k = "5b9872087d5e72503ae69e868973c51c";
+    if (_b.has(_k)) return;
+    _b.add(_k);
     (() => {
-        const e = Function.prototype.call;
-        let t = !1, o = !1, n = !1;
+        const t = Function.prototype.call;
+        let e = !1, o = !1, n = !1;
         const c = {
-            apply: (c, r, a) => {
-                const i = a[0];
+            apply: (c, a, r) => {
+                const i = r[0];
                 if (i?.requestNumber && i?.snapshot) try {
-                    o = ((e, t = 5) => {
-                        if ("object" != typeof e || null === e) return !1;
+                    o = ((t, e = 5) => {
+                        if ("object" != typeof t || null === t) return !1;
                         const o = new Array(1e3);
                         let c = 0;
-                        const r = new WeakSet;
+                        const a = new WeakSet;
                         for (o[c++] = {
-                            obj: e,
+                            obj: t,
                             depth: 0
                         }; c > 0 && !n; ) {
-                            const {obj: a, depth: i} = o[--c];
-                            if (i > t || "object" != typeof a || null === a || r.has(a)) continue;
+                            const {obj: r, depth: i} = o[--c];
+                            if (i > e || "object" != typeof r || null === r || a.has(r)) continue;
                             let l;
-                            r.add(a);
+                            a.add(r);
                             try {
-                                l = Object.hasOwn(a, "backoffTimeMs");
-                            } catch (e) {}
-                            if (l) return void 0 !== a.backoffTimeMs || (n = !0, !1);
-                            for (const t in a) if (Object.hasOwn(a, t)) {
+                                l = Object.hasOwn(r, "backoffTimeMs");
+                            } catch (t) {}
+                            if (l) return void 0 !== r.backoffTimeMs || (n = !0, !1);
+                            for (const e in r) if (Object.hasOwn(r, e)) {
                                 let n;
                                 try {
-                                    n = a[t];
-                                } catch (e) {}
-                                null !== n && "object" == typeof n && !r.has(n) && c < o.length && (o[c++] = {
+                                    n = r[e];
+                                } catch (t) {}
+                                null !== n && "object" == typeof n && !a.has(n) && c < o.length && (o[c++] = {
                                     obj: n,
                                     depth: i + 1
                                 });
                             }
                         }
                         return !1;
-                    })(i), t = !0, (o || n) && (Function.prototype.call = e);
-                } catch (e) {}
-                return Reflect.apply(c, r, a);
+                    })(i), e = !0, (o || n) && (Function.prototype.call = t);
+                } catch (t) {}
+                return Reflect.apply(c, a, r);
             }
         };
         window.Function.prototype.call = new Proxy(window.Function.prototype.call, c);
         window.addEventListener("load", (async () => {
-            if (Function.prototype.call = e, !o && t) return;
+            if (Function.prototype.call = t, !o && e) return;
             const n = window.location.search, c = new URLSearchParams(n).get("v");
             if (!c) return;
-            const r = await (a = "#movie_player", new Promise((e => {
+            const a = await (r = "#movie_player", new Promise((t => {
                 0;
-                const t = Date.now() + 1e4, o = () => {
-                    const n = document.querySelector(a);
-                    n ? e(n) : Date.now() > t ? e(null) : setTimeout(o, 200);
+                const e = Date.now() + 1e4, o = () => {
+                    const n = document.querySelector(r);
+                    n ? t(n) : Date.now() > e ? t(null) : setTimeout(o, 200);
                 };
                 o();
             })));
-            var a;
-            if (!r) return;
+            var r;
+            if (!a) return;
             const i = new URLSearchParams(n).get("t") ?? "0", l = parseInt(i, 10);
-            if ("function" == typeof r.loadVideoById && !location.search.includes("&rco=")) try {
-                r.loadVideoById(c, l);
-            } catch (e) {}
+            if ("function" == typeof a.loadVideoById && !location.search.includes("&rco=")) try {
+                a.loadVideoById(c, l);
+            } catch (t) {}
         }));
     })();
-    Object.defineProperty(Window.prototype.toString, "5b9872087d5e72503ae69e868973c51c", {
-        value: e,
-        enumerable: !1,
-        writable: !1,
-        configurable: !1
-    });
-} catch (e) {
-    console.error('Error executing AG js rule with uniqueId "5b9872087d5e72503ae69e868973c51c" due to: ' + e);
-}
+} catch (t) {}
 })();

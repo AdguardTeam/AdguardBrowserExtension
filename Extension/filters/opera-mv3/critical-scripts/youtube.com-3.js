@@ -1,5 +1,281 @@
 (function () {
 var _b = new Set(), _c = {};
+function preventXHR(e, t) {
+    var r = "done", n = e.uniqueId + e.name + "_" + (Array.isArray(t) ? t.join("_") : "");
+    if (!e.uniqueId || _c[n] !== r) {
+        var a = t ? [].concat(e).concat(t) : [ e ];
+        try {
+            (function(e, t, r) {
+                if ("undefined" != typeof Proxy) {
+                    var n, a = window.XMLHttpRequest.prototype.open, c = window.XMLHttpRequest.prototype.getResponseHeader, f = window.XMLHttpRequest.prototype.getAllResponseHeaders, d = new Map, v = new Map, y = "", g = "", h = {
+                        apply: function(r, a, p) {
+                            n = s.apply(null, p);
+                            if (void 0 === t) {
+                                u(e, `xhr( ${i(n)} )`, !0);
+                                o(e);
+                            } else if (function(e, t, r) {
+                                if ("" === t || "*" === t) return !0;
+                                var n, a = function(e) {
+                                    var t = {};
+                                    return e.split(" ").forEach((function(e) {
+                                        var r = e.indexOf(":"), n = e.slice(0, r);
+                                        if (function(e) {
+                                            return [ "url", "method", "headers", "body", "credentials", "cache", "redirect", "referrer", "referrerPolicy", "integrity", "keepalive", "signal", "mode" ].includes(e);
+                                        }(n)) {
+                                            var a = e.slice(r + 1);
+                                            t[n] = a;
+                                        } else t.url = e;
+                                    })), t;
+                                }(t);
+                                if (function(e) {
+                                    return Object.values(e).every((function(e) {
+                                        return function(e) {
+                                            var t, r = function(e) {
+                                                return e.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+                                            }(e);
+                                            "/" === e[0] && "/" === e[e.length - 1] && (r = e.slice(1, -1));
+                                            try {
+                                                t = new RegExp(r), t = !0;
+                                            } catch (e) {
+                                                t = !1;
+                                            }
+                                            return t;
+                                        }(e);
+                                    }));
+                                }(a)) {
+                                    var o = function(e) {
+                                        var t = {};
+                                        return Object.keys(e).forEach((function(r) {
+                                            t[r] = function(e) {
+                                                var t = e || "", r = "/";
+                                                if ("" === t) return new RegExp(".?");
+                                                var n, a, o = t.lastIndexOf(r), i = t.substring(o + 1), s = t.substring(0, o + 1), u = (a = i, 
+                                                (n = s).startsWith(r) && n.endsWith(r) && !n.endsWith("\\/") && function(e) {
+                                                    if (!e) return !1;
+                                                    try {
+                                                        return new RegExp("", e), !0;
+                                                    } catch (e) {
+                                                        return !1;
+                                                    }
+                                                }(a) ? a : "");
+                                                if (t.startsWith(r) && t.endsWith(r) || u) return new RegExp((u ? s : t).slice(1, -1), u);
+                                                var p = t.replace(/\\'/g, "'").replace(/\\"/g, '"').replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+                                                return new RegExp(p);
+                                            }(e[r]);
+                                        })), t;
+                                    }(a);
+                                    n = Object.keys(o).every((function(e) {
+                                        var t = o[e], n = r[e];
+                                        return Object.prototype.hasOwnProperty.call(r, e) && "string" == typeof n && (null == t ? void 0 : t.test(n));
+                                    }));
+                                } else u(e, `Invalid parameter: ${t}`), n = !1;
+                                return n;
+                            }(e, t, n)) {
+                                "function" == typeof a.onreadystatechange && (n.shouldFireFirstStage = !0);
+                                d.set(a, n);
+                            }
+                            if (d.has(a) && !v.has(a)) {
+                                v.set(a, []);
+                                var l = {
+                                    apply: function(e, t, r) {
+                                        var n = v.get(t);
+                                        n && n.push(r);
+                                        return Reflect.apply(e, t, r);
+                                    }
+                                };
+                                a.setRequestHeader = new Proxy(a.setRequestHeader, l);
+                            }
+                            return Reflect.apply(r, a, p);
+                        }
+                    }, w = {
+                        apply: function(t, n, i) {
+                            if (!d.has(n)) return Reflect.apply(t, n, i);
+                            var s = d.get(n);
+                            "blob" === n.responseType && (y = new Blob);
+                            "arraybuffer" === n.responseType && (y = new ArrayBuffer);
+                            if (r) {
+                                var c = function(e) {
+                                    var t = e;
+                                    if ("true" === t) return Math.random().toString(36).slice(-10);
+                                    t = t.replace("length:", "");
+                                    if (!/^\d+-\d+$/.test(t)) return null;
+                                    var r = p(t.split("-")[0]), n = p(t.split("-")[1]);
+                                    if (!l(r) || !l(n)) return null;
+                                    if (r > n) {
+                                        var a = r;
+                                        r = n, n = a;
+                                    }
+                                    if (n > 5e5) return null;
+                                    var o = function(e, t) {
+                                        return e = Math.ceil(e), t = Math.floor(t), Math.floor(Math.random() * (t - e + 1) + e);
+                                    }(r, n);
+                                    return function(e) {
+                                        for (var t = "", r = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+=~", n = 0; n < e; n += 1) t += r.charAt(Math.floor(76 * Math.random()));
+                                        return t;
+                                    }(o);
+                                }(r);
+                                if (c) {
+                                    y = c;
+                                    g = c;
+                                } else u(e, `Invalid randomize parameter: '${r}'`);
+                            }
+                            var f = new XMLHttpRequest, h = function(t) {
+                                if (2 === t) {
+                                    var {responseURL: r} = f;
+                                    Object.defineProperties(n, {
+                                        responseURL: {
+                                            value: r || s.url,
+                                            writable: !1
+                                        }
+                                    });
+                                }
+                                if (4 === t) {
+                                    var {responseXML: a} = f;
+                                    Object.defineProperties(n, {
+                                        readyState: {
+                                            value: 4,
+                                            writable: !1
+                                        },
+                                        statusText: {
+                                            value: "OK",
+                                            writable: !1
+                                        },
+                                        responseXML: {
+                                            value: a,
+                                            writable: !1
+                                        },
+                                        status: {
+                                            value: 200,
+                                            writable: !1
+                                        },
+                                        response: {
+                                            value: y,
+                                            writable: !1
+                                        },
+                                        responseText: {
+                                            value: g,
+                                            writable: !1
+                                        }
+                                    });
+                                    o(e);
+                                } else Object.defineProperty(n, "readyState", {
+                                    value: t,
+                                    writable: !0,
+                                    configurable: !0
+                                });
+                                var i = new Event("readystatechange");
+                                n.dispatchEvent(i);
+                            };
+                            f.addEventListener("readystatechange", (function() {
+                                d.get(n).shouldFireFirstStage && h(1);
+                                var e = new ProgressEvent("loadstart");
+                                n.dispatchEvent(e);
+                                h(2);
+                                h(3);
+                                var t = new ProgressEvent("progress");
+                                n.dispatchEvent(t);
+                                h(4);
+                            }));
+                            setTimeout((function() {
+                                var e = new ProgressEvent("load");
+                                n.dispatchEvent(e);
+                                var t = new ProgressEvent("loadend");
+                                n.dispatchEvent(t);
+                            }), 1);
+                            a.apply(f, [ s.method, s.url ]);
+                            (v.get(n) || []).forEach((function(e) {
+                                var t = e[0], r = e[1];
+                                f.setRequestHeader(t, r);
+                            }));
+                        }
+                    }, b = {
+                        apply: function(e, t, r) {
+                            var n = v.get(t);
+                            if (!n) return c.apply(t, r);
+                            if (!n.length) return null;
+                            var a = r[0].toLowerCase(), o = n.find((function(e) {
+                                return e[0].toLowerCase() === a;
+                            }));
+                            return o ? o[1] : null;
+                        }
+                    }, R = {
+                        apply: function(e, t) {
+                            var r = v.get(t);
+                            return r ? r.length ? r.map((function(e) {
+                                var t = e[0], r = e[1];
+                                return `${t.toLowerCase()}: ${r}`;
+                            })).join("\r\n") : "" : f.call(t);
+                        }
+                    };
+                    XMLHttpRequest.prototype.open = new Proxy(XMLHttpRequest.prototype.open, h);
+                    XMLHttpRequest.prototype.send = new Proxy(XMLHttpRequest.prototype.send, w);
+                    XMLHttpRequest.prototype.getResponseHeader = new Proxy(XMLHttpRequest.prototype.getResponseHeader, b);
+                    XMLHttpRequest.prototype.getAllResponseHeaders = new Proxy(XMLHttpRequest.prototype.getAllResponseHeaders, R);
+                }
+            }).apply(this, a);
+            e.uniqueId && Object.defineProperty(_c, n, {
+                value: r,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {}
+    }
+    function o(e) {
+        if (e.verbose) {
+            try {
+                var t = console.trace.bind(console), r = "[ext] ";
+                "corelibs" === e.engine ? r += e.ruleText : (e.domainName && (r += `${e.domainName}`), 
+                e.args ? r += `#%#//s('${e.name}', '${e.args.join("', '")}')` : r += `#%#//s('${e.name}')`), 
+                t && t(r);
+            } catch (e) {}
+            "function" == typeof window._d && window._d(e);
+        }
+    }
+    function i(e) {
+        return e && "object" == typeof e ? function(e) {
+            return 0 === Object.keys(e).length && !e.prototype;
+        }(e) ? "{}" : Object.entries(e).map((function(e) {
+            var t = e[0], r = e[1], n = r;
+            return r instanceof Object && (n = `{ ${i(r)} }`), `${t}:"${n}"`;
+        })).join(" ") : String(e);
+    }
+    function s(e, t, r, n, a) {
+        return {
+            method: e,
+            url: t,
+            async: r,
+            user: n,
+            password: a
+        };
+    }
+    function u(e, t) {
+        var r = arguments.length > 2 && void 0 !== arguments[2] && arguments[2], n = !(arguments.length > 3 && void 0 !== arguments[3]) || arguments[3], {name: a, verbose: o} = e;
+        if (r || o) {
+            var i = console.log;
+            n ? i(`${a}: ${t}`) : Array.isArray(t) ? i(`${a}:`, ...t) : i(`${a}:`, t);
+        }
+    }
+    function p(e) {
+        var t, r = parseInt(e, 10);
+        return t = r, (Number.isNaN || window.isNaN)(t) ? null : r;
+    }
+    function l(e) {
+        return (Number.isFinite || window.isFinite)(e);
+    }
+}
+try {
+    var _k = "48f96551f17d8f19cbd6c8e003042d7d";
+    if (_b.has(_k)) return;
+    _b.add(_k);
+    preventXHR.apply(this, [ {
+        name: "prevent-xhr",
+        args: [ "/\\/api\\/stats\\/atr\\?.+?&rt=\\d+\\.\\d+.+?&volume=\\d+&cbr=.+?&fexp=v1%[-%0-9C]{300,}&.+?&muted=\\d(&vis=3)?&docid=/ method:POST" ],
+        engine: "extension",
+        version: "2.4.2",
+        verbose: !1
+    } ].concat([ "/\\/api\\/stats\\/atr\\?.+?&rt=\\d+\\.\\d+.+?&volume=\\d+&cbr=.+?&fexp=v1%[-%0-9C]{300,}&.+?&muted=\\d(&vis=3)?&docid=/ method:POST" ]));
+} catch (d) {}
 function setConstant(e, t) {
     var n = "done", r = e.uniqueId + e.name + "_" + (Array.isArray(t) ? t.join("_") : "");
     if (!e.uniqueId || _c[r] !== n) {

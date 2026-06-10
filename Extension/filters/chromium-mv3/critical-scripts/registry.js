@@ -8,7 +8,6 @@ export const criticalDomainScripts = {
         "13",
         "18",
         "19",
-        "20",
-        "227"
+        "20"
     ]
 };

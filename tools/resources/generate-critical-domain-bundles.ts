@@ -49,7 +49,6 @@ import { extractPreprocessedRawFilterList, readMetadataRuleSet } from './filter-
 import {
     isJsRule,
     calculateUniqueId,
-    wrapScriptCode,
     extractAgFunctionName,
     findAgFunctionUsages,
 } from './update-local-script-rules';
@@ -63,6 +62,70 @@ const CRITICAL_DOMAINS = ['youtube.com'];
  * Subdirectory within the filters output folder where critical-domain bundles are written.
  */
 const CRITICAL_SCRIPTS_DIR = 'critical-scripts';
+
+/**
+ * Per-domain scriptlet exclusions for the critical-domain bundle.
+ *
+ * Key: domain (must match a {@link CRITICAL_DOMAINS} entry).
+ * Value: list of exclusions — rules matching any entry are skipped for that
+ * domain's bundle but still delivered via DNR.
+ *
+ * Common reasons to exclude:
+ * - Rule aborts inline scripts with broad patterns (breaks page UI)
+ * - Rule modifies APIs globally without stack-trace guards
+ * - Rule is only needed on specific sub-pages but bundle runs everywhere
+ */
+const SCRIPTLET_EXCLUSIONS: Record<string, { name: string; argMatch?: RegExp }[]> = {
+    'youtube.com': [
+        // Aborts any inline script calling document.write — too broad, breaks UI
+        { name: 'abort-current-inline-script', argMatch: /^document\.write/ },
+        // Aborts inline scripts matching broad patterns — can break UI
+        { name: 'abort-current-inline-script', argMatch: /^EventTarget\.prototype/ },
+        // Aborts scripts based on stack trace — breaks session-restore player init
+        { name: 'abort-on-stack-trace' },
+        // Intercepts property reads, throws ReferenceError — breaks session restore
+        { name: 'abort-on-property-read' },
+        // Blocks event listeners matching patterns — prevents player interaction
+        { name: 'prevent-addEventListener' },
+        // Blocks window.open — not timing-critical for YouTube
+        { name: 'prevent-window-open' },
+        // Blocks setTimeout — can break lazy-loading and animations
+        { name: 'prevent-setTimeout' },
+        // Throttles setTimeout — breaks async initialization
+        { name: 'adjust-setTimeout' },
+    ],
+};
+
+/**
+ * Returns `true` if a scriptlet rule should be excluded from the
+ * critical-domain bundle for the given domain.
+ *
+ * @param domain Domain name (must match a {@link SCRIPTLET_EXCLUSIONS} key).
+ * @param name Scriptlet name.
+ * @param args Scriptlet arguments (first arg checked against optional `argMatch`).
+ *
+ * @returns Whether the rule is excluded for this domain.
+ */
+const isScriptletExcluded = (
+    domain: string,
+    name: string,
+    args: string[],
+): boolean => {
+    const domainExclusions = SCRIPTLET_EXCLUSIONS[domain];
+    if (!domainExclusions) {
+        return false;
+    }
+
+    return domainExclusions.some((e) => {
+        if (e.name !== name) {
+            return false;
+        }
+        if (!e.argMatch) {
+            return true;
+        }
+        return args.length > 0 && args[0] && e.argMatch.test(args[0]);
+    });
+};
 
 /**
  * Registry of critical-domain persistent content scripts.
@@ -327,6 +390,21 @@ const compileRulesToBundle = async (
     const compiledStatements: string[] = [];
     const errors: string[] = [];
 
+    /**
+     * Wraps code with a private Set-based idempotency guard instead of
+     * touching host objects — avoids YouTube anti-adblock detection.
+     */
+    const wrapWithPrivateGuard = (uniqueId: string, code: string): string => {
+        return `
+            try {
+                var _k = "${uniqueId}";
+                if (_b.has(_k)) return;
+                _b.add(_k);
+                ${code}
+            } catch (_e) {}
+        `;
+    };
+
     // compile each rule with required AG_ dependencies
     for (const rule of remainingRules) {
         try {
@@ -348,7 +426,7 @@ const compileRulesToBundle = async (
             }
 
             const uniqueId = calculateUniqueId(rule);
-            const wrappedCode = wrapScriptCode(uniqueId, processedCode);
+            const wrappedCode = wrapWithPrivateGuard(uniqueId, processedCode);
 
             // eslint-disable-next-line no-await-in-loop
             const minified = await minify(wrappedCode, {
@@ -385,8 +463,21 @@ const compileRulesToBundle = async (
                 continue;
             }
 
-            // Emit function definition once per unique scriptlet name
-            const fnSource = scriptletFn.toString();
+            // Emit function definition once per unique scriptlet name.
+            // Scrub identifiable strings from the function body to avoid
+            // YouTube anti-adblock detection. All replacements ARE the function
+            // source, not runtime values — functionality is preserved.
+            const fnSource = scriptletFn.toString()
+                // Idempotency guard: use private object instead of host prototype
+                .replace(/Window\.prototype\.toString/g, '_c')
+                // Dead catch-log in addCall wrapper — replace with no-op
+                .replace(/console\.log\(e\)/g, 'void 0')
+                // Scrub AdGuard branding from log helpers
+                .replace(/\[AdGuard\]/g, '[ext]')
+                // Scrub scriptlet syntax from log helpers
+                .replace(/#%#\/\/scriptlet/g, '#%#//s')
+                // Scrub debug hook check (guarded by verbose, but string still present)
+                .replace(/window\.__debug/g, 'window._d');
             // eslint-disable-next-line no-await-in-loop
             const minifiedFn = await minify(fnSource, {
                 compress: { sequences: false },
@@ -418,7 +509,7 @@ const compileRulesToBundle = async (
 
                 // Use the original function name (scriptletFn.name) for invocation
                 const invocationCode = `${scriptletFn.name}.apply(this, [${sourceObj}].concat(${argsArr}));`;
-                const wrappedInvocation = wrapScriptCode(uniqueId, invocationCode);
+                const wrappedInvocation = wrapWithPrivateGuard(uniqueId, invocationCode);
 
                 // eslint-disable-next-line no-await-in-loop
                 const minifiedInv = await minify(wrappedInvocation, {
@@ -445,7 +536,7 @@ const compileRulesToBundle = async (
         return null;
     }
 
-    return `(function () {${NEWLINE_CHAR_UNIX}${compiledStatements.join(NEWLINE_CHAR_UNIX)}${NEWLINE_CHAR_UNIX}})();${NEWLINE_CHAR_UNIX}`;
+    return `(function () {${NEWLINE_CHAR_UNIX}var _b = new Set(), _c = {};${NEWLINE_CHAR_UNIX}${compiledStatements.join(NEWLINE_CHAR_UNIX)}${NEWLINE_CHAR_UNIX}})();${NEWLINE_CHAR_UNIX}`;
 };
 
 /**
@@ -498,6 +589,10 @@ export const generateCriticalDomainBundles = async (
     const outputDir = path.join(filtersFolder, CRITICAL_SCRIPTS_DIR);
 
     await fs.mkdir(outputDir, { recursive: true });
+
+    // Remove stale bundles from previous runs before generating new ones
+    const existingFiles = await fs.readdir(outputDir);
+    await Promise.all(existingFiles.map((f) => fs.unlink(path.join(outputDir, f))));
 
     // JS injection rules: Map<domain, Map<filterId, Set<rawBody>>>
     const domainFilterRules = new Map<string, Map<number, Set<string>>>(
@@ -568,12 +663,17 @@ export const generateCriticalDomainBundles = async (
             if (isScriptletRule(ruleNode)) {
                 try {
                     const { name, args } = extractScriptletNameAndArgs(ruleNode);
+
                     // Serialize args for deduplication in Set
                     const argsKey = JSON.stringify(args);
 
                     if (isGenericScriptletRule(ruleNode)) {
                         if (filterId !== null) {
                             CRITICAL_DOMAINS.forEach((domain) => {
+                                if (isScriptletExcluded(domain, name, args)) {
+                                    return;
+                                }
+
                                 const map = getScriptletMap(domainFilterScriptlets, domain, filterId);
                                 if (!map.has(name)) {
                                     map.set(name, new Set());
@@ -588,6 +688,10 @@ export const generateCriticalDomainBundles = async (
                             }
 
                             if (filterId === null) {
+                                return;
+                            }
+
+                            if (isScriptletExcluded(domain, name, args)) {
                                 return;
                             }
 
