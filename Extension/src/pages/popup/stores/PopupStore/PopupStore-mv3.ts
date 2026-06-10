@@ -30,8 +30,7 @@ import { messenger } from '../../../services/messenger';
 import { translator } from '../../../../common/translators/translator';
 import { ExtensionUpdateFSMState, MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../../common/constants';
 import { logger } from '../../../../common/logger';
-import { NotificationType } from '../../../common/types';
-import { type NotificationParams } from '../../../common/types';
+import { type NotificationParams, NotificationType } from '../../../common/types';
 
 import { PopupStoreCommon } from './PopupStore-common';
 
@@ -78,7 +77,7 @@ export class PopupStore extends PopupStoreCommon {
      * Returns null when no notification should be shown (Idle, Available).
      */
     @computed
-    get updateNotification(): NotificationParams | null {
+    override get updateNotification(): NotificationParams | null {
         switch (this.extensionUpdateState) {
             case ExtensionUpdateFSMState.Checking:
                 return {
