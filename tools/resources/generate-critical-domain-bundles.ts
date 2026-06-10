@@ -350,6 +350,48 @@ const validateJavaScriptSyntax = (code: string, description?: string): void => {
 };
 
 /**
+ * Patterns to scrub from injected scriptlet source to avoid
+ * YouTube anti-adblock detection. All replacements operate on the
+ * function source string.
+ */
+const SCRIPTLET_SOURCE_REPLACEMENTS: { pattern: RegExp; replacement: string; description: string }[] = [
+    // Idempotency guard: use private object instead of host prototype
+    { pattern: /Window\.prototype\.toString/g, replacement: '_c', description: 'Window.prototype.toString → _c' },
+    // Dead catch-log in addCall wrapper — replace with no-op
+    { pattern: /console\.log\(e\)/g, replacement: 'void 0', description: 'console.log(e) → void 0' },
+    // Scrub AdGuard branding from log helpers
+    { pattern: /\[AdGuard\]/g, replacement: '[ext]', description: '[AdGuard] → [ext]' },
+    // Scrub scriptlet syntax from log helpers
+    { pattern: /#%#\/\/scriptlet/g, replacement: '#%#//s', description: '#%#//scriptlet → #%#//s' },
+    // Scrub debug hook check (guarded by verbose, but string still present)
+    { pattern: /window\.__debug/g, replacement: 'window._d', description: 'window.__debug → window._d' },
+];
+
+/**
+ * Scrubs identifiable strings from a scriptlet function's source code
+ * before it is injected into critical-domain bundles. Warns if any
+ * expected pattern is missing from the source (e.g. due to upstream
+ * library changes).
+ *
+ * @param source The `.toString()` output of a scriptlet function.
+ *
+ * @returns Scrubed source string.
+ */
+const scrubScriptletSource = (source: string): string => {
+    let result = source;
+
+    SCRIPTLET_SOURCE_REPLACEMENTS.forEach(({ pattern, replacement, description }) => {
+        if (!pattern.test(result)) {
+            console.warn(`[generate-critical-domain-bundles] Expected pattern "${description}" not found in scriptlet source`);
+        }
+
+        result = result.replace(pattern, replacement);
+    });
+
+    return result;
+};
+
+/**
  * Compiles a set of raw JS rule bodies into a self-executing IIFE bundle,
  * with each rule wrapped in an idempotency guard.
  *
@@ -461,19 +503,8 @@ const compileRulesToBundle = async (
 
             // Emit function definition once per unique scriptlet name.
             // Scrub identifiable strings from the function body to avoid
-            // YouTube anti-adblock detection. All replacements ARE the function
-            // source, not runtime values — functionality is preserved.
-            const fnSource = scriptletFn.toString()
-                // Idempotency guard: use private object instead of host prototype
-                .replace(/Window\.prototype\.toString/g, '_c')
-                // Dead catch-log in addCall wrapper — replace with no-op
-                .replace(/console\.log\(e\)/g, 'void 0')
-                // Scrub AdGuard branding from log helpers
-                .replace(/\[AdGuard\]/g, '[ext]')
-                // Scrub scriptlet syntax from log helpers
-                .replace(/#%#\/\/scriptlet/g, '#%#//s')
-                // Scrub debug hook check (guarded by verbose, but string still present)
-                .replace(/window\.__debug/g, 'window._d');
+            // YouTube anti-adblock detection.
+            const fnSource = scrubScriptletSource(scriptletFn.toString());
             // eslint-disable-next-line no-await-in-loop
             const minifiedFn = await minify(fnSource, {
                 compress: { sequences: false },
