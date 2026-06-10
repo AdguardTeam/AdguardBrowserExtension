@@ -123,12 +123,20 @@ export class PersistentScriptsService {
 
         if (toRemoveIds.length > 0) {
             logger.info(`[ext.PersistentScriptsService.sync]: critical-domain-bundle: Unregistering ${toRemoveIds.length} script(s): ${toRemoveIds.join(', ')}`);
-            await chrome.scripting.unregisterContentScripts({ ids: toRemoveIds });
+            try {
+                await chrome.scripting.unregisterContentScripts({ ids: toRemoveIds });
+            } catch (e) {
+                logger.error('[ext.PersistentScriptsService.sync]: Failed to unregister critical scripts', e);
+            }
         }
 
         if (toRegister.length > 0) {
             logger.info(`[ext.PersistentScriptsService.sync]: critical-domain-bundle: Registering ${toRegister.length} script(s): ${toRegister.map((s) => s.id).join(', ')}`);
-            await chrome.scripting.registerContentScripts(toRegister);
+            try {
+                await chrome.scripting.registerContentScripts(toRegister);
+            } catch (e) {
+                logger.error('[ext.PersistentScriptsService.sync]: Failed to register critical scripts', e);
+            }
         }
     }
 }
