@@ -40,6 +40,7 @@ import { extractRuleSetId } from '@adguard/tsurlfilter/es/declarative-converter-
 
 import {
     FILTERS_DEST,
+    CRITICAL_SCRIPTS_DIR,
     DECLARATIVE_FILTERS_DEST,
     type Mv3AssetsFiltersBrowser,
 } from '../constants';
@@ -57,11 +58,6 @@ import {
  * List of critical domains to generate bundles for.
  */
 const CRITICAL_DOMAINS = ['youtube.com'];
-
-/**
- * Subdirectory within the filters output folder where critical-domain bundles are written.
- */
-const CRITICAL_SCRIPTS_DIR = 'critical-scripts';
 
 /**
  * Per-domain scriptlet exclusions for the critical-domain bundle.

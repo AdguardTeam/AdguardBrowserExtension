@@ -18,18 +18,13 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { CRITICAL_SCRIPTS_DIR, EXTENSION_FILTERS_SUBDIR } from '../../../../../tools/constants.js';
 import { criticalDomainScripts } from '../../../../filters/chromium-mv3/critical-scripts/registry.js';
 import { logger } from '../../../common/logger';
 
 /** Stable ID prefix for all critical-domain content script registrations. */
 const SCRIPT_ID_PREFIX = 'critical_';
 const SCRIPT_ID_SEPARATOR = '_';
-
-/** Subdirectory within the filters folder where critical-domain bundles live. */
-const CRITICAL_SCRIPTS_DIR = 'critical-scripts';
-
-/** Extension-relative prefix for filter assets. */
-const EXTENSION_FILTERS_SUBDIR = 'filters';
 
 /**
  * Converts a domain string into the two URL match patterns used in
@@ -121,13 +116,13 @@ export class PersistentScriptsService {
         const toRemoveIds = [...currentIds].filter((id) => !shouldBeActive.has(id));
         const toRegister = [...shouldBeActive.values()].filter((s) => !currentIds.has(s.id));
 
-        logger.info(`[ext.PersistentScriptsService.sync]: critical-domain-bundle: Unregistering ${toRemoveIds.length} script(s): ${toRemoveIds.join(', ')}`);
         if (toRemoveIds.length > 0) {
+            logger.info(`[ext.PersistentScriptsService.sync]: critical-domain-bundle: Unregistering ${toRemoveIds.length} script(s): ${toRemoveIds.join(', ')}`);
             await chrome.scripting.unregisterContentScripts({ ids: toRemoveIds });
         }
 
-        logger.info(`[ext.PersistentScriptsService.sync]: critical-domain-bundle: Registering ${toRegister.length} script(s): ${toRegister.map((s) => s.id).join(', ')}`);
         if (toRegister.length > 0) {
+            logger.info(`[ext.PersistentScriptsService.sync]: critical-domain-bundle: Registering ${toRegister.length} script(s): ${toRegister.map((s) => s.id).join(', ')}`);
             await chrome.scripting.registerContentScripts(toRegister);
         }
     }
