@@ -18,13 +18,18 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { CRITICAL_SCRIPTS_DIR, EXTENSION_FILTERS_SUBDIR } from '../../../../../tools/constants.js';
 import { criticalDomainScripts } from '../../../../filters/chromium-mv3/critical-scripts/registry.js';
 import { logger } from '../../../common/logger';
 
 /** Stable ID prefix for all critical-domain content script registrations. */
 const SCRIPT_ID_PREFIX = 'critical_';
 const SCRIPT_ID_SEPARATOR = '_';
+
+/** Extension-relative prefix for filter assets. */
+const EXTENSION_FILTERS_SUBDIR = 'filters';
+
+/** Subdirectory within the filters folder where critical-domain bundles live. */
+const CRITICAL_SCRIPTS_DIR = 'critical-scripts';
 
 /**
  * Converts a domain string into the two URL match patterns used in
