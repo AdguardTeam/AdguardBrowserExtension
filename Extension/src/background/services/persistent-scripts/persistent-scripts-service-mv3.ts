@@ -121,13 +121,13 @@ export class PersistentScriptsService {
         const toRemoveIds = [...currentIds].filter((id) => !shouldBeActive.has(id));
         const toRegister = [...shouldBeActive.values()].filter((s) => !currentIds.has(s.id));
 
+        logger.info(`[ext.PersistentScriptsService.sync]: critical-domain-bundle: Unregistering ${toRemoveIds.length} script(s): ${toRemoveIds.join(', ')}`);
         if (toRemoveIds.length > 0) {
-            logger.debug(`[ext.PersistentScriptsService.sync]: Unregistering ${toRemoveIds.length} script(s): ${toRemoveIds.join(', ')}`);
             await chrome.scripting.unregisterContentScripts({ ids: toRemoveIds });
         }
 
+        logger.info(`[ext.PersistentScriptsService.sync]: critical-domain-bundle: Registering ${toRegister.length} script(s): ${toRegister.map((s) => s.id).join(', ')}`);
         if (toRegister.length > 0) {
-            logger.debug(`[ext.PersistentScriptsService.sync]: Registering ${toRegister.length} script(s): ${toRegister.map((s) => s.id).join(', ')}`);
             await chrome.scripting.registerContentScripts(toRegister);
         }
     }

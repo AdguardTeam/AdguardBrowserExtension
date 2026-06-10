@@ -26,9 +26,16 @@ import vm from 'node:vm';
 
 import { minify } from 'terser';
 
-import { type AnyRule } from '@adguard/agtree';
+import {
+    type AnyRule,
+    CosmeticRuleType,
+    type JsInjectionRule,
+    RuleCategory,
+    type ScriptletInjectionRule,
+} from '@adguard/agtree';
 import { FilterListParser, defaultParserOptions } from '@adguard/agtree/parser';
 import { CosmeticRuleBodyGenerator } from '@adguard/agtree/generator';
+import { scriptlets, SCRIPTLETS_VERSION } from '@adguard/scriptlets';
 import { extractRuleSetId } from '@adguard/tsurlfilter/es/declarative-converter-utils';
 
 import {
@@ -83,38 +90,6 @@ const getRuleSet = (
 };
 
 /**
- * Returns `true` if the rule's permitted domains include the given critical
- * domain (exact match) or any of its subdomains.
- *
- * Generic rules (no domain list) return `false` — use `isGenericJsRule` to
- * identify those; they are added to each domain's per-filter bundles.
- *
- * @param ruleNode Parsed rule AST node.
- * @param criticalDomain Apex domain to match against, e.g. `"youtube.com"`.
- *
- * @returns Whether the rule targets the critical domain.
- */
-const jsRuleTargetsDomain = (ruleNode: AnyRule | null, criticalDomain: string): boolean => {
-    if (!isJsRule(ruleNode)) {
-        return false;
-    }
-
-    if (!ruleNode.domains || ruleNode.domains.children.length === 0) {
-        return false;
-    }
-
-    return ruleNode.domains.children.some((domainNode) => {
-        if (domainNode.exception) {
-            return false;
-        }
-
-        const v = domainNode.value;
-
-        return v === criticalDomain || v.endsWith(`.${criticalDomain}`);
-    });
-};
-
-/**
  * Returns `true` if the rule is a generic JS injection rule with no domain
  * specifier. Generic rules apply universally and are included in each
  * domain's per-filter bundles so they can be selectively disabled.
@@ -136,6 +111,110 @@ const isGenericJsRule = (ruleNode: AnyRule | null): boolean => {
 };
 
 /**
+ * Returns `true` if the rule node is a scriptlet injection rule.
+ *
+ * @param ruleNode Rule node to check.
+ *
+ * @returns Whether the rule node is a {@link ScriptletInjectionRule}.
+ */
+const isScriptletRule = (
+    ruleNode: AnyRule | null,
+): ruleNode is ScriptletInjectionRule => {
+    return !!ruleNode
+        && ruleNode.category === RuleCategory.Cosmetic
+        && ruleNode.type === CosmeticRuleType.ScriptletInjectionRule;
+};
+
+/**
+ * Returns `true` if the rule's permitted domains include the given
+ * critical domain (exact match) or any of its subdomains.
+ *
+ * @param ruleNode Parsed rule AST node.
+ * @param criticalDomain Apex domain to match against, e.g. `"youtube.com"`.
+ *
+ * @returns Whether the rule targets the critical domain.
+ */
+const isRuleTargetsDomain = (
+    ruleNode: ScriptletInjectionRule | JsInjectionRule,
+    criticalDomain: string,
+): boolean => {
+    if (!ruleNode.domains || ruleNode.domains.children.length === 0) {
+        return false;
+    }
+
+    return ruleNode.domains.children.some((domainNode) => {
+        if (domainNode.exception) {
+            return false;
+        }
+
+        const v = domainNode.value;
+
+        return v === criticalDomain || v.endsWith(`.${criticalDomain}`);
+    });
+};
+
+/**
+ * Returns `true` if the rule is a generic scriptlet injection rule with no
+ * domain specifier. Generic rules apply universally and are included in each
+ * domain's per-filter bundles so they can be selectively disabled.
+ *
+ * @param ruleNode Parsed rule AST node.
+ *
+ * @returns Whether the rule is a generic (domain-less) scriptlet rule.
+ */
+const isGenericScriptletRule = (ruleNode: AnyRule | null): boolean => {
+    if (!isScriptletRule(ruleNode)) {
+        return false;
+    }
+
+    return (
+        !ruleNode.domains
+        || ruleNode.domains.children.length === 0
+        || (ruleNode.domains.children.length === 1 && ruleNode.domains.children[0]!.value === '*')
+    );
+};
+
+/**
+ * Extracts scriptlet name and arguments from a scriptlet injection rule AST node.
+ *
+ * AST stores values with surrounding quotes (e.g. "'set-constant'" → "set-constant").
+ *
+ * @param ruleNode Parsed scriptlet injection rule AST node.
+ *
+ * @returns Object with `name` and `args` properties.
+ *
+ * @throws If the rule body has no children or the scriptlet name is missing.
+ */
+const extractScriptletNameAndArgs = (
+    ruleNode: ScriptletInjectionRule,
+): { name: string; args: string[] } => {
+    const paramList = ruleNode.body.children[0];
+    if (!paramList || paramList.children.length === 0) {
+        throw new Error('ScriptletInjectionRule has no scriptlet calls in body');
+    }
+
+    // AST stores values with surrounding quotes (e.g. "'set-constant'" → "set-constant")
+    const stripQuotes = (s: string): string => {
+        return s.replace(/^['"]|['"]$/g, '');
+    };
+
+    const scriptletName = paramList.children[0]?.value;
+    if (!scriptletName) {
+        throw new Error('ScriptletInjectionRule has no scriptlet name');
+    }
+
+    const args = paramList.children.slice(1)
+        .map((v) => v?.value ?? '')
+        .filter((v) => v !== '')
+        .map(stripQuotes);
+
+    return {
+        name: stripQuotes(scriptletName),
+        args,
+    };
+};
+
+/**
  * Returns the output filename for a (domain, filterId) compiled bundle.
  *
  * @param domain Domain string, e.g. `"youtube.com"`.
@@ -151,26 +230,42 @@ const getBundleFileName = (domain: string, filterId: number): string => {
  * Builds the persistent-scripts registry from the collected ruleset data.
  *
  * @param domainFilterRules Map of domain -> filterId -> set of raw JS rule bodies.
+ * @param domainFilterScriptlets Map of domain -> filterId -> Map of scriptlet name -> Set of arg arrays.
  *
  * @returns Registry object — flat {@link PersistentScriptsRegistry} mapping domain to filter ID array.
  */
 const buildPersistentScriptsRegistry = (
     domainFilterRules: Map<string, Map<number, Set<string>>>,
+    domainFilterScriptlets?: Map<string, Map<number, Map<string, Set<string>>>>,
 ): PersistentScriptsRegistry => {
     const registry: PersistentScriptsRegistry = {};
 
-    domainFilterRules.forEach((filterMap, domain) => {
-        const filterIds: string[] = [];
+    // Collect all (domain, filterId) pairs that have any rules
+    const domainFilterIds = new Map<string, Set<string>>();
 
-        filterMap.forEach((jsRules, filterId) => {
-            if (jsRules.size > 0) {
-                filterIds.push(String(filterId));
+    const collectFrom = (source: Map<string, Map<number, unknown>>) => {
+        source.forEach((filterMap, domain) => {
+            if (!domainFilterIds.has(domain)) {
+                domainFilterIds.set(domain, new Set());
             }
-        });
+            const domainIds = domainFilterIds.get(domain)!;
 
-        if (filterIds.length > 0) {
-            filterIds.sort((a, b) => Number(a) - Number(b));
-            registry[domain] = filterIds;
+            filterMap.forEach((_rules, filterId) => {
+                domainIds.add(String(filterId));
+            });
+        });
+    };
+
+    collectFrom(domainFilterRules);
+
+    if (domainFilterScriptlets) {
+        collectFrom(domainFilterScriptlets);
+    }
+
+    domainFilterIds.forEach((filterIds, domain) => {
+        if (filterIds.size > 0) {
+            const sorted = [...filterIds].sort((a, b) => Number(a) - Number(b));
+            registry[domain] = sorted;
         }
     });
 
@@ -202,11 +297,19 @@ const validateJavaScriptSyntax = (code: string, description?: string): void => {
  * AG_ helper functions found in the rule set are prepended before the rules
  * that use them.
  *
+ * Scriptlet rules are compiled with deduplication: each unique scriptlet
+ * function is emitted once as a named function, then invoked once per
+ * distinct argument list.
+ *
  * @param jsRules Set of unique raw JS rule body strings.
+ * @param scriptletMap Map of scriptlet name → Set of JSON-serialized arg arrays.
  *
  * @returns Compiled JavaScript string, or `null` if no rules could be compiled.
  */
-const compileRulesToBundle = async (jsRules: Set<string>): Promise<string | null> => {
+const compileRulesToBundle = async (
+    jsRules: Set<string>,
+    scriptletMap?: Map<string, Set<string>>,
+): Promise<string | null> => {
     const agFunctions: Map<string, string> = new Map();
     const remainingRules: Set<string> = new Set();
 
@@ -271,6 +374,73 @@ const compileRulesToBundle = async (jsRules: Set<string>): Promise<string | null
 
     errors.forEach((msg) => console.warn(`[generate-critical-domain-bundles] ${msg}`));
 
+    // Compile scriptlet rules with deduplication
+    if (scriptletMap && scriptletMap.size > 0) {
+        for (const [scriptletName, argsSet] of scriptletMap) {
+            const scriptletFn = scriptlets.getScriptletFunction(scriptletName);
+            if (!scriptletFn) {
+                console.warn(
+                    `[generate-critical-domain-bundles] Unknown scriptlet: "${scriptletName}", skipping`,
+                );
+                continue;
+            }
+
+            // Emit function definition once per unique scriptlet name
+            const fnSource = scriptletFn.toString();
+            // eslint-disable-next-line no-await-in-loop
+            const minifiedFn = await minify(fnSource, {
+                compress: { sequences: false },
+                parse: { bare_returns: true },
+                format: {
+                    beautify: true,
+                    indent_level: 4,
+                },
+            });
+
+            if (minifiedFn.code) {
+                compiledStatements.push(minifiedFn.code);
+            }
+
+            // Emit one invocation per distinct argument list
+            for (const argsJson of argsSet) {
+                const args: string[] = JSON.parse(argsJson);
+                const source = {
+                    name: scriptletName,
+                    args,
+                    engine: 'extension' as const,
+                    version: SCRIPTLETS_VERSION,
+                    verbose: false,
+                };
+
+                const uniqueId = calculateUniqueId(`${scriptletName}_${argsJson}`);
+                const sourceObj = JSON.stringify(source);
+                const argsArr = JSON.stringify(args);
+
+                // Use the original function name (scriptletFn.name) for invocation
+                const invocationCode = `${scriptletFn.name}.apply(this, [${sourceObj}].concat(${argsArr}));`;
+                const wrappedInvocation = wrapScriptCode(uniqueId, invocationCode);
+
+                // eslint-disable-next-line no-await-in-loop
+                const minifiedInv = await minify(wrappedInvocation, {
+                    compress: { sequences: false },
+                    parse: { bare_returns: true },
+                    format: {
+                        beautify: true,
+                        indent_level: 4,
+                    },
+                });
+
+                if (minifiedInv.code) {
+                    compiledStatements.push(minifiedInv.code);
+                } else {
+                    console.warn(
+                        `[generate-critical-domain-bundles] Failed to minify scriptlet invocation: ${scriptletName}`,
+                    );
+                }
+            }
+        }
+    }
+
     if (compiledStatements.length === 0) {
         return null;
     }
@@ -329,10 +499,28 @@ export const generateCriticalDomainBundles = async (
 
     await fs.mkdir(outputDir, { recursive: true });
 
-    // Map<domain, Map<filterId, Set<ruleBody>>>
+    // JS injection rules: Map<domain, Map<filterId, Set<rawBody>>>
     const domainFilterRules = new Map<string, Map<number, Set<string>>>(
         CRITICAL_DOMAINS.map((d) => [d, new Map()]),
     );
+
+    // Scriptlet injection rules: Map<domain, Map<filterId, Map<scriptletName, Set<JSON_args>>>>
+    const domainFilterScriptlets = new Map<string, Map<number, Map<string, Set<string>>>>(
+        CRITICAL_DOMAINS.map((d) => [d, new Map()]),
+    );
+
+    /** Ensures the inner Map<filterId, Map<name, Set<args>>> entry exists and returns the Map for scriptlet names. */
+    const getScriptletMap = (
+        source: Map<string, Map<number, Map<string, Set<string>>>>,
+        domain: string,
+        filterId: number,
+    ): Map<string, Set<string>> => {
+        const filterMap = source.get(domain)!;
+        if (!filterMap.has(filterId)) {
+            filterMap.set(filterId, new Map());
+        }
+        return filterMap.get(filterId)!;
+    };
 
     const metadataRuleSet = await readMetadataRuleSet(declarativeFolder);
     const ruleSetIds = metadataRuleSet.getRuleSetIds();
@@ -351,49 +539,118 @@ export const generateCriticalDomainBundles = async (
         });
 
         filterListNode.children.forEach((ruleNode) => {
-            if (!isJsRule(ruleNode)) {
-                return;
-            }
+            if (isJsRule(ruleNode)) {
+                const rawBody = CosmeticRuleBodyGenerator.generate(ruleNode);
 
-            const rawBody = CosmeticRuleBodyGenerator.generate(ruleNode);
-
-            if (isGenericJsRule(ruleNode)) {
-                // Generic rules (no domain specifier) apply to every critical domain,
-                // tracked per-filter so they can be selectively disabled
-                if (filterId !== null) {
+                if (isGenericJsRule(ruleNode)) {
+                    if (filterId !== null) {
+                        CRITICAL_DOMAINS.forEach((domain) => {
+                            getRuleSet(domainFilterRules, domain, filterId).add(rawBody);
+                        });
+                    }
+                } else {
                     CRITICAL_DOMAINS.forEach((domain) => {
+                        if (!isRuleTargetsDomain(ruleNode, domain)) {
+                            return;
+                        }
+
+                        if (filterId === null) {
+                            return;
+                        }
+
                         getRuleSet(domainFilterRules, domain, filterId).add(rawBody);
                     });
                 }
-            } else {
-                CRITICAL_DOMAINS.forEach((domain) => {
-                    if (!jsRuleTargetsDomain(ruleNode, domain)) {
-                        return;
-                    }
 
-                    if (filterId === null) {
-                        return;
-                    }
+                return;
+            }
 
-                    getRuleSet(domainFilterRules, domain, filterId).add(rawBody);
-                });
+            if (isScriptletRule(ruleNode)) {
+                try {
+                    const { name, args } = extractScriptletNameAndArgs(ruleNode);
+                    // Serialize args for deduplication in Set
+                    const argsKey = JSON.stringify(args);
+
+                    if (isGenericScriptletRule(ruleNode)) {
+                        if (filterId !== null) {
+                            CRITICAL_DOMAINS.forEach((domain) => {
+                                const map = getScriptletMap(domainFilterScriptlets, domain, filterId);
+                                if (!map.has(name)) {
+                                    map.set(name, new Set());
+                                }
+                                map.get(name)!.add(argsKey);
+                            });
+                        }
+                    } else {
+                        CRITICAL_DOMAINS.forEach((domain) => {
+                            if (!isRuleTargetsDomain(ruleNode, domain)) {
+                                return;
+                            }
+
+                            if (filterId === null) {
+                                return;
+                            }
+
+                            const map = getScriptletMap(domainFilterScriptlets, domain, filterId);
+                            if (!map.has(name)) {
+                                map.set(name, new Set());
+                            }
+                            map.get(name)!.add(argsKey);
+                        });
+                    }
+                } catch (error) {
+                    console.warn(
+                        `[generate-critical-domain-bundles] Skipping invalid scriptlet rule; Error: ${
+                            error instanceof Error ? error.message : String(error)
+                        }`,
+                    );
+                }
             }
         });
     }
 
+    // Merge all (domain, filterId) pairs from both JS rules and scriptlet rules
+    const allDomainIds = new Map<string, Set<number>>();
+    const addToAllDomainIds = (source: Map<string, Map<number, unknown>>) => {
+        source.forEach((filterMap, domain) => {
+            if (!allDomainIds.has(domain)) {
+                allDomainIds.set(domain, new Set());
+            }
+            const ids = allDomainIds.get(domain)!;
+            filterMap.forEach((_rules, filterId) => {
+                ids.add(filterId);
+            });
+        });
+    };
+    addToAllDomainIds(domainFilterRules);
+    addToAllDomainIds(domainFilterScriptlets);
+
     // eslint-disable-next-line no-restricted-syntax
-    for (const [domain, filterMap] of domainFilterRules) {
+    for (const [domain, filterIds] of allDomainIds) {
         // eslint-disable-next-line no-restricted-syntax
-        for (const [filterId, jsRules] of filterMap) {
-            if (jsRules.size === 0) {
+        for (const filterId of filterIds) {
+            const jsRules = domainFilterRules.get(domain)?.get(filterId);
+            const scriptletMap = domainFilterScriptlets.get(domain)?.get(filterId);
+
+            const scriptletCount = scriptletMap
+                ? [...scriptletMap.values()].reduce((sum, argsSet) => sum + argsSet.size, 0)
+                : 0;
+            const totalRuleCount = (jsRules?.size ?? 0) + scriptletCount;
+            if (totalRuleCount === 0) {
                 // eslint-disable-next-line no-continue
                 continue;
             }
 
-            console.log(`[generate-critical-domain-bundles] ${domain}-${filterId}: ${jsRules.size} unique rules`);
+            console.log(
+                `[generate-critical-domain-bundles] ${domain}-${filterId}: `
+                + `${totalRuleCount} unique rules (${jsRules?.size ?? 0} JS + ${scriptletCount} scriptlets)`,
+            );
 
             // eslint-disable-next-line no-await-in-loop
-            const bundleContent = await compileRulesToBundle(jsRules);
+            const bundleContent = await compileRulesToBundle(
+                jsRules ?? new Set(),
+                scriptletMap ?? undefined,
+            );
 
             if (!bundleContent) {
                 console.warn(`[generate-critical-domain-bundles] No compilable rules for ${domain}-${filterId}, skipping bundle.`);
@@ -415,6 +672,7 @@ export const generateCriticalDomainBundles = async (
     // Build and write the persistent-scripts registry
     const registry = buildPersistentScriptsRegistry(
         domainFilterRules,
+        domainFilterScriptlets,
     );
 
     const registryPath = path.join(outputDir, 'registry.js');
