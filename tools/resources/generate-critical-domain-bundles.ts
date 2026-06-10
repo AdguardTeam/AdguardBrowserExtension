@@ -157,11 +157,7 @@ const getRuleSet = (
  *
  * @returns Whether the rule is a generic (domain-less) JS rule.
  */
-const isGenericJsRule = (ruleNode: AnyRule | null): boolean => {
-    if (!isJsRule(ruleNode)) {
-        return false;
-    }
-
+const isGenericJsRule = (ruleNode: JsInjectionRule): boolean => {
     return (
         !ruleNode.domains
         || ruleNode.domains.children.length === 0
