@@ -76,6 +76,13 @@ export class SettingsStore extends SettingsStoreCommon {
     @observable
     isExtensionCheckingUpdateOrUpdating = false;
 
+    /**
+     * Timestamp of the last extension update check.
+     * Updated on each manual "Check for updates" action.
+     */
+    @observable
+    lastCheckedTime = 0;
+
     constructor(rootStore: RootStore) {
         super(rootStore);
 
@@ -112,9 +119,12 @@ export class SettingsStore extends SettingsStoreCommon {
             isExtensionUpdateAvailable,
             isExtensionReloadedOnUpdate,
             isSuccessfulExtensionUpdate,
+            lastCheckTimeMs,
         } = runtimeInfo;
 
         this.setIsExtensionUpdateAvailable(isExtensionUpdateAvailable);
+
+        this.lastCheckedTime = lastCheckTimeMs;
 
         // notification about successful or failed update should be shown after the options page is opened.
         // and it cannot be done by notifier (from the background page)
@@ -178,7 +188,6 @@ export class SettingsStore extends SettingsStoreCommon {
      * Note: if extension update is found,
      * custom filters will be updated after the extension reload.
      */
-    // eslint-disable-next-line class-methods-use-this
     async checkUpdates() {
         const start = Date.now();
 
@@ -190,6 +199,10 @@ export class SettingsStore extends SettingsStoreCommon {
 
         // Ensure minimum duration for smooth UI experience
         await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
+
+        runInAction(() => {
+            this.lastCheckedTime = Date.now();
+        });
     }
 
     /**
@@ -231,6 +244,18 @@ export class SettingsStore extends SettingsStoreCommon {
     @action
     setIsExtensionUpdateAvailable(isAvailable: boolean): void {
         this.isExtensionUpdateAvailable = isAvailable;
+    }
+
+    /**
+     * Returns the last time the user checked for updates.
+     * Compares the common getter (based on filter timestamps, used in MV2)
+     * with the persisted last check time from the backend, and returns the latest.
+     *
+     * @returns The latest check timestamp.
+     */
+    @override
+    override get latestCheckTime() {
+        return Math.max(super.latestCheckTime, this.lastCheckedTime);
     }
 
     /**

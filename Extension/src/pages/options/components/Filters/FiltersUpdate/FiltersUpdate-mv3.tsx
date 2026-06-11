@@ -28,6 +28,7 @@ import { observer } from 'mobx-react';
 import { translator } from '../../../../../common/translators/translator';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
+import { formatDate } from '../helpers';
 import { TelemetryEventName, TelemetryScreenName } from '../../../../../common/telemetry';
 
 import styles from './extension-update.module.pcss';
@@ -154,6 +155,13 @@ export const FiltersUpdate = observer(() => {
                     <div className={styles.title}>
                         {checkUpdatesTitle}
                     </div>
+                    {settingsStore.latestCheckTime && (
+                        <div className={styles.desc}>
+                            {translator.getMessage('options_filters_last_checked', {
+                                date: formatDate(settingsStore.latestCheckTime),
+                            })}
+                        </div>
+                    )}
                 </div>
             </button>
         </div>

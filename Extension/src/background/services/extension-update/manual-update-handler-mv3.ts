@@ -27,6 +27,7 @@ import { browserStorage } from '../../storages';
 import { getRunInfo } from '../../utils/run-info';
 import { Version } from '../../utils/version';
 import { ContentScriptInjector } from '../../content-script-injector';
+import { FilterUpdateService } from '../filter-update/filter-update-mv3';
 
 import {
     type ManualUpdateMetadata,
@@ -194,6 +195,12 @@ export class ManualUpdateHandler {
             await FilterUpdateApi.updateCustomFilters();
         } catch (e) {
             logger.error('[ext.ManualUpdateHandler.check]: Failed to update custom filters:', e);
+        }
+
+        try {
+            await FilterUpdateService.setLastCheckTimeMs(Date.now());
+        } catch (e) {
+            logger.error('[ext.ManualUpdateHandler.check]: Failed to save last check time:', e);
         }
 
         // Notify that update is not available

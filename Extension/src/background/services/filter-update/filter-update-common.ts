@@ -34,6 +34,13 @@ export abstract class FilterUpdateServiceCommon {
     private static LAST_UPDATE_KEY = 'filters-last-update';
 
     /**
+     * Storage key for storing the last filters check time in the storage.
+     *
+     * Used in MV3 to display "Last checked" date on the Filters tab.
+     */
+    private static LAST_CHECK_KEY = 'filters-last-check';
+
+    /**
      * Sets the last filters **update** (not just *check*) time in the storage
      * for version which supports diff updates, i.e. MV2.
      * For MV3 this method is used only to record the last update time during
@@ -59,5 +66,27 @@ export abstract class FilterUpdateServiceCommon {
         }
 
         return Number(lastUpdateTimeMs);
+    }
+
+    /**
+     * Sets the last filters **check** time in the storage.
+     *
+     * Used in MV3 to persist "Last checked" date across page reloads.
+     *
+     * @param timestampMs The timestamp in milliseconds.
+     */
+    public static async setLastCheckTimeMs(timestampMs: number): Promise<void> {
+        await browserStorage.set(FilterUpdateServiceCommon.LAST_CHECK_KEY, timestampMs);
+    }
+
+    /**
+     * Gets the last filters **check** time from the storage.
+     *
+     * @returns The timestamp in milliseconds.
+     */
+    public static async getLastCheckTimeMs(): Promise<number> {
+        const lastCheckTimeMs = await browserStorage.get(FilterUpdateServiceCommon.LAST_CHECK_KEY);
+
+        return Number(lastCheckTimeMs);
     }
 }
