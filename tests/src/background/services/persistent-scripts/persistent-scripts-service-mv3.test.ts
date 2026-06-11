@@ -45,7 +45,7 @@ vi.stubGlobal('chrome', {
 
 // Mock the registry import — simplified key-value format
 vi.mock(
-    '../../../../../Extension/filters/chromium-mv3/critical-scripts/registry',
+    'critical-scripts-registry',
     () => ({
         criticalDomainScripts: {
             'youtube.com': ['2', '5'],

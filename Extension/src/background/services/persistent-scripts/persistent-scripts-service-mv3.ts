@@ -18,7 +18,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { criticalDomainScripts } from '../../../../filters/chromium-mv3/critical-scripts/registry.js';
+import { criticalDomainScripts } from 'critical-scripts-registry';
+
 import { logger } from '../../../common/logger';
 
 /** Stable ID prefix for all critical-domain content script registrations. */

@@ -91,7 +91,6 @@ interface ExclusionEntry {
 interface SourceReplacementEntry {
     pattern: RegExp;
     replacement: string;
-    description: string;
 }
 
 /**
@@ -153,7 +152,6 @@ const loadCriticalScriptsConfig = (): CriticalScriptsConfig => {
             scriptletSourceReplacements[domain] = domainConfig.scriptletSourceReplacements.map((entry) => ({
                 pattern: parseRegexString(entry.pattern),
                 replacement: entry.replacement,
-                description: entry.description,
             }));
         }
     });

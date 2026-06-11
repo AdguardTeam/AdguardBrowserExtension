@@ -94,6 +94,14 @@ export const genOperaMv3Config = (browserConfig: BrowserConfig, options: BuildOp
 
     const operaMv3Config: Configuration = {
         devtool: BUILD_ENV === 'dev' ? 'inline-source-map' : false,
+        resolve: {
+            alias: {
+                'critical-scripts-registry': path.resolve(
+                    __dirname,
+                    '../../../Extension/filters/opera-mv3/critical-scripts/registry.js',
+                ),
+            },
+        },
         entry: {
             [GPC_SCRIPT_OUTPUT]: {
                 import: GPC_SCRIPT_PATH,

@@ -331,9 +331,9 @@ const scrubScriptletSource = (source: string, domain: string): string => {
         return result;
     }
 
-    replacements.forEach(({ pattern, replacement, description }) => {
+    replacements.forEach(({ pattern, replacement }) => {
         if (!pattern.test(result)) {
-            console.warn(`[generate-critical-domain-bundles] Expected pattern "${description}" not found in scriptlet source`);
+            console.warn(`[generate-critical-domain-bundles] Expected pattern "${pattern}" not found in scriptlet source`);
         }
 
         result = result.replace(pattern, replacement);
