@@ -32,6 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   modifiers [tsurlfilter#189].
 - Scriptlet exception rules with comma-containing arguments now work correctly
   ([#3533]).
+- Generic scriptlet rules (scriptlets without a domain restriction) now appear in
+  the filtering log [#2895].
 - Improved visibility of UI controls in OS high-contrast mode
   (`forced-colors: active`): switches, action buttons, editor, dropdowns,
   and modal-like cards on Options/Popup pages ([#3530]).
@@ -39,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#1486]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1486
 [#1686]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1686
 [#2701]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2701
+[#2895]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2895
 [#3533]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3533
 [#3530]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3530
 [tsurlfilter#111]: https://github.com/AdguardTeam/tsurlfilter/issues/111
