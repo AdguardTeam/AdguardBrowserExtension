@@ -191,8 +191,9 @@ export class SettingsStore extends SettingsStoreCommon {
     async checkUpdates() {
         const start = Date.now();
 
+        let lastCheckTimeMs: number | null = null;
         try {
-            await messenger.checkUpdates();
+            ({ lastCheckTimeMs } = await messenger.checkUpdates());
         } catch (error) {
             logger.debug('[ext.SettingsStore.checkUpdates]: failed to check updates on options page: ', error);
         }
@@ -200,9 +201,14 @@ export class SettingsStore extends SettingsStoreCommon {
         // Ensure minimum duration for smooth UI experience
         await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
 
-        runInAction(() => {
-            this.lastCheckedTime = Date.now();
-        });
+        // Only update local state with the timestamp confirmed and persisted by the background.
+        // If persistence failed (null) or an extension update was found, do not mutate local state
+        // to avoid showing a stale time that will disappear after a page reload.
+        if (lastCheckTimeMs !== null) {
+            runInAction(() => {
+                this.lastCheckedTime = lastCheckTimeMs;
+            });
+        }
     }
 
     /**

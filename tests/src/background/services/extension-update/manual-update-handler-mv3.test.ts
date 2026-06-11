@@ -28,6 +28,7 @@ import {
 } from 'vitest';
 
 import { FilterUpdateApi } from '../../../../../Extension/src/background/api/filters/update/update-mv3';
+import { FilterUpdateService } from '../../../../../Extension/src/background/services/filter-update/filter-update-mv3';
 import {
     ManualUpdateHandler,
 } from '../../../../../Extension/src/background/services/extension-update/manual-update-handler-mv3';
@@ -55,6 +56,17 @@ vi.mock(
     () => ({
         FilterUpdateApi: {
             updateCustomFilters: vi.fn(),
+        },
+    }),
+);
+
+// Mock FilterUpdateService to track last check time persistence
+vi.mock(
+    '../../../../../Extension/src/background/services/filter-update/filter-update-mv3',
+    () => ({
+        FilterUpdateService: {
+            setLastCheckTimeMs: vi.fn(() => Promise.resolve()),
+            getLastCheckTimeMs: vi.fn(() => Promise.resolve(0)),
         },
     }),
 );
@@ -212,6 +224,83 @@ describe('ManualUpdateHandler', () => {
             await handler.check();
 
             expect(onUpdateCheckComplete).toHaveBeenCalledWith(false);
+        });
+    });
+
+    describe.skipIf(!__IS_MV3__)('check() — persists last check time', () => {
+        it('calls setLastCheckTimeMs after a successful check with no update', async () => {
+            const before = Date.now();
+
+            vi.mocked(BackendUpdateChecker.checkUpdate).mockResolvedValue({
+                status: UpdateCheckStatus.NoContent,
+            });
+
+            await handler.check();
+
+            expect(FilterUpdateService.setLastCheckTimeMs).toHaveBeenCalledTimes(1);
+            const [savedTs] = vi.mocked(FilterUpdateService.setLastCheckTimeMs).mock.calls[0];
+            expect(savedTs).toBeGreaterThanOrEqual(before);
+            expect(savedTs).toBeLessThanOrEqual(Date.now());
+        });
+
+        it('returns the confirmed timestamp in the response', async () => {
+            const before = Date.now();
+
+            vi.mocked(BackendUpdateChecker.checkUpdate).mockResolvedValue({
+                status: UpdateCheckStatus.NoContent,
+            });
+
+            const result = await handler.check();
+
+            expect(result.lastCheckTimeMs).not.toBeNull();
+            expect(result.lastCheckTimeMs).toBeGreaterThanOrEqual(before);
+            expect(result.lastCheckTimeMs).toBeLessThanOrEqual(Date.now());
+        });
+
+        it('returns null when setLastCheckTimeMs fails', async () => {
+            vi.mocked(FilterUpdateService.setLastCheckTimeMs).mockRejectedValue(
+                new Error('storage error'),
+            );
+
+            vi.mocked(BackendUpdateChecker.checkUpdate).mockResolvedValue({
+                status: UpdateCheckStatus.NoContent,
+            });
+
+            const result = await handler.check();
+
+            expect(result.lastCheckTimeMs).toBeNull();
+            expect(onUpdateCheckComplete).toHaveBeenCalledWith(false);
+        });
+
+        it('still calls onUpdateCheckComplete when setLastCheckTimeMs fails', async () => {
+            vi.mocked(FilterUpdateService.setLastCheckTimeMs).mockRejectedValue(
+                new Error('storage error'),
+            );
+
+            vi.mocked(BackendUpdateChecker.checkUpdate).mockResolvedValue({
+                status: UpdateCheckStatus.NoContent,
+            });
+
+            await handler.check();
+
+            expect(onUpdateCheckComplete).toHaveBeenCalledWith(false);
+        });
+
+        it('returns null when extension update is available (no timestamp path)', async () => {
+            vi.mocked(BackendUpdateChecker.checkUpdate).mockResolvedValue({
+                status: UpdateCheckStatus.UpdateAvailable,
+                version: '5.3.0.18',
+            });
+
+            // requestUpdateCheck returns throttled — Chrome does not fire onUpdateAvailable
+            (global as Record<string, unknown>).chrome = {
+                ...((global as Record<string, unknown>).chrome as object),
+            };
+
+            const result = await handler.check();
+
+            // When update is available and we wait for Chrome event, null is returned
+            expect(result.lastCheckTimeMs).toBeNull();
         });
     });
 

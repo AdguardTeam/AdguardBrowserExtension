@@ -1,0 +1,77 @@
+/**
+ * Copyright (c) 2015-2026 Adguard Software Ltd.
+ *
+ * @file
+ * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
+ *
+ * AdGuard Browser Extension is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AdGuard Browser Extension is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
+ */
+
+import {
+    describe,
+    it,
+    expect,
+    vi,
+    beforeEach,
+} from 'vitest';
+import { FilterUpdateService } from 'filter-update-service';
+
+const storage: Record<string, unknown> = {};
+
+vi.mock('../../../../../Extension/src/background/storages', () => ({
+    browserStorage: {
+        get: vi.fn((key: string) => Promise.resolve(storage[key])),
+        set: vi.fn((key: string, value: unknown) => {
+            storage[key] = value;
+            return Promise.resolve();
+        }),
+    },
+}));
+
+describe('FilterUpdateServiceCommon — last check time', () => {
+    beforeEach(() => {
+        Object.keys(storage).forEach((k) => delete storage[k]);
+        vi.clearAllMocks();
+    });
+
+    it('returns 0 when nothing is stored', async () => {
+        const result = await FilterUpdateService.getLastCheckTimeMs();
+        expect(result).toBe(0);
+    });
+
+    it('stores and retrieves the check timestamp', async () => {
+        const ts = 1_700_000_000_000;
+        await FilterUpdateService.setLastCheckTimeMs(ts);
+        const result = await FilterUpdateService.getLastCheckTimeMs();
+        expect(result).toBe(ts);
+    });
+
+    it('overwrites with a newer timestamp', async () => {
+        const ts1 = 1_700_000_000_000;
+        const ts2 = 1_700_000_001_000;
+        await FilterUpdateService.setLastCheckTimeMs(ts1);
+        await FilterUpdateService.setLastCheckTimeMs(ts2);
+        const result = await FilterUpdateService.getLastCheckTimeMs();
+        expect(result).toBe(ts2);
+    });
+
+    it('does not affect the last update key', async () => {
+        const checkTs = 1_700_000_000_000;
+        await FilterUpdateService.setLastCheckTimeMs(checkTs);
+
+        // last update should still be null/unset
+        const updateTs = await FilterUpdateService.getLastUpdateTimeMs();
+        expect(updateTs).toBeNull();
+    });
+});

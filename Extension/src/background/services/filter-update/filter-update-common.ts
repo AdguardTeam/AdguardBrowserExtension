@@ -87,6 +87,6 @@ export abstract class FilterUpdateServiceCommon {
     public static async getLastCheckTimeMs(): Promise<number> {
         const lastCheckTimeMs = await browserStorage.get(FilterUpdateServiceCommon.LAST_CHECK_KEY);
 
-        return Number(lastCheckTimeMs);
+        return Number(lastCheckTimeMs || 0);
     }
 }
