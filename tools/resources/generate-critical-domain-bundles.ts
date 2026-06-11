@@ -53,6 +53,7 @@ import {
     extractAgFunctionName,
     findAgFunctionUsages,
 } from './update-local-script-rules';
+import { scriptletExclusions, scriptletSourceReplacements } from './critical-scripts-config';
 
 /**
  * List of critical domains to generate bundles for.
@@ -60,43 +61,10 @@ import {
 const CRITICAL_DOMAINS = ['youtube.com'];
 
 /**
- * Per-domain scriptlet exclusions for the critical-domain bundle.
- *
- * Key: domain (must match a {@link CRITICAL_DOMAINS} entry).
- * Value: list of exclusions — rules matching any entry are skipped for that
- * domain's bundle but still delivered via DNR.
- *
- * Common reasons to exclude:
- * - Rule aborts inline scripts with broad patterns (breaks page UI)
- * - Rule modifies APIs globally without stack-trace guards
- * - Rule is only needed on specific sub-pages but bundle runs everywhere
- */
-const SCRIPTLET_EXCLUSIONS: Record<string, { name: string; argMatch?: RegExp }[]> = {
-    'youtube.com': [
-        // Aborts any inline script calling document.write — too broad, breaks UI
-        { name: 'abort-current-inline-script', argMatch: /^document\.write/ },
-        // Aborts inline scripts matching broad patterns — can break UI
-        { name: 'abort-current-inline-script', argMatch: /^EventTarget\.prototype/ },
-        // Aborts scripts based on stack trace — breaks session-restore player init
-        { name: 'abort-on-stack-trace' },
-        // Intercepts property reads, throws ReferenceError — breaks session restore
-        { name: 'abort-on-property-read' },
-        // Blocks event listeners matching patterns — prevents player interaction
-        { name: 'prevent-addEventListener' },
-        // Blocks window.open — not timing-critical for YouTube
-        { name: 'prevent-window-open' },
-        // Blocks setTimeout — can break lazy-loading and animations
-        { name: 'prevent-setTimeout' },
-        // Throttles setTimeout — breaks async initialization
-        { name: 'adjust-setTimeout' },
-    ],
-};
-
-/**
  * Returns `true` if a scriptlet rule should be excluded from the
  * critical-domain bundle for the given domain.
  *
- * @param domain Domain name (must match a {@link SCRIPTLET_EXCLUSIONS} key).
+ * @param domain Domain name (must match a key in `critical-scripts.json`).
  * @param name Scriptlet name.
  * @param args Scriptlet arguments (first arg checked against optional `argMatch`).
  *
@@ -107,7 +75,7 @@ const isScriptletExcluded = (
     name: string,
     args: string[],
 ): boolean => {
-    const domainExclusions = SCRIPTLET_EXCLUSIONS[domain];
+    const domainExclusions = scriptletExclusions[domain];
     if (!domainExclusions) {
         return false;
     }
@@ -346,24 +314,6 @@ const validateJavaScriptSyntax = (code: string, description?: string): void => {
 };
 
 /**
- * Patterns to scrub from injected scriptlet source to avoid
- * YouTube anti-adblock detection. All replacements operate on the
- * function source string.
- */
-const SCRIPTLET_SOURCE_REPLACEMENTS: { pattern: RegExp; replacement: string; description: string }[] = [
-    // Idempotency guard: use private object instead of host prototype
-    { pattern: /Window\.prototype\.toString/g, replacement: '_c', description: 'Window.prototype.toString → _c' },
-    // Dead catch-log in addCall wrapper — replace with no-op
-    { pattern: /console\.log\(e\)/g, replacement: 'void 0', description: 'console.log(e) → void 0' },
-    // Scrub AdGuard branding from log helpers
-    { pattern: /\[AdGuard\]/g, replacement: '[ext]', description: '[AdGuard] → [ext]' },
-    // Scrub scriptlet syntax from log helpers
-    { pattern: /#%#\/\/scriptlet/g, replacement: '#%#//s', description: '#%#//scriptlet → #%#//s' },
-    // Scrub debug hook check (guarded by verbose, but string still present)
-    { pattern: /window\.__debug/g, replacement: 'window._d', description: 'window.__debug → window._d' },
-];
-
-/**
  * Scrubs identifiable strings from a scriptlet function's source code
  * before it is injected into critical-domain bundles. Warns if any
  * expected pattern is missing from the source (e.g. due to upstream
@@ -373,10 +323,15 @@ const SCRIPTLET_SOURCE_REPLACEMENTS: { pattern: RegExp; replacement: string; des
  *
  * @returns Scrubed source string.
  */
-const scrubScriptletSource = (source: string): string => {
+const scrubScriptletSource = (source: string, domain: string): string => {
     let result = source;
 
-    SCRIPTLET_SOURCE_REPLACEMENTS.forEach(({ pattern, replacement, description }) => {
+    const replacements = scriptletSourceReplacements[domain];
+    if (!replacements) {
+        return result;
+    }
+
+    replacements.forEach(({ pattern, replacement, description }) => {
         if (!pattern.test(result)) {
             console.warn(`[generate-critical-domain-bundles] Expected pattern "${description}" not found in scriptlet source`);
         }
@@ -398,6 +353,22 @@ const scrubScriptletSource = (source: string): string => {
  * function is emitted once as a named function, then invoked once per
  * distinct argument list.
  *
+ * The codebase uses two different idempotency guards that coexist
+ * because no single approach satisfies all constraints:
+ *
+ * - Host-object (used in `local_script_rules.js`): stamps a marker onto
+ *   `Window.prototype.toString`. This provides cross-context visibility
+ *   (a rule that ran in the top page won't re-run inside a same-origin
+ *   iframe), but touching built-in prototypes is detectable by anti-adblock
+ *   systems that scan host objects for tampering.
+ *
+ * - Private-scope (used in critical-domain bundles): uses an IIFE-local
+ *   `Set` (`_b`) and plain object (`_c`). This is invisible to host-object
+ *   scanning but has no cross-context visibility — each script context
+ *   (top page, iframe, etc.) gets its own independent guard. Since bundles
+ *   are injected early enough that each context receives its own copy, this
+ *   limitation is acceptable in practice.
+ *
  * @param jsRules Set of unique raw JS rule body strings.
  * @param scriptletMap Map of scriptlet name → Set of JSON-serialized arg arrays.
  *
@@ -405,7 +376,8 @@ const scrubScriptletSource = (source: string): string => {
  */
 const compileRulesToBundle = async (
     jsRules: Set<string>,
-    scriptletMap?: Map<string, Set<string>>,
+    scriptletMap: Map<string, Set<string>> | undefined,
+    domain: string,
 ): Promise<string | null> => {
     const agFunctions: Map<string, string> = new Map();
     const remainingRules: Set<string> = new Set();
@@ -491,16 +463,14 @@ const compileRulesToBundle = async (
         for (const [scriptletName, argsSet] of scriptletMap) {
             const scriptletFn = scriptlets.getScriptletFunction(scriptletName);
             if (!scriptletFn) {
-                console.warn(
-                    `[generate-critical-domain-bundles] Unknown scriptlet: "${scriptletName}", skipping`,
-                );
+                console.warn(`[generate-critical-domain-bundles] Unknown scriptlet: "${scriptletName}", skipping`);
                 continue;
             }
 
             // Emit function definition once per unique scriptlet name.
             // Scrub identifiable strings from the function body to avoid
             // YouTube anti-adblock detection.
-            const fnSource = scrubScriptletSource(scriptletFn.toString());
+            const fnSource = scrubScriptletSource(scriptletFn.toString(), domain);
             // eslint-disable-next-line no-await-in-loop
             const minifiedFn = await minify(fnSource, {
                 compress: { sequences: false },
@@ -547,9 +517,7 @@ const compileRulesToBundle = async (
                 if (minifiedInv.code) {
                     compiledStatements.push(minifiedInv.code);
                 } else {
-                    console.warn(
-                        `[generate-critical-domain-bundles] Failed to minify scriptlet invocation: ${scriptletName}`,
-                    );
+                    console.warn(`[generate-critical-domain-bundles] Failed to minify scriptlet invocation: ${scriptletName}`);
                 }
             }
         }
@@ -726,11 +694,7 @@ export const generateCriticalDomainBundles = async (
                         });
                     }
                 } catch (error) {
-                    console.warn(
-                        `[generate-critical-domain-bundles] Skipping invalid scriptlet rule; Error: ${
-                            error instanceof Error ? error.message : String(error)
-                        }`,
-                    );
+                    console.warn(`[generate-critical-domain-bundles] Skipping invalid scriptlet rule; Error: ${error instanceof Error ? error.message : String(error)}`);
                 }
             }
         });
@@ -768,15 +732,13 @@ export const generateCriticalDomainBundles = async (
                 continue;
             }
 
-            console.log(
-                `[generate-critical-domain-bundles] ${domain}-${filterId}: `
-                + `${totalRuleCount} unique rules (${jsRules?.size ?? 0} JS + ${scriptletCount} scriptlets)`,
-            );
+            console.log(`[generate-critical-domain-bundles] ${domain}-${filterId}: ${totalRuleCount} unique rules (${jsRules?.size ?? 0} JS + ${scriptletCount} scriptlets)`);
 
             // eslint-disable-next-line no-await-in-loop
             const bundleContent = await compileRulesToBundle(
                 jsRules ?? new Set(),
                 scriptletMap ?? undefined,
+                domain,
             );
 
             if (!bundleContent) {

@@ -1,0 +1,21 @@
+{
+  "youtube.com": {
+    "scriptletExclusions": [
+        { "name": "abort-current-inline-script", "argMatch": "/^document\\.write/" },
+        { "name": "abort-current-inline-script", "argMatch": "/^EventTarget\\.prototype/" },
+        { "name": "abort-on-stack-trace" },
+        { "name": "abort-on-property-read" },
+        { "name": "prevent-addEventListener" },
+        { "name": "prevent-window-open" },
+        { "name": "prevent-setTimeout" },
+        { "name": "adjust-setTimeout" }
+    ],
+    "scriptletSourceReplacements": [
+      { "pattern": "/Window\\.prototype\\.toString/g", "replacement": "_c", "description": "Window.prototype.toString → _c" },
+      { "pattern": "/console\\.log\\(e\\)/g", "replacement": "void 0", "description": "console.log(e) → void 0" },
+      { "pattern": "/\\[AdGuard\\]/g", "replacement": "[ext]", "description": "[AdGuard] → [ext]" },
+      { "pattern": "/#%#\\/\\/scriptlet/g", "replacement": "#%#//s", "description": "#%#//scriptlet → #%#//s" },
+      { "pattern": "/window\\.__debug/g", "replacement": "window._d", "description": "window.__debug → window._d" }
+    ]
+  }
+}
