@@ -24,7 +24,7 @@ import { excludeUnsafeRules } from '@adguard/dnr-rulesets';
 import { findDangerousRules } from './resources/dangerous-rules';
 import { downloadAndPrepareMv3Filters } from './resources/download-filters';
 import { updateLocalResourcesForMv3 } from './resources/update-local-script-rules';
-import { generateCriticalDomainBundles } from './resources/generate-critical-domain-bundles';
+import { generateCriticalDomainBundles } from './resources/critical-scripts/generate-bundle';
 import { AssetsFiltersBrowser, DECLARATIVE_FILTERS_DEST } from './constants';
 import { updateTestcasesScriptRules } from './resources/update-local-test-script-rules';
 

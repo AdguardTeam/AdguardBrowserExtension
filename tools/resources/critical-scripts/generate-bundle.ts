@@ -43,17 +43,17 @@ import {
     CRITICAL_SCRIPTS_DIR,
     DECLARATIVE_FILTERS_DEST,
     type Mv3AssetsFiltersBrowser,
-} from '../constants';
-import { NEWLINE_CHAR_UNIX } from '../../Extension/src/common/constants';
-
-import { extractPreprocessedRawFilterList, readMetadataRuleSet } from './filter-extractor';
+} from '../../constants';
+import { NEWLINE_CHAR_UNIX } from '../../../Extension/src/common/constants';
+import { extractPreprocessedRawFilterList, readMetadataRuleSet } from '../filter-extractor';
 import {
     isJsRule,
     calculateUniqueId,
     extractAgFunctionName,
     findAgFunctionUsages,
-} from './update-local-script-rules';
-import { scriptletExclusions, scriptletSourceReplacements } from './critical-scripts-config';
+} from '../update-local-script-rules';
+
+import { scriptletExclusions, scriptletSourceReplacements } from './config';
 
 /**
  * List of critical domains to generate bundles for.
