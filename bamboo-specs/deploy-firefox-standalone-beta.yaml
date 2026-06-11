@@ -1,13 +1,12 @@
 ---
 version: 2
 deployment:
-  name: browser extension - deploy firefox beta
-  source-plan: ADGEXT-BEFIREFOXBETASPECS
+  name: browser extension - deploy firefox standalone beta
+  source-plan: ADGEXT-BEFIREFOXSTANDALONEBETASPECS
 release-naming: ${bamboo.inject.version}-beta
 environments:
   - static.adtidy.org
   - GitHub
-  - Addons Mozilla
 
 static.adtidy.org:
   triggers: []
@@ -69,37 +68,6 @@ GitHub:
             # append files to latest Github Releases with correct tag
             GITHUB_TOKEN="${bamboo.githubPublicRepoPassword}" \
             ./bamboo-deploy-publisher/deploy.sh browser-extension-github-beta-firefox
-  final-tasks: []
-  variables: {}
-  requirements: *requirements
-
-Addons Mozilla:
-  triggers: []
-  tasks:
-    - clean
-    - checkout:
-        repository: bamboo-deploy-publisher
-        path: bamboo-deploy-publisher
-        force-clean-build: true
-    - artifact-download:
-        artifacts:
-          - name: build.txt
-          - name: firefox-amo.zip
-          - name: source.zip
-          - name: approval-notes.txt
-    - script:
-        interpreter: SHELL
-        scripts:
-          - |-
-            set -x
-            set -e
-
-            # Fix mixed logs
-            exec 2>&1
-
-            ls -la
-
-            ./bamboo-deploy-publisher/deploy.sh browser-extension-amo-beta
   final-tasks: []
   variables: {}
   requirements: *requirements

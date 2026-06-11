@@ -368,7 +368,8 @@ Descriptions must be complete sentences.
 - `auto-build.yaml` — Scheduled auto-build (every 12h) on stable branch for MV3
 - `build-beta.yaml` — Beta builds (chrome, chrome-mv3, edge)
 - `build-release.yaml` — Release builds (all browsers)
-- `build-firefox-beta.yaml` — Firefox beta build + AMO signing
+- `build-firefox-standalone-beta.yaml` — Firefox standalone beta build + signing
+- `build-firefox-amo-beta.yaml` — Firefox AMO beta build
 - `tests.yaml` — Lint + unit/integration tests for PRs
 
 **Docker Build Conventions:**
@@ -394,6 +395,8 @@ Descriptions must be complete sentences.
 
 - [DEVELOPMENT.md](./DEVELOPMENT.md) — Development setup, build instructions,
   and detailed workflows
+- [DEPLOYMENT.md](./DEPLOYMENT.md) — Firefox beta deployment pipelines
+  (standalone and AMO) and release steps
 - [README.md](./README.md) — Project overview, installation, and contribution
   info
 - [CHANGELOG.md](./CHANGELOG.md) — Version history
