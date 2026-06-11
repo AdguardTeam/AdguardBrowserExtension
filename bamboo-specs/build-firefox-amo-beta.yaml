@@ -1,0 +1,99 @@
+---
+version: 2
+plan:
+  project-key: ADGEXT
+  key: BEFIREFOXAMOBETASPECS
+  name: browser extension - build firefox amo beta
+  description: >-
+    Builds the unsigned Firefox AMO beta (firefox-amo.zip) for Mozilla review.
+    AMO signs during review, so this pipeline is not blocked by go-webext
+    signing and is independent of the standalone pipeline.
+stages:
+  - Build:
+      manual: false
+      final: false
+      jobs:
+        - Build AMO
+
+Build AMO:
+  key: BUILDAMO
+  other:
+    clean-working-dir: true
+  tasks:
+    - checkout:
+        force-clean-build: true
+    - script:
+        interpreter: SHELL
+        scripts:
+          - |-
+            # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
+            #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
+            #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
+            set -ex
+
+            # Fix mixed logs
+            exec 2>&1
+
+            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
+            ./bamboo-specs/scripts/clone-tsurlfilter.sh
+
+            export DOCKER_BUILDKIT=1
+
+            # Generate find-compatible .gitignore exclusions on the host (where .git is available).
+            # The gitignore-excludes.txt file is included in the Docker context and consumed by
+            # archive-source.sh inside Docker (where .git is not available).
+            ./bamboo-specs/scripts/generate-find-excludes.sh gitignore-excludes.txt
+
+            # Build Firefox AMO beta artifacts (firefox-amo.zip, source.zip, approval-notes.txt, build.txt)
+            # AMO-listed add-ons are not signed locally — AMO signs during review.
+            docker build \
+              --file Dockerfile \
+              --progress plain \
+              --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
+              --build-context tsurlfilter=../tsurlfilter \
+              --target firefox-amo-beta-build-output \
+              --output type=local,dest=output \
+              .
+    - inject-variables:
+        file: output/artifacts/build.txt
+        scope: RESULT
+        namespace: inject
+  final-tasks:
+    - script:
+        interpreter: SHELL
+        scripts:
+          - "./bamboo-specs/scripts/cleanup.sh output/artifacts/build.txt,output/artifacts/firefox-amo.zip,output/artifacts/source.zip,output/artifacts/approval-notes.txt"
+  artifacts:
+    - name: build.txt
+      location: output/artifacts
+      pattern: build.txt
+      shared: true
+      required: true
+    - name: firefox-amo.zip
+      location: output/artifacts
+      pattern: firefox-amo.zip
+      shared: true
+      required: true
+    - name: source.zip
+      location: output/artifacts
+      pattern: source.zip
+      shared: true
+      required: true
+    - name: approval-notes.txt
+      location: output/artifacts
+      pattern: approval-notes.txt
+      shared: true
+      required: true
+  requirements:
+    - extension: 'true'
+
+triggers: []
+
+branches:
+  create: manually
+  delete: never
+  link-to-jira: 'true'
+
+labels: []
+other:
+  concurrent-build-plugin: system-default
