@@ -1094,4 +1094,5 @@ Investigate the cause of the size increase. If justified, update reference sizes
 - [CHANGELOG.md](./CHANGELOG.md) — Version history
 - [Locales Documentation](./tools/locales/README.md) — Localization workflow
 - [Dangerous Rules Documentation](./tools/resources/dangerous-rules/README.md) — Dangerous rules detection
+- [Critical Scripts Documentation](./tools/resources/critical-scripts/README.md) — Early-injected bundles for critical domains
 - [tsurlfilter](https://github.com/AdguardTeam/tsurlfilter) — Filtering engine library
