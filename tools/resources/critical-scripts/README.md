@@ -51,7 +51,7 @@ Each replacement specifies:
 | File | Purpose |
 | --- | --- |
 | `config.json` | Per-domain exclusion and replacement rules (hand-edited). |
-| `config.ts` | Typed loader: parses `config.json`, converts string regex → `RegExp`. |
+| `config.ts` | Typed loader: parses `config.json`, converts string regex → `RegExp`, exports `criticalDomains`. |
 | `generate-bundle.ts` | Generates `.js` bundles and `registry.js` from MV3 filter lists. |
 
 Downstream consumers:
@@ -76,16 +76,11 @@ Downstream consumers:
    }
    ```
 
-2. Add the domain to the `CRITICAL_DOMAINS` array in `generate-bundle.ts`:
+2. Run `pnpm resources:mv3` to regenerate the bundles. Verify output in
+   `Extension/filters/chromium-mv3/critical-scripts/` and
+   `Extension/filters/opera-mv3/critical-scripts/`.
 
-   ```typescript
-   const CRITICAL_DOMAINS = ['youtube.com', 'new-domain.com'];
-   ```
-
-3. Run `pnpm resources:mv3` to regenerate the bundles. Verify output in
-   `Extension/filters/chromium-mv3/critical-scripts/`.
-
-4. Test the extension on the new domain to confirm bundles are injected
+3. Test the extension on the new domain to confirm bundles are injected
    correctly and the domain's anti-adblock systems are not triggered.
 
 ## Adding a scriptlet exclusion
@@ -109,7 +104,8 @@ functionality, exclude it from the early-injection bundle.
 3. Run `pnpm resources:mv3` to regenerate bundles.
 4. Verify the scriptlet no longer appears in the bundle for that domain by
    inspecting the generated `.js` files in
-   `Extension/filters/chromium-mv3/critical-scripts/`.
+   `Extension/filters/chromium-mv3/critical-scripts/` and
+   `Extension/filters/opera-mv3/critical-scripts/`.
 
 ## Adding a source replacement
 

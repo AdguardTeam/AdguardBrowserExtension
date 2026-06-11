@@ -53,12 +53,11 @@ import {
     findAgFunctionUsages,
 } from '../update-local-script-rules';
 
-import { scriptletExclusions, scriptletSourceReplacements } from './config';
-
-/**
- * List of critical domains to generate bundles for.
- */
-const CRITICAL_DOMAINS = ['youtube.com'];
+import {
+    criticalDomains,
+    scriptletExclusions,
+    scriptletSourceReplacements,
+} from './config';
 
 /**
  * Returns `true` if a scriptlet rule should be excluded from the
@@ -587,12 +586,12 @@ export const generateCriticalDomainBundles = async (
 
     // JS injection rules: Map<domain, Map<filterId, Set<rawBody>>>
     const domainFilterRules = new Map<string, Map<number, Set<string>>>(
-        CRITICAL_DOMAINS.map((d) => [d, new Map()]),
+        criticalDomains.map((d) => [d, new Map()]),
     );
 
     // Scriptlet injection rules: Map<domain, Map<filterId, Map<scriptletName, Set<JSON_args>>>>
     const domainFilterScriptlets = new Map<string, Map<number, Map<string, Set<string>>>>(
-        CRITICAL_DOMAINS.map((d) => [d, new Map()]),
+        criticalDomains.map((d) => [d, new Map()]),
     );
 
     /** Ensures the inner Map<filterId, Map<name, Set<args>>> entry exists and returns the Map for scriptlet names. */
@@ -630,12 +629,12 @@ export const generateCriticalDomainBundles = async (
 
                 if (isGenericJsRule(ruleNode)) {
                     if (filterId !== null) {
-                        CRITICAL_DOMAINS.forEach((domain) => {
+                        criticalDomains.forEach((domain) => {
                             getRuleSet(domainFilterRules, domain, filterId).add(rawBody);
                         });
                     }
                 } else {
-                    CRITICAL_DOMAINS.forEach((domain) => {
+                    criticalDomains.forEach((domain) => {
                         if (!isRuleTargetsDomain(ruleNode, domain)) {
                             return;
                         }
@@ -660,7 +659,7 @@ export const generateCriticalDomainBundles = async (
 
                     if (isGenericScriptletRule(ruleNode)) {
                         if (filterId !== null) {
-                            CRITICAL_DOMAINS.forEach((domain) => {
+                            criticalDomains.forEach((domain) => {
                                 if (isScriptletExcluded(domain, name, args)) {
                                     return;
                                 }
@@ -673,7 +672,7 @@ export const generateCriticalDomainBundles = async (
                             });
                         }
                     } else {
-                        CRITICAL_DOMAINS.forEach((domain) => {
+                        criticalDomains.forEach((domain) => {
                             if (!isRuleTargetsDomain(ruleNode, domain)) {
                                 return;
                             }

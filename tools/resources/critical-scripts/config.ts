@@ -101,6 +101,8 @@ interface CriticalScriptsConfig {
     scriptletExclusions: Record<string, ExclusionEntry[]>;
     /** Scriptlet source replacements keyed by domain. */
     scriptletSourceReplacements: Record<string, SourceReplacementEntry[]>;
+    /** List of domains in the config. */
+    domains: string[];
 }
 
 /** Path to the JSON config, relative to this module. */
@@ -128,6 +130,8 @@ const loadCriticalScriptsConfig = (): CriticalScriptsConfig => {
         throw new Error(`Failed to parse critical-scripts.json: ${error instanceof Error ? error.message : String(error)}`);
     }
 
+    const domains: string[] = [];
+
     // Parse scriptlet exclusions and source replacements for each domain
     const scriptletExclusions: Record<string, ExclusionEntry[]> = {};
     const scriptletSourceReplacements: Record<string, SourceReplacementEntry[]> = {};
@@ -136,6 +140,8 @@ const loadCriticalScriptsConfig = (): CriticalScriptsConfig => {
         if (!domainConfig.scriptletExclusions || !Array.isArray(domainConfig.scriptletExclusions)) {
             throw new Error(`Missing "scriptletExclusions" array for domain "${domain}" in critical-scripts.json`);
         }
+
+        domains.push(domain);
 
         scriptletExclusions[domain] = domainConfig.scriptletExclusions.map((entry) => {
             const parsed: ExclusionEntry = { name: entry.name };
@@ -156,15 +162,23 @@ const loadCriticalScriptsConfig = (): CriticalScriptsConfig => {
         }
     });
 
-    return { scriptletExclusions, scriptletSourceReplacements };
+    return { scriptletExclusions, scriptletSourceReplacements, domains };
 };
 
-/**
- * Scriptlet exclusions per domain (parsed from critical-scripts.json).
- */
-export const scriptletExclusions = loadCriticalScriptsConfig().scriptletExclusions;
+const config = loadCriticalScriptsConfig();
 
 /**
- * Scriptlet source replacement patterns (parsed from critical-scripts.json).
+ * Scriptlet exclusions per domain.
  */
-export const scriptletSourceReplacements = loadCriticalScriptsConfig().scriptletSourceReplacements;
+export const scriptletExclusions = config.scriptletExclusions;
+
+/**
+ * Scriptlet source replacement patterns.
+ */
+export const scriptletSourceReplacements = config.scriptletSourceReplacements;
+
+/**
+ * List of domains for which critical scriptlet bundles
+ * should be generated.
+ */
+export const criticalDomains = config.domains;
