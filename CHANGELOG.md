@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Element hiding rules not being applied on fast page reload in MV3 [#3537].
 - Filtering log loses events during `window.open()` tab redirects [#2701].
 - Filtering log events for tabs closed by `$popup` modifier rules are now displayed
   as linked to the background page [#1686].
@@ -38,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`forced-colors: active`): switches, action buttons, editor, dropdowns,
   and modal-like cards on Options/Popup pages ([#3530]).
 
+[#3537]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3537
 [#1486]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1486
 [#1686]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1686
 [#2701]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2701
