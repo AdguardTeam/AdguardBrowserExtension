@@ -34,9 +34,9 @@ import { messenger } from '../../../services/messenger';
 import { OptionsPageSections } from '../../../../common/nav';
 import { shouldShowUserScriptsApiWarning } from '../../../../common/user-scripts-api';
 import { addMinDelayLoader } from '../../../common/components/helpers';
-import { type IRulesLimits } from '../../../../background/services/rules-limits/interface';
 
 import { Warning } from './Warning';
+import { WarningVariantB } from './Warning/WarningVariantB-mv3';
 
 import './rules-limits.pcss';
 
@@ -56,7 +56,7 @@ export const RulesLimits = observer(() => {
         settingsStore.getRulesLimitsCounters();
     }, [settingsStore]);
 
-    const rulesLimits: IRulesLimits = settingsStore.rulesLimits;
+    const { rulesLimits, showRuleLimitsVariantB } = settingsStore;
 
     const {
         dynamicRulesEnabledCount,
@@ -204,13 +204,19 @@ export const RulesLimits = observer(() => {
             description={translator.getMessage('options_rule_limits_description')}
         >
             {areFilterLimitsExceeded && (
-                <Warning
-                    actuallyEnabledFilterNames={getFiltersNames(rulesLimits.actuallyEnabledFilters).join(', ')}
-                    expectedEnabledFilterNames={getFiltersNames(rulesLimits.expectedEnabledFilters).join(', ')}
-                    onClickReactivateFilters={handleReactivateFiltersWrapper}
-                    onClickGetTheApp={handleGetTheApp}
-                    onClickCloseWarning={handleCloseWarningWrapper}
-                />
+                showRuleLimitsVariantB ? (
+                    <WarningVariantB
+                        onClickCloseWarning={handleCloseWarningWrapper}
+                    />
+                ) : (
+                    <Warning
+                        actuallyEnabledFilterNames={getFiltersNames(rulesLimits.actuallyEnabledFilters).join(', ')}
+                        expectedEnabledFilterNames={getFiltersNames(rulesLimits.expectedEnabledFilters).join(', ')}
+                        onClickReactivateFilters={handleReactivateFiltersWrapper}
+                        onClickGetTheApp={handleGetTheApp}
+                        onClickCloseWarning={handleCloseWarningWrapper}
+                    />
+                )
             )}
             <div className="rules-limits">
                 <div className="rules-limits__section">
