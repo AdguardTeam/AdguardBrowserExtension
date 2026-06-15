@@ -148,7 +148,7 @@ export const measureTextWidth = (text: string) => {
         display: hidden;
         height: 0;
         white-space: nowrap;
-        font-family: Roboto, "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Ubuntu, Arial, sans-serif;
+        font-family: 'Roboto Flex', system-ui;
         font-size: 14px;
     `;
     document.body.appendChild(el);
