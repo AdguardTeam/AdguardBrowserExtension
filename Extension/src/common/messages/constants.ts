@@ -269,13 +269,6 @@ export type CheckExtensionUpdateMessageMv3 = {
     type: MessageType.CheckExtensionUpdateMv3;
 };
 
-/**
- * Result returned by the background when a manual extension update check completes.
- *
- * `lastCheckTimeMs` is the timestamp (ms) persisted to storage after the check.
- * It is `null` when an extension update download was initiated
- * (the page will reload) or when persistence failed.
- */
 export type ManualCheckResult = {
     lastCheckTimeMs: number | null;
 };

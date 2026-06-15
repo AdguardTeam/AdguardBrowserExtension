@@ -238,7 +238,7 @@ describe('ManualUpdateHandler', () => {
             await handler.check();
 
             expect(FilterUpdateService.setLastCheckTimeMs).toHaveBeenCalledTimes(1);
-            const [savedTs] = vi.mocked(FilterUpdateService.setLastCheckTimeMs).mock.calls[0];
+            const [savedTs] = vi.mocked(FilterUpdateService.setLastCheckTimeMs).mock.calls[0]!;
             expect(savedTs).toBeGreaterThanOrEqual(before);
             expect(savedTs).toBeLessThanOrEqual(Date.now());
         });

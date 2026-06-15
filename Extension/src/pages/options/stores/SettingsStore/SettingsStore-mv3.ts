@@ -124,7 +124,7 @@ export class SettingsStore extends SettingsStoreCommon {
 
         this.setIsExtensionUpdateAvailable(isExtensionUpdateAvailable);
 
-        this.lastCheckedTime = lastCheckTimeMs;
+        this.lastCheckedTime = lastCheckTimeMs ?? this.lastCheckedTime;
 
         // notification about successful or failed update should be shown after the options page is opened.
         // and it cannot be done by notifier (from the background page)

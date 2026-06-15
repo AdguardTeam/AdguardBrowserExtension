@@ -50,7 +50,7 @@ vi.mock('../../../../../../Extension/src/common/user-agent', () => ({
     },
 }));
 
-vi.mock('../../../../../../Extension/src/pages/options/services/messenger', () => ({
+vi.mock('../../../../../../Extension/src/pages/services/messenger', () => ({
     messenger: {
         getOptionsData: vi.fn(),
         checkUpdates: vi.fn(() => Promise.resolve({ lastCheckTimeMs: Date.now() })),
@@ -164,7 +164,7 @@ describe.skipIf(!__IS_MV3__)('SettingsStore MV3 — latestCheckTime', () => {
         const confirmedTs = Date.now() + 1_000;
 
         const { messenger } = await import(
-            '../../../../../../Extension/src/pages/options/services/messenger'
+            '../../../../../../Extension/src/pages/services/messenger'
         );
         vi.mocked(messenger.checkUpdates).mockResolvedValueOnce({ lastCheckTimeMs: confirmedTs });
 
@@ -178,7 +178,7 @@ describe.skipIf(!__IS_MV3__)('SettingsStore MV3 — latestCheckTime', () => {
         const store = await createStore();
 
         const { messenger } = await import(
-            '../../../../../../Extension/src/pages/options/services/messenger'
+            '../../../../../../Extension/src/pages/services/messenger'
         );
         vi.mocked(messenger.checkUpdates).mockResolvedValueOnce({ lastCheckTimeMs: null });
 
