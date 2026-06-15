@@ -24,53 +24,13 @@ import { observer } from 'mobx-react';
 import cn from 'classnames';
 
 import { translator } from '../../../../../common/translators/translator';
-import { UserAgent } from '../../../../../common/user-agent';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
-import {
-    Forward,
-    ForwardAction,
-    ForwardFrom,
-} from '../../../../../common/forward';
 import { TelemetryEventName, TelemetryScreenName } from '../../../../../common/telemetry';
 import desktopAppPromoImage from '../../../../../../assets/images/desktop-app-promo.svg';
+import { getCtaByOs } from '../../common/desktop-app-cta';
 
 import styles from './desktop-app-promo.module.pcss';
-
-/**
- * Returns the CTA button text and URL based on user's OS.
- *
- * @returns Object with `text` and `url` properties.
- */
-export const getCtaByOs = (): { text: string; url: string } => {
-    if (UserAgent.isMacOs) {
-        return {
-            text: translator.getMessage('options_desktop_app_promo_button_mac'),
-            url: Forward.get({
-                action: ForwardAction.DesktopAppPromoMac,
-                from: ForwardFrom.Options,
-            }),
-        };
-    }
-
-    if (UserAgent.isWindows) {
-        return {
-            text: translator.getMessage('options_desktop_app_promo_button_windows'),
-            url: Forward.get({
-                action: ForwardAction.DesktopAppPromoWindows,
-                from: ForwardFrom.Options,
-            }),
-        };
-    }
-
-    return {
-        text: translator.getMessage('options_desktop_app_promo_button_linux'),
-        url: Forward.get({
-            action: ForwardAction.DesktopAppPromoLinux,
-            from: ForwardFrom.Options,
-        }),
-    };
-};
 
 /**
  * Promo card encouraging users to install the AdGuard desktop app.
