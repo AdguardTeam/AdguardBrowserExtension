@@ -74,6 +74,11 @@ export const Icons = () => {
                 <path d="M16.5 6V4.5" stroke="currentColor" fill="none" strokeWidth="1.5" strokeLinecap="round" />
             </symbol>
 
+            <symbol id="quality" viewBox="0 0 24 24">
+                <path stroke="currentColor" strokeLinejoin="round" strokeWidth="1.5" d="m12 18.284-3.827 2.955-.616-4.796-4.796-.616L5.716 12 2.761 8.173l4.796-.616.616-4.796L12 5.716l3.827-2.955.617 4.796 4.795.616L18.284 12l2.955 3.827-4.796.617-.616 4.795z" clipRule="evenodd" fill="none" />
+                <path stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" d="M9 11.674 11.395 14 15 10" fill="none" />
+            </symbol>
+
             <symbol id="link" viewBox="0 0 24 24">
                 <g fill="none" fillRule="evenodd">
                     <path stroke="currentColor" d="M18 11.834V6h-5.714M17.92 6.04l-6.788 6.93M8.767 7H8a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2v-.704" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

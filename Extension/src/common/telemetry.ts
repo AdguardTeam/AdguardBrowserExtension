@@ -95,6 +95,7 @@ export enum TelemetryEventName {
     ReactivateFiltersClick = 'reactivate_filters_click',
     GetTheAppClick = 'get_the_app_click',
     CloseWarningClick = 'close_warning_click',
+    ManageExtensionsClick = 'manage_extensions_click',
 }
 
 export type TelemetryActionToScreenMap = {
@@ -135,4 +136,5 @@ export type TelemetryActionToScreenMap = {
     [TelemetryEventName.ReactivateFiltersClick]: TelemetryScreenName.RulesLimitsError;
     [TelemetryEventName.GetTheAppClick]: TelemetryScreenName.RulesLimitsError;
     [TelemetryEventName.CloseWarningClick]: TelemetryScreenName.RulesLimitsError;
+    [TelemetryEventName.ManageExtensionsClick]: TelemetryScreenName.RulesLimitsError;
 };

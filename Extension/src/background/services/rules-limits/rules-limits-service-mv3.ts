@@ -209,7 +209,13 @@ export class RulesLimitsService {
     }
 
     /**
-     * Get the number of static rules enabled.
+     * Get the number of static rules enabled, including metadata rules.
+     *
+     * NOTE: AdGuard includes a metadata rule (id=1) at the start of each
+     * generated static ruleset JSON file. Chrome counts this rule against the
+     * global 330,000 budget, but `RuleSet.getRulesCount()` does not include it.
+     * This method adds +1 per enabled ruleset to match Chrome's actual
+     * consumption count.
      *
      * @param result Configuration result.
      * @param filters Filters with metadata.
@@ -222,7 +228,7 @@ export class RulesLimitsService {
         const ruleSets = RulesLimitsService.getRuleSetCounters(filters, ruleSetsCounters);
 
         return ruleSets.reduce((sum, ruleSet) => {
-            return sum + ruleSet.rulesCount;
+            return sum + ruleSet.rulesCount + 1;
         }, 0);
     }
 
@@ -435,7 +441,17 @@ export class RulesLimitsService {
 
         const staticRulesEnabledCount = RulesLimitsService.getStaticRulesEnabledCount(result, filters);
         const availableStaticRulesCount = await browser.declarativeNetRequest.getAvailableStaticRuleCount();
-        const staticRulesMaximumCount = staticRulesEnabledCount + availableStaticRulesCount;
+        const sessionRules = await browser.declarativeNetRequest.getSessionRules();
+
+        /**
+         * Chrome counts session rules as part of the global static rule limit.
+         * We add sessionRules.length here to reflect the actual budget consumed.
+         *
+         * See Chromium issue: https://issues.chromium.org/u/1/issues/520052960.
+         */
+        const staticRulesMaximumCount = staticRulesEnabledCount
+            + availableStaticRulesCount
+            + sessionRules.length;
 
         return {
             dynamicRulesEnabledCount: RulesLimitsService.getDynamicRulesEnabledCount(result),
@@ -663,7 +679,7 @@ export class RulesLimitsService {
                     rulesCount: {
                         // return number of all rules (enabled + excluded)
                         // to show how many rules a user is trying to enable
-                        current: dynamicRulesEnabledCount + dynamicRulesExcludedCount,
+                        current: allRulesCount,
                         maximum: dynamicRulesMaximumCount,
                     },
                 },

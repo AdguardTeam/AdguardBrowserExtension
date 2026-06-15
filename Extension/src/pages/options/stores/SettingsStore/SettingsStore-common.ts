@@ -230,6 +230,12 @@ export abstract class SettingsStoreCommon {
     @observable
     showGeneralSettingsPromo = false;
 
+    /**
+     * Whether the Rule Limits A/B test B-variant is active (AG-54586).
+     */
+    @observable
+    showRuleLimitsVariantB = false;
+
     @observable
     allowlistSizeReset = false;
 
@@ -352,6 +358,7 @@ export abstract class SettingsStoreCommon {
         this.isChrome = data.environmentOptions.isChrome;
         this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
         this.showGeneralSettingsPromo = data.showGeneralSettingsPromo;
+        this.showRuleLimitsVariantB = data.showRuleLimitsVariantB;
         this.optionsReadyToRender = true;
     }
 

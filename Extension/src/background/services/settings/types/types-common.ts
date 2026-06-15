@@ -109,4 +109,9 @@ export type GetOptionsDataResponseCommon = {
      * Whether the General Settings promo A/B test B-variant is active.
      */
     showGeneralSettingsPromo: boolean;
+
+    /**
+     * Whether the Rule Limits A/B test B-variant is active (AG-54586).
+     */
+    showRuleLimitsVariantB: boolean;
 };
