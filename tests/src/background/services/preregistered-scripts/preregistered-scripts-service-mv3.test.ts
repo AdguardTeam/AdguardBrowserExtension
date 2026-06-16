@@ -27,8 +27,8 @@ import {
 } from 'vitest';
 
 import {
-    PersistentScriptsService,
-} from '../../../../../Extension/src/background/services/persistent-scripts/persistent-scripts-service-mv3';
+    PreregisteredScriptsService,
+} from '../../../../../Extension/src/background/services/preregistered-scripts/preregistered-scripts-service-mv3';
 
 // Mock chrome.scripting API
 const mockGetRegistered = vi.fn();
@@ -45,9 +45,9 @@ vi.stubGlobal('chrome', {
 
 // Mock the registry import — simplified key-value format
 vi.mock(
-    'critical-scripts-registry',
+    'preregistered-scripts-registry',
     () => ({
-        criticalDomainScripts: {
+        preregisteredDomainScripts: {
             'youtube.com': ['2', '5'],
         },
     }),
@@ -63,7 +63,7 @@ vi.mock('../../../../../Extension/src/common/logger', () => ({
     },
 }));
 
-describe('PersistentScriptsService', () => {
+describe('PreregisteredScriptsService', () => {
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -72,13 +72,13 @@ describe('PersistentScriptsService', () => {
         it('registers scripts for enabled filters that are not yet registered', async () => {
             mockGetRegistered.mockResolvedValue([]);
 
-            await PersistentScriptsService.sync([2]);
+            await PreregisteredScriptsService.sync([2]);
 
             expect(mockRegister).toHaveBeenCalledTimes(1);
             const registered = mockRegister.mock.calls[0]![0]!;
             expect(registered).toHaveLength(1);
-            expect(registered[0].id).toBe('critical_youtube.com_2');
-            expect(registered[0].js).toEqual(['filters/critical-scripts/youtube.com-2.js']);
+            expect(registered[0].id).toBe('preregistered_youtube.com_2');
+            expect(registered[0].js).toEqual(['filters/preregistered-scripts/youtube.com-2.js']);
             expect(registered[0].matches).toEqual(['*://youtube.com/*', '*://*.youtube.com/*']);
             expect(registered[0].runAt).toBe('document_start');
             expect(registered[0].world).toBe('MAIN');
@@ -88,47 +88,47 @@ describe('PersistentScriptsService', () => {
         it('registers scripts for multiple enabled filters', async () => {
             mockGetRegistered.mockResolvedValue([]);
 
-            await PersistentScriptsService.sync([2, 5]);
+            await PreregisteredScriptsService.sync([2, 5]);
 
             expect(mockRegister).toHaveBeenCalledTimes(1);
             const registered = mockRegister.mock.calls[0]![0]!;
             expect(registered).toHaveLength(2);
             const ids = registered.map((r: { id: string }) => r.id);
-            expect(ids).toContain('critical_youtube.com_2');
-            expect(ids).toContain('critical_youtube.com_5');
+            expect(ids).toContain('preregistered_youtube.com_2');
+            expect(ids).toContain('preregistered_youtube.com_5');
         });
 
         it('does not register scripts for disabled filters', async () => {
             mockGetRegistered.mockResolvedValue([]);
 
-            await PersistentScriptsService.sync([2]);
+            await PreregisteredScriptsService.sync([2]);
 
             const registered = mockRegister.mock.calls[0]![0]!;
             const ids = registered.map((r: { id: string }) => r.id);
-            expect(ids).not.toContain('critical_youtube.com_5');
+            expect(ids).not.toContain('preregistered_youtube.com_5');
         });
 
         it('unregisters scripts for filters that are no longer enabled', async () => {
             mockGetRegistered.mockResolvedValue([
-                { id: 'critical_youtube.com_2' },
-                { id: 'critical_youtube.com_5' },
+                { id: 'preregistered_youtube.com_2' },
+                { id: 'preregistered_youtube.com_5' },
             ]);
 
             // Only filter 2 is enabled — filter 5 should be unregistered
-            await PersistentScriptsService.sync([2]);
+            await PreregisteredScriptsService.sync([2]);
 
             expect(mockUnregister).toHaveBeenCalledWith({
-                ids: ['critical_youtube.com_5'],
+                ids: ['preregistered_youtube.com_5'],
             });
             expect(mockRegister).not.toHaveBeenCalled();
         });
 
         it('leaves already-correct registrations untouched', async () => {
             mockGetRegistered.mockResolvedValue([
-                { id: 'critical_youtube.com_2' },
+                { id: 'preregistered_youtube.com_2' },
             ]);
 
-            await PersistentScriptsService.sync([2]);
+            await PreregisteredScriptsService.sync([2]);
 
             expect(mockRegister).not.toHaveBeenCalled();
             expect(mockUnregister).not.toHaveBeenCalled();
@@ -136,25 +136,25 @@ describe('PersistentScriptsService', () => {
 
         it('cleans up stale old-format script IDs', async () => {
             mockGetRegistered.mockResolvedValue([
-                { id: 'critical_youtube.com' }, // old format — no filterId suffix
-                { id: 'critical_youtube.com_2' },
+                { id: 'preregistered_youtube.com' }, // old format — no filterId suffix
+                { id: 'preregistered_youtube.com_2' },
             ]);
 
-            await PersistentScriptsService.sync([2]);
+            await PreregisteredScriptsService.sync([2]);
 
             // Old-format ID should be removed
             expect(mockUnregister).toHaveBeenCalledWith({
-                ids: ['critical_youtube.com'],
+                ids: ['preregistered_youtube.com'],
             });
         });
 
-        it('does not touch registrations not starting with critical_ prefix', async () => {
+        it('does not touch registrations not starting with preregistered_ prefix', async () => {
             mockGetRegistered.mockResolvedValue([
                 { id: 'some_other_script' },
-                { id: 'critical_youtube.com_2' },
+                { id: 'preregistered_youtube.com_2' },
             ]);
 
-            await PersistentScriptsService.sync([2]);
+            await PreregisteredScriptsService.sync([2]);
 
             // Only ids with the prefix are considered for removal
             const unregisterCall = mockUnregister.mock.calls[0]?.[0];
@@ -165,14 +165,14 @@ describe('PersistentScriptsService', () => {
 
         it('handles empty enabled filter list — unregisters everything', async () => {
             mockGetRegistered.mockResolvedValue([
-                { id: 'critical_youtube.com_2' },
-                { id: 'critical_youtube.com_5' },
+                { id: 'preregistered_youtube.com_2' },
+                { id: 'preregistered_youtube.com_5' },
             ]);
 
-            await PersistentScriptsService.sync([]);
+            await PreregisteredScriptsService.sync([]);
 
             expect(mockUnregister).toHaveBeenCalledWith({
-                ids: ['critical_youtube.com_2', 'critical_youtube.com_5'],
+                ids: ['preregistered_youtube.com_2', 'preregistered_youtube.com_5'],
             });
             expect(mockRegister).not.toHaveBeenCalled();
         });

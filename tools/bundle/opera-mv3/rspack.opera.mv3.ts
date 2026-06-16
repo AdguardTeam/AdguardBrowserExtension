@@ -96,9 +96,9 @@ export const genOperaMv3Config = (browserConfig: BrowserConfig, options: BuildOp
         devtool: BUILD_ENV === 'dev' ? 'inline-source-map' : false,
         resolve: {
             alias: {
-                'critical-scripts-registry': path.resolve(
+                'preregistered-scripts-registry': path.resolve(
                     __dirname,
-                    '../../../Extension/filters/opera-mv3/critical-scripts/registry.js',
+                    '../../../Extension/filters/opera-mv3/preregistered-scripts/registry.js',
                 ),
             },
         },

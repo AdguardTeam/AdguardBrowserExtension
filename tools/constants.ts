@@ -236,6 +236,6 @@ export const FIREFOX_WEBEXT_UPDATE_FILE_NAME = 'update.json';
 export const FIREFOX_WEBEXT_UPDATE_URL = `${UPDATE_BASE_URL}/${FIREFOX_WEBEXT_UPDATE_FILE_NAME}`;
 
 /**
- * Subdirectory within the filters output folder where critical-domain bundles are written.
+ * Subdirectory within the filters output folder where preregistered-domain bundles are written.
  */
-export const CRITICAL_SCRIPTS_DIR = 'critical-scripts';
+export const PREREGISTERED_SCRIPTS_DIR = 'preregistered-scripts';

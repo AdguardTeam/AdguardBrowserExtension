@@ -18,19 +18,19 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { criticalDomainScripts } from 'critical-scripts-registry';
+import { preregisteredDomainScripts } from 'preregistered-scripts-registry';
 
 import { logger } from '../../../common/logger';
 
-/** Stable ID prefix for all critical-domain content script registrations. */
-const SCRIPT_ID_PREFIX = 'critical_';
+/** Stable ID prefix for all preregistered-domain content script registrations. */
+const SCRIPT_ID_PREFIX = 'preregistered_';
 const SCRIPT_ID_SEPARATOR = '_';
 
 /** Extension-relative prefix for filter assets. */
 const EXTENSION_FILTERS_SUBDIR = 'filters';
 
-/** Subdirectory within the filters folder where critical-domain bundles live. */
-const CRITICAL_SCRIPTS_DIR = 'critical-scripts';
+/** Subdirectory within the filters folder where preregistered-domain bundles live. */
+const PREREGISTERED_SCRIPTS_DIR = 'preregistered-scripts';
 
 /**
  * Converts a domain string into the two URL match patterns used in
@@ -50,10 +50,10 @@ const domainToMatchPatterns = (domain: string): string[] => {
  * @param domain Apex domain string, e.g. `"youtube.com"`.
  * @param filterId Filter ID as a string, e.g. `"14"`.
  *
- * @returns Extension-relative path, e.g. `"filters/critical-scripts/youtube.com-14.js"`.
+ * @returns Extension-relative path, e.g. `"filters/preregistered-scripts/youtube.com-14.js"`.
  */
 const buildScriptPath = (domain: string, filterId: string): string => {
-    return `${EXTENSION_FILTERS_SUBDIR}/${CRITICAL_SCRIPTS_DIR}/${domain}-${filterId}.js`;
+    return `${EXTENSION_FILTERS_SUBDIR}/${PREREGISTERED_SCRIPTS_DIR}/${domain}-${filterId}.js`;
 };
 
 /**
@@ -62,21 +62,21 @@ const buildScriptPath = (domain: string, filterId: string): string => {
  * @param domain Apex domain string, e.g. `"youtube.com"`.
  * @param filterId Filter ID as a string, e.g. `"14"`.
  *
- * @returns Registration ID string, e.g. `"critical_youtube.com_14"`.
+ * @returns Registration ID string, e.g. `"preregistered_youtube.com_14"`.
  */
 const scriptIdForDomainFilter = (domain: string, filterId: string): string => {
     return `${SCRIPT_ID_PREFIX}${domain}${SCRIPT_ID_SEPARATOR}${filterId}`;
 };
 
 /**
- * Manages persistent content-script registrations for critical domains.
+ * Manages preregistered content-script registrations for preregistered domains.
  *
  * Scripts registered here use `persistAcrossSessions: true` so they survive
  * browser restarts without needing to be re-registered on startup.
  */
-export class PersistentScriptsService {
+export class PreregisteredScriptsService {
     /**
-     * Synchronises registered critical-domain content scripts with the given
+     * Synchronises registered preregistered-domain content scripts with the given
      * set of enabled filter IDs.
      *
      * Each (domain, filterId) pair maps to its own `chrome.scripting`
@@ -92,7 +92,7 @@ export class PersistentScriptsService {
         // Build the set of (scriptId -> RegisteredContentScript) that should be active
         const shouldBeActive = new Map<string, chrome.scripting.RegisteredContentScript>();
 
-        Object.entries(criticalDomainScripts).forEach(([domain, filterIds]) => {
+        Object.entries(preregisteredDomainScripts).forEach(([domain, filterIds]) => {
             filterIds.forEach((filterId) => {
                 if (!enabledSet.has(filterId)) {
                     return;
@@ -123,20 +123,20 @@ export class PersistentScriptsService {
         const toRegister = [...shouldBeActive.values()].filter((s) => !currentIds.has(s.id));
 
         if (toRemoveIds.length > 0) {
-            logger.info(`[ext.PersistentScriptsService.sync]: critical-domain-bundle: Unregistering ${toRemoveIds.length} script(s): ${toRemoveIds.join(', ')}`);
+            logger.info(`[ext.PreregisteredScriptsService.sync]: preregistered-domain-bundle: Unregistering ${toRemoveIds.length} script(s): ${toRemoveIds.join(', ')}`);
             try {
                 await chrome.scripting.unregisterContentScripts({ ids: toRemoveIds });
             } catch (e) {
-                logger.error('[ext.PersistentScriptsService.sync]: Failed to unregister critical scripts', e);
+                logger.error('[ext.PreregisteredScriptsService.sync]: Failed to unregister preregistered scripts', e);
             }
         }
 
         if (toRegister.length > 0) {
-            logger.info(`[ext.PersistentScriptsService.sync]: critical-domain-bundle: Registering ${toRegister.length} script(s): ${toRegister.map((s) => s.id).join(', ')}`);
+            logger.info(`[ext.PreregisteredScriptsService.sync]: preregistered-domain-bundle: Registering ${toRegister.length} script(s): ${toRegister.map((s) => s.id).join(', ')}`);
             try {
                 await chrome.scripting.registerContentScripts(toRegister);
             } catch (e) {
-                logger.error('[ext.PersistentScriptsService.sync]: Failed to register critical scripts', e);
+                logger.error('[ext.PreregisteredScriptsService.sync]: Failed to register preregistered scripts', e);
             }
         }
     }

@@ -96,9 +96,9 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, options: BuildO
         devtool: BUILD_ENV === 'dev' ? 'inline-source-map' : false,
         resolve: {
             alias: {
-                'critical-scripts-registry': path.resolve(
+                'preregistered-scripts-registry': path.resolve(
                     __dirname,
-                    '../../../Extension/filters/chromium-mv3/critical-scripts/registry.js',
+                    '../../../Extension/filters/chromium-mv3/preregistered-scripts/registry.js',
                 ),
             },
         },

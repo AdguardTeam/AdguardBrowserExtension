@@ -24,7 +24,7 @@ import { excludeUnsafeRules } from '@adguard/dnr-rulesets';
 import { findDangerousRules } from './resources/dangerous-rules';
 import { downloadAndPrepareMv3Filters } from './resources/download-filters';
 import { updateLocalResourcesForMv3 } from './resources/update-local-script-rules';
-import { generateCriticalDomainBundles } from './resources/critical-scripts/generate-bundle';
+import { generatePreregisteredDomainBundles } from './resources/preregistered-scripts/generate-bundle';
 import { AssetsFiltersBrowser, DECLARATIVE_FILTERS_DEST } from './constants';
 import { updateTestcasesScriptRules } from './resources/update-local-test-script-rules';
 
@@ -58,10 +58,10 @@ const resourcesMv3 = async (skipLocalResources = false) => {
         console.log('Local resources for MV3 updated');
 
         await Promise.all([
-            generateCriticalDomainBundles(AssetsFiltersBrowser.ChromiumMv3),
-            generateCriticalDomainBundles(AssetsFiltersBrowser.OperaMv3),
+            generatePreregisteredDomainBundles(AssetsFiltersBrowser.ChromiumMv3),
+            generatePreregisteredDomainBundles(AssetsFiltersBrowser.OperaMv3),
         ]);
-        console.log('Critical domain bundles generated');
+        console.log('Preregistered domain bundles generated');
     } else {
         console.log('Skipping update of local resources for MV3 (--skip-local-resources flag set)');
     }
