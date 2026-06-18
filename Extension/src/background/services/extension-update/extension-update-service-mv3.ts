@@ -166,35 +166,59 @@ export class ExtensionUpdateService {
         // Load persisted state if any saved before SW restart
         const state = await ExtensionUpdateService.stateManager.init();
 
-        if (!state || !state.nextVersion) {
-            return;
+        // Determine Init event payload from persisted state.
+        // isUpdateAvailable: true if a valid pending update exists in auto-update state.
+        // isReloadedOnUpdate: true if manual update data exists (extension just reloaded after update).
+        // isUpdateFailedAfterReload: true if manual update data exists and its isOk flag is false.
+        let isUpdateAvailable = false;
+        const isReloadedOnUpdate = await ManualUpdateHandler.hasUpdateData();
+        const manualUpdateData = await ExtensionUpdateService.peekManualExtensionUpdateData();
+        const isUpdateFailedAfterReload = isReloadedOnUpdate
+            && manualUpdateData !== null
+            && !manualUpdateData.isOk;
+
+        if (state && state.nextVersion) {
+            // Check if the persisted nextVersion is not newer than the current version.
+            // If Chrome applied the update during browser shutdown (bypassing our
+            // applyUpdate/clearAutoUpdateState flow), the persisted state becomes
+            // stale and must be cleared to avoid showing a false update indicator.
+            try {
+                const persisted = new Version(state.nextVersion);
+                const current = new Version(Prefs.version);
+                if (persisted.compare(current) <= 0) {
+                    logger.info(`[ext.ExtensionUpdateService.init]: Clearing stale update state: persisted nextVersion ${state.nextVersion} is not newer than current version ${Prefs.version}`);
+                    await ExtensionUpdateService.stateManager.clear();
+                } else {
+                    isUpdateAvailable = true;
+                }
+            } catch (e) {
+                logger.error(`[ext.ExtensionUpdateService.init]: Failed to compare versions, clearing state defensively: ${e}`);
+                await ExtensionUpdateService.stateManager.clear();
+            }
         }
 
-        // Check if the persisted nextVersion is not newer than the current version.
-        // If Chrome applied the update during browser shutdown (bypassing our
-        // applyUpdate/clearAutoUpdateState flow), the persisted state becomes
-        // stale and must be cleared to avoid showing a false update indicator.
-        try {
-            const persisted = new Version(state.nextVersion);
-            const current = new Version(Prefs.version);
-            if (persisted.compare(current) <= 0) {
-                logger.info(`[ext.ExtensionUpdateService.init]: Clearing stale update state: persisted nextVersion ${state.nextVersion} is not newer than current version ${Prefs.version}`);
-                await ExtensionUpdateService.stateManager.clear();
-                return;
-            }
-        } catch (e) {
-            logger.error(`[ext.ExtensionUpdateService.init]: Failed to compare versions, clearing state defensively: ${e}`);
-            await ExtensionUpdateService.stateManager.clear();
-            return;
-        }
+        // Send Init event exactly once per service worker lifecycle.
+        // The FSM transitions based on the event payload:
+        // - isUpdateAvailable: true → Idle → Available
+        // - isUpdateFailedAfterReload: true → Idle → Failed
+        // - isReloadedOnUpdate: true → Idle → Success
+        // - neither → stays in Idle
+        extensionUpdateActor.send({
+            type: ExtensionUpdateFSMEvent.Init,
+            isUpdateAvailable,
+            isReloadedOnUpdate,
+            isUpdateFailedAfterReload,
+        });
 
         // If update was already available before SW restart, manually trigger
-        // `onUpdateAvailable` to restore the update process, independently of
-        // source of update (manual or automatic).
-        ExtensionUpdateService.onUpdateAvailable(
-            { version: state.nextVersion },
-            state.lastNavigationTimestamp,
-        );
+        // `onUpdateAvailable` to restore the update process (auto-update handler setup,
+        // icon timing, navigation listener), independently of update source (manual or automatic).
+        if (isUpdateAvailable && state?.nextVersion) {
+            ExtensionUpdateService.onUpdateAvailable(
+                { version: state.nextVersion },
+                state.lastNavigationTimestamp,
+            );
+        }
     }
 
     /**
@@ -296,12 +320,35 @@ export class ExtensionUpdateService {
     }
 
     /**
+     * Returns the current FSM state value.
+     * Used by UI pages to initialize from the FSM snapshot during their initial data fetch.
+     *
+     * @returns The current extension update FSM state.
+     */
+    public static get snapshot(): ExtensionUpdateFSMState {
+        return extensionUpdateActor.getSnapshot().value;
+    }
+
+    /**
      * See {@link ManualUpdateHandler.getUpdateData} description.
      *
      * @returns Manual extension update data or null if not found.
      */
     public static async getManualExtensionUpdateData(): Promise<ManualUpdateMetadata | null> {
         return ManualUpdateHandler.getUpdateData();
+    }
+
+    /**
+     * Reads manual extension update data from storage without removing it.
+     *
+     * See {@link ManualUpdateHandler.peekUpdateData} for details.
+     * This method is intended for FSM initialization during background startup,
+     * where the data must be inspected but preserved for {@link ManualUpdateHandler.handleReload}.
+     *
+     * @returns Manual extension update data or null if not found or invalid.
+     */
+    public static async peekManualExtensionUpdateData(): Promise<ManualUpdateMetadata | null> {
+        return ManualUpdateHandler.peekUpdateData();
     }
 
     /**

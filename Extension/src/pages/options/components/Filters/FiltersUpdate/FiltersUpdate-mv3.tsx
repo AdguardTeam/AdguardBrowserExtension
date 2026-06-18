@@ -18,11 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React, {
-    useCallback,
-    useContext,
-    useState,
-} from 'react';
+import React, { useCallback, useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import { translator } from '../../../../../common/translators/translator';
@@ -30,13 +26,12 @@ import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
 import { formatDate } from '../helpers';
 import { TelemetryEventName, TelemetryScreenName } from '../../../../../common/telemetry';
+import { ExtensionUpdateFSMState } from '../../../../../common/constants';
 
 import styles from './extension-update.module.pcss';
 
 export const FiltersUpdate = observer(() => {
     const { settingsStore, telemetryStore } = useContext(rootStore);
-
-    const [isUpdating, setIsUpdating] = useState(false);
 
     const updateClickHandler = useCallback(async () => {
         telemetryStore.sendCustomEvent(
@@ -44,10 +39,8 @@ export const FiltersUpdate = observer(() => {
             TelemetryScreenName.FiltersScreen,
         );
 
-        setIsUpdating(true);
         await settingsStore.updateExtensionMV3();
-        setIsUpdating(false);
-    }, [settingsStore, telemetryStore, setIsUpdating]);
+    }, [settingsStore, telemetryStore]);
 
     const checkUpdatesClickHandler = useCallback(() => {
         telemetryStore.sendCustomEvent(
@@ -60,7 +53,7 @@ export const FiltersUpdate = observer(() => {
     const checkUpdatesTitle = translator.getMessage('update_check');
     const updateAvailableBtnTitle = translator.getMessage('update_available_update_btn');
 
-    if (settingsStore.isExtensionCheckingUpdateOrUpdating) {
+    if (settingsStore.extensionUpdateState === ExtensionUpdateFSMState.Checking) {
         return (
             <div className={styles.extensionUpdate}>
                 <div className={styles.info}>
@@ -81,7 +74,7 @@ export const FiltersUpdate = observer(() => {
         );
     }
 
-    if (isUpdating) {
+    if (settingsStore.extensionUpdateState === ExtensionUpdateFSMState.Updating) {
         return (
             <div className={styles.extensionUpdate}>
                 <div className={styles.info}>
