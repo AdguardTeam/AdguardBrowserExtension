@@ -292,10 +292,12 @@ describe('ManualUpdateHandler', () => {
                 version: '5.3.0.18',
             });
 
-            // requestUpdateCheck returns throttled — Chrome does not fire onUpdateAvailable
-            (global as Record<string, unknown>).chrome = {
-                ...((global as Record<string, unknown>).chrome as object),
-            };
+            // requestUpdateCheck succeeds and confirms update is available —
+            // handler enters the "wait for Chrome event" early-return path.
+            mockRequestUpdateCheck.mockResolvedValue({
+                status: 'update_available',
+                version: '5.3.0.18',
+            });
 
             const result = await handler.check();
 

@@ -145,7 +145,8 @@ export class ManualUpdateHandler {
      * 4. Waits for Chrome to download update.
      * 5. Fires callbacks for FSM coordination.
      *
-     * @returns The persisted last check timestamp in milliseconds.
+     * @returns Result object with `lastCheckTimeMs` — the persisted timestamp in milliseconds,
+     * or `null` if saving failed or the check was skipped (update in progress).
      */
     public async check(): Promise<ManualCheckResult> {
         // Mark this as manual check

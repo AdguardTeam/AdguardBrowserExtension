@@ -81,7 +81,7 @@ export class SettingsStore extends SettingsStoreCommon {
      * Updated on each manual "Check for updates" action.
      */
     @observable
-    lastCheckedTime = 0;
+    lastCheckedTimeMs = 0;
 
     constructor(rootStore: RootStore) {
         super(rootStore);
@@ -124,7 +124,7 @@ export class SettingsStore extends SettingsStoreCommon {
 
         this.setIsExtensionUpdateAvailable(isExtensionUpdateAvailable);
 
-        this.lastCheckedTime = lastCheckTimeMs ?? this.lastCheckedTime;
+        this.lastCheckedTimeMs = lastCheckTimeMs ?? this.lastCheckedTimeMs;
 
         // notification about successful or failed update should be shown after the options page is opened.
         // and it cannot be done by notifier (from the background page)
@@ -206,7 +206,7 @@ export class SettingsStore extends SettingsStoreCommon {
         // to avoid showing a stale time that will disappear after a page reload.
         if (lastCheckTimeMs !== null) {
             runInAction(() => {
-                this.lastCheckedTime = lastCheckTimeMs;
+                this.lastCheckedTimeMs = lastCheckTimeMs;
             });
         }
     }
@@ -260,8 +260,8 @@ export class SettingsStore extends SettingsStoreCommon {
      * @returns The latest check timestamp.
      */
     @override
-    override get latestCheckTime() {
-        return Math.max(super.latestCheckTime, this.lastCheckedTime);
+    override get latestCheckTimeMs() {
+        return Math.max(super.latestCheckTimeMs, this.lastCheckedTimeMs);
     }
 
     /**

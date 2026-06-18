@@ -39,6 +39,10 @@ vi.mock('../../../../../Extension/src/background/storages', () => ({
     },
 }));
 
+// Arbitrary timestamps; the exact values have no special meaning.
+const SOME_TIMESTAMP_MS = 1_700_000_000_000;
+const SOME_LATER_TIMESTAMP_MS = 1_700_000_001_000;
+
 describe('FilterUpdateServiceCommon — last check time', () => {
     beforeEach(() => {
         Object.keys(storage).forEach((k) => delete storage[k]);
@@ -51,24 +55,20 @@ describe('FilterUpdateServiceCommon — last check time', () => {
     });
 
     it('stores and retrieves the check timestamp', async () => {
-        const ts = 1_700_000_000_000;
-        await FilterUpdateService.setLastCheckTimeMs(ts);
+        await FilterUpdateService.setLastCheckTimeMs(SOME_TIMESTAMP_MS);
         const result = await FilterUpdateService.getLastCheckTimeMs();
-        expect(result).toBe(ts);
+        expect(result).toBe(SOME_TIMESTAMP_MS);
     });
 
     it('overwrites with a newer timestamp', async () => {
-        const ts1 = 1_700_000_000_000;
-        const ts2 = 1_700_000_001_000;
-        await FilterUpdateService.setLastCheckTimeMs(ts1);
-        await FilterUpdateService.setLastCheckTimeMs(ts2);
+        await FilterUpdateService.setLastCheckTimeMs(SOME_TIMESTAMP_MS);
+        await FilterUpdateService.setLastCheckTimeMs(SOME_LATER_TIMESTAMP_MS);
         const result = await FilterUpdateService.getLastCheckTimeMs();
-        expect(result).toBe(ts2);
+        expect(result).toBe(SOME_LATER_TIMESTAMP_MS);
     });
 
     it('does not affect the last update key', async () => {
-        const checkTs = 1_700_000_000_000;
-        await FilterUpdateService.setLastCheckTimeMs(checkTs);
+        await FilterUpdateService.setLastCheckTimeMs(SOME_TIMESTAMP_MS);
 
         // last update should still be null/unset
         const updateTs = await FilterUpdateService.getLastUpdateTimeMs();

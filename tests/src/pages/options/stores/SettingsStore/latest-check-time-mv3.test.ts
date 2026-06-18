@@ -139,7 +139,7 @@ describe.skipIf(!__IS_MV3__)('SettingsStore MV3 — latestCheckTime', () => {
 
     it('latestCheckTime is 0 by default', async () => {
         const store = await createStore();
-        expect(store.latestCheckTime).toBe(0);
+        expect(store.latestCheckTimeMs).toBe(0);
     });
 
     it('latestCheckTime is set from runtimeInfo.lastCheckTimeMs on applyRuntimeInfo', async () => {
@@ -148,7 +148,7 @@ describe.skipIf(!__IS_MV3__)('SettingsStore MV3 — latestCheckTime', () => {
 
         store.applyRuntimeInfo(makeRuntimeInfo({ lastCheckTimeMs: ts }));
 
-        expect(store.latestCheckTime).toBe(ts);
+        expect(store.latestCheckTimeMs).toBe(ts);
     });
 
     it('latestCheckTime stays 0 when runtimeInfo.lastCheckTimeMs is null', async () => {
@@ -156,7 +156,7 @@ describe.skipIf(!__IS_MV3__)('SettingsStore MV3 — latestCheckTime', () => {
 
         store.applyRuntimeInfo(makeRuntimeInfo({ lastCheckTimeMs: null }));
 
-        expect(store.latestCheckTime).toBe(0);
+        expect(store.latestCheckTimeMs).toBe(0);
     });
 
     it('latestCheckTime updates reactively after checkUpdates() when background confirms timestamp', async () => {
@@ -170,8 +170,8 @@ describe.skipIf(!__IS_MV3__)('SettingsStore MV3 — latestCheckTime', () => {
 
         await store.checkUpdates();
 
-        expect(store.lastCheckedTime).toBe(confirmedTs);
-        expect(store.latestCheckTime).toBeGreaterThanOrEqual(confirmedTs);
+        expect(store.lastCheckedTimeMs).toBe(confirmedTs);
+        expect(store.latestCheckTimeMs).toBeGreaterThanOrEqual(confirmedTs);
     });
 
     it('latestCheckTime does not update when background returns null (persistence failed)', async () => {
@@ -185,7 +185,7 @@ describe.skipIf(!__IS_MV3__)('SettingsStore MV3 — latestCheckTime', () => {
         await store.checkUpdates();
 
         // lastCheckedTime must stay 0 — no inconsistent optimistic update
-        expect(store.lastCheckedTime).toBe(0);
+        expect(store.lastCheckedTimeMs).toBe(0);
     });
 
     it('latestCheckTime returns max of filter timestamps and lastCheckedTime', async () => {
@@ -202,7 +202,7 @@ describe.skipIf(!__IS_MV3__)('SettingsStore MV3 — latestCheckTime', () => {
         const olderTs = filterTs - 5_000;
         store.applyRuntimeInfo(makeRuntimeInfo({ lastCheckTimeMs: olderTs }));
 
-        expect(store.latestCheckTime).toBe(filterTs);
+        expect(store.latestCheckTimeMs).toBe(filterTs);
     });
 
     it('latestCheckTime prefers lastCheckedTime when it is newer than filter timestamps', async () => {
@@ -217,6 +217,6 @@ describe.skipIf(!__IS_MV3__)('SettingsStore MV3 — latestCheckTime', () => {
         const newerTs = filterTs + 10_000;
         store.applyRuntimeInfo(makeRuntimeInfo({ lastCheckTimeMs: newerTs }));
 
-        expect(store.latestCheckTime).toBe(newerTs);
+        expect(store.latestCheckTimeMs).toBe(newerTs);
     });
 });

@@ -787,7 +787,7 @@ export abstract class SettingsStoreCommon {
      * @returns The latest check time of all filters.
      */
     @computed
-    get latestCheckTime() {
+    get latestCheckTimeMs() {
         return Math.max(...this.filters
             .map(({ lastScheduledCheckTime, lastCheckTime }) => Math.max(
                 lastScheduledCheckTime || 0,

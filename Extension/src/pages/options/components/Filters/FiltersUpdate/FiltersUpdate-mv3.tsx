@@ -155,10 +155,10 @@ export const FiltersUpdate = observer(() => {
                     <div className={styles.title}>
                         {checkUpdatesTitle}
                     </div>
-                    {settingsStore.latestCheckTime && (
+                    {settingsStore.latestCheckTimeMs > 0 && (
                         <div className={styles.desc}>
                             {translator.getMessage('options_filters_last_checked', {
-                                date: formatDate(settingsStore.latestCheckTime),
+                                date: formatDate(settingsStore.latestCheckTimeMs),
                             })}
                         </div>
                     )}
