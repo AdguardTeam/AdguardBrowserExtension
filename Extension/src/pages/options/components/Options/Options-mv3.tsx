@@ -33,8 +33,7 @@ import { About } from '../About';
 import { RulesLimits } from '../RulesLimits/RulesLimits-mv3';
 import { type LongLivedConnectionCallbackMessage } from '../../../services/messenger';
 import { logger } from '../../../../common/logger';
-import { ExtensionUpdateFSMState, NotifierType } from '../../../../common/constants';
-import { NotificationType } from '../../../common/types';
+import { NotifierType } from '../../../../common/constants';
 import { OptionsPageSections } from '../../../../common/nav';
 import { translator } from '../../../../common/translators/translator';
 import type UiStore from '../../stores/UiStore';
@@ -55,55 +54,13 @@ export const createMessageHandler = (
     settingsStore: SettingsStore,
     uiStore: UiStore,
 ) => {
-    const handleExtensionUpdateStateChange = (state: ExtensionUpdateFSMState) => {
-        switch (state) {
-            case ExtensionUpdateFSMState.Checking:
-                settingsStore.setIsExtensionCheckingUpdateOrUpdating(true);
-                break;
-            case ExtensionUpdateFSMState.NotAvailable: {
-                settingsStore.setIsExtensionCheckingUpdateOrUpdating(false);
-                uiStore.addNotification({
-                    type: NotificationType.Success,
-                    text: translator.getMessage('update_not_needed'),
-                });
-                break;
-            }
-            case ExtensionUpdateFSMState.Available: {
-                settingsStore.setIsExtensionCheckingUpdateOrUpdating(false);
-                settingsStore.setIsExtensionUpdateAvailable(true);
-                break;
-            }
-            case ExtensionUpdateFSMState.Updating:
-                settingsStore.setIsExtensionCheckingUpdateOrUpdating(true);
-                break;
-            case ExtensionUpdateFSMState.Failed: {
-                settingsStore.setIsExtensionCheckingUpdateOrUpdating(false);
-                settingsStore.setIsExtensionUpdateAvailable(false);
-                uiStore.addNotification({
-                    type: NotificationType.Error,
-                    text: translator.getMessage('update_failed_text'),
-                    buttons: [{
-                        title: translator.getMessage('update_failed_try_again_btn'),
-                        onClick: settingsStore.checkUpdates,
-                    }],
-                });
-                break;
-            }
-            default: {
-                // do nothing since notification should be shown
-                // for a limited list of states
-                break;
-            }
-        }
-    };
-
     return async (message: LongLivedConnectionCallbackMessage) => {
         const { type } = message;
 
         switch (type) {
             case NotifierType.ExtensionUpdateStateChange: {
                 const [eventData] = message.data;
-                handleExtensionUpdateStateChange(eventData);
+                settingsStore.handleExtensionUpdateStateChange(eventData);
                 break;
             }
             default: {
@@ -135,6 +92,10 @@ export const initialize = async (
         return false;
     }
     const { runtimeInfo } = optionsData;
+
+    // applyRuntimeInfo() is already called by requestOptionsData(), which
+    // sets extensionUpdateState from the FSM snapshot and adds post-reload notifications.
+    // No need to call configureExtensionUpdates again here.
 
     // Show notification about changed filter list by browser only once.
     if (runtimeInfo?.areFilterLimitsExceeded) {

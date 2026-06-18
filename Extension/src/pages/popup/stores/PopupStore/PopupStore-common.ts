@@ -147,9 +147,14 @@ export class PopupStoreCommon {
 
     /**
      * Notification about update result to display in popup.
+     * Default implementation returns null — overridden as a computed accessor
+     * in {@link PopupStore} (MV3) via the version-specific file pattern.
      */
-    @observable
-    updateNotification: NotificationParams | null = null;
+    // eslint-disable-next-line class-methods-use-this
+    @computed
+    get updateNotification(): NotificationParams | null {
+        return null;
+    }
 
     currentTabId?: number | null = null;
 
@@ -173,6 +178,17 @@ export class PopupStoreCommon {
                 this.appState = state.value;
             });
         });
+    }
+
+    /**
+     * Cleans up resources owned by this store.
+     *
+     * Must be called when the popup unmounts to prevent callbacks from
+     * mutating detached store instances.
+     */
+    // eslint-disable-next-line class-methods-use-this
+    dispose(): void {
+        // Common cleanup — subclasses may override to add version-specific cleanup.
     }
 
     /**
@@ -610,14 +626,4 @@ export class PopupStoreCommon {
             this.showSearchAccessWarning = false;
         });
     };
-
-    /**
-     * Sets the update notification to display in popup.
-     *
-     * @param notification Notification parameters or null to clear.
-     */
-    @action
-    setUpdateNotification(notification: NotificationParams | null): void {
-        this.updateNotification = notification;
-    }
 }

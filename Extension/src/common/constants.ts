@@ -45,6 +45,14 @@ export const RULES_LIMITS_KEY = 'rules-limits';
 export const MANUAL_EXTENSION_UPDATE_KEY = 'manual-extension-update';
 
 /**
+ * Marker key indicating that {@link MANUAL_EXTENSION_UPDATE_KEY} data
+ * has already been processed by handleReload and the target page was opened.
+ *
+ * Prevents re-opening the page on subsequent service worker restarts.
+ */
+export const MANUAL_EXTENSION_UPDATE_PAGE_OPENED_KEY = 'manual-extension-update-page-opened';
+
+/**
  * Storage key to prevent double injection of content scripts after extension update.
  * Set before extension reload, checked and cleared after reload.
  */
