@@ -65,13 +65,12 @@ export const FilteringEventsRows = observer(({
             <AutoSizer>
                 {({
                     height,
-                    width,
                 }) => {
                     return (
                         <FixedSizeList
                             className="list"
                             height={height || 0}
-                            width={width || 0}
+                            width="100vw"
                             itemCount={events.length}
                             itemData={{
                                 events,
