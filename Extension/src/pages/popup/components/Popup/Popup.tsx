@@ -48,6 +48,7 @@ import {
     MessageType,
 } from '../../../../common/messages';
 import { logger } from '../../../../common/logger';
+import { NotifierType, type ExtensionUpdateFSMState } from '../../../../common/constants';
 import { useObservePopupHeight } from '../../hooks/useObservePopupHeight';
 import { TelemetryScreenName } from '../../../../common/telemetry';
 import { useTelemetryPageViewEvent } from '../../../common/telemetry';
@@ -57,6 +58,7 @@ import '../../styles/main.pcss';
 import './popup.pcss';
 
 export const Popup = observer(() => {
+    const store = useContext(popupStore);
     const {
         appearanceTheme,
         isAppInitialized,
@@ -68,7 +70,7 @@ export const Popup = observer(() => {
         isFilteringPossible,
         telemetryStore,
         isPopupDataReceived,
-    } = useContext(popupStore);
+    } = store;
 
     useAppearanceTheme(appearanceTheme);
 
@@ -188,6 +190,47 @@ export const Popup = observer(() => {
             messenger.onMessage.removeListener(messageHandler);
         };
     }, [updateBlockedStats, getPopupData, setIsAppInitialized]);
+
+    // subscribe to FSM extension update state changes
+    useEffect(() => {
+        let cancelled = false;
+        let removeListenerCallback: (() => void) | undefined;
+
+        const subscribeToUpdates = async () => {
+            const messageHandler = (message: { type: NotifierType; data: unknown[] }) => {
+                const { type, data } = message;
+
+                if (type !== NotifierType.ExtensionUpdateStateChange) {
+                    return;
+                }
+
+                const [state] = data as [ExtensionUpdateFSMState];
+                store.handleExtensionUpdateStateChange(state);
+            };
+
+            const callback = await messenger.createEventListener(
+                [NotifierType.ExtensionUpdateStateChange],
+                messageHandler,
+            );
+
+            // If the effect was cleaned up while we were awaiting,
+            // immediately remove the listener we just registered.
+            if (cancelled) {
+                callback();
+                return;
+            }
+
+            removeListenerCallback = callback;
+        };
+
+        subscribeToUpdates();
+
+        return () => {
+            cancelled = true;
+            removeListenerCallback?.();
+            store.dispose();
+        };
+    }, [store, store.handleExtensionUpdateStateChange]);
 
     return (
         <>

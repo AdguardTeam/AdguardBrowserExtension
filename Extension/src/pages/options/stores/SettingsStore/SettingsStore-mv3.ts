@@ -20,6 +20,7 @@
 
 import {
     action,
+    computed,
     makeObservable,
     observable,
     runInAction,
@@ -33,8 +34,7 @@ import { type RootStore } from '../RootStore';
 import { ForwardFrom } from '../../../../common/forward';
 import { messenger } from '../../../services/messenger';
 import { logger } from '../../../../common/logger';
-import { MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../../common/constants';
-import { sleepIfNecessary } from '../../../../common/sleep-utils';
+import { ExtensionUpdateFSMState } from '../../../../common/constants';
 import { type IRulesLimits } from '../../../../background/services/rules-limits/interface';
 
 import { SettingsStoreCommon, fetchDataWithRetry } from './SettingsStore-common';
@@ -59,22 +59,37 @@ const DEFAULT_RULES_LIMITS: IRulesLimits = {
 
 export class SettingsStore extends SettingsStoreCommon {
     /**
-     * Whether the extension update is available after the checking.
-     */
-    @observable
-    isExtensionUpdateAvailable = false;
-
-    /**
      * Current rule limits and counters for DNR.
      */
     @observable
     rulesLimits: IRulesLimits = DEFAULT_RULES_LIMITS;
 
     /**
-     * Whether the extension update is checking or is updating now.
+     * Current state of the extension update FSM.
+     *
+     * All UI flags are derived from this single source of truth.
      */
     @observable
-    isExtensionCheckingUpdateOrUpdating = false;
+    extensionUpdateState: ExtensionUpdateFSMState = ExtensionUpdateFSMState.Idle;
+
+    /**
+     * Whether an extension update is available for installation.
+     * Derived from the FSM state.
+     */
+    @computed
+    get isExtensionUpdateAvailable(): boolean {
+        return this.extensionUpdateState === ExtensionUpdateFSMState.Available;
+    }
+
+    /**
+     * Whether the extension is currently checking for updates or installing one.
+     * Derived from the FSM state.
+     */
+    @computed
+    get isExtensionCheckingUpdateOrUpdating(): boolean {
+        return this.extensionUpdateState === ExtensionUpdateFSMState.Checking
+            || this.extensionUpdateState === ExtensionUpdateFSMState.Updating;
+    }
 
     constructor(rootStore: RootStore) {
         super(rootStore);
@@ -109,32 +124,108 @@ export class SettingsStore extends SettingsStoreCommon {
     @action
     applyRuntimeInfo(runtimeInfo: GetOptionsDataResponse['runtimeInfo']) {
         const {
-            isExtensionUpdateAvailable,
+            extensionUpdateState,
             isExtensionReloadedOnUpdate,
             isSuccessfulExtensionUpdate,
         } = runtimeInfo;
 
-        this.setIsExtensionUpdateAvailable(isExtensionUpdateAvailable);
+        const previousState = this.extensionUpdateState;
+        this.extensionUpdateState = extensionUpdateState;
 
-        // notification about successful or failed update should be shown after the options page is opened.
-        // and it cannot be done by notifier (from the background page)
-        // because event may be dispatched before the options page is opened,
-        // i.e. listener may not be registered yet.
+        // Show notification for terminal states from non-post-reload data fetches
+        // (e.g., when requestOptionsData is called during an update check flow).
+        // Post-reload notifications are handled separately below.
+        if (!isExtensionReloadedOnUpdate && extensionUpdateState !== previousState) {
+            switch (extensionUpdateState) {
+                case ExtensionUpdateFSMState.NotAvailable:
+                    this.uiStore.addNotification({
+                        type: NotificationType.Success,
+                        text: translator.getMessage('update_not_needed'),
+                    });
+                    break;
+                case ExtensionUpdateFSMState.Failed:
+                    this.uiStore.addNotification({
+                        type: NotificationType.Error,
+                        text: translator.getMessage('update_failed_text'),
+                        buttons: [{
+                            title: translator.getMessage('update_failed_try_again_btn'),
+                            onClick: this.checkUpdates,
+                        }],
+                    });
+                    break;
+                case ExtensionUpdateFSMState.Success:
+                    this.uiStore.addNotification({
+                        type: NotificationType.Success,
+                        text: translator.getMessage('update_success_text'),
+                    });
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        // Show post-reload notification. The FSM event may have been dispatched
+        // and completed before the options page was opened, so we use the
+        // reload metadata's success flag rather than the current FSM state
+        // (which may have already transitioned back to Idle).
         if (isExtensionReloadedOnUpdate) {
             const notification = isSuccessfulExtensionUpdate
                 ? {
                     type: NotificationType.Success,
                     text: translator.getMessage('update_success_text'),
-                } : {
+                }
+                : {
                     type: NotificationType.Error,
                     text: translator.getMessage('update_failed_text'),
-                    button: {
-                        title: translator.getMessage('update_failed_try_again_btn'),
+                    buttons: [{
+                        title: translator.getMessage(
+                            'update_failed_try_again_btn',
+                        ),
                         onClick: this.checkUpdates,
-                    },
+                    }],
                 };
 
             this.uiStore.addNotification(notification);
+        }
+    }
+
+    /**
+     * Handles extension update state changes from FSM events.
+     * Called by the event listener when the FSM transitions to a new state.
+     *
+     * Shows appropriate notifications for terminal states (NotAvailable, Failed, Success).
+     *
+     * @param state New FSM state value.
+     */
+    @action
+    handleExtensionUpdateStateChange(state: ExtensionUpdateFSMState): void {
+        this.extensionUpdateState = state;
+
+        switch (state) {
+            case ExtensionUpdateFSMState.NotAvailable:
+                this.uiStore.addNotification({
+                    type: NotificationType.Success,
+                    text: translator.getMessage('update_not_needed'),
+                });
+                break;
+            case ExtensionUpdateFSMState.Failed:
+                this.uiStore.addNotification({
+                    type: NotificationType.Error,
+                    text: translator.getMessage('update_failed_text'),
+                    buttons: [{
+                        title: translator.getMessage('update_failed_try_again_btn'),
+                        onClick: this.checkUpdates,
+                    }],
+                });
+                break;
+            case ExtensionUpdateFSMState.Success:
+                this.uiStore.addNotification({
+                    type: NotificationType.Success,
+                    text: translator.getMessage('update_success_text'),
+                });
+                break;
+            default:
+                break;
         }
     }
 
@@ -180,25 +271,18 @@ export class SettingsStore extends SettingsStoreCommon {
      */
     // eslint-disable-next-line class-methods-use-this
     async checkUpdates() {
-        const start = Date.now();
-
         try {
             await messenger.checkUpdates();
         } catch (error) {
             logger.debug('[ext.SettingsStore.checkUpdates]: failed to check updates on options page: ', error);
         }
-
-        // Ensure minimum duration for smooth UI experience
-        await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
     }
 
     /**
-     * Triggers extension update and waits minimum duration
-     * for a smoother UI experience before reload.
+     * Triggers extension update.
      */
     // eslint-disable-next-line class-methods-use-this
     async updateExtensionMV3() {
-        const start = Date.now();
         try {
             await messenger.updateExtension({
                 from: ForwardFrom.Options,
@@ -206,8 +290,6 @@ export class SettingsStore extends SettingsStoreCommon {
         } catch (error) {
             logger.debug('[ext.SettingsStore.updateExtensionMV3]: failed to update extension on options page: ', error);
         }
-        // Ensure minimum duration for smooth UI experience before extension reload
-        await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
     }
 
     /**
@@ -221,16 +303,6 @@ export class SettingsStore extends SettingsStoreCommon {
         if (updateResult) {
             this.setFilterEnabledState(filterId, enabled);
         }
-    }
-
-    @action
-    setIsExtensionCheckingUpdateOrUpdating(value: boolean): void {
-        this.isExtensionCheckingUpdateOrUpdating = value;
-    }
-
-    @action
-    setIsExtensionUpdateAvailable(isAvailable: boolean): void {
-        this.isExtensionUpdateAvailable = isAvailable;
     }
 
     /**

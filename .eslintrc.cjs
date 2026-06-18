@@ -319,6 +319,7 @@ module.exports = {
             files: [
                 '**/*-mv2?(.test).{ts,tsx,js,jsx}',
                 '**/*-mv3?(.test).{ts,tsx,js,jsx}',
+                '**/*.test.{ts,tsx,js,jsx}',
             ],
             rules: {
                 'no-restricted-imports': 'off',

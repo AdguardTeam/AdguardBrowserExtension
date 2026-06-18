@@ -23,11 +23,9 @@ import { MessageType } from '../../../../common/messages';
 import { logger } from '../../../../common/logger';
 import { SettingOption } from '../../../schema';
 import { messageHandler } from '../../../message-handler';
-import { ExtensionUpdateFSMEvent } from '../../../../common/constants';
 import { engine } from '../../../engine';
 import { SettingsApi, TabsApi } from '../../../api';
 import { settingsEvents } from '../../../events';
-import { extensionUpdateActor } from '../../extension-update/extension-update-machine-mv3';
 import { type GetOptionsDataResponse } from '../types/types-mv3';
 
 import { SettingsServiceCommon } from './settings-service-common';
@@ -101,12 +99,7 @@ export class SettingsService extends SettingsServiceCommon {
 
         const isExtensionUpdateAvailable = ExtensionUpdateService.isUpdateAvailable;
 
-        // TODO: AG-47075 Should be moved to extension update service initialization.
-        extensionUpdateActor.send({
-            type: ExtensionUpdateFSMEvent.Init,
-            isUpdateAvailable: isExtensionUpdateAvailable,
-            isReloadedOnUpdate: isExtensionReloadedOnUpdate,
-        });
+        const extensionUpdateState = ExtensionUpdateService.snapshot;
 
         return {
             ...commonData,
@@ -114,6 +107,7 @@ export class SettingsService extends SettingsServiceCommon {
                 areFilterLimitsExceeded,
                 isExtensionUpdateAvailable,
                 isExtensionReloadedOnUpdate,
+                extensionUpdateState,
                 isSuccessfulExtensionUpdate: manualExtensionUpdateData?.isOk || false,
             },
         };
