@@ -33,7 +33,7 @@
 Ensure that the following software is installed on your computer:
 
 - [Node.js][nodejs]: v22 (you can install multiple versions using [nvm][nvm])
-- [pnpm][pnpm]: v10
+- [pnpm][pnpm]: v10.33.4
 - [Git][git]
 - [Docker][docker] (optional, for CI-like builds and Firefox reviewer builds)
 
