@@ -20,17 +20,17 @@
 
 import { preregisteredDomainScripts } from 'preregistered-scripts-registry';
 
-import { logger } from '../../../common/logger';
+import { TsWebExtension } from 'tswebextension';
 
-/** Stable ID prefix for all preregistered-domain content script registrations. */
-const SCRIPT_ID_PREFIX = 'preregistered_';
-const SCRIPT_ID_SEPARATOR = '_';
+import { logger } from '../../../common/logger';
 
 /** Extension-relative prefix for filter assets. */
 const EXTENSION_FILTERS_SUBDIR = 'filters';
 
 /** Subdirectory within the filters folder where preregistered-domain bundles live. */
 const PREREGISTERED_SCRIPTS_DIR = 'preregistered-scripts';
+
+const PREREGISTERED_SCRIPTS_NAMESPACE = 'preregistered';
 
 /**
  * Converts a domain string into the two URL match patterns used in
@@ -62,10 +62,10 @@ const buildScriptPath = (domain: string, filterId: string): string => {
  * @param domain Apex domain string, e.g. `"youtube.com"`.
  * @param filterId Filter ID as a string, e.g. `"14"`.
  *
- * @returns Registration ID string, e.g. `"preregistered_youtube.com_14"`.
+ * @returns Registration ID string, e.g. `"youtube.com_14"`.
  */
 const scriptIdForDomainFilter = (domain: string, filterId: string): string => {
-    return `${SCRIPT_ID_PREFIX}${domain}${SCRIPT_ID_SEPARATOR}${filterId}`;
+    return `${domain}_${filterId}`;
 };
 
 /**
@@ -88,56 +88,27 @@ export class PreregisteredScriptsService {
      */
     static async sync(enabledFilterIds: number[]): Promise<void> {
         const enabledSet = new Set(enabledFilterIds.map(String));
+        const allScripts: chrome.scripting.RegisteredContentScript[] = [];
 
-        // Build the set of (scriptId -> RegisteredContentScript) that should be active
-        const shouldBeActive = new Map<string, chrome.scripting.RegisteredContentScript>();
-
-        Object.entries(preregisteredDomainScripts).forEach(([domain, filterIds]) => {
-            filterIds.forEach((filterId) => {
-                if (!enabledSet.has(filterId)) {
-                    return;
-                }
-
-                const id = scriptIdForDomainFilter(domain, filterId);
-
-                shouldBeActive.set(id, {
-                    id,
+        for (const [domain, filterIds] of Object.entries(preregisteredDomainScripts)) {
+            const scripts: chrome.scripting.RegisteredContentScript[] = filterIds
+                .filter((filterId) => enabledSet.has(filterId))
+                .map((filterId) => ({
+                    id: scriptIdForDomainFilter(domain, filterId),
                     js: [buildScriptPath(domain, filterId)],
                     matches: domainToMatchPatterns(domain),
                     runAt: 'document_start',
                     world: 'MAIN',
                     persistAcrossSessions: true,
-                });
-            });
-        });
+                }));
 
-        // Current registrations that belong to this service
-        const registeredScripts = await chrome.scripting.getRegisteredContentScripts();
-        const currentIds = new Set(
-            registeredScripts
-                .map((s) => s.id)
-                .filter((id) => id.startsWith(SCRIPT_ID_PREFIX)),
-        );
-
-        const toRemoveIds = [...currentIds].filter((id) => !shouldBeActive.has(id));
-        const toRegister = [...shouldBeActive.values()].filter((s) => !currentIds.has(s.id));
-
-        if (toRemoveIds.length > 0) {
-            logger.info(`[ext.PreregisteredScriptsService.sync]: preregistered-domain-bundle: Unregistering ${toRemoveIds.length} script(s): ${toRemoveIds.join(', ')}`);
-            try {
-                await chrome.scripting.unregisterContentScripts({ ids: toRemoveIds });
-            } catch (e) {
-                logger.error('[ext.PreregisteredScriptsService.sync]: Failed to unregister preregistered scripts', e);
-            }
+            allScripts.push(...scripts);
         }
 
-        if (toRegister.length > 0) {
-            logger.info(`[ext.PreregisteredScriptsService.sync]: preregistered-domain-bundle: Registering ${toRegister.length} script(s): ${toRegister.map((s) => s.id).join(', ')}`);
-            try {
-                await chrome.scripting.registerContentScripts(toRegister);
-            } catch (e) {
-                logger.error('[ext.PreregisteredScriptsService.sync]: Failed to register preregistered scripts', e);
-            }
+        try {
+            await TsWebExtension.syncContentScripts(PREREGISTERED_SCRIPTS_NAMESPACE, allScripts);
+        } catch (e) {
+            logger.error('[ext.PreregisteredScriptsService.sync]: Failed to sync preregistered scripts', e);
         }
     }
 }
