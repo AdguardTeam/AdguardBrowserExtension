@@ -71,7 +71,7 @@ the extension build from source.
 ### Prerequisites
 
 The only prerequisite is [Docker](https://docs.docker.com/get-docker/).
-All build tools (Node.js v22, pnpm v10) are pre-installed in the Docker image.
+All build tools (Node.js v22, pnpm v10.33.4) are pre-installed in the Docker image.
 
 ### Building the release version
 
@@ -134,7 +134,7 @@ cat > "$APPROVAL_NOTES_FILE" << 'APPROVAL_EOF'
 Build reproduction instructions for Firefox Add-ons Review Team.
 
 Prerequisites: Docker (https://docs.docker.com/get-docker/)
-All build tools (Node.js v22, pnpm v10) are pre-installed in the Docker image.
+All build tools (Node.js v22, pnpm v10.33.4) are pre-installed in the Docker image.
 
 To build the RELEASE version:
 

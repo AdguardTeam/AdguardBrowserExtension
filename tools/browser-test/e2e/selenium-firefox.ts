@@ -57,9 +57,133 @@ const FIREFOX_BIDI_SETUP_TIMEOUT_MS = 10_000;
 
 const FIREFOX_APP_INIT_TIMEOUT_MS = 30_000;
 
+/**
+ * Mutable reference to the current foreground BiDi browsing-context id.
+ *
+ * Used by the BiDi error listener to distinguish background-page errors
+ * from foreground-page console entries.
+ *
+ * Note: this must be a BiDi browsing-context id (resolved from the BiDi
+ * browsing-context tree), NOT a Selenium window handle returned by
+ * `driver.getWindowHandle()`. In Firefox these are different id spaces, so
+ * comparing a window handle against `entry.source.browsingContextId` never
+ * matches and foreground errors leak into the background error collector.
+ */
+type BrowsingContextRef = {
+    /**
+     * Current BiDi browsing-context id, or null if not yet captured.
+     */
+    current: string | null;
+};
+
+/**
+ * Raw BiDi `browsingContext.getTree` response context entry.
+ */
+type BidiContextInfo = {
+    /**
+     * BiDi browsing-context id.
+     */
+    context: string;
+
+    /**
+     * Document URL loaded in the browsing context.
+     */
+    url: string;
+
+    /**
+     * Child browsing contexts.
+     */
+    children?: BidiContextInfo[];
+
+    /**
+     * Parent browsing context id, if any.
+     */
+    parent?: string | null;
+};
+
+/**
+ * Resolves the BiDi browsing-context id for the page currently loaded in the
+ * foreground tab by matching its URL against the BiDi browsing-context tree.
+ *
+ * Selenium's `getWindowHandle()` returns a WebDriver window handle which is NOT
+ * the same value as a BiDi browsing-context id in Firefox. Comparing the two
+ * never matches, so foreground console errors were incorrectly collected as
+ * background errors. This helper queries the BiDi tree and returns the real
+ * context id for the given URL.
+ *
+ * @param driver Selenium WebDriver instance.
+ * @param expectedUrl URL (prefix) of the foreground page to resolve.
+ *
+ * @returns BiDi browsing-context id, or null if not found.
+ */
+const getFirefoxBidiContextId = async (
+    driver: WebDriver,
+    expectedUrl: string,
+): Promise<string | null> => {
+    try {
+        const bidi = await driver.getBidi();
+        const result = await bidi.send({
+            method: 'browsingContext.getTree',
+            params: {},
+        }) as { result?: { contexts?: BidiContextInfo[] } };
+
+        const contexts = result?.result?.contexts;
+        if (!Array.isArray(contexts)) {
+            return null;
+        }
+
+        // Search recursively through the browsing-context tree.
+        // Firefox may nest tab contexts under a top-level window context,
+        // so a flat top-level search is not sufficient.
+
+        /**
+         * Recursively searches the BiDi browsing-context tree for a context
+         * whose URL starts with the expected prefix.
+         *
+         * @param nodes Current level of browsing contexts to search.
+         *
+         * @returns Matching BiDi browsing-context id, or null if not found.
+         */
+        const findContext = (nodes: BidiContextInfo[]): string | null => {
+            for (const ctx of nodes) {
+                if (typeof ctx?.url === 'string' && ctx.url.startsWith(expectedUrl)) {
+                    return ctx.context;
+                }
+                if (Array.isArray(ctx?.children)) {
+                    const found = findContext(ctx.children);
+                    if (found !== null) {
+                        return found;
+                    }
+                }
+            }
+            return null;
+        };
+
+        return findContext(contexts);
+    } catch {
+        return null;
+    }
+};
+
+/**
+ * Firefox E2E session state, holding the WebDriver instance, the background
+ * error collector, and the foreground browsing context reference.
+ */
 type FirefoxE2ESession = {
+    /**
+     * Selenium Firefox WebDriver instance.
+     */
     driver: firefox.Driver;
+
+    /**
+     * Collector for background-page errors (console errors, JS exceptions).
+     */
     backgroundErrors: E2EErrorCollector;
+
+    /**
+     * Mutable reference to the current foreground browsing context.
+     */
+    foregroundContext: BrowsingContextRef;
 };
 
 type FirefoxManifest = {
@@ -198,11 +322,22 @@ export const launchFirefoxE2ESession = async (
     await waitForFirefoxAppInitialized(driver);
 
     const backgroundErrors = new E2EErrorCollector();
-    await bindFirefoxBackgroundErrorListeners(driver, backgroundErrors, entry.id);
+    const foregroundContext: BrowsingContextRef = { current: null };
+
+    await bindFirefoxBackgroundErrorListeners(driver, backgroundErrors, entry.id, foregroundContext);
+
+    // Capture the initial foreground BiDi browsing context (the popup page opened during app init).
+    // Selenium's window handle is NOT a BiDi browsing-context id in Firefox, so
+    // resolve the real context id from the BiDi tree by matching the popup URL.
+    foregroundContext.current = await getFirefoxBidiContextId(
+        driver,
+        createFirefoxExtensionUrl('/pages/popup.html'),
+    );
 
     return {
         driver,
         backgroundErrors,
+        foregroundContext,
     };
 };
 
@@ -256,12 +391,21 @@ export const openFirefoxE2ESurface = async (
 ): Promise<E2EPageHandle> => {
     const backgroundCursor = session.backgroundErrors.getCursor();
 
+    const surfaceUrl = createFirefoxExtensionUrl(surface.path);
+
     await withTimeout(
-        session.driver.get(createFirefoxExtensionUrl(surface.path)),
+        session.driver.get(surfaceUrl),
         FIREFOX_PAGE_LOAD_TIMEOUT_MS,
         `Firefox page load timed out: ${surface.id}`,
     );
     await waitForFirefoxPageReadyState(session.driver, surface.waitUntil, surface.id);
+
+    // Update the foreground BiDi browsing context so the error listener can
+    // distinguish between background errors and foreground page errors.
+    // Selenium's window handle is NOT a BiDi browsing-context id in Firefox,
+    // so resolve the real context id from the BiDi tree by matching the URL.
+    // Resolved before `createFirefoxE2ETab` mutates the filtering-log URL hash.
+    session.foregroundContext.current = await getFirefoxBidiContextId(session.driver, surfaceUrl);
 
     if (surface.id === E2ESurfaceId.FilteringLog) {
         await createFirefoxE2ETab(session.driver);
@@ -386,9 +530,13 @@ const waitForFirefoxPageReadyState = async (
 /**
  * Adds Firefox BiDi log listeners where supported.
  *
+ * The `foregroundContext` ref is used to filter out console entries from
+ * foreground extension pages, so only true background-page errors are collected.
+ *
  * @param driver Selenium WebDriver instance.
  * @param errors Error collector.
  * @param matrixId E2E matrix entry id.
+ * @param foregroundContext Mutable reference to the current foreground browsing context.
  *
  * @returns Nothing.
  */
@@ -396,6 +544,7 @@ const bindFirefoxBackgroundErrorListeners = async (
     driver: WebDriver,
     errors: E2EErrorCollector,
     matrixId: string,
+    foregroundContext: BrowsingContextRef,
 ): Promise<void> => {
     try {
         const logInspector = await withTimeout(
@@ -410,6 +559,15 @@ const bindFirefoxBackgroundErrorListeners = async (
                     return;
                 }
 
+                // Skip console entries from the foreground browsing context
+                // (extension pages like popup, options, filtering-log).
+                // The background page has a separate browsing context, so only
+                // entries without a matching foreground context are background errors.
+                if (foregroundContext.current
+                    && entry.source.browsingContextId === foregroundContext.current) {
+                    return;
+                }
+
                 errors.add(createFirefoxLogError(matrixId, E2ESpecialSurfaceId.Background, 'firefox-console', entry));
             }),
             FIREFOX_BIDI_SETUP_TIMEOUT_MS,
@@ -418,6 +576,15 @@ const bindFirefoxBackgroundErrorListeners = async (
 
         await withTimeout(
             logInspector.onJavascriptException((entry: JavascriptLogEntry): void => {
+                // Skip JS exceptions from the foreground browsing context
+                // (extension pages like popup, options, filtering-log).
+                // The background page has a separate browsing context, so only
+                // entries without a matching foreground context are background errors.
+                if (foregroundContext.current
+                    && entry.source.browsingContextId === foregroundContext.current) {
+                    return;
+                }
+
                 errors.add(createFirefoxLogError(
                     matrixId,
                     E2ESpecialSurfaceId.Background,
