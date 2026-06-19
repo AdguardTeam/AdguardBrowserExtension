@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `$urltransform` modifier support [tsurlfilter#111].
 - `$removeparam` support for SPA navigations [tsurlfilter#188].
 - Filter rule conversion error logging in MV2.
+- Default registered script is always added to local script rules [tsurlfilter#167].
 
 ### Changed
 
@@ -19,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Element hiding rules not being applied on fast page reload in MV3 [#3537].
 - Filtering log loses events during `window.open()` tab redirects [#2701].
 - Filtering log events for tabs closed by `$popup` modifier rules are now displayed
   as linked to the background page [#1686].
@@ -31,12 +33,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   modifiers [tsurlfilter#189].
 - Scriptlet exception rules with comma-containing arguments now work correctly
   ([#3533]).
+- Generic scriptlet rules (scriptlets without a domain restriction) now appear in
+  the filtering log [#2895].
+- Improved visibility of UI controls in OS high-contrast mode
+  (`forced-colors: active`): switches, action buttons, editor, dropdowns,
+  and modal-like cards on Options/Popup pages ([#3530]).
+- Firefox freezes when playing Douyin videos, triggered by custom filter rule all.txt [#3525].
+- Sites loading-slowly in Firefox 118 when AdGuard extension is enabled [#2524].
 
+[#3537]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3537
 [#1486]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1486
 [#1686]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1686
 [#2701]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2701
+[#2895]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2895
 [#3533]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3533
+[#3530]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3530
+[#2524]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2524
+[#3525]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3525
 [tsurlfilter#111]: https://github.com/AdguardTeam/tsurlfilter/issues/111
+[tsurlfilter#167]: https://github.com/AdguardTeam/tsurlfilter/issues/167
 [tsurlfilter#188]: https://github.com/AdguardTeam/tsurlfilter/issues/188
 [tsurlfilter#189]: https://github.com/AdguardTeam/tsurlfilter/issues/189
 

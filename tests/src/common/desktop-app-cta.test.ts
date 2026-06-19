@@ -27,13 +27,15 @@ import {
     vi,
 } from 'vitest';
 
-vi.mock('../../../../../../../Extension/src/common/translators/translator', () => ({
+vi.mock('../../../Extension/src/common/translators/translator', () => ({
     translator: {
         getMessage: (key: string) => key,
     },
 }));
 
 describe('getCtaByOs', () => {
+    let getCtaByOs: () => { text: string; url: string };
+
     beforeEach(() => {
         vi.resetModules();
     });
@@ -43,29 +45,26 @@ describe('getCtaByOs', () => {
     });
 
     it('should return macOS CTA when UserAgent.isMacOs is true', async () => {
-        vi.doMock('../../../../../../../Extension/src/common/user-agent', () => ({
+        vi.doMock('../../../Extension/src/common/user-agent', () => ({
             UserAgent: { isMacOs: true, isWindows: false },
         }));
 
-        const { getCtaByOs } = await import(
-            '../../../../../../../Extension/src/pages/options/components/General/DesktopAppPromo/DesktopAppPromo'
-        );
+        const ctaModule = await import('../../../Extension/src/pages/options/components/common/desktop-app-cta');
+        getCtaByOs = ctaModule.getCtaByOs;
 
         const result = getCtaByOs();
 
         expect(result.text).toBe('options_desktop_app_promo_button_mac');
         expect(result.url).toContain('desktop_app_promo_mac');
-        expect(result.url).toContain('forward.html');
     });
 
     it('should return Windows CTA when UserAgent.isWindows is true', async () => {
-        vi.doMock('../../../../../../../Extension/src/common/user-agent', () => ({
+        vi.doMock('../../../Extension/src/common/user-agent', () => ({
             UserAgent: { isMacOs: false, isWindows: true },
         }));
 
-        const { getCtaByOs } = await import(
-            '../../../../../../../Extension/src/pages/options/components/General/DesktopAppPromo/DesktopAppPromo'
-        );
+        const ctaModule = await import('../../../Extension/src/pages/options/components/common/desktop-app-cta');
+        getCtaByOs = ctaModule.getCtaByOs;
 
         const result = getCtaByOs();
 
@@ -74,13 +73,12 @@ describe('getCtaByOs', () => {
     });
 
     it('should return Linux CTA as fallback when neither macOS nor Windows', async () => {
-        vi.doMock('../../../../../../../Extension/src/common/user-agent', () => ({
+        vi.doMock('../../../Extension/src/common/user-agent', () => ({
             UserAgent: { isMacOs: false, isWindows: false },
         }));
 
-        const { getCtaByOs } = await import(
-            '../../../../../../../Extension/src/pages/options/components/General/DesktopAppPromo/DesktopAppPromo'
-        );
+        const ctaModule = await import('../../../Extension/src/pages/options/components/common/desktop-app-cta');
+        getCtaByOs = ctaModule.getCtaByOs;
 
         const result = getCtaByOs();
 

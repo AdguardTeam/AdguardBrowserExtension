@@ -21,8 +21,6 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
-import { MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../../../../common/constants';
-import { sleepIfNecessary } from '../../../../../../common/sleep-utils';
 import { translator } from '../../../../../../common/translators/translator';
 import { Icon } from '../../../../../common/components/ui/Icon';
 import { messenger } from '../../../../../services/messenger';
@@ -48,25 +46,15 @@ export const UpdateButton = observer(() => {
 
     const handleUpdateExtensionClick = async (e: React.MouseEvent | React.KeyboardEvent) => {
         e.preventDefault();
-        const start = Date.now();
 
         telemetryStore.sendCustomEvent(
             TelemetryEventName.UpdateAvailableClick,
             TelemetryScreenName.MainPage,
         );
 
-        // TODO: We should rely on event for changing status instead of setting
-        // flags manually
-        // reset update availability flag
-        store.setIsExtensionUpdateAvailable(false);
-        store.setIsExtensionCheckingUpdateOrUpdating(true);
         await messenger.updateExtension({
             from: ForwardFrom.Popup,
         });
-
-        // Ensure minimum duration for smooth UI experience before extension reload
-        await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
-        store.setIsExtensionCheckingUpdateOrUpdating(false);
     };
 
     if (isExtensionUpdateAvailable) {

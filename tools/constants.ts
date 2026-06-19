@@ -206,6 +206,12 @@ Because of that, we use the following approach (that was accepted by AMO reviewe
 3. We also allow "User rules" and "Custom filters" to work since those rules are added manually by the user.
    This way filters maintainers can test new rules before including them in the filters.`;
 
+/**
+ * Script text of the default registered script used for CSP and Trusted Types
+ * testing on testcases.agrd.dev.
+ */
+export const DEFAULT_REGISTERED_SCRIPT_TEXT = 'console.log(Date.now(), "default registered script")';
+
 export const LOCAL_SCRIPT_RULES_COMMENT_CHROME_MV3 = `Search for 'JS_RULES_EXECUTION' to find all parts of script execution
 process in the extension.
 
