@@ -68,6 +68,13 @@ export const FiltersUpdate = observer(() => {
                         <div className={styles.title}>
                             {translator.getMessage('update_checking_in_progress')}
                         </div>
+                        {settingsStore.latestCheckTimeMs > 0 && (
+                            <div className={styles.desc}>
+                                {translator.getMessage('options_filters_last_checked', {
+                                    date: formatDate(settingsStore.latestCheckTimeMs),
+                                })}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
