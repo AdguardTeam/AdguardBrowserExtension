@@ -24,6 +24,7 @@ import { observer } from 'mobx-react';
 import { translator } from '../../../../../common/translators/translator';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
+import { formatDate } from '../helpers';
 import { TelemetryEventName, TelemetryScreenName } from '../../../../../common/telemetry';
 import { ExtensionUpdateFSMState } from '../../../../../common/constants';
 
@@ -67,6 +68,13 @@ export const FiltersUpdate = observer(() => {
                         <div className={styles.title}>
                             {translator.getMessage('update_checking_in_progress')}
                         </div>
+                        {settingsStore.latestCheckTimeMs > 0 && (
+                            <div className={styles.desc}>
+                                {translator.getMessage('options_filters_last_checked', {
+                                    date: formatDate(settingsStore.latestCheckTimeMs),
+                                })}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -147,6 +155,13 @@ export const FiltersUpdate = observer(() => {
                     <div className={styles.title}>
                         {checkUpdatesTitle}
                     </div>
+                    {settingsStore.latestCheckTimeMs > 0 && (
+                        <div className={styles.desc}>
+                            {translator.getMessage('options_filters_last_checked', {
+                                date: formatDate(settingsStore.latestCheckTimeMs),
+                            })}
+                        </div>
+                    )}
                 </div>
             </button>
         </div>

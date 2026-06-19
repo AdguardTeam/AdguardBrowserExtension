@@ -782,6 +782,20 @@ export abstract class SettingsStoreCommon {
     }
 
     /**
+     * Used to display the last check time on the Filters tab.
+     *
+     * @returns The latest check time of all filters.
+     */
+    @computed
+    get latestCheckTimeMs() {
+        return Math.max(...this.filters
+            .map(({ lastScheduledCheckTime, lastCheckTime }) => Math.max(
+                lastScheduledCheckTime || 0,
+                lastCheckTime || 0,
+            )));
+    }
+
+    /**
      * We do not sort filters on every filters data update for better UI experience
      * Filters sort happens when user exits from filters group, or changes search filters
      */

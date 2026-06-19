@@ -26,6 +26,7 @@ import { messageHandler } from '../../../message-handler';
 import { engine } from '../../../engine';
 import { SettingsApi, TabsApi } from '../../../api';
 import { settingsEvents } from '../../../events';
+import { FilterUpdateService } from '../../filter-update/filter-update-mv3';
 import { type GetOptionsDataResponse } from '../types/types-mv3';
 
 import { SettingsServiceCommon } from './settings-service-common';
@@ -101,6 +102,8 @@ export class SettingsService extends SettingsServiceCommon {
 
         const extensionUpdateState = ExtensionUpdateService.snapshot;
 
+        const lastCheckTimeMs = await FilterUpdateService.getLastCheckTimeMs();
+
         return {
             ...commonData,
             runtimeInfo: {
@@ -109,6 +112,7 @@ export class SettingsService extends SettingsServiceCommon {
                 isExtensionReloadedOnUpdate,
                 extensionUpdateState,
                 isSuccessfulExtensionUpdate: manualExtensionUpdateData?.isOk || false,
+                lastCheckTimeMs,
             },
         };
     }
