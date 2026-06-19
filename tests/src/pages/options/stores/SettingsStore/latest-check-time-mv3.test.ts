@@ -27,6 +27,8 @@ import {
     vi,
 } from 'vitest';
 
+import { ExtensionUpdateFSMState } from '../../../../../../Extension/src/common/constants';
+
 vi.mock('../../../../../../Extension/src/common/logger', () => ({
     logger: {
         trace: vi.fn(),
@@ -133,6 +135,7 @@ describe.skipIf(!__IS_MV3__)('SettingsStore MV3 — latestCheckTime', () => {
         isExtensionUpdateAvailable: false,
         isExtensionReloadedOnUpdate: false,
         isSuccessfulExtensionUpdate: false,
+        extensionUpdateState: ExtensionUpdateFSMState.Idle,
         lastCheckTimeMs: null,
         ...overrides,
     });
@@ -170,7 +173,7 @@ describe.skipIf(!__IS_MV3__)('SettingsStore MV3 — latestCheckTime', () => {
 
         await store.checkUpdates();
 
-        expect(store.lastCheckedTimeMs).toBe(confirmedTs);
+        expect(store.manualCheckTimeMs).toBe(confirmedTs);
         expect(store.latestCheckTimeMs).toBeGreaterThanOrEqual(confirmedTs);
     });
 
@@ -184,8 +187,8 @@ describe.skipIf(!__IS_MV3__)('SettingsStore MV3 — latestCheckTime', () => {
 
         await store.checkUpdates();
 
-        // lastCheckedTime must stay 0 — no inconsistent optimistic update
-        expect(store.lastCheckedTimeMs).toBe(0);
+        // manualCheckTime must stay 0 — no inconsistent optimistic update
+        expect(store.manualCheckTimeMs).toBe(0);
     });
 
     it('latestCheckTime returns max of filter timestamps and lastCheckedTime', async () => {
@@ -198,14 +201,14 @@ describe.skipIf(!__IS_MV3__)('SettingsStore MV3 — latestCheckTime', () => {
             { lastCheckTime: filterTs, lastScheduledCheckTime: 0 },
         ];
 
-        // lastCheckedTime is older
+        // manualCheckTime is older
         const olderTs = filterTs - 5_000;
         store.applyRuntimeInfo(makeRuntimeInfo({ lastCheckTimeMs: olderTs }));
 
         expect(store.latestCheckTimeMs).toBe(filterTs);
     });
 
-    it('latestCheckTime prefers lastCheckedTime when it is newer than filter timestamps', async () => {
+    it('latestCheckTime prefers manualCheckTime when it is newer than filter timestamps', async () => {
         const store = await createStore();
 
         const filterTs = Date.now();

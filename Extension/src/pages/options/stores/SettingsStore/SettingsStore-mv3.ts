@@ -92,11 +92,11 @@ export class SettingsStore extends SettingsStoreCommon {
     }
 
     /**
-     * Timestamp of the last extension update check.
+     * Timestamp of the last manual check for extension/filter updates.
      * Updated on each manual "Check for updates" action.
      */
     @observable
-    lastCheckedTimeMs = 0;
+    manualCheckTimeMs = 0;
 
     constructor(rootStore: RootStore) {
         super(rootStore);
@@ -140,7 +140,7 @@ export class SettingsStore extends SettingsStoreCommon {
         const previousState = this.extensionUpdateState;
         this.extensionUpdateState = extensionUpdateState;
 
-        this.lastCheckedTimeMs = lastCheckTimeMs ?? this.lastCheckedTimeMs;
+        this.manualCheckTimeMs = lastCheckTimeMs ?? this.manualCheckTimeMs;
 
         // Show notification for terminal states from non-post-reload data fetches
         // (e.g., when requestOptionsData is called during an update check flow).
@@ -292,7 +292,7 @@ export class SettingsStore extends SettingsStoreCommon {
         // to avoid showing a stale time that will disappear after a page reload.
         if (lastCheckTimeMs !== null) {
             runInAction(() => {
-                this.lastCheckedTimeMs = lastCheckTimeMs;
+                this.manualCheckTimeMs = lastCheckTimeMs;
             });
         }
     }
@@ -325,15 +325,15 @@ export class SettingsStore extends SettingsStoreCommon {
     }
 
     /**
-     * Returns the last time the user checked for updates.
+     * Returns the latest check timestamp across all sources.
      * Compares the common getter (based on filter timestamps, used in MV2)
-     * with the persisted last check time from the backend, and returns the latest.
+     * with the persisted manual check time from the backend, and returns the latest.
      *
      * @returns The latest check timestamp.
      */
     @override
     override get latestCheckTimeMs() {
-        return Math.max(super.latestCheckTimeMs, this.lastCheckedTimeMs);
+        return Math.max(super.latestCheckTimeMs, this.manualCheckTimeMs);
     }
 
     /**
