@@ -52,6 +52,11 @@ type RuntimeInfo = {
      * Whether the extension update was successful.
      */
     isSuccessfulExtensionUpdate: boolean;
+
+    /**
+     * Timestamp of the last manual filters/extension check in milliseconds.
+     */
+    lastCheckTimeMs: number | null;
 };
 
 /**

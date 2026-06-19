@@ -91,6 +91,13 @@ export class SettingsStore extends SettingsStoreCommon {
             || this.extensionUpdateState === ExtensionUpdateFSMState.Updating;
     }
 
+    /**
+     * Timestamp of the last manual check for extension/filter updates.
+     * Updated on each manual "Check for updates" action.
+     */
+    @observable
+    manualCheckTimeMs = 0;
+
     constructor(rootStore: RootStore) {
         super(rootStore);
 
@@ -127,10 +134,13 @@ export class SettingsStore extends SettingsStoreCommon {
             extensionUpdateState,
             isExtensionReloadedOnUpdate,
             isSuccessfulExtensionUpdate,
+            lastCheckTimeMs,
         } = runtimeInfo;
 
         const previousState = this.extensionUpdateState;
         this.extensionUpdateState = extensionUpdateState;
+
+        this.manualCheckTimeMs = lastCheckTimeMs ?? this.manualCheckTimeMs;
 
         // Show notification for terminal states from non-post-reload data fetches
         // (e.g., when requestOptionsData is called during an update check flow).
@@ -269,12 +279,21 @@ export class SettingsStore extends SettingsStoreCommon {
      * Note: if extension update is found,
      * custom filters will be updated after the extension reload.
      */
-    // eslint-disable-next-line class-methods-use-this
     async checkUpdates() {
+        let lastCheckTimeMs: number | null = null;
         try {
-            await messenger.checkUpdates();
+            ({ lastCheckTimeMs } = await messenger.checkUpdates());
         } catch (error) {
             logger.debug('[ext.SettingsStore.checkUpdates]: failed to check updates on options page: ', error);
+        }
+
+        // Only update local state with the timestamp confirmed and persisted by the background.
+        // If persistence failed (null) or an extension update was found, do not mutate local state
+        // to avoid showing a stale time that will disappear after a page reload.
+        if (lastCheckTimeMs !== null) {
+            runInAction(() => {
+                this.manualCheckTimeMs = lastCheckTimeMs;
+            });
         }
     }
 
@@ -303,6 +322,18 @@ export class SettingsStore extends SettingsStoreCommon {
         if (updateResult) {
             this.setFilterEnabledState(filterId, enabled);
         }
+    }
+
+    /**
+     * Returns the latest check timestamp across all sources.
+     * Compares the common getter (based on filter timestamps, used in MV2)
+     * with the persisted manual check time from the backend, and returns the latest.
+     *
+     * @returns The latest check timestamp.
+     */
+    @override
+    override get latestCheckTimeMs() {
+        return Math.max(super.latestCheckTimeMs, this.manualCheckTimeMs);
     }
 
     /**

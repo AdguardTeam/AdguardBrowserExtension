@@ -259,6 +259,7 @@ describe('SettingsStore - extension update computed properties', () => {
                 isExtensionReloadedOnUpdate: false,
                 extensionUpdateState: ExtensionUpdateFSMState.Available,
                 isSuccessfulExtensionUpdate: false,
+                lastCheckTimeMs: null,
             });
 
             expect(store.extensionUpdateState)
@@ -274,6 +275,7 @@ describe('SettingsStore - extension update computed properties', () => {
                 isExtensionReloadedOnUpdate: true,
                 extensionUpdateState: ExtensionUpdateFSMState.Failed,
                 isSuccessfulExtensionUpdate: false,
+                lastCheckTimeMs: null,
             });
 
             expect(store.extensionUpdateState)
@@ -293,6 +295,7 @@ describe('SettingsStore - extension update computed properties', () => {
                 isExtensionReloadedOnUpdate: true,
                 extensionUpdateState: ExtensionUpdateFSMState.Success,
                 isSuccessfulExtensionUpdate: true,
+                lastCheckTimeMs: null,
             });
 
             expect(store.extensionUpdateState)
@@ -313,6 +316,7 @@ describe('SettingsStore - extension update computed properties', () => {
                 isExtensionReloadedOnUpdate: false,
                 extensionUpdateState: ExtensionUpdateFSMState.Success,
                 isSuccessfulExtensionUpdate: false,
+                lastCheckTimeMs: null,
             });
 
             expect(store.extensionUpdateState)
@@ -408,6 +412,7 @@ describe('SettingsStore - extension update computed properties', () => {
                 isExtensionReloadedOnUpdate: false,
                 extensionUpdateState: ExtensionUpdateFSMState.NotAvailable,
                 isSuccessfulExtensionUpdate: false,
+                lastCheckTimeMs: null,
             });
 
             expect(mockRootStore.uiStore.addNotification).toHaveBeenCalledWith({
@@ -427,6 +432,7 @@ describe('SettingsStore - extension update computed properties', () => {
                 isExtensionReloadedOnUpdate: false,
                 extensionUpdateState: ExtensionUpdateFSMState.NotAvailable,
                 isSuccessfulExtensionUpdate: false,
+                lastCheckTimeMs: null,
             });
 
             expect(mockRootStore.uiStore.addNotification).not.toHaveBeenCalled();
@@ -444,6 +450,7 @@ describe('SettingsStore - extension update computed properties', () => {
                 isExtensionReloadedOnUpdate: true,
                 extensionUpdateState: ExtensionUpdateFSMState.Success,
                 isSuccessfulExtensionUpdate: true,
+                lastCheckTimeMs: null,
             });
 
             // Should call addNotification exactly once (for post-reload),

@@ -269,6 +269,10 @@ export type CheckExtensionUpdateMessageMv3 = {
     type: MessageType.CheckExtensionUpdateMv3;
 };
 
+export type ManualCheckResult = {
+    lastCheckTimeMs: number | null;
+};
+
 export type UpdateExtensionMessageMv3 = {
     type: MessageType.UpdateExtensionMv3;
     data: {
@@ -802,7 +806,7 @@ export type MessageMap = {
     };
     [MessageType.CheckExtensionUpdateMv3]: {
         message: CheckExtensionUpdateMessageMv3;
-        response: void;
+        response: ManualCheckResult;
     };
     [MessageType.UpdateExtensionMv3]: {
         message: UpdateExtensionMessageMv3;
