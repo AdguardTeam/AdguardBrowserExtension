@@ -18,7 +18,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { Prefs } from '../prefs';
-import { appContext, AppContextKey } from '../storages/app';
 import { CHROME_EXTENSIONS_SETTINGS_URL } from '../../common/constants';
 import { logger } from '../../common/logger';
 
@@ -29,35 +28,22 @@ import { Version } from './version';
  */
 export class BrowserUtils {
     /**
-     * Returns extension specified query params.
-     * This method called on app metadata, i18n metadata and thankyou page url calculation.
+     * Returns extension query params shared across filter metadata URLs and thankyou page.
+     *
+     * `cid` is intentionally excluded — see AG-55338.
      *
      * @see NetworkSettings#filtersMetadataUrl
      * @see NetworkSettings#filtersI18nMetadataUrl
      * @see PagesApi.openThankYouPage
      *
-     * @returns Extension specified query params array.
-     *
-     * @throws Error if client id is undefined.
+     * @returns Extension query params array with `v`, `lang`, `id`.
      */
     public static getExtensionParams(): string[] {
-        const persistedClientId = appContext.get(AppContextKey.ClientId);
-
-        if (typeof persistedClientId !== 'string') {
-            throw new Error('client id is not found');
-        }
-
-        const clientId = encodeURIComponent(persistedClientId);
-        const locale = encodeURIComponent(Prefs.language);
-        const version = encodeURIComponent(Prefs.version);
-        const id = encodeURIComponent(Prefs.id);
-
-        const params: string[] = [];
-        params.push(`v=${version}`);
-        params.push(`cid=${clientId}`);
-        params.push(`lang=${locale}`);
-        params.push(`id=${id}`);
-        return params;
+        return [
+            `v=${encodeURIComponent(Prefs.version)}`,
+            `lang=${encodeURIComponent(Prefs.language)}`,
+            `id=${encodeURIComponent(Prefs.id)}`,
+        ];
     }
 
     /**
