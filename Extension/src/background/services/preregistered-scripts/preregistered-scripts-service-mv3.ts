@@ -24,10 +24,14 @@ import { TsWebExtension } from 'tswebextension';
 
 import { logger } from '../../../common/logger';
 
-/** Extension-relative prefix for filter assets. */
+/**
+ * Extension-relative prefix for filter assets.
+ */
 const EXTENSION_FILTERS_SUBDIR = 'filters';
 
-/** Subdirectory within the filters folder where preregistered-domain bundles live. */
+/**
+ * Subdirectory within the filters folder where preregistered-domain bundles live.
+ */
 const PREREGISTERED_SCRIPTS_DIR = 'preregistered-scripts';
 
 const PREREGISTERED_SCRIPTS_NAMESPACE = 'preregistered';

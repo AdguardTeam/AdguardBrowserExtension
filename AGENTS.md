@@ -299,6 +299,10 @@ Use standard JSDoc format **without** `" - "` separator in `@param` and
  */
 ```
 
+Multi-line style comments (`/** ... */`) must always span multiple lines —
+the opening `/**`, the body, and the closing `*/` must each be on their own
+line, even for short descriptions without `@param` or `@returns` tags.
+
 The `background/` directory has **stricter** JSDoc rules (enforced via
 `Extension/src/background/.eslintrc.cjs`): all classes, class properties,
 functions, and methods require JSDoc with descriptions, `@param`, and `@returns`.
