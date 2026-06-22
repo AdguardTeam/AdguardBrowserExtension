@@ -26,6 +26,8 @@ import { browserStorage } from '../../storages';
 import { getRunInfo } from '../../utils/run-info';
 import { Version } from '../../utils/version';
 import { ContentScriptInjector } from '../../content-script-injector';
+import { FilterUpdateService } from '../filter-update/filter-update-mv3';
+import { type ManualCheckResult } from '../../../common/messages';
 
 import {
     type ManualUpdateMetadata,
@@ -141,8 +143,11 @@ export class ManualUpdateHandler {
      * 3. If update confirmed, calls chrome.runtime.requestUpdateCheck().
      * 4. Waits for Chrome to download update.
      * 5. Fires callbacks for FSM coordination.
+     *
+     * @returns Result object with `lastCheckTimeMs` — the persisted timestamp in milliseconds,
+     * or `null` if saving failed or the check was skipped (update in progress).
      */
-    public async check(): Promise<void> {
+    public async check(): Promise<ManualCheckResult> {
         // Mark this as manual check
         this.stateManager.set(AutoUpdateStateField.isManualCheck, true);
 
@@ -174,7 +179,7 @@ export class ManualUpdateHandler {
         // browser will download the update in background.
         if (isUpdateAvailable && shouldWaitForUpdateEvent) {
             // Do nothing, just wait for onUpdateAvailable event from Chrome.
-            return;
+            return { lastCheckTimeMs: null };
         }
 
         // Update custom filters even if no extension update is available,
@@ -188,6 +193,14 @@ export class ManualUpdateHandler {
             logger.error('[ext.ManualUpdateHandler.check]: Failed to update custom filters:', e);
         }
 
+        let lastCheckTimeMs: number | null = null;
+        try {
+            lastCheckTimeMs = Date.now();
+            await FilterUpdateService.setLastCheckTimeMs(lastCheckTimeMs);
+        } catch (e) {
+            logger.error('[ext.ManualUpdateHandler.check]: Failed to save last check time:', e);
+            lastCheckTimeMs = null;
+        }
         // Clear the checking timeout to prevent a stale UpdateFailed event
         // from firing during a subsequent manual check. Without this, a leftover
         // 10-minute timeout from this check could transition a new "Checking"
@@ -199,6 +212,8 @@ export class ManualUpdateHandler {
 
         // Reset manual check flag
         this.stateManager.set(AutoUpdateStateField.isManualCheck, false);
+
+        return { lastCheckTimeMs };
     }
 
     /**

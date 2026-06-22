@@ -33,7 +33,7 @@ export const FiltersUpdate = observer(() => {
 
     const {
         rulesCount,
-        latestCheckTime,
+        latestCheckTimeMs,
         filtersUpdating,
         isUpdateFiltersButtonActive,
     } = settingsStore;
@@ -54,7 +54,7 @@ export const FiltersUpdate = observer(() => {
             <div className={styles.info}>
                 {translator.getMessage('options_antibanner_rules_count', { rules_count: rulesCount })}
                 <br />
-                {translator.getMessage('options_antibanner_updated', { date: formatDate(latestCheckTime) })}
+                {translator.getMessage('options_antibanner_updated', { date: formatDate(latestCheckTimeMs) })}
             </div>
             <button
                 type="button"
