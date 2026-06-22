@@ -48,7 +48,7 @@ interface JsonDomainConfig {
 }
 
 /**
- * Shape of the full preregistered-scripts.json file.
+ * Shape of the full config.json file.
  */
 type JsonConfig = Record<string, JsonDomainConfig>;
 
@@ -68,7 +68,7 @@ type JsonConfig = Record<string, JsonDomainConfig>;
 const parseRegexString = (raw: string): RegExp => {
     const match = raw.match(/^\/(.+)\/([gimsuy]*)$/);
     if (!match) {
-        throw new Error(`Invalid regex string in preregistered-scripts.json: "${raw}"`);
+        throw new Error(`Invalid regex string in config.json: "${raw}"`);
     }
     // Non-null assertion is safe: match succeeded so both capture groups are present
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -110,10 +110,10 @@ interface PreregisteredScriptsConfig {
 const __filename = fileURLToPath(import.meta.url);
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const __dirname = path.dirname(__filename);
-const CONFIG_PATH = path.resolve(__dirname, 'preregistered-scripts.json');
+const CONFIG_PATH = path.resolve(__dirname, 'config.json');
 
 /**
- * Loads and parses `preregistered-scripts.json`, converting all string-based
+ * Loads and parses `config.json`, converting all string-based
  * regex patterns into `RegExp` objects.
  *
  * @returns Parsed config with `scriptletExclusions` and `scriptletSourceReplacements`.
@@ -127,7 +127,7 @@ const loadPreregisteredScriptsConfig = (): PreregisteredScriptsConfig => {
     try {
         config = JSON.parse(raw) as JsonConfig;
     } catch (error) {
-        throw new Error(`Failed to parse preregistered-scripts.json: ${error instanceof Error ? error.message : String(error)}`);
+        throw new Error(`Failed to parse config.json: ${error instanceof Error ? error.message : String(error)}`);
     }
 
     const domains: string[] = [];
@@ -138,7 +138,7 @@ const loadPreregisteredScriptsConfig = (): PreregisteredScriptsConfig => {
 
     Object.entries(config).forEach(([domain, domainConfig]) => {
         if (!domainConfig.scriptletExclusions || !Array.isArray(domainConfig.scriptletExclusions)) {
-            throw new Error(`Missing "scriptletExclusions" array for domain "${domain}" in preregistered-scripts.json`);
+            throw new Error(`Missing "scriptletExclusions" array for domain "${domain}" in config.json`);
         }
 
         domains.push(domain);
