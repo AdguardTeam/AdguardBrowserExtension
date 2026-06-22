@@ -416,270 +416,9 @@ try {
         window.JSON.stringify = new Proxy(window.JSON.stringify, t);
     })();
 } catch (t) {}
-function preventFetch(e, r) {
-    var t = "done", n = e.uniqueId + e.name + "_" + (Array.isArray(r) ? r.join("_") : "");
-    if (!e.uniqueId || _c[n] !== t) {
-        var i = r ? [].concat(e).concat(r) : [ e ];
-        try {
-            (function(e, r) {
-                var t = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : "emptyObj", n = arguments.length > 3 ? arguments[3] : void 0;
-                if ("undefined" != typeof fetch && "undefined" != typeof Proxy && "undefined" != typeof Response) {
-                    var i, f = Request.prototype.clone;
-                    if ("" === t || "emptyObj" === t) i = "{}"; else if ("emptyArr" === t) i = "[]"; else if ("emptyStr" === t) i = ""; else {
-                        if ("true" !== t && !t.match(/^length:\d+-\d+$/)) {
-                            u(e, `Invalid responseBody parameter: '${t}'`);
-                            return;
-                        }
-                        i = function(e) {
-                            var r = e;
-                            if ("true" === r) return Math.random().toString(36).slice(-10);
-                            r = r.replace("length:", "");
-                            if (!/^\d+-\d+$/.test(r)) return null;
-                            var t = l(r.split("-")[0]), n = l(r.split("-")[1]);
-                            if (!s(t) || !s(n)) return null;
-                            if (t > n) {
-                                var i = t;
-                                t = n, n = i;
-                            }
-                            if (n > 5e5) return null;
-                            var o = function(e, r) {
-                                return e = Math.ceil(e), r = Math.floor(r), Math.floor(Math.random() * (r - e + 1) + e);
-                            }(t, n);
-                            return function(e) {
-                                for (var r = "", t = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+=~", n = 0; n < e; n += 1) r += t.charAt(Math.floor(76 * Math.random()));
-                                return r;
-                            }(o);
-                        }(t);
-                    }
-                    if (void 0 === n || function(e) {
-                        return [ "basic", "cors", "opaque" ].includes(e);
-                    }(n)) {
-                        var d = [ "chrome-extension:", "moz-extension:", "ms-browser-extension:", "safari-web-extension:" ], v = {
-                            apply: async function(t, s, l) {
-                                var v, p = function(e, r) {
-                                    var t, n, i = {}, o = e[0];
-                                    if (o instanceof Request) {
-                                        var a = function(e) {
-                                            var r = [ "url", "method", "headers", "body", "credentials", "cache", "redirect", "referrer", "referrerPolicy", "integrity", "keepalive", "signal", "mode" ].map((function(r) {
-                                                return [ r, e[r] ];
-                                            }));
-                                            return Object.fromEntries(r);
-                                        }(r.call(o));
-                                        t = a.url, n = a;
-                                    } else t = o, n = e[1];
-                                    (i.url = t, n instanceof Object) && Object.keys(n).forEach((function(e) {
-                                        i[e] = n[e];
-                                    }));
-                                    return i;
-                                }(l, f);
-                                if (void 0 === r) {
-                                    u(e, `fetch( ${a(p)} )`, !0);
-                                    o(e);
-                                    return Reflect.apply(t, s, l);
-                                }
-                                if (function(e, r, t) {
-                                    if ("" === r || "*" === r) return !0;
-                                    var n, i = function(e) {
-                                        var r = {};
-                                        return e.split(" ").forEach((function(e) {
-                                            var t = e.indexOf(":"), n = e.slice(0, t);
-                                            if (function(e) {
-                                                return [ "url", "method", "headers", "body", "credentials", "cache", "redirect", "referrer", "referrerPolicy", "integrity", "keepalive", "signal", "mode" ].includes(e);
-                                            }(n)) {
-                                                var i = e.slice(t + 1);
-                                                r[n] = i;
-                                            } else r.url = e;
-                                        })), r;
-                                    }(r);
-                                    if (function(e) {
-                                        return Object.values(e).every((function(e) {
-                                            return function(e) {
-                                                var r, t = function(e) {
-                                                    return e.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-                                                }(e);
-                                                "/" === e[0] && "/" === e[e.length - 1] && (t = e.slice(1, -1));
-                                                try {
-                                                    r = new RegExp(t), r = !0;
-                                                } catch (e) {
-                                                    r = !1;
-                                                }
-                                                return r;
-                                            }(e);
-                                        }));
-                                    }(i)) {
-                                        var o = function(e) {
-                                            var r = {};
-                                            return Object.keys(e).forEach((function(t) {
-                                                r[t] = function(e) {
-                                                    var r = e || "", t = "/";
-                                                    if ("" === r) return new RegExp(".?");
-                                                    var n, i, o = r.lastIndexOf(t), a = r.substring(o + 1), u = r.substring(0, o + 1), c = (i = a, 
-                                                    (n = u).startsWith(t) && n.endsWith(t) && !n.endsWith("\\/") && function(e) {
-                                                        if (!e) return !1;
-                                                        try {
-                                                            return new RegExp("", e), !0;
-                                                        } catch (e) {
-                                                            return !1;
-                                                        }
-                                                    }(i) ? i : "");
-                                                    if (r.startsWith(t) && r.endsWith(t) || c) return new RegExp((c ? u : r).slice(1, -1), c);
-                                                    var s = r.replace(/\\'/g, "'").replace(/\\"/g, '"').replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-                                                    return new RegExp(s);
-                                                }(e[t]);
-                                            })), r;
-                                        }(i);
-                                        n = Object.keys(o).every((function(e) {
-                                            var r = o[e], n = t[e];
-                                            return Object.prototype.hasOwnProperty.call(t, e) && "string" == typeof n && (null == r ? void 0 : r.test(n));
-                                        }));
-                                    } else u(e, `Invalid parameter: ${r}`), n = !1;
-                                    return n;
-                                }(e, r, p)) {
-                                    o(e);
-                                    var y;
-                                    try {
-                                        y = n || function(r) {
-                                            try {
-                                                var {mode: t} = r;
-                                                if (void 0 === t || "cors" === t || "no-cors" === t) return new URL(r.url).origin === document.location.origin ? "basic" : "no-cors" === t ? "opaque" : "cors";
-                                            } catch (r) {
-                                                u(e, `Could not determine response type: ${r}`);
-                                            }
-                                        }(p);
-                                        var h = await Reflect.apply(t, s, l);
-                                        return !h.ok || (v = h.url, d.some((function(e) {
-                                            return v.startsWith(e);
-                                        }))) ? c(i, p.url, y) : function(e) {
-                                            var r, t = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {
-                                                body: "{}"
-                                            }, n = {};
-                                            null == e || null === (r = e.headers) || void 0 === r || r.forEach((function(e, r) {
-                                                n[r] = e;
-                                            }));
-                                            var i = new Response(t.body, {
-                                                status: e.status,
-                                                statusText: e.statusText,
-                                                headers: n
-                                            });
-                                            return Object.defineProperties(i, {
-                                                url: {
-                                                    value: e.url
-                                                },
-                                                type: {
-                                                    value: t.type || e.type
-                                                }
-                                            }), i;
-                                        }(h, {
-                                            body: i,
-                                            type: y
-                                        });
-                                    } catch (e) {
-                                        return c(i, p.url, y);
-                                    }
-                                }
-                                return Reflect.apply(t, s, l);
-                            }
-                        };
-                        fetch = new Proxy(fetch, v);
-                    } else u(e, `Invalid responseType parameter: '${n}'`);
-                }
-            }).apply(this, i);
-            e.uniqueId && Object.defineProperty(_c, n, {
-                value: t,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {}
-    }
-    function o(e) {
-        if (e.verbose) {
-            try {
-                var r = console.trace.bind(console), t = "[ext] ";
-                "corelibs" === e.engine ? t += e.ruleText : (e.domainName && (t += `${e.domainName}`), 
-                e.args ? t += `#%#//s('${e.name}', '${e.args.join("', '")}')` : t += `#%#//s('${e.name}')`), 
-                r && r(t);
-            } catch (e) {}
-            "function" == typeof window._d && window._d(e);
-        }
-    }
-    function a(e) {
-        return e && "object" == typeof e ? function(e) {
-            return 0 === Object.keys(e).length && !e.prototype;
-        }(e) ? "{}" : Object.entries(e).map((function(e) {
-            var r = e[0], t = e[1], n = t;
-            return t instanceof Object && (n = `{ ${a(t)} }`), `${r}:"${n}"`;
-        })).join(" ") : String(e);
-    }
-    function u(e, r) {
-        var t = arguments.length > 2 && void 0 !== arguments[2] && arguments[2], n = !(arguments.length > 3 && void 0 !== arguments[3]) || arguments[3], {name: i, verbose: o} = e;
-        if (t || o) {
-            var a = console.log;
-            n ? a(`${i}: ${r}`) : Array.isArray(r) ? a(`${i}:`, ...r) : a(`${i}:`, r);
-        }
-    }
-    function c() {
-        var e = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : "{}", r = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : "", t = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : "basic";
-        if ("undefined" != typeof Response) {
-            var n = new Response(e, {
-                headers: {
-                    "Content-Length": `${e.length}`
-                },
-                status: 200,
-                statusText: "OK"
-            });
-            return "opaque" === t ? Object.defineProperties(n, {
-                body: {
-                    value: null
-                },
-                status: {
-                    value: 0
-                },
-                ok: {
-                    value: !1
-                },
-                statusText: {
-                    value: ""
-                },
-                url: {
-                    value: ""
-                },
-                type: {
-                    value: t
-                }
-            }) : Object.defineProperties(n, {
-                url: {
-                    value: r
-                },
-                type: {
-                    value: t
-                }
-            }), Promise.resolve(n);
-        }
-    }
-    function s(e) {
-        return (Number.isFinite || window.isFinite)(e);
-    }
-    function l(e) {
-        var r, t = parseInt(e, 10);
-        return r = t, (Number.isNaN || window.isNaN)(r) ? null : t;
-    }
-}
-try {
-    var _k = "592e548291de2975f8f41e69efa3ae9e";
-    if (_b.has(_k)) return;
-    _b.add(_k);
-    preventFetch.apply(this, [ {
-        name: "prevent-fetch",
-        args: [ "pagead2.googlesyndication.com" ],
-        engine: "extension",
-        version: "2.4.2",
-        verbose: !1
-    } ].concat([ "pagead2.googlesyndication.com" ]));
-} catch (e) {}
 function setConstant(e, t) {
     var n = "done", r = e.uniqueId + e.name + "_" + (Array.isArray(t) ? t.join("_") : "");
-    if (!e.uniqueId || _c[r] !== n) {
+    if (!e.uniqueId || Window.prototype.toString[r] !== n) {
         var i = t ? [].concat(e).concat(t) : [ e ];
         try {
             (function(e, t, n) {
@@ -709,9 +448,9 @@ function setConstant(e, t) {
                         asResolved: e => Promise.resolve(e),
                         asRejected: e => Promise.reject(e)
                     }[m](j));
-                    var x = !1, R = function(e) {
+                    var R = !1, x = function(e) {
                         var {source: t, stack: n, mustCancel: r, trapProp: i, getConstantValue: s, setConstantValue: a} = e, u = function(e, c) {
-                            var l = g(e, c), {base: f, prop: d, chain: p} = l, m = {
+                            var l = h(e, c), {base: f, prop: d, chain: p} = l, m = {
                                 factValue: void 0,
                                 init(e) {
                                     return this.factValue = e, !0;
@@ -778,11 +517,11 @@ function setConstant(e, t) {
                                                         if (o(e) && u[c].startsWith(r) && u[c].match(v(e))) return !0;
                                                     }
                                                     return !1;
-                                                }(e, t)) return n.length && n[0] !== RegExp.$1 && h(n), !0;
+                                                }(e, t)) return n.length && n[0] !== RegExp.$1 && g(n), !0;
                                                 var r = v(e), i = t.split("\n").slice(2).map((function(e) {
                                                     return e.trim();
                                                 })).join("\n");
-                                                return n.length && n[0] !== RegExp.$1 && h(n), function() {
+                                                return n.length && n[0] !== RegExp.$1 && g(n), function() {
                                                     var e = Object.getOwnPropertyDescriptor(RegExp.prototype, "test"), t = null == e ? void 0 : e.value;
                                                     if (e && "function" == typeof e.value) return t;
                                                     throw new Error("RegExp.prototype.test is not a function");
@@ -810,7 +549,7 @@ function setConstant(e, t) {
                         source: e,
                         stack: i,
                         mustCancel: function(e) {
-                            return x || (x = void 0 !== e && void 0 !== j && typeof e != typeof j && null !== e);
+                            return R || (R = void 0 !== e && void 0 !== j && typeof e != typeof j && null !== e);
                         },
                         trapProp: function(n, r, i, o) {
                             if (!o.init(n[r])) return !1;
@@ -862,26 +601,28 @@ function setConstant(e, t) {
                             j = e;
                         }
                     });
-                    R(window, t);
+                    x(window, t);
                 }
             }).apply(this, i);
-            e.uniqueId && Object.defineProperty(_c, r, {
+            e.uniqueId && Object.defineProperty(Window.prototype.toString, r, {
                 value: n,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
-        } catch (e) {}
+        } catch (e) {
+            console.log(e);
+        }
     }
     function o(e) {
         if (e.verbose) {
             try {
-                var t = console.trace.bind(console), n = "[ext] ";
+                var t = console.trace.bind(console), n = "[AdGuard] ";
                 "corelibs" === e.engine ? n += e.ruleText : (e.domainName && (n += `${e.domainName}`), 
-                e.args ? n += `#%#//s('${e.name}', '${e.args.join("', '")}')` : n += `#%#//s('${e.name}')`), 
+                e.args ? n += `#%#//scriptlet('${e.name}', '${e.args.join("', '")}')` : n += `#%#//scriptlet('${e.name}')`), 
                 t && t(n);
             } catch (e) {}
-            "function" == typeof window._d && window._d(e);
+            "function" == typeof window.__debug && window.__debug(e);
         }
     }
     function s() {}
@@ -958,7 +699,7 @@ function setConstant(e, t) {
         var c = t.replace(/\\'/g, "'").replace(/\\"/g, '"').replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
         return new RegExp(c);
     }
-    function h(e) {
+    function g(e) {
         if (e.length) try {
             var t;
             t = 1 === e.length ? `(${e[0]})` : e.reduce((function(e, t, n) {
@@ -971,7 +712,7 @@ function setConstant(e, t) {
             console.log(r);
         }
     }
-    function g(e, t) {
+    function h(e, t) {
         var n = t.indexOf(".");
         if (-1 === n) return {
             base: e,
@@ -988,7 +729,7 @@ function setConstant(e, t) {
             base: e,
             prop: r,
             chain: t
-        } : void 0 !== i ? g(i, t) : (Object.defineProperty(e, r, {
+        } : void 0 !== i ? h(i, t) : (Object.defineProperty(e, r, {
             configurable: !0
         }), {
             base: e,
@@ -1100,417 +841,9 @@ try {
         verbose: !1
     } ].concat([ "__Cpn.prototype.showAds", "false" ]));
 } catch (e) {}
-function trustedReplaceNodeText(t, e) {
-    var n = "done", r = t.uniqueId + t.name + "_" + (Array.isArray(e) ? e.join("_") : "");
-    if (!t.uniqueId || _c[r] !== n) {
-        var i = e ? [].concat(t).concat(e) : [ t ];
-        try {
-            (function(t, e, n, r, i) {
-                for (var a = function(t) {
-                    return "string" != typeof t ? t : t.replace(/\\'/g, "'").replace(/\\"/g, '"');
-                }, s = a(r), f = a(i), {selector: d, nodeNameMatch: p, textContentMatch: l, patternMatch: v} = function(t, e) {
-                    var n, r = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : null, i = "/", c = !(t.startsWith(i) && t.endsWith(i)), o = c ? t : "*", a = c ? t : u(t), s = e.startsWith(i) ? u(e) : e;
-                    return r && (n = r.startsWith(i) ? u(r) : r), {
-                        selector: o,
-                        nodeNameMatch: a,
-                        textContentMatch: s,
-                        patternMatch: n
-                    };
-                }(e, n, s), T = arguments.length, g = new Array(T > 5 ? T - 5 : 0), h = 5; h < T; h++) g[h - 5] = arguments[h];
-                var y, m, b = g.includes("verbose"), S = function(e) {
-                    return e.forEach((function(e) {
-                        if (function(t, e, n) {
-                            var {nodeName: r, textContent: i} = t, c = r.toLowerCase();
-                            return null !== i && "" !== i && (e instanceof RegExp ? e.test(c) : e === c) && (n instanceof RegExp ? n.test(i) : i.includes(n));
-                        }(e, p, l)) {
-                            if (b) {
-                                var n = e.textContent;
-                                n && c(t, `Original text content: ${n}`);
-                            }
-                            !function(t, e, n, r) {
-                                var {textContent: i} = e;
-                                if (i) {
-                                    var c = i.replace(n, r);
-                                    "SCRIPT" === e.nodeName && (c = function(t) {
-                                        var e, n = null == t || null === (e = t.api) || void 0 === e ? void 0 : e.policy;
-                                        if (n) return n;
-                                        var r = "AGPolicy", i = window.trustedTypes, c = !!i, o = {
-                                            HTML: "TrustedHTML",
-                                            Script: "TrustedScript",
-                                            ScriptURL: "TrustedScriptURL"
-                                        };
-                                        if (!c) return {
-                                            name: r,
-                                            isSupported: c,
-                                            TrustedType: o,
-                                            createHTML: function(t) {
-                                                return t;
-                                            },
-                                            createScript: function(t) {
-                                                return t;
-                                            },
-                                            createScriptURL: function(t) {
-                                                return t;
-                                            },
-                                            create: function(t, e) {
-                                                return e;
-                                            },
-                                            getAttributeType: function() {
-                                                return null;
-                                            },
-                                            convertAttributeToTrusted: function(t, e, n) {
-                                                return n;
-                                            },
-                                            getPropertyType: function() {
-                                                return null;
-                                            },
-                                            convertPropertyToTrusted: function(t, e, n) {
-                                                return n;
-                                            },
-                                            isHTML: function() {
-                                                return !1;
-                                            },
-                                            isScript: function() {
-                                                return !1;
-                                            },
-                                            isScriptURL: function() {
-                                                return !1;
-                                            }
-                                        };
-                                        var u = i.createPolicy(r, {
-                                            createHTML: function(t) {
-                                                return t;
-                                            },
-                                            createScript: function(t) {
-                                                return t;
-                                            },
-                                            createScriptURL: function(t) {
-                                                return t;
-                                            }
-                                        }), a = function(t) {
-                                            return u.createHTML(t);
-                                        }, s = function(t) {
-                                            return u.createScript(t);
-                                        }, f = function(t) {
-                                            return u.createScriptURL(t);
-                                        }, d = function(t, e) {
-                                            switch (t) {
-                                              case o.HTML:
-                                                return a(e);
-
-                                              case o.Script:
-                                                return s(e);
-
-                                              case o.ScriptURL:
-                                                return f(e);
-
-                                              default:
-                                                return e;
-                                            }
-                                        }, p = i.getAttributeType.bind(i), l = i.getPropertyType.bind(i), v = i.isHTML.bind(i), T = i.isScript.bind(i), g = i.isScriptURL.bind(i);
-                                        return {
-                                            name: r,
-                                            isSupported: c,
-                                            TrustedType: o,
-                                            createHTML: a,
-                                            createScript: s,
-                                            createScriptURL: f,
-                                            create: d,
-                                            getAttributeType: p,
-                                            convertAttributeToTrusted: function(t, e, n, r, i) {
-                                                var c = p(t, e, r, i);
-                                                return c ? d(c, n) : n;
-                                            },
-                                            getPropertyType: l,
-                                            convertPropertyToTrusted: function(t, e, n, r) {
-                                                var i = l(t, e, r);
-                                                return i ? d(i, n) : n;
-                                            },
-                                            isHTML: v,
-                                            isScript: T,
-                                            isScriptURL: g
-                                        };
-                                    }(t).createScript(c));
-                                    e.textContent = c, function(t) {
-                                        if (t.verbose) {
-                                            try {
-                                                var e = console.trace.bind(console), n = "[ext] ";
-                                                "corelibs" === t.engine ? n += t.ruleText : (t.domainName && (n += `${t.domainName}`), 
-                                                t.args ? n += `#%#//s('${t.name}', '${t.args.join("', '")}')` : n += `#%#//s('${t.name}')`), 
-                                                e && e(n);
-                                            } catch (t) {}
-                                            "function" == typeof window._d && window._d(t);
-                                        }
-                                    }(t);
-                                }
-                            }(t, e, v, f);
-                            if (b) {
-                                var r = e.textContent;
-                                r && c(t, `Modified text content: ${r}`);
-                            }
-                        }
-                    }));
-                };
-                document.documentElement && (y = d, m = S, [ document ].forEach((function(t) {
-                    return function(t) {
-                        if ("#text" === y) {
-                            var e = o(t.childNodes).filter((function(t) {
-                                return t.nodeType === Node.TEXT_NODE;
-                            }));
-                            m(e);
-                        } else {
-                            var n = o(t.querySelectorAll(y));
-                            m(n);
-                        }
-                    }(t);
-                })));
-                !function(t) {
-                    var e = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {
-                        subtree: !0,
-                        childList: !0
-                    }, n = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : 1e4, r = new MutationObserver((function(n, r) {
-                        r.disconnect(), t(n, r), r.observe(document.documentElement, e);
-                    }));
-                    r.observe(document.documentElement, e), "number" == typeof n && setTimeout((function() {
-                        return r.disconnect();
-                    }), n);
-                }((function(t) {
-                    return function(t, e) {
-                        var n = function(t) {
-                            for (var e = [], n = 0; n < t.length; n += 1) for (var {addedNodes: r} = t[n], i = 0; i < r.length; i += 1) e.push(r[i]);
-                            return e;
-                        }(t);
-                        e(n);
-                    }(t, S);
-                }));
-            }).apply(this, i);
-            t.uniqueId && Object.defineProperty(_c, r, {
-                value: n,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (t) {}
-    }
-    function c(t, e) {
-        var n = arguments.length > 2 && void 0 !== arguments[2] && arguments[2], r = !(arguments.length > 3 && void 0 !== arguments[3]) || arguments[3], {name: i, verbose: c} = t;
-        if (n || c) {
-            var o = console.log;
-            r ? o(`${i}: ${e}`) : Array.isArray(e) ? o(`${i}:`, ...e) : o(`${i}:`, e);
-        }
-    }
-    function o(t) {
-        for (var e = [], n = 0; n < t.length; n += 1) e.push(t[n]);
-        return e;
-    }
-    function u(t) {
-        var e = t || "", n = "/";
-        if ("" === e) return new RegExp(".?");
-        var r, i, c = e.lastIndexOf(n), o = e.substring(c + 1), u = e.substring(0, c + 1), a = (i = o, 
-        (r = u).startsWith(n) && r.endsWith(n) && !r.endsWith("\\/") && function(t) {
-            if (!t) return !1;
-            try {
-                return new RegExp("", t), !0;
-            } catch (t) {
-                return !1;
-            }
-        }(i) ? i : "");
-        if (e.startsWith(n) && e.endsWith(n) || a) return new RegExp((a ? u : e).slice(1, -1), a);
-        var s = e.replace(/\\'/g, "'").replace(/\\"/g, '"').replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-        return new RegExp(s);
-    }
-}
-try {
-    var _k = "f9f87ddc010332fcc2edb2b2f33c7a00";
-    if (_b.has(_k)) return;
-    _b.add(_k);
-    trustedReplaceNodeText.apply(this, [ {
-        name: "trusted-replace-node-text",
-        args: [ "script", "AdblockCheck", "/AdblockCheck\\.on\\(!0,adBlockDetected\\)/", "AdblockCheck.on(!0,adBlockUndetected)" ],
-        engine: "extension",
-        version: "2.4.2",
-        verbose: !1
-    } ].concat([ "script", "AdblockCheck", "/AdblockCheck\\.on\\(!0,adBlockDetected\\)/", "AdblockCheck.on(!0,adBlockUndetected)" ]));
-} catch (e) {}
-function abortCurrentInlineScript(e, t) {
-    var n = "done", r = e.uniqueId + e.name + "_" + (Array.isArray(t) ? t.join("_") : "");
-    if (!e.uniqueId || _c[r] !== n) {
-        var i = t ? [].concat(e).concat(t) : [ e ];
-        try {
-            (function(e, t, n) {
-                var r, i, c = function(e) {
-                    var t = e || "", n = "/";
-                    if ("" === t) return new RegExp(".?");
-                    var r, i, o = t.lastIndexOf(n), a = t.substring(o + 1), c = t.substring(0, o + 1), s = (i = a, 
-                    (r = c).startsWith(n) && r.endsWith(n) && !r.endsWith("\\/") && function(e) {
-                        if (!e) return !1;
-                        try {
-                            return new RegExp("", e), !0;
-                        } catch (e) {
-                            return !1;
-                        }
-                    }(i) ? i : "");
-                    if (t.startsWith(n) && t.endsWith(n) || s) return new RegExp((s ? c : t).slice(1, -1), s);
-                    var u = t.replace(/\\'/g, "'").replace(/\\"/g, '"').replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-                    return new RegExp(u);
-                }(n), s = o(), u = "data:text/javascript;base64,", l = function() {
-                    if ("currentScript" in document) return document.currentScript;
-                    var e = document.getElementsByTagName("script");
-                    return e[e.length - 1];
-                }, f = l(), d = function() {
-                    var t, n = l();
-                    if (n) {
-                        var r = n.textContent;
-                        try {
-                            r = Object.getOwnPropertyDescriptor(Node.prototype, "textContent").get.call(n);
-                        } catch (e) {}
-                        if (0 === r.length && void 0 !== n.src && null !== (t = n.src) && void 0 !== t && t.startsWith(u)) {
-                            var i = n.src.slice(28);
-                            r = window.atob(i);
-                        }
-                        if (n instanceof HTMLScriptElement && r.length > 0 && n !== f && c.test(r)) {
-                            !function(e) {
-                                if (e.verbose) {
-                                    try {
-                                        var t = console.trace.bind(console), n = "[ext] ";
-                                        "corelibs" === e.engine ? n += e.ruleText : (e.domainName && (n += `${e.domainName}`), 
-                                        e.args ? n += `#%#//s('${e.name}', '${e.args.join("', '")}')` : n += `#%#//s('${e.name}')`), 
-                                        t && t(n);
-                                    } catch (e) {}
-                                    "function" == typeof window._d && window._d(e);
-                                }
-                            }(e);
-                            throw new ReferenceError(s);
-                        }
-                    }
-                }, p = function(t, n) {
-                    var r = a(t, n), {base: i, prop: c, chain: s} = r;
-                    if (i instanceof Object != 0 || null !== i) if (s) !function(e, t, n, r) {
-                        var i;
-                        try {
-                            i = e[t];
-                        } catch (e) {
-                            i = void 0;
-                        }
-                        Object.defineProperty(e, t, {
-                            get: function() {
-                                return i;
-                            },
-                            set: function(e) {
-                                i = e, e instanceof Object && r(e, n);
-                            }
-                        });
-                    }(t, c, s, p); else {
-                        var u = i[c], l = Object.getOwnPropertyDescriptor(i, c);
-                        if (l instanceof Object == 0 || l.get instanceof Function == 0) {
-                            u = i[c];
-                            l = void 0;
-                        }
-                        var f, b, g, h, v = Object.assign({
-                            isAbortingSuspended: !1,
-                            isolateCallback(e) {
-                                this.isAbortingSuspended = !0;
-                                try {
-                                    for (var t = arguments.length, n = new Array(t > 1 ? t - 1 : 0), r = 1; r < t; r++) n[r - 1] = arguments[r];
-                                    var i = e(...n);
-                                    return this.isAbortingSuspended = !1, i;
-                                } catch (e) {
-                                    var a = o();
-                                    throw this.isAbortingSuspended = !1, new ReferenceError(a);
-                                }
-                            }
-                        }, {
-                            currentValue: u,
-                            get() {
-                                this.isAbortingSuspended || this.isolateCallback(d);
-                                return l instanceof Object ? l.get.call(i) : this.currentValue;
-                            },
-                            set(e) {
-                                this.isAbortingSuspended || this.isolateCallback(d);
-                                l instanceof Object ? l.set.call(i, e) : this.currentValue = e;
-                            }
-                        });
-                        f = i, b = c, g = {
-                            get: () => v.get.call(v),
-                            set(e) {
-                                v.set.call(v, e);
-                            }
-                        }, (h = Object.getOwnPropertyDescriptor(f, b)) && !h.configurable || Object.defineProperty(f, b, g);
-                    } else {
-                        var w = n.split("."), y = w.indexOf(c), O = w[y - 1];
-                        !function(e, t) {
-                            var n = arguments.length > 2 && void 0 !== arguments[2] && arguments[2], r = !(arguments.length > 3 && void 0 !== arguments[3]) || arguments[3], {name: i, verbose: o} = e;
-                            if (n || o) {
-                                var a = console.log;
-                                r ? a(`${i}: ${t}`) : Array.isArray(t) ? a(`${i}:`, ...t) : a(`${i}:`, t);
-                            }
-                        }(e, `The scriptlet had been executed before the ${O} was loaded.`);
-                    }
-                };
-                p(window, t);
-                window.onerror = (r = s, i = window.onerror, function(e) {
-                    if ("string" == typeof e && e.includes(r)) return !0;
-                    if (i instanceof Function) {
-                        for (var t = arguments.length, n = new Array(t > 1 ? t - 1 : 0), o = 1; o < t; o++) n[o - 1] = arguments[o];
-                        return i.apply(window, [ e, ...n ]);
-                    }
-                    return !1;
-                }).bind();
-            }).apply(this, i);
-            e.uniqueId && Object.defineProperty(_c, r, {
-                value: n,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {}
-    }
-    function o() {
-        return Math.random().toString(36).slice(2, 9);
-    }
-    function a(e, t) {
-        var n = t.indexOf(".");
-        if (-1 === n) return {
-            base: e,
-            prop: t
-        };
-        var r = t.slice(0, n);
-        if (null === e) return {
-            base: e,
-            prop: r,
-            chain: t
-        };
-        var i = e[r];
-        return t = t.slice(n + 1), (e instanceof Object || "object" == typeof e) && function(e) {
-            return 0 === Object.keys(e).length && !e.prototype;
-        }(e) || null === i ? {
-            base: e,
-            prop: r,
-            chain: t
-        } : void 0 !== i ? a(i, t) : (Object.defineProperty(e, r, {
-            configurable: !0
-        }), {
-            base: e,
-            prop: r,
-            chain: t
-        });
-    }
-}
-try {
-    var _k = "610b952d9a97b6526f834370d92dba22";
-    if (_b.has(_k)) return;
-    _b.add(_k);
-    abortCurrentInlineScript.apply(this, [ {
-        name: "abort-current-inline-script",
-        args: [ "document.createElement", "dtnoppu" ],
-        engine: "extension",
-        version: "2.4.2",
-        verbose: !1
-    } ].concat([ "document.createElement", "dtnoppu" ]));
-} catch (e) {}
 function jsonPrune(e, r) {
     var t = "done", n = e.uniqueId + e.name + "_" + (Array.isArray(r) ? r.join("_") : "");
-    if (!e.uniqueId || _c[n] !== t) {
+    if (!e.uniqueId || Window.prototype.toString[n] !== t) {
         var a = r ? [].concat(e).concat(r) : [ e ];
         try {
             (function(e, r, t) {
@@ -1530,7 +863,7 @@ function jsonPrune(e, r) {
                     nativeStringify: window.JSON.stringify
                 }, w = function(t) {
                     return "jsonpath" === a.mode ? function(e, r, t, n, a) {
-                        var i = arguments.length > 5 && void 0 !== arguments[5] ? arguments[5] : "", s = arguments.length > 6 && void 0 !== arguments[6] && arguments[6], l = "$", c = ".", $ = "..", b = "", w = "\\", x = ")", A = "[", W = "@", j = "contains", P = "equal", O = "exists", S = "greater_than", E = "greater_than_or_equal", R = "less_than", N = "less_than_or_equal", k = "not_equal", _ = "regex", V = [ "==", "!=", "<=", ">=", "*=", "=~", "<", ">", "=" ], I = /^[A-Za-z_$][\w$]*$/;
+                        var i = arguments.length > 5 && void 0 !== arguments[5] ? arguments[5] : "", u = arguments.length > 6 && void 0 !== arguments[6] && arguments[6], l = "$", c = ".", $ = "..", b = "", w = "\\", x = ")", W = "[", A = "@", j = "contains", P = "equal", S = "exists", O = "greater_than", E = "greater_than_or_equal", R = "less_than", N = "less_than_or_equal", k = "not_equal", _ = "regex", V = [ "==", "!=", "<=", ">=", "*=", "=~", "<", ">", "=" ], I = /^[A-Za-z_$][\w$]*$/;
                         function J(e) {
                             return null !== e && "object" == typeof e;
                         }
@@ -1565,41 +898,41 @@ function jsonPrune(e, r) {
                         }
                         function T(e, r) {
                             for (var t = 0, n = 0, a = 0, i = null, o = 0; o < e.length; o += 1) {
-                                var s = e[o];
+                                var u = e[o];
                                 if (i) {
-                                    if (s !== i || M(e, o) || (i = null), r(o, !1)) return;
-                                } else if (F(s)) {
-                                    if (i = s, r(o, !1)) return;
+                                    if (u !== i || M(e, o) || (i = null), r(o, !1)) return;
+                                } else if (F(u)) {
+                                    if (i = u, r(o, !1)) return;
                                 } else {
-                                    var u = !0;
-                                    if (s === A ? t += 1 : "]" === s ? t -= 1 : "{" === s ? n += 1 : "}" === s ? n -= 1 : "(" === s ? a += 1 : s === x ? a -= 1 : u = !1, 
-                                    r(o, !u && 0 === t && 0 === n && 0 === a)) return;
+                                    var s = !0;
+                                    if (u === W ? t += 1 : "]" === u ? t -= 1 : "{" === u ? n += 1 : "}" === u ? n -= 1 : "(" === u ? a += 1 : u === x ? a -= 1 : s = !1, 
+                                    r(o, !s && 0 === t && 0 === n && 0 === a)) return;
                                 }
                             }
                         }
                         function D(e, r) {
                             for (var t = 0, n = null, a = r; a < e.length; a += 1) {
                                 var i = e[a];
-                                if (n) i !== n || M(e, a) || (n = null); else if (F(i)) n = i; else if (i !== A) {
+                                if (n) i !== n || M(e, a) || (n = null); else if (F(i)) n = i; else if (i !== W) {
                                     if ("]" === i && 0 == (t -= 1)) return a;
                                 } else t += 1;
                             }
                             return -1;
                         }
-                        function K(e, r) {
+                        function G(e, r) {
                             var t = [], n = b, a = new Set;
                             return T(e, (function(i, o) {
                                 if (!a.has(i)) if (o && e.startsWith(r, i)) {
                                     t.push(n.trim()), n = b;
-                                    for (var s = 1; s < r.length; s += 1) a.add(i + s);
+                                    for (var u = 1; u < r.length; u += 1) a.add(i + u);
                                 } else n += e[i];
                             })), n !== b && t.push(n.trim()), t;
                         }
-                        function Z(e) {
+                        function K(e) {
                             var r = e.trim();
-                            return r.startsWith(W) && (r = r.slice(1)), r === b ? l : r.startsWith(l) ? r : r.startsWith(c) || r.startsWith($) || r.startsWith(A) ? `${l}${r}` : `${l}${c}${r}`;
+                            return r.startsWith(A) && (r = r.slice(1)), r === b ? l : r.startsWith(l) ? r : r.startsWith(c) || r.startsWith($) || r.startsWith(W) ? `${l}${r}` : `${l}${c}${r}`;
                         }
-                        function B(e) {
+                        function Z(e) {
                             var r = e.trim();
                             if (r.startsWith("(") && r.endsWith(x)) {
                                 for (var t = 0, n = null, a = !1, i = 0; i < r.length; i += 1) {
@@ -1611,22 +944,22 @@ function jsonPrune(e, r) {
                                 }
                                 a && (r = r.slice(1, -1).trim());
                             }
-                            var s = K(r, "||");
-                            if (s.length > 1) return {
-                                conditions: s.map((function(e) {
-                                    return B(e);
+                            var u = G(r, "||");
+                            if (u.length > 1) return {
+                                conditions: u.map((function(e) {
+                                    return Z(e);
                                 })),
                                 operator: "or"
                             };
-                            var u = K(r, "&&");
-                            if (u.length > 1) return {
-                                conditions: u.map((function(e) {
-                                    return B(e);
+                            var s = G(r, "&&");
+                            if (s.length > 1) return {
+                                conditions: s.map((function(e) {
+                                    return Z(e);
                                 })),
                                 operator: "and"
                             };
                             if (r.startsWith("!") && !r.startsWith("!=")) return {
-                                condition: B(r.slice(1).trim()),
+                                condition: Z(r.slice(1).trim()),
                                 operator: "not"
                             };
                             var p, v, h = (v = null, T(p = r, (function(e, r) {
@@ -1641,30 +974,30 @@ function jsonPrune(e, r) {
                                 }, !0);
                             })), v);
                             if (!h) return {
-                                operator: O,
-                                selectorPath: Z(r)
+                                operator: S,
+                                selectorPath: K(r)
                             };
                             var d = r.slice(0, h.index).trim(), g = r.slice(h.index + h.operator.length).trim(), m = P;
-                            "!=" === h.operator ? m = k : "<" === h.operator ? m = R : "<=" === h.operator ? m = N : ">" === h.operator ? m = S : ">=" === h.operator ? m = E : "*=" === h.operator ? m = j : ("=~" === h.operator || "=" === h.operator && /^\/.*\/[a-z]*$/i.test(g)) && (m = _);
-                            var y, $, b = g.trim(), w = b === l || b.startsWith(l + c) || b.startsWith(l + A), I = b === W || b.startsWith(W + c) || b.startsWith(W + A);
+                            "!=" === h.operator ? m = k : "<" === h.operator ? m = R : "<=" === h.operator ? m = N : ">" === h.operator ? m = O : ">=" === h.operator ? m = E : "*=" === h.operator ? m = j : ("=~" === h.operator || "=" === h.operator && /^\/.*\/[a-z]*$/i.test(g)) && (m = _);
+                            var y, $, b = g.trim(), w = b === l || b.startsWith(l + c) || b.startsWith(l + W), I = b === A || b.startsWith(A + c) || b.startsWith(A + W);
                             return w || I ? {
-                                comparisonSelectorPath: Z(b),
+                                comparisonSelectorPath: K(b),
                                 operator: m,
                                 resolveComparisonAgainstRoot: w,
-                                selectorPath: Z(d)
+                                selectorPath: K(d)
                             } : {
                                 comparisonValue: (y = g, $ = y.trim(), "true" === $ || "false" !== $ && ("null" === $ ? null : /^-?\d+(?:\.\d+)?$/.test($) ? Number($) : /^\/.*\/[a-z]*$/i.test($) ? f($) : C($))),
                                 operator: m,
-                                selectorPath: Z(d)
+                                selectorPath: K(d)
                             };
                         }
-                        function G(e, r) {
+                        function B(e, r) {
                             if ("*" === e) return {
                                 mode: "wildcard",
                                 recursive: r
                             };
                             if (e.startsWith("?")) return {
-                                filter: B(e.slice(1)),
+                                filter: Z(e.slice(1)),
                                 mode: "filter",
                                 recursive: r
                             };
@@ -1722,8 +1055,8 @@ function jsonPrune(e, r) {
                             for (e.startsWith(l) && (t = 1); t < e.length; ) {
                                 var n = !1;
                                 if (e.startsWith($, t) ? (n = !0, t += 2) : e[t] === c && (t += 1), t >= e.length) break;
-                                if (e[t] !== A) if ("*" !== e[t]) {
-                                    for (var a = t; a < e.length && e[a] !== c && e[a] !== A; ) a += 1;
+                                if (e[t] !== W) if ("*" !== e[t]) {
+                                    for (var a = t; a < e.length && e[a] !== c && e[a] !== W; ) a += 1;
                                     var i = e.slice(t, a).trim();
                                     i && r.push({
                                         mode: "property",
@@ -1736,8 +1069,8 @@ function jsonPrune(e, r) {
                                 }), t += 1; else {
                                     var o = D(e, t);
                                     if (-1 === o) throw new Error(`Invalid JSONPath expression: ${e}`);
-                                    var s = e.slice(t + 1, o).trim();
-                                    r.push(G(s, n)), t = o + 1;
+                                    var u = e.slice(t + 1, o).trim();
+                                    r.push(B(u, n)), t = o + 1;
                                 }
                             }
                             return {
@@ -1746,7 +1079,7 @@ function jsonPrune(e, r) {
                         }
                         function Q(e, r, t) {
                             var n, a = e.trim();
-                            if (a.startsWith("{") || a.startsWith(A)) n = r(a); else {
+                            if (a.startsWith("{") || a.startsWith(W)) n = r(a); else {
                                 var i = t(a);
                                 if (!i || i.shouldReplaceArgument) throw new Error(`Invalid append value: ${e}`);
                                 n = i.constantValue;
@@ -1798,9 +1131,9 @@ function jsonPrune(e, r) {
                                 if (!J(e.value) || !r.properties) return t;
                                 for (var n = new Set, a = 0; a < r.properties.length; a += 1) {
                                     var i = r.properties[a];
-                                    if (i instanceof RegExp) for (var o = Object.keys(e.value), s = 0; s < o.length; s += 1) {
-                                        var u = o[s];
-                                        i.lastIndex = 0, i.test(u) && !n.has(u) && (n.add(u), t.push(L(e.value[u], e.value, u, z(e.path, u))));
+                                    if (i instanceof RegExp) for (var o = Object.keys(e.value), u = 0; u < o.length; u += 1) {
+                                        var s = o[u];
+                                        i.lastIndex = 0, i.test(s) && !n.has(s) && (n.add(s), t.push(L(e.value[s], e.value, s, z(e.path, s))));
                                     } else !n.has(i) && Object.prototype.hasOwnProperty.call(e.value, i) && (n.add(i), 
                                     t.push(L(e.value[i], e.value, i, z(e.path, i))));
                                 }
@@ -1831,7 +1164,7 @@ function jsonPrune(e, r) {
                                         for (var o = Math.max(0, t); o < Math.min(e, n); o += i) a.push(o);
                                         return a;
                                     }
-                                    for (var s = Math.min(e - 1, t); s > Math.max(-1, n); s += i) a.push(s);
+                                    for (var u = Math.min(e - 1, t); u > Math.max(-1, n); u += i) a.push(u);
                                     return a;
                                 }(e.value.length, r.slice), v = 0; v < p.length; v += 1) {
                                     var h = p[v];
@@ -1849,25 +1182,25 @@ function jsonPrune(e, r) {
                                 }));
                                 if ("condition" in t) return !n(e, t.condition);
                                 var a = te(e, H(t.selectorPath));
-                                if (t.operator === O) return a.length > 0;
+                                if (t.operator === S) return a.length > 0;
                                 var i = t.comparisonValue;
                                 if (t.comparisonSelectorPath) {
                                     var o = te(t.resolveComparisonAgainstRoot ? r : e, H(t.comparisonSelectorPath));
                                     if (0 === o.length) return !1;
                                     i = o[0].value;
                                 }
-                                for (var s = 0; s < a.length; s += 1) {
-                                    var u = a[s].value;
+                                for (var u = 0; u < a.length; u += 1) {
+                                    var s = a[u].value;
                                     if (t.operator !== j) {
                                         if (t.operator !== _) {
-                                            if (t.operator === P && u === i) return !0;
-                                            if (t.operator === k && u !== i) return !0;
-                                            if (t.operator === R && u < i) return !0;
-                                            if (t.operator === N && u <= i) return !0;
-                                            if (t.operator === S && u > i) return !0;
-                                            if (t.operator === E && u >= i) return !0;
-                                        } else if ("string" == typeof u && i instanceof RegExp && (i.lastIndex = 0, i.test(u))) return !0;
-                                    } else if ("string" == typeof u && u.includes(String(i))) return !0;
+                                            if (t.operator === P && s === i) return !0;
+                                            if (t.operator === k && s !== i) return !0;
+                                            if (t.operator === R && s < i) return !0;
+                                            if (t.operator === N && s <= i) return !0;
+                                            if (t.operator === O && s > i) return !0;
+                                            if (t.operator === E && s >= i) return !0;
+                                        } else if ("string" == typeof s && i instanceof RegExp && (i.lastIndex = 0, i.test(s))) return !0;
+                                    } else if ("string" == typeof s && s.includes(String(i))) return !0;
                                 }
                                 return !1;
                             }
@@ -1879,10 +1212,10 @@ function jsonPrune(e, r) {
                                 return t;
                             }
                             for (var i = [ L(e, null, null, l) ], o = 0; o < t.steps.length; o += 1) {
-                                var s = t.steps[o];
-                                if ("filter" === s.mode && s.filter) i = a(i, s.filter); else {
-                                    for (var u = [], f = 0; f < i.length; f += 1) for (var c = i[f], p = s.recursive ? Y(c) : [ c ], v = 0; v < p.length; v += 1) for (var h = re(p[v], s), d = 0; d < h.length; d += 1) u.push(h[d]);
-                                    i = u;
+                                var u = t.steps[o];
+                                if ("filter" === u.mode && u.filter) i = a(i, u.filter); else {
+                                    for (var s = [], f = 0; f < i.length; f += 1) for (var c = i[f], p = u.recursive ? Y(c) : [ c ], v = 0; v < p.length; v += 1) for (var h = re(p[v], u), d = 0; d < h.length; d += 1) s.push(h[d]);
+                                    i = s;
                                 }
                             }
                             return i;
@@ -1892,12 +1225,12 @@ function jsonPrune(e, r) {
                             ne = !0;
                         }
                         if (!J(r)) return r;
-                        var ie, oe = (ie = n) && ie.nativeParse ? ie.nativeParse : JSON.parse, se = function(e) {
+                        var ie, oe = (ie = n) && ie.nativeParse ? ie.nativeParse : JSON.parse, ue = function(e) {
                             return e && e.nativeStringify ? e.nativeStringify : JSON.stringify;
-                        }(n), ue = (new Error).stack || "";
-                        if (i && !o(i, ue)) return r;
-                        if (!t) return u(e, `${window.location.hostname}\n${se(r, null, 2)}\nStack trace:\n${ue}`, !0), 
-                        u(e, r, !0, !1), r;
+                        }(n), se = (new Error).stack || "";
+                        if (i && !o(i, se)) return r;
+                        if (!t) return s(e, `${window.location.hostname}\n${ue(r, null, 2)}\nStack trace:\n${se}`, !0), 
+                        s(e, r, !0, !1), r;
                         try {
                             for (var le = function(e, r, t) {
                                 var n, a = function(e) {
@@ -1919,43 +1252,43 @@ function jsonPrune(e, r) {
                                         var n = D(t, 0);
                                         if (-1 === n) break;
                                         var a = t.slice(1, n);
-                                        r.push(B(a.slice(1))), t = t.slice(n + 1).trim();
+                                        r.push(Z(a.slice(1))), t = t.slice(n + 1).trim();
                                     }
                                     return {
                                         guards: r,
                                         selectorPart: t
                                     };
-                                }(a.selectorPart), o = H((n = i.selectorPart.trim()) === b ? l : n.startsWith(l) ? n : n.startsWith(c) || n.startsWith(A) || n.startsWith($) ? `${l}${n}` : `${l}${c}${n}`), s = {
+                                }(a.selectorPart), o = H((n = i.selectorPart.trim()) === b ? l : n.startsWith(l) ? n : n.startsWith(c) || n.startsWith(W) || n.startsWith($) ? `${l}${n}` : `${l}${c}${n}`), u = {
                                     mode: a.mode
                                 };
-                                return "append" === a.mode ? s = {
+                                return "append" === a.mode ? u = {
                                     mode: "append",
                                     updater: Q(a.valuePart, r, t)
-                                } : "set" === a.mode && (s = {
+                                } : "set" === a.mode && (u = {
                                     mode: "set",
                                     updater: U(a.valuePart, r, t)
                                 }), {
                                     guards: i.guards,
-                                    mutation: s,
+                                    mutation: u,
                                     selector: o
                                 };
                             }(t, oe, (function(r) {
                                 return function(e, r, t) {
-                                    var n, a, i = "json:", o = "replace:", s = "", l = !1, f = !1;
+                                    var n, a, i = "json:", o = "replace:", u = "", l = !1, f = !1;
                                     if (r.startsWith(o)) {
                                         var c = extractRegexAndReplacement(r);
-                                        if (!c) return u(e, `Invalid argument value format: ${r}`), null;
-                                        s = c.regexPart, n = c.replacementPart, l = !0;
+                                        if (!c) return s(e, `Invalid argument value format: ${r}`), null;
+                                        u = c.regexPart, n = c.replacementPart, l = !0;
                                     } else if (r.startsWith(i)) try {
                                         n = t(r.slice(i.length)), f = !0;
                                     } catch (t) {
-                                        return u(e, `Invalid JSON argument value: ${r}`), null;
+                                        return s(e, `Invalid JSON argument value: ${r}`), null;
                                     } else if ("undefined" === r) n = void 0; else if ("false" === r) n = !1; else if ("true" === r) n = !0; else if ("null" === r) n = null; else if ("NaN" === r) n = NaN; else if ("emptyArr" === r || "[]" === r) n = []; else if ("emptyObj" === r || "{}" === r) n = {}; else if ("noopFunc" === r) n = v; else if ("noopCallbackFunc" === r) n = p; else if ("trueFunc" === r) n = h; else if ("falseFunc" === r) n = d; else if ("throwFunc" === r) n = g; else if ("noopPromiseResolve" === r) n = y; else if ("noopPromiseReject" === r) n = m; else if (/^-?\d+$/.test(r)) {
                                         if (a = n = parseFloat(r), (Number.isNaN || window.isNaN)(a)) return null;
                                     } else n = r;
                                     return {
                                         constantValue: n,
-                                        replaceRegexValue: s,
+                                        replaceRegexValue: u,
                                         shouldReplaceArgument: l,
                                         shouldMergeJsonValue: f
                                     };
@@ -1968,8 +1301,8 @@ function jsonPrune(e, r) {
                                 } ]
                             }).length) return r;
                             var ce = te(r, le.selector);
-                            if (s) return ce.length > 0 && a && a(), r;
-                            if (!("remove" === le.mutation.mode || "string" == typeof e.name && e.name.startsWith("trusted-"))) return u(e, "JSONPath set and append operations are allowed only in trusted scriptlets"), 
+                            if (u) return ce.length > 0 && a && a(), r;
+                            if (!("remove" === le.mutation.mode || "string" == typeof e.name && e.name.startsWith("trusted-"))) return s(e, "JSONPath set and append operations are allowed only in trusted scriptlets"), 
                             r;
                             if ("remove" === le.mutation.mode) return function(e) {
                                 for (var r = new Set, t = new Map, n = 0; n < e.length; n += 1) {
@@ -1997,15 +1330,15 @@ function jsonPrune(e, r) {
                                 return a;
                             }(r, ce, le.mutation.updater), ne && a && a());
                         } catch (r) {
-                            u(e, `JSONPath processing failed for expression '${t}': ${r.message}`);
+                            s(e, `JSONPath processing failed for expression '${t}': ${r.message}`);
                         }
                         return r;
                     }(e, t, r, b, (function() {
                         return i(e);
                     }), n) : function(e, r, t, n, a, l) {
                         var {nativeStringify: c} = l;
-                        if (0 === t.length && 0 === n.length) return u(e, `${window.location.hostname}\n${c(r, null, 2)}\nStack trace:\n${(new Error).stack}`, !0), 
-                        r && "object" == typeof r && u(e, r, !0, !1), r;
+                        if (0 === t.length && 0 === n.length) return s(e, `${window.location.hostname}\n${c(r, null, 2)}\nStack trace:\n${(new Error).stack}`, !0), 
+                        r && "object" == typeof r && s(e, r, !0, !1), r;
                         try {
                             if (!1 === function(e, r, t, n, a, i) {
                                 if (!r) return !1;
@@ -2016,14 +1349,14 @@ function jsonPrune(e, r) {
                                 }));
                                 if (0 === p.length && v.length > 0) {
                                     var h = c(r);
-                                    if (f(v.join("")).test(h)) return u(e, `${window.location.hostname}\n${c(r, null, 2)}\nStack trace:\n${(new Error).stack}`, !0), 
-                                    r && "object" == typeof r && u(e, r, !0, !1), l = !1;
+                                    if (f(v.join("")).test(h)) return s(e, `${window.location.hostname}\n${c(r, null, 2)}\nStack trace:\n${(new Error).stack}`, !0), 
+                                    r && "object" == typeof r && s(e, r, !0, !1), l = !1;
                                 }
                                 if (a && !o(a, (new Error).stack || "")) return l = !1;
                                 for (var d, g = [ ".*.", "*.", ".*", ".[].", "[].", ".[]" ], m = function() {
                                     var e = v[y], t = e.split(".").pop(), n = g.some((function(r) {
                                         return e.includes(r);
-                                    })), a = s(r, e, n);
+                                    })), a = u(r, e, n);
                                     if (!a.length) return {
                                         v: l = !1
                                     };
@@ -2036,8 +1369,8 @@ function jsonPrune(e, r) {
                                 return l;
                             }(e, r, t, n, a, l)) return r;
                             t.forEach((function(t) {
-                                for (var n = t.path, a = t.value, o = s(r, n, !0, [], a), u = o.length - 1; u >= 0; u -= 1) {
-                                    var l = o[u];
+                                for (var n = t.path, a = t.value, o = u(r, n, !0, [], a), s = o.length - 1; s >= 0; s -= 1) {
+                                    var l = o[s];
                                     if (void 0 !== l && l.base) if (i(e), Array.isArray(l.base)) try {
                                         var f = Number(l.prop);
                                         if (Number.isNaN(f)) continue;
@@ -2048,7 +1381,7 @@ function jsonPrune(e, r) {
                                 }
                             }));
                         } catch (r) {
-                            u(e, r);
+                            s(e, r);
                         }
                         return r;
                     }(e, t, c, $, n, b);
@@ -2059,30 +1392,32 @@ function jsonPrune(e, r) {
                 };
                 x.toString = b.nativeParse.toString.bind(b.nativeParse);
                 JSON.parse = x;
-                var A = Response.prototype.json;
+                var W = Response.prototype.json;
                 "undefined" != typeof Response && (Response.prototype.json = function() {
-                    return A.apply(this).then((function(e) {
+                    return W.apply(this).then((function(e) {
                         return w(e);
                     }));
                 });
             }).apply(this, a);
-            e.uniqueId && Object.defineProperty(_c, n, {
+            e.uniqueId && Object.defineProperty(Window.prototype.toString, n, {
                 value: t,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
-        } catch (e) {}
+        } catch (e) {
+            console.log(e);
+        }
     }
     function i(e) {
         if (e.verbose) {
             try {
-                var r = console.trace.bind(console), t = "[ext] ";
+                var r = console.trace.bind(console), t = "[AdGuard] ";
                 "corelibs" === e.engine ? t += e.ruleText : (e.domainName && (t += `${e.domainName}`), 
-                e.args ? t += `#%#//s('${e.name}', '${e.args.join("', '")}')` : t += `#%#//s('${e.name}')`), 
+                e.args ? t += `#%#//scriptlet('${e.name}', '${e.args.join("', '")}')` : t += `#%#//scriptlet('${e.name}')`), 
                 r && r(t);
             } catch (e) {}
-            "function" == typeof window._d && window._d(e);
+            "function" == typeof window.__debug && window.__debug(e);
         }
     }
     function o(e, r) {
@@ -2106,27 +1441,27 @@ function jsonPrune(e, r) {
                 return e.includes(n);
             };
             if (!a(e) && !i(e)) return !1;
-            var o = window.location.href, s = o.indexOf("#");
-            -1 !== s && (o = o.slice(0, s));
-            var u = r.split("\n").slice(2).map((function(e) {
+            var o = window.location.href, u = o.indexOf("#");
+            -1 !== u && (o = o.slice(0, u));
+            var s = r.split("\n").slice(2).map((function(e) {
                 return e.trim();
             })).map((function(e) {
                 var r, a = /(.*?@)?(\S+)(:\d+)(:\d+)\)?$/.exec(e);
                 if (a) {
-                    var i, s, u = a[2], l = a[3], f = a[4];
-                    if (null !== (i = u) && void 0 !== i && i.startsWith("(") && (u = u.slice(1)), null !== (s = u) && void 0 !== s && s.startsWith("<anonymous>")) {
+                    var i, u, s = a[2], l = a[3], f = a[4];
+                    if (null !== (i = s) && void 0 !== i && i.startsWith("(") && (s = s.slice(1)), null !== (u = s) && void 0 !== u && u.startsWith("<anonymous>")) {
                         var c;
-                        u = n;
+                        s = n;
                         var p = void 0 !== a[1] ? a[1].slice(0, -1) : e.slice(0, a.index).trim();
                         null !== (c = p) && void 0 !== c && c.startsWith("at") && (p = p.slice(2).trim()), 
-                        r = `${p} ${u}${l}${f}`.trim();
-                    } else r = u === o ? `${t}${l}${f}`.trim() : `${u}${l}${f}`.trim();
+                        r = `${p} ${s}${l}${f}`.trim();
+                    } else r = s === o ? `${t}${l}${f}`.trim() : `${s}${l}${f}`.trim();
                 } else r = e;
                 return r;
             }));
-            if (u) for (var l = 0; l < u.length; l += 1) {
-                if (a(e) && u[l].startsWith(t) && u[l].match(f(e))) return !0;
-                if (i(e) && u[l].startsWith(n) && u[l].match(f(e))) return !0;
+            if (s) for (var l = 0; l < s.length; l += 1) {
+                if (a(e) && s[l].startsWith(t) && s[l].match(f(e))) return !0;
+                if (i(e) && s[l].startsWith(n) && s[l].match(f(e))) return !0;
             }
             return !1;
         }(e, r)) return t.length && t[0] !== RegExp.$1 && c(t), !0;
@@ -2139,16 +1474,16 @@ function jsonPrune(e, r) {
             throw new Error("RegExp.prototype.test is not a function");
         }().call(n, a);
     }
-    function s(e, r) {
+    function u(e, r) {
         var t = arguments.length > 2 && void 0 !== arguments[2] && arguments[2], n = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : [], a = arguments.length > 4 ? arguments[4] : void 0, i = r.indexOf(".");
         if (-1 === i) {
             if ("*" === r || "[]" === r) {
                 for (var o in e) if (Object.prototype.hasOwnProperty.call(e, o)) if (void 0 !== a) {
-                    var u = e[o];
-                    "string" == typeof u && a instanceof RegExp ? a.test(u) && n.push({
+                    var s = e[o];
+                    "string" == typeof s && a instanceof RegExp ? a.test(s) && n.push({
                         base: e,
                         prop: o
-                    }) : u === a && n.push({
+                    }) : s === a && n.push({
                         base: e,
                         prop: o
                     });
@@ -2200,16 +1535,16 @@ function jsonPrune(e, r) {
                 })), n;
             }
             p.forEach((function(r) {
-                s(e[r], c, t, n, a);
+                u(e[r], c, t, n, a);
             }));
         }
         Array.isArray(e) && e.forEach((function(e) {
-            void 0 !== e && s(e, r, t, n, a);
+            void 0 !== e && u(e, r, t, n, a);
         }));
         var h = e[f];
-        return r = r.slice(i + 1), void 0 !== h && s(h, r, t, n, a), n;
+        return r = r.slice(i + 1), void 0 !== h && u(h, r, t, n, a), n;
     }
-    function u(e, r) {
+    function s(e, r) {
         var t = arguments.length > 2 && void 0 !== arguments[2] && arguments[2], n = !(arguments.length > 3 && void 0 !== arguments[3]) || arguments[3], {name: a, verbose: i} = e;
         if (t || i) {
             var o = console.log;
@@ -2221,9 +1556,9 @@ function jsonPrune(e, r) {
         if ("string" == typeof e && void 0 !== e && "" !== e) {
             var t = function(e) {
                 for (var t = [], n = "", a = 0, i = !1, o = !1; a < e.length; ) {
-                    var s = e[a];
-                    if (i) n += s, "\\" === s ? o = !o : ("/" !== s || o || (i = !1), o = !1), a += 1; else {
-                        if (" " === s || "\n" === s || "\t" === s || "\r" === s || "\f" === s || "\v" === s) {
+                    var u = e[a];
+                    if (i) n += u, "\\" === u ? o = !o : ("/" !== u || o || (i = !1), o = !1), a += 1; else {
+                        if (" " === u || "\n" === u || "\t" === u || "\r" === u || "\f" === u || "\v" === u) {
                             for (;a < e.length && /\s/.test(e[a]); ) a += 1;
                             "" !== n && (t.push(n), n = "");
                             continue;
@@ -2235,7 +1570,7 @@ function jsonPrune(e, r) {
                             }
                             continue;
                         }
-                        n += s, a += 1;
+                        n += u, a += 1;
                     }
                 }
                 return "" !== n && t.push(n), t;
@@ -2256,8 +1591,8 @@ function jsonPrune(e, r) {
     function f(e) {
         var r = e || "", t = "/";
         if ("" === r) return new RegExp(".?");
-        var n, a, i = r.lastIndexOf(t), o = r.substring(i + 1), s = r.substring(0, i + 1), u = (a = o, 
-        (n = s).startsWith(t) && n.endsWith(t) && !n.endsWith("\\/") && function(e) {
+        var n, a, i = r.lastIndexOf(t), o = r.substring(i + 1), u = r.substring(0, i + 1), s = (a = o, 
+        (n = u).startsWith(t) && n.endsWith(t) && !n.endsWith("\\/") && function(e) {
             if (!e) return !1;
             try {
                 return new RegExp("", e), !0;
@@ -2265,7 +1600,7 @@ function jsonPrune(e, r) {
                 return !1;
             }
         }(a) ? a : "");
-        if (r.startsWith(t) && r.endsWith(t) || u) return new RegExp((u ? s : r).slice(1, -1), u);
+        if (r.startsWith(t) && r.endsWith(t) || s) return new RegExp((s ? u : r).slice(1, -1), s);
         var l = r.replace(/\\'/g, "'").replace(/\\"/g, '"').replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
         return new RegExp(l);
     }
@@ -2400,13 +1735,13 @@ try {
 } catch (e) {}
 function jsonPruneXhrResponse(e, r) {
     var t = "done", n = e.uniqueId + e.name + "_" + (Array.isArray(r) ? r.join("_") : "");
-    if (!e.uniqueId || _c[n] !== t) {
+    if (!e.uniqueId || Window.prototype.toString[n] !== t) {
         var a = r ? [].concat(e).concat(r) : [ e ];
         try {
             (function(e, r, t) {
                 var n = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : "", a = arguments.length > 4 && void 0 !== arguments[4] ? arguments[4] : "";
                 if ("undefined" != typeof Proxy) {
-                    var b = !r && !t, $ = function(e, r) {
+                    var b = !r && !t, w = function(e, r) {
                         var t = "legacy", n = "jsonpath", a = "string" == typeof r ? r.trim().toLowerCase() : "";
                         if (a === t || a === n) return {
                             mode: a
@@ -2417,12 +1752,12 @@ function jsonPruneXhrResponse(e, r) {
                         } : {
                             mode: t
                         };
-                    }(r, arguments.length > 5 && void 0 !== arguments[5] ? arguments[5] : ""), w = "legacy" === $.mode ? d(r) : [], x = "legacy" === $.mode ? d(t) : [], R = window.JSON.parse, j = window.JSON.stringify, E = {
+                    }(r, arguments.length > 5 && void 0 !== arguments[5] ? arguments[5] : ""), $ = "legacy" === w.mode ? d(r) : [], x = "legacy" === w.mode ? d(t) : [], R = window.JSON.parse, W = window.JSON.stringify, j = {
                         nativeParse: R,
-                        nativeStringify: j
-                    }, W = function(t) {
-                        return "jsonpath" === $.mode ? function(e, r, t, n, a) {
-                            var i = arguments.length > 5 && void 0 !== arguments[5] ? arguments[5] : "", d = arguments.length > 6 && void 0 !== arguments[6] && arguments[6], g = "$", m = ".", b = "..", $ = "", w = "\\", x = ")", R = "[", j = "@", E = "contains", W = "equal", A = "exists", P = "greater_than", O = "greater_than_or_equal", S = "less_than", k = "less_than_or_equal", N = "not_equal", q = "regex", M = [ "==", "!=", "<=", ">=", "*=", "=~", "<", ">", "=" ], L = /^[A-Za-z_$][\w$]*$/;
+                        nativeStringify: W
+                    }, A = function(t) {
+                        return "jsonpath" === w.mode ? function(e, r, t, n, a) {
+                            var i = arguments.length > 5 && void 0 !== arguments[5] ? arguments[5] : "", d = arguments.length > 6 && void 0 !== arguments[6] && arguments[6], g = "$", m = ".", b = "..", w = "", $ = "\\", x = ")", R = "[", W = "@", j = "contains", A = "equal", E = "exists", P = "greater_than", O = "greater_than_or_equal", S = "less_than", k = "less_than_or_equal", N = "not_equal", q = "regex", M = [ "==", "!=", "<=", ">=", "*=", "=~", "<", ">", "=" ], L = /^[A-Za-z_$][\w$]*$/;
                             function _(e) {
                                 return null !== e && "object" == typeof e;
                             }
@@ -2435,14 +1770,14 @@ function jsonPruneXhrResponse(e, r) {
                                 return "'" === e || '"' === e;
                             }
                             function H(e, r) {
-                                for (var t = 0, n = r - 1; n >= 0 && e[n] === w; ) t += 1, n -= 1;
+                                for (var t = 0, n = r - 1; n >= 0 && e[n] === $; ) t += 1, n -= 1;
                                 return t % 2 != 0;
                             }
                             function J(e) {
                                 var r = e.trim();
                                 if (r.length < 2) return r;
                                 var t = r[0], n = r[r.length - 1];
-                                return V(t) && t === n ? r.slice(1, -1).split("\\'").join("'").split('\\"').join('"').split(w + w).join(w) : r;
+                                return V(t) && t === n ? r.slice(1, -1).split("\\'").join("'").split('\\"').join('"').split($ + $).join($) : r;
                             }
                             function T(e, r) {
                                 return "number" == typeof r || /^\d+$/.test(String(r)) ? `${e}[${r}]` : L.test(String(r)) ? `${e}.${r}` : `${e}['${String(r).replace(/'/g, "\\'")}']`;
@@ -2479,17 +1814,17 @@ function jsonPruneXhrResponse(e, r) {
                                 return -1;
                             }
                             function z(e, r) {
-                                var t = [], n = $, a = new Set;
+                                var t = [], n = w, a = new Set;
                                 return F(e, (function(i, o) {
                                     if (!a.has(i)) if (o && e.startsWith(r, i)) {
-                                        t.push(n.trim()), n = $;
+                                        t.push(n.trim()), n = w;
                                         for (var s = 1; s < r.length; s += 1) a.add(i + s);
                                     } else n += e[i];
-                                })), n !== $ && t.push(n.trim()), t;
+                                })), n !== w && t.push(n.trim()), t;
                             }
                             function B(e) {
                                 var r = e.trim();
-                                return r.startsWith(j) && (r = r.slice(1)), r === $ ? g : r.startsWith(g) ? r : r.startsWith(m) || r.startsWith(b) || r.startsWith(R) ? `${g}${r}` : `${g}${m}${r}`;
+                                return r.startsWith(W) && (r = r.slice(1)), r === w ? g : r.startsWith(g) ? r : r.startsWith(m) || r.startsWith(b) || r.startsWith(R) ? `${g}${r}` : `${g}${m}${r}`;
                             }
                             function U(e) {
                                 var r = e.trim();
@@ -2521,28 +1856,28 @@ function jsonPruneXhrResponse(e, r) {
                                     condition: U(r.slice(1).trim()),
                                     operator: "not"
                                 };
-                                var f, c, p = (c = null, F(f = r, (function(e, r) {
+                                var c, f, p = (f = null, F(c = r, (function(e, r) {
                                     if (!r) return !1;
                                     for (var t = null, n = 0; n < M.length; n += 1) {
                                         var a = M[n];
-                                        f.startsWith(a, e) && (null === t || a.length > t.length) && (t = a);
+                                        c.startsWith(a, e) && (null === t || a.length > t.length) && (t = a);
                                     }
-                                    return null !== t && (c = {
+                                    return null !== t && (f = {
                                         index: e,
                                         operator: t
                                     }, !0);
-                                })), c);
+                                })), f);
                                 if (!p) return {
-                                    operator: A,
+                                    operator: E,
                                     selectorPath: B(r)
                                 };
-                                var v = r.slice(0, p.index).trim(), h = r.slice(p.index + p.operator.length).trim(), d = W;
-                                "!=" === p.operator ? d = N : "<" === p.operator ? d = S : "<=" === p.operator ? d = k : ">" === p.operator ? d = P : ">=" === p.operator ? d = O : "*=" === p.operator ? d = E : ("=~" === p.operator || "=" === p.operator && /^\/.*\/[a-z]*$/i.test(h)) && (d = q);
-                                var y, b, $ = h.trim(), w = $ === g || $.startsWith(g + m) || $.startsWith(g + R), L = $ === j || $.startsWith(j + m) || $.startsWith(j + R);
-                                return w || L ? {
-                                    comparisonSelectorPath: B($),
+                                var v = r.slice(0, p.index).trim(), h = r.slice(p.index + p.operator.length).trim(), d = A;
+                                "!=" === p.operator ? d = N : "<" === p.operator ? d = S : "<=" === p.operator ? d = k : ">" === p.operator ? d = P : ">=" === p.operator ? d = O : "*=" === p.operator ? d = j : ("=~" === p.operator || "=" === p.operator && /^\/.*\/[a-z]*$/i.test(h)) && (d = q);
+                                var y, b, w = h.trim(), $ = w === g || w.startsWith(g + m) || w.startsWith(g + R), L = w === W || w.startsWith(W + m) || w.startsWith(W + R);
+                                return $ || L ? {
+                                    comparisonSelectorPath: B(w),
                                     operator: d,
-                                    resolveComparisonAgainstRoot: w,
+                                    resolveComparisonAgainstRoot: $,
                                     selectorPath: B(v)
                                 } : {
                                     comparisonValue: (y = h, b = y.trim(), "true" === b || "false" !== b && ("null" === b ? null : /^-?\d+(?:\.\d+)?$/.test(b) ? Number(b) : /^\/.*\/[a-z]*$/i.test(b) ? s(b) : J(b))),
@@ -2569,28 +1904,28 @@ function jsonPruneXhrResponse(e, r) {
                                     };
                                 }
                                 var n = function(e) {
-                                    var r = [], t = $;
+                                    var r = [], t = w;
                                     return F(e, (function(n, a) {
-                                        a && ":" === e[n] ? (r.push(t.trim()), t = $) : t += e[n];
+                                        a && ":" === e[n] ? (r.push(t.trim()), t = w) : t += e[n];
                                     })), r.push(t.trim()), r;
                                 }(e);
                                 if (n.length > 1) {
-                                    var a = n[0] === $ ? void 0 : Number(n[0]);
+                                    var a = n[0] === w ? void 0 : Number(n[0]);
                                     return {
                                         mode: "slice",
                                         recursive: r,
                                         slice: {
-                                            end: n[1] === $ ? void 0 : Number(n[1]),
+                                            end: n[1] === w ? void 0 : Number(n[1]),
                                             start: a,
-                                            step: n.length > 2 && n[2] !== $ ? Number(n[2]) : 1
+                                            step: n.length > 2 && n[2] !== w ? Number(n[2]) : 1
                                         }
                                     };
                                 }
                                 var i = function(e, r) {
-                                    var t = [], n = $;
+                                    var t = [], n = w;
                                     return F(e, (function(a, i) {
-                                        i && e[a] === r ? (t.push(n.trim()), n = $) : n += e[a];
-                                    })), n !== $ && t.push(n.trim()), t;
+                                        i && e[a] === r ? (t.push(n.trim()), n = w) : n += e[a];
+                                    })), n !== w && t.push(n.trim()), t;
                                 }(e, ",");
                                 return i.every((function(e) {
                                     return /^-?\d+$/.test(e);
@@ -2609,7 +1944,7 @@ function jsonPruneXhrResponse(e, r) {
                                     recursive: r
                                 };
                             }
-                            function K(e) {
+                            function G(e) {
                                 var r = [], t = 0;
                                 for (e.startsWith(g) && (t = 1); t < e.length; ) {
                                     var n = !1;
@@ -2636,7 +1971,7 @@ function jsonPruneXhrResponse(e, r) {
                                     steps: r
                                 };
                             }
-                            function Z(e, r, t) {
+                            function K(e, r, t) {
                                 var n, a = e.trim();
                                 if (a.startsWith("{") || a.startsWith(R)) n = r(a); else {
                                     var i = t(a);
@@ -2647,12 +1982,12 @@ function jsonPruneXhrResponse(e, r) {
                                     return Array.isArray(e) ? Array.isArray(n) ? e.concat(n) : e.concat([ n ]) : I(e) && I(n) ? Object.assign({}, e, n) : "string" == typeof e && "string" == typeof n ? `${e}${n}` : n;
                                 };
                             }
-                            function G(e, r, t) {
+                            function Z(e, r, t) {
                                 var n = e.trim();
                                 if (n.startsWith("replace(") && n.endsWith(x)) return function(e, r) {
                                     var t = r(e.slice(8, -1));
                                     if ("string" != typeof t.regex || "string" != typeof t.replacement) throw new Error('Invalid replace payload: "regex" and "replacement" must be strings');
-                                    var n = t.regex.startsWith("/") ? s(t.regex) : new RegExp(t.regex, t.flags || $);
+                                    var n = t.regex.startsWith("/") ? s(t.regex) : new RegExp(t.regex, t.flags || w);
                                     return function(e) {
                                         return "string" != typeof e ? e : e.replace(n, t.replacement);
                                     };
@@ -2702,15 +2037,15 @@ function jsonPruneXhrResponse(e, r) {
                                 if ("index" === r.mode) {
                                     if (!Array.isArray(e.value) || !r.indexes) return t;
                                     for (var l = 0; l < r.indexes.length; l += 1) {
-                                        var f = ee(e.value.length, r.indexes[l]);
-                                        f >= 0 && f < e.value.length && t.push(X(e.value[f], e.value, f, T(e.path, f)));
+                                        var c = ee(e.value.length, r.indexes[l]);
+                                        c >= 0 && c < e.value.length && t.push(X(e.value[c], e.value, c, T(e.path, c)));
                                     }
                                     return t;
                                 }
                                 if ("computed-index" === r.mode) {
                                     if (!Array.isArray(e.value)) return t;
-                                    var c = e.value.length - (r.subtractLength || 0);
-                                    return c >= 0 && c < e.value.length && t.push(X(e.value[c], e.value, c, T(e.path, c))), 
+                                    var f = e.value.length - (r.subtractLength || 0);
+                                    return f >= 0 && f < e.value.length && t.push(X(e.value[f], e.value, f, T(e.path, f))), 
                                     t;
                                 }
                                 if ("slice" === r.mode) {
@@ -2740,19 +2075,19 @@ function jsonPruneXhrResponse(e, r) {
                                         return n(e, r);
                                     }));
                                     if ("condition" in t) return !n(e, t.condition);
-                                    var a = te(e, K(t.selectorPath));
-                                    if (t.operator === A) return a.length > 0;
+                                    var a = te(e, G(t.selectorPath));
+                                    if (t.operator === E) return a.length > 0;
                                     var i = t.comparisonValue;
                                     if (t.comparisonSelectorPath) {
-                                        var o = te(t.resolveComparisonAgainstRoot ? r : e, K(t.comparisonSelectorPath));
+                                        var o = te(t.resolveComparisonAgainstRoot ? r : e, G(t.comparisonSelectorPath));
                                         if (0 === o.length) return !1;
                                         i = o[0].value;
                                     }
                                     for (var s = 0; s < a.length; s += 1) {
                                         var u = a[s].value;
-                                        if (t.operator !== E) {
+                                        if (t.operator !== j) {
                                             if (t.operator !== q) {
-                                                if (t.operator === W && u === i) return !0;
+                                                if (t.operator === A && u === i) return !0;
                                                 if (t.operator === N && u !== i) return !0;
                                                 if (t.operator === S && u < i) return !0;
                                                 if (t.operator === k && u <= i) return !0;
@@ -2773,7 +2108,7 @@ function jsonPruneXhrResponse(e, r) {
                                 for (var i = [ X(e, null, null, g) ], o = 0; o < t.steps.length; o += 1) {
                                     var s = t.steps[o];
                                     if ("filter" === s.mode && s.filter) i = a(i, s.filter); else {
-                                        for (var u = [], l = 0; l < i.length; l += 1) for (var f = i[l], c = s.recursive ? Y(f) : [ f ], p = 0; p < c.length; p += 1) for (var v = re(c[p], s), h = 0; h < v.length; h += 1) u.push(v[h]);
+                                        for (var u = [], l = 0; l < i.length; l += 1) for (var c = i[l], f = s.recursive ? Y(c) : [ c ], p = 0; p < f.length; p += 1) for (var v = re(f[p], s), h = 0; h < v.length; h += 1) u.push(v[h]);
                                         i = u;
                                     }
                                 }
@@ -2800,7 +2135,7 @@ function jsonPruneXhrResponse(e, r) {
                                         })), -1 === r ? {
                                             mode: "remove",
                                             selectorPart: e.trim(),
-                                            valuePart: $
+                                            valuePart: w
                                         } : {
                                             mode: t,
                                             selectorPart: e.slice(0, r).trim(),
@@ -2817,15 +2152,15 @@ function jsonPruneXhrResponse(e, r) {
                                             guards: r,
                                             selectorPart: t
                                         };
-                                    }(a.selectorPart), o = K((n = i.selectorPart.trim()) === $ ? g : n.startsWith(g) ? n : n.startsWith(m) || n.startsWith(R) || n.startsWith(b) ? `${g}${n}` : `${g}${m}${n}`), s = {
+                                    }(a.selectorPart), o = G((n = i.selectorPart.trim()) === w ? g : n.startsWith(g) ? n : n.startsWith(m) || n.startsWith(R) || n.startsWith(b) ? `${g}${n}` : `${g}${m}${n}`), s = {
                                         mode: a.mode
                                     };
                                     return "append" === a.mode ? s = {
                                         mode: "append",
-                                        updater: Z(a.valuePart, r, t)
+                                        updater: K(a.valuePart, r, t)
                                     } : "set" === a.mode && (s = {
                                         mode: "set",
-                                        updater: G(a.valuePart, r, t)
+                                        updater: Z(a.valuePart, r, t)
                                     }), {
                                         guards: i.guards,
                                         mutation: s,
@@ -2842,7 +2177,7 @@ function jsonPruneXhrResponse(e, r) {
                                             n = t(r.slice(a.length)), g = !0;
                                         } catch (t) {
                                             return o(e, `Invalid JSON argument value: ${r}`), null;
-                                        } else if ("undefined" === r) n = void 0; else if ("false" === r) n = !1; else if ("true" === r) n = !0; else if ("null" === r) n = null; else if ("NaN" === r) n = NaN; else if ("emptyArr" === r || "[]" === r) n = []; else if ("emptyObj" === r || "{}" === r) n = {}; else if ("noopFunc" === r) n = l; else if ("noopCallbackFunc" === r) n = u; else if ("trueFunc" === r) n = f; else if ("falseFunc" === r) n = c; else if ("throwFunc" === r) n = p; else if ("noopPromiseResolve" === r) n = h; else if ("noopPromiseReject" === r) n = v; else if (/^-?\d+$/.test(r)) {
+                                        } else if ("undefined" === r) n = void 0; else if ("false" === r) n = !1; else if ("true" === r) n = !0; else if ("null" === r) n = null; else if ("NaN" === r) n = NaN; else if ("emptyArr" === r || "[]" === r) n = []; else if ("emptyObj" === r || "{}" === r) n = {}; else if ("noopFunc" === r) n = l; else if ("noopCallbackFunc" === r) n = u; else if ("trueFunc" === r) n = c; else if ("falseFunc" === r) n = f; else if ("throwFunc" === r) n = p; else if ("noopPromiseResolve" === r) n = h; else if ("noopPromiseReject" === r) n = v; else if (/^-?\d+$/.test(r)) {
                                             if (n = parseFloat(r), nativeIsNaN(n)) return null;
                                         } else n = r;
                                         return {
@@ -2852,15 +2187,15 @@ function jsonPruneXhrResponse(e, r) {
                                             shouldMergeJsonValue: g
                                         };
                                     }(e, r, oe);
-                                })), fe = 0; fe < le.guards.length; fe += 1) if (0 === te(r, {
+                                })), ce = 0; ce < le.guards.length; ce += 1) if (0 === te(r, {
                                     steps: [ {
-                                        filter: le.guards[fe],
+                                        filter: le.guards[ce],
                                         mode: "filter",
                                         recursive: !1
                                     } ]
                                 }).length) return r;
-                                var ce = te(r, le.selector);
-                                if (d) return ce.length > 0 && a && a(), r;
+                                var fe = te(r, le.selector);
+                                if (d) return fe.length > 0 && a && a(), r;
                                 if (!("remove" === le.mutation.mode || "string" == typeof e.name && e.name.startsWith("trusted-"))) return o(e, "JSONPath set and append operations are allowed only in trusted scriptlets"), 
                                 r;
                                 if ("remove" === le.mutation.mode) return function(e) {
@@ -2879,7 +2214,7 @@ function jsonPruneXhrResponse(e, r) {
                                             a >= 0 && a < r.length && (r.splice(a, 1), ae());
                                         }
                                     }));
-                                }(ce), ne && a && a(), r;
+                                }(fe), ne && a && a(), r;
                                 le.mutation.updater && (r = function(e, r, t) {
                                     for (var n = new Set, a = e, i = 0; i < r.length; i += 1) {
                                         var o = r[i];
@@ -2887,12 +2222,12 @@ function jsonPruneXhrResponse(e, r) {
                                         ae()) : (a = t(a), ae()));
                                     }
                                     return a;
-                                }(r, ce, le.mutation.updater), ne && a && a());
+                                }(r, fe, le.mutation.updater), ne && a && a());
                             } catch (r) {
                                 o(e, `JSONPath processing failed for expression '${t}': ${r.message}`);
                             }
                             return r;
-                        }(e, t, r, E, (function() {
+                        }(e, t, r, j, (function() {
                             return i(e);
                         }), "") : function(e, r, t, n, a, u) {
                             var {nativeStringify: l} = u;
@@ -2901,18 +2236,18 @@ function jsonPruneXhrResponse(e, r) {
                             try {
                                 if (!1 === function(e, r, t, n, a, i) {
                                     if (!r) return !1;
-                                    var u, {nativeStringify: l} = i, f = t.map((function(e) {
+                                    var u, {nativeStringify: l} = i, c = t.map((function(e) {
                                         return e.path;
-                                    })), c = n.map((function(e) {
+                                    })), f = n.map((function(e) {
                                         return e.path;
                                     }));
-                                    if (0 === f.length && c.length > 0) {
+                                    if (0 === c.length && f.length > 0) {
                                         var p = l(r);
-                                        if (s(c.join("")).test(p)) return o(e, `${window.location.hostname}\n${l(r, null, 2)}\nStack trace:\n${(new Error).stack}`, !0), 
+                                        if (s(f.join("")).test(p)) return o(e, `${window.location.hostname}\n${l(r, null, 2)}\nStack trace:\n${(new Error).stack}`, !0), 
                                         r && "object" == typeof r && o(e, r, !0, !1), u = !1;
                                     }
                                     for (var v, h = [ ".*.", "*.", ".*", ".[].", "[].", ".[]" ], d = function() {
-                                        var e = c[g], t = e.split(".").pop(), n = h.some((function(r) {
+                                        var e = f[g], t = e.split(".").pop(), n = h.some((function(r) {
                                             return e.includes(r);
                                         })), a = m(r, e, n);
                                         if (!a.length) return {
@@ -2923,7 +2258,7 @@ function jsonPruneXhrResponse(e, r) {
                                             var o = "string" == typeof t && void 0 !== a[i].base[t];
                                             u = n ? o || u : o && u;
                                         }
-                                    }, g = 0; g < c.length; g += 1) if (v = d()) return v.v;
+                                    }, g = 0; g < f.length; g += 1) if (v = d()) return v.v;
                                     return u;
                                 }(e, r, t, n, 0, u)) return r;
                                 t.forEach((function(t) {
@@ -2942,8 +2277,8 @@ function jsonPruneXhrResponse(e, r) {
                                 o(e, r);
                             }
                             return r;
-                        }(e, t, w, x, 0, E);
-                    }, A = window.XMLHttpRequest.prototype.open, P = window.XMLHttpRequest.prototype.send, O = new Map, S = new Map, k = {
+                        }(e, t, $, x, 0, j);
+                    }, E = window.XMLHttpRequest.prototype.open, P = window.XMLHttpRequest.prototype.send, O = new Map, S = new Map, k = {
                         apply: function(e, r, t) {
                             var n = S.get(r);
                             n && n.push(t);
@@ -3014,31 +2349,31 @@ function jsonPruneXhrResponse(e, r) {
                             l.withCredentials = t.withCredentials;
                             l.addEventListener("readystatechange", (function() {
                                 if (4 === l.readyState) {
-                                    var {readyState: r, response: n, responseText: a, responseURL: s, responseXML: f, status: c, statusText: p} = l, v = a || n;
+                                    var {readyState: r, response: n, responseText: a, responseURL: s, responseXML: c, status: f, statusText: p} = l, v = a || n;
                                     if ("string" == typeof v || "object" == typeof v) {
                                         var h;
                                         if ("string" == typeof v) try {
                                             var d = R(v);
                                             if (b) {
-                                                o(e, `${window.location.hostname}\n${j(d, null, 2)}\nStack trace:\n${u}`, !0);
+                                                o(e, `${window.location.hostname}\n${W(d, null, 2)}\nStack trace:\n${u}`, !0);
                                                 o(e, d, !0, !1);
                                                 h = v;
                                             } else {
-                                                h = W(d);
+                                                h = A(d);
                                                 try {
                                                     var {responseType: g} = t;
                                                     switch (g) {
                                                       case "":
                                                       case "text":
-                                                        h = j(h);
+                                                        h = W(h);
                                                         break;
 
                                                       case "arraybuffer":
-                                                        h = (new TextEncoder).encode(j(h)).buffer;
+                                                        h = (new TextEncoder).encode(W(h)).buffer;
                                                         break;
 
                                                       case "blob":
-                                                        h = new Blob([ j(h) ]);
+                                                        h = new Blob([ W(h) ]);
                                                     }
                                                 } catch (r) {
                                                     o(e, `Response body cannot be converted to response type: '${v}'`);
@@ -3059,11 +2394,11 @@ function jsonPruneXhrResponse(e, r) {
                                                 writable: !1
                                             },
                                             responseXML: {
-                                                value: f,
+                                                value: c,
                                                 writable: !1
                                             },
                                             status: {
-                                                value: c,
+                                                value: f,
                                                 writable: !1
                                             },
                                             statusText: {
@@ -3091,7 +2426,7 @@ function jsonPruneXhrResponse(e, r) {
                                     }
                                 }
                             }));
-                            A.apply(l, [ s.method, s.url, Boolean(s.async) ]);
+                            E.apply(l, [ s.method, s.url, Boolean(s.async) ]);
                             (S.get(t) || []).forEach((function(e) {
                                 l.setRequestHeader(e[0], e[1]);
                             }));
@@ -3108,23 +2443,25 @@ function jsonPruneXhrResponse(e, r) {
                     XMLHttpRequest.prototype.send = new Proxy(XMLHttpRequest.prototype.send, q);
                 }
             }).apply(this, a);
-            e.uniqueId && Object.defineProperty(_c, n, {
+            e.uniqueId && Object.defineProperty(Window.prototype.toString, n, {
                 value: t,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
-        } catch (e) {}
+        } catch (e) {
+            console.log(e);
+        }
     }
     function i(e) {
         if (e.verbose) {
             try {
-                var r = console.trace.bind(console), t = "[ext] ";
+                var r = console.trace.bind(console), t = "[AdGuard] ";
                 "corelibs" === e.engine ? t += e.ruleText : (e.domainName && (t += `${e.domainName}`), 
-                e.args ? t += `#%#//s('${e.name}', '${e.args.join("', '")}')` : t += `#%#//s('${e.name}')`), 
+                e.args ? t += `#%#//scriptlet('${e.name}', '${e.args.join("', '")}')` : t += `#%#//scriptlet('${e.name}')`), 
                 r && r(t);
             } catch (e) {}
-            "function" == typeof window._d && window._d(e);
+            "function" == typeof window.__debug && window.__debug(e);
         }
     }
     function o(e, r) {
@@ -3154,10 +2491,10 @@ function jsonPruneXhrResponse(e, r) {
         return l;
     }
     function l() {}
-    function f() {
+    function c() {
         return !0;
     }
-    function c() {
+    function f() {
         return !1;
     }
     function p() {
@@ -3279,20 +2616,20 @@ function jsonPruneXhrResponse(e, r) {
             })).map((function(e) {
                 var r, a = /(.*?@)?(\S+)(:\d+)(:\d+)\)?$/.exec(e);
                 if (a) {
-                    var i, s, u = a[2], l = a[3], f = a[4];
+                    var i, s, u = a[2], l = a[3], c = a[4];
                     if (null !== (i = u) && void 0 !== i && i.startsWith("(") && (u = u.slice(1)), null !== (s = u) && void 0 !== s && s.startsWith("<anonymous>")) {
-                        var c;
+                        var f;
                         u = n;
                         var p = void 0 !== a[1] ? a[1].slice(0, -1) : e.slice(0, a.index).trim();
-                        null !== (c = p) && void 0 !== c && c.startsWith("at") && (p = p.slice(2).trim()), 
-                        r = `${p} ${u}${l}${f}`.trim();
-                    } else r = u === o ? `${t}${l}${f}`.trim() : `${u}${l}${f}`.trim();
+                        null !== (f = p) && void 0 !== f && f.startsWith("at") && (p = p.slice(2).trim()), 
+                        r = `${p} ${u}${l}${c}`.trim();
+                    } else r = u === o ? `${t}${l}${c}`.trim() : `${u}${l}${c}`.trim();
                 } else r = e;
                 return r;
             }));
-            if (l) for (var f = 0; f < l.length; f += 1) {
-                if (a(e) && l[f].startsWith(t) && l[f].match(s(e))) return !0;
-                if (i(e) && l[f].startsWith(n) && l[f].match(s(e))) return !0;
+            if (l) for (var c = 0; c < l.length; c += 1) {
+                if (a(e) && l[c].startsWith(t) && l[c].match(s(e))) return !0;
+                if (i(e) && l[c].startsWith(n) && l[c].match(s(e))) return !0;
             }
             return !1;
         }(e, r)) return t.length && t[0] !== RegExp.$1 && b(t), !0;
@@ -3339,10 +2676,10 @@ function jsonPruneXhrResponse(e, r) {
         }
         var l = r.slice(0, i);
         if ("[]" === l && Array.isArray(e) || "*" === l && e instanceof Object || "[-]" === l && Array.isArray(e) || "{-}" === l && e instanceof Object) {
-            var f = r.slice(i + 1), c = Object.keys(e);
+            var c = r.slice(i + 1), f = Object.keys(e);
             if ("{-}" === l || "[-]" === l) {
                 var p = Array.isArray(e) ? "array" : "object";
-                return ("{-}" !== l || "object" !== p) && ("[-]" !== l || "array" !== p) || c.forEach((function(r) {
+                return ("{-}" !== l || "object" !== p) && ("[-]" !== l || "array" !== p) || f.forEach((function(r) {
                     (function(e, r, t) {
                         var n = r.split("."), a = function(e, r) {
                             if (null == e) return !1;
@@ -3359,14 +2696,14 @@ function jsonPruneXhrResponse(e, r) {
                             return !!Object.prototype.hasOwnProperty.call(e, n) && a(e[n], i);
                         };
                         return a(e, n);
-                    })(e[r], f, a) && n.push({
+                    })(e[r], c, a) && n.push({
                         base: e,
                         prop: r
                     });
                 })), n;
             }
-            c.forEach((function(r) {
-                m(e[r], f, t, n, a);
+            f.forEach((function(r) {
+                m(e[r], c, t, n, a);
             }));
         }
         Array.isArray(e) && e.forEach((function(e) {
@@ -3403,19 +2740,19 @@ try {
 } catch (e) {}
 function jsonPruneFetchResponse(e, r) {
     var t = "done", n = e.uniqueId + e.name + "_" + (Array.isArray(r) ? r.join("_") : "");
-    if (!e.uniqueId || _c[n] !== t) {
-        var a = r ? [].concat(e).concat(r) : [ e ];
+    if (!e.uniqueId || Window.prototype.toString[n] !== t) {
+        var i = r ? [].concat(e).concat(r) : [ e ];
         try {
             (function(e, r, t) {
-                var n = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : "", a = arguments.length > 4 && void 0 !== arguments[4] ? arguments[4] : "";
+                var n = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : "", i = arguments.length > 4 && void 0 !== arguments[4] ? arguments[4] : "";
                 if ("undefined" != typeof fetch && "undefined" != typeof Proxy && "undefined" != typeof Response) {
                     var $ = function(e, r) {
-                        var t = "legacy", n = "jsonpath", a = "string" == typeof r ? r.trim().toLowerCase() : "";
-                        if (a === t || a === n) return {
-                            mode: a
+                        var t = "legacy", n = "jsonpath", i = "string" == typeof r ? r.trim().toLowerCase() : "";
+                        if (i === t || i === n) return {
+                            mode: i
                         };
-                        var i = "string" == typeof e ? e.trim() : "";
-                        return i.startsWith("$") || i.startsWith("[?") ? {
+                        var a = "string" == typeof e ? e.trim() : "";
+                        return a.startsWith("$") || a.startsWith("[?") ? {
                             mode: n
                         } : {
                             mode: t
@@ -3424,8 +2761,8 @@ function jsonPruneFetchResponse(e, r) {
                         nativeParse: window.JSON.parse,
                         nativeStringify: window.JSON.stringify
                     }, A = function(t) {
-                        return "jsonpath" === $.mode ? function(e, r, t, n, a) {
-                            var i = arguments.length > 5 && void 0 !== arguments[5] ? arguments[5] : "", u = arguments.length > 6 && void 0 !== arguments[6] && arguments[6], d = "$", m = ".", $ = "..", b = "", w = "\\", x = ")", j = "[", O = "@", W = "contains", A = "equal", P = "exists", R = "greater_than", E = "greater_than_or_equal", k = "less_than", S = "less_than_or_equal", N = "not_equal", _ = "regex", I = [ "==", "!=", "<=", ">=", "*=", "=~", "<", ">", "=" ], V = /^[A-Za-z_$][\w$]*$/;
+                        return "jsonpath" === $.mode ? function(e, r, t, n, i) {
+                            var a = arguments.length > 5 && void 0 !== arguments[5] ? arguments[5] : "", u = arguments.length > 6 && void 0 !== arguments[6] && arguments[6], d = "$", m = ".", $ = "..", b = "", w = "\\", x = ")", j = "[", O = "@", W = "contains", A = "equal", P = "exists", R = "greater_than", E = "greater_than_or_equal", S = "less_than", k = "less_than_or_equal", N = "not_equal", _ = "regex", I = [ "==", "!=", "<=", ">=", "*=", "=~", "<", ">", "=" ], V = /^[A-Za-z_$][\w$]*$/;
                             function q(e) {
                                 return null !== e && "object" == typeof e;
                             }
@@ -3459,107 +2796,107 @@ function jsonPruneFetchResponse(e, r) {
                                 };
                             }
                             function L(e, r) {
-                                for (var t = 0, n = 0, a = 0, i = null, o = 0; o < e.length; o += 1) {
+                                for (var t = 0, n = 0, i = 0, a = null, o = 0; o < e.length; o += 1) {
                                     var u = e[o];
-                                    if (i) {
-                                        if (u !== i || M(e, o) || (i = null), r(o, !1)) return;
+                                    if (a) {
+                                        if (u !== a || M(e, o) || (a = null), r(o, !1)) return;
                                     } else if (F(u)) {
-                                        if (i = u, r(o, !1)) return;
+                                        if (a = u, r(o, !1)) return;
                                     } else {
                                         var s = !0;
-                                        if (u === j ? t += 1 : "]" === u ? t -= 1 : "{" === u ? n += 1 : "}" === u ? n -= 1 : "(" === u ? a += 1 : u === x ? a -= 1 : s = !1, 
-                                        r(o, !s && 0 === t && 0 === n && 0 === a)) return;
+                                        if (u === j ? t += 1 : "]" === u ? t -= 1 : "{" === u ? n += 1 : "}" === u ? n -= 1 : "(" === u ? i += 1 : u === x ? i -= 1 : s = !1, 
+                                        r(o, !s && 0 === t && 0 === n && 0 === i)) return;
                                     }
                                 }
                             }
                             function U(e, r) {
-                                for (var t = 0, n = null, a = r; a < e.length; a += 1) {
-                                    var i = e[a];
-                                    if (n) i !== n || M(e, a) || (n = null); else if (F(i)) n = i; else if (i !== j) {
-                                        if ("]" === i && 0 == (t -= 1)) return a;
+                                for (var t = 0, n = null, i = r; i < e.length; i += 1) {
+                                    var a = e[i];
+                                    if (n) a !== n || M(e, i) || (n = null); else if (F(a)) n = a; else if (a !== j) {
+                                        if ("]" === a && 0 == (t -= 1)) return i;
                                     } else t += 1;
                                 }
                                 return -1;
                             }
                             function D(e, r) {
-                                var t = [], n = b, a = new Set;
-                                return L(e, (function(i, o) {
-                                    if (!a.has(i)) if (o && e.startsWith(r, i)) {
+                                var t = [], n = b, i = new Set;
+                                return L(e, (function(a, o) {
+                                    if (!i.has(a)) if (o && e.startsWith(r, a)) {
                                         t.push(n.trim()), n = b;
-                                        for (var u = 1; u < r.length; u += 1) a.add(i + u);
-                                    } else n += e[i];
+                                        for (var u = 1; u < r.length; u += 1) i.add(a + u);
+                                    } else n += e[a];
                                 })), n !== b && t.push(n.trim()), t;
                             }
-                            function K(e) {
+                            function G(e) {
                                 var r = e.trim();
                                 return r.startsWith(O) && (r = r.slice(1)), r === b ? d : r.startsWith(d) ? r : r.startsWith(m) || r.startsWith($) || r.startsWith(j) ? `${d}${r}` : `${d}${m}${r}`;
                             }
-                            function Z(e) {
+                            function K(e) {
                                 var r = e.trim();
                                 if (r.startsWith("(") && r.endsWith(x)) {
-                                    for (var t = 0, n = null, a = !1, i = 0; i < r.length; i += 1) {
-                                        var o = r[i];
-                                        if (n) o !== n || M(r, i) || (n = null); else if (F(o)) n = o; else if ("(" === o) t += 1; else if (o === x && 0 == (t -= 1)) {
-                                            a = i === r.length - 1;
+                                    for (var t = 0, n = null, i = !1, a = 0; a < r.length; a += 1) {
+                                        var o = r[a];
+                                        if (n) o !== n || M(r, a) || (n = null); else if (F(o)) n = o; else if ("(" === o) t += 1; else if (o === x && 0 == (t -= 1)) {
+                                            i = a === r.length - 1;
                                             break;
                                         }
                                     }
-                                    a && (r = r.slice(1, -1).trim());
+                                    i && (r = r.slice(1, -1).trim());
                                 }
                                 var u = D(r, "||");
                                 if (u.length > 1) return {
                                     conditions: u.map((function(e) {
-                                        return Z(e);
+                                        return K(e);
                                     })),
                                     operator: "or"
                                 };
                                 var s = D(r, "&&");
                                 if (s.length > 1) return {
                                     conditions: s.map((function(e) {
-                                        return Z(e);
+                                        return K(e);
                                     })),
                                     operator: "and"
                                 };
                                 if (r.startsWith("!") && !r.startsWith("!=")) return {
-                                    condition: Z(r.slice(1).trim()),
+                                    condition: K(r.slice(1).trim()),
                                     operator: "not"
                                 };
-                                var l, f, c = (f = null, L(l = r, (function(e, r) {
+                                var l, c, f = (c = null, L(l = r, (function(e, r) {
                                     if (!r) return !1;
                                     for (var t = null, n = 0; n < I.length; n += 1) {
-                                        var a = I[n];
-                                        l.startsWith(a, e) && (null === t || a.length > t.length) && (t = a);
+                                        var i = I[n];
+                                        l.startsWith(i, e) && (null === t || i.length > t.length) && (t = i);
                                     }
-                                    return null !== t && (f = {
+                                    return null !== t && (c = {
                                         index: e,
                                         operator: t
                                     }, !0);
-                                })), f);
-                                if (!c) return {
+                                })), c);
+                                if (!f) return {
                                     operator: P,
-                                    selectorPath: K(r)
+                                    selectorPath: G(r)
                                 };
-                                var p = r.slice(0, c.index).trim(), v = r.slice(c.index + c.operator.length).trim(), h = A;
-                                "!=" === c.operator ? h = N : "<" === c.operator ? h = k : "<=" === c.operator ? h = S : ">" === c.operator ? h = R : ">=" === c.operator ? h = E : "*=" === c.operator ? h = W : ("=~" === c.operator || "=" === c.operator && /^\/.*\/[a-z]*$/i.test(v)) && (h = _);
+                                var p = r.slice(0, f.index).trim(), v = r.slice(f.index + f.operator.length).trim(), h = A;
+                                "!=" === f.operator ? h = N : "<" === f.operator ? h = S : "<=" === f.operator ? h = k : ">" === f.operator ? h = R : ">=" === f.operator ? h = E : "*=" === f.operator ? h = W : ("=~" === f.operator || "=" === f.operator && /^\/.*\/[a-z]*$/i.test(v)) && (h = _);
                                 var g, $, b = v.trim(), w = b === d || b.startsWith(d + m) || b.startsWith(d + j), V = b === O || b.startsWith(O + m) || b.startsWith(O + j);
                                 return w || V ? {
-                                    comparisonSelectorPath: K(b),
+                                    comparisonSelectorPath: G(b),
                                     operator: h,
                                     resolveComparisonAgainstRoot: w,
-                                    selectorPath: K(p)
+                                    selectorPath: G(p)
                                 } : {
                                     comparisonValue: (g = v, $ = g.trim(), "true" === $ || "false" !== $ && ("null" === $ ? null : /^-?\d+(?:\.\d+)?$/.test($) ? Number($) : /^\/.*\/[a-z]*$/i.test($) ? y($) : C($))),
                                     operator: h,
-                                    selectorPath: K(p)
+                                    selectorPath: G(p)
                                 };
                             }
-                            function B(e, r) {
+                            function Z(e, r) {
                                 if ("*" === e) return {
                                     mode: "wildcard",
                                     recursive: r
                                 };
                                 if (e.startsWith("?")) return {
-                                    filter: Z(e.slice(1)),
+                                    filter: K(e.slice(1)),
                                     mode: "filter",
                                     recursive: r
                                 };
@@ -3573,58 +2910,58 @@ function jsonPruneFetchResponse(e, r) {
                                 }
                                 var n = function(e) {
                                     var r = [], t = b;
-                                    return L(e, (function(n, a) {
-                                        a && ":" === e[n] ? (r.push(t.trim()), t = b) : t += e[n];
+                                    return L(e, (function(n, i) {
+                                        i && ":" === e[n] ? (r.push(t.trim()), t = b) : t += e[n];
                                     })), r.push(t.trim()), r;
                                 }(e);
                                 if (n.length > 1) {
-                                    var a = n[0] === b ? void 0 : Number(n[0]);
+                                    var i = n[0] === b ? void 0 : Number(n[0]);
                                     return {
                                         mode: "slice",
                                         recursive: r,
                                         slice: {
                                             end: n[1] === b ? void 0 : Number(n[1]),
-                                            start: a,
+                                            start: i,
                                             step: n.length > 2 && n[2] !== b ? Number(n[2]) : 1
                                         }
                                     };
                                 }
-                                var i = function(e, r) {
+                                var a = function(e, r) {
                                     var t = [], n = b;
-                                    return L(e, (function(a, i) {
-                                        i && e[a] === r ? (t.push(n.trim()), n = b) : n += e[a];
+                                    return L(e, (function(i, a) {
+                                        a && e[i] === r ? (t.push(n.trim()), n = b) : n += e[i];
                                     })), n !== b && t.push(n.trim()), t;
                                 }(e, ",");
-                                return i.every((function(e) {
+                                return a.every((function(e) {
                                     return /^-?\d+$/.test(e);
                                 })) ? {
-                                    indexes: i.map((function(e) {
+                                    indexes: a.map((function(e) {
                                         return Number(e);
                                     })),
                                     mode: "index",
                                     recursive: r
                                 } : {
                                     mode: "property",
-                                    properties: i.map((function(e) {
+                                    properties: a.map((function(e) {
                                         return r = e.trim(), /^\/.*\/[a-z]*$/i.test(r) ? y(r) : C(r);
                                         var r;
                                     })),
                                     recursive: r
                                 };
                             }
-                            function G(e) {
+                            function B(e) {
                                 var r = [], t = 0;
                                 for (e.startsWith(d) && (t = 1); t < e.length; ) {
                                     var n = !1;
                                     if (e.startsWith($, t) ? (n = !0, t += 2) : e[t] === m && (t += 1), t >= e.length) break;
                                     if (e[t] !== j) if ("*" !== e[t]) {
-                                        for (var a = t; a < e.length && e[a] !== m && e[a] !== j; ) a += 1;
-                                        var i = e.slice(t, a).trim();
-                                        i && r.push({
+                                        for (var i = t; i < e.length && e[i] !== m && e[i] !== j; ) i += 1;
+                                        var a = e.slice(t, i).trim();
+                                        a && r.push({
                                             mode: "property",
-                                            properties: [ i ],
+                                            properties: [ a ],
                                             recursive: n
-                                        }), t = a;
+                                        }), t = i;
                                     } else r.push({
                                         mode: "wildcard",
                                         recursive: n
@@ -3632,7 +2969,7 @@ function jsonPruneFetchResponse(e, r) {
                                         var o = U(e, t);
                                         if (-1 === o) throw new Error(`Invalid JSONPath expression: ${e}`);
                                         var u = e.slice(t + 1, o).trim();
-                                        r.push(B(u, n)), t = o + 1;
+                                        r.push(Z(u, n)), t = o + 1;
                                     }
                                 }
                                 return {
@@ -3640,11 +2977,11 @@ function jsonPruneFetchResponse(e, r) {
                                 };
                             }
                             function H(e, r, t) {
-                                var n, a = e.trim();
-                                if (a.startsWith("{") || a.startsWith(j)) n = r(a); else {
-                                    var i = t(a);
-                                    if (!i || i.shouldReplaceArgument) throw new Error(`Invalid append value: ${e}`);
-                                    n = i.constantValue;
+                                var n, i = e.trim();
+                                if (i.startsWith("{") || i.startsWith(j)) n = r(i); else {
+                                    var a = t(i);
+                                    if (!a || a.shouldReplaceArgument) throw new Error(`Invalid append value: ${e}`);
+                                    n = a.constantValue;
                                 }
                                 return function(e) {
                                     return Array.isArray(e) ? Array.isArray(n) ? e.concat(n) : e.concat([ n ]) : J(e) && J(n) ? Object.assign({}, e, n) : "string" == typeof e && "string" == typeof n ? `${e}${n}` : n;
@@ -3660,27 +2997,27 @@ function jsonPruneFetchResponse(e, r) {
                                         return "string" != typeof e ? e : e.replace(n, t.replacement);
                                     };
                                 }(n, r);
-                                var a = t(n);
-                                if (!a) throw new Error(`Invalid set value: ${e}`);
+                                var i = t(n);
+                                if (!i) throw new Error(`Invalid set value: ${e}`);
                                 return function(e) {
                                     return function(e, r) {
                                         return r.shouldReplaceArgument ? "string" == typeof e ? e.replace(r.replaceRegexValue, r.constantValue) : e : !r.shouldMergeJsonValue || null === e || "object" != typeof e || Array.isArray(e) || null === r.constantValue || "object" != typeof r.constantValue || Array.isArray(r.constantValue) ? r.constantValue : Object.assign({}, e, r.constantValue);
-                                    }(e, a);
+                                    }(e, i);
                                 };
                             }
                             function X(e) {
                                 if (!q(e.value)) return [];
                                 for (var r = Object.keys(e.value), t = [], n = 0; n < r.length; n += 1) {
-                                    var a = r[n];
-                                    t.push(z(e.value[a], e.value, a, T(e.path, a)));
+                                    var i = r[n];
+                                    t.push(z(e.value[i], e.value, i, T(e.path, i)));
                                 }
                                 return t;
                             }
                             function Y(e) {
                                 for (var r = [ e ], t = X(e), n = 0; n < t.length; n += 1) r.push(t[n]);
-                                for (var a = 1; a < r.length; ) {
-                                    for (var i = X(r[a]), o = 0; o < i.length; o += 1) r.push(i[o]);
-                                    a += 1;
+                                for (var i = 1; i < r.length; ) {
+                                    for (var a = X(r[i]), o = 0; o < a.length; o += 1) r.push(a[o]);
+                                    i += 1;
                                 }
                                 return r;
                             }
@@ -3691,13 +3028,13 @@ function jsonPruneFetchResponse(e, r) {
                                 var t = [];
                                 if ("property" === r.mode) {
                                     if (!q(e.value) || !r.properties) return t;
-                                    for (var n = new Set, a = 0; a < r.properties.length; a += 1) {
-                                        var i = r.properties[a];
-                                        if (i instanceof RegExp) for (var o = Object.keys(e.value), u = 0; u < o.length; u += 1) {
+                                    for (var n = new Set, i = 0; i < r.properties.length; i += 1) {
+                                        var a = r.properties[i];
+                                        if (a instanceof RegExp) for (var o = Object.keys(e.value), u = 0; u < o.length; u += 1) {
                                             var s = o[u];
-                                            i.lastIndex = 0, i.test(s) && !n.has(s) && (n.add(s), t.push(z(e.value[s], e.value, s, T(e.path, s))));
-                                        } else !n.has(i) && Object.prototype.hasOwnProperty.call(e.value, i) && (n.add(i), 
-                                        t.push(z(e.value[i], e.value, i, T(e.path, i))));
+                                            a.lastIndex = 0, a.test(s) && !n.has(s) && (n.add(s), t.push(z(e.value[s], e.value, s, T(e.path, s))));
+                                        } else !n.has(a) && Object.prototype.hasOwnProperty.call(e.value, a) && (n.add(a), 
+                                        t.push(z(e.value[a], e.value, a, T(e.path, a))));
                                     }
                                     return t;
                                 }
@@ -3705,29 +3042,29 @@ function jsonPruneFetchResponse(e, r) {
                                 if ("index" === r.mode) {
                                     if (!Array.isArray(e.value) || !r.indexes) return t;
                                     for (var l = 0; l < r.indexes.length; l += 1) {
-                                        var f = ee(e.value.length, r.indexes[l]);
-                                        f >= 0 && f < e.value.length && t.push(z(e.value[f], e.value, f, T(e.path, f)));
+                                        var c = ee(e.value.length, r.indexes[l]);
+                                        c >= 0 && c < e.value.length && t.push(z(e.value[c], e.value, c, T(e.path, c)));
                                     }
                                     return t;
                                 }
                                 if ("computed-index" === r.mode) {
                                     if (!Array.isArray(e.value)) return t;
-                                    var c = e.value.length - (r.subtractLength || 0);
-                                    return c >= 0 && c < e.value.length && t.push(z(e.value[c], e.value, c, T(e.path, c))), 
+                                    var f = e.value.length - (r.subtractLength || 0);
+                                    return f >= 0 && f < e.value.length && t.push(z(e.value[f], e.value, f, T(e.path, f))), 
                                     t;
                                 }
                                 if ("slice" === r.mode) {
                                     if (!Array.isArray(e.value) || !r.slice) return t;
                                     for (var p = function(e, r) {
-                                        var t, n, a = [], i = void 0 === r.step ? 1 : r.step;
-                                        if (0 === i) return a;
-                                        if (t = void 0 === r.start ? i > 0 ? 0 : e - 1 : ee(e, r.start), n = void 0 === r.end ? i > 0 ? e : -1 : ee(e, r.end), 
-                                        i > 0) {
-                                            for (var o = Math.max(0, t); o < Math.min(e, n); o += i) a.push(o);
-                                            return a;
+                                        var t, n, i = [], a = void 0 === r.step ? 1 : r.step;
+                                        if (0 === a) return i;
+                                        if (t = void 0 === r.start ? a > 0 ? 0 : e - 1 : ee(e, r.start), n = void 0 === r.end ? a > 0 ? e : -1 : ee(e, r.end), 
+                                        a > 0) {
+                                            for (var o = Math.max(0, t); o < Math.min(e, n); o += a) i.push(o);
+                                            return i;
                                         }
-                                        for (var u = Math.min(e - 1, t); u > Math.max(-1, n); u += i) a.push(u);
-                                        return a;
+                                        for (var u = Math.min(e - 1, t); u > Math.max(-1, n); u += a) i.push(u);
+                                        return i;
                                     }(e.value.length, r.slice), v = 0; v < p.length; v += 1) {
                                         var h = p[v];
                                         t.push(z(e.value[h], e.value, h, T(e.path, h)));
@@ -3743,62 +3080,62 @@ function jsonPruneFetchResponse(e, r) {
                                         return n(e, r);
                                     }));
                                     if ("condition" in t) return !n(e, t.condition);
-                                    var a = te(e, G(t.selectorPath));
-                                    if (t.operator === P) return a.length > 0;
-                                    var i = t.comparisonValue;
+                                    var i = te(e, B(t.selectorPath));
+                                    if (t.operator === P) return i.length > 0;
+                                    var a = t.comparisonValue;
                                     if (t.comparisonSelectorPath) {
-                                        var o = te(t.resolveComparisonAgainstRoot ? r : e, G(t.comparisonSelectorPath));
+                                        var o = te(t.resolveComparisonAgainstRoot ? r : e, B(t.comparisonSelectorPath));
                                         if (0 === o.length) return !1;
-                                        i = o[0].value;
+                                        a = o[0].value;
                                     }
-                                    for (var u = 0; u < a.length; u += 1) {
-                                        var s = a[u].value;
+                                    for (var u = 0; u < i.length; u += 1) {
+                                        var s = i[u].value;
                                         if (t.operator !== W) {
                                             if (t.operator !== _) {
-                                                if (t.operator === A && s === i) return !0;
-                                                if (t.operator === N && s !== i) return !0;
-                                                if (t.operator === k && s < i) return !0;
-                                                if (t.operator === S && s <= i) return !0;
-                                                if (t.operator === R && s > i) return !0;
-                                                if (t.operator === E && s >= i) return !0;
-                                            } else if ("string" == typeof s && i instanceof RegExp && (i.lastIndex = 0, i.test(s))) return !0;
-                                        } else if ("string" == typeof s && s.includes(String(i))) return !0;
+                                                if (t.operator === A && s === a) return !0;
+                                                if (t.operator === N && s !== a) return !0;
+                                                if (t.operator === S && s < a) return !0;
+                                                if (t.operator === k && s <= a) return !0;
+                                                if (t.operator === R && s > a) return !0;
+                                                if (t.operator === E && s >= a) return !0;
+                                            } else if ("string" == typeof s && a instanceof RegExp && (a.lastIndex = 0, a.test(s))) return !0;
+                                        } else if ("string" == typeof s && s.includes(String(a))) return !0;
                                     }
                                     return !1;
                                 }
-                                function a(e, r) {
-                                    for (var t = [], a = 0; a < e.length; a += 1) {
-                                        var i = e[a];
-                                        if (Array.isArray(i.value)) for (var o = 0; o < i.value.length; o += 1) n(i.value[o], r) && t.push(z(i.value[o], i.value, o, T(i.path, o))); else n(i.value, r) && t.push(i);
+                                function i(e, r) {
+                                    for (var t = [], i = 0; i < e.length; i += 1) {
+                                        var a = e[i];
+                                        if (Array.isArray(a.value)) for (var o = 0; o < a.value.length; o += 1) n(a.value[o], r) && t.push(z(a.value[o], a.value, o, T(a.path, o))); else n(a.value, r) && t.push(a);
                                     }
                                     return t;
                                 }
-                                for (var i = [ z(e, null, null, d) ], o = 0; o < t.steps.length; o += 1) {
+                                for (var a = [ z(e, null, null, d) ], o = 0; o < t.steps.length; o += 1) {
                                     var u = t.steps[o];
-                                    if ("filter" === u.mode && u.filter) i = a(i, u.filter); else {
-                                        for (var s = [], l = 0; l < i.length; l += 1) for (var f = i[l], c = u.recursive ? Y(f) : [ f ], p = 0; p < c.length; p += 1) for (var v = re(c[p], u), h = 0; h < v.length; h += 1) s.push(v[h]);
-                                        i = s;
+                                    if ("filter" === u.mode && u.filter) a = i(a, u.filter); else {
+                                        for (var s = [], l = 0; l < a.length; l += 1) for (var c = a[l], f = u.recursive ? Y(c) : [ c ], p = 0; p < f.length; p += 1) for (var v = re(f[p], u), h = 0; h < v.length; h += 1) s.push(v[h]);
+                                        a = s;
                                     }
                                 }
-                                return i;
+                                return a;
                             }
                             var ne = !1;
-                            function ae() {
+                            function ie() {
                                 ne = !0;
                             }
                             if (!q(r)) return r;
-                            var ie, oe = (ie = n) && ie.nativeParse ? ie.nativeParse : JSON.parse, ue = function(e) {
+                            var ae, oe = (ae = n) && ae.nativeParse ? ae.nativeParse : JSON.parse, ue = function(e) {
                                 return e && e.nativeStringify ? e.nativeStringify : JSON.stringify;
                             }(n), se = (new Error).stack || "";
-                            if (i && !g(i, se)) return r;
+                            if (a && !g(a, se)) return r;
                             if (!t) return o(e, `${window.location.hostname}\n${ue(r, null, 2)}\nStack trace:\n${se}`, !0), 
                             o(e, r, !0, !1), r;
                             try {
                                 for (var le = function(e, r, t) {
-                                    var n, a = function(e) {
+                                    var n, i = function(e) {
                                         var r = -1, t = "remove", n = 0;
-                                        return L(e, (function(a, i) {
-                                            return !!i && (e.startsWith("+=", a) ? (r = a, t = "append", n = 2, !0) : "=" === e[a] && (r = a, 
+                                        return L(e, (function(i, a) {
+                                            return !!a && (e.startsWith("+=", i) ? (r = i, t = "append", n = 2, !0) : "=" === e[i] && (r = i, 
                                             t = "set", n = 1, !0));
                                         })), -1 === r ? {
                                             mode: "remove",
@@ -3809,43 +3146,43 @@ function jsonPruneFetchResponse(e, r) {
                                             selectorPart: e.slice(0, r).trim(),
                                             valuePart: e.slice(r + n).trim()
                                         };
-                                    }(e), i = function(e) {
+                                    }(e), a = function(e) {
                                         for (var r = [], t = e.trim(); t.startsWith("[?"); ) {
                                             var n = U(t, 0);
                                             if (-1 === n) break;
-                                            var a = t.slice(1, n);
-                                            r.push(Z(a.slice(1))), t = t.slice(n + 1).trim();
+                                            var i = t.slice(1, n);
+                                            r.push(K(i.slice(1))), t = t.slice(n + 1).trim();
                                         }
                                         return {
                                             guards: r,
                                             selectorPart: t
                                         };
-                                    }(a.selectorPart), o = G((n = i.selectorPart.trim()) === b ? d : n.startsWith(d) ? n : n.startsWith(m) || n.startsWith(j) || n.startsWith($) ? `${d}${n}` : `${d}${m}${n}`), u = {
-                                        mode: a.mode
+                                    }(i.selectorPart), o = B((n = a.selectorPart.trim()) === b ? d : n.startsWith(d) ? n : n.startsWith(m) || n.startsWith(j) || n.startsWith($) ? `${d}${n}` : `${d}${m}${n}`), u = {
+                                        mode: i.mode
                                     };
-                                    return "append" === a.mode ? u = {
+                                    return "append" === i.mode ? u = {
                                         mode: "append",
-                                        updater: H(a.valuePart, r, t)
-                                    } : "set" === a.mode && (u = {
+                                        updater: H(i.valuePart, r, t)
+                                    } : "set" === i.mode && (u = {
                                         mode: "set",
-                                        updater: Q(a.valuePart, r, t)
+                                        updater: Q(i.valuePart, r, t)
                                     }), {
-                                        guards: i.guards,
+                                        guards: a.guards,
                                         mutation: u,
                                         selector: o
                                     };
                                 }(t, oe, (function(r) {
                                     return function(e, r, t) {
-                                        var n, a = "json:", i = "replace:", u = "", d = !1, g = !1;
-                                        if (r.startsWith(i)) {
+                                        var n, i = "json:", a = "replace:", u = "", d = !1, g = !1;
+                                        if (r.startsWith(a)) {
                                             var y = extractRegexAndReplacement(r);
                                             if (!y) return o(e, `Invalid argument value format: ${r}`), null;
                                             u = y.regexPart, n = y.replacementPart, d = !0;
-                                        } else if (r.startsWith(a)) try {
-                                            n = t(r.slice(a.length)), g = !0;
+                                        } else if (r.startsWith(i)) try {
+                                            n = t(r.slice(i.length)), g = !0;
                                         } catch (t) {
                                             return o(e, `Invalid JSON argument value: ${r}`), null;
-                                        } else if ("undefined" === r) n = void 0; else if ("false" === r) n = !1; else if ("true" === r) n = !0; else if ("null" === r) n = null; else if ("NaN" === r) n = NaN; else if ("emptyArr" === r || "[]" === r) n = []; else if ("emptyObj" === r || "{}" === r) n = {}; else if ("noopFunc" === r) n = l; else if ("noopCallbackFunc" === r) n = s; else if ("trueFunc" === r) n = f; else if ("falseFunc" === r) n = c; else if ("throwFunc" === r) n = p; else if ("noopPromiseResolve" === r) n = h; else if ("noopPromiseReject" === r) n = v; else if (/^-?\d+$/.test(r)) {
+                                        } else if ("undefined" === r) n = void 0; else if ("false" === r) n = !1; else if ("true" === r) n = !0; else if ("null" === r) n = null; else if ("NaN" === r) n = NaN; else if ("emptyArr" === r || "[]" === r) n = []; else if ("emptyObj" === r || "{}" === r) n = {}; else if ("noopFunc" === r) n = l; else if ("noopCallbackFunc" === r) n = s; else if ("trueFunc" === r) n = c; else if ("falseFunc" === r) n = f; else if ("throwFunc" === r) n = p; else if ("noopPromiseResolve" === r) n = h; else if ("noopPromiseReject" === r) n = v; else if (/^-?\d+$/.test(r)) {
                                             if (n = parseFloat(r), nativeIsNaN(n)) return null;
                                         } else n = r;
                                         return {
@@ -3855,85 +3192,85 @@ function jsonPruneFetchResponse(e, r) {
                                             shouldMergeJsonValue: g
                                         };
                                     }(e, r, oe);
-                                })), fe = 0; fe < le.guards.length; fe += 1) if (0 === te(r, {
+                                })), ce = 0; ce < le.guards.length; ce += 1) if (0 === te(r, {
                                     steps: [ {
-                                        filter: le.guards[fe],
+                                        filter: le.guards[ce],
                                         mode: "filter",
                                         recursive: !1
                                     } ]
                                 }).length) return r;
-                                var ce = te(r, le.selector);
-                                if (u) return ce.length > 0 && a && a(), r;
+                                var fe = te(r, le.selector);
+                                if (u) return fe.length > 0 && i && i(), r;
                                 if (!("remove" === le.mutation.mode || "string" == typeof e.name && e.name.startsWith("trusted-"))) return o(e, "JSONPath set and append operations are allowed only in trusted scriptlets"), 
                                 r;
                                 if ("remove" === le.mutation.mode) return function(e) {
                                     for (var r = new Set, t = new Map, n = 0; n < e.length; n += 1) {
-                                        var a = e[n];
-                                        if (null !== a.parent && null !== a.key && !r.has(a.path)) if (r.add(a.path), Array.isArray(a.parent)) {
-                                            var i = t.get(a.parent) || [];
-                                            i.push(Number(a.key)), t.set(a.parent, i);
-                                        } else delete a.parent[a.key], ae();
+                                        var i = e[n];
+                                        if (null !== i.parent && null !== i.key && !r.has(i.path)) if (r.add(i.path), Array.isArray(i.parent)) {
+                                            var a = t.get(i.parent) || [];
+                                            a.push(Number(i.key)), t.set(i.parent, a);
+                                        } else delete i.parent[i.key], ie();
                                     }
                                     t.forEach((function(e, r) {
                                         for (var t = Array.from(new Set(e)).sort((function(e, r) {
                                             return r - e;
                                         })), n = 0; n < t.length; n += 1) {
-                                            var a = t[n];
-                                            a >= 0 && a < r.length && (r.splice(a, 1), ae());
+                                            var i = t[n];
+                                            i >= 0 && i < r.length && (r.splice(i, 1), ie());
                                         }
                                     }));
-                                }(ce), ne && a && a(), r;
+                                }(fe), ne && i && i(), r;
                                 le.mutation.updater && (r = function(e, r, t) {
-                                    for (var n = new Set, a = e, i = 0; i < r.length; i += 1) {
-                                        var o = r[i];
+                                    for (var n = new Set, i = e, a = 0; a < r.length; a += 1) {
+                                        var o = r[a];
                                         n.has(o.path) || (n.add(o.path), null !== o.parent || null !== o.key || o.path !== d ? null !== o.parent && null !== o.key && (o.parent[o.key] = t(o.parent[o.key]), 
-                                        ae()) : (a = t(a), ae()));
+                                        ie()) : (i = t(i), ie()));
                                     }
-                                    return a;
-                                }(r, ce, le.mutation.updater), ne && a && a());
+                                    return i;
+                                }(r, fe, le.mutation.updater), ne && i && i());
                             } catch (r) {
                                 o(e, `JSONPath processing failed for expression '${t}': ${r.message}`);
                             }
                             return r;
                         }(e, t, r, W, (function() {
-                            return i(e);
-                        }), a) : function(e, r, t, n, a, u) {
+                            return a(e);
+                        }), i) : function(e, r, t, n, i, u) {
                             var {nativeStringify: s} = u;
                             if (0 === t.length && 0 === n.length) return o(e, `${window.location.hostname}\n${s(r, null, 2)}\nStack trace:\n${(new Error).stack}`, !0), 
                             r && "object" == typeof r && o(e, r, !0, !1), r;
                             try {
-                                if (!1 === function(e, r, t, n, a, i) {
+                                if (!1 === function(e, r, t, n, i, a) {
                                     if (!r) return !1;
-                                    var u, {nativeStringify: s} = i, l = t.map((function(e) {
+                                    var u, {nativeStringify: s} = a, l = t.map((function(e) {
                                         return e.path;
-                                    })), f = n.map((function(e) {
+                                    })), c = n.map((function(e) {
                                         return e.path;
                                     }));
-                                    if (0 === l.length && f.length > 0) {
-                                        var c = s(r);
-                                        if (y(f.join("")).test(c)) return o(e, `${window.location.hostname}\n${s(r, null, 2)}\nStack trace:\n${(new Error).stack}`, !0), 
+                                    if (0 === l.length && c.length > 0) {
+                                        var f = s(r);
+                                        if (y(c.join("")).test(f)) return o(e, `${window.location.hostname}\n${s(r, null, 2)}\nStack trace:\n${(new Error).stack}`, !0), 
                                         r && "object" == typeof r && o(e, r, !0, !1), u = !1;
                                     }
-                                    if (a && !g(a, (new Error).stack || "")) return u = !1;
+                                    if (i && !g(i, (new Error).stack || "")) return u = !1;
                                     for (var p, v = [ ".*.", "*.", ".*", ".[].", "[].", ".[]" ], h = function() {
-                                        var e = f[d], t = e.split(".").pop(), n = v.some((function(r) {
+                                        var e = c[d], t = e.split(".").pop(), n = v.some((function(r) {
                                             return e.includes(r);
-                                        })), a = m(r, e, n);
-                                        if (!a.length) return {
+                                        })), i = m(r, e, n);
+                                        if (!i.length) return {
                                             v: u = !1
                                         };
                                         u = !n;
-                                        for (var i = 0; i < a.length; i += 1) {
-                                            var o = "string" == typeof t && void 0 !== a[i].base[t];
+                                        for (var a = 0; a < i.length; a += 1) {
+                                            var o = "string" == typeof t && void 0 !== i[a].base[t];
                                             u = n ? o || u : o && u;
                                         }
-                                    }, d = 0; d < f.length; d += 1) if (p = h()) return p.v;
+                                    }, d = 0; d < c.length; d += 1) if (p = h()) return p.v;
                                     return u;
-                                }(e, r, t, n, a, u)) return r;
+                                }(e, r, t, n, i, u)) return r;
                                 t.forEach((function(t) {
-                                    for (var n = t.path, a = t.value, o = m(r, n, !0, [], a), u = o.length - 1; u >= 0; u -= 1) {
+                                    for (var n = t.path, i = t.value, o = m(r, n, !0, [], i), u = o.length - 1; u >= 0; u -= 1) {
                                         var s = o[u];
-                                        if (void 0 !== s && s.base) if (i(e), Array.isArray(s.base)) try {
+                                        if (void 0 !== s && s.base) if (a(e), Array.isArray(s.base)) try {
                                             var l = Number(s.prop);
                                             if (Number.isNaN(l)) continue;
                                             s.base.splice(l, 1);
@@ -3946,36 +3283,36 @@ function jsonPruneFetchResponse(e, r) {
                                 o(e, r);
                             }
                             return r;
-                        }(e, t, b, w, a, W);
+                        }(e, t, b, w, i, W);
                     }, P = {
-                        apply: async function(r, t, a) {
-                            var s, l, f, c = function(e, r) {
-                                var t, n, a = {}, i = e[0];
-                                if (i instanceof Request) {
+                        apply: async function(r, t, i) {
+                            var s, l, c, f = function(e, r) {
+                                var t, n, i = {}, a = e[0];
+                                if (a instanceof Request) {
                                     var o = function(e) {
                                         var r = [ "url", "method", "headers", "body", "credentials", "cache", "redirect", "referrer", "referrerPolicy", "integrity", "keepalive", "signal", "mode" ].map((function(r) {
                                             return [ r, e[r] ];
                                         }));
                                         return Object.fromEntries(r);
-                                    }(r.call(i));
+                                    }(r.call(a));
                                     t = o.url, n = o;
-                                } else t = i, n = e[1];
-                                (a.url = t, n instanceof Object) && Object.keys(n).forEach((function(e) {
-                                    a[e] = n[e];
+                                } else t = a, n = e[1];
+                                (i.url = t, n instanceof Object) && Object.keys(n).forEach((function(e) {
+                                    i[e] = n[e];
                                 }));
-                                return a;
-                            }(a, x);
+                                return i;
+                            }(i, x);
                             if (!function(e, r, t) {
                                 if ("" === r || "*" === r) return !0;
-                                var n, a = function(e) {
+                                var n, i = function(e) {
                                     var r = {};
                                     return e.split(" ").forEach((function(e) {
                                         var t = e.indexOf(":"), n = e.slice(0, t);
                                         if (function(e) {
                                             return [ "url", "method", "headers", "body", "credentials", "cache", "redirect", "referrer", "referrerPolicy", "integrity", "keepalive", "signal", "mode" ].includes(e);
                                         }(n)) {
-                                            var a = e.slice(t + 1);
-                                            r[n] = a;
+                                            var i = e.slice(t + 1);
+                                            r[n] = i;
                                         } else r.url = e;
                                     })), r;
                                 }(r);
@@ -3994,41 +3331,41 @@ function jsonPruneFetchResponse(e, r) {
                                             return r;
                                         }(e);
                                     }));
-                                }(a)) {
-                                    var i = function(e) {
+                                }(i)) {
+                                    var a = function(e) {
                                         var r = {};
                                         return Object.keys(e).forEach((function(t) {
                                             r[t] = y(e[t]);
                                         })), r;
-                                    }(a);
-                                    n = Object.keys(i).every((function(e) {
-                                        var r = i[e], n = t[e];
+                                    }(i);
+                                    n = Object.keys(a).every((function(e) {
+                                        var r = a[e], n = t[e];
                                         return Object.prototype.hasOwnProperty.call(t, e) && "string" == typeof n && (null == r ? void 0 : r.test(n));
                                     }));
                                 } else o(e, `Invalid parameter: ${r}`), n = !1;
                                 return n;
-                            }(e, n, c)) return Reflect.apply(r, t, a);
+                            }(e, n, f)) return Reflect.apply(r, t, i);
                             try {
-                                s = await O.apply(null, a);
+                                s = await O.apply(null, i);
                                 l = j.call(s);
                             } catch (n) {
-                                o(e, `Could not make an original fetch request: ${c.url}`);
-                                return Reflect.apply(r, t, a);
+                                o(e, `Could not make an original fetch request: ${f.url}`);
+                                return Reflect.apply(r, t, i);
                             }
                             try {
-                                f = await s.json();
+                                c = await s.json();
                             } catch (r) {
-                                var p = `Response body can't be converted to json: ${u(c)}`;
+                                var p = `Response body can't be converted to json: ${u(f)}`;
                                 o(e, p);
                                 return l;
                             }
-                            var v = A(f), h = function(e, r) {
-                                var {bodyUsed: t, headers: n, ok: a, redirected: i, status: o, statusText: u, type: s, url: l} = e, f = new Response(r, {
+                            var v = A(c), h = function(e, r) {
+                                var {bodyUsed: t, headers: n, ok: i, redirected: a, status: o, statusText: u, type: s, url: l} = e, c = new Response(r, {
                                     status: o,
                                     statusText: u,
                                     headers: n
                                 });
-                                return Object.defineProperties(f, {
+                                return Object.defineProperties(c, {
                                     url: {
                                         value: l
                                     },
@@ -4036,47 +3373,49 @@ function jsonPruneFetchResponse(e, r) {
                                         value: s
                                     },
                                     ok: {
-                                        value: a
+                                        value: i
                                     },
                                     bodyUsed: {
                                         value: t
                                     },
                                     redirected: {
-                                        value: i
+                                        value: a
                                     }
-                                }), f;
+                                }), c;
                             }(s, W.nativeStringify(v));
-                            i(e);
+                            a(e);
                             return h;
                         }
                     };
                     window.fetch = new Proxy(window.fetch, P);
                 }
-            }).apply(this, a);
-            e.uniqueId && Object.defineProperty(_c, n, {
+            }).apply(this, i);
+            e.uniqueId && Object.defineProperty(Window.prototype.toString, n, {
                 value: t,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
-        } catch (e) {}
+        } catch (e) {
+            console.log(e);
+        }
     }
-    function i(e) {
+    function a(e) {
         if (e.verbose) {
             try {
-                var r = console.trace.bind(console), t = "[ext] ";
+                var r = console.trace.bind(console), t = "[AdGuard] ";
                 "corelibs" === e.engine ? t += e.ruleText : (e.domainName && (t += `${e.domainName}`), 
-                e.args ? t += `#%#//s('${e.name}', '${e.args.join("', '")}')` : t += `#%#//s('${e.name}')`), 
+                e.args ? t += `#%#//scriptlet('${e.name}', '${e.args.join("', '")}')` : t += `#%#//scriptlet('${e.name}')`), 
                 r && r(t);
             } catch (e) {}
-            "function" == typeof window._d && window._d(e);
+            "function" == typeof window.__debug && window.__debug(e);
         }
     }
     function o(e, r) {
-        var t = arguments.length > 2 && void 0 !== arguments[2] && arguments[2], n = !(arguments.length > 3 && void 0 !== arguments[3]) || arguments[3], {name: a, verbose: i} = e;
-        if (t || i) {
+        var t = arguments.length > 2 && void 0 !== arguments[2] && arguments[2], n = !(arguments.length > 3 && void 0 !== arguments[3]) || arguments[3], {name: i, verbose: a} = e;
+        if (t || a) {
             var o = console.log;
-            n ? o(`${a}: ${r}`) : Array.isArray(r) ? o(`${a}:`, ...r) : o(`${a}:`, r);
+            n ? o(`${i}: ${r}`) : Array.isArray(r) ? o(`${i}:`, ...r) : o(`${i}:`, r);
         }
     }
     function u(e) {
@@ -4091,10 +3430,10 @@ function jsonPruneFetchResponse(e, r) {
         return l;
     }
     function l() {}
-    function f() {
+    function c() {
         return !0;
     }
-    function c() {
+    function f() {
         return !1;
     }
     function p() {
@@ -4146,32 +3485,32 @@ function jsonPruneFetchResponse(e, r) {
         var r = ".[=].";
         if ("string" == typeof e && void 0 !== e && "" !== e) {
             var t = function(e) {
-                for (var t = [], n = "", a = 0, i = !1, o = !1; a < e.length; ) {
-                    var u = e[a];
-                    if (i) n += u, "\\" === u ? o = !o : ("/" !== u || o || (i = !1), o = !1), a += 1; else {
+                for (var t = [], n = "", i = 0, a = !1, o = !1; i < e.length; ) {
+                    var u = e[i];
+                    if (a) n += u, "\\" === u ? o = !o : ("/" !== u || o || (a = !1), o = !1), i += 1; else {
                         if (" " === u || "\n" === u || "\t" === u || "\r" === u || "\f" === u || "\v" === u) {
-                            for (;a < e.length && /\s/.test(e[a]); ) a += 1;
+                            for (;i < e.length && /\s/.test(e[i]); ) i += 1;
                             "" !== n && (t.push(n), n = "");
                             continue;
                         }
-                        if (e.startsWith(r, a)) {
-                            if (n += r, "/" === e[a += 5]) {
-                                i = !0, o = !1, n += "/", a += 1;
+                        if (e.startsWith(r, i)) {
+                            if (n += r, "/" === e[i += 5]) {
+                                a = !0, o = !1, n += "/", i += 1;
                                 continue;
                             }
                             continue;
                         }
-                        n += u, a += 1;
+                        n += u, i += 1;
                     }
                 }
                 return "" !== n && t.push(n), t;
             }(e);
             return t.map((function(e) {
-                var t = e.split(r), n = t[0], a = t[1];
-                return void 0 !== a ? ("true" === a ? a = !0 : "false" === a ? a = !1 : a.startsWith("/") ? a = y(a) : "string" == typeof a && /^\d+$/.test(a) && (a = parseFloat(a)), 
+                var t = e.split(r), n = t[0], i = t[1];
+                return void 0 !== i ? ("true" === i ? i = !0 : "false" === i ? i = !1 : i.startsWith("/") ? i = y(i) : "string" == typeof i && /^\d+$/.test(i) && (i = parseFloat(i)), 
                 {
                     path: n,
-                    value: a
+                    value: i
                 }) : {
                     path: n
                 };
@@ -4194,49 +3533,49 @@ function jsonPruneFetchResponse(e, r) {
             }
         }();
         if (function(e, r) {
-            var t = "inlineScript", n = "injectedScript", a = function(e) {
+            var t = "inlineScript", n = "injectedScript", i = function(e) {
                 return e.includes(t);
-            }, i = function(e) {
+            }, a = function(e) {
                 return e.includes(n);
             };
-            if (!a(e) && !i(e)) return !1;
+            if (!i(e) && !a(e)) return !1;
             var o = window.location.href, u = o.indexOf("#");
             -1 !== u && (o = o.slice(0, u));
             var s = r.split("\n").slice(2).map((function(e) {
                 return e.trim();
             })).map((function(e) {
-                var r, a = /(.*?@)?(\S+)(:\d+)(:\d+)\)?$/.exec(e);
-                if (a) {
-                    var i, u, s = a[2], l = a[3], f = a[4];
-                    if (null !== (i = s) && void 0 !== i && i.startsWith("(") && (s = s.slice(1)), null !== (u = s) && void 0 !== u && u.startsWith("<anonymous>")) {
-                        var c;
+                var r, i = /(.*?@)?(\S+)(:\d+)(:\d+)\)?$/.exec(e);
+                if (i) {
+                    var a, u, s = i[2], l = i[3], c = i[4];
+                    if (null !== (a = s) && void 0 !== a && a.startsWith("(") && (s = s.slice(1)), null !== (u = s) && void 0 !== u && u.startsWith("<anonymous>")) {
+                        var f;
                         s = n;
-                        var p = void 0 !== a[1] ? a[1].slice(0, -1) : e.slice(0, a.index).trim();
-                        null !== (c = p) && void 0 !== c && c.startsWith("at") && (p = p.slice(2).trim()), 
-                        r = `${p} ${s}${l}${f}`.trim();
-                    } else r = s === o ? `${t}${l}${f}`.trim() : `${s}${l}${f}`.trim();
+                        var p = void 0 !== i[1] ? i[1].slice(0, -1) : e.slice(0, i.index).trim();
+                        null !== (f = p) && void 0 !== f && f.startsWith("at") && (p = p.slice(2).trim()), 
+                        r = `${p} ${s}${l}${c}`.trim();
+                    } else r = s === o ? `${t}${l}${c}`.trim() : `${s}${l}${c}`.trim();
                 } else r = e;
                 return r;
             }));
             if (s) for (var l = 0; l < s.length; l += 1) {
-                if (a(e) && s[l].startsWith(t) && s[l].match(y(e))) return !0;
-                if (i(e) && s[l].startsWith(n) && s[l].match(y(e))) return !0;
+                if (i(e) && s[l].startsWith(t) && s[l].match(y(e))) return !0;
+                if (a(e) && s[l].startsWith(n) && s[l].match(y(e))) return !0;
             }
             return !1;
         }(e, r)) return t.length && t[0] !== RegExp.$1 && $(t), !0;
-        var n = y(e), a = r.split("\n").slice(2).map((function(e) {
+        var n = y(e), i = r.split("\n").slice(2).map((function(e) {
             return e.trim();
         })).join("\n");
         return t.length && t[0] !== RegExp.$1 && $(t), function() {
             var e = Object.getOwnPropertyDescriptor(RegExp.prototype, "test"), r = null == e ? void 0 : e.value;
             if (e && "function" == typeof e.value) return r;
             throw new Error("RegExp.prototype.test is not a function");
-        }().call(n, a);
+        }().call(n, i);
     }
     function y(e) {
         var r = e || "", t = "/";
         if ("" === r) return new RegExp(".?");
-        var n, a, i = r.lastIndexOf(t), o = r.substring(i + 1), u = r.substring(0, i + 1), s = (a = o, 
+        var n, i, a = r.lastIndexOf(t), o = r.substring(a + 1), u = r.substring(0, a + 1), s = (i = o, 
         (n = u).startsWith(t) && n.endsWith(t) && !n.endsWith("\\/") && function(e) {
             if (!e) return !1;
             try {
@@ -4244,21 +3583,21 @@ function jsonPruneFetchResponse(e, r) {
             } catch (e) {
                 return !1;
             }
-        }(a) ? a : "");
+        }(i) ? i : "");
         if (r.startsWith(t) && r.endsWith(t) || s) return new RegExp((s ? u : r).slice(1, -1), s);
         var l = r.replace(/\\'/g, "'").replace(/\\"/g, '"').replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
         return new RegExp(l);
     }
     function m(e, r) {
-        var t = arguments.length > 2 && void 0 !== arguments[2] && arguments[2], n = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : [], a = arguments.length > 4 ? arguments[4] : void 0, i = r.indexOf(".");
-        if (-1 === i) {
+        var t = arguments.length > 2 && void 0 !== arguments[2] && arguments[2], n = arguments.length > 3 && void 0 !== arguments[3] ? arguments[3] : [], i = arguments.length > 4 ? arguments[4] : void 0, a = r.indexOf(".");
+        if (-1 === a) {
             if ("*" === r || "[]" === r) {
-                for (var o in e) if (Object.prototype.hasOwnProperty.call(e, o)) if (void 0 !== a) {
+                for (var o in e) if (Object.prototype.hasOwnProperty.call(e, o)) if (void 0 !== i) {
                     var u = e[o];
-                    "string" == typeof u && a instanceof RegExp ? a.test(u) && n.push({
+                    "string" == typeof u && i instanceof RegExp ? i.test(u) && n.push({
                         base: e,
                         prop: o
-                    }) : u === a && n.push({
+                    }) : u === i && n.push({
                         base: e,
                         prop: o
                     });
@@ -4266,12 +3605,12 @@ function jsonPruneFetchResponse(e, r) {
                     base: e,
                     prop: o
                 });
-            } else if (void 0 !== a) {
+            } else if (void 0 !== i) {
                 var s = e[r];
-                "string" == typeof s && a instanceof RegExp ? a.test(s) && n.push({
+                "string" == typeof s && i instanceof RegExp ? i.test(s) && n.push({
                     base: e,
                     prop: r
-                }) : e[r] === a && n.push({
+                }) : e[r] === i && n.push({
                     base: e,
                     prop: r
                 });
@@ -4281,43 +3620,43 @@ function jsonPruneFetchResponse(e, r) {
             });
             return n;
         }
-        var l = r.slice(0, i);
+        var l = r.slice(0, a);
         if ("[]" === l && Array.isArray(e) || "*" === l && e instanceof Object || "[-]" === l && Array.isArray(e) || "{-}" === l && e instanceof Object) {
-            var f = r.slice(i + 1), c = Object.keys(e);
+            var c = r.slice(a + 1), f = Object.keys(e);
             if ("{-}" === l || "[-]" === l) {
                 var p = Array.isArray(e) ? "array" : "object";
-                return ("{-}" !== l || "object" !== p) && ("[-]" !== l || "array" !== p) || c.forEach((function(r) {
+                return ("{-}" !== l || "object" !== p) && ("[-]" !== l || "array" !== p) || f.forEach((function(r) {
                     (function(e, r, t) {
-                        var n = r.split("."), a = function(e, r) {
+                        var n = r.split("."), i = function(e, r) {
                             if (null == e) return !1;
                             if (0 === r.length) return void 0 === t || ("string" == typeof e && t instanceof RegExp ? t.test(e) : e === t);
-                            var n = r[0], i = r.slice(1);
+                            var n = r[0], a = r.slice(1);
                             if ("*" === n || "[]" === n) {
                                 if (Array.isArray(e)) return e.some((function(e) {
-                                    return a(e, i);
+                                    return i(e, a);
                                 }));
                                 if ("object" == typeof e && null !== e) return Object.keys(e).some((function(r) {
-                                    return a(e[r], i);
+                                    return i(e[r], a);
                                 }));
                             }
-                            return !!Object.prototype.hasOwnProperty.call(e, n) && a(e[n], i);
+                            return !!Object.prototype.hasOwnProperty.call(e, n) && i(e[n], a);
                         };
-                        return a(e, n);
-                    })(e[r], f, a) && n.push({
+                        return i(e, n);
+                    })(e[r], c, i) && n.push({
                         base: e,
                         prop: r
                     });
                 })), n;
             }
-            c.forEach((function(r) {
-                m(e[r], f, t, n, a);
+            f.forEach((function(r) {
+                m(e[r], c, t, n, i);
             }));
         }
         Array.isArray(e) && e.forEach((function(e) {
-            void 0 !== e && m(e, r, t, n, a);
+            void 0 !== e && m(e, r, t, n, i);
         }));
         var v = e[l];
-        return r = r.slice(i + 1), void 0 !== v && m(v, r, t, n, a), n;
+        return r = r.slice(a + 1), void 0 !== v && m(v, r, t, n, i), n;
     }
     function $(e) {
         if (e.length) try {
