@@ -64,13 +64,19 @@ const { PreregisteredScriptsService } = await import(
 );
 
 describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
+    const allowlistDisabled = {
+        allowlist: [],
+        allowlistInverted: false,
+        allowlistEnabled: false,
+    };
+
     beforeEach(() => {
         vi.clearAllMocks();
         mockSyncContentScripts.mockResolvedValue(undefined);
     });
 
     it('should call syncContentScripts with the correct namespace', async () => {
-        await PreregisteredScriptsService.sync([1]);
+        await PreregisteredScriptsService.sync([1], allowlistDisabled);
 
         expect(mockSyncContentScripts).toHaveBeenCalledWith(
             'preregistered',
@@ -79,7 +85,7 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
     });
 
     it('should register only scripts for enabled filter IDs', async () => {
-        await PreregisteredScriptsService.sync([1, 2]);
+        await PreregisteredScriptsService.sync([1, 2], allowlistDisabled);
 
         // youtube.com: filters 1,2,3,5 → only 1,2 enabled → 2 scripts
         // example.com: filters 2,4     → only 2 enabled   → 1 script
@@ -97,7 +103,7 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
     });
 
     it('should pass empty scripts array when no filter is enabled', async () => {
-        await PreregisteredScriptsService.sync([99]);
+        await PreregisteredScriptsService.sync([99], allowlistDisabled);
 
         // Single call with empty scripts array
         expect(mockSyncContentScripts).toHaveBeenCalledTimes(1);
@@ -107,7 +113,7 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
     });
 
     it('should build correct script descriptor shape', async () => {
-        await PreregisteredScriptsService.sync([1, 2]);
+        await PreregisteredScriptsService.sync([1, 2], allowlistDisabled);
 
         const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
         const scripts = scriptsArg as Array<Record<string, unknown>>;
@@ -133,7 +139,7 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
     });
 
     it('should construct the correct script path', async () => {
-        await PreregisteredScriptsService.sync([5]);
+        await PreregisteredScriptsService.sync([5], allowlistDisabled);
 
         const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
         const scripts = scriptsArg as Array<{ id: string; js: string[] }>;
@@ -144,7 +150,7 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
     });
 
     it('should construct the correct match patterns', async () => {
-        await PreregisteredScriptsService.sync([1]);
+        await PreregisteredScriptsService.sync([1], allowlistDisabled);
 
         const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
         const scripts = scriptsArg as Array<{ id: string; matches: string[] }>;
@@ -158,7 +164,7 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
     });
 
     it('should handle an empty enabled filter list gracefully', async () => {
-        await PreregisteredScriptsService.sync([]);
+        await PreregisteredScriptsService.sync([], allowlistDisabled);
 
         expect(mockSyncContentScripts).toHaveBeenCalledTimes(1);
 
@@ -168,7 +174,7 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
     });
 
     it('should handle all filters enabled', async () => {
-        await PreregisteredScriptsService.sync([1, 2, 3, 4, 5]);
+        await PreregisteredScriptsService.sync([1, 2, 3, 4, 5], allowlistDisabled);
 
         const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
         const scripts = scriptsArg as Array<{ id: string }>;
@@ -191,7 +197,7 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
 
     it('should pass number filter IDs and correctly convert them to strings for lookup', async () => {
         // Even though the registry uses strings, the service receives numbers
-        await PreregisteredScriptsService.sync([1]);
+        await PreregisteredScriptsService.sync([1], allowlistDisabled);
 
         const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
         const scripts = scriptsArg as Array<{ id: string }>;
@@ -203,7 +209,7 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
     });
 
     it('should include scripts from all domains when the same filter appears for different domains', async () => {
-        await PreregisteredScriptsService.sync([2]);
+        await PreregisteredScriptsService.sync([2], allowlistDisabled);
 
         // Filter 2 exists in both youtube.com and example.com
         expect(mockSyncContentScripts).toHaveBeenCalledTimes(1);
@@ -222,7 +228,7 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
     });
 
     it('should call syncContentScripts exactly once with all domains scripts combined', async () => {
-        await PreregisteredScriptsService.sync([1, 2, 3, 4, 5]);
+        await PreregisteredScriptsService.sync([1, 2, 3, 4, 5], allowlistDisabled);
 
         // The namespace is shared — calling syncContentScripts once per domain
         // would cause each subsequent call to unregister the previous domain's
@@ -259,11 +265,269 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
     it('should log error when syncContentScripts throws', async () => {
         mockSyncContentScripts.mockRejectedValue(new Error('API failure'));
 
-        await PreregisteredScriptsService.sync([1]);
+        await PreregisteredScriptsService.sync([1], allowlistDisabled);
 
         expect(mockLoggerError).toHaveBeenCalledWith(
             expect.stringContaining('Failed to sync preregistered scripts'),
             expect.any(Error),
         );
+    });
+
+    it('should exclude a domain from registration when it is in the allowlist (default mode)', async () => {
+        await PreregisteredScriptsService.sync([1, 2, 3, 4, 5], {
+            allowlist: ['youtube.com'],
+            allowlistInverted: false,
+            allowlistEnabled: true,
+        });
+
+        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+        const scripts = scriptsArg as Array<{ id: string }>;
+
+        // youtube.com is allowlisted → only example.com scripts remain
+        // example.com: filters 2,4 → 2 scripts
+        expect(scripts).toHaveLength(2);
+
+        const scriptIds = scripts.map((s) => s.id);
+        expect(scriptIds).toEqual(expect.arrayContaining([
+            'example.com_2',
+            'example.com_4',
+        ]));
+        expect(scriptIds).not.toEqual(
+            expect.arrayContaining([
+                expect.stringContaining('youtube.com'),
+            ]),
+        );
+    });
+
+    it('should register all domain scripts when allowlist is empty (default mode)', async () => {
+        await PreregisteredScriptsService.sync([1, 2], {
+            allowlist: [],
+            allowlistInverted: false,
+            allowlistEnabled: true,
+        });
+
+        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+        const scripts = scriptsArg as Array<{ id: string }>;
+
+        // No allowlist filtering — same as current behaviour
+        // youtube.com: filters 1,2 → 2 scripts
+        // example.com: filter 2    → 1 script
+        expect(scripts).toHaveLength(3);
+    });
+
+    it('should match allowlist entries with www. prefix', async () => {
+        await PreregisteredScriptsService.sync([1, 2, 3, 4, 5], {
+            allowlist: ['www.youtube.com'],
+            allowlistInverted: false,
+            allowlistEnabled: true,
+        });
+
+        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+        const scripts = scriptsArg as Array<{ id: string }>;
+
+        // www.youtube.com should match youtube.com in the registry
+        // Only example.com scripts remain
+        const scriptIds = scripts.map((s) => s.id);
+        expect(scriptIds).not.toEqual(
+            expect.arrayContaining([
+                expect.stringContaining('youtube.com'),
+            ]),
+        );
+        expect(scriptIds).toEqual(expect.arrayContaining([
+            'example.com_2',
+            'example.com_4',
+        ]));
+    });
+
+    it('should match allowlist entries with *. subdomain wildcard prefix', async () => {
+        await PreregisteredScriptsService.sync([1, 2, 3, 4, 5], {
+            allowlist: ['*.youtube.com'],
+            allowlistInverted: false,
+            allowlistEnabled: true,
+        });
+
+        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+        const scripts = scriptsArg as Array<{ id: string }>;
+
+        // *.youtube.com should match youtube.com in the registry
+        const scriptIds = scripts.map((s) => s.id);
+        expect(scriptIds).not.toEqual(
+            expect.arrayContaining([
+                expect.stringContaining('youtube.com'),
+            ]),
+        );
+    });
+
+    it('should exclude all domains when all are in the allowlist (default mode)', async () => {
+        await PreregisteredScriptsService.sync(
+            [1, 2, 3, 4, 5],
+            { allowlist: ['youtube.com', 'example.com'], allowlistInverted: false, allowlistEnabled: true },
+        );
+
+        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+        expect(scriptsArg).toEqual([]);
+    });
+
+    it('should only register scripts for domains in the allowlist (inverted mode)', async () => {
+        await PreregisteredScriptsService.sync([1, 2, 3, 4, 5], {
+            allowlist: ['youtube.com'],
+            allowlistInverted: true,
+            allowlistEnabled: true,
+        });
+
+        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+        const scripts = scriptsArg as Array<{ id: string }>;
+
+        // Inverted: only youtube.com is allowed
+        // youtube.com: filters 1,2,3,5 → 4 scripts
+        expect(scripts).toHaveLength(4);
+
+        const scriptIds = scripts.map((s) => s.id);
+        expect(scriptIds).toEqual(expect.arrayContaining([
+            'youtube.com_1',
+            'youtube.com_2',
+            'youtube.com_3',
+            'youtube.com_5',
+        ]));
+        expect(scriptIds).not.toEqual(
+            expect.arrayContaining([
+                expect.stringContaining('example.com'),
+            ]),
+        );
+    });
+
+    it('should register no scripts when allowlist is empty (inverted mode)', async () => {
+        await PreregisteredScriptsService.sync([1, 2, 3, 4, 5], {
+            allowlist: [],
+            allowlistInverted: true,
+            allowlistEnabled: true,
+        });
+
+        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+        // Inverted + empty = no domains allowed
+        expect(scriptsArg).toEqual([]);
+    });
+
+    it('should register all domain scripts when all domains are in the allowlist (inverted mode)', async () => {
+        await PreregisteredScriptsService.sync(
+            [1, 2, 3, 4, 5],
+            { allowlist: ['youtube.com', 'example.com'], allowlistInverted: true, allowlistEnabled: true },
+        );
+
+        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+        const scripts = scriptsArg as Array<{ id: string }>;
+
+        // Both domains are in the inverted allowlist → all 6 scripts
+        expect(scripts).toHaveLength(6);
+    });
+
+    it('should match inverted allowlist entries with www. prefix', async () => {
+        await PreregisteredScriptsService.sync([1, 2, 3, 4, 5], {
+            allowlist: ['www.youtube.com'],
+            allowlistInverted: true,
+            allowlistEnabled: true,
+        });
+
+        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+        const scripts = scriptsArg as Array<{ id: string }>;
+
+        // www.youtube.com → normalised to youtube.com → allowed in inverted mode
+        // example.com not in list → excluded
+        expect(scripts).toHaveLength(4);
+        const scriptIds = scripts.map((s) => s.id);
+        expect(scriptIds).toEqual(
+            expect.arrayContaining([
+                'youtube.com_1',
+                'youtube.com_2',
+            ]),
+        );
+    });
+
+    it('should register all scripts when allowlist is disabled even if inverted mode is on', async () => {
+        // When allowlistEnabled is false, the allowlist and allowlistInverted
+        // fields are ignored — all scripts are registered globally regardless.
+        await PreregisteredScriptsService.sync([1, 2, 3, 4, 5], {
+            allowlist: [],
+            allowlistInverted: true,
+            allowlistEnabled: false,
+        });
+
+        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+        const scripts = scriptsArg as Array<{ id: string }>;
+
+        // All 6 scripts should be registered (no allowlist filtering)
+        expect(scripts).toHaveLength(6);
+
+        const scriptIds = scripts.map((s) => s.id);
+        expect(scriptIds).toEqual(expect.arrayContaining([
+            'youtube.com_1',
+            'youtube.com_2',
+            'youtube.com_3',
+            'youtube.com_5',
+            'example.com_2',
+            'example.com_4',
+        ]));
+    });
+
+    it('should register all scripts when allowlist is disabled even with non-empty allowlist', async () => {
+        // allowlistEnabled: false must ignore any allowlist entries.
+        await PreregisteredScriptsService.sync([1, 2, 3, 4, 5], {
+            allowlist: ['youtube.com'],
+            allowlistInverted: false,
+            allowlistEnabled: false,
+        });
+
+        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+        const scripts = scriptsArg as Array<{ id: string }>;
+
+        expect(scripts).toHaveLength(6);
+
+        const scriptIds = scripts.map((s) => s.id);
+        expect(scriptIds).toEqual(expect.arrayContaining([
+            'youtube.com_1',
+            'youtube.com_2',
+            'youtube.com_3',
+            'youtube.com_5',
+            'example.com_2',
+            'example.com_4',
+        ]));
+    });
+
+    it('should normalise allowlist entries with mixed case and whitespace', async () => {
+        await PreregisteredScriptsService.sync([1, 2, 3, 4, 5], {
+            allowlist: ['  Www.YouTube.COM  '],
+            allowlistInverted: false,
+            allowlistEnabled: true,
+        });
+
+        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+        const scripts = scriptsArg as Array<{ id: string }>;
+        const scriptIds = scripts.map((s) => s.id);
+
+        // youtube.com should be excluded (normalised from '  Www.YouTube.COM  ')
+        expect(scriptIds).not.toEqual(
+            expect.arrayContaining([
+                expect.stringContaining('youtube.com'),
+            ]),
+        );
+        // example.com should remain
+        expect(scriptIds).toEqual(expect.arrayContaining([
+            'example.com_2',
+            'example.com_4',
+        ]));
+    });
+
+    it('should be a no-op when allowlist contains a domain not in the preregistered registry', async () => {
+        await PreregisteredScriptsService.sync([1, 2, 3, 4, 5], {
+            allowlist: ['unknown.com'],
+            allowlistInverted: false,
+            allowlistEnabled: true,
+        });
+
+        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+        const scripts = scriptsArg as Array<{ id: string }>;
+
+        // unknown.com is not in the registry — all 6 scripts still registered
+        expect(scripts).toHaveLength(6);
     });
 });

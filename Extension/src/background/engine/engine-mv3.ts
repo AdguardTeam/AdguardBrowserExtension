@@ -162,10 +162,7 @@ export class Engine implements TsWebExtensionEngine {
          */
         await iconsApi.update();
 
-        // Sync preregistered domain scripts with the current enabled-filter set.
-        const enabledFilterIds = FiltersApi.getEnabledFilters()
-            .filter((id) => CommonFilterUtils.isCommonFilter(id));
-        await PreregisteredScriptsService.sync(enabledFilterIds);
+        await Engine.syncPreregisteredScripts(configuration);
     }
 
     /**
@@ -204,10 +201,27 @@ export class Engine implements TsWebExtensionEngine {
         // Updates extension icon state to reflect current filtering status.
         await iconsApi.update();
 
-        // Keep preregistered domain scripts in sync with the updated filter set.
+        await Engine.syncPreregisteredScripts(configuration);
+    }
+
+    /**
+     * Synchronises preregistered domain content scripts with the current
+     * enabled-filter set and allowlist state.
+     *
+     * When the allowlist is enabled, domains in the allowlist are excluded
+     * from script registration (default mode) or exclusively included
+     * (inverted mode).
+     *
+     * @param configuration Current tswebextension {@link Configuration}.
+     */
+    private static async syncPreregisteredScripts(configuration: Configuration): Promise<void> {
         const enabledFilterIds = FiltersApi.getEnabledFilters()
             .filter((id) => CommonFilterUtils.isCommonFilter(id));
-        await PreregisteredScriptsService.sync(enabledFilterIds);
+        await PreregisteredScriptsService.sync(enabledFilterIds, {
+            allowlist: configuration.allowlist,
+            allowlistInverted: configuration.settings.allowlistInverted,
+            allowlistEnabled: configuration.settings.allowlistEnabled,
+        });
     }
 
     /**

@@ -73,6 +73,46 @@ const scriptIdForDomainFilter = (domain: string, filterId: string): string => {
 };
 
 /**
+ * Normalises a domain entry to a bare lowercase apex domain for
+ * comparison with registry domain keys.
+ *
+ * Strips the `www.` prefix, the `*.` subdomain-wildcard prefix, and
+ * lowercases the result.
+ *
+ * @param entry Raw domain entry, e.g. `"www.YouTube.com"` or `"*.youtube.com"`.
+ *
+ * @returns Normalised domain string, e.g. `"youtube.com"`.
+ */
+const normalizeDomain = (entry: string): string => {
+    const domain = entry.toLowerCase().trim();
+    return domain.replace(/^(www\.|\*\.)/, '');
+};
+
+/**
+ * Subset of configuration relevant for preregistered-script registration.
+ */
+interface SyncConfig {
+    /**
+     * Current allowlist domain entries. Only meaningful when
+     * {@link SyncConfig.allowlistEnabled} is `true`.
+     */
+    allowlist: string[];
+
+    /**
+     * Whether the allowlist operates in inverted mode. Only meaningful when
+     * {@link SyncConfig.allowlistEnabled} is `true`.
+     */
+    allowlistInverted: boolean;
+
+    /**
+     * Whether the allowlist feature is currently enabled. When `false`,
+     * {@link SyncConfig.allowlist} and {@link SyncConfig.allowlistInverted}
+     * are ignored and all preregistered scripts are registered globally.
+     */
+    allowlistEnabled: boolean;
+}
+
+/**
  * Manages preregistered content-script registrations for preregistered domains.
  *
  * Scripts registered here use `persistAcrossSessions: true` so they survive
@@ -81,7 +121,7 @@ const scriptIdForDomainFilter = (domain: string, filterId: string): string => {
 export class PreregisteredScriptsService {
     /**
      * Synchronises registered preregistered-domain content scripts with the given
-     * set of enabled filter IDs.
+     * set of enabled filter IDs and the current allowlist state.
      *
      * Each (domain, filterId) pair maps to its own `chrome.scripting`
      * registration, so disabling a single filter unregisters only that
@@ -89,12 +129,29 @@ export class PreregisteredScriptsService {
      * left untouched.
      *
      * @param enabledFilterIds Array of currently-enabled AdGuard filter IDs.
+     * @param config Configuration subset with allowlist state.
+     *
+     * When {@link SyncConfig.allowlistEnabled} is `false`,
+     * {@link SyncConfig.allowlist} and {@link SyncConfig.allowlistInverted}
+     * are ignored and all preregistered scripts are registered globally.
      */
-    static async sync(enabledFilterIds: number[]): Promise<void> {
+    static async sync(enabledFilterIds: number[], config: SyncConfig): Promise<void> {
         const enabledSet = new Set(enabledFilterIds.map(String));
         const allScripts: chrome.scripting.RegisteredContentScript[] = [];
 
+        let allowlistSet: Set<string> | undefined;
+        if (config.allowlistEnabled) {
+            allowlistSet = new Set(config.allowlist.map(normalizeDomain));
+        }
+
         for (const [domain, filterIds] of Object.entries(preregisteredDomainScripts)) {
+            if (allowlistSet) {
+                const isInAllowlist = allowlistSet.has(domain);
+                if (isInAllowlist !== config.allowlistInverted) {
+                    continue;
+                }
+            }
+
             const scripts: chrome.scripting.RegisteredContentScript[] = filterIds
                 .filter((filterId) => enabledSet.has(filterId))
                 .map((filterId) => ({
