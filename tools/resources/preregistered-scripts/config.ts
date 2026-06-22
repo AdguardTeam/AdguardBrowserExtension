@@ -40,11 +40,22 @@ interface JsonSourceReplacement {
 }
 
 /**
+ * Shape of a custom JS rule pattern for whitelist matching.
+ */
+interface JsonCustomRulePattern {
+    pattern: string;
+    description?: string;
+}
+
+/**
  * Shape of a per-domain config section in the JSON.
  */
 interface JsonDomainConfig {
-    scriptletExclusions: JsonExclusion[];
-    scriptletSourceReplacements: JsonSourceReplacement[];
+    scriptletExclusions?: JsonExclusion[];
+    scriptletSourceReplacements?: JsonSourceReplacement[];
+    includedScriptlets?: string[];
+    includedCustomRules?: JsonCustomRulePattern[];
+    includedFilterIds?: string[];
 }
 
 /**
@@ -94,6 +105,14 @@ interface SourceReplacementEntry {
 }
 
 /**
+ * Parsed custom JS rule pattern entry (after regex conversion).
+ */
+interface CustomRulePatternEntry {
+    pattern: RegExp;
+    description?: string;
+}
+
+/**
  * Loaded preregistered-scripts config, with string patterns converted to RegExp.
  */
 interface PreregisteredScriptsConfig {
@@ -101,6 +120,12 @@ interface PreregisteredScriptsConfig {
     scriptletExclusions: Record<string, ExclusionEntry[]>;
     /** Scriptlet source replacements keyed by domain. */
     scriptletSourceReplacements: Record<string, SourceReplacementEntry[]>;
+    /** Scriptlet whitelist keyed by domain. When non-empty, only listed scriptlets are included. */
+    includedScriptlets: Record<string, string[]>;
+    /** Custom JS rule whitelist keyed by domain. When set (even to empty), only matching rules included. */
+    includedCustomRules: Record<string, CustomRulePatternEntry[] | undefined>;
+    /** Filter ID whitelist keyed by domain. When set, only rules from these filter IDs are processed. */
+    includedFilterIds: Record<string, string[] | undefined>;
     /** List of domains in the config. */
     domains: string[];
 }
@@ -135,21 +160,25 @@ const loadPreregisteredScriptsConfig = (): PreregisteredScriptsConfig => {
     // Parse scriptlet exclusions and source replacements for each domain
     const scriptletExclusions: Record<string, ExclusionEntry[]> = {};
     const scriptletSourceReplacements: Record<string, SourceReplacementEntry[]> = {};
+    const includedScriptlets: Record<string, string[]> = {};
+    const includedCustomRules: Record<string, CustomRulePatternEntry[] | undefined> = {};
+    const includedFilterIds: Record<string, string[] | undefined> = {};
 
     Object.entries(config).forEach(([domain, domainConfig]) => {
-        if (!domainConfig.scriptletExclusions || !Array.isArray(domainConfig.scriptletExclusions)) {
-            throw new Error(`Missing "scriptletExclusions" array for domain "${domain}" in config.json`);
-        }
-
         domains.push(domain);
 
-        scriptletExclusions[domain] = domainConfig.scriptletExclusions.map((entry) => {
-            const parsed: ExclusionEntry = { name: entry.name };
-            if (entry.argMatch) {
-                parsed.argMatch = parseRegexString(entry.argMatch);
-            }
-            return parsed;
-        });
+        // Parse scriptletExclusions (optional, defaults to empty)
+        if (domainConfig.scriptletExclusions && Array.isArray(domainConfig.scriptletExclusions)) {
+            scriptletExclusions[domain] = domainConfig.scriptletExclusions.map((entry) => {
+                const parsed: ExclusionEntry = { name: entry.name };
+                if (entry.argMatch) {
+                    parsed.argMatch = parseRegexString(entry.argMatch);
+                }
+                return parsed;
+            });
+        } else {
+            scriptletExclusions[domain] = [];
+        }
 
         if (
             domainConfig.scriptletSourceReplacements
@@ -160,9 +189,38 @@ const loadPreregisteredScriptsConfig = (): PreregisteredScriptsConfig => {
                 replacement: entry.replacement,
             }));
         }
+
+        // Parse includedScriptlets whitelist
+        if (domainConfig.includedScriptlets && Array.isArray(domainConfig.includedScriptlets)) {
+            includedScriptlets[domain] = domainConfig.includedScriptlets;
+        }
+
+        // Parse includedCustomRules whitelist
+        if (domainConfig.includedCustomRules !== undefined) {
+            if (Array.isArray(domainConfig.includedCustomRules)) {
+                includedCustomRules[domain] = domainConfig.includedCustomRules.map((entry) => ({
+                    pattern: parseRegexString(entry.pattern),
+                    description: entry.description,
+                }));
+            } else {
+                includedCustomRules[domain] = undefined;
+            }
+        }
+
+        // Parse includedFilterIds whitelist
+        if (domainConfig.includedFilterIds && Array.isArray(domainConfig.includedFilterIds)) {
+            includedFilterIds[domain] = domainConfig.includedFilterIds;
+        }
     });
 
-    return { scriptletExclusions, scriptletSourceReplacements, domains };
+    return {
+        scriptletExclusions,
+        scriptletSourceReplacements,
+        includedScriptlets,
+        includedCustomRules,
+        includedFilterIds,
+        domains,
+    };
 };
 
 const config = loadPreregisteredScriptsConfig();
@@ -176,6 +234,29 @@ export const scriptletExclusions = config.scriptletExclusions;
  * Scriptlet source replacement patterns.
  */
 export const scriptletSourceReplacements = config.scriptletSourceReplacements;
+
+/**
+ * Scriptlet whitelist per domain.
+ * When a domain has a non-empty array, only the listed scriptlet names
+ * are included in the preregistered bundle. {@link scriptletExclusions} is ignored.
+ */
+export const includedScriptlets = config.includedScriptlets;
+
+/**
+ * Custom JS rule whitelist per domain.
+ * When set (including to an empty array), only custom JS rules whose
+ * body matches at least one pattern are included.
+ * When `undefined` for a domain, all custom JS rules are included.
+ */
+export const includedCustomRules = config.includedCustomRules;
+
+/**
+ * Filter ID whitelist per domain.
+ * When set, only rules from the listed filter IDs are considered
+ * for the domain's preregistered bundle.
+ * When `undefined` for a domain, all filter IDs are processed.
+ */
+export const includedFilterIds = config.includedFilterIds;
 
 /**
  * List of domains for which preregistered scriptlet bundles

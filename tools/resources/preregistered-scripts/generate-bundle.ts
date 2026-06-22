@@ -57,6 +57,9 @@ import {
     preregisteredDomains,
     scriptletExclusions,
     scriptletSourceReplacements,
+    includedScriptlets,
+    includedCustomRules,
+    includedFilterIds,
 } from './config';
 
 /**
@@ -88,6 +91,58 @@ const isScriptletExcluded = (
         }
         return args.length > 0 && args[0] && e.argMatch.test(args[0]);
     });
+};
+
+/**
+ * Returns `true` if a named scriptlet should be included in the
+ * preregistered-domain bundle for the given domain.
+ *
+ * When `includedScriptlets` is set for the domain, only scriptlets
+ * whose name appears in the whitelist are included.
+ * When `includedScriptlets` is NOT set, all scriptlets are included
+ * (falls back to {@link isScriptletExcluded} for exclusion control).
+ *
+ * @param domain Domain name.
+ * @param name Scriptlet name.
+ *
+ * @returns Whether the scriptlet is included for this domain.
+ */
+const isScriptletIncluded = (domain: string, name: string): boolean => {
+    const whitelist = includedScriptlets[domain];
+    // No whitelist → include all (backward compat, exclusions handle filtering)
+    if (!whitelist || whitelist.length === 0) {
+        return true;
+    }
+    // Whitelist mode: only include if name is in the list
+    return whitelist.includes(name);
+};
+
+/**
+ * Returns `true` if a custom JS rule should be included in the
+ * preregistered-domain bundle for the given domain.
+ *
+ * When `includedCustomRules` is set for the domain (even to an empty array),
+ * only rules whose raw body matches at least one pattern are included.
+ * When `includedCustomRules` is NOT set (`undefined`), all custom JS rules
+ * are included (backward compat).
+ *
+ * @param domain Domain name.
+ * @param rawBody The raw generated JS body of the rule.
+ *
+ * @returns Whether the custom JS rule is included for this domain.
+ */
+const isCustomJsRuleIncluded = (domain: string, rawBody: string): boolean => {
+    const domainRules = includedCustomRules[domain];
+    // Not set → include all (backward compat)
+    if (domainRules === undefined) {
+        return true;
+    }
+    // Set but empty → exclude all custom JS
+    if (domainRules.length === 0) {
+        return false;
+    }
+    // Set with patterns → include only if body matches at least one pattern
+    return domainRules.some(({ pattern }) => pattern.test(rawBody));
 };
 
 /**
@@ -614,6 +669,25 @@ export const generatePreregisteredDomainBundles = async (
     for (const ruleSetId of ruleSetIds) {
         const filterId = extractRuleSetId(ruleSetId);
 
+        // Compute which domains should process this filter based on includedFilterIds
+        const domainsForFilter = preregisteredDomains.filter((domain) => {
+            const domainFilterIds = includedFilterIds[domain];
+            // No whitelist → include all filters for this domain
+            if (!domainFilterIds) {
+                return true;
+            }
+            // Whitelist set → only include if filterId is in the list
+            if (filterId === null) {
+                return false;
+            }
+            return domainFilterIds.includes(String(filterId));
+        });
+
+        if (domainsForFilter.length === 0) {
+            // eslint-disable-next-line no-continue
+            continue;
+        }
+
         // eslint-disable-next-line no-await-in-loop
         const rawFilterList = await extractPreprocessedRawFilterList(ruleSetId, declarativeFolder);
         const filterListNode = FilterListParser.parse(rawFilterList, {
@@ -629,17 +703,26 @@ export const generatePreregisteredDomainBundles = async (
 
                 if (isGenericJsRule(ruleNode)) {
                     if (filterId !== null) {
-                        preregisteredDomains.forEach((domain) => {
+                        domainsForFilter.forEach((domain) => {
+                            // Check custom JS rule whitelist
+                            if (!isCustomJsRuleIncluded(domain, rawBody)) {
+                                return;
+                            }
                             getRuleSet(domainFilterRules, domain, filterId).add(rawBody);
                         });
                     }
                 } else {
-                    preregisteredDomains.forEach((domain) => {
+                    domainsForFilter.forEach((domain) => {
                         if (!isRuleTargetsDomain(ruleNode, domain)) {
                             return;
                         }
 
                         if (filterId === null) {
+                            return;
+                        }
+
+                        // Check custom JS rule whitelist
+                        if (!isCustomJsRuleIncluded(domain, rawBody)) {
                             return;
                         }
 
@@ -659,8 +742,11 @@ export const generatePreregisteredDomainBundles = async (
 
                     if (isGenericScriptletRule(ruleNode)) {
                         if (filterId !== null) {
-                            preregisteredDomains.forEach((domain) => {
+                            domainsForFilter.forEach((domain) => {
                                 if (isScriptletExcluded(domain, name, args)) {
+                                    return;
+                                }
+                                if (!isScriptletIncluded(domain, name)) {
                                     return;
                                 }
 
@@ -672,7 +758,7 @@ export const generatePreregisteredDomainBundles = async (
                             });
                         }
                     } else {
-                        preregisteredDomains.forEach((domain) => {
+                        domainsForFilter.forEach((domain) => {
                             if (!isRuleTargetsDomain(ruleNode, domain)) {
                                 return;
                             }
@@ -682,6 +768,9 @@ export const generatePreregisteredDomainBundles = async (
                             }
 
                             if (isScriptletExcluded(domain, name, args)) {
+                                return;
+                            }
+                            if (!isScriptletIncluded(domain, name)) {
                                 return;
                             }
 

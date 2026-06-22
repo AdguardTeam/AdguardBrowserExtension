@@ -21,7 +21,65 @@ the page's own scripts.
 
 ## Key concepts
 
-### Scriptlet exclusions
+All fields in `config.json` are **optional** — omit any field you don't need.
+An empty domain entry `{}` is valid and means "include everything with defaults".
+
+### Scriptlet inclusions (whitelist mode)
+
+When you know exactly which scriptlets should run on a domain, use a whitelist
+instead of excluding individual scriptlets. When `includedScriptlets` is set
+to a non-empty array, **only** the listed scriptlet names are included in
+bundles. `scriptletExclusions` is ignored in whitelist mode.
+
+```json
+{
+  "youtube.com": {
+    "includedScriptlets": [
+      "set-constant",
+      "json-prune"
+    ]
+  }
+}
+```
+
+### Custom JS rule inclusions
+
+Filter lists contain complex custom JavaScript rules (raw `#%#(()=>{...})()`
+blocks) that are not named scriptlets. Use `includedCustomRules` to control
+which custom JS rules are included:
+
+- **Omitted** → all custom JS rules are included (backward compatible).
+- **Empty array `[]`** → no custom JS rules at all.
+- **Array with patterns** → only custom JS rules whose body matches at least one pattern are included.
+
+```json
+{
+  "youtube.com": {
+    "includedCustomRules": []
+  }
+}
+```
+
+Each pattern entry:
+- `pattern` — a regex in `/pattern/flags` format to test against the rule body.
+- `description` (optional) — human-readable note about what the pattern matches.
+
+### Filter ID whitelist
+
+By default, all filter IDs are processed for each domain. Use
+`includedFilterIds` to restrict which filters' rules go into bundles:
+
+```json
+{
+  "youtube.com": {
+    "includedFilterIds": ["1", "2", "3"]
+  }
+}
+```
+
+When set, only rules from the listed filter IDs are considered for the domain.
+
+### Scriptlet exclusions (blacklist mode — default)
 
 Some scriptlets use patterns that are detectable by anti-adblock systems
 (e.g. YouTube's). When a scriptlet rule is excluded, it is **omitted** from
@@ -34,6 +92,10 @@ Each exclusion specifies:
 - `argMatch` (optional) — a regex in `/pattern/flags` format. If present,
   only rules whose **first argument** matches the pattern are excluded.
   If absent, **all** rules with that scriptlet name are excluded.
+
+> **Note**: `includedScriptlets` (whitelist) takes precedence over
+> `scriptletExclusions` (blacklist). When `includedScriptlets` is non-empty,
+> `scriptletExclusions` is ignored.
 
 ### Scriptlet source replacements
 
@@ -50,7 +112,7 @@ Each replacement specifies:
 
 | File | Purpose |
 | --- | --- |
-| `config.json` | Per-domain exclusion and replacement rules (hand-edited). |
+| `config.json` | Per-domain config (hand-edited). All fields optional. |
 | `config.ts` | Typed loader: parses `config.json`, converts string regex → `RegExp`, exports `preregisteredDomains`. |
 | `generate-bundle.ts` | Generates `.js` bundles and `registry.js` from MV3 filter lists. |
 
@@ -69,12 +131,11 @@ Downstream consumers:
    ```json
    {
      "youtube.com": { ... },
-     "new-domain.com": {
-       "scriptletExclusions": [],
-       "scriptletSourceReplacements": []
-     }
+     "new-domain.com": {}
    }
    ```
+
+   All fields are optional — an empty object `{}` includes everything.
 
 2. Run `pnpm resources:mv3` to regenerate the bundles. Verify output in
    `Extension/filters/chromium-mv3/preregistered-scripts/` and
@@ -167,14 +228,33 @@ mechanism), remove the corresponding entry from `config.json` and run
 
 ## Configuration schema
 
+All fields are optional. Omit any field you don't need.
+
 ```typescript
 // Top-level: domain → config
 type JsonConfig = Record<string, {
-    scriptletExclusions: Array<{
+    // Whitelist mode: only these named scriptlets are included.
+    // When non-empty, scriptletExclusions is ignored.
+    includedScriptlets?: string[];
+
+    // Custom JS rule whitelist. Omitted = include all. [] = exclude all.
+    includedCustomRules?: Array<{
+        pattern: string;        // Regex in /pattern/flags format
+        description?: string;   // Human-readable note (optional)
+    }>;
+
+    // Only process rules from these filter IDs. Omitted = all filters.
+    includedFilterIds?: string[];
+
+    // Blacklist mode (default): scriptlets to exclude.
+    // Ignored when includedScriptlets is non-empty.
+    scriptletExclusions?: Array<{
         name: string;           // Scriptlet name to exclude
         argMatch?: string;      // Optional regex to match first argument
     }>;
-    scriptletSourceReplacements: Array<{
+
+    // String replacements applied to scriptlet source code.
+    scriptletSourceReplacements?: Array<{
         pattern: string;        // Regex in /pattern/flags format
         replacement: string;    // Substitution string
     }>;

@@ -1,21 +1,15 @@
 {
   "youtube.com": {
-    "scriptletExclusions": [
-        { "name": "abort-current-inline-script", "argMatch": "/^document\\.write/" },
-        { "name": "abort-current-inline-script", "argMatch": "/^EventTarget\\.prototype/" },
-        { "name": "abort-on-stack-trace" },
-        { "name": "abort-on-property-read" },
-        { "name": "prevent-addEventListener" },
-        { "name": "prevent-window-open" },
-        { "name": "prevent-setTimeout" },
-        { "name": "adjust-setTimeout" }
-    ],
-    "scriptletSourceReplacements": [
-      { "pattern": "/Window\\.prototype\\.toString/g", "replacement": "_c" },
-      { "pattern": "/console\\.log\\(e\\)/g", "replacement": "void 0" },
-      { "pattern": "/\\[AdGuard\\]/g", "replacement": "[ext]" },
-      { "pattern": "/#%#\\/\\/scriptlet/g", "replacement": "#%#//s" },
-      { "pattern": "/window\\.__debug/g", "replacement": "window._d" }
+    "includedFilterIds": ["2"],
+    "includedScriptlets": [
+      "set-constant",
+      "json-prune",
+      "json-prune-xhr-response",
+      "json-prune-fetch-response",
+      "no-topics",
+      "no-protected-audience",
+      "trusted-click-element",
+      "spoof-css"
     ]
   }
 }
