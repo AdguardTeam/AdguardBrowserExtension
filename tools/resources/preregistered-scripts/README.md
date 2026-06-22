@@ -179,7 +179,8 @@ scriptlet source code, add replacements to obscure them.
    ```json
    {
      "pattern": "/identifiableString/g",
-     "replacement": "_x"
+     "replacement": "_x",
+     "description": "Obscure identifiableString in scriptlet source"
    }
    ```
 
@@ -257,6 +258,7 @@ type JsonConfig = Record<string, {
     scriptletSourceReplacements?: Array<{
         pattern: string;        // Regex in /pattern/flags format
         replacement: string;    // Substitution string
+        description: string;    // Human-readable note about what this replacement does
     }>;
 }>;
 ```
