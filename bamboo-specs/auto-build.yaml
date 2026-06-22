@@ -74,5 +74,5 @@ branch-overrides:
       # filter list maintainers.
       triggers:
         - cron:
-            expression: 0 30 */12 ? * *
-            description: Run auto-build every 12 hours at 30 minutes past the hour.
+            expression: 0 30 12 ? * *
+            description: Run auto-build every 24 hours at 12:30 to avoid timezone ambiguity with the Tuesday day-of-week check.
