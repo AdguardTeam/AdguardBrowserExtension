@@ -256,16 +256,6 @@
                     "agarz.com"
                 ],
                 "restrictedDomains": []
-            },
-            {
-                "permittedDomains": [
-                    "animeid.tv",
-                    "eztv.ag",
-                    "noslocker.com",
-                    "istockfile.com",
-                    "upfile.mobi"
-                ],
-                "restrictedDomains": []
             }
         ],
         "(()=>{document.addEventListener(\"DOMContentLoaded\",(()=>{\"function\"==typeof load_3rdparties&&load_3rdparties()}));})();": [
@@ -1826,14 +1816,6 @@
                 "restrictedDomains": []
             }
         ],
-        "window.ads = \"on\";": [
-            {
-                "permittedDomains": [
-                    "a2zapk.com"
-                ],
-                "restrictedDomains": []
-            }
-        ],
         "window.detector_active = true;": [
             {
                 "permittedDomains": [
@@ -3114,7 +3096,7 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{const e={apply:(e,t,n)=>{const o=Reflect.apply(e,t,n);try{o instanceof HTMLIFrameElement&&(\"\"===o.src||\"about:blank\"===o.src)&&o.contentWindow&&(o.contentWindow.String=window.String,o.contentWindow.Function.prototype.call=window.Function.prototype.call,o.contentWindow.JSON.parse=window.JSON.parse)}catch(e){}return o}};Node.prototype.appendChild=new Proxy(Node.prototype.appendChild,e)})();": [
+        "(()=>{const t={apply:(t,n,e)=>{const o=Reflect.apply(t,n,e);try{o instanceof HTMLIFrameElement&&(\"\"===o.src||\"about:blank\"===o.src)&&o.contentWindow&&(o.contentWindow.String=window.String,o.contentWindow.Function.prototype.call=window.Function.prototype.call,o.contentWindow.JSON.parse=window.JSON.parse,o.contentWindow.XMLHttpRequest.prototype=window.XMLHttpRequest.prototype)}catch(t){}return o}};window.Node.prototype.appendChild=new Proxy(window.Node.prototype.appendChild,t),window.Element.prototype.insertAdjacentElement=new Proxy(window.Element.prototype.insertAdjacentElement,t)})();": [
             {
                 "permittedDomains": [
                     "facebook.com",
@@ -3384,6 +3366,8 @@
         "(()=>{const e=/html-load\\.com|loader\\.min\\.js|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\.|:\\/\\/loader\\.|core\\.js|\\/sdk\\.js/,t={filter:Array.prototype.filter,includes:String.prototype.includes,regexTest:RegExp.prototype.test},o=()=>(new Error).stack,l=o=>t.regexTest.call(e,o),r={construct:(e,r,n)=>{const c=o();return l(c)&&r[0]&&t.includes.call(r[0],\"adshield\")&&(r[0]=[\"(function(){})();\"]),Reflect.construct(e,r,n)}};window.Blob=new Proxy(window.Blob,r);const n={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&(t.includes.call(n[0],\"new Error\")||t.includes.call(n[0],\".apply(this\"))&&(n[0]=()=>{}),Reflect.apply(e,r,n)}};window.setTimeout=new Proxy(window.setTimeout,n);const c={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&r?.includes?.(\"setTimeout\")&&(r=t.filter.call(r,(e=>!t.includes.call(e,\"setTimeout\")))),Reflect.apply(e,r,n)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,c)})();": [
             {
                 "permittedDomains": [
+                    "kurashiru.com",
+                    "advnture.com",
                     "voici.fr",
                     "androidcentral.com",
                     "rainbowplantlife.com",
@@ -3914,6 +3898,14 @@
                 "restrictedDomains": []
             }
         ],
+        "document.addEventListener('DOMContentLoaded',function(){const o=new MutationObserver(function(m,b){const e=document.querySelector('.gtp-wrap.gtp-open button.gtp-decline');e&&e.click()});setTimeout(function(){o.disconnect()},60000);o.observe(document.body,{childList:!0,subtree:!0})})": [
+            {
+                "permittedDomains": [
+                    "gdeposylka.ru"
+                ],
+                "restrictedDomains": []
+            }
+        ],
         "(()=>{let t,e=!0;document.addEventListener(\"click\",(i=>{if(i.target.matches(\"button.button-login\"))return e=!1,void(t&&(t.style.visibility=\"visible\"));i.target.matches(\"button.close\")&&document.querySelector(\"dialog.PartLoginModal\").contains(i.target)&&(e=!0)}),!0),document.addEventListener(\"toggle\",(i=>{i.target.matches(\"dialog.PartLoginModal\")&&\"open\"===i.newState&&e&&(t=i.target,t.style.visibility=\"hidden\",t.querySelector(\"button.close\").click())}),!0)})();": [
             {
                 "permittedDomains": [
@@ -4332,6 +4324,9 @@
         "window.addEventListener(\"contextmenu\",function(a){a.stopPropagation()},!0);": [
             {
                 "permittedDomains": [
+                    "streamingnow.mov",
+                    "vidmoly.*",
+                    "vidmoly.biz",
                     "savefiles.com",
                     "mangaplus.shueisha.co.jp",
                     "otakuhg.site",
@@ -4619,6 +4614,14 @@
             {
                 "permittedDomains": [
                     "hopesandfears.com"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "(()=>{let t=!1;const i={apply:(i,n,a)=>{try{!t&&window.ytInitialData&&(window.ytInitialData=JSON.parse(JSON.stringify(window.ytInitialData)),t=!0)}catch(t){}return Reflect.apply(i,n,a)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,i)})();": [
+            {
+                "permittedDomains": [
+                    "www.youtube.com"
                 ],
                 "restrictedDomains": []
             }
