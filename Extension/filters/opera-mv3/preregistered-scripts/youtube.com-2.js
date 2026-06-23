@@ -3684,4 +3684,92 @@ try {
         verbose: !1
     } ].concat([ "playerResponse.adPlacements playerResponse.playerAds playerResponse.adSlots adPlacements playerAds adSlots", "", "/playlist\\?list=|player\\?|watch\\?[tv]=/" ]));
 } catch (e) {}
+function adjustSetTimeout(e, n) {
+    var t = "done", r = e.uniqueId + e.name + "_" + (Array.isArray(n) ? n.join("_") : "");
+    if (!e.uniqueId || Window.prototype.toString[r] !== t) {
+        var i = n ? [].concat(e).concat(n) : [ e ];
+        try {
+            (function(e, n, t, r) {
+                var i = window.setTimeout, a = function(e) {
+                    var n = e || "", t = "/";
+                    if ("" === n) return new RegExp(".?");
+                    var r, i, o = n.lastIndexOf(t), a = n.substring(o + 1), u = n.substring(0, o + 1), c = (i = a, 
+                    (r = u).startsWith(t) && r.endsWith(t) && !r.endsWith("\\/") && function(e) {
+                        if (!e) return !1;
+                        try {
+                            return new RegExp("", e), !0;
+                        } catch (e) {
+                            return !1;
+                        }
+                    }(i) ? i : "");
+                    if (n.startsWith(t) && n.endsWith(t) || c) return new RegExp((c ? u : n).slice(1, -1), c);
+                    var s = n.replace(/\\'/g, "'").replace(/\\"/g, '"').replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+                    return new RegExp(s);
+                }(n);
+                window.setTimeout = function(n, u) {
+                    if ((d = n) instanceof Function || "string" == typeof d) {
+                        if (a.test(n.toString()) && (l = u, function(e) {
+                            return "*" === e;
+                        }(s = t) || l === function(e) {
+                            var n = parseInt(e, 10);
+                            return o(n) ? 1e3 : n;
+                        }(s))) {
+                            u *= function(e) {
+                                var n = parseFloat(e), t = o(n) || !function(e) {
+                                    return (Number.isFinite || window.isFinite)(e);
+                                }(n) ? .05 : n;
+                                return t < .001 && (t = .001), t > 50 && (t = 50), t;
+                            }(r);
+                            !function(e) {
+                                if (e.verbose) {
+                                    try {
+                                        var n = console.trace.bind(console), t = "[AdGuard] ";
+                                        "corelibs" === e.engine ? t += e.ruleText : (e.domainName && (t += `${e.domainName}`), 
+                                        e.args ? t += `#%#//scriptlet('${e.name}', '${e.args.join("', '")}')` : t += `#%#//scriptlet('${e.name}')`), 
+                                        n && n(t);
+                                    } catch (e) {}
+                                    "function" == typeof window.__debug && window.__debug(e);
+                                }
+                            }(e);
+                        }
+                    } else {
+                        var c = `Scriptlet can't be applied because of invalid callback: '${String(n)}'`;
+                        !function(e, n) {
+                            var t = arguments.length > 2 && void 0 !== arguments[2] && arguments[2], r = !(arguments.length > 3 && void 0 !== arguments[3]) || arguments[3], {name: i, verbose: o} = e;
+                            if (t || o) {
+                                var a = console.log;
+                                r ? a(`${i}: ${n}`) : Array.isArray(n) ? a(`${i}:`, ...n) : a(`${i}:`, n);
+                            }
+                        }(e, c);
+                    }
+                    for (var s, l, d, f = arguments.length, g = new Array(f > 2 ? f - 2 : 0), p = 2; p < f; p++) g[p - 2] = arguments[p];
+                    return i.apply(window, [ n, u, ...g ]);
+                };
+            }).apply(this, i);
+            e.uniqueId && Object.defineProperty(Window.prototype.toString, r, {
+                value: t,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.log(e);
+        }
+    }
+    function o(e) {
+        return (Number.isNaN || window.isNaN)(e);
+    }
+}
+try {
+    var _k = "2ca935cd72ff980f927fdabc6550d66f";
+    if (_b.has(_k)) return;
+    _b.add(_k);
+    adjustSetTimeout.apply(this, [ {
+        name: "adjust-setTimeout",
+        args: [ "[native code]", "17000", "0.001" ],
+        engine: "extension",
+        version: "2.4.2",
+        verbose: !1
+    } ].concat([ "[native code]", "17000", "0.001" ]));
+} catch (e) {}
 })();
