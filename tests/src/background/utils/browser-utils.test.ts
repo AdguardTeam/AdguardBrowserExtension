@@ -79,5 +79,24 @@ describe('browserUtils', () => {
         });
     });
 
+    describe('getExtensionParams', () => {
+        it('does not contain cid parameter', () => {
+            const params = BrowserUtils.getExtensionParams();
+
+            const cidParam = params.find((p) => p.startsWith('cid='));
+            expect(cidParam).toBeUndefined();
+        });
+
+        it('returns only v, lang, and id', () => {
+            const params = BrowserUtils.getExtensionParams();
+
+            const keys = params.map((p) => p.split('=')[0]);
+            expect(keys).toContain('v');
+            expect(keys).toContain('lang');
+            expect(keys).toContain('id');
+            expect(params).toHaveLength(3);
+        });
+    });
+
     // TODO: cover other cases
 });

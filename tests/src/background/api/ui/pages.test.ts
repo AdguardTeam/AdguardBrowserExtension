@@ -34,7 +34,6 @@ import { SettingsApi } from '../../../../../Extension/src/background/api/setting
 import { FilterStateStorage } from '../../../../../Extension/src/background/storages/filter-state';
 import { GroupStateStorage } from '../../../../../Extension/src/background/storages/group-state';
 import { ForwardFrom } from '../../../../../Extension/src/common/forward';
-import { appContext, AppContextKey } from '../../../../../Extension/src/background/storages/app';
 import { browserStorage } from '../../../../../Extension/src/background/storages/shared-instances';
 import { TabsApi, WindowsApi } from '../../../../../Extension/src/common/api/extension';
 
@@ -211,9 +210,6 @@ describe('PagesApi', () => {
         });
 
         it('openThankYouPage produces a valid URL', async () => {
-            // openThankYouPage requires a client ID to be set
-            appContext.set(AppContextKey.ClientId, 'test-client-id');
-
             await pagesApi.openThankYouPage();
 
             const spy = vi.mocked(browser.tabs.create);
