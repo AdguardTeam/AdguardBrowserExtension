@@ -103,8 +103,13 @@ export class Engine implements TsWebExtensionEngine {
         TsWebExtension.setLocalScriptRules(localScriptRules);
 
         this.handleMessage = this.api.getMessageHandler();
+    }
 
-        // Expose for integration tests.
+    /**
+     * Exposes the tswebextension configure function on the global object for integration tests.
+     * Must be called after storage is initialized.
+     */
+    exposeConfigureHook(): void {
         // eslint-disable-next-line no-restricted-globals
         Object.assign(self, {
             adguard: {

@@ -25,6 +25,7 @@ export default defineConfig({
         environment: 'node',
         hookTimeout: 120_000,
         include: ['tests/e2e/**/*.vitest.ts'],
+        fileParallelism: false,
         testTimeout: 120_000,
     },
 });

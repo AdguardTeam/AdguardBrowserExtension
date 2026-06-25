@@ -135,6 +135,9 @@ export abstract class AppCommon {
         // Reads persisted data from session storage.
         await engine.api.initStorage();
 
+        // Must be after initStorage() and before engine.start().
+        this.exposeEngineHooks();
+
         // Initializes connection and message handler as soon as possible
         // to prevent connection errors from extension pages
         ConnectionHandler.init();
@@ -284,6 +287,17 @@ export abstract class AppCommon {
         await sendMessage({ type: MessageType.AppInitialized });
 
         return isUpdate;
+    }
+
+    /**
+     * Hook for exposing engine APIs needed by integration tests.
+     * Called after storage is initialized and before the engine starts.
+     * Override in MV3 to expose the configure function on the global object.
+     *
+     * @throws NotImplementedError if not overridden.
+     */
+    protected static exposeEngineHooks(): void {
+        throw new NotImplementedError();
     }
 
     /**

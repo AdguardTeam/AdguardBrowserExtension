@@ -72,13 +72,14 @@ const getE2EHeadlessMode = (): string => {
 export const launchE2ESession = async (
     entry: E2EMatrixEntry,
     extensionPath: string,
+    { cleanProfile = true }: { cleanProfile?: boolean } = {},
 ): Promise<E2ESession> => {
     if (entry.engine === E2EBrowserEngine.PlaywrightChromium) {
         logInfo(`[${entry.id}] launching Chromium (${getE2EHeadlessMode()})`);
 
         return {
             engine: E2EBrowserEngine.PlaywrightChromium,
-            session: await launchChromiumE2ESession(entry, extensionPath),
+            session: await launchChromiumE2ESession(entry, extensionPath, { cleanProfile }),
         };
     }
 
