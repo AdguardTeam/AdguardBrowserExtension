@@ -472,6 +472,10 @@ export const openFirefoxE2ESurface = async (
             const rawErrors = session.backgroundErrors.sliceFrom(backgroundCursor);
             return filterBenignErrors(rawErrors, BENIGN_ERROR_PATTERNS);
         },
+        async clickSelector(selector: string): Promise<void> {
+            const el = await session.driver.findElement({ css: selector });
+            await el.click();
+        },
         async close(): Promise<void> {
             // Firefox uses a single driver window; no separate page to close.
         },

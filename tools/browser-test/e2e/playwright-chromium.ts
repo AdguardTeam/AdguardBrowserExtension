@@ -18,6 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import fs from 'node:fs';
 import path from 'node:path';
 
 import {
@@ -131,13 +132,20 @@ export const isChromiumEngineStartedLog = (message: string): boolean => {
  *
  * @param entry E2E matrix entry.
  * @param extensionPath Unpacked extension path.
+ * @param options Launch options; set cleanProfile to false to reuse the persistent
+ * Chromium profile across launches (default: true — profile is deleted).
  *
  * @returns Chromium E2E session.
  */
 export const launchChromiumE2ESession = async (
     entry: E2EMatrixEntry,
     extensionPath: string,
+    { cleanProfile = true }: { cleanProfile?: boolean } = {},
 ): Promise<ChromiumE2ESession> => {
+    if (cleanProfile) {
+        fs.rmSync(path.join('tmp', 'e2e', entry.id), { recursive: true, force: true });
+    }
+
     const userDataDir = path.join('tmp', 'e2e', entry.id, 'chromium-profile');
     const args = [
         ...createChromiumLaunchArgs(extensionPath, entry.isMv3 ? 3 : 2),
@@ -235,6 +243,9 @@ export const openChromiumE2ESurface = async (
         },
         async getBackgroundErrors(): Promise<E2EError[]> {
             return session.backgroundErrors.sliceFrom(backgroundCursor);
+        },
+        async clickSelector(selector: string): Promise<void> {
+            await page.locator(selector).first().click();
         },
         async close(): Promise<void> {
             await page.close();

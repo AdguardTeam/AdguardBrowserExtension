@@ -57,6 +57,13 @@ export type E2EPageHandle = {
     getBackgroundErrors(): Promise<E2EError[]>;
 
     /**
+     * Clicks the first element matching a CSS selector.
+     *
+     * @param selector CSS selector.
+     */
+    clickSelector(selector: string): Promise<void>;
+
+    /**
      * Closes the page (Chromium) or is a no-op (Firefox, since driver reuses window).
      *
      * @returns Nothing.

@@ -27,6 +27,7 @@ import {
     FilterUpdateApi,
     network,
 } from '../api';
+import { engine } from '../engine';
 
 import { AppCommon } from './app-common';
 
@@ -94,6 +95,13 @@ export class App extends AppCommon {
 
         // Needs to be called after FiltersApi.init.
         await rulesLimitsService.init();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected static override exposeEngineHooks(): void {
+        engine.exposeConfigureHook();
     }
 
     /**
