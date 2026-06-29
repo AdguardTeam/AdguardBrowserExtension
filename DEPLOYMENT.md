@@ -60,7 +60,9 @@ standalone.
 **Deploy plan**: `browser extension - deploy release` (source plan:
 `ADGEXT-BERELEASESPECS`).
 
-- `static.adtidy.org` — Chrome and Firefox release bundles.
+- `static.adtidy.org` — Chrome and Firefox release bundles. Keep both
+  `chrome.zip` and `chrome-mv3.zip` available here, because different browsers
+  can use static builds from this location, for example Brave.
 - `Chrome WebStore MV2` — publishes MV2 to Chrome Web Store.
 - `Chrome WebStore MV3` — publishes MV3 to Chrome Web Store.
 - `Addons Mozilla` — submits to Mozilla Add-ons (AMO).
