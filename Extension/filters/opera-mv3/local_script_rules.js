@@ -4276,21 +4276,6 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "33d2335f47a6a24e15dbab294084b29d" due to: ' + e);
         }
     },
-    'window.ads = "on";': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["1667ac15a74b79e35fdab510c44b45c6"] === e) return;
-            window.ads = "on";
-            Object.defineProperty(Window.prototype.toString, "1667ac15a74b79e35fdab510c44b45c6", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "1667ac15a74b79e35fdab510c44b45c6" due to: ' + e);
-        }
-    },
     "window.detector_active = true;": () => {
         try {
             const e = "done";
@@ -7421,31 +7406,33 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "f108a248579190d52136e6e135a4d6c9" due to: ' + e);
         }
     },
-    '(()=>{const e={apply:(e,t,n)=>{const o=Reflect.apply(e,t,n);try{o instanceof HTMLIFrameElement&&(""===o.src||"about:blank"===o.src)&&o.contentWindow&&(o.contentWindow.String=window.String,o.contentWindow.Function.prototype.call=window.Function.prototype.call,o.contentWindow.JSON.parse=window.JSON.parse)}catch(e){}return o}};Node.prototype.appendChild=new Proxy(Node.prototype.appendChild,e)})();': () => {
+    '(()=>{const t={apply:(t,n,e)=>{const o=Reflect.apply(t,n,e);try{o instanceof HTMLIFrameElement&&(""===o.src||"about:blank"===o.src)&&o.contentWindow&&(o.contentWindow.String=window.String,o.contentWindow.Function.prototype.call=window.Function.prototype.call,o.contentWindow.JSON.parse=window.JSON.parse,o.contentWindow.XMLHttpRequest.prototype=window.XMLHttpRequest.prototype)}catch(t){}return o}};window.Node.prototype.appendChild=new Proxy(window.Node.prototype.appendChild,t),window.Element.prototype.insertAdjacentElement=new Proxy(window.Element.prototype.insertAdjacentElement,t)})();': () => {
         try {
             const t = "done";
-            if (Window.prototype.toString["891746fb34d81f620dbf8560ba00f0f6"] === t) return;
+            if (Window.prototype.toString["6b368b9c6394a02f2343c2717d5eaf44"] === t) return;
             (() => {
                 const t = {
-                    apply: (t, o, n) => {
-                        const e = Reflect.apply(t, o, n);
+                    apply: (t, e, n) => {
+                        const o = Reflect.apply(t, e, n);
                         try {
-                            e instanceof HTMLIFrameElement && ("" === e.src || "about:blank" === e.src) && e.contentWindow && (e.contentWindow.String = window.String, 
-                            e.contentWindow.Function.prototype.call = window.Function.prototype.call, e.contentWindow.JSON.parse = window.JSON.parse);
+                            o instanceof HTMLIFrameElement && ("" === o.src || "about:blank" === o.src) && o.contentWindow && (o.contentWindow.String = window.String, 
+                            o.contentWindow.Function.prototype.call = window.Function.prototype.call, o.contentWindow.JSON.parse = window.JSON.parse, 
+                            o.contentWindow.XMLHttpRequest.prototype = window.XMLHttpRequest.prototype);
                         } catch (t) {}
-                        return e;
+                        return o;
                     }
                 };
-                Node.prototype.appendChild = new Proxy(Node.prototype.appendChild, t);
+                window.Node.prototype.appendChild = new Proxy(window.Node.prototype.appendChild, t), 
+                window.Element.prototype.insertAdjacentElement = new Proxy(window.Element.prototype.insertAdjacentElement, t);
             })();
-            Object.defineProperty(Window.prototype.toString, "891746fb34d81f620dbf8560ba00f0f6", {
+            Object.defineProperty(Window.prototype.toString, "6b368b9c6394a02f2343c2717d5eaf44", {
                 value: t,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (t) {
-            console.error('Error executing AG js rule with uniqueId "891746fb34d81f620dbf8560ba00f0f6" due to: ' + t);
+            console.error('Error executing AG js rule with uniqueId "6b368b9c6394a02f2343c2717d5eaf44" due to: ' + t);
         }
     },
     '(()=>{const e="SPONSORED",t="SponsoredData",r="AdsSideFeedUnit",n=e=>e?.__typename===r||Boolean(e?.item_collection?.nodes?.[0]?.sponsored_data?.ad_id),a=e=>Boolean(e)&&Object.values(e).some((e=>e?.__typename===t)),o={apply:(o,d,i)=>{let s;try{s=Reflect.apply(o,d,i);const l=JSON.stringify(s);return l?.includes?.(e)||l?.includes?.(t)||l?.includes?.(r)?(Array.isArray(s.require?.[0]?.[3]?.[0]?.__bbox?.require)&&s.require[0][3][0].__bbox.require.forEach((t=>{t[3]?.[1]?.__bbox?.result?.data?.category===e&&delete t[3][1].__bbox.result.data.node,a(t[3]?.[1]?.__bbox?.result?.data?.node)&&delete t[3][1].__bbox.result.data.node,((e,t=10)=>{const r=e[3]?.[1]?.__bbox?.result?.data?.viewer;if(!r)return;const a=new WeakSet,o=(e,t,r)=>{if(!(!e||"object"!=typeof e||r<0||a.has(e))){if(a.add(e),Array.isArray(e.nodes)&&e.nodes.filter(n).length>0)return void(e.nodes=e.nodes.filter((e=>!n(e))));Object.entries(e).forEach((([e,n])=>{o(n,`${t}.${e}`,r-1)}))}};o(r,"item[3][1].__bbox.result.data.viewer",t)})(t,10)})),Array.isArray(s.data?.viewer?.news_feed?.edges)&&(s.data.viewer.news_feed.edges=s.data.viewer.news_feed.edges.filter((t=>!a(t.node)&&t.category!==e))),a(s.data?.node)&&delete s.data.node,s.data?.category===e&&delete s.data.node,s):s}catch(e){return s??Reflect.apply(o,d,i)}}};window.JSON.parse=new Proxy(window.JSON.parse,o);const d={apply:(n,a,o)=>{try{const d=Reflect.apply(n,a,o);if(d?.startsWith?.("{")&&d?.endsWith?.("}")&&(d?.includes?.(e)||d?.includes?.(t)||d?.includes?.(r))){const e=JSON.parse(d);return JSON.stringify(e)}return d}catch(e){return Reflect.apply(n,a,o)}}};window.String=new Proxy(window.String,d);const i={apply:(e,r,n)=>{try{if(n[2]?.[0]&&n[2][0]?.includes?.(t)){const e=n[2][0],t=e.split(/\\r?\\n|\\r/).map((e=>{if(""===e.trim())return e;try{return JSON.stringify(JSON.parse(e))}catch{return e}})).join("\\r\\n");n[2][0]=t}return Reflect.apply(e,r,n)}catch(t){return Reflect.apply(e,r,n)}}};window.Function.prototype.call=new Proxy(window.Function.prototype.call,i)})();': () => {
@@ -10042,6 +10029,33 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "f8726a98e9ee7f87afd7c9376374eb99" due to: ' + e);
         }
     },
+    "document.addEventListener('DOMContentLoaded',function(){const o=new MutationObserver(function(m,b){const e=document.querySelector('.gtp-wrap.gtp-open button.gtp-decline');e&&e.click()});setTimeout(function(){o.disconnect()},60000);o.observe(document.body,{childList:!0,subtree:!0})})": () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["5d2ed20fe2cf48b0e460c65c0cdeff79"] === e) return;
+            document.addEventListener("DOMContentLoaded", (function() {
+                const e = new MutationObserver((function(e, t) {
+                    const n = document.querySelector(".gtp-wrap.gtp-open button.gtp-decline");
+                    n && n.click();
+                }));
+                setTimeout((function() {
+                    e.disconnect();
+                }), 6e4);
+                e.observe(document.body, {
+                    childList: !0,
+                    subtree: !0
+                });
+            }));
+            Object.defineProperty(Window.prototype.toString, "5d2ed20fe2cf48b0e460c65c0cdeff79", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "5d2ed20fe2cf48b0e460c65c0cdeff79" due to: ' + e);
+        }
+    },
     '(()=>{let t,e=!0;document.addEventListener("click",(i=>{if(i.target.matches("button.button-login"))return e=!1,void(t&&(t.style.visibility="visible"));i.target.matches("button.close")&&document.querySelector("dialog.PartLoginModal").contains(i.target)&&(e=!0)}),!0),document.addEventListener("toggle",(i=>{i.target.matches("dialog.PartLoginModal")&&"open"===i.newState&&e&&(t=i.target,t.style.visibility="hidden",t.querySelector("button.close").click())}),!0)})();': () => {
         try {
             const e = "done";
@@ -11836,6 +11850,33 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "14a0dfcfc56570b45c7aa35014affd67" due to: ' + e);
+        }
+    },
+    "(()=>{let t=!1;const i={apply:(i,n,a)=>{try{!t&&window.ytInitialData&&(window.ytInitialData=JSON.parse(JSON.stringify(window.ytInitialData)),t=!0)}catch(t){}return Reflect.apply(i,n,a)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,i)})();": () => {
+        try {
+            const t = "done";
+            if (Window.prototype.toString["4fb0d297efd8c2d39f1903c82ecb7031"] === t) return;
+            (() => {
+                let t = !1;
+                const e = {
+                    apply: (e, o, r) => {
+                        try {
+                            !t && window.ytInitialData && (window.ytInitialData = JSON.parse(JSON.stringify(window.ytInitialData)), 
+                            t = !0);
+                        } catch (t) {}
+                        return Reflect.apply(e, o, r);
+                    }
+                };
+                window.Promise.prototype.then = new Proxy(window.Promise.prototype.then, e);
+            })();
+            Object.defineProperty(Window.prototype.toString, "4fb0d297efd8c2d39f1903c82ecb7031", {
+                value: t,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (t) {
+            console.error('Error executing AG js rule with uniqueId "4fb0d297efd8c2d39f1903c82ecb7031" due to: ' + t);
         }
     },
     '(()=>{const t=Function.prototype.call;let e=!1,o=!1,n=!1;const c={apply:(c,r,a)=>{const i=a[0];if(i?.requestNumber&&i?.snapshot)try{o=((t,e=5)=>{if("object"!=typeof t||null===t)return!1;const o=new Array(1e3);let c=0;const r=new WeakSet;for(o[c++]={obj:t,depth:0};c>0&&!n;){const{obj:t,depth:a}=o[--c];if(a>e||"object"!=typeof t||null===t||r.has(t))continue;let i;r.add(t);try{i=Object.hasOwn(t,"backoffTimeMs")}catch(t){}if(i)return void 0!==t.backoffTimeMs||(n=!0,!1);for(const e in t)if(Object.hasOwn(t,e)){let n;try{n=t[e]}catch(t){}null!==n&&"object"==typeof n&&!r.has(n)&&c<o.length&&(o[c++]={obj:n,depth:a+1})}}return!1})(i),e=!0,(o||n)&&(Function.prototype.call=t)}catch(t){}return Reflect.apply(c,r,a)}};window.Function.prototype.call=new Proxy(window.Function.prototype.call,c);window.addEventListener("load",(async()=>{if(Function.prototype.call=t,!o&&e)return;const n=window.location.search,c=new URLSearchParams(n).get("v");if(!c)return;const r=await(a="#movie_player",i=200,l=1e4,new Promise((t=>{if(!a||!i||!l)return void t(null);const e=Date.now()+l,o=()=>{const n=document.querySelector(a);n?t(n):Date.now()>e?t(null):setTimeout(o,i)};o()})));var a,i,l;if(!r)return;const s=new URLSearchParams(n).get("t")??"0",u=parseInt(s,10);if("function"==typeof r.loadVideoById&&!location.search.includes("&rco="))try{r.loadVideoById(c,u)}catch(t){}}))})();': () => {
