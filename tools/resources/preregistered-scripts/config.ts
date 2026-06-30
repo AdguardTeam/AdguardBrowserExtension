@@ -29,7 +29,6 @@
  * `pnpm resources:mv3`.
  */
 const config: string[] = [
-    'drive2.ru',
     'youtube.com',
 ];
 
