@@ -26,8 +26,9 @@ import {
     beforeEach,
 } from 'vitest';
 
-const { mockSyncContentScripts } = vi.hoisted(() => ({
+const { mockSyncContentScripts, mockGetEnabledFilters } = vi.hoisted(() => ({
     mockSyncContentScripts: vi.fn(),
+    mockGetEnabledFilters: vi.fn(),
 }));
 
 vi.mock(
@@ -59,6 +60,24 @@ vi.mock(
     }),
 );
 
+vi.mock(
+    '../../../../../Extension/src/background/api',
+    () => ({
+        FiltersApi: {
+            getEnabledFilters: mockGetEnabledFilters,
+        },
+    }),
+);
+
+vi.mock(
+    '../../../../../Extension/src/common/common-filter-utils',
+    () => ({
+        CommonFilterUtils: {
+            isCommonFilter: (id: number) => id > 0 && id < 100,
+        },
+    }),
+);
+
 const { PreregisteredScriptsService } = await import(
     '../../../../../Extension/src/background/services/preregistered-scripts/preregistered-scripts-service-mv3'
 );
@@ -67,10 +86,14 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         mockSyncContentScripts.mockResolvedValue(undefined);
+        // Default: all filters 1-5 enabled
+        mockGetEnabledFilters.mockReturnValue([1, 2, 3, 4, 5]);
+        // Reset short-circuit cache between tests
+        PreregisteredScriptsService['lastSyncedKey'] = null;
     });
 
     it('should call syncContentScripts with the correct namespace', async () => {
-        await PreregisteredScriptsService.sync([1]);
+        await PreregisteredScriptsService.sync(true);
 
         expect(mockSyncContentScripts).toHaveBeenCalledWith(
             'preregistered',
@@ -79,7 +102,9 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
     });
 
     it('should register only scripts for enabled filter IDs', async () => {
-        await PreregisteredScriptsService.sync([1, 2]);
+        mockGetEnabledFilters.mockReturnValue([1, 2]);
+
+        await PreregisteredScriptsService.sync(true);
 
         // youtube.com: filters 1,2,3,5 → only 1,2 enabled → 2 scripts
         // example.com: filters 2,4     → only 2 enabled   → 1 script
@@ -97,7 +122,9 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
     });
 
     it('should pass empty scripts array when no filter is enabled', async () => {
-        await PreregisteredScriptsService.sync([99]);
+        mockGetEnabledFilters.mockReturnValue([99]);
+
+        await PreregisteredScriptsService.sync(true);
 
         // Single call with empty scripts array
         expect(mockSyncContentScripts).toHaveBeenCalledTimes(1);
@@ -107,7 +134,9 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
     });
 
     it('should build correct script descriptor shape', async () => {
-        await PreregisteredScriptsService.sync([1, 2]);
+        mockGetEnabledFilters.mockReturnValue([1, 2]);
+
+        await PreregisteredScriptsService.sync(true);
 
         const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
         const scripts = scriptsArg as Array<Record<string, unknown>>;
@@ -121,10 +150,12 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
             expect(script).toHaveProperty('runAt');
             expect(script).toHaveProperty('world');
             expect(script).toHaveProperty('persistAcrossSessions');
+            expect(script).toHaveProperty('allFrames');
 
             expect(script.runAt).toBe('document_start');
             expect(script.world).toBe('MAIN');
             expect(script.persistAcrossSessions).toBe(true);
+            expect(script.allFrames).toBe(true);
 
             // js should be an array with one path
             expect(Array.isArray(script.js)).toBe(true);
@@ -133,7 +164,9 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
     });
 
     it('should construct the correct script path', async () => {
-        await PreregisteredScriptsService.sync([5]);
+        mockGetEnabledFilters.mockReturnValue([5]);
+
+        await PreregisteredScriptsService.sync(true);
 
         const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
         const scripts = scriptsArg as Array<{ id: string; js: string[] }>;
@@ -144,7 +177,9 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
     });
 
     it('should construct the correct match patterns', async () => {
-        await PreregisteredScriptsService.sync([1]);
+        mockGetEnabledFilters.mockReturnValue([1]);
+
+        await PreregisteredScriptsService.sync(true);
 
         const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
         const scripts = scriptsArg as Array<{ id: string; matches: string[] }>;
@@ -158,7 +193,9 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
     });
 
     it('should handle an empty enabled filter list gracefully', async () => {
-        await PreregisteredScriptsService.sync([]);
+        mockGetEnabledFilters.mockReturnValue([]);
+
+        await PreregisteredScriptsService.sync(true);
 
         expect(mockSyncContentScripts).toHaveBeenCalledTimes(1);
 
@@ -168,7 +205,9 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
     });
 
     it('should handle all filters enabled', async () => {
-        await PreregisteredScriptsService.sync([1, 2, 3, 4, 5]);
+        mockGetEnabledFilters.mockReturnValue([1, 2, 3, 4, 5]);
+
+        await PreregisteredScriptsService.sync(true);
 
         const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
         const scripts = scriptsArg as Array<{ id: string }>;
@@ -190,8 +229,9 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
     });
 
     it('should pass number filter IDs and correctly convert them to strings for lookup', async () => {
-        // Even though the registry uses strings, the service receives numbers
-        await PreregisteredScriptsService.sync([1]);
+        mockGetEnabledFilters.mockReturnValue([1]);
+
+        await PreregisteredScriptsService.sync(true);
 
         const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
         const scripts = scriptsArg as Array<{ id: string }>;
@@ -203,7 +243,9 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
     });
 
     it('should include scripts from all domains when the same filter appears for different domains', async () => {
-        await PreregisteredScriptsService.sync([2]);
+        mockGetEnabledFilters.mockReturnValue([2]);
+
+        await PreregisteredScriptsService.sync(true);
 
         // Filter 2 exists in both youtube.com and example.com
         expect(mockSyncContentScripts).toHaveBeenCalledTimes(1);
@@ -222,7 +264,9 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
     });
 
     it('should call syncContentScripts exactly once with all domains scripts combined', async () => {
-        await PreregisteredScriptsService.sync([1, 2, 3, 4, 5]);
+        mockGetEnabledFilters.mockReturnValue([1, 2, 3, 4, 5]);
+
+        await PreregisteredScriptsService.sync(true);
 
         // The namespace is shared — calling syncContentScripts once per domain
         // would cause each subsequent call to unregister the previous domain's
@@ -256,10 +300,59 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
         ]));
     });
 
+    it('should unregister all scripts when filtering is paused', async () => {
+        // Filters are enabled, but filtering is paused
+        mockGetEnabledFilters.mockReturnValue([1, 2, 3, 4, 5]);
+
+        await PreregisteredScriptsService.sync(false);
+
+        // Should pass empty scripts array → ContentScriptManager unregisters all
+        expect(mockSyncContentScripts).toHaveBeenCalledTimes(1);
+
+        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+        expect(scriptsArg).toEqual([]);
+    });
+
+    it('should not call getEnabledFilters when filtering is paused', async () => {
+        await PreregisteredScriptsService.sync(false);
+
+        expect(mockGetEnabledFilters).not.toHaveBeenCalled();
+    });
+
+    it('should short-circuit when the enabled-filter set has not changed', async () => {
+        mockGetEnabledFilters.mockReturnValue([1, 2]);
+
+        await PreregisteredScriptsService.sync(true);
+        await PreregisteredScriptsService.sync(true);
+
+        // syncContentScripts should be called only once — the second call
+        // is short-circuited because nothing changed.
+        expect(mockSyncContentScripts).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not short-circuit when the filter set changes', async () => {
+        mockGetEnabledFilters.mockReturnValue([1, 2]);
+        await PreregisteredScriptsService.sync(true);
+
+        mockGetEnabledFilters.mockReturnValue([1, 2, 3]);
+        await PreregisteredScriptsService.sync(true);
+
+        expect(mockSyncContentScripts).toHaveBeenCalledTimes(2);
+    });
+
+    it('should not short-circuit when filtering state changes', async () => {
+        mockGetEnabledFilters.mockReturnValue([1, 2]);
+        await PreregisteredScriptsService.sync(true);
+
+        await PreregisteredScriptsService.sync(false);
+
+        expect(mockSyncContentScripts).toHaveBeenCalledTimes(2);
+    });
+
     it('should log error when syncContentScripts throws', async () => {
         mockSyncContentScripts.mockRejectedValue(new Error('API failure'));
 
-        await PreregisteredScriptsService.sync([1]);
+        await PreregisteredScriptsService.sync(true);
 
         expect(mockLoggerError).toHaveBeenCalledWith(
             expect.stringContaining('Failed to sync preregistered scripts'),

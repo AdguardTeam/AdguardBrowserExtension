@@ -20,8 +20,6 @@
 
 import { debounce } from 'lodash-es';
 
-// Because this file is already MV3 replacement module, we can import directly
-// from mv3 tswebextension without using aliases.
 import {
     MESSAGE_HANDLER_NAME,
     type Configuration,
@@ -103,6 +101,9 @@ export class Engine implements TsWebExtensionEngine {
          */
         TsWebExtension.setLocalScriptRules(localScriptRules);
 
+        // Register preregistered domains to avoid double scriptlet injection.
+        PreregisteredScriptsService.registerDomains();
+
         this.handleMessage = this.api.getMessageHandler();
 
         // Expose for integration tests.
@@ -163,9 +164,7 @@ export class Engine implements TsWebExtensionEngine {
         await iconsApi.update();
 
         // Sync preregistered domain scripts with the current enabled-filter set.
-        const enabledFilterIds = FiltersApi.getEnabledFilters()
-            .filter((id) => CommonFilterUtils.isCommonFilter(id));
-        await PreregisteredScriptsService.sync(enabledFilterIds);
+        await PreregisteredScriptsService.sync(configuration.settings.filteringEnabled);
     }
 
     /**
@@ -205,9 +204,7 @@ export class Engine implements TsWebExtensionEngine {
         await iconsApi.update();
 
         // Keep preregistered domain scripts in sync with the updated filter set.
-        const enabledFilterIds = FiltersApi.getEnabledFilters()
-            .filter((id) => CommonFilterUtils.isCommonFilter(id));
-        await PreregisteredScriptsService.sync(enabledFilterIds);
+        await PreregisteredScriptsService.sync(configuration.settings.filteringEnabled);
     }
 
     /**

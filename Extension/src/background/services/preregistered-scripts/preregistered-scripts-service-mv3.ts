@@ -23,6 +23,8 @@ import { preregisteredDomainScripts } from 'preregistered-scripts-registry';
 import { TsWebExtension } from 'tswebextension';
 
 import { logger } from '../../../common/logger';
+import { FiltersApi } from '../../api';
+import { CommonFilterUtils } from '../../../common/common-filter-utils';
 
 /**
  * Extension-relative prefix for filter assets.
@@ -35,6 +37,22 @@ const EXTENSION_FILTERS_SUBDIR = 'filters';
 const PREREGISTERED_SCRIPTS_DIR = 'preregistered-scripts';
 
 const PREREGISTERED_SCRIPTS_NAMESPACE = 'preregistered';
+
+/**
+ * Filename of the shared scriptlets bundle loaded before every
+ * per-domain bundle. Contains deduplicated scriptlet function
+ * definitions and the `window._g` runner.
+ */
+const SHARED_BUNDLE_FILENAME = 'scriptlets-bundle.js';
+
+/**
+ * Returns the extension-relative path for the shared scriptlets bundle.
+ *
+ * @returns Extension-relative path, e.g. `"filters/preregistered-scripts/scriptlets-bundle.js"`.
+ */
+const buildSharedBundlePath = (): string => {
+    return `${EXTENSION_FILTERS_SUBDIR}/${PREREGISTERED_SCRIPTS_DIR}/${SHARED_BUNDLE_FILENAME}`;
+};
 
 /**
  * Converts a domain string into the two URL match patterns used in
@@ -80,18 +98,66 @@ const scriptIdForDomainFilter = (domain: string, filterId: string): string => {
  */
 export class PreregisteredScriptsService {
     /**
-     * Synchronises registered preregistered-domain content scripts with the given
-     * set of enabled filter IDs.
+     * Cache of the last synchronised state.
+     *
+     * Used to short-circuit {@link sync} when nothing has changed, avoiding
+     * unnecessary `chrome.scripting` calls on every debounced `update()`.
+     */
+    private static lastSyncedKey: string | null = null;
+
+    /**
+     * Registers preregistered domains with tswebextension so that the
+     * cosmetic API skips dynamic scriptlet injection on those domains,
+     * avoiding double execution with the preregistered bundles.
+     */
+    public static registerDomains(): void {
+        TsWebExtension.setPreregisteredScriptDomains(PreregisteredScriptsService.getDomains());
+    }
+
+    /**
+     * Returns the list of domains that have preregistered-script bundles.
+     *
+     * @returns Array of domain strings (e.g. `["youtube.com"]`).
+     */
+    private static getDomains(): string[] {
+        return Object.keys(preregisteredDomainScripts);
+    }
+
+    /**
+     * Synchronises registered preregistered-domain content scripts with the
+     * current enabled-filter set.
      *
      * Each (domain, filterId) pair maps to its own `chrome.scripting`
      * registration, so disabling a single filter unregisters only that
      * filter's scripts — other filters' scripts for the same domain are
      * left untouched.
      *
-     * @param enabledFilterIds Array of currently-enabled AdGuard filter IDs.
+     * When `filteringEnabled` is `false` (AdGuard is paused), all
+     * preregistered scripts are unregistered by passing an empty
+     * desired set to the sync call.
+     *
+     * Short-circuits when the enabled-filter set is identical to the
+     * previous call, avoiding redundant `chrome.scripting` work.
+     *
+     * @param filteringEnabled Whether global filtering is enabled.
      */
-    static async sync(enabledFilterIds: number[]): Promise<void> {
-        const enabledSet = new Set(enabledFilterIds.map(String));
+    public static async sync(filteringEnabled: boolean): Promise<void> {
+        // When filtering is paused, pass an empty set to unregister all
+        // preregistered scripts.
+        const enabledSet = filteringEnabled
+            ? new Set(
+                FiltersApi.getEnabledFilters()
+                    .filter((id) => CommonFilterUtils.isCommonFilter(id))
+                    .map(String),
+            )
+            : new Set<string>();
+
+        const syncKey = `${filteringEnabled}|${[...enabledSet].sort().join(',')}`;
+        if (syncKey === PreregisteredScriptsService.lastSyncedKey) {
+            return;
+        }
+        PreregisteredScriptsService.lastSyncedKey = syncKey;
+
         const allScripts: chrome.scripting.RegisteredContentScript[] = [];
 
         for (const [domain, filterIds] of Object.entries(preregisteredDomainScripts)) {
@@ -99,10 +165,14 @@ export class PreregisteredScriptsService {
                 .filter((filterId) => enabledSet.has(filterId))
                 .map((filterId) => ({
                     id: scriptIdForDomainFilter(domain, filterId),
-                    js: [buildScriptPath(domain, filterId)],
+                    js: [
+                        buildSharedBundlePath(),
+                        buildScriptPath(domain, filterId),
+                    ],
                     matches: domainToMatchPatterns(domain),
                     runAt: 'document_start',
                     world: 'MAIN',
+                    allFrames: true,
                     persistAcrossSessions: true,
                 }));
 

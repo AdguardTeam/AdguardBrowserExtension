@@ -340,6 +340,9 @@ Descriptions must be complete sentences.
   named constants, enums, or existing shared types instead. Local one-off UI
   text, log messages, and test fixture values may stay inline when clearer.
 - Use `classnames` (`cn`) for dynamic class names instead of template literals
+- Avoid the TypeScript non-null assertion operator (`!`). Use proper null
+  checks, optional chaining (`?.`), or type guards instead. If absolutely
+  unavoidable, add a comment explaining why.
 
 
 ### Testing

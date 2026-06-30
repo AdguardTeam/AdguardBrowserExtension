@@ -18,20 +18,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * List of domains for which preregistered-script bundles are generated.
- *
- * All scriptlets and JS rules from all enabled filters that target a
- * listed domain are automatically included — no manual allowlisting
- * or exclusion configuration needed.
- *
- * To add a new preregistered domain, add it here and run
- * `pnpm resources:mv3`.
- */
-const config: string[] = [
-    'drive2.ru',
-    'youtube.com',
-];
-
-/** Domains for which preregistered scriptlet bundles should be generated. */
-export const preregisteredDomains: readonly string[] = config;
+export { writeSharedBundle } from './white-shared-bundle';

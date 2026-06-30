@@ -41,17 +41,12 @@ import { minify } from 'terser';
 import { some } from 'lodash-es';
 
 import {
-    type AnyRule,
-    CosmeticRuleType,
-    type JsInjectionRule,
-    RuleCategory,
-} from '@adguard/agtree';
-import {
     CosmeticRuleParser,
     defaultParserOptions,
     FilterListParser,
 } from '@adguard/agtree/parser';
 import { CosmeticRuleBodyGenerator } from '@adguard/agtree/generator';
+import { isJsInjectionRule } from '@adguard/dnr-rulesets';
 
 import { ADGUARD_FILTERS_IDS } from '../../constants';
 import {
@@ -67,21 +62,6 @@ import { extractPreprocessedRawFilterList, readMetadataRuleSet } from './filter-
 import { TESTCASES_RULES } from './testcases-rules';
 
 const exec = promisify(execCallback);
-
-/**
- * Checks if the given rule node is a JS injection rule.
- *
- * @param ruleNode Rule node to check.
- *
- * @returns True if the rule node is a JS injection rule.
- */
-export const isJsRule = (
-    ruleNode: AnyRule | null,
-): ruleNode is JsInjectionRule => {
-    return !!ruleNode
-        && ruleNode.category === RuleCategory.Cosmetic
-        && ruleNode.type === CosmeticRuleType.JsInjectionRule;
-};
 
 // Add these helper functions after imports
 const AG_FUNCTION_REGEX = /var\s+(AG_[a-zA-Z0-9_]+)\s*=\s*function/;
@@ -161,7 +141,7 @@ const updateLocalScriptRulesForBrowser = async (browser: AssetsFiltersBrowser) =
         });
 
         filterListNode.children.forEach((ruleNode) => {
-            if (isJsRule(ruleNode)) {
+            if (isJsInjectionRule(ruleNode)) {
                 // Re-generate raw body to make it consistent with TSUrlFilter rule instances
                 // (TSUrlFilter also re-generates body from AST in the cosmetic rule constructor)
                 const rawBody = CosmeticRuleBodyGenerator.generate(ruleNode);
@@ -193,7 +173,7 @@ const updateLocalScriptRulesForBrowser = async (browser: AssetsFiltersBrowser) =
     // Add testcases rules to allow integration tests to work with custom filters
     TESTCASES_RULES.forEach((rawRule) => {
         const ruleNode = CosmeticRuleParser.parse(rawRule);
-        if (!isJsRule(ruleNode)) {
+        if (!ruleNode || !isJsInjectionRule(ruleNode)) {
             throw new Error(`Invalid testcases rule, expected JS injection rule: ${rawRule}`);
         }
 
@@ -358,7 +338,7 @@ const updateLocalScriptRulesForMv3 = async (
     // First, process testcases rules
     TESTCASES_RULES.forEach((rawRule) => {
         const ruleNode = CosmeticRuleParser.parse(rawRule);
-        if (!isJsRule(ruleNode)) {
+        if (!ruleNode || !isJsInjectionRule(ruleNode)) {
             throw new Error('Invalid test rule, expected JS rule');
         }
         const rawBody = CosmeticRuleBodyGenerator.generate(ruleNode);
@@ -473,7 +453,7 @@ export const updateLocalResourcesForMv3 = async (browser: Mv3AssetsFiltersBrowse
         });
 
         filterListNode.children.forEach((ruleNode) => {
-            if (isJsRule(ruleNode)) {
+            if (isJsInjectionRule(ruleNode)) {
                 const rawBody = CosmeticRuleBodyGenerator.generate(ruleNode);
                 jsRules.add(rawBody);
             }

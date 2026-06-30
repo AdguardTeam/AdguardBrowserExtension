@@ -18,20 +18,21 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * List of domains for which preregistered-script bundles are generated.
- *
- * All scriptlets and JS rules from all enabled filters that target a
- * listed domain are automatically included — no manual allowlisting
- * or exclusion configuration needed.
- *
- * To add a new preregistered domain, add it here and run
- * `pnpm resources:mv3`.
- */
-const config: string[] = [
-    'drive2.ru',
-    'youtube.com',
-];
+import { promises as fs } from 'node:fs';
+import path from 'node:path';
+import vm from 'node:vm';
 
-/** Domains for which preregistered scriptlet bundles should be generated. */
-export const preregisteredDomains: readonly string[] = config;
+export const validateSyntax = (code: string, desc: string): void => {
+    try {
+        // eslint-disable-next-line no-new
+        new vm.Script(code);
+    } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        throw new Error(`Syntax error in ${desc}: ${msg}`);
+    }
+};
+
+export const writeBundle = async (content: string, filePath: string): Promise<void> => {
+    validateSyntax(content, path.basename(filePath));
+    await fs.writeFile(filePath, content, 'utf-8');
+};

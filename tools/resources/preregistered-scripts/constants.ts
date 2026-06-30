@@ -19,19 +19,19 @@
  */
 
 /**
- * List of domains for which preregistered-script bundles are generated.
- *
- * All scriptlets and JS rules from all enabled filters that target a
- * listed domain are automatically included — no manual allowlisting
- * or exclusion configuration needed.
- *
- * To add a new preregistered domain, add it here and run
- * `pnpm resources:mv3`.
+ * File names for generated bundles.
  */
-const config: string[] = [
-    'drive2.ru',
-    'youtube.com',
-];
+export const SHARED_BUNDLE_FILENAME = 'scriptlets-bundle.js';
+export const REGISTRY_FILENAME = 'registry.js';
 
-/** Domains for which preregistered scriptlet bundles should be generated. */
-export const preregisteredDomains: readonly string[] = config;
+/**
+ * Returns the output filename for a (domain, filterId) per-domain bundle.
+ *
+ * @param domain Domain string, e.g. `"youtube.com"`.
+ * @param filterId Filter ID number.
+ *
+ * @returns Filename string, e.g. `"youtube.com-2.js"`.
+ */
+export const getBundleFileName = (domain: string, filterId: number): string => {
+    return `${domain}-${filterId}.js`;
+};
