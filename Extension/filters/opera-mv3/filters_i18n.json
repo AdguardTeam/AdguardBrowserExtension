@@ -16256,7 +16256,7 @@
 				"description": "Suodatin, joka parantaa yksityisyyttä poistamalla seurantaparametrit URL-osoitteista."
 			},
 			"fr": {
-				"name": "Filtre AdGuard Traceur de URL",
+				"name": "Filtre AdGuard du suivi des URL",
 				"description": "Un filtre qui renforce la confidentialité en supprimant les paramètres de suivi depuis les liens URL."
 			},
 			"he": {
@@ -17582,7 +17582,7 @@
 				"description": "Acest filtru blochează pixelii de urmărire în clienți de e-mail."
 			},
 			"ru": {
-				"name": "Фильтр счётчиков и систем аналитики AdGuard Mail",
+				"name": "Фильтр защиты от отслеживания почты",
 				"description": "Этот фильтр блокирует пиксели отслеживания в почтовых клиентах."
 			},
 			"sk": {
@@ -22964,6 +22964,184 @@
 			"zh_TW": {
 				"name": "Dandelion Sprout's Anti-Malware List",
 				"description": "相比多數主流反惡意軟體列表，本列表具備更全面的封鎖能力，其覆蓋範圍包括：惡意軟體重定向鏈中的域名與 URL 模式、惡意軟體專屬 IP 地址、潛在不受歡迎程式（PUP）彈窗及部分欺詐網站。該列表功能已集成於 Dandelion Sprout‘s Annoyances List 中。"
+			}
+		},
+		"260": {
+			"ar": {
+				"name": "Stevo's AI Blocklist",
+				"description": "قائمة تصفية تُخفي ميزات مواقع الويب التي تستخدم الذكاء الاصطناعي التوليدي والمحتوى المُنشأ بواسطة الذكاء الاصطناعي."
+			},
+			"be": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Спіс фільтраў, які хавае функцыі вэб-сайтаў, што выкарыстоўваюць генератыўны ШІ і кантэнт, створаны ШІ."
+			},
+			"bg": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Списък с филтри, който скрива функции на уебсайтове, които използват генеративен изкуствен интелект и съдържание, генерирано от ИИ."
+			},
+			"ca": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Una llista de filtres que amaga les funcionalitats del lloc web que utilitzen IA generativa i contingut generat per IA."
+			},
+			"cs": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Seznam filtrů, který skrývá funkce webových stránek využívající generativní AI a obsah vytvořený AI."
+			},
+			"da": {
+				"name": "Stevo's AI Blocklist",
+				"description": "En filterliste, der skjuler webstedsfunktioner, som bruger generativ AI og AI-genereret indhold."
+			},
+			"de": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Eine Filterliste, die Website-Funktionen ausblendet, die generative KI und KI-generierte Inhalte verwenden."
+			},
+			"el": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Μια λίστα φίλτρων που αποκρύπτει λειτουργίες ιστότοπων που χρησιμοποιούν γενετική τεχνητή νοημοσύνη και περιεχόμενο που δημιουργείται από AI."
+			},
+			"en": {
+				"name": "Stevo's AI Blocklist",
+				"description": "A filter list that hides website features which use generative AI and AI-generated content."
+			},
+			"es": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Una lista de filtros que oculta funciones de sitios web que utilizan IA generativa y contenido generado por IA."
+			},
+			"es_ES": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Una lista de filtros que oculta funciones de sitios web que utilizan IA generativa y contenido generado por IA."
+			},
+			"fa": {
+				"name": "Stevo's AI Blocklist",
+				"description": "فهرست فیلتری که ویژگی‌های وب‌سایت را که از هوش مصنوعی مولد و محتوای تولیدشده توسط هوش مصنوعی استفاده می‌کنند پنهان می‌کند."
+			},
+			"fi": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Suodatinluettelo, joka piilottaa verkkosivuston toiminnot, joissa käytetään generatiivista tekoälyä ja tekoälyn tuottamaa sisältöä."
+			},
+			"fr": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Une liste de filtres permettant de masquer les fonctionnalités des sites web qui utilisent l'IA générative et le contenu généré par l'IA."
+			},
+			"he": {
+				"name": "Stevo's AI Blocklist",
+				"description": "רשימת מסננים שמסתירה תכונות באתרי אינטרנט המשתמשות בבינה מלאכותית יוצרת ובתוכן שנוצר על ידי בינה מלאכותית."
+			},
+			"hi": {
+				"name": "Stevo's AI Blocklist",
+				"description": "एक फ़िल्टर सूची जो उन वेबसाइट सुविधाओं को छिपाती है जो जनरेटिव एआई और एआई-जनित सामग्री का उपयोग करती हैं।"
+			},
+			"hr": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Popis filtara koji skriva značajke web-mjesta koje koriste generativnu umjetnu inteligenciju i sadržaj generiran umjetnom inteligencijom."
+			},
+			"hu": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Egy szűrőlista, amely elrejti azokat a webhelyfunkciókat, amelyek generatív MI-t és MI által generált tartalmat használnak."
+			},
+			"hy": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Ֆիլտրերի ցուցակ, որը թաքցնում է կայքի առանձնահատկությունները, որոնք օգտագործում են գեներատիվ ԱԲ և ԱԲ-ի գեներացված բովանդակություն։"
+			},
+			"id": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Daftar filter yang menyembunyikan fitur situs web yang menggunakan AI generatif dan konten yang dihasilkan AI."
+			},
+			"it": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Un elenco di filtri che nasconde le funzionalità dei siti web che utilizzano l'intelligenza artificiale generativa e i contenuti generati dall'IA."
+			},
+			"ja": {
+				"name": "Stevo's AI Blocklist",
+				"description": "生成AIとAI生成コンテンツを使用しているウェブサイト機能を非表示にするフィルタリングリスト。"
+			},
+			"ko": {
+				"name": "Stevo's AI Blocklist",
+				"description": "생성형 AI 및 AI 생성 콘텐츠를 사용하는 웹사이트 기능을 숨기는 필터 목록입니다."
+			},
+			"lt": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Filtrų sąrašas, kuris slepia svetainės funkcijas, kurios naudoja generatyvinį DI ir DI sukurtą turinį."
+			},
+			"mk": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Список на филтри што ги сокрива функциите на веб-страниците кои користат генеративна ВИ и содржина генерирана од ВИ."
+			},
+			"ms": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Senarai penapis yang menyembunyikan ciri laman web yang menggunakan AI generatif dan kandungan yang dijana oleh AI."
+			},
+			"nl": {
+				"name": "Stevo's AI-blokkeerlijst",
+				"description": "Een filterlijst die websitefuncties verbergt die gebruikmaken van generatieve AI en door AI gegenereerde content."
+			},
+			"no": {
+				"name": "Stevo's AI Blocklist",
+				"description": "En filterliste som skjuler nettstedfunksjoner som bruker generativ KI og KI-generert innhold."
+			},
+			"pl": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Lista filtrów, która ukrywa funkcje stron internetowych wykorzystujące generatywną sztuczną inteligencję oraz treści generowane przez SI."
+			},
+			"pt": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Uma lista de filtros que oculta funcionalidades de sites que usam IA generativa e conteúdo gerado por IA."
+			},
+			"pt_BR": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Uma lista de filtros que oculta recursos de sites que utilizam IA generativa e conteúdo gerado por IA."
+			},
+			"pt_PT": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Uma lista de filtros que oculta funcionalidades de sites que usam IA generativa e conteúdo gerado por IA."
+			},
+			"ro": {
+				"name": "Stevo's AI Blocklist",
+				"description": "O listă de filtre care ascunde funcționalitățile site-urilor web care folosesc IA generativă și conținut generat de IA."
+			},
+			"ru": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Фильтр, который скрывает функции сайтов, использующие генеративный ИИ и созданный им контент."
+			},
+			"sk": {
+				"name": "Stevov AI blokovací zoznam",
+				"description": "Zoznam filtrov, ktorý skrýva funkcie webových stránok, ktoré používajú generatívnu umelú inteligenciu a obsah generovaný umelou inteligenciou."
+			},
+			"sl": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Seznam filtrov, ki skrije funkcije spletnih mest, ki uporabljajo generativno umetno inteligenco in vsebino, ustvarjeno z umetno inteligenco."
+			},
+			"sr": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Lista filtera koja sakriva funkcije veb-sajtova koje koriste generativnu veštačku inteligenciju i sadržaj generisan veštačkom inteligencijom."
+			},
+			"sv": {
+				"name": "Stevo's AI Blocklist",
+				"description": "En filterlista som döljer webbplatsfunktioner som använder generativ AI och AI-genererat innehåll."
+			},
+			"th": {
+				"name": "Stevo's AI Blocklist",
+				"description": "รายการตัวกรองที่ซ่อนฟีเจอร์ของเว็บไซต์ที่ใช้ปัญญาประดิษฐ์เชิงกำเนิดและเนื้อหาที่สร้างโดย AI"
+			},
+			"tr": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Üretken yapay zekâ ve yapay zekâ tarafından üretilen içerik kullanan site özelliklerini gizleyen bir filtre listesi."
+			},
+			"uk": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Список фільтрів, який приховує функції вебсайтів, що використовують генеративний ШІ та контент, створений ШІ."
+			},
+			"vi": {
+				"name": "Stevo's AI Blocklist",
+				"description": "Danh sách bộ lọc ẩn các tính năng của trang web sử dụng AI tạo sinh và nội dung do AI tạo ra."
+			},
+			"zh": {
+				"name": "Stevo's AI Blocklist",
+				"description": "用于隐藏使用生成式 AI 及 AI 生成内容的网站功能的过滤器列表。"
+			},
+			"zh_TW": {
+				"name": "Stevo's AI Blocklist",
+				"description": "用於隱藏使用生成式 AI 及 AI 生成內容的網站功能的過濾器清單。"
 			}
 		}
 	}
