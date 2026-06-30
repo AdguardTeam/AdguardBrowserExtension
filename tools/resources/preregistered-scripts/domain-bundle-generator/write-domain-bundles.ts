@@ -17,6 +17,9 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/* eslint-disable no-console */
+
 import path from 'node:path';
 
 import { getBundleFileName } from '../constants';
@@ -24,10 +27,13 @@ import { writeBundle } from '../writeHelpers';
 
 import { compileDomainBundle } from './domain-bundle-generator';
 
-/* eslint-disable no-console */
-
 /**
  * Merges domain rules and scriptlets into a map of domain IDs to sets of filter IDs.
+ *
+ * @param domainRules JS rules grouped by domain and filter ID.
+ * @param domainScriptlets Scriptlet invocations grouped by domain and filter ID.
+ *
+ * @returns Map from domain string to the union set of filter IDs present in either source.
  */
 const mergeDomainIds = (
     domainRules: Map<string, Map<number, unknown>>,
@@ -84,7 +90,7 @@ export const writeDomainBundles = async (
                 continue;
             }
 
-            const content = await compileDomainBundle(jsRules ?? new Set(), scriptletMap ?? undefined);
+            const content = await compileDomainBundle(jsRules ?? new Set(), scriptletMap);
             if (!content) {
                 continue;
             }

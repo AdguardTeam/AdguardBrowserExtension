@@ -89,11 +89,14 @@ export const compileSharedScriptletsBundle = async (
     }
 
     const registryEntries = [...scriptletNames]
-        .filter((name) => scriptlets.getScriptletFunction(name))
         .map((name) => {
             const fn = scriptlets.getScriptletFunction(name);
-            return `${JSON.stringify(name)}: ${fn!.name}`;
+            if (!fn) {
+                return null;
+            }
+            return `${JSON.stringify(name)}: ${fn.name}`;
         })
+        .filter((entry): entry is string => entry !== null)
         .join(',');
 
     const filled = assembleTemplate(

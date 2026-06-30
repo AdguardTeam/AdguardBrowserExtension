@@ -96,6 +96,10 @@ export const isRuleTargetsDomain = (
 /**
  * Extracts scriptlet name and arguments from a scriptlet injection rule AST node.
  *
+ * @note Only the first scriptlet call in the rule body is extracted.
+ * Multi-scriptlet rules (multiple calls separated by `;`) are rare in practice,
+ * but additional calls beyond the first are silently ignored.
+ *
  * @param ruleNode Parsed scriptlet injection rule AST node.
  *
  * @returns Object with `name` (string) and `args` (string array).
@@ -190,7 +194,6 @@ export interface CollectedRules {
  * Accumulators are initialised in the constructor. Call {@link collect} once
  * per instance — subsequent calls would append to the same accumulators,
  * producing duplicate entries.
- * ```
  */
 export class FilterCollector {
     /** Preregistered domain list from {@link config}. */
@@ -254,7 +257,7 @@ export class FilterCollector {
         ruleSetId: string,
         filterId: number | null,
     ): Promise<void> {
-        if (!filterId) {
+        if (filterId === null) {
             return;
         }
 

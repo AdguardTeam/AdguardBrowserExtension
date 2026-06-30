@@ -47,7 +47,6 @@ FilterCollector.collect()
                                  ▼
                           scriptlets-bundle.js (one file, ~600 KB)
                           youtube.com-2.js     (tiny,  ~25 KB)
-                          drive2.ru-19.js      (tiny,  ~0.5 KB)
                           registry.js
 ```
 
@@ -115,11 +114,8 @@ Bundles are generated as part of `pnpm resources:mv3`:
 pnpm resources:mv3
 ```
 
-To regenerate only preregistered bundles without downloading filters:
-
-```bash
-npx tsx tools/_gen-prereg.ts   # one-off script (create if needed)
-```
+To regenerate only preregistered bundles without downloading filters, run
+`pnpm resources:mv3` after ensuring the filter files are already present locally.
 
 ## Runtime
 

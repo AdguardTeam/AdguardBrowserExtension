@@ -22,6 +22,14 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 
+/**
+ * Validates the JavaScript syntax of the given code string using Node.js `vm.Script`.
+ *
+ * @param code JavaScript source code to validate.
+ * @param desc Human-readable description of the bundle (used in the error message).
+ *
+ * @throws {Error} If the code contains a syntax error.
+ */
 export const validateSyntax = (code: string, desc: string): void => {
     try {
         // eslint-disable-next-line no-new
@@ -32,6 +40,14 @@ export const validateSyntax = (code: string, desc: string): void => {
     }
 };
 
+/**
+ * Validates the syntax of `content` and writes it to `filePath`.
+ *
+ * @param content JavaScript source code to write.
+ * @param filePath Absolute path of the output file.
+ *
+ * @throws {Error} If the code contains a syntax error.
+ */
 export const writeBundle = async (content: string, filePath: string): Promise<void> => {
     validateSyntax(content, path.basename(filePath));
     await fs.writeFile(filePath, content, 'utf-8');

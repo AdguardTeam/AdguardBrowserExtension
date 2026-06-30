@@ -36,6 +36,10 @@ const EXTENSION_FILTERS_SUBDIR = 'filters';
  */
 const PREREGISTERED_SCRIPTS_DIR = 'preregistered-scripts';
 
+/**
+ * Namespace passed to {@link TsWebExtension.syncContentScripts} to scope all
+ * preregistered-domain registrations. Must be stable across sessions.
+ */
 const PREREGISTERED_SCRIPTS_NAMESPACE = 'preregistered';
 
 /**
@@ -152,7 +156,7 @@ export class PreregisteredScriptsService {
             )
             : new Set<string>();
 
-        const syncKey = `${filteringEnabled}|${[...enabledSet].sort().join(',')}`;
+        const syncKey = `${filteringEnabled}|${[...enabledSet].sort((a, b) => Number(a) - Number(b)).join(',')}`;
         if (syncKey === PreregisteredScriptsService.lastSyncedKey) {
             return;
         }

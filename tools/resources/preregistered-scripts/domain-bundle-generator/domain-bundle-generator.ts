@@ -35,6 +35,11 @@ import { type RuleBody } from '../filter-collector';
 /**
  * Wraps code with a Set-based idempotency guard that uses `window._g.b`
  * (defined in the shared `scriptlets-bundle.js`).
+ *
+ * @param uniqueId Stable hash key used to detect already-executed code.
+ * @param code JavaScript code to wrap.
+ *
+ * @returns Wrapped code string.
  */
 const wrapWithGuard = (uniqueId: string, code: string): string => {
     return [

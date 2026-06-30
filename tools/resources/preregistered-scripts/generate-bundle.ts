@@ -38,6 +38,10 @@ import { writeDomainBundles } from './domain-bundle-generator';
 
 /**
  * Generates preregistered-script bundles and registry for a target MV3 browser.
+ *
+ * @param browser Target MV3 browser identifier (e.g. `"chrome-mv3"`).
+ *
+ * @returns Promise that resolves when all bundles and the registry have been written.
  */
 export const generatePreregisteredDomainBundles = async (
     browser: Mv3AssetsFiltersBrowser,
@@ -48,9 +52,14 @@ export const generatePreregisteredDomainBundles = async (
 
     await fs.mkdir(outputDir, { recursive: true });
 
-    // Clean stale bundles
+    // Clean stale bundles — only remove .js files to avoid accidentally
+    // deleting non-JS assets that may be co-located in the directory.
     const existing = await fs.readdir(outputDir);
-    await Promise.all(existing.map((f) => fs.unlink(path.join(outputDir, f))));
+    await Promise.all(
+        existing
+            .filter((f) => f.endsWith('.js'))
+            .map((f) => fs.unlink(path.join(outputDir, f))),
+    );
 
     // 1. Collect rules
     const collector = new FilterCollector(preregisteredDomains, declarativeFolder);

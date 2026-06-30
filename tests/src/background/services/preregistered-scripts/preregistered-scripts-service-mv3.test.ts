@@ -157,9 +157,10 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
             expect(script.persistAcrossSessions).toBe(true);
             expect(script.allFrames).toBe(true);
 
-            // js should be an array with one path
+            // js array: [shared-bundle, per-domain-bundle]
             expect(Array.isArray(script.js)).toBe(true);
-            expect((script.js as string[])).toHaveLength(1);
+            expect((script.js as string[])).toHaveLength(2);
+            expect((script.js as string[])[0]).toBe('filters/preregistered-scripts/scriptlets-bundle.js');
         }
     });
 
@@ -173,7 +174,8 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
 
         const script = scripts.find((s) => s.id.includes('youtube.com'));
         expect(script).toBeDefined();
-        expect(script!.js[0]).toBe('filters/preregistered-scripts/youtube.com-5.js');
+        expect(script!.js[0]).toBe('filters/preregistered-scripts/scriptlets-bundle.js');
+        expect(script!.js[1]).toBe('filters/preregistered-scripts/youtube.com-5.js');
     });
 
     it('should construct the correct match patterns', async () => {

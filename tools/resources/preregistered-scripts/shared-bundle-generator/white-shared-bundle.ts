@@ -29,6 +29,12 @@ import { compileSharedScriptletsBundle } from './shared-bundle-generator';
 
 /**
  * Builds and writes the shared scriptlets bundle.
+ *
+ * @param scriptletNames Set of unique scriptlet names used across all domains.
+ * @param outputDir Directory to write the shared bundle file into.
+ *
+ * @returns Promise that resolves when the file has been written (or immediately
+ *   if `scriptletNames` is empty or the compiled bundle is empty).
  */
 export const writeSharedBundle = async (
     scriptletNames: Set<string>,

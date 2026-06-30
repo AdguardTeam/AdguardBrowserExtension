@@ -32,6 +32,11 @@ export type PreregisteredScriptsRegistry = Record<string, string[]>;
 
 /**
  * Builds the preregistered-scripts registry from collected ruleset data.
+ *
+ * @param domainRules JS rules grouped by domain and filter ID.
+ * @param domainScriptlets Scriptlet invocations grouped by domain and filter ID.
+ *
+ * @returns Registry mapping each domain to a sorted array of filter ID strings.
  */
 export const buildRegistry = (
     domainRules: DomainRules,
@@ -69,6 +74,12 @@ export const buildRegistry = (
 
 /**
  * Writes the registry as an ES module to disk.
+ *
+ * @param domainRules JS rules grouped by domain and filter ID.
+ * @param domainScriptlets Scriptlet invocations grouped by domain and filter ID.
+ * @param outputDir Directory to write the registry file into.
+ *
+ * @returns Promise that resolves when the file has been written.
  */
 export const writeRegistry = async (
     domainRules: DomainRules,
