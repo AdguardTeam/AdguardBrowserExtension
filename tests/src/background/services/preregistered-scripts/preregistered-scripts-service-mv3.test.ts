@@ -89,7 +89,8 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
         // Default: all filters 1-5 enabled
         mockGetEnabledFilters.mockReturnValue([1, 2, 3, 4, 5]);
         // Reset short-circuit cache between tests
-        PreregisteredScriptsService['lastSyncedKey'] = null;
+        // @ts-expect-error - accessing private field for test reset
+        PreregisteredScriptsService.lastSyncedKey = null;
     });
 
     it('should call syncContentScripts with the correct namespace', async () => {
@@ -360,5 +361,17 @@ describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
             expect.stringContaining('Failed to sync preregistered scripts'),
             expect.any(Error),
         );
+    });
+
+    it('should retry after a failed sync with the same filter set', async () => {
+        mockSyncContentScripts.mockRejectedValueOnce(new Error('temporary failure'));
+
+        await PreregisteredScriptsService.sync(true);
+        expect(mockSyncContentScripts).toHaveBeenCalledTimes(1);
+
+        // Second call with the same state should NOT be short-circuited
+        // because the first one failed and the key was never committed.
+        await PreregisteredScriptsService.sync(true);
+        expect(mockSyncContentScripts).toHaveBeenCalledTimes(2);
     });
 });

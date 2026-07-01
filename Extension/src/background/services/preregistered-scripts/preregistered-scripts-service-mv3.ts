@@ -160,8 +160,6 @@ export class PreregisteredScriptsService {
         if (syncKey === PreregisteredScriptsService.lastSyncedKey) {
             return;
         }
-        PreregisteredScriptsService.lastSyncedKey = syncKey;
-
         const allScripts: chrome.scripting.RegisteredContentScript[] = [];
 
         for (const [domain, filterIds] of Object.entries(preregisteredDomainScripts)) {
@@ -185,6 +183,9 @@ export class PreregisteredScriptsService {
 
         try {
             await TsWebExtension.syncContentScripts(PREREGISTERED_SCRIPTS_NAMESPACE, allScripts);
+            // Commit the key only after a successful sync so that a failed
+            // attempt does not permanently suppress future retries.
+            PreregisteredScriptsService.lastSyncedKey = syncKey;
         } catch (e) {
             logger.error('[ext.PreregisteredScriptsService.sync]: Failed to sync preregistered scripts', e);
         }

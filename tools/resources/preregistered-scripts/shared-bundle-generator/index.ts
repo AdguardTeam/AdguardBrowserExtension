@@ -18,4 +18,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { writeSharedBundle } from './white-shared-bundle';
+export { writeSharedBundle } from './write-shared-bundle';
