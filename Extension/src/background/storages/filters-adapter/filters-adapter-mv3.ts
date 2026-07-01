@@ -67,7 +67,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
     public static override async set(filterId: number, filter: string | FilterList): Promise<void> {
         // Do not allow to modify static filters in MV3.
         if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
-            logger.warn(`[ext.FiltersStoragesAdapter.set]: filter id ${filterId} is a static filter id, modifying it is not allowed from the extension.`);
+            logger.debug(`[ext.FiltersStoragesAdapter.set]: filter id ${filterId} is a static filter id, modifying it is not allowed from the extension.`);
             return;
         }
 
@@ -86,7 +86,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
     public static override async setRaw(filterId: number, filter: string): Promise<void> {
         // Do not allow to modify raw filter lists for static filters in MV3.
         if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
-            logger.warn(`[ext.FiltersStoragesAdapter.setRaw]: filter id ${filterId} is a static filter id, modifying it is not allowed from the extension.`);
+            logger.debug(`[ext.FiltersStoragesAdapter.setRaw]: filter id ${filterId} is a static filter id, modifying it is not allowed from the extension.`);
             return;
         }
 
@@ -112,7 +112,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
      */
     public static override async remove(filterId: number): Promise<void> {
         if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
-            logger.warn(`[ext.FiltersStoragesAdapter.remove]: filter id ${filterId} is a static filter id, removing it is not allowed from the extension.`);
+            logger.debug(`[ext.FiltersStoragesAdapter.remove]: filter id ${filterId} is a static filter id, removing it is not allowed from the extension.`);
             return;
         }
 
@@ -154,7 +154,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
      *
      * @returns True if the given ID represents a static filter, otherwise false.
      */
-    public static override isStaticFilterId(filterId: number): boolean {
+    protected static override isStaticFilterId(filterId: number): boolean {
         const staticFilterIds = FiltersStoragesAdapter.getStaticFilterIds();
 
         return staticFilterIds !== null && staticFilterIds.has(filterId);
