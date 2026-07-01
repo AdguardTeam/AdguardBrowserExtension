@@ -30,6 +30,7 @@
  */
 const config: string[] = [
     'youtube.com',
+    'drive2.ru',
 ];
 
 /** Domains for which preregistered scriptlet bundles should be generated. */
