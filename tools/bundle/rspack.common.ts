@@ -211,6 +211,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
         'configuration-import-api': path.resolve(__dirname, `../../Extension/src/background/api/settings/configuration-import/configuration-import-api-mv${manifestVersion}.ts`),
         'configuration-export-api': path.resolve(__dirname, `../../Extension/src/background/api/settings/configuration-export/configuration-export-api-mv${manifestVersion}.ts`),
         'fullscreen-user-rules-store': path.resolve(__dirname, `../../Extension/src/pages/fullscreen-user-rules/stores/FullscreenUserRulesStore-mv${manifestVersion}.ts`),
+        'filter-actions': path.resolve(__dirname, `../../Extension/src/pages/options/components/Filters/Filter/FilterActions-mv${manifestVersion}.ts`),
     };
 
     const configuration: Configuration = {

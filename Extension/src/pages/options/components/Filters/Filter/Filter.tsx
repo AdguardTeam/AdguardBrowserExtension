@@ -28,25 +28,23 @@ import React, { useContext, useState } from 'react';
 import { observer } from 'mobx-react';
 
 import cn from 'classnames';
+import { useFilterActions } from 'filter-actions';
 
-import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
-import { rootStore } from '../../stores/RootStore';
-import { translator } from '../../../../common/translators/translator';
-import { messenger } from '../../../services/messenger';
-import { Icon } from '../../../common/components/ui/Icon';
-import { ConfirmModal } from '../../../common/components/ConfirmModal';
-import { TRUSTED_TAG_ID, TRUSTED_TAG_KEYWORD } from '../../../../common/constants';
-import { addMinDelayLoader } from '../../../common/components/helpers';
-import { Popover } from '../../../common/components/ui/Popover';
-import { CustomFilterUtils } from '../../../../common/custom-filter-utils';
-import { getStaticWarningMessage } from '../../../common/utils/rules-limits-messages';
-import { type CategoriesFilterData } from '../../../../background/api/filters/categories';
+import { Setting, SETTINGS_TYPES } from '../../Settings/Setting';
+import { rootStore } from '../../../stores/RootStore';
+import { translator } from '../../../../../common/translators/translator';
+import { messenger } from '../../../../services/messenger';
+import { Icon } from '../../../../common/components/ui/Icon';
+import { ConfirmModal } from '../../../../common/components/ConfirmModal';
+import { TRUSTED_TAG_ID, TRUSTED_TAG_KEYWORD } from '../../../../../common/constants';
+import { addMinDelayLoader } from '../../../../common/components/helpers';
+import { Popover } from '../../../../common/components/ui/Popover';
+import { type CategoriesFilterData } from '../../../../../background/api/filters/categories';
+import { formatDate } from '../helpers';
+import { HighlightSearch } from '../Search/HighlightSearch';
+import { FilterTags } from '../FilterTags';
 
-import { formatDate } from './helpers';
-import { HighlightSearch } from './Search/HighlightSearch';
-import { FilterTags } from './FilterTags';
-
-import './filter.pcss';
+import '../filter.pcss';
 
 const FILTER_PREFIX = 'filter-';
 
@@ -55,7 +53,7 @@ const FILTER_PREFIX = 'filter-';
  *
  * @param filterId Filter id.
  *
- * @returns Filter if with prefix.
+ * @returns Filter id with prefix.
  */
 const addPrefix = (filterId: number): string => {
     return `${FILTER_PREFIX}${filterId}`;
@@ -88,9 +86,6 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
         filterId,
         description,
         version,
-        lastCheckTime,
-        lastScheduledCheckTime,
-        lastUpdateTime,
         homepage,
         enabled,
         tagsDetails = [],
@@ -106,6 +101,13 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
         customUrl = filter.customUrl;
     }
 
+    const {
+        updateFilterSetting,
+        optimistic,
+        getDisplayTimestamp,
+        checkLimitations,
+    } = useFilterActions(filter, groupEnabled);
+
     // Trusted tag can be only on custom filters,
     const tags = trusted
         ? [...tagsDetails, {
@@ -114,40 +116,6 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
             description: translator.getMessage('options_filters_filter_trusted_tag_desc'),
         }]
         : [...tagsDetails];
-
-    const updateFilterSettingMV3 = async (filterId: number, enabled: boolean) => {
-        if (CustomFilterUtils.isCustomFilter(filterId)) {
-            // for custom filters, we can't check limits before applying,
-            // so we need to check the after applying
-            await settingsStore.updateFilterSetting(filterId, enabled);
-            await settingsStore.checkLimitations();
-            return;
-        }
-
-        // check limits only if filter is enabled
-        if (enabled && groupEnabled) {
-            // for static rules, we can check limits before enabling
-            const result = await messenger.canEnableStaticFilter(filterId);
-            if (!result.ok && result.data) {
-                settingsStore.setFilterEnabledState(filterId, !enabled);
-
-                const staticFiltersLimitsWarning = getStaticWarningMessage(result.data);
-                if (staticFiltersLimitsWarning) {
-                    uiStore.addRuleLimitsNotification(staticFiltersLimitsWarning);
-                }
-
-                // We don't enable the filter if it exceeds the limit.
-                // [revert-checkbox] is used to revert the checkbox state.
-                throw new Error('Filter will exceed the limit. [revert-checkbox]');
-            }
-        }
-
-        await settingsStore.updateFilterSetting(filterId, enabled);
-    };
-
-    const updateFilterSettingMV2 = settingsStore.updateFilterSetting;
-
-    const updateFilterSetting = __IS_MV3__ ? updateFilterSettingMV3 : updateFilterSettingMV2;
 
     const handleFilterSwitch = async ({ id, data }: { id: string; data: boolean }) => {
         // remove prefix from filter id and parse it to number
@@ -175,10 +143,7 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
         }
 
         await updateFilterSettingWrapper(filterId, data);
-
-        if (__IS_MV3__) {
-            await settingsStore.checkLimitations();
-        }
+        await checkLimitations();
     };
 
     const handleRemoveFilterClick = async (e: React.MouseEvent) => {
@@ -192,10 +157,7 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
 
     const handleRemoveFilterConfirm = async () => {
         await settingsStore.removeCustomFilter(filterId);
-
-        if (__IS_MV3__) {
-            await settingsStore.checkLimitations();
-        }
+        await checkLimitations();
     };
 
     const handleRemoveFilterConfirmWrapper = addMinDelayLoader(
@@ -260,7 +222,7 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
                                         label={name}
                                         labelId={prefixedFilterTitleId}
                                         value={!!enabled}
-                                        optimistic={!__IS_MV3__}
+                                        optimistic={optimistic}
                                         disabled={disabled}
                                         handler={handleFilterSwitch}
                                     />
@@ -289,11 +251,7 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
                                         }
                                         {translator.getMessage('options_filters_filter_updated')}
                                         {' '}
-                                        {formatDate(Math.max(
-                                            lastUpdateTime || 0,
-                                            lastCheckTime || 0,
-                                            lastScheduledCheckTime || 0,
-                                        ))}
+                                        {formatDate(getDisplayTimestamp())}
                                     </div>
                                 </div>
                                 <a
