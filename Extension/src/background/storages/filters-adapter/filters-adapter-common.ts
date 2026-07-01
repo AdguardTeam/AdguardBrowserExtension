@@ -129,7 +129,7 @@ export class FiltersStoragesAdapterCommon {
      * @returns Always `false` in the base implementation.
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public static isStaticFilterId(_filterId: number): boolean {
+    protected static isStaticFilterId(_filterId: number): boolean {
         return false;
     }
 

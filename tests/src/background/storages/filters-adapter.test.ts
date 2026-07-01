@@ -35,6 +35,7 @@ import { FilterList } from '@adguard/tsurlfilter';
 
 import { mockLocalStorage } from '../../../helpers';
 import { FiltersStoragesAdapter } from '../../../../Extension/src/background/storages/filters-adapter';
+import { logger } from '../../../../Extension/src/common/logger';
 import {
     FiltersStorage as BrowserExtensionFiltersStorage,
     RawFiltersStorage,
@@ -187,6 +188,19 @@ describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
         expect(browserExtensionFiltersStorageSetSpy).not.toHaveBeenCalled();
     });
 
+    it('set should log static-write skip at debug level, not warn', async () => {
+        const debugSpy = vi.spyOn(logger, 'debug').mockImplementation(() => {});
+        const warnSpy = vi.spyOn(logger, 'warn').mockImplementation(() => {});
+
+        await FiltersStoragesAdapter.set(2, filter);
+
+        expect(warnSpy).not.toHaveBeenCalled();
+        expect(debugSpy).toHaveBeenCalled();
+
+        debugSpy.mockRestore();
+        warnSpy.mockRestore();
+    });
+
     it('setRaw should not save raw filter for static filters', async () => {
         await FiltersStoragesAdapter.setRaw(2, rawFilter);
 
@@ -197,6 +211,19 @@ describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
         await FiltersStoragesAdapter.setRaw(1, rawFilter);
 
         expect(rawFiltersStorageSetSpy).toHaveBeenCalledWith(1, rawFilter);
+    });
+
+    it('setRaw should log static-write skip at debug level, not warn', async () => {
+        const debugSpy = vi.spyOn(logger, 'debug').mockImplementation(() => {});
+        const warnSpy = vi.spyOn(logger, 'warn').mockImplementation(() => {});
+
+        await FiltersStoragesAdapter.setRaw(2, rawFilter);
+
+        expect(warnSpy).not.toHaveBeenCalled();
+        expect(debugSpy).toHaveBeenCalled();
+
+        debugSpy.mockRestore();
+        warnSpy.mockRestore();
     });
 
     it('has', async () => {
@@ -226,5 +253,18 @@ describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
         await FiltersStoragesAdapter.remove(2);
 
         expect(browserExtensionFiltersStorageRemoveSpy).not.toHaveBeenCalled();
+    });
+
+    it('remove should log static-write skip at debug level, not warn', async () => {
+        const debugSpy = vi.spyOn(logger, 'debug').mockImplementation(() => {});
+        const warnSpy = vi.spyOn(logger, 'warn').mockImplementation(() => {});
+
+        await FiltersStoragesAdapter.remove(2);
+
+        expect(warnSpy).not.toHaveBeenCalled();
+        expect(debugSpy).toHaveBeenCalled();
+
+        debugSpy.mockRestore();
+        warnSpy.mockRestore();
     });
 });
