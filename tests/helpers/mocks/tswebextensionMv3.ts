@@ -43,6 +43,12 @@ export class MockedTsWebExtensionMV3 {
      */
     public static setLocalScriptRules: Mock = vi.fn();
 
+    /**
+     * Static method to set preregistered script domains.
+     * In MV3, this is called as TsWebExtension.setPreregisteredScriptDomains(domains).
+     */
+    public static setPreregisteredScriptDomains: Mock = vi.fn();
+
     public start: Mock = vi.fn(async (): Promise<ConfigurationResult> => {
         this.isStarted = true;
         return Promise.resolve({
