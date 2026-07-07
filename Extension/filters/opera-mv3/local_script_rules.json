@@ -182,6 +182,22 @@
                 "restrictedDomains": []
             }
         ],
+        "document.addEventListener('click',function(e){var t=e.target.closest('.click_coupons_code');if(!t)return;e.stopPropagation();e.preventDefault();var u=t.dataset.hrefAlt||null;if(u)location.href=u},true);": [
+            {
+                "permittedDomains": [
+                    "pepper.ru"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "(function(){var i=setInterval(function(){var f=window.CashbackOpenCouponGlobal;if(f){window.CashbackOpenCouponGlobal=function(a){if(a&&a.IS_CODE){try{Cookies.set('CASHBACK_OPEN_OFFER',a.ID,{expires:new Date(Date.now()+1800000)});Cookies.set('CASHBACK_SCROLL_TOP',window.scrollY,{expires:new Date(Date.now()+1800000)})}catch(e){}var u=new URL(location.href);u.hash='';u.searchParams.delete('ncc');u.searchParams.delete('pr');u.searchParams.set('ncc','1');location.href=u.toString();return}return f(a)};clearInterval(i)}},5)})();": [
+            {
+                "permittedDomains": [
+                    "promokodi.net"
+                ],
+                "restrictedDomains": []
+            }
+        ],
         "!function(){const p={apply:(p,e,n)=>{const r=Reflect.apply(p,e,n),s=r?.[0]?.props?.data;return s&&null===s.user&&(r[0].props.data.user=\"guest\"),r}};window.JSON.parse=new Proxy(window.JSON.parse,p)}();": [
             {
                 "permittedDomains": [
@@ -3367,6 +3383,8 @@
         "(()=>{const e=/html-load\\.com|loader\\.min\\.js|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\.|:\\/\\/loader\\.|core\\.js|\\/sdk\\.js/,t={filter:Array.prototype.filter,includes:String.prototype.includes,regexTest:RegExp.prototype.test},o=()=>(new Error).stack,l=o=>t.regexTest.call(e,o),r={construct:(e,r,n)=>{const c=o();return l(c)&&r[0]&&t.includes.call(r[0],\"adshield\")&&(r[0]=[\"(function(){})();\"]),Reflect.construct(e,r,n)}};window.Blob=new Proxy(window.Blob,r);const n={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&(t.includes.call(n[0],\"new Error\")||t.includes.call(n[0],\".apply(this\"))&&(n[0]=()=>{}),Reflect.apply(e,r,n)}};window.setTimeout=new Proxy(window.setTimeout,n);const c={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&r?.includes?.(\"setTimeout\")&&(r=t.filter.call(r,(e=>!t.includes.call(e,\"setTimeout\")))),Reflect.apply(e,r,n)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,c)})();": [
             {
                 "permittedDomains": [
+                    "coolmathgames.com",
+                    "cardcluster.com",
                     "tbsradio.jp",
                     "mopo.de",
                     "kurashiru.com",
@@ -3598,6 +3616,14 @@
             }
         ],
         "(()=>{const e={apply:(e,t,o)=>{const n=Reflect.apply(e,t,o);if(n?.responseContext)try{delete n.adSlots,delete n.playerAds,n.playerConfig?.audioConfig?.muteOnStart&&(location.href.includes(\"/watch\")||n.cards&&!n.playabilityStatus?.miniplayer)&&(delete n.playerConfig.audioConfig.muteOnStart,n.messages[0]?.youThereRenderer&&delete n.messages[0].youThereRenderer)}catch(e){}return n}},t={apply:(t,o,n)=>{const r=n[0];return\"function\"==typeof r&&r.toString().includes(\"jspbResponseCtor\")&&(n[0]=new Proxy(r,e)),Reflect.apply(t,o,n)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t)})();": [
+            {
+                "permittedDomains": [
+                    "www.youtube.com"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "(()=>{let t=!1;const i={apply:(i,n,a)=>{try{!t&&window.ytInitialData&&(window.ytInitialData=JSON.parse(JSON.stringify(window.ytInitialData)),t=!0)}catch(t){}return Reflect.apply(i,n,a)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,i)})();": [
             {
                 "permittedDomains": [
                     "www.youtube.com"
@@ -4327,6 +4353,10 @@
         "window.addEventListener(\"contextmenu\",function(a){a.stopPropagation()},!0);": [
             {
                 "permittedDomains": [
+                    "anixtv.pro",
+                    "anixtv.in",
+                    "anixtv.us.cc",
+                    "anixx.fun",
                     "cloudorchestranova.com",
                     "nextgencloudfabric.com",
                     "anixx.fun",
@@ -4620,14 +4650,6 @@
             {
                 "permittedDomains": [
                     "hopesandfears.com"
-                ],
-                "restrictedDomains": []
-            }
-        ],
-        "(()=>{let t=!1;const i={apply:(i,n,a)=>{try{!t&&window.ytInitialData&&(window.ytInitialData=JSON.parse(JSON.stringify(window.ytInitialData)),t=!0)}catch(t){}return Reflect.apply(i,n,a)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,i)})();": [
-            {
-                "permittedDomains": [
-                    "www.youtube.com"
                 ],
                 "restrictedDomains": []
             }
