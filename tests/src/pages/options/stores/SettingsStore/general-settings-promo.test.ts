@@ -50,7 +50,7 @@ vi.mock('../../../../../../Extension/src/common/user-agent', () => ({
     },
 }));
 
-vi.mock('../../../../../../Extension/src/pages/options/services/messenger', () => ({
+vi.mock('../../../../../../Extension/src/pages/services/messenger', () => ({
     messenger: {
         getOptionsData: vi.fn(),
         saveAllowlist: vi.fn(() => Promise.resolve()),
@@ -199,6 +199,18 @@ describe('SettingsStoreCommon', () => {
                 createOptionsData({ showGeneralSettingsPromo: false }),
             );
             expect(store.showGeneralSettingsPromo).toBe(false);
+        });
+    });
+
+    describe('availableUpdateVersion initialization from applyOptionsData', () => {
+        it('should set availableUpdateVersion from options data', async () => {
+            const { store } = await createStore();
+
+            store.testApplyOptionsData(
+                createOptionsData({ availableUpdateVersion: '5.4.1' }),
+            );
+
+            expect(store.availableUpdateVersion).toBe('5.4.1');
         });
     });
 });

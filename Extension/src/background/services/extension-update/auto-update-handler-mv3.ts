@@ -30,7 +30,7 @@ import {
 } from './types';
 import { IdleDetector } from './idle-detector-mv3';
 import { type AutoUpdateStateManager } from './auto-update-state-manager-mv3';
-import { BackendUpdateChecker } from './backend-update-checker-mv3';
+import { BackendUpdateChecker } from './backend-update-checker';
 
 /**
  * Handles automatic update orchestration after Chrome downloads an update.

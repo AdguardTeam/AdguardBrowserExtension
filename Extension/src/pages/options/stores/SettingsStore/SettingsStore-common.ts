@@ -174,6 +174,9 @@ export abstract class SettingsStoreCommon {
     appVersion: string | null = null;
 
     @observable
+    availableUpdateVersion: string | undefined;
+
+    @observable
     libVersions: GetOptionsDataResponse['libVersions'] | null = null;
 
     @observable
@@ -351,6 +354,7 @@ export abstract class SettingsStoreCommon {
             this.setGroups(data.filtersMetadata.categories);
         }
         this.appVersion = data.appVersion;
+        this.setAvailableUpdateVersion(data.availableUpdateVersion);
         this.libVersions = data.libVersions;
         this.setAllowAcceptableAds(data.filtersMetadata.filters);
         this.setBlockKnownTrackers(data.filtersMetadata.filters);
@@ -360,6 +364,11 @@ export abstract class SettingsStoreCommon {
         this.showGeneralSettingsPromo = data.showGeneralSettingsPromo;
         this.showRuleLimitsVariantB = data.showRuleLimitsVariantB;
         this.optionsReadyToRender = true;
+    }
+
+    @action
+    setAvailableUpdateVersion(version: string | undefined): void {
+        this.availableUpdateVersion = version;
     }
 
     @action

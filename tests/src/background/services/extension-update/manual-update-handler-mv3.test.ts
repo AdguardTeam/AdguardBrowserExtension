@@ -34,7 +34,7 @@ import {
 } from '../../../../../Extension/src/background/services/extension-update/manual-update-handler-mv3';
 import {
     BackendUpdateChecker,
-} from '../../../../../Extension/src/background/services/extension-update/backend-update-checker-mv3';
+} from '../../../../../Extension/src/background/services/extension-update/backend-update-checker';
 import {
     AutoUpdateStateManager,
 } from '../../../../../Extension/src/background/services/extension-update/auto-update-state-manager-mv3';
@@ -47,7 +47,7 @@ import { ForwardFrom } from '../../../../../Extension/src/common/forward';
 
 // Mock BackendUpdateChecker to control its return values
 vi.mock(
-    '../../../../../Extension/src/background/services/extension-update/backend-update-checker-mv3',
+    '../../../../../Extension/src/background/services/extension-update/backend-update-checker',
     () => ({
         BackendUpdateChecker: {
             checkUpdate: vi.fn(),
@@ -174,7 +174,7 @@ describe('ManualUpdateHandler', () => {
         vi.restoreAllMocks();
     });
 
-    describe('check() — pre-download backend check', () => {
+    describe('check() - pre-download backend check', () => {
         it('calls requestUpdateCheck when backend reports update available', async () => {
             vi.mocked(BackendUpdateChecker.checkUpdate).mockResolvedValue({
                 status: UpdateCheckStatus.UpdateAvailable,
@@ -218,7 +218,7 @@ describe('ManualUpdateHandler', () => {
         });
     });
 
-    describe.skipIf(!__IS_MV3__)('check() — custom filters update when no extension update', () => {
+    describe.skipIf(!__IS_MV3__)('check() - custom filters update when no extension update', () => {
         it('calls updateCustomFilters when no extension update is found', async () => {
             vi.spyOn(FilterUpdateApi, 'updateCustomFilters').mockResolvedValue(undefined);
 
@@ -347,7 +347,7 @@ describe('ManualUpdateHandler', () => {
 
             await handler.onUpdateAvailable();
 
-            // The handler should still notify completion — analytics failure is swallowed
+            // The handler should still notify completion; analytics failure is swallowed.
             expect(onUpdateCheckComplete).toHaveBeenCalledWith(true);
         });
     });

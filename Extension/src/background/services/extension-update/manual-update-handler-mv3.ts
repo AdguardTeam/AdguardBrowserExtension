@@ -34,7 +34,7 @@ import {
     ManualUpdateMetadataValidator,
     UpdateCheckStatus,
 } from './types';
-import { BackendUpdateChecker } from './backend-update-checker-mv3';
+import { BackendUpdateChecker } from './backend-update-checker';
 import { type AutoUpdateStateManager } from './auto-update-state-manager-mv3';
 import { AutoUpdateStateField } from './types';
 

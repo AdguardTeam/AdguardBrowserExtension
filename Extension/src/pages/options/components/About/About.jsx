@@ -21,6 +21,8 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
+import cn from 'classnames';
+
 import { useTelemetryPageViewEvent } from '../../../common/telemetry';
 import { TelemetryScreenName } from '../../../../common/telemetry';
 import { rootStore } from '../../stores/RootStore';
@@ -43,7 +45,11 @@ const About = observer(() => {
 
     useTelemetryPageViewEvent(telemetryStore, TelemetryScreenName.AboutScreen);
 
-    const { appVersion, libVersions } = settingsStore;
+    const {
+        appVersion,
+        libVersions,
+        availableUpdateVersion,
+    } = settingsStore;
 
     if (!appVersion) {
         return null;
@@ -64,28 +70,35 @@ const About = observer(() => {
                     {translator.getMessage('options_about_title')}
                 </div>
                 <div className="about__version">
-                    {`${translator.getMessage('options_about_version')} ${appVersion}`}
-                    <p>
-                        {`TSWebExtension v${libVersions.tswebextension}`}
-                        <br />
-                        {`TSUrlFilter v${libVersions.tsurlfilter}`}
-                        <br />
-                        {`Scriptlets v${libVersions.scriptlets}`}
-                        <br />
-                        {`ExtendedCss v${libVersions.extendedCss}`}
-                        {libVersions.dnrRulesets && (
-                            <>
-                                <br />
-                                {`DNR rulesets v${libVersions.dnrRulesets}`}
-                            </>
-                        )}
+                    <p
+                        className={cn('about__current-version', {
+                            'about__current-version--with-update': availableUpdateVersion,
+                        })}
+                    >
+                        {`${translator.getMessage('options_about_version')} ${appVersion}`}
                     </p>
+                    {availableUpdateVersion && (
+                        <p className="about__update-available">
+                            {translator.getMessage('options_about_update_available', {
+                                version: availableUpdateVersion,
+                            })}
+                        </p>
+                    )}
+                    <ul className="about__libs">
+                        <li>{`TSWebExtension v${libVersions.tswebextension}`}</li>
+                        <li>{`TSUrlFilter v${libVersions.tsurlfilter}`}</li>
+                        <li>{`Scriptlets v${libVersions.scriptlets}`}</li>
+                        <li>{`ExtendedCss v${libVersions.extendedCss}`}</li>
+                        {libVersions.dnrRulesets && (
+                            <li>{`DNR rulesets v${libVersions.dnrRulesets}`}</li>
+                        )}
+                    </ul>
                 </div>
                 <div className="about__copyright">
-                    {copyRightText}
-                    {/* Hide following br tag so Screen Reader will read text together */}
-                    <br aria-hidden="true" />
-                    {translator.getMessage('options_copyright')}
+                    <span>{copyRightText}</span>
+                    <span className="about__copyright-reserved">
+                        {translator.getMessage('options_copyright')}
+                    </span>
                 </div>
                 <div className="links-menu">
                     <AboutLink href={CHANGELOG_URL} title={translator.getMessage('options_open_changelog')} />

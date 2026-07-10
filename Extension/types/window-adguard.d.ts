@@ -38,9 +38,9 @@ declare global {
             autoUpdate: (forceUpdate?: boolean) => Promise<FilterMetadata[]>;
 
             /**
-             * Used to mock update check in CWS for tests for MV3.
+             * Used to mock update check in CWS for tests.
              */
-            mockMv3UpdateCheckInCws: boolean | undefined;
+            mockUpdateCheckInCws: boolean | undefined;
         };
     }
 }
