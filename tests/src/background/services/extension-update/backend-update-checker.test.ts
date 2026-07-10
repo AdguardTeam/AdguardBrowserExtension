@@ -29,7 +29,7 @@ import {
 
 import {
     BackendUpdateChecker,
-} from '../../../../../Extension/src/background/services/extension-update/backend-update-checker-mv3';
+} from '../../../../../Extension/src/background/services/extension-update/backend-update-checker';
 import { UpdateCheckStatus } from '../../../../../Extension/src/background/services/extension-update/types';
 import { appContext, AppContextKey } from '../../../../../Extension/src/background/storages/app';
 

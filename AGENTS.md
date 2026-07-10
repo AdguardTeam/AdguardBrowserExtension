@@ -310,6 +310,8 @@ Descriptions must be complete sentences.
 - The ESLint rule `no-console: error` enforces this
 - Format: `[ext.ClassName.methodName]: message`
 - Example: `logger.warn('[ext.EventPauseController.forceResume]: Force resuming with pending changes:', data);`
+- Keep `logger.*` calls on one line. Logger calls are exempt from the line
+  length limit, so do not split them only to satisfy `max-len`.
 - The custom ESLint plugin `@adguard/logger-context` enforces context tags in
   logger calls
 

@@ -73,6 +73,7 @@ import { contextMenuEvents, settingsEvents } from '../events';
 import { KeepAlive } from '../keep-alive';
 import { getZodErrorMessage } from '../../common/error';
 import { NotImplementedError } from '../errors/not-implemented-error';
+import { updateCheckService } from '../services/update-check/update-check-service';
 
 /**
  * This class is app entry point.
@@ -234,6 +235,7 @@ export abstract class AppCommon {
         eventService.init();
 
         await this.manifestSpecificInit();
+        await this.initUpdateCheckService();
 
         /**
          * Called after eventService init and manifestSpecificInit, otherwise it won't handle messages.
@@ -305,6 +307,13 @@ export abstract class AppCommon {
      */
     protected static async manifestSpecificInit(): Promise<void> {
         throw new NotImplementedError();
+    }
+
+    /**
+     * Initializes the periodic extension update check service.
+     */
+    protected static async initUpdateCheckService(): Promise<void> {
+        await updateCheckService.init();
     }
 
     /**

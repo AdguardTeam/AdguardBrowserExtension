@@ -55,6 +55,7 @@ import {
     TelemetryScreenName,
 } from '../../telemetry';
 import { AG_52622_GENERAL_SETTINGS_PROMO_B, AG_52740_RULE_LIMITS_B } from '../../telemetry/abtest/constants';
+import { UpdateCheckService } from '../../update-check/update-check-service';
 
 /**
  * SettingsService handles all setting-related messages and
@@ -94,6 +95,7 @@ export abstract class SettingsServiceCommon {
         return {
             settings: SettingsApi.getData(),
             appVersion: Prefs.version,
+            availableUpdateVersion: await UpdateCheckService.getAvailableUpdateVersion(),
             libVersions: Prefs.libVersions,
             environmentOptions: {
                 isChrome: UserAgent.isChrome,

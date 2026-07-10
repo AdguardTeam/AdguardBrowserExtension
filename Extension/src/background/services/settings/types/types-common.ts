@@ -51,6 +51,13 @@ export type GetOptionsDataResponseCommon = {
     appVersion: string;
 
     /**
+     * Available extension update version, if any.
+     * Used in the About section to show update availability.
+     * Undefined if no update is available or not yet checked.
+     */
+    availableUpdateVersion?: string;
+
+    /**
      * Versions of the libraries used in the extension.
      */
     libVersions: {
