@@ -1524,7 +1524,7 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{const e=/free-download-form|'\\),_0x|\\)\\]\\(function\\(_0x/,o={apply:(e,o,t)=>{const n=t[0];\"boolean\"==typeof n&&!0===n&&(t[0]=!1),setTimeout((()=>Reflect.apply(e,o,t)),2e3)}},t={apply:(t,n,r)=>{const i=r[0];return\"function\"==typeof i&&e.test(i.toString())&&(r[0]=new Proxy(r[0],o)),Reflect.apply(t,n,r)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t),window.addEventListener(\"load\",(()=>{const e=document.querySelector(\"form#go-link button#link-button\");if(e){const o=e.cloneNode(!0);e.parentNode.replaceChild(o,e),o.removeAttribute(\"disabled\")}}))})();": [
+        "(()=>{const e=/free-download-form|'\\),_0x|\\)\\]\\(function\\(_0x|=>\\{return/,o={apply:(e,o,t)=>{const n=t[0];\"boolean\"==typeof n&&!0===n&&(t[0]=!1),setTimeout((()=>Reflect.apply(e,o,t)),2e3)}},t={apply:(t,n,r)=>{const i=r[0];return\"function\"==typeof i&&e.test(i.toString())&&(r[0]=new Proxy(r[0],o)),Reflect.apply(t,n,r)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t),window.addEventListener(\"load\",(()=>{const e=document.querySelector(\"form#go-link button#link-button\");if(e){const o=e.cloneNode(!0);e.parentNode.replaceChild(o,e),o.removeAttribute(\"disabled\")}}))})();": [
             {
                 "permittedDomains": [
                     "upfilesgo.com",
@@ -3077,7 +3077,7 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{const t={apply:(t,n,e)=>{const o=Reflect.apply(t,n,e);try{o instanceof HTMLIFrameElement&&(\"\"===o.src||\"about:blank\"===o.src)&&o.contentWindow&&(o.contentWindow.String=window.String,o.contentWindow.Function.prototype.call=window.Function.prototype.call,o.contentWindow.JSON.parse=window.JSON.parse,o.contentWindow.XMLHttpRequest.prototype=window.XMLHttpRequest.prototype)}catch(t){}return o}};window.Node.prototype.appendChild=new Proxy(window.Node.prototype.appendChild,t),window.Element.prototype.insertAdjacentElement=new Proxy(window.Element.prototype.insertAdjacentElement,t)})();": [
+        "(()=>{const t={apply:(t,e,o)=>{const n=Reflect.apply(t,e,o);try{n instanceof HTMLIFrameElement&&(\"\"===n.src||\"about:blank\"===n.src)&&n.contentWindow&&(n.contentWindow.String=window.String,n.contentWindow.Function.prototype.call=window.Function.prototype.call,n.contentWindow.JSON.parse=window.JSON.parse,n.contentWindow.XMLHttpRequest.prototype=window.XMLHttpRequest.prototype)}catch(t){}return n}};window.Node.prototype.appendChild=new Proxy(window.Node.prototype.appendChild,t),window.Node.prototype.insertBefore=new Proxy(window.Node.prototype.insertBefore,t),window.Element.prototype.insertAdjacentElement=new Proxy(window.Element.prototype.insertAdjacentElement,t)})();": [
             {
                 "permittedDomains": [
                     "facebook.com",
@@ -3347,6 +3347,8 @@
         "(()=>{const e=/html-load\\.com|loader\\.min\\.js|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\.|:\\/\\/loader\\.|core\\.js|\\/sdk\\.js/,t={filter:Array.prototype.filter,includes:String.prototype.includes,regexTest:RegExp.prototype.test},o=()=>(new Error).stack,l=o=>t.regexTest.call(e,o),r={construct:(e,r,n)=>{const c=o();return l(c)&&r[0]&&t.includes.call(r[0],\"adshield\")&&(r[0]=[\"(function(){})();\"]),Reflect.construct(e,r,n)}};window.Blob=new Proxy(window.Blob,r);const n={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&(t.includes.call(n[0],\"new Error\")||t.includes.call(n[0],\".apply(this\"))&&(n[0]=()=>{}),Reflect.apply(e,r,n)}};window.setTimeout=new Proxy(window.setTimeout,n);const c={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&r?.includes?.(\"setTimeout\")&&(r=t.filter.call(r,(e=>!t.includes.call(e,\"setTimeout\")))),Reflect.apply(e,r,n)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,c)})();": [
             {
                 "permittedDomains": [
+                    "gamebanana.com",
+                    "weerplaza.nl",
                     "coolmathgames.com",
                     "cardcluster.com",
                     "tbsradio.jp",
@@ -3695,6 +3697,14 @@
             {
                 "permittedDomains": [
                     "play.nova.bg"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "(()=>{window.addEventListener(\"click\",(function(t){const e=t?.target?.closest?.(\".BottomRecirc a[href].Post-item\");e&&(t.preventDefault(),location.assign(e.href))}),!0);})();": [
+            {
+                "permittedDomains": [
+                    "imgur.com"
                 ],
                 "restrictedDomains": []
             }
@@ -4309,6 +4319,7 @@
         "window.addEventListener(\"contextmenu\",function(a){a.stopPropagation()},!0);": [
             {
                 "permittedDomains": [
+                    "kisskh.*",
                     "anixtv.pro",
                     "anixtv.in",
                     "anixtv.us.cc",
