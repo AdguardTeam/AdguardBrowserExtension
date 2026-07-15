@@ -2,6 +2,7 @@
  * Copyright (c) 2015-2026 Adguard Software Ltd.
  *
  * @file
+ * Common BackendUpdateChecker - shared by both MV2 and MV3 update check flows.
  * This file is part of AdGuard Browser Extension (https://github.com/AdguardTeam/AdguardBrowserExtension).
  *
  * AdGuard Browser Extension is free software: you can redistribute it and/or modify
@@ -30,6 +31,31 @@ import {
     UpdateCheckStatus,
     type UpdateCheckResult,
 } from './types';
+
+/**
+ * Backend API route used for extension update checks.
+ */
+const CHECK_UPDATE_ROUTE = 'check_update';
+
+/**
+ * Backend API browser path values.
+ */
+const enum BackendBrowserType {
+    Chrome = 'chrome',
+    Firefox = 'firefox',
+    Edge = 'edge',
+    Opera = 'opera',
+}
+
+/**
+ * Backend API query parameter names.
+ */
+const enum BackendQueryParam {
+    AppId = 'app_id',
+    ExtensionId = 'ex_id',
+    Version = 'version',
+    BrowserVersion = 'browser_version',
+}
 
 /**
  * Service responsible for checking extension update availability
@@ -106,13 +132,13 @@ export class BackendUpdateChecker {
                 return { status: UpdateCheckStatus.Error, error: e };
             }
 
-            // 204 No Content — no update available
+            // 204 No Content - no update available.
             if (response.status === BackendUpdateChecker.HTTP_NO_CONTENT) {
                 logger.debug('[ext.BackendUpdateChecker.checkUpdate]: Backend returned 204 (no update available)');
                 return { status: UpdateCheckStatus.NoContent };
             }
 
-            // Non-200 — treat as error
+            // Non-200 - treat as error.
             if (response.status !== BackendUpdateChecker.HTTP_OK) {
                 logger.debug(`[ext.BackendUpdateChecker.checkUpdate]: Backend returned unexpected status ${response.status}`);
                 return {
@@ -121,7 +147,7 @@ export class BackendUpdateChecker {
                 };
             }
 
-            // 200 OK — parse and validate response body
+            // 200 OK - parse and validate response body.
             let json: unknown;
             try {
                 json = await response.json();
@@ -138,7 +164,7 @@ export class BackendUpdateChecker {
 
             const backendVersion = parseResult.data.version;
 
-            // Compare versions: only treat as update if backend version is strictly greater
+            // Compare versions: only treat as update if backend version is strictly greater.
             const { currentAppVersion } = await getRunInfo();
             const currentVersion = new Version(currentAppVersion);
             const latestVersion = new Version(backendVersion);
@@ -173,11 +199,11 @@ export class BackendUpdateChecker {
             throw new Error('Client ID is not available yet');
         }
 
-        const url = new URL(`${BackendUpdateChecker.BACKEND_BASE_URL}/${browserType}/check_update`);
-        url.searchParams.set('app_id', clientId);
-        url.searchParams.set('ex_id', Prefs.id);
-        url.searchParams.set('version', Prefs.version);
-        url.searchParams.set('browser_version', UserAgent.parser.getBrowser().version || '');
+        const url = new URL(`${BackendUpdateChecker.BACKEND_BASE_URL}/${browserType}/${CHECK_UPDATE_ROUTE}`);
+        url.searchParams.set(BackendQueryParam.AppId, clientId);
+        url.searchParams.set(BackendQueryParam.ExtensionId, Prefs.id);
+        url.searchParams.set(BackendQueryParam.Version, Prefs.version);
+        url.searchParams.set(BackendQueryParam.BrowserVersion, UserAgent.parser.getBrowser().version || '');
 
         return url.href;
     }
@@ -186,19 +212,19 @@ export class BackendUpdateChecker {
      * Determines the browser type for the API path variable
      * based on runtime user agent detection.
      *
-     * @returns Browser type string: 'chrome', 'firefox', 'edge', or 'opera'.
+     * @returns Browser type string: chrome, firefox, edge, or opera.
      */
-    private static getBrowserType(): string {
+    private static getBrowserType(): BackendBrowserType {
         if (UserAgent.isEdge) {
-            return 'edge';
+            return BackendBrowserType.Edge;
         }
         if (UserAgent.isOpera) {
-            return 'opera';
+            return BackendBrowserType.Opera;
         }
         if (UserAgent.isFirefox) {
-            return 'firefox';
+            return BackendBrowserType.Firefox;
         }
-        return 'chrome';
+        return BackendBrowserType.Chrome;
     }
 
     /**
@@ -208,7 +234,7 @@ export class BackendUpdateChecker {
      */
     private static shouldMockVersion(): boolean {
         // eslint-disable-next-line no-restricted-globals
-        return !!self.adguard?.mockMv3UpdateCheckInCws;
+        return !!self.adguard?.mockUpdateCheckInCws;
     }
 
     /**

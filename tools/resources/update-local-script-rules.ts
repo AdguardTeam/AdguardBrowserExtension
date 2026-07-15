@@ -63,7 +63,7 @@ import {
     type Mv3AssetsFiltersBrowser,
 } from '../constants';
 
-import { extractPreprocessedRawFilterList, readMetadataRuleSet } from './filter-extractor';
+import { extractPreprocessedFilterContent, readMetadataRuleset } from './filter-extractor';
 import { TESTCASES_RULES } from './testcases-rules';
 
 const exec = promisify(execCallback);
@@ -457,15 +457,15 @@ export const updateLocalResourcesForMv3 = async (browser: Mv3AssetsFiltersBrowse
         'declarative',
     );
 
-    const metadataRuleSet = await readMetadataRuleSet(folder);
-    const ruleSetIds = metadataRuleSet.getRuleSetIds();
+    const metadataRuleset = await readMetadataRuleset(folder);
+    const rulesetIds = metadataRuleset.getRulesetIds();
 
     const jsRules: Set<string> = new Set();
 
     // eslint-disable-next-line no-restricted-syntax
-    for (const ruleSetId of ruleSetIds) {
-        const rawFilterList = await extractPreprocessedRawFilterList(ruleSetId, folder);
-        const filterListNode = FilterListParser.parse(rawFilterList, {
+    for (const rulesetId of rulesetIds) {
+        const filterContent = await extractPreprocessedFilterContent(rulesetId, folder);
+        const filterListNode = FilterListParser.parse(filterContent, {
             ...defaultParserOptions,
             includeRaws: false,
             isLocIncluded: false,

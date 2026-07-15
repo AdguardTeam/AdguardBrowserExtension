@@ -69,6 +69,18 @@ export const AUTO_UPDATE_STATE_KEY_MV3 = 'auto-update-state-mv3';
 export const AUTO_UPDATE_CONFIG_KEY_MV3 = 'auto-update-config-mv3';
 
 /**
+ * Storage keys for the periodic extension update check service.
+ *
+ * - `timestamp`: Timestamp of the last successful check, used to determine if 24h has elapsed.
+ * - `availableVersion`: Version reported by the backend as available.
+ *   Absent/undefined means no update is available.
+ */
+export const EXTENSION_UPDATE_CHECK_KEYS = {
+    timestamp: 'extension-update-check-timestamp',
+    availableVersion: 'extension-update-available-version',
+} as const;
+
+/**
  * Storage key for filtering log window state (position and size),
  * persisted in browser.storage.local.
  */
@@ -168,6 +180,7 @@ export enum NotifierType {
     SettingUpdated = 'event.update.setting.value',
     FiltersUpdateCheckReady = 'event.update.filters.check',
     ExtensionUpdateStateChange = 'event.update.extension.state.change',
+    AvailableUpdateVersionChanged = 'event.update.available.version.changed',
     // Filtering log events.
     TabAdded = 'log.tab.added',
     TabClose = 'log.tab.close',

@@ -18,7 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { type ConversionData, FilterList } from '@adguard/tsurlfilter';
+import { type ConversionData, FilterList } from '@adguard/tswebextension';
 
 import { logger } from '../../../common/logger';
 import { FiltersStorage as BrowserExtensionFiltersStorage } from '../filters';
@@ -129,7 +129,7 @@ export class FiltersStoragesAdapterCommon {
      * @returns Always `false` in the base implementation.
      */
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public static isStaticFilterId(_filterId: number): boolean {
+    protected static isStaticFilterId(_filterId: number): boolean {
         return false;
     }
 

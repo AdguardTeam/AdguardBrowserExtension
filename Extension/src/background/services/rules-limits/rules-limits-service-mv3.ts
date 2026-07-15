@@ -74,9 +74,9 @@ const {
 } = browser.declarativeNetRequest;
 
 /**
- * RuleSetCounter interface.
+ * RulesetCounter interface.
  */
-interface RuleSetCounter {
+interface RulesetCounter {
     filterId: number;
     rulesCount: number;
     regexpRulesCount: number;
@@ -85,8 +85,8 @@ interface RuleSetCounter {
 /**
  * Map of ruleset counters.
  */
-interface RuleSetCountersMap {
-    [key: number]: RuleSetCounter;
+interface RulesetCountersMap {
+    [key: number]: RulesetCounter;
 }
 
 /**
@@ -155,13 +155,13 @@ export class RulesLimitsService {
      *
      * @returns A map of ruleset counters.
      */
-    private static getRuleSetsCountersMap = (result: ConfigurationResult): RuleSetCountersMap => {
-        const counters = result.staticFilters.reduce((acc: { [key: number]: RuleSetCounter }, ruleset) => {
+    private static getRulesetsCountersMap = (result: ConfigurationResult): RulesetCountersMap => {
+        const counters = result.staticFilters.reduce((acc: { [key: number]: RulesetCounter }, ruleset) => {
             const filterId = Number(ruleset.getId().slice(RULESET_NAME_PREFIX.length));
 
             acc[filterId] = {
                 filterId,
-                rulesCount: ruleset.getRulesCount(),
+                rulesCount: ruleset.getSafeRulesCount() + ruleset.getUnsafeRulesCount(),
                 regexpRulesCount: ruleset.getRegexpRulesCount(),
             };
 
@@ -175,18 +175,18 @@ export class RulesLimitsService {
      * Returns an array of ruleset counters.
      *
      * @param filters List of filters with metadata.
-     * @param ruleSetsCounters A map of ruleset counters.
+     * @param rulesetsCounters A map of ruleset counters.
      *
      * @returns An array of ruleset counters by filters ids.
      */
-    private static getRuleSetCounters(
+    private static getRulesetCounters(
         filters: FilterMetadata[],
-        ruleSetsCounters: RuleSetCountersMap,
-    ): RuleSetCounter[] {
+        rulesetsCounters: RulesetCountersMap,
+    ): RulesetCounter[] {
         return filters
             .filter((f) => !CustomFilterUtils.isCustomFilter(f.filterId))
-            .map((filter) => ruleSetsCounters[filter.filterId])
-            .filter((ruleSet): ruleSet is RuleSetCounter => ruleSet !== undefined);
+            .map((filter) => rulesetsCounters[filter.filterId])
+            .filter((ruleset): ruleset is RulesetCounter => ruleset !== undefined);
     }
 
     /**
@@ -199,13 +199,13 @@ export class RulesLimitsService {
      *
      * @throws Error if the ruleset counter is not found.
      */
-    private static getStaticRuleSetCounter(result: ConfigurationResult, filterId: number): RuleSetCounter {
-        const ruleSetsCounters = RulesLimitsService.getRuleSetsCountersMap(result);
-        const ruleSetsCounter = ruleSetsCounters[filterId];
-        if (!ruleSetsCounter) {
-            throw new Error(`RuleSetCounter for filterId ${filterId} not found`);
+    private static getStaticRulesetCounter(result: ConfigurationResult, filterId: number): RulesetCounter {
+        const rulesetsCounters = RulesLimitsService.getRulesetsCountersMap(result);
+        const rulesetsCounter = rulesetsCounters[filterId];
+        if (!rulesetsCounter) {
+            throw new Error(`RulesetCounter for filterId ${filterId} not found`);
         }
-        return ruleSetsCounter;
+        return rulesetsCounter;
     }
 
     /**
@@ -213,7 +213,7 @@ export class RulesLimitsService {
      *
      * NOTE: AdGuard includes a metadata rule (id=1) at the start of each
      * generated static ruleset JSON file. Chrome counts this rule against the
-     * global 330,000 budget, but `RuleSet.getRulesCount()` does not include it.
+     * global 330,000 budget, but `Ruleset.getRulesCount()` does not include it.
      * This method adds +1 per enabled ruleset to match Chrome's actual
      * consumption count.
      *
@@ -223,12 +223,12 @@ export class RulesLimitsService {
      * @returns The number of static rules enabled.
      */
     private static getStaticRulesEnabledCount(result: ConfigurationResult, filters: FilterMetadata[]): number {
-        const ruleSetsCounters = RulesLimitsService.getRuleSetsCountersMap(result);
+        const rulesetsCounters = RulesLimitsService.getRulesetsCountersMap(result);
 
-        const ruleSets = RulesLimitsService.getRuleSetCounters(filters, ruleSetsCounters);
+        const rulesets = RulesLimitsService.getRulesetCounters(filters, rulesetsCounters);
 
-        return ruleSets.reduce((sum, ruleSet) => {
-            return sum + ruleSet.rulesCount + 1;
+        return rulesets.reduce((sum, ruleset) => {
+            return sum + ruleset.rulesCount + 1;
         }, 0);
     }
 
@@ -241,12 +241,12 @@ export class RulesLimitsService {
      * @returns Count of the regexp rules.
      */
     private static getStaticRulesRegexpsCount(result: ConfigurationResult, filters: FilterMetadata[]): number {
-        const ruleSetsCounters = RulesLimitsService.getRuleSetsCountersMap(result);
+        const rulesetsCounters = RulesLimitsService.getRulesetsCountersMap(result);
 
-        const ruleSets = RulesLimitsService.getRuleSetCounters(filters, ruleSetsCounters);
+        const rulesets = RulesLimitsService.getRulesetCounters(filters, rulesetsCounters);
 
-        return ruleSets.reduce((sum, ruleSet) => {
-            return sum + ruleSet.regexpRulesCount;
+        return rulesets.reduce((sum, ruleset) => {
+            return sum + ruleset.regexpRulesCount;
         }, 0);
     }
 
@@ -301,7 +301,10 @@ export class RulesLimitsService {
      */
     private static getDynamicRulesEnabledCount(result: ConfigurationResult): number {
         const rulesLimitExceedErr = RulesLimitsService.getRulesLimitExceedErr(result);
-        const declarativeRulesCount = result.dynamicRules?.ruleSet.getRulesCount() || 0;
+        const ruleset = result.dynamicRules?.ruleset;
+        const declarativeRulesCount = ruleset
+            ? ruleset.getSafeRulesCount() + ruleset.getUnsafeRulesCount()
+            : 0;
         return rulesLimitExceedErr?.numberOfMaximumRules || declarativeRulesCount;
     }
 
@@ -337,7 +340,8 @@ export class RulesLimitsService {
      * @returns Number rules.
      */
     private static getDynamicRegexpRulesEnabledCount(result: ConfigurationResult): number {
-        const regexpsCount = result.dynamicRules?.ruleSet.getRegexpRulesCount() || 0;
+        const ruleset = result.dynamicRules?.ruleset;
+        const regexpsCount = ruleset ? ruleset.getRegexpRulesCount() : 0;
 
         const regexpRulesLimitExceedErr = RulesLimitsService.getRegexpRulesLimitExceedErr(result);
         const excludedRulesCount = regexpRulesLimitExceedErr?.excludedRulesIds.length || 0;
@@ -365,7 +369,8 @@ export class RulesLimitsService {
      * @returns Count of enabled dynamic unsafe rules.
      */
     private static getDynamicUnsafeRulesEnabledCount(result: ConfigurationResult): number {
-        const unsafeRulesCount = result.dynamicRules?.ruleSet.getUnsafeRulesCount() || 0;
+        const ruleset = result.dynamicRules?.ruleset;
+        const unsafeRulesCount = ruleset ? ruleset.getUnsafeRulesCount() : 0;
 
         const unsafeRulesLimitExceedErr = RulesLimitsService.getUnsafeRulesLimitExceedErr(result);
         const excludedRulesCount = unsafeRulesLimitExceedErr?.excludedRulesIds.length || 0;
@@ -421,9 +426,9 @@ export class RulesLimitsService {
      * @returns Filters which rulesets (we have 1 to 1 relation) actually enabled.
      */
     private static async getActuallyEnabledFilters(): Promise<number[]> {
-        const enabledRuleSetsIds = await chrome.declarativeNetRequest.getEnabledRulesets();
+        const enabledRulesetsIds = await chrome.declarativeNetRequest.getEnabledRulesets();
 
-        return enabledRuleSetsIds.map((id) => Number.parseInt(id.slice(RULESET_NAME_PREFIX.length), 10));
+        return enabledRulesetsIds.map((id) => Number.parseInt(id.slice(RULESET_NAME_PREFIX.length), 10));
     }
 
     /**
@@ -758,14 +763,19 @@ export class RulesLimitsService {
         }
 
         const availableStaticRulesCount = await browser.declarativeNetRequest.getAvailableStaticRuleCount();
-        const filterStaticRulesCount = RulesLimitsService.getStaticRuleSetCounter(result, filterId);
-        if (filterStaticRulesCount.rulesCount > availableStaticRulesCount) {
+        const filterStaticRulesCount = RulesLimitsService.getStaticRulesetCounter(result, filterId);
+        // +1 for the metadata rule Chrome counts at the start of each static
+        // ruleset (`Ruleset.getRulesCount()` excludes it; see
+        // `getStaticRulesEnabledCount`). Without it the check undercounts and can
+        // admit a ruleset Chrome will actually reject when near the global limit.
+        const filterStaticRulesTotalCount = filterStaticRulesCount.rulesCount + 1;
+        if (filterStaticRulesTotalCount > availableStaticRulesCount) {
             return {
                 ok: false,
                 data: {
                     type: 'static',
                     rulesCount: {
-                        current: filterStaticRulesCount.rulesCount,
+                        current: filterStaticRulesTotalCount,
                         maximum: availableStaticRulesCount,
                     },
                 },
@@ -851,8 +861,11 @@ export class RulesLimitsService {
 
         const { totalStaticRulesCount, totalRegexpRulesCount } = filterIds.reduce(
             (acc, filterId) => {
-                const filterStaticRulesCount = RulesLimitsService.getStaticRuleSetCounter(result, filterId);
-                acc.totalStaticRulesCount += filterStaticRulesCount.rulesCount;
+                const filterStaticRulesCount = RulesLimitsService.getStaticRulesetCounter(result, filterId);
+                // +1 for the metadata rule Chrome counts per ruleset (see
+                // `getStaticRulesEnabledCount`) so the admission check matches
+                // Chrome's actual static-rule consumption.
+                acc.totalStaticRulesCount += filterStaticRulesCount.rulesCount + 1;
                 acc.totalRegexpRulesCount += filterStaticRulesCount.regexpRulesCount;
                 return acc;
             },

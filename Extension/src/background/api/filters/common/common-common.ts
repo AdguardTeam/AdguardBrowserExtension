@@ -168,12 +168,10 @@ export class CommonFilterApiCommon {
         // Note: we should join array of rules here, because they contain
         // preprocessed directives, e.g. including another filter via `!#include`
         // directive.
-        // In MV3, static filters are managed by TSWebExtension, so we skip
-        // writing them to the extension's own storage.
-        if (!FiltersStoragesAdapter.isStaticFilterId(filterUpdateOptions.filterId)) {
-            await FiltersStoragesAdapter.set(filterUpdateOptions.filterId, filter.join(NEWLINE_CHAR_UNIX));
-            await FiltersStoragesAdapter.setRaw(filterUpdateOptions.filterId, rawFilter);
-        }
+        // The adapter is responsible for skipping static filters in MV3, so
+        // callers do not need to branch on the filter type.
+        await FiltersStoragesAdapter.set(filterUpdateOptions.filterId, filter.join(NEWLINE_CHAR_UNIX));
+        await FiltersStoragesAdapter.setRaw(filterUpdateOptions.filterId, rawFilter);
 
         return filterMetadata;
     }

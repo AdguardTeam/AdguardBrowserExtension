@@ -30,6 +30,8 @@ import {
     type Worker,
 } from 'playwright';
 
+import { type Configuration } from '@adguard/tswebextension/mv3';
+
 import { MessageType } from '../../../Extension/src/common/messages/constants';
 import { setTsWebExtensionConfig } from '../page-injections';
 import { DEFAULT_EXTENSION_CONFIG } from '../test-constants';
@@ -132,15 +134,18 @@ export const isChromiumEngineStartedLog = (message: string): boolean => {
  *
  * @param entry E2E matrix entry.
  * @param extensionPath Unpacked extension path.
- * @param options Launch options; set cleanProfile to false to reuse the persistent
- * Chromium profile across launches (default: true — profile is deleted).
+ * @param options.cleanProfile If false, reuse the persistent profile (default: true).
+ * @param options.config Configuration to inject, null to skip, undefined for DEFAULT_EXTENSION_CONFIG.
  *
  * @returns Chromium E2E session.
  */
 export const launchChromiumE2ESession = async (
     entry: E2EMatrixEntry,
     extensionPath: string,
-    { cleanProfile = true }: { cleanProfile?: boolean } = {},
+    { cleanProfile = true, config }: {
+        cleanProfile?: boolean;
+        config?: Configuration | null;
+    } = {},
 ): Promise<ChromiumE2ESession> => {
     if (cleanProfile) {
         fs.rmSync(path.join('tmp', 'e2e', entry.id), { recursive: true, force: true });
@@ -165,7 +170,7 @@ export const launchChromiumE2ESession = async (
     if (entry.isMv3) {
         backgroundTarget = await getMv3BackgroundTarget(context);
         extensionId = getExtensionIdFromUrl(backgroundTarget.url());
-        await configureChromiumTsWebExtension(backgroundTarget);
+        await configureChromiumTsWebExtension(backgroundTarget, config);
     } else {
         backgroundTarget = await getMv2BackgroundTarget(context);
         extensionId = getExtensionIdFromUrl(backgroundTarget.url());
@@ -398,18 +403,30 @@ const waitForChromiumEngineStartedFromContext = (context: BrowserContext): Promi
 };
 
 /**
- * Applies the default browser-test TSWebExtension configuration.
+ * Applies the browser-test TSWebExtension configuration.
+ *
+ * When config is null, only waits for the config hook (SW ready) without injecting.
  *
  * @param target Extension background target.
+ * @param config Configuration to inject, null to skip, or undefined for default.
  *
  * @returns Nothing.
  */
-const configureChromiumTsWebExtension = async (target: Page | Worker): Promise<void> => {
+const configureChromiumTsWebExtension = async (
+    target: Page | Worker,
+    config?: Configuration | null,
+): Promise<void> => {
     await waitForChromiumTsWebExtensionConfigHook(target);
 
-    await target.evaluate<void, typeof DEFAULT_EXTENSION_CONFIG>(
+    if (config === null) {
+        return;
+    }
+
+    const configToUse = config ?? DEFAULT_EXTENSION_CONFIG;
+
+    await target.evaluate<void, Configuration>(
         setTsWebExtensionConfig,
-        DEFAULT_EXTENSION_CONFIG,
+        configToUse,
     );
 };
 

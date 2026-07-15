@@ -32,7 +32,7 @@ import {
 } from 'vitest';
 
 import { FilterList } from '@adguard/tswebextension';
-import { getRuleSetId, getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
+import { getRulesetId, getRulesetPath } from '@adguard/dnr-converter';
 
 import { network } from '../../../../../Extension/src/background/api/network';
 import { HitStatsApi } from '../../../../../Extension/src/background/api/filters/hit-stats';
@@ -79,9 +79,9 @@ describe('Hit Stats Api', () => {
                 declarative_net_request: {
                     rule_resources: [
                         {
-                            id: getRuleSetId(filterId),
+                            id: getRulesetId(filterId),
                             enabled: true,
-                            path: getRuleSetPath(filterId),
+                            path: getRulesetPath(filterId),
                         },
                     ],
                 },

@@ -21,9 +21,8 @@
 import browser from 'webextension-polyfill';
 
 import { FiltersStorage as TsWebExtensionFiltersStorage } from '@adguard/tswebextension/filters-storage';
-import { extractRuleSetId } from '@adguard/tsurlfilter/es/declarative-converter-utils';
-import { METADATA_RULESET_ID } from '@adguard/tsurlfilter/es/declarative-converter';
-import { type ConversionData, type FilterList } from '@adguard/tsurlfilter';
+import { extractRulesetId, METADATA_RULESET_ID } from '@adguard/dnr-converter';
+import { type ConversionData, type FilterList } from '@adguard/tswebextension';
 
 import { logger } from '../../../common/logger';
 
@@ -67,7 +66,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
     public static override async set(filterId: number, filter: string | FilterList): Promise<void> {
         // Do not allow to modify static filters in MV3.
         if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
-            logger.warn(`[ext.FiltersStoragesAdapter.set]: filter id ${filterId} is a static filter id, modifying it is not allowed from the extension.`);
+            logger.debug(`[ext.FiltersStoragesAdapter.set]: filter id ${filterId} is a static filter id, modifying it is not allowed from the extension.`);
             return;
         }
 
@@ -86,7 +85,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
     public static override async setRaw(filterId: number, filter: string): Promise<void> {
         // Do not allow to modify raw filter lists for static filters in MV3.
         if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
-            logger.warn(`[ext.FiltersStoragesAdapter.setRaw]: filter id ${filterId} is a static filter id, modifying it is not allowed from the extension.`);
+            logger.debug(`[ext.FiltersStoragesAdapter.setRaw]: filter id ${filterId} is a static filter id, modifying it is not allowed from the extension.`);
             return;
         }
 
@@ -112,7 +111,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
      */
     public static override async remove(filterId: number): Promise<void> {
         if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
-            logger.warn(`[ext.FiltersStoragesAdapter.remove]: filter id ${filterId} is a static filter id, removing it is not allowed from the extension.`);
+            logger.debug(`[ext.FiltersStoragesAdapter.remove]: filter id ${filterId} is a static filter id, removing it is not allowed from the extension.`);
             return;
         }
 
@@ -154,7 +153,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
      *
      * @returns True if the given ID represents a static filter, otherwise false.
      */
-    public static override isStaticFilterId(filterId: number): boolean {
+    protected static override isStaticFilterId(filterId: number): boolean {
         const staticFilterIds = FiltersStoragesAdapter.getStaticFilterIds();
 
         return staticFilterIds !== null && staticFilterIds.has(filterId);
@@ -180,7 +179,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
 
         FiltersStoragesAdapter.staticFilterIds = new Set(
             manifest.declarative_net_request.rule_resources
-                .map(({ id }) => extractRuleSetId(id))
+                .map(({ id }) => extractRulesetId(id))
                 // Metadata ruleset is not a real ruleset, so we should not include it in the list of static rulesets.
                 // Also, its ID is conflicting with the ID of User Rules.
                 .filter((id): id is number => id !== null && id !== METADATA_RULESET_ID),
