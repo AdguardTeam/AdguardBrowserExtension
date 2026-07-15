@@ -27,6 +27,8 @@ import {
 } from 'vitest';
 import { type Tabs } from 'webextension-polyfill';
 
+import { type DeclarativeRuleInfo } from 'tswebextension';
+
 import { FilteringLogApi } from '../../../../Extension/src/background/api/filtering-log';
 
 const tabId = 1;
@@ -411,6 +413,94 @@ describe('FilteringLogApi', () => {
 
             expect(filteringLogApi.getFilteringInfoByTabId(BACKGROUND_TAB_ID)?.filteringEvents)
                 .toHaveLength(0);
+        });
+    });
+
+    describe('attachDeclarativeRuleToEventData', () => {
+        it('sets declarative rule info for the first matching event (single match)', async () => {
+            const filteringLogApi = new FilteringLogApi();
+            await filteringLogApi.synchronizeOpenTabs(); // registers tab 1
+            filteringLogApi.onOpenFilteringLogPage();
+
+            filteringLogApi.addEventData(tabId, { eventId });
+
+            const declarativeRuleInfo: DeclarativeRuleInfo = {
+                declarativeRuleJson: '{"id":1}',
+                sourceRules: [{ sourceRule: '||example.com^', filterId: 1 }],
+            };
+
+            await filteringLogApi.attachDeclarativeRuleToEventData(tabId, eventId, declarativeRuleInfo);
+
+            const event = filteringLogApi.getFilteringInfoByTabId(tabId)?.filteringEvents[0];
+            expect(event?.declarativeRuleInfo).toEqual(declarativeRuleInfo);
+        });
+
+        // onRuleMatchedDebug fires once per matched DNR rule, so the same
+        // request/eventId can be reported multiple times. Verify that source
+        // rules accumulate while the declarative rule json is kept deliberately.
+        it('accumulates source rules across multiple matches and keeps the first declarative rule json', async () => {
+            const filteringLogApi = new FilteringLogApi();
+            await filteringLogApi.synchronizeOpenTabs();
+            filteringLogApi.onOpenFilteringLogPage();
+
+            filteringLogApi.addEventData(tabId, { eventId });
+
+            const first: DeclarativeRuleInfo = {
+                declarativeRuleJson: '{"id":1}',
+                sourceRules: [{ sourceRule: '||first.com^', filterId: 1 }],
+            };
+            const second: DeclarativeRuleInfo = {
+                declarativeRuleJson: '{"id":2}',
+                sourceRules: [
+                    { sourceRule: '||second-a.com^', filterId: 2 },
+                    { sourceRule: '||second-b.com^', filterId: 2 },
+                ],
+            };
+
+            await filteringLogApi.attachDeclarativeRuleToEventData(tabId, eventId, first);
+            await filteringLogApi.attachDeclarativeRuleToEventData(tabId, eventId, second);
+
+            const event = filteringLogApi.getFilteringInfoByTabId(tabId)?.filteringEvents[0];
+            // Source rules from both calls are merged.
+            expect(event?.declarativeRuleInfo?.sourceRules).toEqual([
+                { sourceRule: '||first.com^', filterId: 1 },
+                { sourceRule: '||second-a.com^', filterId: 2 },
+                { sourceRule: '||second-b.com^', filterId: 2 },
+            ]);
+            // declarativeRuleJson intentionally keeps the first matched DNR rule.
+            expect(event?.declarativeRuleInfo?.declarativeRuleJson).toBe('{"id":1}');
+        });
+
+        it('does nothing when the filtering log is closed', async () => {
+            const filteringLogApi = new FilteringLogApi();
+            await filteringLogApi.synchronizeOpenTabs();
+            // Filtering log is closed: events are not collected.
+
+            filteringLogApi.addEventData(tabId, { eventId });
+
+            await filteringLogApi.attachDeclarativeRuleToEventData(tabId, eventId, {
+                declarativeRuleJson: '{"id":1}',
+                sourceRules: [{ sourceRule: '||example.com^', filterId: 1 }],
+            });
+
+            const event = filteringLogApi.getFilteringInfoByTabId(tabId)?.filteringEvents[0];
+            expect(event?.declarativeRuleInfo).toBeUndefined();
+        });
+
+        it('does nothing when the event is not found', async () => {
+            const filteringLogApi = new FilteringLogApi();
+            await filteringLogApi.synchronizeOpenTabs();
+            filteringLogApi.onOpenFilteringLogPage();
+
+            filteringLogApi.addEventData(tabId, { eventId });
+
+            await filteringLogApi.attachDeclarativeRuleToEventData(tabId, 'unknown-id', {
+                declarativeRuleJson: '{"id":1}',
+                sourceRules: [{ sourceRule: '||example.com^', filterId: 1 }],
+            });
+
+            const event = filteringLogApi.getFilteringInfoByTabId(tabId)?.filteringEvents[0];
+            expect(event?.declarativeRuleInfo).toBeUndefined();
         });
     });
 

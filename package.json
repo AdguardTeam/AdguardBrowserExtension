@@ -20,7 +20,7 @@
         "test:e2e": "rimraf tmp/e2e && mkdir -p tests-reports && tsx tools/browser-test/e2e/vitest-runner.ts",
         "locales": "tsx tools/locales.js",
         "resources": "tsx tools/resources.ts",
-        "resources:mv3": "pnpm remove @adguard/dnr-rulesets && pnpm add -D @adguard/dnr-rulesets@~4.2 && tsx tools/resources-mv3.ts",
+        "resources:mv3": "pnpm remove @adguard/dnr-rulesets && pnpm add -D @adguard/dnr-rulesets@~5.0 && tsx tools/resources-mv3.ts",
         "resources:mv3:extract-unsafe-rules": "pnpm exec dnr-rulesets exclude-unsafe-rules ./Extension/filters/chromium-mv3/declarative",
         "resources:blocking-pages": "tsx tools/resources/download-blocking-pages.ts",
         "lint:code": "eslint --cache --max-warnings=0 --ext .jsx,.js,.cjs,.mjs,.tsx,.ts .",
@@ -48,7 +48,7 @@
         "pnpm": ">=10.33.4 <11"
     },
     "devDependencies": {
-        "@adguard/dnr-rulesets": "~4.2",
+        "@adguard/dnr-rulesets": "~5.0",
         "@adguard/eslint-plugin-logger-context": "1.0.1",
         "@adguard/re2-wasm": "1.2.0",
         "@csstools/postcss-global-data": "4.0.0",
@@ -142,6 +142,7 @@
     },
     "dependencies": {
         "@adguard/agtree": "4.1.1",
+        "@adguard/dnr-converter": "1.0.0-alpha.2",
         "@adguard/filters-downloader": "2.4.4",
         "@adguard/logger": "2.0.0",
         "@adguard/scriptlets": "2.4.2",
@@ -187,5 +188,12 @@
         "xstate": "5.19.0",
         "zod": "3.24.4",
         "zod-validation-error": "3.4.0"
+    },
+    "pnpm": {
+        "overrides": {
+            "@adguard/tswebextension": "link:../tsurlfilter/packages/tswebextension",
+            "@adguard/tsurlfilter": "link:../tsurlfilter/packages/tsurlfilter",
+            "@adguard/dnr-rulesets": "link:../tsurlfilter/packages/dnr-rulesets"
+        }
     }
 }

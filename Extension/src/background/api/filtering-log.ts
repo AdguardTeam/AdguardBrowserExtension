@@ -534,29 +534,25 @@ export class FilteringLogApi {
             return;
         }
 
-        /**
-         * Search for matching request event inside of filtering events.
-         * If found matching event we assign declarative rule to that event,
-         * otherwise assign it to original event.
-         */
-        const { sourceRules } = declarativeRuleInfo;
-
-        const matchedFilteringEvent = filteringEvents.find((event) => {
-            if (!event.requestRule) {
-                return false;
+        // Merge source rules when multiple DNR rules match the same request.
+        // `sourceRules` accumulate so the log shows every original rule that
+        // contributed to a match, while `declarativeRuleJson` intentionally
+        // keeps the first matched DNR rule (the log renders a single
+        // declarative rule per event).
+        if (event.declarativeRuleInfo) {
+            // Deduplicate by (filterId, sourceRule) before merging to guard
+            // against late or out-of-order `onRuleMatchedDebug` callbacks
+            // attaching the same source rule to the same event twice.
+            const existingRules = event.declarativeRuleInfo.sourceRules;
+            for (const sourceRule of declarativeRuleInfo.sourceRules) {
+                const isDuplicate = existingRules.some((existingRule) => (
+                    existingRule.filterId === sourceRule.filterId
+                    && existingRule.sourceRule === sourceRule.sourceRule
+                ));
+                if (!isDuplicate) {
+                    existingRules.push(sourceRule);
+                }
             }
-
-            const { originalRuleText, appliedRuleText, filterId } = event.requestRule;
-            const ruleText = originalRuleText || appliedRuleText;
-
-            return ruleText && sourceRules.some((rule) => (
-                rule.sourceRule === ruleText
-                && rule.filterId === filterId
-            ));
-        });
-
-        if (matchedFilteringEvent) {
-            matchedFilteringEvent.declarativeRuleInfo = declarativeRuleInfo;
         } else {
             event.declarativeRuleInfo = declarativeRuleInfo;
         }

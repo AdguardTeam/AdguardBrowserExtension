@@ -21,9 +21,8 @@
 import browser from 'webextension-polyfill';
 
 import { FiltersStorage as TsWebExtensionFiltersStorage } from '@adguard/tswebextension/filters-storage';
-import { extractRuleSetId } from '@adguard/tsurlfilter/es/declarative-converter-utils';
-import { METADATA_RULESET_ID } from '@adguard/tsurlfilter/es/declarative-converter';
-import { type ConversionData, type FilterList } from '@adguard/tsurlfilter';
+import { extractRulesetId, METADATA_RULESET_ID } from '@adguard/dnr-converter';
+import { type ConversionData, type FilterList } from '@adguard/tswebextension';
 
 import { logger } from '../../../common/logger';
 
@@ -180,7 +179,7 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
 
         FiltersStoragesAdapter.staticFilterIds = new Set(
             manifest.declarative_net_request.rule_resources
-                .map(({ id }) => extractRuleSetId(id))
+                .map(({ id }) => extractRulesetId(id))
                 // Metadata ruleset is not a real ruleset, so we should not include it in the list of static rulesets.
                 // Also, its ID is conflicting with the ID of User Rules.
                 .filter((id): id is number => id !== null && id !== METADATA_RULESET_ID),

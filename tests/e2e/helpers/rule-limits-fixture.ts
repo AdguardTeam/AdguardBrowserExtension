@@ -26,8 +26,8 @@ import {
     type DeclarativeRule,
     ResourceType,
     RuleActionType,
-} from '@adguard/tsurlfilter/es/declarative-converter';
-import { getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
+    getRulesetPath,
+} from '@adguard/dnr-converter';
 
 /**
  * Number of rules to generate per oversized ruleset.
@@ -49,12 +49,19 @@ const METADATA_RULESET_ID = 'ruleset_0';
  * Shape of a single generated DNR rule entry in an oversized ruleset.
  */
 type GeneratedDnrRule = DeclarativeRule & {
-    /**
-     * Empty metadata object required by the extension's ruleset JSON format —
-     * every rule entry must have it, though the oversized test rules carry no
-     * actual metadata.
-     */
-    metadata: Record<string, never>;
+    /** Metadata required by the extension's ruleset JSON format. */
+    metadata: Record<string, unknown>;
+};
+
+/**
+ * Metadata for the first rule (id=1) in each oversized ruleset.
+ * RulesetsLoaderApi reads filterContent from parsedRuleset[0].metadata;
+ * without it, sync throws a destructure error.
+ */
+const FIRST_RULE_METADATA: Record<string, unknown> = {
+    filterContent: '',
+    metadata: {},
+    lazyMetadata: {},
 };
 
 /**
@@ -66,12 +73,13 @@ type GeneratedDnrRule = DeclarativeRule & {
  */
 const createRuleEntry = (i: number): GeneratedDnrRule => ({
     id: i,
-    action: { type: RuleActionType.BLOCK },
+    action: { type: RuleActionType.Block },
     condition: {
         urlFilter: `test-rule-${i}.adguard.com`,
         resourceTypes: [ResourceType.XmlHttpRequest],
     },
-    metadata: {},
+    // First rule carries metadata; all others have empty metadata.
+    metadata: i === 1 ? FIRST_RULE_METADATA : {},
 });
 
 /**
@@ -116,33 +124,27 @@ const replaceRulesetWithOversized = async (
     oversizedRulesetPath: string,
 ): Promise<void> => {
     const declarativeDir = path.join(extensionDir, DECLARATIVE_DIR);
-    const destFile = getRuleSetPath(rulesetName, declarativeDir);
+    const destFile = getRulesetPath(rulesetName, declarativeDir);
 
     await fs.copyFile(oversizedRulesetPath, destFile);
 };
 
 /**
  * Shape of a single entry in ruleset_0.json.
- *
- * Contains a dummy DNR rule and a metadata section with checksums
- * for all bundled rulesets.
  */
 interface MetadataRulesetEntry {
     id: number;
     action: { type: string };
     condition: { urlFilter: string; resourceTypes: string[] };
     metadata: {
-        byteRangeMapsCollection: Record<string, unknown>;
         checksums: Record<string, string>;
     };
 }
 
 /**
- * Updates checksums in ruleset_0.json to match the replaced oversized rulesets.
- *
- * `RuleSetsLoaderApi.syncRuleSetWithIdb` re-syncs a ruleset from disk only when
- * its checksum changes. Updating the checksum here forces a cache miss so
- * the oversized ruleset is loaded.
+ * Updates checksums in ruleset_0.json to match replaced oversized rulesets.
+ * Forces RulesetsLoaderApi to reload the oversized rulesets (cache miss on
+ * checksum change).
  *
  * @param extensionDir Absolute path to the unpacked extension root.
  * @param checksums Map of ruleset name → new MD5 checksum.
@@ -154,7 +156,7 @@ const updateRulesetZeroChecksums = async (
     checksums: Record<string, string>,
 ): Promise<void> => {
     const declarativeDir = path.join(extensionDir, DECLARATIVE_DIR);
-    const rulesetZeroPath = getRuleSetPath(METADATA_RULESET_ID, declarativeDir);
+    const rulesetZeroPath = getRulesetPath(METADATA_RULESET_ID, declarativeDir);
 
     const raw = await fs.readFile(rulesetZeroPath, 'utf-8');
     const parsed: MetadataRulesetEntry[] = JSON.parse(raw);
@@ -188,9 +190,6 @@ const OVERSIZED_RULESET_NAMES = ['ruleset_2', 'ruleset_10'];
  * @param extensionPath Absolute path to the unpacked extension root.
  */
 export const applyOversizedRulesets = async (extensionPath: string): Promise<void> => {
-    // Temporary directory for generated oversized rulesets — lives next to the
-    // unpacked extension. Cleaned up in the finally block below; the parent
-    // tmp/e2e cleanup covers abnormal exits should anything go wrong.
     const tmpDir = path.join(extensionPath, '..', '.oversized-rulesets-tmp');
     await fs.mkdir(tmpDir, { recursive: true });
 

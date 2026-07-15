@@ -27,6 +27,8 @@ import {
     it,
 } from 'vitest';
 
+import { type Configuration } from '@adguard/tswebextension/mv3';
+
 import { logInfo, logSection } from '../../tools/browser-test/logger';
 import { unpackE2EArtifact } from '../../tools/browser-test/e2e/artifacts';
 import {
@@ -35,7 +37,10 @@ import {
     launchE2ESession,
     openE2ESurface,
 } from '../../tools/browser-test/e2e/session';
-import { E2ESurfaceId } from '../../tools/browser-test/e2e/types';
+import { E2EBrowserEngine, E2ESurfaceId } from '../../tools/browser-test/e2e/types';
+import { DEFAULT_EXTENSION_CONFIG } from '../../tools/browser-test/test-constants';
+import { ADGUARD_SETTINGS_KEY } from '../../Extension/src/common/constants';
+import { SettingOption } from '../../Extension/src/background/schema/settings/enum';
 
 import {
     expectNoErrors,
@@ -51,8 +56,20 @@ const e2eMatrix = getE2EMatrix();
 
 /**
  * Timeout for waiting for a DOM element to appear, in milliseconds.
+ * Large rulesets can keep the SW busy on slow CI hosts.
  */
-const SELECTOR_WAIT_TIMEOUT_MS = 10_000;
+const SELECTOR_WAIT_TIMEOUT_MS = 30_000;
+
+/**
+ * Locale-independent selector for the rule limits notification button.
+ * Matches both popup and options page notification structures.
+ */
+const RULE_LIMITS_NOTIFICATION_BUTTON_SELECTOR = '.notifications .notification .notification__content button';
+
+/**
+ * Selector for the rule limits notification container (used for negative checks).
+ */
+const RULE_LIMITS_NOTIFICATION_SELECTOR = '.notifications .notification';
 
 /**
  * Short timeout for negative checks — verifying an element does NOT appear.
@@ -64,6 +81,51 @@ const ABSENT_SELECTOR_TIMEOUT_MS = 2000;
  * Must not exceed vitest.config.ts hookTimeout (120_000).
  */
 const BEFORE_ALL_TIMEOUT_MS = 120_000;
+
+/**
+ * Enable the English filter (2) and Search & Self-Promo filter (10).
+ * These rulesets will be replaced with oversized versions.
+ */
+const RULE_LIMITS_CONFIG: Configuration = {
+    ...DEFAULT_EXTENSION_CONFIG,
+    staticFiltersIds: [2, 10],
+};
+
+/**
+ * Browser-context callbacks run via Playwright `evaluate`. Their bodies close
+ * over no Node-scope variables — keys/values are passed as the second
+ * `evaluate` argument because the callback executes in the browser page.
+ */
+
+/**
+ * Browser-context: writes the injected filter-state and rules-limits into
+ * chrome.storage.local.
+ */
+const injectFiltersState = async (args: {
+    settingsKey: string;
+    filtersStateKey: string;
+    filterState: string;
+}) => {
+    const result = await chrome.storage.local.get(args.settingsKey);
+    const settings = result[args.settingsKey] ?? {};
+    settings[args.filtersStateKey] = args.filterState;
+    await chrome.storage.local.set({
+        [args.settingsKey]: settings,
+        'rules-limits': JSON.stringify([2, 10]),
+    });
+};
+
+/**
+ * Browser-context: reads filters-state back from chrome.storage.local to
+ * confirm the injected value persisted.
+ */
+const readPersistedFiltersState = async (args: {
+    settingsKey: string;
+    filtersStateKey: string;
+}) => {
+    const result = await chrome.storage.local.get(args.settingsKey);
+    return result[args.settingsKey]?.[args.filtersStateKey];
+};
 
 logSection(`E2E rule limits tests (${e2eEnv})`);
 logInfo(`Selected matrix: ${e2eMatrix.map((entry) => entry.id).join(', ')}`);
@@ -87,7 +149,9 @@ mv3Entries.forEach((entry) => {
 
         beforeAll(async () => {
             logInfo('[rule-limits] Launching Chromium session (clean extension)');
-            e2eSession = await launchE2ESession(entry, extensionPath);
+            e2eSession = await launchE2ESession(entry, extensionPath, {
+                config: RULE_LIMITS_CONFIG,
+            });
         }, BEFORE_ALL_TIMEOUT_MS);
 
         afterAll(async () => {
@@ -105,12 +169,10 @@ mv3Entries.forEach((entry) => {
                 const page = await openE2ESurface(session, entry, surface);
 
                 try {
-                    // Wait for the popup to finish loading — the protection
-                    // switch is always visible once the UI is ready.
                     await page.waitForSelector('button[role="switch"]', SELECTOR_WAIT_TIMEOUT_MS);
                     await expect(
                         page.waitForSelector(
-                            'button[title="Rule limits"]',
+                            RULE_LIMITS_NOTIFICATION_SELECTOR,
                             ABSENT_SELECTOR_TIMEOUT_MS,
                         ),
                     ).rejects.toThrow();
@@ -128,7 +190,7 @@ mv3Entries.forEach((entry) => {
                     await page.waitForSelector('#root .page', SELECTOR_WAIT_TIMEOUT_MS);
                     await expect(
                         page.waitForSelector(
-                            'button[title="Rule limits"]',
+                            RULE_LIMITS_NOTIFICATION_SELECTOR,
                             ABSENT_SELECTOR_TIMEOUT_MS,
                         ),
                     ).rejects.toThrow();
@@ -140,28 +202,75 @@ mv3Entries.forEach((entry) => {
     });
 
     /**
-     * Test strategy:
-     * 1. Launch with normal rulesets → extension records expected filters
-     *    in IndexedDB / chrome.storage.local.
-     * 2. Close browser — persistent Chromium profile stays on disk.
-     * 3. Replace ruleset_2 + ruleset_10 with oversized versions, update checksums.
-     * 4. Re-launch with same profile. Extension remembers expected filters,
-     *    but Chrome disables some (budget exceeded).
-     *    Mismatch → areFilterLimitsExceeded = true → notification.
+     * Two-session approach: dev builds ship no text-rule files, so
+     * initDefaultFilters() can't enable filters on first install. We use a
+     * setup session to inject filter-state + rules-limits into storage, then
+     * relaunch with cleanProfile: false so the new SW sees the injected state
+     * and triggers areFilterLimitsExceeded() when oversized rulesets exceed
+     * Chrome's static-rule budget.
      */
     describe(`[rule-limits] ${entry.id} — with oversized rulesets`, () => {
         let e2eSession: E2ESession | undefined;
 
         beforeAll(async () => {
-            logInfo('[rule-limits] Warm-up launch (normal rulesets)');
-            const cleanSession = await launchE2ESession(entry, extensionPath);
-            await closeE2ESession(cleanSession);
-
-            logInfo('[rule-limits] Injecting oversized rulesets');
+            logInfo('[rule-limits] Injecting oversized rulesets (before launch)');
             await applyOversizedRulesets(extensionPath);
 
-            logInfo('[rule-limits] Relaunching (oversized rulesets)');
-            e2eSession = await launchE2ESession(entry, extensionPath, { cleanProfile: false });
+            logInfo('[rule-limits] Launching setup session (clean profile)');
+            const setupSession = await launchE2ESession(entry, extensionPath, {
+                config: null,
+            });
+
+            // This test is MV3-only, so the session is always Chromium. Narrow
+            // the E2ESession discriminated union by engine to obtain a typed
+            // background target instead of downcasting to `any`.
+            if (setupSession.engine !== E2EBrowserEngine.PlaywrightChromium) {
+                throw new Error('[rule-limits] setup session requires Chromium');
+            }
+            const setupTarget = setupSession.session.backgroundTarget;
+
+            // Inject filter-state {2,10} and rules-limits [2,10], retrying
+            // until the value persists. The SW's post-init storage saves can
+            // race with ours and overwrite filter-state; this read-back replaces
+            // a fragile fixed-delay wait.
+            logInfo('[rule-limits] Writing filter state to storage');
+            const injectedFilterState = JSON.stringify({
+                2: { enabled: true, installed: true, loaded: true },
+                10: { enabled: true, installed: true, loaded: true },
+            });
+            const SETTLE_MAX_ATTEMPTS = 60;
+            const SETTLE_INTERVAL_MS = 250;
+            for (let attempt = 0; attempt < SETTLE_MAX_ATTEMPTS; attempt += 1) {
+                await setupTarget.evaluate(injectFiltersState, {
+                    settingsKey: ADGUARD_SETTINGS_KEY,
+                    filtersStateKey: SettingOption.FiltersState,
+                    filterState: injectedFilterState,
+                });
+
+                const persisted = await setupTarget.evaluate(readPersistedFiltersState, {
+                    settingsKey: ADGUARD_SETTINGS_KEY,
+                    filtersStateKey: SettingOption.FiltersState,
+                });
+
+                if (persisted === injectedFilterState) {
+                    break;
+                }
+                if (attempt === SETTLE_MAX_ATTEMPTS - 1) {
+                    throw new Error('[rule-limits] Timed out waiting for injected filter state to persist');
+                }
+                await new Promise((resolve) => {
+                    setTimeout(resolve, SETTLE_INTERVAL_MS);
+                });
+            }
+
+            logInfo('[rule-limits] Closing setup session');
+            await closeE2ESession(setupSession);
+
+            logInfo('[rule-limits] Launching test session (reusing profile)');
+            e2eSession = await launchE2ESession(entry, extensionPath, {
+                config: null,
+                cleanProfile: false,
+            });
         }, BEFORE_ALL_TIMEOUT_MS);
 
         afterAll(async () => {
@@ -176,10 +285,14 @@ mv3Entries.forEach((entry) => {
             const page = await openE2ESurface(session, entry, surface);
 
             try {
-                await page.waitForSelector('button[title="Rule limits"]', SELECTOR_WAIT_TIMEOUT_MS);
+                await page.waitForSelector('button[role="switch"]', SELECTOR_WAIT_TIMEOUT_MS);
+                await page.waitForSelector(
+                    RULE_LIMITS_NOTIFICATION_BUTTON_SELECTOR,
+                    SELECTOR_WAIT_TIMEOUT_MS,
+                );
 
                 expect(
-                    await page.querySelectorCount('button[title="Rule limits"]'),
+                    await page.querySelectorCount(RULE_LIMITS_NOTIFICATION_BUTTON_SELECTOR),
                 ).toBeGreaterThan(0);
 
                 const bgErrors = await page.getBackgroundErrors();
@@ -196,9 +309,12 @@ mv3Entries.forEach((entry) => {
 
             try {
                 await page.waitForSelector('#root .page', SELECTOR_WAIT_TIMEOUT_MS);
-                await page.waitForSelector('button[title="Rule limits"]', SELECTOR_WAIT_TIMEOUT_MS);
+                await page.waitForSelector(
+                    RULE_LIMITS_NOTIFICATION_BUTTON_SELECTOR,
+                    SELECTOR_WAIT_TIMEOUT_MS,
+                );
 
-                await page.clickSelector('button[title="Rule limits"]');
+                await page.clickSelector(RULE_LIMITS_NOTIFICATION_BUTTON_SELECTOR);
                 await page.waitForSelector('.rules-limits', SELECTOR_WAIT_TIMEOUT_MS);
 
                 const bgErrors = await page.getBackgroundErrors();

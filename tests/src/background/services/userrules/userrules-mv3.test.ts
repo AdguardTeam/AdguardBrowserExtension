@@ -118,7 +118,7 @@ describe.skipIf(!__IS_MV3__)('UserRulesService MV3 - checkUserRulesErrors', () =
     it('should log UnsupportedRegexpError with rule text', () => {
         const mockNode = { type: 'NetworkRule' };
         const error = Object.create(UnsupportedRegexpError.prototype);
-        error.networkRule = { node: mockNode };
+        error.rule = { node: mockNode };
         error.message = 'Regexp is too complex';
 
         const result = {

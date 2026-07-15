@@ -19,37 +19,40 @@
  */
 import { readFile } from 'fs/promises';
 
-import { METADATA_RULESET_ID, MetadataRuleSet } from '@adguard/tsurlfilter/es/declarative-converter';
-import { getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
+import {
+    METADATA_RULESET_ID,
+    MetadataRuleset,
+    getRulesetPath,
+} from '@adguard/dnr-converter';
 
 /**
- * Reads a metadata rule set from a folder.
+ * Reads a metadata ruleset from a folder.
  *
- * @param folder The folder to read the metadata rule set from.
+ * @param folder The folder to read the metadata ruleset from.
  *
- * @returns A Promise that resolves to the metadata rule set.
+ * @returns A Promise that resolves to the metadata ruleset.
  */
-export const readMetadataRuleSet = async (folder: string): Promise<MetadataRuleSet> => {
-    const metadataRuleSetPath = getRuleSetPath(METADATA_RULESET_ID, folder);
-    const content = await readFile(metadataRuleSetPath, 'utf-8');
-    return MetadataRuleSet.deserialize(content);
+export const readMetadataRuleset = async (folder: string): Promise<MetadataRuleset> => {
+    const metadataRulesetPath = getRulesetPath(METADATA_RULESET_ID, folder);
+    const content = await readFile(metadataRulesetPath, 'utf-8');
+    return MetadataRuleset.deserialize(content);
 };
 
 /**
- * Extracts the original raw filter list from a rule set.
+ * Extracts the original filter content from a ruleset.
  *
- * @param ruleSetId The path to the rule set.
- * @param folder The folder containing the rule set.
+ * @param rulesetId The path to the ruleset.
+ * @param folder The folder containing the ruleset.
  *
- * @returns A Promise that resolves to the original raw filter list.
+ * @returns A Promise that resolves to the original filter content.
  */
-export const extractPreprocessedRawFilterList = async (
-    ruleSetId: string,
+export const extractPreprocessedFilterContent = async (
+    rulesetId: string,
     folder: string,
 ): Promise<string> => {
-    const ruleSetPath = getRuleSetPath(ruleSetId, folder);
-    const rawRuleSetContent = await readFile(ruleSetPath, 'utf-8');
-    const ruleSetContent = JSON.parse(rawRuleSetContent);
+    const rulesetPath = getRulesetPath(rulesetId, folder);
+    const rawRulesetContent = await readFile(rulesetPath, 'utf-8');
+    const rulesetContent = JSON.parse(rawRulesetContent);
 
-    return ruleSetContent[0].metadata.rawFilterList;
+    return rulesetContent[0].metadata.filterContent;
 };

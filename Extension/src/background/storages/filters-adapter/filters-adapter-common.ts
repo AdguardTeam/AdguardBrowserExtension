@@ -18,7 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { type ConversionData, FilterList } from '@adguard/tsurlfilter';
+import { type ConversionData, FilterList } from '@adguard/tswebextension';
 
 import { logger } from '../../../common/logger';
 import { FiltersStorage as BrowserExtensionFiltersStorage } from '../filters';

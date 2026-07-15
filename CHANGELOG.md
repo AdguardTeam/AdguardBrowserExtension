@@ -16,6 +16,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Migrated declarative network rule conversion from
+  `@adguard/tsurlfilter/es/declarative-converter` to the dedicated
+  `@adguard/dnr-converter` package.
+- Aligned internal `RuleSet`/`ruleSet` identifiers to `Ruleset`/`ruleset` to match
+  the renamed linked libraries (`@adguard/dnr-converter`, `@adguard/tswebextension`).
+- Filtering log now accumulates `declarativeRuleInfo.sourceRules` across multiple
+  DNR matches for the same event instead of overwriting the previous value.
+- Aligned `RuleActionType` enum casing to PascalCase (`BLOCK` → `Block`, etc.) to
+  match the `@adguard/dnr-converter` API.
 - User rules error reporting in MV3 now logs dynamic rule conversion errors.
 
 ### Fixed

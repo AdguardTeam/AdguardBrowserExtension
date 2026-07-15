@@ -25,7 +25,7 @@ import assert from 'node:assert';
 import { Option, program } from 'commander';
 
 import { AssetsLoader } from '@adguard/dnr-rulesets';
-import { convertFilters } from '@adguard/tsurlfilter/cli';
+import { convertFilters } from '@adguard/dnr-converter/cli';
 
 import {
     Browser,

@@ -41,7 +41,7 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
         --frozen-lockfile \
         --prefer-offline \
         --ignore-scripts && \
-    npx lerna run build --scope=@adguard/tswebextension --include-dependencies
+    npx lerna run build --scope=@adguard/tswebextension --scope=@adguard/dnr-rulesets --include-dependencies
 
 # ============================================================================
 # Stage: deps

@@ -31,7 +31,7 @@ import {
     type MockInstance,
 } from 'vitest';
 
-import { getRuleSetId, getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
+import { getRulesetId, getRulesetPath } from '@adguard/dnr-converter';
 
 import { HybridStorage } from '../../../../Extension/src/background/storages/hybrid-storage';
 import { UpdateApi } from '../../../../Extension/src/background/api';
@@ -314,9 +314,9 @@ describe('Update Api (without indexedDB)', () => {
                     ...browser.runtime.getManifest(),
                     declarative_net_request: {
                         rule_resources: [{
-                            id: getRuleSetId(staticFilterId),
+                            id: getRulesetId(staticFilterId),
                             enabled: true,
-                            path: getRuleSetPath(staticFilterId),
+                            path: getRulesetPath(staticFilterId),
                         }],
                     },
                 });
