@@ -25,7 +25,7 @@ import escape from 'css.escape';
 import chrome from 'sinon-chrome/extensions';
 import { type DebouncedFunc } from 'lodash-es/debounce';
 
-import { ResourceType } from '@adguard/tsurlfilter/es/declarative-converter';
+import { ResourceType } from '@adguard/dnr-converter';
 
 import { MANIFEST_ENV } from './tools/constants';
 import {

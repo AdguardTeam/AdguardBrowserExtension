@@ -325,7 +325,7 @@ export class Engine implements TsWebExtensionEngine {
             allowlist,
             settings,
             filtersPath: 'filters/',
-            ruleSetsPath: 'filters/declarative',
+            rulesetsPath: 'filters/declarative',
             trustedDomains,
         };
     }

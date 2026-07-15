@@ -27,8 +27,7 @@ import { Command } from 'commander';
 import fastDeepEqual from 'fast-deep-equal';
 import { type Manifest } from 'webextension-polyfill';
 
-import { type DeclarativeRule } from '@adguard/tsurlfilter/es/declarative-converter';
-import { isSafeRule } from '@adguard/tsurlfilter/es/declarative-converter-utils';
+import { type DeclarativeRule, isSafeRule } from '@adguard/dnr-converter';
 
 /**
  * Name of the manifest file.

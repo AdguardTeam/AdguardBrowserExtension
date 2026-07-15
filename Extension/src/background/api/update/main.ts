@@ -26,8 +26,7 @@ import { trimEnd } from 'lodash-es';
 import browser from 'webextension-polyfill';
 
 import { FilterList } from '@adguard/tsurlfilter';
-import { extractRuleSetId } from '@adguard/tsurlfilter/es/declarative-converter-utils';
-import { METADATA_RULESET_ID } from '@adguard/tsurlfilter/es/declarative-converter';
+import { extractRulesetId, METADATA_RULESET_ID } from '@adguard/dnr-converter';
 
 import { logger } from '../../../common/logger';
 import { getZodErrorMessage } from '../../../common/error';
@@ -261,7 +260,7 @@ export class UpdateApi {
 
         const staticFilterIds = new Set(
             manifest.declarative_net_request.rule_resources
-                .map(({ id }) => extractRuleSetId(id))
+                .map(({ id }) => extractRulesetId(id))
                 .filter((id): id is number => id !== null && id !== METADATA_RULESET_ID),
         );
 

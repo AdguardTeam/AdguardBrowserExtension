@@ -29,9 +29,9 @@ import {
     vi,
 } from 'vitest';
 
-import { getRuleSetId, getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
+import { getRulesetId, getRulesetPath } from '@adguard/dnr-converter';
 import { FiltersStorage as TsWebExtensionFiltersStorage } from '@adguard/tswebextension/filters-storage';
-import { FilterList } from '@adguard/tsurlfilter';
+import { FilterList } from '@adguard/tswebextension';
 
 import { mockLocalStorage } from '../../../helpers';
 import { FiltersStoragesAdapter } from '../../../../Extension/src/background/storages/filters-adapter';
@@ -132,9 +132,9 @@ describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
             ...browser.runtime.getManifest(),
             declarative_net_request: {
                 rule_resources: staticFilterIds.map((id) => ({
-                    id: getRuleSetId(id),
+                    id: getRulesetId(id),
                     enabled: true,
-                    path: getRuleSetPath(id),
+                    path: getRulesetPath(id),
                 })),
             },
         });

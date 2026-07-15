@@ -76,7 +76,7 @@ export class UserRulesService extends UserRulesServiceCommon {
             if (error instanceof UnsupportedRegexpError) {
                 logger.error(
                     '[ext.UserRulesService.checkUserRulesErrors]: User rule conversion error:',
-                    `\nRule: ${RuleGenerator.generate(error.networkRule.node)}`,
+                    `\nRule: ${RuleGenerator.generate(error.rule.node)}`,
                     '\nReason:',
                     error,
                 );

@@ -18,12 +18,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import {
-    SimpleRegex,
-    NetworkRule,
-    NETWORK_RULE_OPTIONS,
-    OPTIONS_DELIMITER,
-} from '@adguard/tsurlfilter';
+import { SimpleRegex } from '@adguard/tsurlfilter';
+import { NetworkRule } from '@adguard/tswebextension';
 
 import { type FilteringEventRuleData, type FilteringLogEvent } from '../../../../background/api';
 import { strings } from '../../../../common/strings';
@@ -380,27 +376,27 @@ export const createRuleFromParams = ({
 
     // add domain option
     if (urlDomain) {
-        options.push(`${NETWORK_RULE_OPTIONS.DOMAIN}=${urlDomain}`);
+        options.push(`${NetworkRule.OPTIONS.DOMAIN}=${urlDomain}`);
     }
     // add important option
     if (important) {
-        options.push(NETWORK_RULE_OPTIONS.IMPORTANT);
+        options.push(NetworkRule.OPTIONS.IMPORTANT);
     }
     // add third party option
     if (thirdParty) {
-        options.push(NETWORK_RULE_OPTIONS.THIRD_PARTY);
+        options.push(NetworkRule.OPTIONS.THIRD_PARTY);
     }
     // add removeparam option
     if (removeParam) {
-        options.push(NETWORK_RULE_OPTIONS.REMOVEPARAM);
+        options.push(NetworkRule.OPTIONS.REMOVEPARAM);
     }
 
     if (options.length > 0) {
         // Pick correct symbol to append options with
-        const hasOptions = appliedRuleText.includes(OPTIONS_DELIMITER);
+        const hasOptions = appliedRuleText.includes(NetworkRule.OPTIONS_DELIMITER);
         const prefix = hasOptions
             ? COMMA_DELIMITER
-            : OPTIONS_DELIMITER;
+            : NetworkRule.OPTIONS_DELIMITER;
         appliedRuleText += prefix + options.join(COMMA_DELIMITER);
     }
 
@@ -427,11 +423,11 @@ export const createCookieRuleFromParams = ({
 
     // add important option
     if (important) {
-        options.push(NETWORK_RULE_OPTIONS.IMPORTANT);
+        options.push(NetworkRule.OPTIONS.IMPORTANT);
     }
     // add third party option
     if (thirdParty) {
-        options.push(NETWORK_RULE_OPTIONS.THIRD_PARTY);
+        options.push(NetworkRule.OPTIONS.THIRD_PARTY);
     }
     if (options.length > 0) {
         appliedRuleText += COMMA_DELIMITER + options.join(COMMA_DELIMITER);

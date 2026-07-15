@@ -47,7 +47,7 @@ export const DEFAULT_EXTENSION_CONFIG: Configuration = {
     },
     verbose: false,
     filtersPath: 'filters',
-    ruleSetsPath: 'filters/declarative',
+    rulesetsPath: 'filters/declarative',
     declarativeLogEnabled: false,
     settings: {
         // Url can be empty because it is not using during tests.
