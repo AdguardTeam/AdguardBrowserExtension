@@ -50,11 +50,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Firefox freezes when playing Douyin videos, triggered by custom filter rule all.txt [#3525].
 - Sites loading-slowly in Firefox 118 when AdGuard extension is enabled [#2524].
 - Scroll bar missing in the filtering log [#3558].
+- The request for additional permissions is not asked when importing extension
+  settings [#2754].
 
 [#3537]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3537
 [#1486]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1486
 [#1686]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1686
 [#2701]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2701
+[#2754]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2754
 [#2895]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2895
 [#3533]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3533
 [#3530]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3530
