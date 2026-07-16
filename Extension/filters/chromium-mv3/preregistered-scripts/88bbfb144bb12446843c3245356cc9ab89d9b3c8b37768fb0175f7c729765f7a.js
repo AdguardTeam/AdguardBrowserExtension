@@ -1,3 +1,1 @@
-(function () {
-_ag.r("trusted-click-element", {"name":"trusted-click-element","args":["form[action=\"https://consent.youtube.com/save\"][jsaction] button[jsname=\"b3VHJd\"]"],"engine":"extension","version":"2.4.2","verbose":false}, ["form[action=\"https://consent.youtube.com/save\"][jsaction] button[jsname=\"b3VHJd\"]"], "88bbfb144bb12446843c3245356cc9ab89d9b3c8b37768fb0175f7c729765f7a");
-})();
+_ag.r("trusted-click-element",{name:"trusted-click-element",args:['form[action="https://consent.youtube.com/save"][jsaction] button[jsname="b3VHJd"]'],engine:"extension",version:"2.4.2",verbose:!1},['form[action="https://consent.youtube.com/save"][jsaction] button[jsname="b3VHJd"]'],"88bbfb144bb12446843c3245356cc9ab89d9b3c8b37768fb0175f7c729765f7a");

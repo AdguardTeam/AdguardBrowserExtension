@@ -1,3 +1,1 @@
-(function () {
-_ag.r("set-constant", {"name":"set-constant","args":["puShown","true"],"engine":"extension","version":"2.4.2","verbose":false}, ["puShown","true"], "f3f0ebc4a4c7f9337e0971e21b6263b1e62e3df4ec7097f2cf41a8a56e78c56c");
-})();
+_ag.r("set-constant",{name:"set-constant",args:["puShown","true"],engine:"extension",version:"2.4.2",verbose:!1},["puShown","true"],"f3f0ebc4a4c7f9337e0971e21b6263b1e62e3df4ec7097f2cf41a8a56e78c56c");

@@ -1,3 +1,1 @@
-(function () {
-_ag.r("trusted-replace-node-text", {"name":"trusted-replace-node-text","args":["script","AdblockCheck","/AdblockCheck\\.on\\(!0,adBlockDetected\\)/","AdblockCheck.on(!0,adBlockUndetected)"],"engine":"extension","version":"2.4.2","verbose":false}, ["script","AdblockCheck","/AdblockCheck\\.on\\(!0,adBlockDetected\\)/","AdblockCheck.on(!0,adBlockUndetected)"], "6dc344ed5e6c954d205cee030080f053479b914a0bb4c6bbd769732b97b05597");
-})();
+_ag.r("trusted-replace-node-text",{name:"trusted-replace-node-text",args:["script","AdblockCheck","/AdblockCheck\\.on\\(!0,adBlockDetected\\)/","AdblockCheck.on(!0,adBlockUndetected)"],engine:"extension",version:"2.4.2",verbose:!1},["script","AdblockCheck","/AdblockCheck\\.on\\(!0,adBlockDetected\\)/","AdblockCheck.on(!0,adBlockUndetected)"],"6dc344ed5e6c954d205cee030080f053479b914a0bb4c6bbd769732b97b05597");

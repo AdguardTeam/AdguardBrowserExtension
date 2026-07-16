@@ -25,6 +25,7 @@ import path from 'node:path';
 import { SCRIPTLETS_VERSION } from '@adguard/scriptlets';
 
 import { NEWLINE_CHAR_UNIX } from '../../../../../Extension/src/common/constants';
+import { minifyJs } from '../../constants';
 import { writeBundle } from '../../writeHelpers';
 import { type CollectedRuleEntry } from '../../scriptlet-collector';
 
@@ -103,6 +104,8 @@ const compileJsRuleFile = (entry: CollectedRuleEntry): string => {
  * - JS injection rules emit a file containing the rule body wrapped in a
  *   dedup guard.
  *
+ * All output is minified with Terser before writing.
+ *
  * @param rules Map of hash → rule entry.
  * @param outputDir Directory to write files into.
  */
@@ -120,6 +123,8 @@ export const writePerHashFiles = async (
         } else {
             throw new Error(`Rule entry ${hash} has neither scriptletName nor jsBody`);
         }
+
+        content = await minifyJs(content);
 
         const fileName = `${hash}.js`;
         await writeBundle(content, path.join(outputDir, fileName));

@@ -1,3 +1,1 @@
-(function () {
-_ag.r("abort-current-inline-script", {"name":"abort-current-inline-script","args":["document.createElement","dtnoppu"],"engine":"extension","version":"2.4.2","verbose":false}, ["document.createElement","dtnoppu"], "f288c6d04f158091ff466122508523073112dc862f20f9caa4d91af58a1a5e52");
-})();
+_ag.r("abort-current-inline-script",{name:"abort-current-inline-script",args:["document.createElement","dtnoppu"],engine:"extension",version:"2.4.2",verbose:!1},["document.createElement","dtnoppu"],"f288c6d04f158091ff466122508523073112dc862f20f9caa4d91af58a1a5e52");

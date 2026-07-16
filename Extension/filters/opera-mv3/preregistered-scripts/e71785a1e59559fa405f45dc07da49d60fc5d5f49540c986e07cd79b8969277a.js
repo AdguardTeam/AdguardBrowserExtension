@@ -1,3 +1,1 @@
-(function () {
-_ag.r("set-constant", {"name":"set-constant","args":["playerResponse.adPlacements","undefined"],"engine":"extension","version":"2.4.2","verbose":false}, ["playerResponse.adPlacements","undefined"], "e71785a1e59559fa405f45dc07da49d60fc5d5f49540c986e07cd79b8969277a");
-})();
+_ag.r("set-constant",{name:"set-constant",args:["playerResponse.adPlacements","undefined"],engine:"extension",version:"2.4.2",verbose:!1},["playerResponse.adPlacements","undefined"],"e71785a1e59559fa405f45dc07da49d60fc5d5f49540c986e07cd79b8969277a");

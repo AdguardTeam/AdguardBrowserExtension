@@ -1,3 +1,1 @@
-(function () {
-_ag.r("trusted-replace-node-text", {"name":"trusted-replace-node-text","args":["script","prerollEnabled","/prerollEnabled:\\s*true/","prerollEnabled:false"],"engine":"extension","version":"2.4.2","verbose":false}, ["script","prerollEnabled","/prerollEnabled:\\s*true/","prerollEnabled:false"], "d4b09648ac071d7b67f6f6e633b6dd01ca1598ca0368f19f6ac24c9ec7383f49");
-})();
+_ag.r("trusted-replace-node-text",{name:"trusted-replace-node-text",args:["script","prerollEnabled","/prerollEnabled:\\s*true/","prerollEnabled:false"],engine:"extension",version:"2.4.2",verbose:!1},["script","prerollEnabled","/prerollEnabled:\\s*true/","prerollEnabled:false"],"d4b09648ac071d7b67f6f6e633b6dd01ca1598ca0368f19f6ac24c9ec7383f49");
