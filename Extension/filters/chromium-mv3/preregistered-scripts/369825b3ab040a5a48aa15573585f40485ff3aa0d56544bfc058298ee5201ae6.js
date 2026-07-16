@@ -1,0 +1,3 @@
+(function () {
+_ag.r("set-constant", {"name":"set-constant","args":["player.vroll","noopFunc"],"engine":"extension","version":"2.4.2","verbose":false}, ["player.vroll","noopFunc"], "369825b3ab040a5a48aa15573585f40485ff3aa0d56544bfc058298ee5201ae6");
+})();

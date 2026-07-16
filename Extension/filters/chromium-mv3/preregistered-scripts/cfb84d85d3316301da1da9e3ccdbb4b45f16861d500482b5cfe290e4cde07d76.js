@@ -1,0 +1,3 @@
+(function () {
+_ag.r("prevent-addEventListener", {"name":"prevent-addEventListener","args":["click","window.open"],"engine":"extension","version":"2.4.2","verbose":false}, ["click","window.open"], "cfb84d85d3316301da1da9e3ccdbb4b45f16861d500482b5cfe290e4cde07d76");
+})();

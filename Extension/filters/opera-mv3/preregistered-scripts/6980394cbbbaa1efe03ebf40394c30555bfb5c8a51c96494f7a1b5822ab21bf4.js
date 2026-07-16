@@ -1,0 +1,3 @@
+(function () {
+_ag.r("json-prune", {"name":"json-prune","args":["playerResponse.adPlacements playerResponse.adSlots","playerResponse.streamingData.serverAbrStreamingUrl"],"engine":"extension","version":"2.4.2","verbose":false}, ["playerResponse.adPlacements playerResponse.adSlots","playerResponse.streamingData.serverAbrStreamingUrl"], "6980394cbbbaa1efe03ebf40394c30555bfb5c8a51c96494f7a1b5822ab21bf4");
+})();

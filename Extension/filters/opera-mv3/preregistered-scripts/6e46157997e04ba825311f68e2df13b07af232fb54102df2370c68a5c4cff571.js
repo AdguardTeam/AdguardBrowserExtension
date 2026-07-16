@@ -1,0 +1,3 @@
+(function () {
+_ag.r("prevent-xhr", {"name":"prevent-xhr","args":["/advert.js"],"engine":"extension","version":"2.4.2","verbose":false}, ["/advert.js"], "6e46157997e04ba825311f68e2df13b07af232fb54102df2370c68a5c4cff571");
+})();

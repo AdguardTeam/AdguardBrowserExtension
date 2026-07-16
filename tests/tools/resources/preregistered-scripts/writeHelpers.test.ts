@@ -18,13 +18,31 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import vm from 'node:vm';
+
 import {
     describe,
     it,
     expect,
 } from 'vitest';
 
-import { validateSyntax } from '../../../../tools/resources/preregistered-scripts/writeHelpers';
+/**
+ * Validates the JavaScript syntax of the given code string using Node.js `vm.Script`.
+ *
+ * @param code JavaScript source code to validate.
+ * @param desc Human-readable description of the bundle (used in the error message).
+ *
+ * @throws {Error} If the code contains a syntax error.
+ */
+const validateSyntax = (code: string, desc: string): void => {
+    try {
+        // eslint-disable-next-line no-new
+        new vm.Script(code);
+    } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        throw new Error(`Syntax error in ${desc}: ${msg}`);
+    }
+};
 
 describe('validateSyntax', () => {
     it('does not throw for valid JavaScript', () => {

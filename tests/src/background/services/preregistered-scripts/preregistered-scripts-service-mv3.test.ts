@@ -26,54 +26,71 @@ import {
     beforeEach,
 } from 'vitest';
 
-const { mockSyncContentScripts, mockGetEnabledFilters } = vi.hoisted(() => ({
+const {
+    mockSyncContentScripts,
+    mockSetPreregisteredScriptDomains,
+    mockGetCosmeticResult,
+    mockLoggerError,
+    mockLoggerWarn,
+} = vi.hoisted(() => ({
     mockSyncContentScripts: vi.fn(),
-    mockGetEnabledFilters: vi.fn(),
+    mockSetPreregisteredScriptDomains: vi.fn(),
+    mockGetCosmeticResult: vi.fn(),
+    mockLoggerError: vi.fn(),
+    mockLoggerWarn: vi.fn(),
 }));
 
+// Mock tswebextension
 vi.mock(
     'tswebextension',
     () => ({
         TsWebExtension: {
             syncContentScripts: mockSyncContentScripts,
+            setPreregisteredScriptDomains: mockSetPreregisteredScriptDomains,
         },
     }),
 );
 
+// Mock @adguard/tsurlfilter
+vi.mock(
+    '@adguard/tsurlfilter',
+    () => ({
+        CosmeticOption: {
+            CosmeticOptionJS: 8,
+        },
+    }),
+);
+
+// Mock preregistered-scripts-registry (now exports domains string[])
 vi.mock(
     'preregistered-scripts-registry',
     () => ({
-        preregisteredDomainScripts: {
-            'youtube.com': ['1', '2', '3', '5'],
-            'example.com': ['2', '4'],
-        },
+        preregisteredDomains: [
+            'youtube.com',
+            'example.com',
+        ],
     }),
 );
 
-const mockLoggerError = vi.fn();
+// Mock logger
 vi.mock(
     '../../../../../Extension/src/common/logger',
     () => ({
         logger: {
             error: (...args: unknown[]) => mockLoggerError(...args),
+            warn: (...args: unknown[]) => mockLoggerWarn(...args),
         },
     }),
 );
 
+// Mock engine
 vi.mock(
-    '../../../../../Extension/src/background/api',
+    '../../../../../Extension/src/background/engine',
     () => ({
-        FiltersApi: {
-            getEnabledFilters: mockGetEnabledFilters,
-        },
-    }),
-);
-
-vi.mock(
-    '../../../../../Extension/src/common/common-filter-utils',
-    () => ({
-        CommonFilterUtils: {
-            isCommonFilter: (id: number) => id > 0 && id < 100,
+        engine: {
+            api: {
+                getCosmeticResult: (...args: unknown[]) => mockGetCosmeticResult(...args),
+            },
         },
     }),
 );
@@ -82,296 +99,271 @@ const { PreregisteredScriptsService } = await import(
     '../../../../../Extension/src/background/services/preregistered-scripts/preregistered-scripts-service-mv3'
 );
 
-describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService.sync', () => {
+/**
+ * Creates a mock CosmeticResult with the given rules.
+ *
+ * @param rules Array of mock rule objects.
+ *
+ * @returns Mock CosmeticResult.
+ */
+const createMockCosmeticResult = (rules: any[]): any => ({
+    JS: {
+        getRules: () => rules,
+    },
+});
+
+/**
+ * Creates a mock scriptlet rule.
+ *
+ * @param name Scriptlet name.
+ * @param args Scriptlet args.
+ *
+ * @returns Mock scriptlet rule.
+ */
+const createScriptletRule = (name: string, args: string[]): any => ({
+    isScriptlet: true,
+    getScriptletData: () => ({
+        params: { name, args },
+        func: () => {},
+    }),
+});
+
+/**
+ * Creates a mock JS injection rule.
+ *
+ * @param content JS rule body.
+ *
+ * @returns Mock JS injection rule.
+ */
+const createJsRule = (content: string): any => ({
+    isScriptlet: false,
+    getContent: () => content,
+});
+
+describe.skipIf(!__IS_MV3__)('PreregisteredScriptsService', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         mockSyncContentScripts.mockResolvedValue(undefined);
-        // Default: all filters 1-5 enabled
-        mockGetEnabledFilters.mockReturnValue([1, 2, 3, 4, 5]);
-        // Reset short-circuit cache between tests
-        // @ts-expect-error - accessing private field for test reset
-        PreregisteredScriptsService.lastSyncedKey = null;
+
+        // Default: no rules for any domain
+        mockGetCosmeticResult.mockReturnValue(createMockCosmeticResult([]));
     });
 
-    it('should call syncContentScripts with the correct namespace', async () => {
-        await PreregisteredScriptsService.sync(true);
+    describe('registerDomains', () => {
+        it('should register preregistered domains via TsWebExtension', () => {
+            PreregisteredScriptsService.registerDomains();
 
-        expect(mockSyncContentScripts).toHaveBeenCalledWith(
-            'preregistered',
-            expect.any(Array),
-        );
+            expect(mockSetPreregisteredScriptDomains).toHaveBeenCalledWith(
+                ['youtube.com', 'example.com'],
+            );
+        });
     });
 
-    it('should register only scripts for enabled filter IDs', async () => {
-        mockGetEnabledFilters.mockReturnValue([1, 2]);
-
-        await PreregisteredScriptsService.sync(true);
-
-        // youtube.com: filters 1,2,3,5 → only 1,2 enabled → 2 scripts
-        // example.com: filters 2,4     → only 2 enabled   → 1 script
-        // Total: 3 scripts
-        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
-        const scripts = scriptsArg as Array<{ id: string }>;
-        expect(scripts).toHaveLength(3);
-
-        const scriptIds = scripts.map((s) => s.id);
-        expect(scriptIds).toEqual(expect.arrayContaining([
-            'youtube.com_1',
-            'youtube.com_2',
-            'example.com_2',
-        ]));
-    });
-
-    it('should pass empty scripts array when no filter is enabled', async () => {
-        mockGetEnabledFilters.mockReturnValue([99]);
-
-        await PreregisteredScriptsService.sync(true);
-
-        // Single call with empty scripts array
-        expect(mockSyncContentScripts).toHaveBeenCalledTimes(1);
-
-        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
-        expect(scriptsArg).toEqual([]);
-    });
-
-    it('should build correct script descriptor shape', async () => {
-        mockGetEnabledFilters.mockReturnValue([1, 2]);
-
-        await PreregisteredScriptsService.sync(true);
-
-        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
-        const scripts = scriptsArg as Array<Record<string, unknown>>;
-
-        expect(scripts.length).toBeGreaterThan(0);
-
-        for (const script of scripts) {
-            expect(script).toHaveProperty('id');
-            expect(script).toHaveProperty('js');
-            expect(script).toHaveProperty('matches');
-            expect(script).toHaveProperty('runAt');
-            expect(script).toHaveProperty('world');
-            expect(script).toHaveProperty('persistAcrossSessions');
-            expect(script).toHaveProperty('allFrames');
-
-            expect(script.runAt).toBe('document_start');
-            expect(script.world).toBe('MAIN');
-            expect(script.persistAcrossSessions).toBe(true);
-            expect(script.allFrames).toBe(true);
-
-            // js array: [shared-bundle, per-domain-bundle]
-            expect(Array.isArray(script.js)).toBe(true);
-            expect((script.js as string[])).toHaveLength(2);
-            expect((script.js as string[])[0]).toBe('filters/preregistered-scripts/scriptlets-bundle.js');
-        }
-    });
-
-    it('should construct the correct script path', async () => {
-        mockGetEnabledFilters.mockReturnValue([5]);
-
-        await PreregisteredScriptsService.sync(true);
-
-        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
-        const scripts = scriptsArg as Array<{ id: string; js: string[] }>;
-
-        const script = scripts.find((s) => s.id.includes('youtube.com'));
-        expect(script).toBeDefined();
-        expect(script!.js[0]).toBe('filters/preregistered-scripts/scriptlets-bundle.js');
-        expect(script!.js[1]).toBe('filters/preregistered-scripts/youtube.com-5.js');
-    });
-
-    it('should construct the correct match patterns', async () => {
-        mockGetEnabledFilters.mockReturnValue([1]);
-
-        await PreregisteredScriptsService.sync(true);
-
-        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
-        const scripts = scriptsArg as Array<{ id: string; matches: string[] }>;
-
-        const script = scripts.find((s) => s.id.includes('youtube.com'));
-        expect(script).toBeDefined();
-        expect(script!.matches).toEqual([
-            '*://youtube.com/*',
-            '*://*.youtube.com/*',
-        ]);
-    });
-
-    it('should handle an empty enabled filter list gracefully', async () => {
-        mockGetEnabledFilters.mockReturnValue([]);
-
-        await PreregisteredScriptsService.sync(true);
-
-        expect(mockSyncContentScripts).toHaveBeenCalledTimes(1);
-
-        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
-        expect(scriptsArg).toEqual([]);
-        expect(mockLoggerError).not.toHaveBeenCalled();
-    });
-
-    it('should handle all filters enabled', async () => {
-        mockGetEnabledFilters.mockReturnValue([1, 2, 3, 4, 5]);
-
-        await PreregisteredScriptsService.sync(true);
-
-        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
-        const scripts = scriptsArg as Array<{ id: string }>;
-
-        // youtube.com has filters 1,2,3,5 → 4 scripts
-        // example.com has filters 2,4     → 2 scripts
-        // Total: 6 scripts
-        expect(scripts).toHaveLength(6);
-
-        const scriptIds = scripts.map((s) => s.id);
-        expect(scriptIds).toEqual(expect.arrayContaining([
-            'youtube.com_1',
-            'youtube.com_2',
-            'youtube.com_3',
-            'youtube.com_5',
-            'example.com_2',
-            'example.com_4',
-        ]));
-    });
-
-    it('should pass number filter IDs and correctly convert them to strings for lookup', async () => {
-        mockGetEnabledFilters.mockReturnValue([1]);
-
-        await PreregisteredScriptsService.sync(true);
-
-        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
-        const scripts = scriptsArg as Array<{ id: string }>;
-
-        // Filter 1 should match the string "1" in the registry
-        const script = scripts.find((s) => s.id.includes('youtube.com'));
-        expect(script).toBeDefined();
-        expect(script!.id).toBe('youtube.com_1');
-    });
-
-    it('should include scripts from all domains when the same filter appears for different domains', async () => {
-        mockGetEnabledFilters.mockReturnValue([2]);
-
-        await PreregisteredScriptsService.sync(true);
-
-        // Filter 2 exists in both youtube.com and example.com
-        expect(mockSyncContentScripts).toHaveBeenCalledTimes(1);
-
-        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
-        const scripts = scriptsArg as Array<{ id: string }>;
-
-        // Both domains should have their own registration for filter 2
-        expect(scripts).toHaveLength(2);
-
-        const scriptIds = scripts.map((s) => s.id);
-        expect(scriptIds).toEqual(expect.arrayContaining([
-            'youtube.com_2',
-            'example.com_2',
-        ]));
-    });
-
-    it('should call syncContentScripts exactly once with all domains scripts combined', async () => {
-        mockGetEnabledFilters.mockReturnValue([1, 2, 3, 4, 5]);
-
-        await PreregisteredScriptsService.sync(true);
-
-        // The namespace is shared — calling syncContentScripts once per domain
-        // would cause each subsequent call to unregister the previous domain's
-        // scripts (ContentScriptManager.sync does a full reconciliation).
-        // Therefore syncContentScripts must be called exactly once with all
-        // scripts across all domains.
-        expect(mockSyncContentScripts).toHaveBeenCalledTimes(1);
-
-        const [namespaceArg, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
-        expect(namespaceArg).toBe('preregistered');
-
-        const scripts = scriptsArg as Array<{ id: string }>;
-
-        // youtube.com: filters 1,2,3,5 → 4 scripts
-        // example.com: filters 2,4     → 2 scripts
-        // Total: 6 scripts from both domains
-        expect(scripts).toHaveLength(6);
-
-        // All expected IDs from both domains must be present.
-        // ContentScriptManager expects IDs without the namespace prefix
-        // (it adds the prefix internally), so the descriptor IDs omit
-        // the 'preregistered_' portion.
-        const scriptIds = scripts.map((s) => s.id);
-        expect(scriptIds).toEqual(expect.arrayContaining([
-            'youtube.com_1',
-            'youtube.com_2',
-            'youtube.com_3',
-            'youtube.com_5',
-            'example.com_2',
-            'example.com_4',
-        ]));
-    });
-
-    it('should unregister all scripts when filtering is paused', async () => {
-        // Filters are enabled, but filtering is paused
-        mockGetEnabledFilters.mockReturnValue([1, 2, 3, 4, 5]);
-
-        await PreregisteredScriptsService.sync(false);
-
-        // Should pass empty scripts array → ContentScriptManager unregisters all
-        expect(mockSyncContentScripts).toHaveBeenCalledTimes(1);
-
-        const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
-        expect(scriptsArg).toEqual([]);
-    });
-
-    it('should not call getEnabledFilters when filtering is paused', async () => {
-        await PreregisteredScriptsService.sync(false);
-
-        expect(mockGetEnabledFilters).not.toHaveBeenCalled();
-    });
-
-    it('should short-circuit when the enabled-filter set has not changed', async () => {
-        mockGetEnabledFilters.mockReturnValue([1, 2]);
-
-        await PreregisteredScriptsService.sync(true);
-        await PreregisteredScriptsService.sync(true);
-
-        // syncContentScripts should be called only once — the second call
-        // is short-circuited because nothing changed.
-        expect(mockSyncContentScripts).toHaveBeenCalledTimes(1);
-    });
-
-    it('should not short-circuit when the filter set changes', async () => {
-        mockGetEnabledFilters.mockReturnValue([1, 2]);
-        await PreregisteredScriptsService.sync(true);
-
-        mockGetEnabledFilters.mockReturnValue([1, 2, 3]);
-        await PreregisteredScriptsService.sync(true);
-
-        expect(mockSyncContentScripts).toHaveBeenCalledTimes(2);
-    });
-
-    it('should not short-circuit when filtering state changes', async () => {
-        mockGetEnabledFilters.mockReturnValue([1, 2]);
-        await PreregisteredScriptsService.sync(true);
-
-        await PreregisteredScriptsService.sync(false);
-
-        expect(mockSyncContentScripts).toHaveBeenCalledTimes(2);
-    });
-
-    it('should log error when syncContentScripts throws', async () => {
-        mockSyncContentScripts.mockRejectedValue(new Error('API failure'));
-
-        await PreregisteredScriptsService.sync(true);
-
-        expect(mockLoggerError).toHaveBeenCalledWith(
-            expect.stringContaining('Failed to sync preregistered scripts'),
-            expect.any(Error),
-        );
-    });
-
-    it('should retry after a failed sync with the same filter set', async () => {
-        mockSyncContentScripts.mockRejectedValueOnce(new Error('temporary failure'));
-
-        await PreregisteredScriptsService.sync(true);
-        expect(mockSyncContentScripts).toHaveBeenCalledTimes(1);
-
-        // Second call with the same state should NOT be short-circuited
-        // because the first one failed and the key was never committed.
-        await PreregisteredScriptsService.sync(true);
-        expect(mockSyncContentScripts).toHaveBeenCalledTimes(2);
+    describe('sync', () => {
+        it('should call syncContentScripts with the correct namespace', async () => {
+            await PreregisteredScriptsService.sync(true);
+
+            expect(mockSyncContentScripts).toHaveBeenCalledWith(
+                'preregistered',
+                expect.any(Array),
+            );
+        });
+
+        it('should pass empty scripts array when filtering is paused', async () => {
+            await PreregisteredScriptsService.sync(false);
+
+            expect(mockSyncContentScripts).toHaveBeenCalledTimes(1);
+
+            const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+            expect(scriptsArg).toEqual([]);
+        });
+
+        it('should not query engine when filtering is paused', async () => {
+            await PreregisteredScriptsService.sync(false);
+
+            expect(mockGetCosmeticResult).not.toHaveBeenCalled();
+        });
+
+        it('should pass empty scripts array when no rules apply to any domain', async () => {
+            mockGetCosmeticResult.mockReturnValue(createMockCosmeticResult([]));
+
+            await PreregisteredScriptsService.sync(true);
+
+            const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+            expect(scriptsArg).toEqual([]);
+        });
+
+        it('should create one registration per domain with rules', async () => {
+            // youtube.com has 2 scriptlets, example.com has 0
+            mockGetCosmeticResult.mockImplementation((url: string) => {
+                if (url.includes('youtube.com')) {
+                    return createMockCosmeticResult([
+                        createScriptletRule('remove-attr', ['target', '_blank']),
+                        createScriptletRule('set-constant', ['config', 'true']),
+                    ]);
+                }
+                return createMockCosmeticResult([]);
+            });
+
+            await PreregisteredScriptsService.sync(true);
+
+            const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+            const scripts = scriptsArg as Array<{ id: string }>;
+            expect(scripts).toHaveLength(1);
+            expect(scripts[0]!.id).toBe('youtube.com');
+        });
+
+        it('should include shared bundle as first js file', async () => {
+            mockGetCosmeticResult.mockImplementation((url: string) => {
+                if (url.includes('youtube.com')) {
+                    return createMockCosmeticResult([
+                        createScriptletRule('remove-attr', ['target']),
+                    ]);
+                }
+                return createMockCosmeticResult([]);
+            });
+
+            await PreregisteredScriptsService.sync(true);
+
+            const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+            const scripts = scriptsArg as Array<{ id: string; js: string[] }>;
+            const script = scripts.find((s) => s.id === 'youtube.com');
+            expect(script).toBeDefined();
+            expect(script!.js[0]).toBe('filters/preregistered-scripts/scriptlets-bundle.js');
+        });
+
+        it('should construct correct match patterns', async () => {
+            mockGetCosmeticResult.mockImplementation((url: string) => {
+                if (url.includes('youtube.com')) {
+                    return createMockCosmeticResult([
+                        createScriptletRule('noop', []),
+                    ]);
+                }
+                return createMockCosmeticResult([]);
+            });
+
+            await PreregisteredScriptsService.sync(true);
+
+            const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+            const scripts = scriptsArg as Array<{ id: string; matches: string[] }>;
+            const script = scripts.find((s) => s.id === 'youtube.com');
+            expect(script).toBeDefined();
+            expect(script!.matches).toEqual([
+                '*://youtube.com/*',
+                '*://*.youtube.com/*',
+            ]);
+        });
+
+        it('should set MAIN world and document_start', async () => {
+            mockGetCosmeticResult.mockImplementation((url: string) => {
+                if (url.includes('youtube.com')) {
+                    return createMockCosmeticResult([
+                        createScriptletRule('noop', []),
+                    ]);
+                }
+                return createMockCosmeticResult([]);
+            });
+
+            await PreregisteredScriptsService.sync(true);
+
+            const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+            const scripts = scriptsArg as Array<Record<string, unknown>>;
+            for (const script of scripts) {
+                expect(script.world).toBe('MAIN');
+                expect(script.runAt).toBe('document_start');
+                expect(script.persistAcrossSessions).toBe(true);
+                expect(script.allFrames).toBe(true);
+            }
+        });
+
+        it('should query the engine with the correct URL and CosmeticOption', async () => {
+            await PreregisteredScriptsService.sync(true);
+
+            // Should query for each preregistered domain
+            expect(mockGetCosmeticResult).toHaveBeenCalledTimes(2);
+            expect(mockGetCosmeticResult).toHaveBeenCalledWith(
+                'https://youtube.com/',
+                8, // CosmeticOption.CosmeticOptionJS
+            );
+            expect(mockGetCosmeticResult).toHaveBeenCalledWith(
+                'https://example.com/',
+                8,
+            );
+        });
+
+        it('should deduplicate scriptlets with same name and args', async () => {
+            mockGetCosmeticResult.mockImplementation((url: string) => {
+                if (url.includes('youtube.com')) {
+                    return createMockCosmeticResult([
+                        createScriptletRule('remove-attr', ['target']),
+                        createScriptletRule('remove-attr', ['target']), // duplicate
+                        createScriptletRule('set-constant', ['config', 'true']),
+                    ]);
+                }
+                return createMockCosmeticResult([]);
+            });
+
+            await PreregisteredScriptsService.sync(true);
+
+            const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+            const scripts = scriptsArg as Array<{ id: string; js: string[] }>;
+            const script = scripts.find((s) => s.id === 'youtube.com');
+            expect(script).toBeDefined();
+            // shared-bundle + hash1 + hash2 (deduped from 3 rules to 2 unique)
+            expect(script!.js).toHaveLength(3);
+        });
+
+        it('should handle both scriptlet and JS injection rules', async () => {
+            mockGetCosmeticResult.mockImplementation((url: string) => {
+                if (url.includes('youtube.com')) {
+                    return createMockCosmeticResult([
+                        createScriptletRule('remove-attr', ['target']),
+                        createJsRule('document.title = "blocked";'),
+                    ]);
+                }
+                return createMockCosmeticResult([]);
+            });
+
+            await PreregisteredScriptsService.sync(true);
+
+            const [, scriptsArg] = mockSyncContentScripts.mock.calls[0]!;
+            const scripts = scriptsArg as Array<{ id: string; js: string[] }>;
+            const script = scripts.find((s) => s.id === 'youtube.com');
+            expect(script).toBeDefined();
+            // shared-bundle + scriptlet-hash + js-hash
+            expect(script!.js).toHaveLength(3);
+        });
+
+        it('should log error when syncContentScripts throws', async () => {
+            mockSyncContentScripts.mockRejectedValue(new Error('API failure'));
+
+            await PreregisteredScriptsService.sync(true);
+
+            expect(mockLoggerError).toHaveBeenCalledWith(
+                expect.stringContaining('Failed to sync preregistered scripts'),
+                expect.any(Error),
+            );
+        });
+
+        it('should log warning when rule hashing fails', async () => {
+            mockGetCosmeticResult.mockImplementation((url: string) => {
+                if (url.includes('youtube.com')) {
+                    return createMockCosmeticResult([
+                        {
+                            isScriptlet: true,
+                            getScriptletData: () => null, // triggers error path
+                        },
+                    ]);
+                }
+                return createMockCosmeticResult([]);
+            });
+
+            await PreregisteredScriptsService.sync(true);
+
+            expect(mockLoggerWarn).toHaveBeenCalledWith(
+                expect.stringContaining('Failed to hash rule for domain youtube.com'),
+                expect.anything(),
+            );
+        });
     });
 });

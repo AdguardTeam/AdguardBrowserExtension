@@ -240,8 +240,3 @@ export const CHROME_CODEBASE_URL = `${UPDATE_BASE_URL}/${CHROME_CODEBASE_FILE_NA
 export const FIREFOX_UPDATE_TEMPLATE = path.resolve(__dirname, './bundle/firefox/update_template.json');
 export const FIREFOX_WEBEXT_UPDATE_FILE_NAME = 'update.json';
 export const FIREFOX_WEBEXT_UPDATE_URL = `${UPDATE_BASE_URL}/${FIREFOX_WEBEXT_UPDATE_FILE_NAME}`;
-
-/**
- * Subdirectory within the filters output folder where preregistered-domain bundles are written.
- */
-export const PREREGISTERED_SCRIPTS_DIR = 'preregistered-scripts';

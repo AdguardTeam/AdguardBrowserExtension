@@ -98,7 +98,7 @@ export const genOperaMv3Config = (browserConfig: BrowserConfig, options: BuildOp
             alias: {
                 'preregistered-scripts-registry': path.resolve(
                     __dirname,
-                    '../../../Extension/filters/opera-mv3/preregistered-scripts/registry.js',
+                    '../../../Extension/filters/opera-mv3/preregistered-scripts/domains.js',
                 ),
             },
         },

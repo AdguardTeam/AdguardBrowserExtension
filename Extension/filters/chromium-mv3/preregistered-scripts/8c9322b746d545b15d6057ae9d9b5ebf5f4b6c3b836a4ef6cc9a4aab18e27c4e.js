@@ -1,0 +1,3 @@
+(function () {
+_ag.r("spoof-css", {"name":"spoof-css","args":["body > * > * > * > *:not(div)[id][class] ~ *:not(div)[id][class] > *:not(div)[class] article > article","display","block"],"engine":"extension","version":"2.4.2","verbose":false}, ["body > * > * > * > *:not(div)[id][class] ~ *:not(div)[id][class] > *:not(div)[class] article > article","display","block"], "8c9322b746d545b15d6057ae9d9b5ebf5f4b6c3b836a4ef6cc9a4aab18e27c4e");
+})();

@@ -1,0 +1,3 @@
+(function () {
+_ag.r("json-prune", {"name":"json-prune","args":["$..adaptiveFormats[?@.audioTrack.isAutoDubbed]"],"engine":"extension","version":"2.4.2","verbose":false}, ["$..adaptiveFormats[?@.audioTrack.isAutoDubbed]"], "bafc0342a043f9320b5f519dcda8000f40e3edb1bae0097e3d2592c6d356fdd6");
+})();

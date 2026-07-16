@@ -1,0 +1,3 @@
+(function () {
+_ag.r("prevent-addEventListener", {"name":"prevent-addEventListener","args":["DOMContentLoaded","promoContainers"],"engine":"extension","version":"2.4.2","verbose":false}, ["DOMContentLoaded","promoContainers"], "fe525a653eec177936f21442869f5ae8e3026bbcdb249d4d1e8a80a8b8fd72d0");
+})();

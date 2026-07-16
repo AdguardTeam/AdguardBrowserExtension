@@ -1,0 +1,3 @@
+(function () {
+_ag.r("adjust-setTimeout", {"name":"adjust-setTimeout","args":["closeBtn.innerHTML","*","0.001"],"engine":"extension","version":"2.4.2","verbose":false}, ["closeBtn.innerHTML","*","0.001"], "84655a741bd2214c1c8c80d82916b269fbe267c800fa9a214d2db3b16eb531b4");
+})();

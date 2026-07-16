@@ -25,23 +25,34 @@ import path from 'node:path';
 
 import {
     FILTERS_DEST,
-    PREREGISTERED_SCRIPTS_DIR,
     DECLARATIVE_FILTERS_DEST,
     type Mv3AssetsFiltersBrowser,
 } from '../../constants';
+import { PREREGISTERED_SCRIPTS_DIR } from '../../../Extension/src/common/preregistered-scripts/constants';
 
-import { preregisteredDomains } from './config';
-import { FilterCollector } from './filter-collector';
-import { writeRegistry } from './registry';
-import { writeSharedBundle } from './shared-bundle-generator';
-import { writeDomainBundles } from './domain-bundle-generator';
+import { ScriptletCollector } from './scriptlet-collector';
+import {
+    writeSharedBundle,
+    writePerHashFiles,
+    writeDomainsList,
+} from './code-generators';
 
 /**
- * Generates preregistered-script bundles and registry for a target MV3 browser.
+ * Generates preregistered-script bundles and domains list for a target MV3 browser.
+ *
+ * Output files (in `filters/<browser>/preregistered-scripts/`):
+ *
+ * 1. `scriptlets-bundle.js` — shared bundle with all scriptlet function
+ *    definitions and the `window._ag` runner.
+ * 2. `{hash}.js` — one file per unique rule (scriptlet invocation or JS rule).
+ *    Scriptlets: contains `_ag.r(name, source, args, hash)`.
+ *    JS rules: contains the rule body wrapped in a dedup guard.
+ * 3. `domains.js` — ES module exporting `preregisteredDomains` (string[])
+ *    of domains that have at least one blocking rule.
  *
  * @param browser Target MV3 browser identifier (e.g. `"chrome-mv3"`).
  *
- * @returns Promise that resolves when all bundles and the registry have been written.
+ * @returns Promise that resolves when all files have been written.
  */
 export const generatePreregisteredDomainBundles = async (
     browser: Mv3AssetsFiltersBrowser,
@@ -50,23 +61,19 @@ export const generatePreregisteredDomainBundles = async (
     const outputDir = path.join(filtersFolder, PREREGISTERED_SCRIPTS_DIR);
     const declarativeFolder = DECLARATIVE_FILTERS_DEST.replace('%browser', browser);
 
+    await fs.rm(outputDir, { recursive: true, force: true });
     await fs.mkdir(outputDir, { recursive: true });
 
-    // Clean stale bundles — only remove .js files to avoid accidentally
-    // deleting non-JS assets that may be co-located in the directory.
-    const existing = await fs.readdir(outputDir);
-    await Promise.all(
-        existing
-            .filter((f) => f.endsWith('.js'))
-            .map((f) => fs.unlink(path.join(outputDir, f))),
-    );
+    // 1. Collect rules from all rulesets.
+    const collector = new ScriptletCollector(declarativeFolder);
+    const { rules, scriptletNames, domains } = await collector.collect();
 
-    // 1. Collect rules
-    const collector = new FilterCollector(preregisteredDomains, declarativeFolder);
-    const { domainRules, domainScriptlets, scriptletNames } = await collector.collect();
-
-    // 2. build bundles and write them to disk
+    // // 2. Build and write the shared scriptlets bundle.
     await writeSharedBundle(scriptletNames, outputDir);
-    await writeDomainBundles(domainRules, domainScriptlets, outputDir);
-    await writeRegistry(domainRules, domainScriptlets, outputDir);
+
+    // // 3. Write per-hash files (one per unique rule).
+    await writePerHashFiles(rules, outputDir);
+
+    // // 4. Write the domains list.
+    await writeDomainsList(domains, outputDir);
 };

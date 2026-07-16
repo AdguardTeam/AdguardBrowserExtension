@@ -1,0 +1,3 @@
+(function () {
+_ag.r("trusted-replace-node-text", {"name":"trusted-replace-node-text","args":["script","money_current","(money_current+1 == money_vids.length)","(true)"],"engine":"extension","version":"2.4.2","verbose":false}, ["script","money_current","(money_current+1 == money_vids.length)","(true)"], "6af359ca8f6004f4c0c906fe202c0d0d8a87e5893fa5543f7cbe6aa04331066b");
+})();

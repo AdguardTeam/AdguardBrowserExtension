@@ -1,0 +1,3 @@
+(function () {
+_ag.r("prevent-setTimeout", {"name":"prevent-setTimeout","args":["offsetHeight === 0"],"engine":"extension","version":"2.4.2","verbose":false}, ["offsetHeight === 0"], "1516ecf3b14ad935d89322933d4fc510aab63c8865d8b4e34fffe15c1e9245b9");
+})();

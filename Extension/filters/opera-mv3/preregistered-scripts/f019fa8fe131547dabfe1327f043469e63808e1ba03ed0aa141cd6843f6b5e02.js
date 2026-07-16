@@ -1,0 +1,3 @@
+(function () {
+_ag.r("prevent-window-open", {"name":"prevent-window-open","args":[],"engine":"extension","version":"2.4.2","verbose":false}, [], "f019fa8fe131547dabfe1327f043469e63808e1ba03ed0aa141cd6843f6b5e02");
+})();

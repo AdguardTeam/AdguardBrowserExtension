@@ -17,21 +17,36 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { minify as terserMinify } from 'terser';
 
 /**
- * File names for generated bundles.
+ * File names for generated bundles (tools-only).
  */
-export const SHARED_BUNDLE_FILENAME = 'scriptlets-bundle.js';
-export const REGISTRY_FILENAME = 'registry.js';
+export const DOMAINS_LIST_FILENAME = 'domains.js';
 
 /**
- * Returns the output filename for a (domain, filterId) per-domain bundle.
+ * Minifies JavaScript code using shared {@link PREREG_TERSER_OPTIONS}.
  *
- * @param domain Domain string, e.g. `"youtube.com"`.
- * @param filterId Filter ID number.
+ * @param code JavaScript source to minify.
  *
- * @returns Filename string, e.g. `"youtube.com-2.js"`.
+ * @returns Minified code.
+ *
+ * @throws If minification fails.
  */
-export const getBundleFileName = (domain: string, filterId: number): string => {
-    return `${domain}-${filterId}.js`;
+export const minifyJs = async (code: string): Promise<string> => {
+    const result = await terserMinify(code, {
+        compress: {
+            sequences: false,
+            negate_iife: false,
+        },
+        parse: {
+            bare_returns: true,
+        },
+    });
+
+    if (!result.code) {
+        throw new Error('Terser minification failed');
+    }
+
+    return result.code;
 };

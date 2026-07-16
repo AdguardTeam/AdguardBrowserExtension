@@ -18,176 +18,231 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { preregisteredDomainScripts } from 'preregistered-scripts-registry';
+import { preregisteredDomains } from 'preregistered-scripts-registry';
+
+import { CosmeticOption } from '@adguard/tsurlfilter';
 
 import { TsWebExtension } from 'tswebextension';
 
+import { PREREGISTERED_SCRIPTS_DIR, SHARED_BUNDLE_FILENAME } from '../../../common/preregistered-scripts/constants';
+import { computeJsRuleHash, computeScriptletHash } from '../../../common/preregistered-scripts/hasher';
 import { logger } from '../../../common/logger';
-import { FiltersApi } from '../../api';
-import { CommonFilterUtils } from '../../../common/common-filter-utils';
+import { engine } from '../../engine';
 
-/**
- * Extension-relative prefix for filter assets.
- */
+/** Extension-relative prefix for filter assets. */
 const EXTENSION_FILTERS_SUBDIR = 'filters';
 
-/**
- * Subdirectory within the filters folder where preregistered-domain bundles live.
- */
-const PREREGISTERED_SCRIPTS_DIR = 'preregistered-scripts';
-
-/**
- * Namespace passed to {@link TsWebExtension.syncContentScripts} to scope all
- * preregistered-domain registrations. Must be stable across sessions.
- */
+/** Namespace for {@link TsWebExtension.syncContentScripts}. Must be stable across sessions. */
 const PREREGISTERED_SCRIPTS_NAMESPACE = 'preregistered';
 
-/**
- * Filename of the shared scriptlets bundle loaded before every
- * per-domain bundle. Contains deduplicated scriptlet function
- * definitions and the `window._g` runner.
- */
-const SHARED_BUNDLE_FILENAME = 'scriptlets-bundle.js';
-
-/**
- * Returns the extension-relative path for the shared scriptlets bundle.
- *
- * @returns Extension-relative path, e.g. `"filters/preregistered-scripts/scriptlets-bundle.js"`.
- */
-const buildSharedBundlePath = (): string => {
+/** @returns Extension-relative path to the shared scriptlets bundle. */
+const getSharedBundlePath = (): string => {
     return `${EXTENSION_FILTERS_SUBDIR}/${PREREGISTERED_SCRIPTS_DIR}/${SHARED_BUNDLE_FILENAME}`;
 };
 
 /**
- * Converts a domain string into the two URL match patterns used in
- * `content_scripts.matches`.
+ * @param hash SHA-256 hash of the scriptlet name + args (or JS rule body).
  *
- * @param domain Domain string, e.g. `"youtube.com"`.
+ * @returns Extension-relative path to the per-hash scriptlet file.
+ */
+const getScriptPath = (hash: string): string => {
+    return `${EXTENSION_FILTERS_SUBDIR}/${PREREGISTERED_SCRIPTS_DIR}/${hash}.js`;
+};
+
+/**
+ * Converts a domain into URL match patterns for `matches`/`excludeMatches`.
  *
- * @returns Array of two match pattern strings.
+ * @param domain Domain string.
+ *
+ * @returns Two match patterns: `*://domain/*` and `*://*.domain/*`.
  */
 const domainToMatchPatterns = (domain: string): string[] => {
     return [`*://${domain}/*`, `*://*.${domain}/*`];
 };
 
 /**
- * Returns the extension-relative script path for a (domain, filterId) bundle.
+ * Finds the longest domain in the list that is a parent of `domain`.
  *
- * @param domain Apex domain string, e.g. `"youtube.com"`.
- * @param filterId Filter ID as a string, e.g. `"14"`.
+ * @param domain Domain to find parent for.
+ * @param allDomains All preregistered domains.
  *
- * @returns Extension-relative path, e.g. `"filters/preregistered-scripts/youtube.com-14.js"`.
+ * @returns Closest parent, or `null` if none.
  */
-const buildScriptPath = (domain: string, filterId: string): string => {
-    return `${EXTENSION_FILTERS_SUBDIR}/${PREREGISTERED_SCRIPTS_DIR}/${domain}-${filterId}.js`;
+const findClosestParentDomain = (
+    domain: string,
+    allDomains: readonly string[],
+): string | null => {
+    let parent: string | null = null;
+    for (const d of allDomains) {
+        if (d !== domain && domain.endsWith(`.${d}`)) {
+            if (parent === null || d.length > parent.length) {
+                parent = d;
+            }
+        }
+    }
+
+    return parent;
 };
 
 /**
- * Derives the stable `chrome.scripting` registration ID for a (domain, filterId) pair.
- *
- * @param domain Apex domain string, e.g. `"youtube.com"`.
- * @param filterId Filter ID as a string, e.g. `"14"`.
- *
- * @returns Registration ID string, e.g. `"youtube.com_14"`.
+ * @returns `true` if both sets contain the same elements.
  */
-const scriptIdForDomainFilter = (domain: string, filterId: string): string => {
-    return `${domain}_${filterId}`;
+const setsEqual = <T>(a: Set<T>, b: Set<T>): boolean => {
+    if (a.size !== b.size) {
+        return false;
+    }
+    for (const item of a) {
+        if (!b.has(item)) {
+            return false;
+        }
+    }
+
+    return true;
 };
 
 /**
  * Manages preregistered content-script registrations for preregistered domains.
  *
- * Scripts registered here use `persistAcrossSessions: true` so they survive
- * browser restarts without needing to be re-registered on startup.
+ * Scripts use `persistAcrossSessions: true` so they survive browser restarts.
+ *
+ * Build-time (`tools/resources/preregistered-scripts/`) generates per-rule
+ * `{hash}.js` files, a shared `scriptlets-bundle.js`, and `domains.js` listing
+ * domains that have rules.
+ *
+ * At runtime, this service queries the engine per domain to get applicable
+ * cosmetic rules, computes their hashes, and registers content scripts with
+ * wildcard `matches` and `excludeMatches` for subdomains with different rule
+ * sets. Apex domains cover all subdomains via wildcards; subdomains with
+ * exceptions or extra rules get their own registration.
  */
 export class PreregisteredScriptsService {
     /**
-     * Cache of the last synchronised state.
-     *
-     * Used to short-circuit {@link sync} when nothing has changed, avoiding
-     * unnecessary `chrome.scripting` calls on every debounced `update()`.
-     */
-    private static lastSyncedKey: string | null = null;
-
-    /**
-     * Registers preregistered domains with tswebextension so that the
-     * cosmetic API skips dynamic scriptlet injection on those domains,
-     * avoiding double execution with the preregistered bundles.
+     * Registers preregistered domains with tswebextension to skip dynamic scriptlet injection.
      */
     public static registerDomains(): void {
-        TsWebExtension.setPreregisteredScriptDomains(PreregisteredScriptsService.getDomains());
+        TsWebExtension.setPreregisteredScriptDomains(preregisteredDomains);
     }
 
     /**
-     * Returns the list of domains that have preregistered-script bundles.
+     * Synchronises preregistered content scripts with the current engine state.
      *
-     * @returns Array of domain strings (e.g. `["youtube.com"]`).
-     */
-    private static getDomains(): string[] {
-        return Object.keys(preregisteredDomainScripts);
-    }
-
-    /**
-     * Synchronises registered preregistered-domain content scripts with the
-     * current enabled-filter set.
-     *
-     * Each (domain, filterId) pair maps to its own `chrome.scripting`
-     * registration, so disabling a single filter unregisters only that
-     * filter's scripts — other filters' scripts for the same domain are
-     * left untouched.
-     *
-     * When `filteringEnabled` is `false` (AdGuard is paused), all
-     * preregistered scripts are unregistered by passing an empty
-     * desired set to the sync call.
-     *
-     * Short-circuits when the enabled-filter set is identical to the
-     * previous call, avoiding redundant `chrome.scripting` work.
+     * All scripts are unregistered when filtering is disabled. The sync call
+     * diffs against current browser registrations, so repeated calls with same
+     * state are safe.
      *
      * @param filteringEnabled Whether global filtering is enabled.
      */
     public static async sync(filteringEnabled: boolean): Promise<void> {
-        // When filtering is paused, pass an empty set to unregister all
-        // preregistered scripts.
-        const enabledSet = filteringEnabled
-            ? new Set(
-                FiltersApi.getEnabledFilters()
-                    .filter((id) => CommonFilterUtils.isCommonFilter(id))
-                    .map(String),
-            )
-            : new Set<string>();
+        let scripts: chrome.scripting.RegisteredContentScript[] = [];
 
-        const syncKey = `${filteringEnabled}|${[...enabledSet].sort((a, b) => Number(a) - Number(b)).join(',')}`;
-        if (syncKey === PreregisteredScriptsService.lastSyncedKey) {
-            return;
-        }
-        const allScripts: chrome.scripting.RegisteredContentScript[] = [];
-
-        for (const [domain, filterIds] of Object.entries(preregisteredDomainScripts)) {
-            const scripts: chrome.scripting.RegisteredContentScript[] = filterIds
-                .filter((filterId) => enabledSet.has(filterId))
-                .map((filterId) => ({
-                    id: scriptIdForDomainFilter(domain, filterId),
-                    js: [
-                        buildSharedBundlePath(),
-                        buildScriptPath(domain, filterId),
-                    ],
-                    matches: domainToMatchPatterns(domain),
-                    runAt: 'document_start',
-                    world: 'MAIN',
-                    allFrames: true,
-                    persistAcrossSessions: true,
-                }));
-
-            allScripts.push(...scripts);
+        if (filteringEnabled) {
+            scripts = await PreregisteredScriptsService.buildDomainScripts();
         }
 
         try {
-            await TsWebExtension.syncContentScripts(PREREGISTERED_SCRIPTS_NAMESPACE, allScripts);
-            // Commit the key only after a successful sync so that a failed
-            // attempt does not permanently suppress future retries.
-            PreregisteredScriptsService.lastSyncedKey = syncKey;
+            await TsWebExtension.syncContentScripts(PREREGISTERED_SCRIPTS_NAMESPACE, scripts);
         } catch (e) {
             logger.error('[ext.PreregisteredScriptsService.sync]: Failed to sync preregistered scripts', e);
         }
+    }
+
+    /**
+     * Builds MAIN-world content-script descriptors with wildcard `matches`
+     * and `excludeMatches` for subdomains with different rule sets.
+     *
+     * @returns Array of content-script descriptors.
+     */
+    private static async buildDomainScripts(): Promise<chrome.scripting.RegisteredContentScript[]> {
+        const scripts: chrome.scripting.RegisteredContentScript[] = [];
+        const sharedBundlePath = getSharedBundlePath();
+        const allDomains = preregisteredDomains;
+
+        // Pre-compute hashes for all domains
+        const hashCache = new Map<string, Set<string>>();
+        for (const domain of allDomains) {
+            const hashes = await PreregisteredScriptsService.getDomainRuleHashes(domain);
+            hashCache.set(domain, hashes);
+        }
+
+        for (const domain of allDomains) {
+            const domainHashes = hashCache.get(domain)!;
+
+            if (domainHashes.size === 0) {
+                continue;
+            }
+
+            // Skip if same hashes as closest parent (parent's wildcard covers it)
+            const parent = findClosestParentDomain(domain, allDomains);
+            if (parent && setsEqual(domainHashes, hashCache.get(parent)!)) {
+                continue;
+            }
+
+            // Find subdomains with different hash sets → excludeMatches
+            const excludeMatches: string[] = [];
+            for (const other of allDomains) {
+                if (other === domain || !other.endsWith(`.${domain}`)) {
+                    continue;
+                }
+                const otherHashes = hashCache.get(other)!;
+                if (!setsEqual(otherHashes, domainHashes)) {
+                    excludeMatches.push(...domainToMatchPatterns(other));
+                }
+            }
+
+            const js = [sharedBundlePath, ...[...domainHashes].map(getScriptPath)];
+
+            scripts.push({
+                id: domain,
+                js,
+                matches: domainToMatchPatterns(domain),
+                excludeMatches: excludeMatches.length > 0 ? excludeMatches : undefined,
+                runAt: 'document_start',
+                world: 'MAIN',
+                allFrames: true,
+                persistAcrossSessions: true,
+            });
+        }
+
+        return scripts;
+    }
+
+    /**
+     * Queries the engine for cosmetic rules applicable to `domain` and computes
+     * their hashes.
+     *
+     * @param domain Domain string.
+     *
+     * @returns Set of rule hash strings.
+     */
+    private static async getDomainRuleHashes(domain: string): Promise<Set<string>> {
+        const url = `https://${domain}/`;
+        const cosmeticResult = engine.api.getCosmeticResult(url, CosmeticOption.CosmeticOptionJS);
+        const rules = cosmeticResult.JS.getRules();
+
+        const hashes = new Set<string>();
+
+        for (const rule of rules) {
+            try {
+                if (rule.isScriptlet) {
+                    const data = rule.getScriptletData();
+                    if (!data) {
+                        throw new Error('getScriptletData() returned null');
+                    }
+                    const hash = await computeScriptletHash(data.params.name, data.params.args);
+                    hashes.add(hash);
+                } else {
+                    const content = rule.getContent();
+                    const hash = await computeJsRuleHash(content);
+                    hashes.add(hash);
+                }
+            } catch (e) {
+                logger.warn(
+                    `[ext.PreregisteredScriptsService.getDomainRuleHashes]: Failed to hash rule for domain ${domain}`,
+                    e,
+                );
+            }
+        }
+
+        return hashes;
     }
 }

@@ -1,0 +1,3 @@
+(function () {
+_ag.r("json-prune-fetch-response", {"name":"json-prune-fetch-response","args":["playerResponse.adPlacements playerResponse.playerAds playerResponse.adSlots adPlacements playerAds adSlots","","/playlist\\?list=|player\\?|watch\\?[tv]=/"],"engine":"extension","version":"2.4.2","verbose":false}, ["playerResponse.adPlacements playerResponse.playerAds playerResponse.adSlots adPlacements playerAds adSlots","","/playlist\\?list=|player\\?|watch\\?[tv]=/"], "4707122f6654e1c11097abf0ad43949d59d9f2d5ca7f0ffee7cf4e43feb71d7f");
+})();

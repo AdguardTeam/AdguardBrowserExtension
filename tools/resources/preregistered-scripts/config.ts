@@ -28,9 +28,6 @@
  * To add a new preregistered domain, add it here and run
  * `pnpm resources:mv3`.
  */
-const config: string[] = [
+export const preregisteredDomains: readonly string[] = [
     'youtube.com',
 ];
-
-/** Domains for which preregistered scriptlet bundles should be generated. */
-export const preregisteredDomains: readonly string[] = config;

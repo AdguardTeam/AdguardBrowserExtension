@@ -24,9 +24,11 @@ import {
     expect,
 } from 'vitest';
 
+/* eslint-disable max-len */
 import {
     compileSharedScriptletsBundle,
-} from '../../../../tools/resources/preregistered-scripts/shared-bundle-generator/shared-bundle-generator';
+} from '../../../../tools/resources/preregistered-scripts/code-generators/shared-bundle-generator/shared-bundle-generator';
+/* eslint-enable max-len */
 
 describe('compileSharedScriptletsBundle', () => {
     it('returns null for an empty scriptlet names set', async () => {
@@ -50,20 +52,21 @@ describe('compileSharedScriptletsBundle', () => {
         expect(result).toContain('})();');
     });
 
-    it('defines the window._g API object in the output', async () => {
+    it('defines the window._ag API object in the output', async () => {
         const result = await compileSharedScriptletsBundle(
             new Set(['abort-on-property-read']),
         );
         expect(result).not.toBeNull();
-        expect(result).toContain('window._g');
+        expect(result).toContain('window._ag');
     });
 
-    it('includes a _loaded guard against double execution', async () => {
+    it('includes a guard against double execution', async () => {
         const result = await compileSharedScriptletsBundle(
             new Set(['abort-on-property-read']),
         );
         expect(result).not.toBeNull();
-        expect(result).toContain('_loaded');
+        // Minified: `if(!window._ag)` or `if (window._ag)`
+        expect(result).toMatch(/window\._ag/);
     });
 
     it('includes the deduplication Set in the output', async () => {
@@ -71,16 +74,16 @@ describe('compileSharedScriptletsBundle', () => {
             new Set(['abort-on-property-read']),
         );
         expect(result).not.toBeNull();
-        // _b is the deduplication Set; _g.b aliases it
-        expect(result).toMatch(/new Set\(\)/);
+        // Terser outputs `new Set` without parens for no-arg constructor
+        expect(result).toMatch(/new Set/);
     });
 
-    it('exposes a runner function _g.r', async () => {
+    it('exposes a runner function _ag.r', async () => {
         const result = await compileSharedScriptletsBundle(
             new Set(['abort-on-property-read']),
         );
         expect(result).not.toBeNull();
-        // The runner is defined as the `r` property on the `window._g` object
+        // The runner is defined as the `r` property on the `window._ag` object
         expect(result).toMatch(/\br:/);
     });
 

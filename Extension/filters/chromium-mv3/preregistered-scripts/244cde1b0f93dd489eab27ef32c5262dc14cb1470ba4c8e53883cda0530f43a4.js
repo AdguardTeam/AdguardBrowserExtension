@@ -1,0 +1,3 @@
+(function () {
+_ag.r("trusted-click-element", {"name":"trusted-click-element","args":["ytm-consent-bump-v2-renderer .dialog-scrollable-content > .one-col-dialog-buttons > ytm-button-renderer.eom-reject button.ytSpecButtonShapeNextHost","","2000"],"engine":"extension","version":"2.4.2","verbose":false}, ["ytm-consent-bump-v2-renderer .dialog-scrollable-content > .one-col-dialog-buttons > ytm-button-renderer.eom-reject button.ytSpecButtonShapeNextHost","","2000"], "244cde1b0f93dd489eab27ef32c5262dc14cb1470ba4c8e53883cda0530f43a4");
+})();

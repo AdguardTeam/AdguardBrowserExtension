@@ -98,7 +98,7 @@ export const genChromeMv3Config = (browserConfig: BrowserConfig, options: BuildO
             alias: {
                 'preregistered-scripts-registry': path.resolve(
                     __dirname,
-                    '../../../Extension/filters/chromium-mv3/preregistered-scripts/registry.js',
+                    '../../../Extension/filters/chromium-mv3/preregistered-scripts/domains.js',
                 ),
             },
         },

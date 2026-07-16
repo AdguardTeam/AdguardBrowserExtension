@@ -1,0 +1,3 @@
+(function () {
+_ag.r("json-prune", {"name":"json-prune","args":["playerResponse.messages.[].youThereRenderer messages.[].youThereRenderer"],"engine":"extension","version":"2.4.2","verbose":false}, ["playerResponse.messages.[].youThereRenderer messages.[].youThereRenderer"], "d076bdb3d5dc2532d6327d8de960170323437d4559b11bcebb0adacd32bef60e");
+})();
