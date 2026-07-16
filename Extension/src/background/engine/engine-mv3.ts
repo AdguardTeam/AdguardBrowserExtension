@@ -19,6 +19,7 @@
  */
 
 import { debounce } from 'lodash-es';
+import { preregisteredDomains } from 'preregistered-scripts-registry';
 
 import {
     MESSAGE_HANDLER_NAME,
@@ -29,6 +30,7 @@ import {
     type ConfigurationResult,
     FilterList,
 } from '@adguard/tswebextension/mv3';
+import { PREREGISTERED_SCRIPTS_DIR } from '@adguard/tswebextension/mv3/preregistered-scripts';
 
 import { logger } from '../../common/logger';
 import { WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS } from '../../../../constants';
@@ -52,7 +54,6 @@ import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rul
 import { CommonFilterUtils } from '../../common/common-filter-utils';
 import { FiltersStoragesAdapter } from '../storages/filters-adapter';
 import { isUserScriptsApiSupported } from '../../common/user-scripts-api/user-scripts-api-mv3';
-import { PreregisteredScriptsService } from '../services/preregistered-scripts/preregistered-scripts-service-mv3';
 
 import { type TsWebExtensionEngine } from './interface';
 
@@ -100,9 +101,6 @@ export class Engine implements TsWebExtensionEngine {
          * to execute scripts via scripting.executeScript with locality check.
          */
         TsWebExtension.setLocalScriptRules(localScriptRules);
-
-        // Register preregistered domains to avoid double scriptlet injection.
-        PreregisteredScriptsService.registerDomains();
 
         this.handleMessage = this.api.getMessageHandler();
 
@@ -162,9 +160,6 @@ export class Engine implements TsWebExtensionEngine {
          *   - Default filters (IDs: 2, 10) are pending enablement.
          */
         await iconsApi.update();
-
-        // Sync preregistered domain scripts with the current enabled-filter set.
-        await PreregisteredScriptsService.sync(configuration.settings.filteringEnabled);
     }
 
     /**
@@ -202,9 +197,6 @@ export class Engine implements TsWebExtensionEngine {
         }
         // Updates extension icon state to reflect current filtering status.
         await iconsApi.update();
-
-        // Keep preregistered domain scripts in sync with the updated filter set.
-        await PreregisteredScriptsService.sync(configuration.settings.filteringEnabled);
     }
 
     /**
@@ -329,6 +321,8 @@ export class Engine implements TsWebExtensionEngine {
             settings,
             filtersPath: 'filters/',
             ruleSetsPath: 'filters/declarative',
+            preregisteredScriptDomains: preregisteredDomains,
+            preregisteredScriptsPath: `filters/${PREREGISTERED_SCRIPTS_DIR}`,
             trustedDomains,
         };
     }

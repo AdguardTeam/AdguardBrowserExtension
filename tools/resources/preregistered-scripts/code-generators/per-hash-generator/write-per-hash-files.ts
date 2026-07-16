@@ -104,8 +104,6 @@ const compileJsRuleFile = (entry: CollectedRuleEntry): string => {
  * - JS injection rules emit a file containing the rule body wrapped in a
  *   dedup guard.
  *
- * All output is minified with Terser before writing.
- *
  * @param rules Map of hash → rule entry.
  * @param outputDir Directory to write files into.
  */

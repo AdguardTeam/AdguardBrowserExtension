@@ -22,7 +22,8 @@
 
 import path from 'node:path';
 
-import { SHARED_BUNDLE_FILENAME } from '../../../../../Extension/src/common/preregistered-scripts/constants';
+import { SHARED_BUNDLE_FILENAME } from '@adguard/tswebextension/mv3/preregistered-scripts';
+
 import { writeBundle } from '../../writeHelpers';
 
 import { compileSharedScriptletsBundle } from './shared-bundle-generator';

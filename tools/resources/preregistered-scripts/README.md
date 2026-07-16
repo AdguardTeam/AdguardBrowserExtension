@@ -119,17 +119,21 @@ To regenerate only preregistered bundles without downloading filters, run
 
 ## Runtime
 
-`Extension/src/background/services/preregistered-scripts/preregistered-scripts-service-mv3.ts`
-reads `registry.js` and registers content scripts via
-`chrome.scripting.registerContentScripts`. Each registration includes both
-the shared bundle and the per-domain file:
+At runtime, `@adguard/tswebextension` handles preregistered script
+registration. The extension passes `preregisteredScriptDomains` and
+`preregisteredScriptsPath` via the MV3 `Configuration` object, and
+`TsWebExtension.configure()` calls `PreregisteredScriptsService.sync()`
+which queries the engine per domain and registers content scripts via
+`chrome.scripting.registerContentScripts`. Each registration includes
+both the shared bundle and the per-hash files:
 
 ```typescript
 js: [
     'filters/preregistered-scripts/scriptlets-bundle.js',
-    `filters/preregistered-scripts/${domain}-${filterId}.js`,
+    `filters/preregistered-scripts/${hash}.js`,
 ]
 ```
 
-Enabled/disabled filters are synced automatically — `PreregisteredScriptsService.sync()`
-calls `FiltersApi.getEnabledFilters()`.
+Enabled/disabled filters are synced automatically —
+`PreregisteredScriptsService.sync()` queries the engine for current
+cosmetic rules on every `configure()` call.

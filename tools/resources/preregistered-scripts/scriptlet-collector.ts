@@ -31,8 +31,8 @@ import {
 import { FilterListParser, defaultParserOptions } from '@adguard/agtree/parser';
 import { CosmeticRuleBodyGenerator } from '@adguard/agtree/generator';
 import { isJsInjectionRule } from '@adguard/dnr-rulesets';
+import { computeJsRuleHash, computeScriptletHash } from '@adguard/tswebextension/mv3/preregistered-scripts';
 
-import { computeJsRuleHash, computeScriptletHash } from '../../../Extension/src/common/preregistered-scripts/hasher';
 import { extractPreprocessedRawFilterList, readMetadataRuleSet } from '../filter-extractor';
 
 import { preregisteredDomains } from './config';

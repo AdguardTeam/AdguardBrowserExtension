@@ -23,12 +23,13 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
+import { PREREGISTERED_SCRIPTS_DIR } from '@adguard/tswebextension/mv3/preregistered-scripts';
+
 import {
     FILTERS_DEST,
     DECLARATIVE_FILTERS_DEST,
     type Mv3AssetsFiltersBrowser,
 } from '../../constants';
-import { PREREGISTERED_SCRIPTS_DIR } from '../../../Extension/src/common/preregistered-scripts/constants';
 
 import { ScriptletCollector } from './scriptlet-collector';
 import {
