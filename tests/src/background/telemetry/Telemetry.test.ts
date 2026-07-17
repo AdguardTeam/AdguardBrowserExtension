@@ -37,6 +37,7 @@ import { messageHandler } from '../../../../Extension/src/background/message-han
 import { SettingsApi, TelemetryApi } from '../../../../Extension/src/background/api';
 import { MessageType } from '../../../../Extension/src/common/messages';
 import { ABTestManager } from '../../../../Extension/src/background/services/telemetry';
+import { NotifierType } from '../../../../Extension/src/common/constants';
 
 vi.mock('../../../../Extension/src/background/message-handler', () => ({
     messageHandler: {
@@ -50,6 +51,7 @@ vi.mock('../../../../Extension/src/background/api', () => ({
     },
     TelemetryApi: {
         sendEvent: vi.fn(),
+        sendSessionStart: vi.fn().mockResolvedValue({ versions: {} }),
     },
 }));
 
@@ -98,6 +100,13 @@ describe('Telemetry', () => {
                 update_interval: null,
             },
         });
+
+        // Reset session start state so each test starts fresh
+        // @ts-ignore - accessing private field for testing
+        Telemetry.isSessionStartSent = false;
+        // @ts-ignore - accessing private field for testing
+        Telemetry.isSessionStartInProgress = false;
+        vi.mocked(TelemetryApi.sendSessionStart).mockResolvedValue({ versions: {} });
 
         await Telemetry.init();
     });
@@ -197,6 +206,155 @@ describe('Telemetry', () => {
             await Telemetry.sendPageViewEvent(TelemetryScreenName.GeneralSettings, 'page-1');
 
             expect(TelemetryApi.sendEvent).toHaveBeenCalledTimes(3);
+        });
+    });
+
+    describe('session_start', () => {
+        test('sends session_start during init when telemetry is enabled', async () => {
+            // beforeEach calls init() with telemetry enabled
+            expect(TelemetryApi.sendSessionStart).toHaveBeenCalledTimes(1);
+        });
+
+        test('does not send session_start again on re-init', async () => {
+            // @ts-ignore - accessing private field for testing
+            Telemetry.isSessionStartSent = true;
+            vi.clearAllMocks();
+            await Telemetry.init();
+
+            expect(TelemetryApi.sendSessionStart).not.toHaveBeenCalled();
+        });
+
+        test('does not send session_start when telemetry is disabled', async () => {
+            // @ts-ignore - accessing private field for testing
+            Telemetry.isSessionStartSent = false;
+            // @ts-ignore - accessing private field for testing
+            Telemetry.isSessionStartInProgress = false;
+            vi.clearAllMocks();
+            vi.mocked(SettingsApi.getSetting).mockImplementation((key) => {
+                if (key === SettingOption.AllowAnonymizedUsageData) {
+                    return false;
+                }
+                return undefined;
+            });
+            await Telemetry.init();
+
+            expect(TelemetryApi.sendSessionStart).not.toHaveBeenCalled();
+        });
+
+        test('drops events before session_start succeeds even if telemetry is enabled', async () => {
+            // Simulate state before session_start has succeeded: telemetry enabled,
+            // but isSessionStartSent is still false.
+            // @ts-ignore - accessing private field for testing
+            Telemetry.isSessionStartSent = false;
+            vi.clearAllMocks();
+
+            await Telemetry.sendPageViewEvent(TelemetryScreenName.MainPage, 'page-1');
+
+            expect(TelemetryApi.sendEvent).not.toHaveBeenCalled();
+        });
+
+        test('sends events after session_start succeeds', async () => {
+            // beforeEach already called init() so isSessionStartSent is true
+            vi.clearAllMocks();
+
+            await Telemetry.sendPageViewEvent(TelemetryScreenName.MainPage, 'page-1');
+
+            expect(TelemetryApi.sendEvent).toHaveBeenCalledTimes(1);
+        });
+
+        test('retries session_start on next trigger after failure', async () => {
+            // Reset state
+            // @ts-ignore - accessing private field for testing
+            Telemetry.isSessionStartSent = false;
+            // @ts-ignore - accessing private field for testing
+            Telemetry.isSessionStartInProgress = false;
+            vi.clearAllMocks();
+
+            // First attempt: session_start fails
+            vi.mocked(TelemetryApi.sendSessionStart).mockRejectedValue(new Error('Network error'));
+            await Telemetry.init();
+
+            expect(TelemetryApi.sendSessionStart).toHaveBeenCalledTimes(1);
+            // @ts-ignore - accessing private field for testing
+            expect(Telemetry.isSessionStartSent).toBe(false);
+
+            // Second attempt: session_start succeeds (e.g. user re-enables telemetry)
+            vi.mocked(TelemetryApi.sendSessionStart).mockResolvedValue({ versions: {} });
+            vi.clearAllMocks();
+            // @ts-ignore - accessing private field for testing
+            Telemetry.isSessionStartInProgress = false;
+            await Telemetry.init();
+
+            expect(TelemetryApi.sendSessionStart).toHaveBeenCalledTimes(1);
+            // @ts-ignore - accessing private field for testing
+            expect(Telemetry.isSessionStartSent).toBe(true);
+        });
+
+        test('sends session_start when telemetry is enabled mid-process via handleSettingUpdated', async () => {
+            // Reset state — init with telemetry disabled first
+            // @ts-ignore - accessing private field for testing
+            Telemetry.isSessionStartSent = false;
+            // @ts-ignore - accessing private field for testing
+            Telemetry.isSessionStartInProgress = false;
+            vi.clearAllMocks();
+            vi.mocked(SettingsApi.getSetting).mockImplementation((key) => {
+                if (key === SettingOption.AllowAnonymizedUsageData) {
+                    return false;
+                }
+                return undefined;
+            });
+
+            await Telemetry.init();
+            expect(TelemetryApi.sendSessionStart).not.toHaveBeenCalled();
+
+            // Now enable telemetry — SettingsApi must return true for runSessionStart to proceed
+            vi.mocked(SettingsApi.getSetting).mockImplementation((key) => {
+                if (key === SettingOption.AllowAnonymizedUsageData) {
+                    return true;
+                }
+                return undefined;
+            });
+
+            // Simulate the notifier callback when user enables telemetry consent
+            // @ts-ignore - accessing private method for testing
+            Telemetry.handleSettingUpdated(
+                NotifierType.SettingUpdated,
+                { propertyName: SettingOption.AllowAnonymizedUsageData, propertyValue: true },
+            );
+
+            // handleSettingUpdated calls runSessionStart() fire-and-forget,
+            // so wait for the async operation to complete
+            await vi.waitFor(() => {
+                expect(TelemetryApi.sendSessionStart).toHaveBeenCalledTimes(1);
+            });
+        });
+
+        test('does not set isSessionStartSent on failure, allowing retry', async () => {
+            // Reset state
+            // @ts-ignore - accessing private field for testing
+            Telemetry.isSessionStartSent = false;
+            // @ts-ignore - accessing private field for testing
+            Telemetry.isSessionStartInProgress = false;
+            vi.clearAllMocks();
+
+            // First attempt: session_start fails
+            vi.mocked(TelemetryApi.sendSessionStart).mockRejectedValue(new Error('Network error'));
+            await Telemetry.init();
+
+            expect(TelemetryApi.sendSessionStart).toHaveBeenCalledTimes(1);
+            // @ts-ignore - accessing private field for testing
+            expect(Telemetry.isSessionStartSent).toBe(false);
+
+            // Second attempt: session_start succeeds (e.g. user re-enables telemetry)
+            vi.mocked(TelemetryApi.sendSessionStart).mockResolvedValue({ versions: {} });
+            vi.clearAllMocks();
+            // @ts-ignore - accessing private field for testing
+            Telemetry.isSessionStartInProgress = false;
+            await Telemetry.init();
+
+            expect(TelemetryApi.sendSessionStart).toHaveBeenCalledTimes(1);
+            // @ts-ignore - accessing private field for testing
+            expect(Telemetry.isSessionStartSent).toBe(true);
         });
     });
 

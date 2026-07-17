@@ -70,6 +70,12 @@ export class Telemetry {
     private static isSessionStartInProgress = false;
 
     /**
+     * Flag indicating that session_start has been successfully sent in this
+     * process lifetime.
+     */
+    private static isSessionStartSent = false;
+
+    /**
      * Initializes telemetry service.
      *
      * Generates or retrieves synthetic ID, collects user agent and props,
@@ -194,7 +200,7 @@ export class Telemetry {
      * @param event Event data (page view or custom event).
      */
     private static async sendEvent(event: TelemetryEventData): Promise<void> {
-        if (!Telemetry.isAnonymizedUsageDataAllowed()) {
+        if (!Telemetry.isAnonymizedUsageDataAllowed() || !Telemetry.isSessionStartSent) {
             return;
         }
 
@@ -253,11 +259,13 @@ export class Telemetry {
 
     /**
      * Sends a session_start request to request A/B experiment variant assignments.
-     * Fire-and-forget: errors are caught and logged; the extension continues normally.
+     * Sent at most once per process lifetime: after the first successful send,
+     * repeat calls are suppressed via {@link isSessionStartSent}.
+     * Errors are caught and logged; the extension continues normally.
      * Prevents concurrent calls to avoid duplicate requests.
      */
     private static async runSessionStart(): Promise<void> {
-        if (!Telemetry.isAnonymizedUsageDataAllowed()) {
+        if (!Telemetry.isAnonymizedUsageDataAllowed() || Telemetry.isSessionStartSent) {
             return;
         }
 
@@ -283,6 +291,7 @@ export class Telemetry {
 
             const response = await TelemetryApi.sendSessionStart(request);
             await ABTestManager.processResponse(response);
+            Telemetry.isSessionStartSent = true;
         } catch (e) {
             logger.debug('[ext.Telemetry.runSessionStart]: session_start failed', e);
         } finally {
