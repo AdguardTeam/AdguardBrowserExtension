@@ -50,6 +50,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Firefox freezes when playing Douyin videos, triggered by custom filter rule all.txt [#3525].
 - Sites loading-slowly in Firefox 118 when AdGuard extension is enabled [#2524].
 - Scroll bar missing in the filtering log [#3558].
+- Allowlist editor now accepts bare compound public suffixes (e.g. `gov.br`,
+  `co.uk`, `com.au`) while still rejecting single-label TLDs [#3587].
 - The request for additional permissions is not asked when importing extension
   settings [#2754].
 
@@ -64,6 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2524]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2524
 [#3525]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3525
 [#3558]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3558
+[#3587]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3587
 [tsurlfilter#111]: https://github.com/AdguardTeam/tsurlfilter/issues/111
 [tsurlfilter#167]: https://github.com/AdguardTeam/tsurlfilter/issues/167
 [tsurlfilter#188]: https://github.com/AdguardTeam/tsurlfilter/issues/188

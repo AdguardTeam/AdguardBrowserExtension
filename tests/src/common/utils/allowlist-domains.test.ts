@@ -145,6 +145,52 @@ describe('normalizeAllowlistEntry', () => {
         expect(normalizeAllowlistEntry('---')).toBeNull();
         expect(normalizeAllowlistEntry('___')).toBeNull();
     });
+
+    it('accepts and returns bare compound public suffixes', () => {
+        expect(normalizeAllowlistEntry('gov.br')).toBe('gov.br');
+        expect(normalizeAllowlistEntry('co.uk')).toBe('co.uk');
+        expect(normalizeAllowlistEntry('com.au')).toBe('com.au');
+        expect(normalizeAllowlistEntry('org.uk')).toBe('org.uk');
+        expect(normalizeAllowlistEntry('gov.uk')).toBe('gov.uk');
+        expect(normalizeAllowlistEntry('net.br')).toBe('net.br');
+        expect(normalizeAllowlistEntry('org.br')).toBe('org.br');
+        expect(normalizeAllowlistEntry('co.jp')).toBe('co.jp');
+        expect(normalizeAllowlistEntry('com.br')).toBe('com.br');
+        expect(normalizeAllowlistEntry('www.ro')).toBe('www.ro');
+    });
+
+    it('case-normalizes a bare compound public suffix', () => {
+        expect(normalizeAllowlistEntry('GOV.BR')).toBe('gov.br');
+        expect(normalizeAllowlistEntry('Gov.UK')).toBe('gov.uk');
+    });
+
+    it('accepts a recognized IDN compound public suffix', () => {
+        // `政府.香港` is a recognized compound public suffix in the PSL.
+        expect(normalizeAllowlistEntry('政府.香港')).toBe('政府.香港');
+    });
+
+    it('rejects bare single-label country-code TLDs', () => {
+        expect(normalizeAllowlistEntry('br')).toBeNull();
+        expect(normalizeAllowlistEntry('uk')).toBeNull();
+    });
+
+    it('rejects trailing-dot forms of single-label values', () => {
+        expect(normalizeAllowlistEntry('com.')).toBeNull();
+        expect(normalizeAllowlistEntry('randomword.')).toBeNull();
+    });
+
+    it('normalizes trailing-dot forms', () => {
+        expect(normalizeAllowlistEntry('gov.br.')).toBe('gov.br');
+        expect(normalizeAllowlistEntry('https://gov.br./')).toBe('gov.br');
+        expect(normalizeAllowlistEntry('gov.br./path')).toBe('gov.br');
+        expect(normalizeAllowlistEntry('co.uk.')).toBe('co.uk');
+        expect(normalizeAllowlistEntry('com.au.')).toBe('com.au');
+        expect(normalizeAllowlistEntry('192.168.1.1.')).toBe('192.168.1.1');
+        expect(normalizeAllowlistEntry('localhost.')).toBe('localhost');
+        expect(normalizeAllowlistEntry('example.com.')).toBe('example.com');
+        expect(normalizeAllowlistEntry('*.example.com.')).toBe('*.example.com');
+        expect(normalizeAllowlistEntry('*.gov.br.')).toBe('*.gov.br');
+    });
 });
 
 describe('normalizeAllowlistDomains', () => {
@@ -193,6 +239,13 @@ describe('normalizeAllowlistDomains', () => {
 
         expect(result.domains).toEqual([]);
         expect(result.invalidEntries).toEqual([]);
+    });
+
+    it('accepts a compound public suffix in a mixed batch', () => {
+        const result = normalizeAllowlistDomains('gov.br\nexample.com\nrandomword');
+
+        expect(result.domains).toEqual(['gov.br', 'example.com']);
+        expect(result.invalidEntries).toEqual(['randomword']);
     });
 });
 
