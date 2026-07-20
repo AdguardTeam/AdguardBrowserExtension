@@ -1,1 +1,0 @@
-_ag.r("ubo-set",{name:"ubo-set",args:["ytcfg.data_.EXPERIMENT_FLAGS.enable_ai_mode_suggest_client","false"],engine:"extension",version:"2.4.2",verbose:!1},["ytcfg.data_.EXPERIMENT_FLAGS.enable_ai_mode_suggest_client","false"],"e7e85e28b6e62fb998fb7301e9c7c9723664f92f12604959e57182708bb2580f");

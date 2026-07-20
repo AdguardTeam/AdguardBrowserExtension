@@ -1,1 +1,0 @@
-_ag.r("ubo-json-prune",{name:"ubo-json-prune",args:['$[?..paygatedQualitiesMetadata.*[?.key=="1080p"]]..adaptiveFormats.*[?.qualityLabel=="1080p"]'],engine:"extension",version:"2.4.2",verbose:!1},['$[?..paygatedQualitiesMetadata.*[?.key=="1080p"]]..adaptiveFormats.*[?.qualityLabel=="1080p"]'],"ec2d1105988ad28a56a1c45c7137dccb5b47950fee239d35cfeca19d1f7b8340");

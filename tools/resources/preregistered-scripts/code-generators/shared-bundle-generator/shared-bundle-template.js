@@ -59,7 +59,7 @@ export const BUNDLE_TEMPLATE = () => {
                 dedupSet.add(ruleKey);
                 let fn = functionRegistry[scriptletName];
                 if (fn) {
-                    fn.apply(null, [source].concat(args));
+                    fn.apply(null, [source, args]);
                 }
             } catch (e) {
                 // Swallow — never break the page.
