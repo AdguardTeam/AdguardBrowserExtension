@@ -1,1 +1,0 @@
-_ag.r("trusted-click-element",{name:"trusted-click-element",args:["button#preroll-skip","","1000"],engine:"extension",version:"2.4.2",verbose:!1},["button#preroll-skip","","1000"],"5f6c27f069fed5ea0e9c8dd29f250ce042e1631956929fe7c069812dc146f3e3");

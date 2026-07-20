@@ -1,1 +1,0 @@
-_ag.r("abort-current-inline-script",{name:"abort-current-inline-script",args:["document.write",""],engine:"extension",version:"2.4.2",verbose:!1},["document.write",""],"efe8025aadc98cb7bf311e9ab991979de74d21b2a956c90930a4c217e3035910");

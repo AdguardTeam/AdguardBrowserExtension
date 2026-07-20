@@ -1,1 +1,0 @@
-(function(){try{const t="7b36035f0313bf440ea21337800e220f4277c5d05d88f27caa0a38193961a8f5";if(_ag.b.has(t))return;_ag.b.add(t);(()=>{const t={apply:(t,n,o)=>{const e=o[0];return"function"==typeof e&&e.toString().includes("onAbnormalityDetected")&&(o[0]=function(){}),Reflect.apply(t,n,o)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t)})()}catch(t){}})();

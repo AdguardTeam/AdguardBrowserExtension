@@ -1,0 +1,1 @@
+_ag.r("trusted-replace-node-text",{name:"trusted-replace-node-text",args:["script","videoSources","/window\\.app\\.initAdv\\(\\);/","window.app.initMatch();"],engine:"extension",version:"2.4.2",verbose:!1},["script","videoSources","/window\\.app\\.initAdv\\(\\);/","window.app.initMatch();"],"393a757d678cad0d");

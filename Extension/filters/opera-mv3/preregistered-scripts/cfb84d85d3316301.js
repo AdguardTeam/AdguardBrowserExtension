@@ -1,0 +1,1 @@
+_ag.r("prevent-addEventListener",{name:"prevent-addEventListener",args:["click","window.open"],engine:"extension",version:"2.4.2",verbose:!1},["click","window.open"],"cfb84d85d3316301");

@@ -1,1 +1,0 @@
-_ag.r("set-constant",{name:"set-constant",args:["ytInitialPlayerResponse.adPlacements","undefined"],engine:"extension",version:"2.4.2",verbose:!1},["ytInitialPlayerResponse.adPlacements","undefined"],"b119d69da9d1ca59496ca98de2fca98146d658d45a98a2db91e5f313e76331ce");

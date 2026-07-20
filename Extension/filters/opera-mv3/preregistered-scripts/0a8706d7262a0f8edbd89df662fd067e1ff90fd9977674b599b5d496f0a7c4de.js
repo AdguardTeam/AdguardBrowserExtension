@@ -1,1 +1,0 @@
-_ag.r("remove-node-text",{name:"remove-node-text",args:["script","pickEngine"],engine:"extension",version:"2.4.2",verbose:!1},["script","pickEngine"],"0a8706d7262a0f8edbd89df662fd067e1ff90fd9977674b599b5d496f0a7c4de");

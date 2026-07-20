@@ -1,1 +1,0 @@
-_ag.r("prevent-addEventListener",{name:"prevent-addEventListener",args:["DOMContentLoaded","app_advert"],engine:"extension",version:"2.4.2",verbose:!1},["DOMContentLoaded","app_advert"],"46c4523e534679026fa9e9f5b3a3828d80cac05e104ee0c0fea10b029e95e848");

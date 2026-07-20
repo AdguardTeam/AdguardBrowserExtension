@@ -1,1 +1,0 @@
-_ag.r("remove-class",{name:"remove-class",args:["active-brand","body"],engine:"extension",version:"2.4.2",verbose:!1},["active-brand","body"],"752d1754eea8c8857a62273f9685079ae4f20857d2b6b9154508936b8e450062");

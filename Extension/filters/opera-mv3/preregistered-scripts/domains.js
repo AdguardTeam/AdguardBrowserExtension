@@ -3,6 +3,5 @@ export const preregisteredDomains = [
 	"youtube.com",
 	"m.youtube.com",
 	"consent.youtube.com",
-	"music.youtube.com",
 	"www.youtube.com"
 ];

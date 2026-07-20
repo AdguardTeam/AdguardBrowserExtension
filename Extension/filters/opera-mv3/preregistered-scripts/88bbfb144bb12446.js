@@ -1,0 +1,1 @@
+_ag.r("trusted-click-element",{name:"trusted-click-element",args:['form[action="https://consent.youtube.com/save"][jsaction] button[jsname="b3VHJd"]'],engine:"extension",version:"2.4.2",verbose:!1},['form[action="https://consent.youtube.com/save"][jsaction] button[jsname="b3VHJd"]'],"88bbfb144bb12446");

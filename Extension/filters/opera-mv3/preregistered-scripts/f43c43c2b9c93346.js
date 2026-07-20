@@ -1,0 +1,1 @@
+_ag.r("trusted-dispatch-event",{name:"trusted-dispatch-event",args:["ended","#preroll-video"],engine:"extension",version:"2.4.2",verbose:!1},["ended","#preroll-video"],"f43c43c2b9c93346");
