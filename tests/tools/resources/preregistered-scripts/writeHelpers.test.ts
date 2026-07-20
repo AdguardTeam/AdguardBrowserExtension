@@ -18,55 +18,70 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import vm from 'node:vm';
+import os from 'node:os';
+import path from 'node:path';
+import { promises as fs } from 'node:fs';
 
 import {
     describe,
     it,
     expect,
+    beforeEach,
+    afterEach,
 } from 'vitest';
 
-/**
- * Validates the JavaScript syntax of the given code string using Node.js `vm.Script`.
- *
- * @param code JavaScript source code to validate.
- * @param desc Human-readable description of the bundle (used in the error message).
- *
- * @throws {Error} If the code contains a syntax error.
- */
-const validateSyntax = (code: string, desc: string): void => {
-    try {
-        // eslint-disable-next-line no-new
-        new vm.Script(code);
-    } catch (e) {
-        const msg = e instanceof Error ? e.message : String(e);
-        throw new Error(`Syntax error in ${desc}: ${msg}`);
-    }
-};
+import { writeBundle } from '../../../../tools/resources/preregistered-scripts/writeHelpers';
 
-describe('validateSyntax', () => {
-    it('does not throw for valid JavaScript', () => {
-        expect(() => validateSyntax('var x = 1;', 'test.js')).not.toThrow();
+describe('writeBundle', () => {
+    let tempDir: string;
+
+    beforeEach(async () => {
+        tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'write-bundle-test-'));
     });
 
-    it('does not throw for an empty string', () => {
-        expect(() => validateSyntax('', 'empty.js')).not.toThrow();
+    afterEach(async () => {
+        await fs.rm(tempDir, { recursive: true, force: true });
     });
 
-    it('does not throw for a complex valid IIFE', () => {
+    it('writes valid JavaScript content to disk', async () => {
+        const filePath = path.join(tempDir, 'test.js');
+        await writeBundle('var x = 1;', filePath);
+
+        const written = await fs.readFile(filePath, 'utf-8');
+        expect(written).toBe('var x = 1;');
+    });
+
+    it('writes an empty string without throwing', async () => {
+        const filePath = path.join(tempDir, 'empty.js');
+        await expect(writeBundle('', filePath)).resolves.toBeUndefined();
+
+        const written = await fs.readFile(filePath, 'utf-8');
+        expect(written).toBe('');
+    });
+
+    it('writes a complex valid IIFE', async () => {
+        const filePath = path.join(tempDir, 'bundle.js');
         const code = '(function() { var _g = window._g; if (!_g) return; _g.r("foo", {}, [], "k"); })();';
-        expect(() => validateSyntax(code, 'bundle.js')).not.toThrow();
+        await writeBundle(code, filePath);
+
+        const written = await fs.readFile(filePath, 'utf-8');
+        expect(written).toBe(code);
     });
 
-    it('throws for a syntax error and includes the descriptor in the message', () => {
-        expect(() => validateSyntax('var = ;', 'bad-bundle.js')).toThrowError(/bad-bundle\.js/);
+    it('throws for a syntax error and includes the file name in the message, without writing the file', async () => {
+        const filePath = path.join(tempDir, 'bad-bundle.js');
+        await expect(writeBundle('var = ;', filePath)).rejects.toThrowError(/bad-bundle\.js/);
+
+        await expect(fs.readFile(filePath, 'utf-8')).rejects.toThrow();
     });
 
-    it('throws for unclosed braces', () => {
-        expect(() => validateSyntax('function foo() {', 'unclosed.js')).toThrow();
+    it('throws for unclosed braces', async () => {
+        const filePath = path.join(tempDir, 'unclosed.js');
+        await expect(writeBundle('function foo() {', filePath)).rejects.toThrow();
     });
 
-    it('throws for an unexpected token', () => {
-        expect(() => validateSyntax('!!!', 'invalid.js')).toThrow();
+    it('throws for an unexpected token', async () => {
+        const filePath = path.join(tempDir, 'invalid.js');
+        await expect(writeBundle('!!!', filePath)).rejects.toThrow();
     });
 });

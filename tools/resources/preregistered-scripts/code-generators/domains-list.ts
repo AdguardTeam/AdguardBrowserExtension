@@ -45,14 +45,16 @@ export const writeDomainsList = async (
     domains: string[],
     outputDir: string,
 ): Promise<void> => {
+    const sortedDomains = [...domains].sort();
+
     const content = [
         '// AUTO-GENERATED — do not edit manually. Re-run pnpm resources:mv3 to update.',
-        `export const preregisteredDomains = ${JSON.stringify(domains, null, '\t')};`,
+        `export const preregisteredDomains = ${JSON.stringify(sortedDomains, null, '\t')};`,
         '',
     ].join(NEWLINE_CHAR_UNIX);
 
     const outputPath = path.join(outputDir, DOMAINS_LIST_FILENAME);
 
     await fs.writeFile(outputPath, content, 'utf-8');
-    console.log(`[generate-preregistered-domain-bundles] Wrote ${DOMAINS_LIST_FILENAME} (${domains.length} domains)`);
+    console.log(`[generate-preregistered-domain-bundles] Wrote ${DOMAINS_LIST_FILENAME} (${sortedDomains.length} domains)`);
 };

@@ -283,7 +283,7 @@ export class ScriptletCollector {
         return {
             rules: this.rules,
             scriptletNames: this.scriptletNames,
-            domains: [...this.domainsWithRules],
+            domains: [...this.domainsWithRules].sort(),
         };
     }
 
