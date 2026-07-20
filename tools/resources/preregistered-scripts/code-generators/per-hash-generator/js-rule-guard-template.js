@@ -30,6 +30,7 @@
  * `__CODE__` is replaced with the rule's source code.
  */
 export const JS_RULE_GUARD_TEMPLATE = () => {
+    // __BODY_START__
     try {
         const ruleKey = __KEY__; /* replaced with JSON.stringify(ruleHash) */
         if (_ag.b.has(ruleKey)) {
@@ -38,4 +39,5 @@ export const JS_RULE_GUARD_TEMPLATE = () => {
         _ag.b.add(ruleKey);
         __CODE__; /* replaced with rule source code */
     } catch (err) {}
+    // __BODY_END__
 };

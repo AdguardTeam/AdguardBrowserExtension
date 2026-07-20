@@ -43,6 +43,7 @@
  * - `_ag.b` — `Set` of executed rule keys for dedup (shared with JS rule guards).
  */
 export const BUNDLE_TEMPLATE = () => {
+    // __BODY_START__
     if (window._ag) {
         return;
     }
@@ -67,4 +68,5 @@ export const BUNDLE_TEMPLATE = () => {
         },
         b: dedupSet,
     };
+    // __BODY_END__
 };

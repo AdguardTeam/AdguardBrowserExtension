@@ -32,6 +32,16 @@ import { type CollectedRuleEntry } from '../../scriptlet-collector';
 import { JS_RULE_GUARD_TEMPLATE } from './js-rule-guard-template';
 
 /**
+ * Explicit sentinel comments marking the extractable body inside
+ * {@link JS_RULE_GUARD_TEMPLATE}. Using explicit markers (instead of locating
+ * the first `{`/last `}` in the stringified function) keeps extraction
+ * correct regardless of how the template's signature or surrounding code is
+ * written.
+ */
+const BODY_START_MARKER = '// __BODY_START__';
+const BODY_END_MARKER = '// __BODY_END__';
+
+/**
  * Compiles a single scriptlet invocation file.
  *
  * Emits a call to `_ag.r(name, source, args, hash)` which delegates execution
@@ -86,8 +96,8 @@ const compileJsRuleFile = (entry: CollectedRuleEntry): string => {
     }
 
     const source = JS_RULE_GUARD_TEMPLATE.toString();
-    const bodyStart = source.indexOf('{') + 1;
-    const bodyEnd = source.lastIndexOf('}');
+    const bodyStart = source.indexOf(BODY_START_MARKER) + BODY_START_MARKER.length;
+    const bodyEnd = source.indexOf(BODY_END_MARKER);
 
     const body = source
         .slice(bodyStart, bodyEnd)

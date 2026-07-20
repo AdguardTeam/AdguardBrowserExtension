@@ -400,7 +400,7 @@ export class ScriptletCollector {
         ruleNode.domains.children.forEach((domainNode) => {
             const { value: domain } = domainNode;
             if (preregisteredDomains.some((d) => isDomainOrSubdomain(domain, d))) {
-                this.domainsWithRules.add(domain);
+                this.domainsWithRules.add(normalizeDomain(domain));
             }
         });
     }

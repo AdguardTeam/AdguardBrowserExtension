@@ -28,6 +28,15 @@ import { minifyJs } from '../../constants';
 import { BUNDLE_TEMPLATE } from './shared-bundle-template';
 
 /**
+ * Explicit sentinel comments marking the extractable body inside
+ * {@link BUNDLE_TEMPLATE}. Using explicit markers (instead of locating the
+ * first `{`/last `}` in the stringified function) keeps extraction correct
+ * regardless of how the template's signature or surrounding code is written.
+ */
+const BODY_START_MARKER = '// __BODY_START__';
+const BODY_END_MARKER = '// __BODY_END__';
+
+/**
  * Builds the shared bundle body by filling `__FUNCTIONS__` and `__REGISTRY__`
  * markers in {@link BUNDLE_TEMPLATE}.
  *
@@ -41,8 +50,8 @@ const assembleTemplate = (
     registryEntries: string,
 ): string => {
     const source = BUNDLE_TEMPLATE.toString();
-    const bodyStart = source.indexOf('{') + 1;
-    const bodyEnd = source.lastIndexOf('}');
+    const bodyStart = source.indexOf(BODY_START_MARKER) + BODY_START_MARKER.length;
+    const bodyEnd = source.indexOf(BODY_END_MARKER);
 
     return source
         .slice(bodyStart, bodyEnd)
@@ -55,7 +64,7 @@ const assembleTemplate = (
  *
  * Loaded once per page. Contains deduplicated scriptlet function definitions
  * and the `window._ag` runner. Multiple loads are harmless — the IIFE is
- * guarded by `window._ag._loaded`.
+ * guarded by `if (window._ag) return`.
  *
  * @param scriptletNames Set of unique scriptlet names used across all domains.
  *
