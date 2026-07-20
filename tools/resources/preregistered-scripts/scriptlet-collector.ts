@@ -234,23 +234,21 @@ export interface CollectedScriptlets {
  * (via `getCosmeticResult`), which correctly accounts for filter enable/disable,
  * user rules, and allowlist entries.
  *
- * @note Single-use:
- * Accumulators are initialised in the constructor. Call {@link collect} once
- * per instance — subsequent calls would append to the same accumulators,
- * producing duplicate entries.
+ * {@link collect} resets its accumulators on every call, so a single instance
+ * can safely be reused for repeated collection runs.
  */
 export class ScriptletCollector {
     /** Path to the DNR declarative filter folder. */
     private readonly declarativeFolder: string;
 
     /** Accumulator: unique rule entries keyed by hash. */
-    private readonly rules: Map<string, CollectedRuleEntry>;
+    private rules: Map<string, CollectedRuleEntry>;
 
     /** Accumulator: unique scriptlet names (for shared bundle generation). */
-    private readonly scriptletNames: Set<string>;
+    private scriptletNames: Set<string>;
 
     /** Accumulator: domains that have at least one blocking rule. */
-    private readonly domainsWithRules: Set<string>;
+    private domainsWithRules: Set<string>;
 
     /**
      * @param declarativeFolder Path to the DNR declarative filter folder.
@@ -265,9 +263,16 @@ export class ScriptletCollector {
     /**
      * Walks all rulesets and collects rules into the accumulators.
      *
+     * Resets the accumulators first, so calling this more than once on the
+     * same instance does not produce duplicate entries.
+     *
      * @returns Collected unique rules, scriptlet names, and domains with rules.
      */
     public async collect(): Promise<CollectedScriptlets> {
+        this.rules = new Map();
+        this.scriptletNames = new Set();
+        this.domainsWithRules = new Set();
+
         const metadataRuleSet = await readMetadataRuleSet(this.declarativeFolder);
         const ruleSetIds = metadataRuleSet.getRuleSetIds();
 

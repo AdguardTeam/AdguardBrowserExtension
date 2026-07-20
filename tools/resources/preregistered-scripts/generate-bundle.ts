@@ -18,8 +18,6 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-/* eslint-disable no-console */
-
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
@@ -62,19 +60,29 @@ export const generatePreregisteredDomainBundles = async (
     const outputDir = path.join(filtersFolder, PREREGISTERED_SCRIPTS_DIR);
     const declarativeFolder = DECLARATIVE_FILTERS_DEST.replace('%browser', browser);
 
-    await fs.rm(outputDir, { recursive: true, force: true });
-    await fs.mkdir(outputDir, { recursive: true });
+    const tempDir = `${outputDir}.tmp-${process.pid}`;
+    await fs.rm(tempDir, { recursive: true, force: true });
+    await fs.mkdir(tempDir, { recursive: true });
 
-    // 1. Collect rules from all rulesets.
-    const collector = new ScriptletCollector(declarativeFolder);
-    const { rules, scriptletNames, domains } = await collector.collect();
+    try {
+        // 1. Collect rules from all rulesets.
+        const collector = new ScriptletCollector(declarativeFolder);
+        const { rules, scriptletNames, domains } = await collector.collect();
 
-    // 2. Build and write the shared scriptlets bundle.
-    await writeSharedBundle(scriptletNames, outputDir);
+        // 2. Build and write the shared scriptlets bundle.
+        await writeSharedBundle(scriptletNames, tempDir);
 
-    // 3. Write per-hash files (one per unique rule).
-    await writePerHashFiles(rules, outputDir);
+        // 3. Write per-hash files (one per unique rule).
+        await writePerHashFiles(rules, tempDir);
 
-    // 4. Write the domains list.
-    await writeDomainsList(domains, outputDir);
+        // 4. Write the domains list.
+        await writeDomainsList(domains, tempDir);
+
+        // 5. Replace the old output with the newly generated one.
+        await fs.rm(outputDir, { recursive: true, force: true });
+        await fs.rename(tempDir, outputDir);
+    } catch (error) {
+        await fs.rm(tempDir, { recursive: true, force: true });
+        throw error;
+    }
 };

@@ -18,6 +18,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import vm from 'node:vm';
+
 import {
     describe,
     it,
@@ -120,9 +122,10 @@ describe('compileSharedScriptletsBundle', () => {
             new Set(['abort-on-property-read']),
         );
         expect(result).not.toBeNull();
-        // If syntax were invalid, vm.Script would throw — we verify it's a
-        // non-empty string and starts/ends with the expected IIFE delimiters
-        expect(result).toMatch(/^\(function/);
-        expect(result!.trimEnd()).toMatch(/\}\)\(\);$/);
+        // If syntax were invalid, vm.Script would throw.
+        expect(() => {
+            // eslint-disable-next-line no-new
+            new vm.Script(result as string);
+        }).not.toThrow();
     });
 });
