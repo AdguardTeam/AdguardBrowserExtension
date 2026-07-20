@@ -69,12 +69,12 @@ export const generatePreregisteredDomainBundles = async (
     const collector = new ScriptletCollector(declarativeFolder);
     const { rules, scriptletNames, domains } = await collector.collect();
 
-    // // 2. Build and write the shared scriptlets bundle.
+    // 2. Build and write the shared scriptlets bundle.
     await writeSharedBundle(scriptletNames, outputDir);
 
-    // // 3. Write per-hash files (one per unique rule).
+    // 3. Write per-hash files (one per unique rule).
     await writePerHashFiles(rules, outputDir);
 
-    // // 4. Write the domains list.
+    // 4. Write the domains list.
     await writeDomainsList(domains, outputDir);
 };

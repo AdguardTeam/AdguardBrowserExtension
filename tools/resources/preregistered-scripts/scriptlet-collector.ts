@@ -27,15 +27,26 @@ import {
     QuoteUtils,
     RuleCategory,
     type JsInjectionRule,
+    getScriptletName,
 } from '@adguard/agtree';
 import { FilterListParser, defaultParserOptions } from '@adguard/agtree/parser';
 import { CosmeticRuleBodyGenerator } from '@adguard/agtree/generator';
 import { isJsInjectionRule } from '@adguard/dnr-rulesets';
-import { computeJsRuleHash, computeScriptletHash } from '@adguard/tswebextension/mv3/preregistered-scripts';
+import {
+    computeJsRuleHash,
+    computeScriptletHash,
+    normalizeDomain,
+} from '@adguard/tswebextension/mv3/preregistered-scripts';
 
 import { extractPreprocessedRawFilterList, readMetadataRuleSet } from '../filter-extractor';
 
-import { preregisteredDomains } from './config';
+import { preregisteredDomains as rawPreregisteredDomains } from './config';
+
+/**
+ * Normalized preregistered domains list — the single source of truth used
+ * for all domain comparisons in this module.
+ */
+const preregisteredDomains: readonly string[] = rawPreregisteredDomains.map(normalizeDomain);
 
 /**
  * Returns `true` if a cosmetic rule is "generic" — not restricted to specific domains.
@@ -81,7 +92,8 @@ export const isDomainOrSubdomain = (
     domain: string,
     preregisteredDomain: string,
 ): boolean => {
-    return domain === preregisteredDomain || domain.endsWith(`.${preregisteredDomain}`);
+    const normalizedDomain = normalizeDomain(domain);
+    return normalizedDomain === preregisteredDomain || normalizedDomain.endsWith(`.${preregisteredDomain}`);
 };
 
 /**
@@ -100,7 +112,17 @@ export const isRuleTargetsDomain = (
         return true;
     }
 
-    return ruleNode.domains!.children.some((domainNode) => {
+    // `isGenericCosmeticRule` already covers a missing/empty domain list for
+    // well-formed rules. `domains` is typed as always present on the AST, but
+    // guard explicitly (rather than with a non-null assertion) since malformed
+    // input parsed with `tolerant: true` could theoretically produce a node
+    // without it.
+    const { domains } = ruleNode;
+    if (!domains) {
+        return false;
+    }
+
+    return domains.children.some((domainNode) => {
         if (domainNode.exception) {
             return false;
         }
@@ -111,9 +133,10 @@ export const isRuleTargetsDomain = (
 /**
  * Extracts scriptlet name and arguments from a scriptlet injection rule AST node.
  *
- * This extraction matches the logic in the `CosmeticRule` constructor so that
- * the hash computed at build-time matches the hash computed at runtime from
- * `rule.getScriptletData().params`.
+ * The name is extracted via agtree's {@link getScriptletName} (the same helper
+ * agtree's own converters use), so build-time hashing matches runtime hashing
+ * from `rule.getScriptletData().params`. Arguments are extracted the same way
+ * agtree extracts the name, for consistency.
  *
  * @note Only the first scriptlet call in the rule body is extracted.
  * Multi-scriptlet rules (multiple calls separated by `;`) are rare in practice,
@@ -123,7 +146,7 @@ export const isRuleTargetsDomain = (
  *
  * @returns Object with `name` (string) and `args` (string array).
  *
- * @throws If the rule body has no scriptlet call.
+ * @throws If the rule body has no scriptlet call, or the scriptlet name is empty.
  */
 export const extractScriptletNameAndArgs = (
     ruleNode: ScriptletInjectionRule,
@@ -133,12 +156,10 @@ export const extractScriptletNameAndArgs = (
         throw new Error('ScriptletInjectionRule has no scriptlet calls in body');
     }
 
-    const params = paramList.children.map(
+    const name = QuoteUtils.removeQuotesAndUnescape(getScriptletName(paramList));
+    const args = paramList.children.slice(1).map(
         (param) => (param === null ? '' : QuoteUtils.removeQuotesAndUnescape(param.value)),
     );
-
-    const name = params[0] ?? '';
-    const args = params.slice(1);
 
     return { name, args };
 };
