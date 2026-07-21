@@ -80,9 +80,8 @@ export class UserAgent {
     static async getPlatformVersion(): Promise<string | undefined> {
         let platformVersion: string | undefined;
         try {
-            // @ts-ignore
-            const ua = await navigator.userAgentData.getHighEntropyValues([UserAgent.PLATFORM_VERSION]);
-            platformVersion = ua[UserAgent.PLATFORM_VERSION];
+            const ua = await navigator.userAgentData?.getHighEntropyValues([UserAgent.PLATFORM_VERSION]);
+            platformVersion = ua?.[UserAgent.PLATFORM_VERSION];
         } catch (e) {
             // do nothing
         }
@@ -175,9 +174,21 @@ export class UserAgent {
      * This method is more accurate than using UserAgent string,
      * because it uses the browser API to get the platform info.
      *
+     * On desktop-class Chromium builds running on Android (e.g. Chrome in desktop
+     * mode), `getPlatformInfo().os` returns `'android'`, but the browser uses
+     * desktop extension popup auto-sizing. In that case `navigator.userAgentData.mobile`
+     * is `false`, so we use it to avoid treating desktop-class Android as mobile Android.
+     *
      * @returns True if the current platform is Android.
      */
     static async getIsAndroid(): Promise<boolean> {
+        // If userAgentData is available and indicates a non-mobile device,
+        // this is a desktop-class environment (e.g. desktop Chrome on Android),
+        // so we should not treat it as mobile Android.
+        if (navigator.userAgentData?.mobile === false) {
+            return false;
+        }
+
         try {
             const { os } = await browser.runtime.getPlatformInfo();
             return os === UserAgent.ANDROID_OS_NAME;
