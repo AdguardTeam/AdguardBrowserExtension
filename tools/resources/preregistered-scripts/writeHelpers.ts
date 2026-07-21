@@ -23,6 +23,25 @@ import path from 'node:path';
 import vm from 'node:vm';
 
 /**
+ * Asserts that none of the given template sentinel markers remain in
+ * `content`. Intended to be called right after filling in a code template,
+ * to catch cases where a marker was left unreplaced (e.g. a typo in the
+ * marker name, or a template change that removed a marker the generator
+ * still expects to fill).
+ *
+ * @param content Assembled template content to check.
+ * @param sentinels Marker strings that must not appear in `content`.
+ *
+ * @throws {Error} If any sentinel is still present in `content`.
+ */
+export const assertNoTemplateSentinels = (content: string, sentinels: string[]): void => {
+    const remaining = sentinels.filter((sentinel) => content.includes(sentinel));
+    if (remaining.length > 0) {
+        throw new Error(`Template sentinel(s) not replaced: ${remaining.join(', ')}`);
+    }
+};
+
+/**
  * Validates the syntax of `content` and writes it to `filePath`.
  *
  * The `vm.Script` constructor is used solely for syntax validation —

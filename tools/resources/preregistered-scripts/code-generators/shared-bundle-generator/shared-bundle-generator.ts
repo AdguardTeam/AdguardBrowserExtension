@@ -24,6 +24,7 @@ import { scriptlets } from '@adguard/scriptlets';
 
 import { NEWLINE_CHAR_UNIX } from '../../../../../Extension/src/common/constants';
 import { minifyJs } from '../../constants';
+import { assertNoTemplateSentinels } from '../../writeHelpers';
 
 import { BUNDLE_TEMPLATE } from './shared-bundle-template';
 
@@ -53,10 +54,14 @@ const assembleTemplate = (
     const bodyStart = source.indexOf(BODY_START_MARKER) + BODY_START_MARKER.length;
     const bodyEnd = source.indexOf(BODY_END_MARKER);
 
-    return source
+    const filled = source
         .slice(bodyStart, bodyEnd)
-        .replace('__FUNCTIONS__', functions.join(NEWLINE_CHAR_UNIX))
-        .replace('__REGISTRY__', `{${registryEntries}}`);
+        .replace('__FUNCTIONS__', () => functions.join(NEWLINE_CHAR_UNIX))
+        .replace('__REGISTRY__', () => `{${registryEntries}}`);
+
+    assertNoTemplateSentinels(filled, ['__FUNCTIONS__', '__REGISTRY__']);
+
+    return filled;
 };
 
 /**

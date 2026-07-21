@@ -38,8 +38,10 @@
  *
  * - Defines all scriptlet functions (registry maps name → function).
  * - Creates `window._ag = { r, b }` — the only public API.
- * - `_ag.r(name, source, args, key)` — deduplicates by `key`, then executes
- *   the scriptlet function. If the function is not found, the call is a no-op.
+ * - `_ag.r(name, source, args, key)` — deduplicates by `key`, sets
+ *   `source.domainName` from `document.location.hostname`, then executes
+ *   the scriptlet function (no-op if not found). `source.verbose` stays
+ *   baked in as `false` — `debugScriptlets` isn't available in MAIN world.
  * - `_ag.b` — `Set` of executed rule keys for dedup (shared with JS rule guards).
  */
 export const BUNDLE_TEMPLATE = () => {
@@ -60,6 +62,7 @@ export const BUNDLE_TEMPLATE = () => {
                 dedupSet.add(ruleKey);
                 let fn = functionRegistry[scriptletName];
                 if (fn) {
+                    source.domainName = document.location.hostname;
                     fn.apply(null, [source, args]);
                 }
             } catch (e) {

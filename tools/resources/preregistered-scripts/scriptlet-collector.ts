@@ -36,7 +36,7 @@ import {
     computeJsRuleHash,
     computeScriptletHash,
     normalizeDomain,
-} from '@adguard/tswebextension/mv3/preregistered-scripts';
+} from '@adguard/tswebextension/mv3/preregistered-scripts/hasher';
 
 import { extractPreprocessedRawFilterList, readMetadataRuleSet } from '../filter-extractor';
 
@@ -138,9 +138,10 @@ export const isRuleTargetsDomain = (
  * from `rule.getScriptletData().params`. Arguments are extracted the same way
  * agtree extracts the name, for consistency.
  *
- * @note Only the first scriptlet call in the rule body is extracted.
- * Multi-scriptlet rules (multiple calls separated by `;`) are rare in practice,
- * but additional calls beyond the first are silently ignored.
+ * @note Only the first scriptlet call in the rule body is extracted. This
+ * matches `@adguard/tsurlfilter`'s `CosmeticRule`, which also only ever reads
+ * `body.children[0]`, so calls beyond the first are never executed by the
+ * engine regardless of preregistration.
  *
  * @param ruleNode Parsed scriptlet injection rule AST node.
  *
@@ -154,6 +155,13 @@ export const extractScriptletNameAndArgs = (
     const paramList = ruleNode.body.children[0];
     if (!paramList) {
         throw new Error('ScriptletInjectionRule has no scriptlet calls in body');
+    }
+
+    if (ruleNode.body.children.length > 1) {
+        console.warn(
+            `[ext.extractScriptletNameAndArgs]: Rule has ${ruleNode.body.children.length} scriptlet calls; `
+                + 'only the first will be preregistered (matches @adguard/tsurlfilter\'s CosmeticRule behavior).',
+        );
     }
 
     const name = QuoteUtils.removeQuotesAndUnescape(getScriptletName(paramList));

@@ -22,7 +22,7 @@
 
 import path from 'node:path';
 
-import { SHARED_BUNDLE_FILENAME } from '@adguard/tswebextension/mv3/preregistered-scripts';
+import { SHARED_BUNDLE_FILENAME } from '@adguard/tswebextension/mv3/preregistered-scripts/hasher';
 
 import { writeBundle } from '../../writeHelpers';
 

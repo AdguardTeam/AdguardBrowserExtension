@@ -128,4 +128,15 @@ describe('compileSharedScriptletsBundle', () => {
             new vm.Script(result as string);
         }).not.toThrow();
     });
+
+    it('does not corrupt scriptlet source containing "$&" via String.replace special patterns', async () => {
+        const result = await compileSharedScriptletsBundle(
+            new Set(['abort-on-property-read', 'set-constant', 'json-prune']),
+        );
+        expect(result).not.toBeNull();
+        expect(result).not.toContain('__FUNCTIONS__');
+        expect(result).not.toContain('__REGISTRY__');
+        // The regex-escaping helper's replacement string must survive intact.
+        expect(result).toContain('\\$&');
+    });
 });

@@ -26,7 +26,7 @@ import { SCRIPTLETS_VERSION } from '@adguard/scriptlets';
 
 import { NEWLINE_CHAR_UNIX } from '../../../../../Extension/src/common/constants';
 import { minifyJs } from '../../constants';
-import { writeBundle } from '../../writeHelpers';
+import { writeBundle, assertNoTemplateSentinels } from '../../writeHelpers';
 import { type CollectedRuleEntry } from '../../scriptlet-collector';
 
 import { JS_RULE_GUARD_TEMPLATE } from './js-rule-guard-template';
@@ -47,6 +47,11 @@ const BODY_END_MARKER = '// __BODY_END__';
  * Emits a call to `_ag.r(name, source, args, hash)` which delegates execution
  * to the shared scriptlets bundle loaded before this file.
  *
+ * `source.domainName` is omitted — `_ag.r` fills it in at runtime from
+ * `document.location.hostname`. `source.verbose` is hardcoded to `false`;
+ * debug scriptlet output isn't available on preregistered domains since
+ * `debugScriptlets` lives in `chrome.storage`, unreachable from MAIN world.
+ *
  * @param entry Collected rule entry for a scriptlet.
  *
  * @returns Compiled JavaScript string for the `{hash}.js` file.
@@ -65,6 +70,7 @@ const compileScriptletFile = (entry: CollectedRuleEntry): string => {
         args: scriptletArgs,
         engine: 'extension',
         version: SCRIPTLETS_VERSION,
+        // See @note above: overwritten at runtime by `_ag.r`.
         verbose: false,
     };
 
@@ -101,8 +107,10 @@ const compileJsRuleFile = (entry: CollectedRuleEntry): string => {
 
     const body = source
         .slice(bodyStart, bodyEnd)
-        .replace('__KEY__', JSON.stringify(hash))
-        .replace('__CODE__', jsBody);
+        .replace('__KEY__', () => JSON.stringify(hash))
+        .replace('__CODE__', () => jsBody);
+
+    assertNoTemplateSentinels(body, ['__KEY__', '__CODE__']);
 
     return `(function () {${NEWLINE_CHAR_UNIX}${body}${NEWLINE_CHAR_UNIX}})();${NEWLINE_CHAR_UNIX}`;
 };

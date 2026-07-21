@@ -21,7 +21,7 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
-import { PREREGISTERED_SCRIPTS_DIR } from '@adguard/tswebextension/mv3/preregistered-scripts';
+import { PREREGISTERED_SCRIPTS_DIR } from '@adguard/tswebextension/mv3/preregistered-scripts/hasher';
 
 import {
     FILTERS_DEST,
