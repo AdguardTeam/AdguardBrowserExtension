@@ -19,6 +19,29 @@
  */
 
 declare global {
+    interface Navigator {
+        /**
+         * User-Agent Client Hints API.
+         *
+         * @see https://developer.mozilla.org/en-US/docs/Web/API/Navigator/userAgentData
+         */
+        userAgentData?: {
+            /**
+             * Whether the device is a mobile device.
+             */
+            mobile: boolean;
+
+            /**
+             * Returns a Promise that resolves with the requested high entropy values.
+             *
+             * @param hints Array of hint names to request.
+             *
+             * @returns Promise resolving to an object containing the requested hints.
+             */
+            getHighEntropyValues: (hints: string[]) => Promise<Record<string, string>>;
+        };
+    }
+
     interface Window {
         adguard: {
             /**
