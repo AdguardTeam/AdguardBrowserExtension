@@ -40,7 +40,7 @@ import { TelemetryEventName, TelemetryScreenName } from '../../../../common/tele
 import { RateNotification } from '../RateNotification';
 
 import { Compare } from './Compare';
-import { FilterSortMenu, PageActionsMenu } from './SidebarMenu';
+import { FilterSortMenu } from './SidebarMenu';
 
 import './sidebar.pcss';
 
@@ -117,10 +117,6 @@ const Sidebar = observer(() => {
     });
 
     const isFiltersPage = location.pathname.startsWith(`/${OptionsPageSections.filters}`);
-    const isAllowListPage = location.pathname.startsWith(`/${OptionsPageSections.allowlist}`);
-    const isUserFilterPage = location.pathname.startsWith(`/${OptionsPageSections.userFilter}`);
-
-    const showPageActionsMenu = isAllowListPage || isUserFilterPage;
 
     return (
         <>
@@ -142,7 +138,6 @@ const Sidebar = observer(() => {
                 <div className="sidebar__actions">
                     {isFiltersPage && <UpdateButtonMobile />}
                     {isFiltersPage && <FilterSortMenu />}
-                    {showPageActionsMenu && <PageActionsMenu />}
                 </div>
             </div>
             {/* eslint-disable-next-line max-len */}

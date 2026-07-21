@@ -247,6 +247,18 @@ export const genCommonConfig = (
         'configuration-export-api': path.resolve(__dirname, `../../Extension/src/background/api/settings/configuration-export/configuration-export-api-mv${manifestVersion}.ts`),
         'fullscreen-user-rules-store': path.resolve(__dirname, `../../Extension/src/pages/fullscreen-user-rules/stores/FullscreenUserRulesStore-mv${manifestVersion}.ts`),
         'filter-actions': path.resolve(__dirname, `../../Extension/src/pages/options/components/Filters/Filter/FilterActions-mv${manifestVersion}.ts`),
+        // Deduplicate CodeMirror / Lezer / oniguruma.
+        // `@adguard/rules-editor` externalizes these packages, so the linked
+        // library and the extension must resolve to a single physical copy.
+        // Otherwise duplicate `@codemirror/state` instances break `instanceof`
+        // checks ("Unrecognized extension value in extension set").
+        '@codemirror/state': path.resolve(__dirname, '../../node_modules/@codemirror/state'),
+        '@codemirror/view': path.resolve(__dirname, '../../node_modules/@codemirror/view'),
+        '@codemirror/language': path.resolve(__dirname, '../../node_modules/@codemirror/language'),
+        '@codemirror/commands': path.resolve(__dirname, '../../node_modules/@codemirror/commands'),
+        '@codemirror/search': path.resolve(__dirname, '../../node_modules/@codemirror/search'),
+        '@lezer/highlight': path.resolve(__dirname, '../../node_modules/@lezer/highlight'),
+        'vscode-oniguruma': path.resolve(__dirname, '../../node_modules/vscode-oniguruma'),
     };
 
     const configuration: Configuration = {
@@ -466,8 +478,20 @@ export const genCommonConfig = (
                 },
                 {
                     test: /\.(js|ts)x?$/,
-                    // TODO: Check, maybe it can be removed. Added in AG-28996.
-                    exclude: /node_modules\/(?!@adguard\/tswebextension)/,
+                    exclude: [
+                        // TODO: Check, maybe it can be removed. Added in AG-28996.
+                        /node_modules\/(?!@adguard\/tswebextension)/,
+                        // When @adguard/rules-editor is linked from a sibling
+                        // checkout (CI/local pnpm link), `symlinks: true`
+                        // resolves it to a path outside node_modules, so the
+                        // rule above does not exclude it. Its dist is already a
+                        // pre-built bundle and must not be re-transpiled: SWC's
+                        // `usage` core-js injection would add unresolvable
+                        // `import "core-js/..."` statements relative to the
+                        // linked location. This mirrors how the published npm
+                        // package (inside node_modules) is already excluded.
+                        /[/\\]rules-editor[/\\]dist[/\\]/,
+                    ],
                     use: [
                         {
                             // Rspack has built-in SWC loader
@@ -563,6 +587,13 @@ export const genCommonConfig = (
                     type: 'asset/resource',
                     generator: {
                         filename: 'assets/videos/[name][ext]',
+                    },
+                },
+                {
+                    test: /\.wasm$/,
+                    type: 'asset/resource',
+                    generator: {
+                        filename: 'assets/wasm/[name][ext]',
                     },
                 },
             ],

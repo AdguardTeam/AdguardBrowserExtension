@@ -106,7 +106,13 @@ const getEnvPolicy = (env: BuildTargetEnv, browser: Browser) => {
     switch (browser) {
         case Browser.ChromeMv3:
         case Browser.OperaMv3:
-            return { content_security_policy: { extension_pages: "script-src 'self'; object-src 'self'" } };
+            // MV3 extension-pages CSP does not allow WebAssembly compilation by default.
+            // 'wasm-unsafe-eval' is required so the bundled WASM modules can instantiate:
+            //   - @adguard/re2-wasm (RE2 regex engine)
+            //   - vscode-oniguruma's onig.wasm (regex grammar powering the CodeMirror syntax highlighter).
+            // Without it, the editor highlighting fails to load at runtime.
+            // eslint-disable-next-line max-len
+            return { content_security_policy: { extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'" } };
         default:
             return env === BuildTargetEnv.Dev
                 // eslint-disable-next-line max-len

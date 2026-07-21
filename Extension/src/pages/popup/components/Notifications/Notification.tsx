@@ -28,6 +28,7 @@ import classnames from 'classnames';
 
 import { NOTIFICATION_TTL_MS } from '../../../../common/constants';
 import { Icon } from '../../../common/components/ui/Icon';
+import { CloseIcon } from '../../../common/components/ui/CloseIcon';
 import { TIME_TO_REMOVE_NOTIFICATION_MS } from '../../../common/constants';
 import { NotificationType, type NotificationParams } from '../../../common/types';
 import { translator } from '../../../../common/translators/translator';
@@ -150,10 +151,7 @@ export const Notification = ({
                 className="notification__btn-close"
                 onClick={handleCloseClick}
             >
-                <Icon
-                    id="#cross"
-                    className="icon icon--24 icon--gray-default"
-                />
+                <CloseIcon />
             </button>
         </div>
     );

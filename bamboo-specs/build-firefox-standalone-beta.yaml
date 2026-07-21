@@ -33,9 +33,6 @@ Build and Sign Standalone:
             # Fix mixed logs
             exec 2>&1
 
-            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
-            ./bamboo-specs/scripts/clone-tsurlfilter.sh
-
             export DOCKER_BUILDKIT=1
 
             # Generate find-compatible .gitignore exclusions on the host (where .git is available).
@@ -48,7 +45,6 @@ Build and Sign Standalone:
               --file Dockerfile \
               --progress plain \
               --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
-              --build-context tsurlfilter=../tsurlfilter \
               --target firefox-beta-build-output \
               --output type=local,dest=output \
               .

@@ -1,3 +1,4 @@
+<!-- omit in toc -->
 # AI Agent Guidelines for AdGuard Browser Extension
 
 This document provides guidance for AI coding assistants and human contributors
@@ -59,6 +60,8 @@ Edge, and Opera. Licensed under GPL-3.0.
 - **Project Type**: Single-package repository (not a monorepo)
 - **Constraints**: MV3 bundle must stay under 30 MB; Firefox `.js` files under
   4 MB
+
+> All `dependencies` and `devDependencies` must be pinned to exact versions (no caret `^`, etc.).
 
 ## Project Structure
 
@@ -178,6 +181,7 @@ pnpm increment                           # Increment build version
 7. Verify MobX decorators are correct (`@action` vs `@override`)
 8. Check memory cleanup (dispose timers, listeners, observers)
 9. Confirm TypeScript types are correct (no `any` without justification)
+10. If adding or updating asset images, run `svgo` on them to optimize file size
 
 ### Copyright Header
 

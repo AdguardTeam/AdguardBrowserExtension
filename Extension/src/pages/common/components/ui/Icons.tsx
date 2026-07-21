@@ -115,7 +115,7 @@ export const Icons = () => {
                 </g>
             </symbol>
 
-            <symbol id="no-filters-found" viewBox="0 0 48 51">
+            <symbol id="no-search-match" viewBox="0 0 48 51">
                 <g fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M31.631 18.31a15.16 15.16 0 0 1-4.196 12.723c-5.872 5.999-15.504 6.099-21.503.226-6-5.872-6.108-15.505-.227-21.503 4.377-4.477 10.838-5.673 16.33-3.553M27.436 31.033 47 50.172" />
                     <path d="M31.522 15.564a7.023 7.023 0 1 0 0-14.046 7.023 7.023 0 0 0 0 14.046ZM27.752 4.645l7.54 7.539M27.752 12.157l7.54-7.54" />

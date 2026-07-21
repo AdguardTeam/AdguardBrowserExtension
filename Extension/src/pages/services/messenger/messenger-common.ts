@@ -499,6 +499,16 @@ export abstract class MessengerCommon {
     };
 
     /**
+     * Sends a message to the background page to close the fullscreen user rules
+     * editor window if it is open.
+     *
+     * @returns Promise that resolves after the message is sent.
+     */
+    closeFullscreenUserRules = async (): Promise<ExtractMessageResponse<MessageType.CloseFullscreenUserRules>> => {
+        return this.sendMessage(MessageType.CloseFullscreenUserRules);
+    };
+
+    /**
      * Sends a message to the background page to get the allowlist domains.
      *
      * @returns Promise that resolves with the list of allowlist domains.

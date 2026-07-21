@@ -36,19 +36,13 @@ Check Bundle Size:
             # Fix mixed logs
             exec 2>&1
 
-            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
-            ./bamboo-specs/scripts/clone-tsurlfilter.sh
-
             export DOCKER_BUILDKIT=1
 
-            # Build with named context for tsurlfilter
-            # Docker checksums the context content for cache invalidation
             docker build \
               --file Dockerfile \
               --progress plain \
               --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
               --build-arg BUILD_TYPE=beta \
-              --build-context tsurlfilter=../tsurlfilter \
               --target bundle-size-check-output \
               --output type=local,dest=output \
               .
@@ -79,18 +73,12 @@ Check translations:
             # Fix mixed logs
             exec 2>&1
 
-            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
-            ./bamboo-specs/scripts/clone-tsurlfilter.sh
-
             export DOCKER_BUILDKIT=1
 
-            # Build with named context for tsurlfilter
-            # Docker checksums the context content for cache invalidation
             docker build \
               --file Dockerfile \
               --progress plain \
               --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
-              --build-context tsurlfilter=../tsurlfilter \
               --target locales-check-output \
               --output type=local,dest=output \
               .
@@ -121,9 +109,6 @@ Build:
             # Fix mixed logs
             exec 2>&1
 
-            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
-            ./bamboo-specs/scripts/clone-tsurlfilter.sh
-
             export DOCKER_BUILDKIT=1
 
             # Build beta artifacts (chrome, chrome-mv3, edge zips + build.txt)
@@ -131,7 +116,6 @@ Build:
               --file Dockerfile \
               --progress plain \
               --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
-              --build-context tsurlfilter=../tsurlfilter \
               --build-context private=private \
               --target beta-build-output \
               --output type=local,dest=output \
@@ -142,7 +126,6 @@ Build:
               --file Dockerfile \
               --progress plain \
               --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
-              --build-context tsurlfilter=../tsurlfilter \
               --build-context private=private \
               --target beta-chrome-crx-output \
               --output type=local,dest=output \

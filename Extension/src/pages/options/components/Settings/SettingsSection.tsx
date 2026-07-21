@@ -18,24 +18,98 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import React from 'react';
+import React, { type ReactNode } from 'react';
 
 import classNames from 'classnames';
 
-const SettingsSection = (props) => {
+/**
+ * Rendering mode of the {@link SettingsSection}, affects title container and
+ * title styles.
+ */
+type SettingsSectionMode = 'smallContainer' | 'subTitle' | 'custom';
+
+/**
+ * Props for the {@link SettingsSection} component.
+ */
+type SettingsSectionProps = {
+    /**
+     * Section title text.
+     */
+    title?: string;
+
+    /**
+     * Id of the title element, used as `aria-labelledby` target by controls.
+     */
+    titleId?: string;
+
+    /**
+     * Optional icon rendered before the title.
+     */
+    titleIcon?: ReactNode;
+
+    /**
+     * Section description rendered under the title.
+     */
+    description?: ReactNode;
+
+    /**
+     * Render prop for the back button, replaces the title block.
+     */
+    renderBackButton?: () => ReactNode;
+
+    /**
+     * Id of the control associated with the section header label.
+     */
+    id?: string;
+
+    /**
+     * Control rendered inline with the title (e.g. a switcher).
+     */
+    inlineControl?: ReactNode;
+
+    /**
+     * Extra actions rendered in the section header (e.g. a dropdown menu).
+     */
+    actions?: ReactNode;
+
+    /**
+     * Section content.
+     */
+    children?: ReactNode;
+
+    /**
+     * Whether the section is disabled (grayed out and inert).
+     */
+    disabled?: boolean;
+
+    /**
+     * Rendering mode of the section.
+     */
+    mode?: SettingsSectionMode;
+
+    /**
+     * Additional class name for the section container.
+     */
+    className?: string;
+};
+
+const SettingsSection = (props: SettingsSectionProps) => {
     const {
         title,
         titleId,
+        titleIcon,
         description,
         renderBackButton,
         id,
         inlineControl,
+        actions,
         children,
         disabled,
         mode,
+        className,
     } = props;
 
-    const settingGroupClassName = classNames('settings__group', {
+    const settingGroupClassName = classNames('settings__group', className, {
         'settings__group--disabled': disabled,
     });
 
@@ -68,6 +142,7 @@ const SettingsSection = (props) => {
                         // of the controls title (aria-labelledby).
                         aria-hidden={!!titleId}
                     >
+                        {titleIcon}
                         {title}
                     </TitleTag>
                 )}
@@ -99,20 +174,29 @@ const SettingsSection = (props) => {
         );
     };
 
+    const header = renderBackButton ? (
+        <div className={titleContainerClass}>
+            {renderContent()}
+        </div>
+    ) : (
+        <label
+            className={titleContainerClass}
+            htmlFor={id}
+        >
+            {renderContent()}
+        </label>
+    );
+
     return (
         <div key={title} className={settingGroupClassName} inert={disabled ? '' : undefined}>
-            {renderBackButton ? (
-                <div className={titleContainerClass}>
-                    {renderContent()}
+            {actions ? (
+                <div className="settings__group__header">
+                    {header}
+                    <div className="settings__group__actions">
+                        {actions}
+                    </div>
                 </div>
-            ) : (
-                <label
-                    className={titleContainerClass}
-                    htmlFor={id}
-                >
-                    {renderContent()}
-                </label>
-            )}
+            ) : header}
             <div>
                 {children}
             </div>

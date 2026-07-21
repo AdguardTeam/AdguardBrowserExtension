@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `$removeparam` support for SPA navigations [tsurlfilter#188].
 - Filter rule conversion error logging in MV2.
 - Default registered script is always added to local script rules [tsurlfilter#167].
+- New Rules Editor with dedicated list and editor views.
 
 ### Changed
 

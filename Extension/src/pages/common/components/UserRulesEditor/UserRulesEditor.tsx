@@ -19,6 +19,9 @@
  */
 
 import React, {
+    type ChangeEvent,
+    type MouseEvent,
+    type ReactNode,
     useContext,
     useEffect,
     useRef,
@@ -26,21 +29,20 @@ import React, {
 } from 'react';
 import { observer } from 'mobx-react';
 
-import { Range } from 'ace-builds';
 import cn from 'classnames';
-
-import { SimpleRegex } from '@adguard/tsurlfilter/es/simple-regex';
 
 import { Editor, EditorLeaveModal } from '../Editor';
 import { translator } from '../../../../common/translators/translator';
 import { Checkbox } from '../ui/Checkbox';
 import { messenger } from '../../../services/messenger';
-import { TelemetryEventName, TelemetryScreenName } from '../../../../common/telemetry';
 import {
-    NotifierType,
-    NEWLINE_CHAR_UNIX,
-    NEWLINE_CHAR_REGEX,
-} from '../../../../common/constants';
+    TelemetryEventName,
+    TelemetryScreenName,
+    type TelemetryActionToScreenMap,
+} from '../../../../common/telemetry';
+import { type Settings, SettingOption } from '../../../../background/schema/settings';
+import { NotifierType } from '../../../../common/constants';
+import { mergeImportedRules } from '../../../../common/utils/user-rules';
 import { getFirstNonDisabledElement } from '../../utils/dom';
 import { handleFileUpload } from '../../../helpers';
 import { logger } from '../../../../common/logger';
@@ -48,8 +50,9 @@ import { exportData, ExportTypes } from '../../utils/export';
 import { addMinDelayLoader } from '../helpers';
 import { FILE_WRONG_EXTENSION_CAUSE } from '../../constants';
 import { usePreventUnload } from '../../hooks/usePreventUnload';
-import { NotificationType } from '../../types';
-import { SavingFSMState, CURSOR_POSITION_AFTER_INSERT } from '../Editor/savingFSM';
+import { type NotificationParams, NotificationType } from '../../types';
+import { SavingFSMState } from '../Editor/savingFSM';
+import { type EditorHandle } from '../Editor/editor-handle';
 import { SavingErrorMessage } from '../SavingButton';
 
 import { ToggleWrapButton } from './ToggleWrapButton';
@@ -60,26 +63,48 @@ import { userRulesEditorStore } from './UserRulesEditorStore';
 import theme from '../../styles/theme';
 
 /**
- * Keys identifying sidebar menu options emitted by UserRulesEditor.
+ * Props for the UserRulesEditor component.
  */
-export const UserRulesMenuKey = {
-    Import: 'import',
-    Export: 'export',
+type UserRulesEditorProps = {
+    /**
+     * Whether the editor is in fullscreen mode.
+     */
+    fullscreen?: boolean;
+
+    /**
+     * Callback to toggle the loader overlay.
+     */
+    setShowLoader: (value: boolean) => void;
+
+    /**
+     * Callback to add a notification.
+     */
+    addNotification: (params: NotificationParams) => void;
+
+    /**
+     * Callback to update a boolean setting.
+     */
+    updateSetting: <T extends SettingOption>(settingId: T, value: Settings[T]) => Promise<void>;
+
+    /**
+     * Callback to check MV3 rule limitations.
+     */
+    checkLimitations: () => Promise<void>;
+
+    /**
+     * Callback to send a telemetry event.
+     */
+    sendTelemetryCustomEvent: (
+        eventName: TelemetryEventName,
+        screenName: TelemetryActionToScreenMap[TelemetryEventName],
+    ) => Promise<void>;
+
+    /**
+     * Optional extra icon buttons rendered before the fullscreen toggle.
+     */
+    extraIcons?: ReactNode;
 };
 
-/**
- * This module is placed in the common directory because it is used in the options page
- * and fullscreen-user-rules page.
- *
- * @param {object} props Component props.
- * @param {boolean} [props.fullscreen] Whether the editor is in fullscreen mode.
- * @param {Function} props.setShowLoader Callback to toggle the loader overlay.
- * @param {Function} props.addNotification Callback to add a notification.
- * @param {Function} props.updateSetting Callback to update a setting.
- * @param {Function} props.checkLimitations Callback to check MV3 rule limitations.
- * @param {Function} props.sendTelemetryCustomEvent Callback to send a telemetry event.
- * @param {Function} [props.setSidebarMenuOptions] Optional callback to set sidebar menu (options page only).
- */
 export const UserRulesEditor = observer(({
     fullscreen,
     setShowLoader,
@@ -87,13 +112,21 @@ export const UserRulesEditor = observer(({
     updateSetting,
     checkLimitations,
     sendTelemetryCustomEvent,
-    setSidebarMenuOptions = null,
-}) => {
+    extraIcons = null,
+}: UserRulesEditorProps) => {
     const store = useContext(userRulesEditorStore);
 
-    const editorRef = useRef(null);
-    const inputRef = useRef(null);
-    const actionsRef = useRef(null);
+    const editorRef = useRef<EditorHandle | null>(null);
+    const inputRef = useRef<HTMLInputElement | null>(null);
+    const actionsRef = useRef<HTMLDivElement | null>(null);
+
+    const getEditor = (): EditorHandle => {
+        if (!editorRef.current) {
+            throw new Error('User rules editor is not initialized.');
+        }
+
+        return editorRef.current;
+    };
 
     const switchId = store.userFilterEnabledSettingId;
     const switchTitleId = `${switchId}-title`;
@@ -143,7 +176,7 @@ export const UserRulesEditor = observer(({
         (async () => {
             let editorContent = await messenger.getEditorStorageContent();
             // clear editor content from storage after reading it
-            await messenger.setEditorStorageContent(null);
+            await messenger.setEditorStorageContent('');
             let resetInfoThatContentChanged = false;
 
             if (!editorContent) {
@@ -153,8 +186,16 @@ export const UserRulesEditor = observer(({
             }
 
             if (editorRef.current) {
-                editorRef.current.editor.setValue(editorContent, CURSOR_POSITION_AFTER_INSERT);
-                editorRef.current.editor.session.getUndoManager().reset();
+                editorRef.current.setValue(editorContent);
+
+                // Apply a cursor position requested by the list view (Create /
+                // Edit) and focus the editor so the user can type immediately.
+                const cursorPosition = store.getCursorPosition();
+                if (cursorPosition) {
+                    editorRef.current.setCursor(cursorPosition);
+                    editorRef.current.focus();
+                    store.setCursorPosition(null);
+                }
             }
 
             if (resetInfoThatContentChanged) {
@@ -163,7 +204,7 @@ export const UserRulesEditor = observer(({
 
             // initial export button state
             const { userRules } = await messenger.getUserRulesEditorData();
-            if (userRules.length > 0) {
+            if (userRules.trim().length > 0) {
                 store.setUserRulesExportAvailableState(true);
             } else {
                 store.setUserRulesExportAvailableState(false);
@@ -182,20 +223,20 @@ export const UserRulesEditor = observer(({
 
         if (!store.userRulesEditorContentChanged) {
             if (editorRef.current) {
-                editorRef.current.editor.setValue(userRules, CURSOR_POSITION_AFTER_INSERT);
+                editorRef.current.setValue(userRules);
 
                 const cursorPosition = store.getCursorPosition();
                 if (cursorPosition) {
-                    editorRef.current.editor.moveCursorTo(cursorPosition.row, cursorPosition.column);
+                    editorRef.current.setCursor(cursorPosition);
                     store.setCursorPosition(null);
                 }
             }
             store.setUserRulesEditorContentChangedState(false);
-            await messenger.setEditorStorageContent(null);
+            await messenger.setEditorStorageContent('');
         }
 
         // disable or enable export button
-        if (userRules.length > 0) {
+        if (userRules.trim().length > 0) {
             store.setUserRulesExportAvailableState(true);
         } else {
             store.setUserRulesExportAvailableState(false);
@@ -243,17 +284,24 @@ export const UserRulesEditor = observer(({
             const beforeUnloadListener = async () => {
                 if (store.userRulesEditorContentChanged) {
                     // send content to the storage only before switching editors
-                    const content = editorRef.current.editor.session.getValue();
-                    await messenger.setEditorStorageContent(content);
+                    const content = editorRef.current?.getValue();
+                    if (content !== undefined) {
+                        await messenger.setEditorStorageContent(content);
+                    }
                 }
             };
             window.addEventListener('beforeunload', beforeUnloadListener);
+
+            return () => {
+                window.removeEventListener('beforeunload', beforeUnloadListener);
+            };
         }
+        return undefined;
     }, [store.userRulesEditorContentChanged, fullscreen]);
 
     // set initial wrap mode
     useEffect(() => {
-        editorRef.current.editor.session.setUseWrapMode(store.userRulesEditorWrapState);
+        editorRef.current?.setWrap(Boolean(store.userRulesEditorWrapState));
     }, [store.userRulesEditorWrapState]);
 
     const isSaving = store.savingUserRulesState === SavingFSMState.Saving;
@@ -267,7 +315,7 @@ export const UserRulesEditor = observer(({
      *
      * @param userRules User rules content.
      */
-    const saveUserRules = async (userRules) => {
+    const saveUserRules = async (userRules: string): Promise<void> => {
         sendTelemetryCustomEvent(
             TelemetryEventName.UserRulesSaveClick,
             TelemetryScreenName.UserRulesScreen,
@@ -276,7 +324,7 @@ export const UserRulesEditor = observer(({
         if (isSaving) {
             return;
         }
-        store.setCursorPosition(editorRef.current.editor.getCursorPosition());
+        store.setCursorPosition(editorRef.current?.getCursor() ?? null);
 
         setShowLoader(true);
         try {
@@ -290,39 +338,28 @@ export const UserRulesEditor = observer(({
         store.setCursorPosition(null);
     };
 
-    const inputChangeHandler = async (event) => {
+    const inputChangeHandler = async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
         event.persist();
-        const file = event.target.files[0];
+        const [file] = event.target.files ?? [];
 
         try {
-            const rawNewRules = await handleFileUpload(file, 'txt');
-            const trimmedNewRules = rawNewRules.trim();
-
-            if (trimmedNewRules.length < 0) {
+            if (!file) {
                 return;
             }
 
-            const oldRulesString = editorRef.current.editor.getValue();
-            const oldRules = oldRulesString.split(NEWLINE_CHAR_UNIX);
+            const rawNewRules = await handleFileUpload(file, 'txt');
 
-            const newRules = trimmedNewRules.split(NEWLINE_CHAR_REGEX);
-            const uniqNewRules = newRules.filter((newRule) => {
-                const trimmedNewRule = newRule.trim();
-                if (trimmedNewRule.length === 0) {
-                    return true;
-                }
+            if (rawNewRules.trim().length === 0) {
+                return;
+            }
 
-                const isInOldRules = oldRules.some((oldRule) => oldRule === trimmedNewRule);
-                return !isInOldRules;
-            });
+            const oldRulesString = getEditor().getValue();
+            const { merged, addedCount } = mergeImportedRules(oldRulesString, rawNewRules);
 
-            const rulesUnion = [...oldRules, ...uniqNewRules];
-            const rulesUnionString = rulesUnion.join(NEWLINE_CHAR_UNIX).trim();
+            if (addedCount > 0 && oldRulesString !== merged) {
+                getEditor().setValue(merged);
 
-            if (oldRulesString !== rulesUnionString) {
-                editorRef.current.editor.setValue(rulesUnionString, CURSOR_POSITION_AFTER_INSERT);
-
-                await saveUserRules(rulesUnionString);
+                await saveUserRules(merged);
             }
         } catch (e) {
             logger.debug('[ext.UserRulesEditor]: import error:', e);
@@ -334,7 +371,7 @@ export const UserRulesEditor = observer(({
             } else {
                 addNotification({
                     type: NotificationType.Error,
-                    text: translator('options_popup_import_error_file_description'),
+                    text: translator.getMessage('options_popup_import_error_file_description'),
                 });
             }
         }
@@ -343,8 +380,8 @@ export const UserRulesEditor = observer(({
         event.target.value = '';
     };
 
-    const importClickHandler = useCallback((e) => {
-        e.preventDefault();
+    const importClickHandler = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
 
         sendTelemetryCustomEvent(
             TelemetryEventName.UserRulesImportClick,
@@ -358,16 +395,16 @@ export const UserRulesEditor = observer(({
         inputRef.current.click();
     }, [sendTelemetryCustomEvent]);
 
-    const saveClickHandler = async () => {
+    const saveClickHandler = async (): Promise<void> => {
         if (!store.userRulesEditorContentChanged) {
             return;
         }
 
-        const value = editorRef.current.editor.getValue();
+        const value = getEditor().getValue();
         await saveUserRules(value);
     };
 
-    const editorChangeHandler = async (value) => {
+    const editorChangeHandler = async (value: string): Promise<void> => {
         const { content } = await messenger.getUserRules();
         store.setUserRulesEditorContentChangedState(content !== value);
     };
@@ -387,71 +424,14 @@ export const UserRulesEditor = observer(({
         }
     };
 
-    const shortcuts = [{
-        name: 'togglecomment',
-        bindKey: { win: 'Ctrl-/', mac: 'Command-/' },
-        exec: (editor) => {
-            const selection = editor.getSelection();
-            const ranges = selection.getAllRanges();
-
-            const rowsSelected = ranges
-                .map((range) => {
-                    const [start, end] = [range.start.row, range.end.row];
-                    return Array.from({ length: end - start + 1 }, (_, idx) => idx + start);
-                })
-                .flat();
-
-            const allRowsCommented = rowsSelected.every((row) => {
-                const rowLine = editor.session.getLine(row);
-                return rowLine.trim().startsWith(SimpleRegex.MASK_COMMENT);
-            });
-
-            rowsSelected.forEach((row) => {
-                const rawLine = editor.session.getLine(row);
-                // if all lines start with comment mark we remove it
-                if (allRowsCommented) {
-                    const lineWithRemovedComment = rawLine.replace(SimpleRegex.MASK_COMMENT, '');
-                    editor.session.replace(new Range(row, 0, row), lineWithRemovedComment);
-                    // otherwise we add it
-                } else {
-                    editor.session.insert({ row, column: 0 }, SimpleRegex.MASK_COMMENT);
-                }
-            });
-        },
-    }];
-
     const exportClickHandler = () => {
         exportData(ExportTypes.UserFilter);
     };
 
-    useEffect(() => {
-        if (!setSidebarMenuOptions) {
-            return undefined;
-        }
-
-        setSidebarMenuOptions([
-            {
-                key: UserRulesMenuKey.Import,
-                title: translator.getMessage('options_userfilter_import'),
-                onClick: importClickHandler,
-            },
-            {
-                key: UserRulesMenuKey.Export,
-                title: translator.getMessage('options_userfilter_export'),
-                onClick: exportClickHandler,
-                disabled: !store.userRulesExportAvailable,
-            },
-        ]);
-
-        return () => setSidebarMenuOptions([]);
-    }, [importClickHandler, store.userRulesExportAvailable, setSidebarMenuOptions]);
-
-    // We set wrap mode directly in order to avoid editor re-rendering
-    // Otherwise editor would remove all unsaved content
+    // Wrap mode is applied in-place via the `useEffect` above using CM6 compartment
+    // reconfiguration, so the editor is not destroyed and unsaved content is preserved.
     const toggleWrap = async () => {
-        const toggledWrapMode = !store.userRulesEditorWrapState;
-        editorRef.current.editor.session.setUseWrapMode(toggledWrapMode);
-        await store.toggleUserRulesEditorWrapMode(toggledWrapMode);
+        await store.toggleUserRulesEditorWrapMode();
         await checkLimitations();
     };
 
@@ -463,32 +443,50 @@ export const UserRulesEditor = observer(({
         }
     };
 
-    const openEditorFullscreen = async () => {
+    const openEditorFullscreen = async (): Promise<void> => {
+        sendTelemetryCustomEvent(
+            TelemetryEventName.EditorInNewWindowClick,
+            TelemetryScreenName.UserRulesScreen,
+        );
+
         // send dirty content to the storage only before switching editors
         if (store.userRulesEditorContentChanged) {
-            const content = editorRef.current.editor.session.getValue();
+            const content = getEditor().getValue();
             await messenger.setEditorStorageContent(content);
         }
 
         await messenger.openFullscreenUserRules();
     };
 
-    const closeEditorFullscreen = async () => {
+    const closeEditorFullscreen = async (): Promise<void> => {
         // send dirty content to the storage only before switching editors
         if (store.userRulesEditorContentChanged) {
-            const content = editorRef.current.editor.session.getValue();
+            const content = getEditor().getValue();
             await messenger.setEditorStorageContent(content);
         }
 
         window.close();
     };
 
-    const updateSettingWithLimitCheck = async (settingId, value) => {
+    const updateSettingWithLimitCheck = async (
+        settingId: SettingOption.UserFilterEnabled,
+        value: boolean,
+    ): Promise<void> => {
         await updateSetting(settingId, value);
         await checkLimitations();
     };
 
-    const handleUserRulesToggle = async ({ id, data }) => {
+    const handleUserRulesToggle = async ({ id, data }: { id: string | number; data: boolean }): Promise<void> => {
+        if (id !== SettingOption.UserFilterEnabled) {
+            logger.error('[ext.UserRulesEditor]: unsupported setting:', id);
+            return;
+        }
+
+        sendTelemetryCustomEvent(
+            TelemetryEventName.UserRulesSwitchClick,
+            TelemetryScreenName.UserRulesScreen,
+        );
+
         await addMinDelayLoader(
             setShowLoader,
             updateSettingWithLimitCheck,
@@ -500,7 +498,6 @@ export const UserRulesEditor = observer(({
             <Editor
                 name="user-rules"
                 editorRef={editorRef}
-                shortcuts={shortcuts}
                 fullscreen={fullscreen}
                 shouldResetSize={shouldResetSize}
                 onChange={editorChangeHandler}
@@ -540,6 +537,7 @@ export const UserRulesEditor = observer(({
                                     id={switchId}
                                     handler={handleUserRulesToggle}
                                     value={store.userFilterEnabled}
+                                    label=""
                                     className="checkbox__label--actions"
                                     labelId={switchTitleId}
                                 />
@@ -549,38 +547,46 @@ export const UserRulesEditor = observer(({
                 }
                 <div className="actions--grid actions--buttons">
                     <UserRulesSavingButton onClick={saveClickHandler} />
-                    <input
-                        type="file"
-                        accept="text/plain"
-                        ref={inputRef}
-                        onChange={inputChangeHandler}
-                        className="actions__input-file"
-                    />
-                    <button
-                        type="button"
-                        className={cn('button button--l button--transparent actions__btn', theme.common.hideOnMobile)}
-                        onClick={importClickHandler}
-                        title={translator.getMessage('options_userfilter_import')}
-                    >
-                        {translator.getMessage('options_userfilter_import')}
-                    </button>
-                    <button
-                        type="button"
-                        className={cn(
-                            'button button--l',
-                            'button--transparent actions__btn',
-                            theme.common.hideOnMobile,
-                        )}
-                        onClick={exportClickHandler}
-                        disabled={!store.userRulesExportAvailable}
-                        title={translator.getMessage('options_userfilter_export')}
-                    >
-                        {translator.getMessage('options_userfilter_export')}
-                    </button>
+                    {fullscreen && (
+                        <>
+                            <input
+                                type="file"
+                                accept="text/plain"
+                                ref={inputRef}
+                                onChange={inputChangeHandler}
+                                className="actions__input-file"
+                            />
+                            <button
+                                type="button"
+                                className={cn(
+                                    'button button--l button--transparent actions__btn',
+                                    theme.common.hideOnMobile,
+                                )}
+                                onClick={importClickHandler}
+                                title={translator.getMessage('options_userfilter_import')}
+                            >
+                                {translator.getMessage('options_userfilter_import')}
+                            </button>
+                            <button
+                                type="button"
+                                className={cn(
+                                    'button button--l',
+                                    'button--transparent actions__btn',
+                                    theme.common.hideOnMobile,
+                                )}
+                                onClick={exportClickHandler}
+                                disabled={!store.userRulesExportAvailable}
+                                title={translator.getMessage('options_userfilter_export')}
+                            >
+                                {translator.getMessage('options_userfilter_export')}
+                            </button>
+                        </>
+                    )}
                 </div>
                 <div className="actions--grid actions--icons">
                     <ToggleWrapButton onClick={toggleWrap} />
-                    <ToggleFullscreenButton fullscreen={fullscreen} onClick={toggleFullscreen} />
+                    {extraIcons}
+                    <ToggleFullscreenButton fullscreen={Boolean(fullscreen)} onClick={toggleFullscreen} />
                 </div>
             </div>
         </>

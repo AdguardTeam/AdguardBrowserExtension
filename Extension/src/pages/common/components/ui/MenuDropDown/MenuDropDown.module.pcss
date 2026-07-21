@@ -19,6 +19,38 @@
     border: 0;
 }
 
+.menuItem {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 18px 16px;
+    background: transparent;
+    border: 0;
+    font-size: 16px;
+    font-weight: 400;
+    text-align: left;
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+.menuItem:hover {
+    background-color: var(--fills-menus-dropdown-menu-background-hovered);
+}
+
+.menuItem:active {
+    background-color: var(--fills-menus-dropdown-menu-background-pressed);
+}
+
+.menuItem:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.menuItemDanger {
+    color: var(--stroke-icons-error-icon-default);
+}
+
 @media (forced-colors: active) {
     .dropdown {
         border: 1px solid CanvasText;

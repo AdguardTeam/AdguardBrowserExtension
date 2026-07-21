@@ -164,6 +164,7 @@ export class UiService {
         );
         messageHandler.addListener(MessageType.OpenExtensionDetailsPage, PagesApi.openExtensionDetailsPage);
         messageHandler.addListener(MessageType.OpenFullscreenUserRules, PagesApi.openFullscreenUserRulesPage);
+        messageHandler.addListener(MessageType.CloseFullscreenUserRules, PagesApi.closeFullscreenUserRulesPage);
         messageHandler.addListener(
             MessageType.UpdateFullscreenUserRulesTheme,
             PagesApi.updateFullscreenUserRulesPageTheme,

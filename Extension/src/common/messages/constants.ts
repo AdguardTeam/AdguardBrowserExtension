@@ -73,6 +73,7 @@ export enum MessageType {
     ApplySettingsJson = 'applySettingsJson',
     OpenFilteringLog = 'openFilteringLog',
     OpenFullscreenUserRules = 'openFullscreenUserRules',
+    CloseFullscreenUserRules = 'closeFullscreenUserRules',
     UpdateFullscreenUserRulesTheme = 'updateFullscreenUserRulesTheme',
     ResetBlockedAdsCount = 'resetBlockedAdsCount',
     ResetSettings = 'resetSettings',
@@ -302,6 +303,10 @@ export type OpenExtensionDetailsPageMessage = {
 
 export type OpenFullscreenUserRulesMessage = {
     type: MessageType.OpenFullscreenUserRules;
+};
+
+export type CloseFullscreenUserRulesMessage = {
+    type: MessageType.CloseFullscreenUserRules;
 };
 
 export type OpenExtensionStoreMessage = {
@@ -834,6 +839,10 @@ export type MessageMap = {
     };
     [MessageType.OpenFullscreenUserRules]: {
         message: OpenFullscreenUserRulesMessage;
+        response: void;
+    };
+    [MessageType.CloseFullscreenUserRules]: {
+        message: CloseFullscreenUserRulesMessage;
         response: void;
     };
     [MessageType.ResetBlockedAdsCount]: {

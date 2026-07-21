@@ -213,6 +213,10 @@ module.exports = {
         'jsx-a11y/control-has-associated-label': 'off',
         'jsx-a11y/label-has-associated-control': 'off',
 
+        // Use 4-space indentation for JSX to match the project's indent rule
+        'react/jsx-indent': ['error', 4],
+        'react/jsx-indent-props': ['error', 4],
+
         // These rules are enabled for background only see Extension/src/background/.eslintrc.cjs
         // TODO: consider enabling them for the whole project later
         '@typescript-eslint/explicit-function-return-type': 'off',

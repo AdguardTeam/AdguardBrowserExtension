@@ -19,4 +19,3 @@
  */
 
 export { FilterSortMenu } from './FilterSortMenu';
-export { PageActionsMenu } from './PageActionsMenu';
