@@ -26,6 +26,7 @@ import cn from 'classnames';
 import { translator } from '../../../../../common/translators/translator';
 import { OptionsPageSections } from '../../../../../common/nav';
 import { Icon } from '../../../../common/components/ui/Icon';
+import { CloseIcon } from '../../../../common/components/ui/CloseIcon';
 import { rootStore } from '../../../stores/RootStore';
 import { messenger } from '../../../../services/messenger';
 import { logger } from '../../../../../common/logger';
@@ -96,11 +97,7 @@ export const WarningVariantB = ({ onClickCloseWarning }: WarningVariantBProps) =
                     onClick={onClickCloseWarning}
                     aria-label={translator.getMessage('close_button_title')}
                 >
-                    <Icon
-                        id="#cross"
-                        className="icon--24 icon--gray-default"
-                        aria-hidden="true"
-                    />
+                    <CloseIcon />
                 </button>
 
                 <div className={styles.warningSections}>

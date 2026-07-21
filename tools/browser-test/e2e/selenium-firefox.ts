@@ -476,6 +476,27 @@ export const openFirefoxE2ESurface = async (
             const el = await session.driver.findElement({ css: selector });
             await el.click();
         },
+        async typeText(selector: string, text: string): Promise<void> {
+            // Focus via JS (preserves an existing selection — e.g. a
+            // CodeMirror cursor position — unlike a WebDriver click), then
+            // deliver real key events to the focused element via the Actions
+            // API. Element-level sendKeys is not used because WebDriver does
+            // not dispatch it to contenteditable widgets like CodeMirror.
+            const el = await session.driver.findElement({ css: selector });
+            await session.driver.executeScript('arguments[0].focus();', el);
+            await session.driver.actions().sendKeys(text).perform();
+        },
+        async evaluate<T>(fn: (arg: unknown) => Promise<T> | T, arg?: unknown): Promise<T> {
+            // Selenium's executeScript requires a string, so we serialize the
+            // function and pass the argument via the arguments array.
+            const fnStr = fn.toString();
+            const script = `return (${fnStr})(arguments[0]);`;
+            return session.driver.executeScript(script, arg) as Promise<T>;
+        },
+        async getTextContents(selector: string): Promise<string[]> {
+            const elements = await session.driver.findElements({ css: selector });
+            return Promise.all(elements.map((el) => el.getText()));
+        },
         async close(): Promise<void> {
             // Firefox uses a single driver window; no separate page to close.
         },

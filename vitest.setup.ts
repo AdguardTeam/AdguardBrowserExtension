@@ -91,6 +91,19 @@ vi.mock('nanoid', () => ({
 // Mock log to hide all logger message
 vi.mock('./Extension/src/common/logger.ts');
 
+// Polyfill ResizeObserver for jsdom (not natively supported)
+// eslint-disable-next-line class-methods-use-this
+global.ResizeObserver = class ResizeObserver {
+    // eslint-disable-next-line class-methods-use-this
+    observe() {}
+
+    // eslint-disable-next-line class-methods-use-this
+    unobserve() {}
+
+    // eslint-disable-next-line class-methods-use-this
+    disconnect() {}
+};
+
 vi.mock('@adguard/tswebextension', async () => ({
     ...(await vi.importActual('@adguard/tswebextension')),
     TsWebExtension: MockedTsWebExtension,

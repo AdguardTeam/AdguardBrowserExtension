@@ -20,31 +20,35 @@
 
 import React from 'react';
 
-import { translator } from '../../../../common/translators/translator';
 import { Icon } from '../../../common/components/ui/Icon';
-import { HOW_TO_CREATE_RULES_URL } from '../../constants';
+
+import './no-search-match.pcss';
 
 /**
- * Component for link to rule syntax with 'question' icon.
- *
- * @returns Link to rule syntax.
+ * Props for the {@link NoSearchMatch} component.
  */
-export const RuleSyntaxLink = () => {
-    return (
-        <a
-            className="button button--link link_with_icon"
-            href={HOW_TO_CREATE_RULES_URL}
-            target="_blank"
-            rel="noreferrer"
-        >
-            <Icon
-                id="#question"
-                className="icon icon--24 icon--green-default"
-                aria-hidden="true"
-            />
-            <span className="link_with_icon__text">
-                {translator.getMessage('options_rule_syntax')}
-            </span>
-        </a>
-    );
-};
+interface NoSearchMatchProps {
+    /**
+     * The translated text message to display.
+     */
+    message: string;
+}
+
+/**
+ * Shared component: icon and message shown when a search yields no results.
+ * Used by both the Filters list and the User Rules list.
+ *
+ * @param props Component props.
+ *
+ * @returns Centered icon + message placeholder.
+ */
+export const NoSearchMatch = ({ message }: NoSearchMatchProps) => (
+    <div className="no-search-match">
+        <Icon
+            id="#no-search-match"
+            className="icon--48 icon--gray-default"
+            aria-hidden="true"
+        />
+        <div>{message}</div>
+    </div>
+);

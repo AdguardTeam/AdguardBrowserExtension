@@ -25,7 +25,7 @@ import cn from 'classnames';
 
 import { translator } from '../../../../common/translators/translator';
 import { messenger } from '../../../services/messenger';
-import { Icon } from '../../../common/components/ui/Icon';
+import { CloseIcon } from '../../../common/components/ui/CloseIcon';
 import { rootStore } from '../../stores/RootStore';
 import { TelemetryEventName, TelemetryScreenName } from '../../../../common/telemetry';
 
@@ -84,11 +84,7 @@ export const RateNotification = observer(() => {
                 onClick={hideRate}
                 aria-label={translator.getMessage('close_button_title')}
             >
-                <Icon
-                    id="#cross"
-                    className="icon--24 icon--gray-default"
-                    aria-hidden="true"
-                />
+                <CloseIcon />
             </button>
         </div>
     );

@@ -219,6 +219,17 @@ export abstract class PagesApiCommon {
     }
 
     /**
+     * Closes the fullscreen user rules page window if it is open.
+     */
+    public static async closeFullscreenUserRulesPage(): Promise<void> {
+        const tab = await TabsApi.findOne({ url: `${PagesApiCommon.fullscreenUserRulesPageUrl}*` });
+
+        if (tab?.id) {
+            await browser.tabs.remove(tab.id);
+        }
+    }
+
+    /**
      * Updated the theme for the fullscreen user rules page
      * by updating the query parameter with the new theme value.
      *

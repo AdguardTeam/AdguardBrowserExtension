@@ -1,4 +1,5 @@
 .editor {
+    box-sizing: border-box;
     width: 100%;
     height: 300px;
     min-height: 300px;
@@ -45,15 +46,6 @@
         padding: 16px;
     }
 
-    & .ace_placeholder {
-        color: var(--gray-50) !important;
-        transform: none !important;
-        opacity: 1 !important;
-        padding: 0 !important;
-        margin-left: 7px !important;
-        font-size: 16px !important;
-    }
-
     &--full-screen {
         width: 100% !important;
         height: calc(100vh - 112px) !important;
@@ -71,105 +63,69 @@
     &--with-margin {
         margin-top: 16px;
     }
+}
 
-    & .ace_cursor {
-        color: var(--text-main-text-main-default);
+/* ── CodeMirror 6 overrides ── */
+.cm-editor {
+    width: 100%;
+    height: 100%;
+
+    &.cm-focused {
+        outline: none;
     }
 
-    & .ace_editor {
-        width: 100%;
-        height: 100%;
+    .cm-scroller {
+        overflow: auto;
     }
 
-    & .ace_gutter {
+    .cm-content {
+        caret-color: var(--text-main-text-main-default);
+    }
+
+    .cm-cursor {
+        border-left-color: var(--text-main-text-main-default);
+    }
+
+    .cm-gutters {
         background: var(--fills-backgrounds-page-background-additional-default);
+        border-right: none;
     }
 
-    & .ace_gutter-active-line {
+    .cm-activeLineGutter {
         background: var(--fills-backgrounds-page-background-additional-hovered);
     }
 
-    & .ace_gutter-cell {
+    .cm-gutterElement {
         color: var(--text-main-text-main-default);
     }
 
-    & .ace_comment {
-        color: var(--editor-comment);
+    .cm-activeLine {
+        background-color: var(--fills-backgrounds-page-background-additional-default);
     }
 
-    & .ace_constant {
-        color: var(--editor-syntax-pink);
-    }
-
-    & .ace_keyword {
-        color: var(--editor-syntax-red);
-    }
-
-    & .ace_control {
-        color: var(--editor-syntax-blue);
-    }
-
-    & .ace_operator {
-        color: var(--editor-syntax-blue) !important;
-    }
-
-    & .ace_quoted {
-        color: var(--editor-syntax-red);
-    }
-
-    & .ace_string {
-        color: var(--editor-syntax-red);
-    }
-
-    & .ace_variable {
-        color: var(--editor-syntax-red);
-    }
-
-    & .ace_support.ace_type {
-        color: var(--editor-syntax-red) !important;
-    }
-
-    & .ace_support.ace_constant {
-        color: var(--editor-syntax-red) !important;
-    }
-
-    & .ace_support.ace_function {
-        color: var(--editor-syntax-red) !important;
-    }
-
-    & .ace_name.ace_function {
-        color: var(--editor-syntax-yellow) !important;
-    }
-
-    & .ace_constant.ace_numeric {
-        color: var(--editor-syntax-red) !important;
-    }
-
-    & .ace_storage.ace_type {
-        color: var(--editor-syntax-blue) !important;
-    }
-
-    & .ace-tm {
-        background-color: transparent !important;
-
-        & .ace_active-line {
-            background-color: var(--fills-backgrounds-page-background-additional-default);
-        }
-    }
-
-    & .ace_selected-word {
-        background: var(--editor-highlight) !important;
-        border: 0 !important;
-    }
-
-    & .ace_selection {
-        border: 0 !important;
-        border-radius: 0;
+    .cm-selectionBackground,
+    &.cm-focused .cm-selectionBackground {
         background-color: var(--editor-selection) !important;
     }
 
-    & .ace_mobile-button {
-        display: block !important;
+    .cm-selectionMatch {
+        background-color: var(--editor-highlight);
+    }
+
+    .cm-placeholder {
+        color: var(--gray-50) !important;
+        opacity: 1 !important;
+    }
+
+    .cm-searchMatch {
+        background-color: var(--editor-highlight);
+    }
+}
+
+/* Mobile: hide gutters */
+@media (max-width: 640px) {
+    .cm-gutters {
+        display: none;
     }
 }
 
@@ -177,32 +133,15 @@
    Work-around for Quest/Android "focus-zoom" bug
    AG-43589
    ------------------------------------------------
-   Ace keeps a hidden 1 × 1 px <textarea> (`.ace_text-input`) to funnel
-   keystrokes and IME events (Input Method Editor events, e.g., for
-   typing non-Latin characters). When that element receives focus in
-   Blink-based browsers on Android (including Meta Quest Browser),
-   the "minimum-readable-font-size" heuristic (< 16 px) kicks in and
-   zooms the whole window.
-
-   By forcing both the computed font-size *and* the bounding-box
-   (width/height/line-height) to 16 px we stay above the threshold and
-   completely suppress the auto-zoom—without affecting Ace's layout,
-   because the element is still `opacity:0`.
-
-   The `:not(.ace_composition)` guard lets Ace temporarily resize the
-   textarea during IME composition so candidate windows continue to work.
-
-   NOTE: This rule is applied only on the Oculus browser (Meta Quest Browser).
+   CM6 uses a contenteditable div instead of Ace's hidden
+   <textarea>. The Blink auto-zoom heuristic is not triggered
+   by contenteditable, so no workaround is currently needed.
+   The oculus-browser class is preserved for potential future
+   Oculus-specific fixes.
 ------------------------------------------------------------------ */
-.editor.oculus-browser .ace_text-input:not(.ace_composition) {
-    width: 16px !important;
-    height: 16px !important;
-    line-height: 16px !important;
-    font-size: 16px !important;
-}
 
 @media (forced-colors: active) {
-    .ace_editor {
+    .cm-editor {
         border: 1px solid CanvasText;
     }
 }

@@ -18,4 +18,29 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { UserRulesEditor, UserRulesMenuKey } from './UserRulesEditor';
+import React from 'react';
+
+import cn from 'classnames';
+
+import { Icon } from './Icon';
+
+/**
+ * Unified close (×) icon used across the extension for dismiss buttons,
+ * search clear buttons, and other close actions.
+ *
+ * Defaults to a 24×24 gray icon. Pass an optional {@link className} to
+ * override sizing or color (e.g. {@code color: inherit} to let a parent
+ * button control the icon tint).
+ *
+ * @param props Component props.
+ * @param props.className Optional additional CSS class for theming.
+ *
+ * @returns An icon hidden from screen readers.
+ */
+export const CloseIcon = ({ className }: { className?: string }) => (
+    <Icon
+        id="#cross"
+        className={cn('icon--24', !className && 'icon--gray-default', className)}
+        aria-hidden="true"
+    />
+);

@@ -314,7 +314,7 @@ COPY --from=e2e-tests-standalone /out/ /
 # Creates beta build with zip files for CI artifacts
 # Requires private repo for certificate (passed via named build context)
 # ============================================================================
-FROM linked-deps AS beta-build
+FROM source-deps AS beta-build
 
 # Copy private repo for certificates
 COPY --from=private . /extension/private
@@ -342,7 +342,7 @@ COPY --from=beta-build /out/ /
 # Creates Chrome CRX for beta build
 # Requires private repo for certificate (passed via named build context)
 # ============================================================================
-FROM linked-deps AS beta-chrome-crx
+FROM source-deps AS beta-chrome-crx
 
 # Copy private repo for certificates
 COPY --from=private . /extension/private
@@ -367,7 +367,7 @@ COPY --from=beta-chrome-crx /out/ /
 # Stage: bundle-size-check
 # Checks bundle sizes for specified build type (beta or release)
 # ============================================================================
-FROM linked-deps AS bundle-size-check
+FROM source-deps AS bundle-size-check
 
 ARG BUILD_TYPE
 
@@ -401,7 +401,7 @@ COPY --from=locales-check /out/ /
 # Stage: firefox-beta-build
 # Creates Firefox beta build with zip files and source archive for AMO
 # ============================================================================
-FROM linked-deps AS firefox-beta-build
+FROM source-deps AS firefox-beta-build
 
 ARG TEST_RUN_ID
 
@@ -474,7 +474,7 @@ COPY --from=firefox-beta-sign /out/ /
 # Stage: firefox-amo-beta-build
 # Creates Firefox AMO beta build with unsigned zip and AMO review artifacts
 # ============================================================================
-FROM linked-deps AS firefox-amo-beta-build
+FROM source-deps AS firefox-amo-beta-build
 
 ARG TEST_RUN_ID
 
@@ -500,7 +500,7 @@ COPY --from=firefox-amo-beta-build /out/ /
 # Stage: release-build
 # Creates release build with zip files for CI artifacts
 # ============================================================================
-FROM linked-deps AS release-build
+FROM source-deps AS release-build
 
 ARG TEST_RUN_ID
 

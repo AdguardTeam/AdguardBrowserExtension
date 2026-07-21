@@ -24,7 +24,7 @@ import Modal from 'react-modal';
 import cn from 'classnames';
 
 import { translator } from '../../../../common/translators/translator';
-import { Icon } from '../ui/Icon';
+import { CloseIcon } from '../ui/CloseIcon';
 
 import theme from '../../styles/theme';
 
@@ -137,7 +137,7 @@ export const ConfirmModal = ({
                         title={translator.getMessage('close_button_title')}
                         onClick={handleCancel}
                     >
-                        <Icon id="#cross" aria-hidden="true" />
+                        <CloseIcon />
                     </button>
                     <div className={theme.modal.header}>
                         <div className={theme.modal.title}>

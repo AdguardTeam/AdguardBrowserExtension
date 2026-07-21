@@ -91,6 +91,49 @@ export const Icons = () => {
                     <path d="m4 13h16m-16-5.41666667h16m-16 10.83333337h16" stroke="#888" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" />
                 </g>
             </symbol>
+
+            <symbol id="blocking-rule" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path fill="none" stroke="#f67247" d="M3 8a1 1 0 0 1 1-1h16a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1zM4 21 20 3" />
+            </symbol>
+
+            <symbol id="exclusion-rule" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path fill="none" stroke="#67b279" d="m7.18 11.37-2.288 2.289s-1.53 1.516.304 3.35l1.323 1.324s1.811 1.787 3.322.276l3.249-3.249s1.59-1.595-.538-3.722l-.345-.345" />
+                <path fill="none" stroke="#67b279" d="m15.82 12.63 2.288-2.289s1.53-1.516-.304-3.35L16.48 5.666s-1.811-1.787-3.322-.276L9.91 8.64s-1.59 1.595.537 3.722l.345.345" />
+            </symbol>
+
+            <symbol id="custom-rule" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path fill="none" stroke="#7f7f7f" d="M12 21a.42.42 0 0 1-.3-.129L3.129 12.3a.414.414 0 0 1 0-.6L11.7 3.129a.414.414 0 0 1 .6 0l2.957 2.957c.107.107.15.3.107.45a.45.45 0 0 1-.364.278 2.3 2.3 0 0 0-.514.129 2.1 2.1 0 0 0-.686.45 1.96 1.96 0 0 0-.579 1.414c0 .536.215 1.029.579 1.414.771.772 2.036.772 2.829 0 .192-.192.342-.428.45-.685q.096-.258.128-.515a.45.45 0 0 1 .279-.364c.15-.064.321-.021.45.107l2.957 2.957A.4.4 0 0 1 21 12a.42.42 0 0 1-.129.3l-2.464 2.486a2.845 2.845 0 0 1 1.114 4.714 2.86 2.86 0 0 1-2.014.836c-.771 0-1.478-.3-2.014-.836a2.6 2.6 0 0 1-.686-1.114L12.3 20.87A.42.42 0 0 1 12 21Z" />
+            </symbol>
+
+            <symbol id="comment" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path fill="none" stroke="#7f7f7f" d="M12 18.18c5.523 0 10-3.174 10-7.09S17.523 4 12 4 2 7.174 2 11.09c0 1.958 1.12 3.73 2.929 5.014.462.328.97.624 1.515.883.155.073.161.417.105.875l-.052.362-.067.39-.147.808-.064.387c-.095.624-.118 1.12.1 1.184.17.05.495-.176.887-.523l.305-.28.322-.312.827-.815.16-.155.31-.287c.397-.358.733-.601.918-.575q.949.134 1.952.135Z" />
+                <path fill="none" stroke="#7f7f7f" d="M12.497 11.596c.012.002 0-.191 0-.191M8.497 11.596c.012.002 0-.191 0-.191M16.497 11.596c.012.002 0-.191 0-.191" />
+            </symbol>
+
+            <symbol id="switch-to-editor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path fill="none" stroke="#67b279" d="M4 20.5h15.983M10.777 16.435l-4.242-4.243 7.07-7.07a3 3 0 1 1 4.243 4.242z" />
+                <path fill="none" stroke="#67b279" d="m5.12 17.85 1.415-5.658 4.243 4.243zM16.79 9.01l-2.83-2.828" />
+            </symbol>
+
+            <symbol id="switch-to-list-view" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke="#67b279" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m3.666 3.667 2.667 2.666M6.334 3.667 3.667 6.333M10 5h11M10 12h11" />
+                <circle cx="5" cy="12" r="1" stroke="#67b279" strokeWidth="1.5" />
+                <path stroke="#67b279" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m3.666 17.666 2.667 2.667M6.334 17.666l-2.667 2.667M10 19h6" />
+            </symbol>
+
+            <symbol id="plus" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path fill="none" stroke="#67b279" d="M4 12h16M12 4v16" />
+            </symbol>
+
+            <symbol id="user-rules" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path fill="none" stroke="#67b279" d="m4.379 19 5-13M8.379 19l5-13M18.5 7v5M20.664 8.25l-4.33 2.5M20.664 10.75l-4.33-2.5" />
+            </symbol>
+
+            <symbol id="no-rules-yet" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M43.837 12h-24.45a3.78 3.78 0 0 0-3.78 3.78v32.64a3.78 3.78 0 0 0 3.78 3.78h24.45a3.78 3.78 0 0 0 3.78-3.78V15.78a3.78 3.78 0 0 0-3.78-3.78" />
+                <path fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="m15.607 18.43-8.29 1.56a2.856 2.856 0 0 0-2.27 3.32l4.54 24.11a2.83 2.83 0 0 0 3.31 2.26l2.78-.52M47.537 49.16l2.78.52c1.54.29 3.02-.72 3.31-2.26l4.54-24.11c.28-1.54-.73-3.03-2.27-3.32l-8.29-1.56" />
+                <path fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.5" d="M37 27 27 37M27 27l10 10" />
+            </symbol>
         </svg>
     );
 };

@@ -37,7 +37,7 @@ import {
 import { logger } from '../../../../common/logger';
 import { sleep } from '../../../../common/sleep-utils';
 import { UserAgent } from '../../../../common/user-agent';
-import { type SettingOption, type Settings } from '../../../../background/schema/settings';
+import { SettingOption, type Settings } from '../../../../background/schema/settings';
 import { type GetOptionsDataResponse } from '../../../../background/services/settings';
 import { type CustomFilterSubscriptionData } from '../../../../common/messages/constants';
 import { type FilterMetadata } from '../../../../background/api/filters/main';
@@ -58,6 +58,11 @@ import {
 } from '../../components/Filters/helpers';
 import { optionsStorage } from '../../options-storage';
 import { type AppearanceTheme } from '../../../../common/constants';
+import {
+    readViewMode,
+    writeViewMode,
+    type ViewModeValue,
+} from '../../../common/components/UserRulesEditor/view-mode';
 import { type RootStore } from '../RootStore';
 import { type default as UiStore } from '../UiStore';
 import { type TelemetryStore } from '../../../common/telemetry';
@@ -228,6 +233,12 @@ export abstract class SettingsStoreCommon {
     fullscreenUserRulesEditorIsOpen = false;
 
     /**
+     * Current presentation mode (list/editor) of the User Rules section.
+     */
+    @observable
+    userRulesViewMode: ViewModeValue = readViewMode();
+
+    /**
      * Whether the General Settings promo A/B test B-variant is active (AG-52622).
      */
     @observable
@@ -277,7 +288,7 @@ export abstract class SettingsStoreCommon {
      * No-op on MV2; overridden in SettingsStore-mv3.
      */
     /* eslint-disable class-methods-use-this */
-    @action
+    @action.bound
     async checkLimitations(): Promise<void> {
         // No-op. Overridden in MV3 subclass.
     }
@@ -976,23 +987,32 @@ export abstract class SettingsStoreCommon {
         this.fullscreenUserRulesEditorIsOpen = isOpen;
     }
 
+    /**
+     * Updates the User Rules view mode and persists it to localStorage.
+     *
+     * @param mode New view mode.
+     */
+    @action
+    setUserRulesViewMode(mode: ViewModeValue): void {
+        writeViewMode(mode);
+        this.userRulesViewMode = mode;
+    }
+
     @computed
     get isFullscreenUserRulesEditorOpen(): boolean {
         return this.fullscreenUserRulesEditorIsOpen;
     }
 
-    @computed
-    get userFilterEnabledSettingId(): SettingOption.UserFilterEnabled | null {
-        if (!this.settings) {
-            logger.debug('[ext.SettingsStoreCommon.userFilterEnabledSettingId]: settings is not initialized yet');
-            return null;
-        }
-        return this.settings.names.UserFilterEnabled;
-    }
+    /**
+     * Setting id for the user filter enabled toggle. `SettingsData.names` is
+     * the static {@link SettingOption} enum, so the id does not depend on the
+     * loaded settings and is always available.
+     */
+    readonly userFilterEnabledSettingId = SettingOption.UserFilterEnabled;
 
     @computed
     get userFilterEnabled(): boolean | null {
-        if (!this.settings || !this.userFilterEnabledSettingId) {
+        if (!this.settings) {
             logger.debug('[ext.SettingsStoreCommon.userFilterEnabled]: settings is not initialized yet');
             return null;
         }

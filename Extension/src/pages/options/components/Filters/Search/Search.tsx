@@ -28,7 +28,7 @@ import { observer } from 'mobx-react';
 
 import { translator } from '../../../../../common/translators/translator';
 import { Select } from '../../../../common/components/ui/Select';
-import { Icon } from '../../../../common/components/ui/Icon';
+import { CloseIcon } from '../../../../common/components/ui/CloseIcon';
 import { UserAgent } from '../../../../../common/user-agent';
 import { TABLET_BREAKPOINT_PX } from '../../../../common/constants';
 import { rootStore } from '../../../stores/RootStore';
@@ -145,11 +145,7 @@ const Search = observer(() => {
                     title={translator.getMessage('clear_button_title')}
                     aria-keyshortcuts="Escape"
                 >
-                    <Icon
-                        id="#cross"
-                        className="icon--24 icon--gray-default"
-                        aria-hidden="true"
-                    />
+                    <CloseIcon />
                 </button>
             )}
             <div className="search__select">

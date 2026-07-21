@@ -61,3 +61,46 @@
         padding: 16px 48px;
     }
 }
+
+.settings__group__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.settings__group__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.user-rules__switch-row {
+    /* Override the default .title (24px) for the user rules switch with icon row. */
+    & .title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 0;
+        font-size: 16px;
+        font-weight: 400;
+    }
+}
+
+.user-rules__switch-editor {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+}
+
+.user-rules__switch-editor:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}

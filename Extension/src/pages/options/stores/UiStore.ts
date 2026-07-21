@@ -28,26 +28,13 @@ import { nanoid } from 'nanoid';
 import { type InvalidStaticResultData, type InvalidDynamicResultData } from '../../../background/services/rules-limits';
 import { translator } from '../../../common/translators/translator';
 import { NotificationType, type NotificationParams } from '../../common/types';
+import { isDuplicateNotification } from '../../common/utils/notifications';
 import { messenger } from '../../services/messenger';
 // TODO: Maybe not import from components folder here?
 import { getDynamicWarningMessage, getStaticWarningMessage } from '../../common/utils/rules-limits-messages';
 import { type NotificationParamsWithId } from '../../common/components/Notification';
 
 import { type RootStore } from './RootStore';
-
-export enum SidebarMenuId {
-    ImportUserRules = 'import_user_rules',
-    ExportUserRules = 'export_user_rules',
-    ImportAllowlist = 'import_allowlist',
-    ExportAllowlist = 'export_allowlist',
-}
-
-type MenuOption = {
-    id: string;
-    title: string;
-    onClick: () => void;
-    disabled?: boolean;
-};
 
 class UiStore {
     /**
@@ -95,19 +82,10 @@ class UiStore {
     @observable
     isSidebarOpen = false;
 
-    @observable sidebarMenuOptions: MenuOption[] = [];
-
-    @action setSidebarMenuOptions(options: MenuOption[]) {
-        this.sidebarMenuOptions = options;
-    }
-
-    @action
+    @action.bound
     addNotification(params: NotificationParams) {
         const isNotificationAlreadyPresent = this.notifications
-            .some((notification) => {
-                return notification.type === params.type
-                    && notification.text === params.text;
-            });
+            .some((notification) => isDuplicateNotification(notification, params));
 
         if (isNotificationAlreadyPresent) {
             return null;
@@ -140,7 +118,7 @@ class UiStore {
         });
     }
 
-    @action
+    @action.bound
     removeNotification(id: string) {
         this.notifications = this.notifications
             .filter((notification) => notification.id !== id);

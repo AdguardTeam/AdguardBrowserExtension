@@ -47,6 +47,7 @@ export enum TelemetryScreenName {
     TrackingProtectionScreen = 'tracking_protection_screen',
     WebsiteAllowListScreen = 'website_allow_list_screen',
     UserRulesScreen = 'user_rules_screen',
+    UserRulesEmpty = 'user_rules_empty',
     AdditionalSettings = 'additional_settings',
     RulesLimits = 'rules_limits',
     RulesLimitsError = 'rule_limits_error',
@@ -78,6 +79,14 @@ export enum TelemetryEventName {
     AllowlistImportClick = 'allowlist_import_click',
     UserRulesSaveClick = 'user_rules_save_click',
     UserRulesImportClick = 'user_rules_import_click',
+    SwitchToListClick = 'switch_to_list_click',
+    EditorInNewWindowClick = 'editor_in_new_window_click',
+    UserRulesSwitchClick = 'user_rules_switch_click',
+    CheckboxClick = 'checkbox_click',
+    CreateRuleClick = 'create_rule_click',
+    UserRulesSearchClick = 'user_rules_search_click',
+    UserRulesMenuClick = 'user_rules_menu_click',
+    SwitchToEditorClick = 'switch_to_editor_click',
     CompareClick = 'compare_click',
     CloseCompareClick = 'close_compare_click',
     RateUsClick = 'rate_us_click',
@@ -119,6 +128,14 @@ export type TelemetryActionToScreenMap = {
     [TelemetryEventName.AllowlistImportClick]: TelemetryScreenName.WebsiteAllowListScreen;
     [TelemetryEventName.UserRulesSaveClick]: TelemetryScreenName.UserRulesScreen;
     [TelemetryEventName.UserRulesImportClick]: TelemetryScreenName.UserRulesScreen;
+    [TelemetryEventName.SwitchToListClick]: TelemetryScreenName.UserRulesScreen;
+    [TelemetryEventName.EditorInNewWindowClick]: TelemetryScreenName.UserRulesScreen;
+    [TelemetryEventName.UserRulesSwitchClick]: TelemetryScreenName.UserRulesScreen;
+    [TelemetryEventName.CheckboxClick]: TelemetryScreenName.UserRulesScreen;
+    [TelemetryEventName.CreateRuleClick]: TelemetryScreenName.UserRulesScreen;
+    [TelemetryEventName.UserRulesSearchClick]: TelemetryScreenName.UserRulesScreen;
+    [TelemetryEventName.UserRulesMenuClick]: TelemetryScreenName.UserRulesScreen;
+    [TelemetryEventName.SwitchToEditorClick]: TelemetryScreenName.UserRulesScreen;
     [TelemetryEventName.CompareClick]: TelemetryScreenName.MainPage;
     [TelemetryEventName.CloseCompareClick]: TelemetryScreenName.MainPage;
     [TelemetryEventName.RateUsClick]: TelemetryScreenName.MainPage;

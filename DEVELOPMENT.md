@@ -1,29 +1,61 @@
+<!-- omit in toc -->
 # Development
 
 - [Prerequisites](#prerequisites)
 - [Getting Started](#getting-started)
 - [Development Workflow](#development-workflow)
-    - [Available Scripts](#available-scripts)
-    - [Running Tests](#running-tests)
-    - [Linting and Type Checking](#linting-and-type-checking)
-    - [Building](#building)
-    - [Watch Mode](#watch-mode)
+  - [Available Scripts](#available-scripts)
+  - [Running Tests](#running-tests)
+  - [Linting and Type Checking](#linting-and-type-checking)
+  - [Building](#building)
+  - [Watch Mode](#watch-mode)
 - [Common Tasks](#common-tasks)
-    - [Linking with the developer build of tsurlfilter/tswebextension](#linking-with-the-developer-build-of-tsurlfiltertswebextension)
-    - [Linking tsurlfilter on CI (Bamboo)](#linking-tsurlfilter-on-ci-bamboo)
-    - [Building the beta and release versions](#building-the-beta-and-release-versions)
-    - [Special building instructions for Firefox reviewers](#special-building-instructions-for-firefox-reviewers)
-    - [Analyzing bundle size](#analyzing-bundle-size)
-    - [Debug MV3 declarative rules](#debug-mv3-declarative-rules)
-    - [Hotfix filters for MV3 with skip review](#hotfix-filters-for-mv3-with-skip-review)
-    - [Update localizations](#update-localizations)
-    - [Bundle Size Monitoring](#bundle-size-monitoring)
+  - [Linking with the developer build of tsurlfilter/tswebextension](#linking-with-the-developer-build-of-tsurlfiltertswebextension)
+  - [Linking tsurlfilter on CI (Bamboo)](#linking-tsurlfilter-on-ci-bamboo)
+    - [Configuring tsurlfilter reference](#configuring-tsurlfilter-reference)
+    - [How it works](#how-it-works)
+    - [Running CI tests locally](#running-ci-tests-locally)
+  - [Building the beta and release versions](#building-the-beta-and-release-versions)
+    - [Resources Process](#resources-process)
+    - [How to generate credentials for `crx` builds](#how-to-generate-credentials-for-crx-builds)
+  - [Special building instructions for Firefox reviewers](#special-building-instructions-for-firefox-reviewers)
+  - [Analyzing bundle size](#analyzing-bundle-size)
+  - [Debug MV3 declarative rules](#debug-mv3-declarative-rules)
+    - [How to build the MV3 extension](#how-to-build-the-mv3-extension)
+    - [How to install the unpacked extension in the browser](#how-to-install-the-unpacked-extension-in-the-browser)
+    - [How to debug rules](#how-to-debug-rules)
+    - [Technical information about commands](#technical-information-about-commands)
+  - [Hotfix filters for MV3 with skip review](#hotfix-filters-for-mv3-with-skip-review)
+    - [Prerequisites](#prerequisites-1)
+    - [Steps](#steps)
+  - [Update localizations](#update-localizations)
+  - [Bundle Size Monitoring](#bundle-size-monitoring)
+    - [Key Features](#key-features)
+    - [How it works](#how-it-works-1)
+    - [To update the bundle sizes manually](#to-update-the-bundle-sizes-manually)
+      - [Steps](#steps-1)
+    - [Checking bundle size locally](#checking-bundle-size-locally)
+    - [Custom Threshold](#custom-threshold)
 - [Project Architecture](#project-architecture)
-    - [Background Layers](#background-layers)
-    - [TypeScript Configuration](#typescript-configuration)
-    - [CSS Cascade Layers](#css-cascade-layers)
+  - [Background Layers](#background-layers)
+    - [Layer responsibilities](#layer-responsibilities)
+    - [Supporting modules](#supporting-modules)
+    - [Folder structure](#folder-structure)
+  - [TypeScript Configuration](#typescript-configuration)
+    - [Configuration Files Overview](#configuration-files-overview)
+  - [CSS Cascade Layers](#css-cascade-layers)
+  - [Rules Editor](#rules-editor)
+    - [Dependencies](#dependencies)
+    - [WASM Grammar and CSP Requirement](#wasm-grammar-and-csp-requirement)
+    - [Editor Component API](#editor-component-api)
 - [Environment Variables](#environment-variables)
 - [Troubleshooting](#troubleshooting)
+  - [`pnpm install` fails with network errors](#pnpm-install-fails-with-network-errors)
+  - [ESLint reports `no-restricted-imports` errors](#eslint-reports-no-restricted-imports-errors)
+  - [TypeScript errors in IDE but not in CI (or vice versa)](#typescript-errors-in-ide-but-not-in-ci-or-vice-versa)
+  - [`lint-staged` leaves a `lint-staged` section in `package.json`](#lint-staged-leaves-a-lint-staged-section-in-packagejson)
+  - [Linked tsurlfilter changes not picked up in watch mode](#linked-tsurlfilter-changes-not-picked-up-in-watch-mode)
+  - [Bundle size check fails](#bundle-size-check-fails)
 - [Additional Resources](#additional-resources)
 
 <a name="dev-requirements"></a>
@@ -1047,6 +1079,116 @@ The project uses two CSS layers to manage style priority:
 Layer order is declared inline in HTML templates (e.g., `Extension/pages/options/index.html`):
 This ensures the layer order is established before any `style-loader` injections from JavaScript bundles. The `utilities` layer has higher priority than `components`, ensuring utility classes always override component styles.
 
+<a name="dev-rules-editor"></a>
+
+### Rules Editor
+
+The user rules and allowlist editors are built on [CodeMirror 6], wrapped by the
+[`@adguard/rules-editor`][rules-editor] package. The editor lives in
+`Extension/src/pages/common/components/Editor/` and is consumed by:
+
+- `UserRulesEditor` (`Extension/src/pages/common/components/UserRulesEditor/`)
+- `Allowlist` (`Extension/src/pages/options/components/Allowlist/`)
+
+#### Dependencies
+
+The editor pulls in the following `package.json` dependencies:
+
+- `@adguard/rules-editor` — initialization wrapper around CodeMirror 6
+  (`initEditor`), providing the AdGuard filter syntax grammar, hotkeys, and
+  highlighting configuration.
+- `@codemirror/state`, `@codemirror/view`, `@codemirror/commands`,
+  `@codemirror/language`, `@codemirror/search` — CodeMirror 6 core packages
+  used directly by the `Editor` component and `editor-handle.ts`.
+- `@lezer/highlight` — Lezer highlight support used by the AdGuard theme.
+- `vscode-oniguruma` — provides the `onig.wasm` WebAssembly regex engine that
+  powers the TextMate grammar used for full syntax highlighting (see
+  [WASM Grammar and CSP Requirement](#wasm-grammar-and-csp-requirement)).
+
+> All `dependencies` and `devDependencies` are pinned to exact versions (no
+> `^` etc.), as required by the project conventions.
+
+#### WASM Grammar and CSP Requirement
+
+When the `Editor` is mounted with `highlightRules` enabled, it constructs a URL
+to `vscode-oniguruma/release/onig.wasm` and passes it to `initEditor`. The
+rules-editor uses this WASM module to instantiate the Oniguruma regex engine,
+which drives the TextMate grammar for full (token-level) syntax highlighting of
+AdGuard filter rules.
+
+Because MV3 extension pages disallow WebAssembly compilation by default, the
+build sets `'wasm-unsafe-eval'` in the `extension_pages` Content Security
+Policy. This is configured in `tools/helpers.ts` (`getEnvPolicy`), which
+produces:
+
+```
+script-src 'self' 'wasm-unsafe-eval'; object-src 'self'
+```
+
+for Chrome MV3 and Opera MV3 builds. This CSP directive is also required by
+`@adguard/re2-wasm` (the RE2 regex engine used elsewhere in the extension). If it
+is removed, code that depends on WASM — including editor highlighting — will
+fail to load at runtime.
+
+The `onig.wasm` asset must be present in the build output; it is emitted by
+Rspack from the `vscode-oniguruma` package (configured in
+`tools/bundle/rspack.common.ts`).
+
+#### Editor Component API
+
+The `Editor` component (`Extension/src/pages/common/components/Editor/Editor.tsx`)
+is a thin React wrapper around CodeMirror 6. Callers interact with it
+imperatively through an `editorRef` ref; they do **not** receive a CodeMirror
+`EditorView` directly.
+
+**Props** (`EditorProps`):
+
+| Prop | Type | Description |
+| ---- | ---- | ----------- |
+| `name` | `string` | Unique editor name; used as part of the persisted size storage key. |
+| `editorRef` | `MutableRefObject<EditorHandle \| null>` | Ref that receives the imperative `EditorHandle` (see below). |
+| `onChange?` | `(value: string) => void` | Called with the full document content on every document change. |
+| `onSave?` | `() => void` | Called on the save hotkey (Ctrl/Cmd+S). |
+| `onExit?` | `() => void` | Called on Escape (unless the search panel is open). |
+| `fullscreen?` | `boolean` | Whether the editor renders in fullscreen mode. |
+| `highlightRules?` | `boolean` | Whether to enable full syntax highlighting. **Captured once at mount, not reactive** — to toggle at runtime, remount the editor (e.g. via `key`). |
+| `shouldResetSize?` | `boolean` | Resets the persisted editor size to the default. |
+| `readOnly?` | `boolean` | Whether the editor is read-only (default `false`). |
+| `wrapEnabled?` | `boolean` | Whether line wrapping is enabled (default `false`). |
+
+**`editorRef` expects an `EditorHandle`.**
+
+`editorRef` receives an `EditorHandle | null` — an imperative facade defined in
+`Extension/src/pages/common/components/Editor/editor-handle.ts`. It exposes:
+
+| Method | Description |
+| ------ | ----------- |
+| `getValue()` | Returns the entire document content as a string. |
+| `setValue(value)` | Replaces the document content and inserts a full history barrier. |
+| `getCursor()` | Returns `{ line, ch }` (1-based line, 0-based char). |
+| `setCursor(cursor)` | Moves the cursor and scrolls it into view. |
+| `setWrap(enabled)` | Toggles line wrapping. |
+| `setReadOnly(enabled)` | Toggles read-only mode. |
+| `focus()` | Focuses the editor. |
+
+Because `initEditor` resolves only after the WASM grammar loads, the underlying
+`EditorView` is created asynchronously. `Editor` exposes a
+`DeferredEditorHandle` so that writes made before the view exists are buffered
+and replayed in call order once the view attaches, while readers (`getValue`,
+`getCursor`) return sensible defaults (`''` / `{ line: 1, ch: 0 }`) until then.
+
+When consuming the editor, type the ref as:
+
+```typescript
+import { type EditorHandle } from '../../../common/components/Editor/editor-handle';
+
+const editorRef = useRef<EditorHandle | null>(null);
+```
+
+Do not import types from `@codemirror/view` or `@codemirror/state` to type
+`editorRef` — the facade is the stable public surface; the CodeMirror view is an
+implementation detail owned by the `Editor` component.
+
 ## Environment Variables
 
 Optional environment variables are configured via a `.env` file (copy from `.env.example`):
@@ -1095,3 +1237,6 @@ Investigate the cause of the size increase. If justified, update reference sizes
 - [Locales Documentation](./tools/locales/README.md) — Localization workflow
 - [Dangerous Rules Documentation](./tools/resources/dangerous-rules/README.md) — Dangerous rules detection
 - [tsurlfilter](https://github.com/AdguardTeam/tsurlfilter) — Filtering engine library
+
+[CodeMirror 6]: https://codemirror.net/
+[rules-editor]: https://github.com/AdguardTeam/rules-editor

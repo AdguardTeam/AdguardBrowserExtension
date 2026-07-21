@@ -252,6 +252,18 @@ export const openChromiumE2ESurface = async (
         async clickSelector(selector: string): Promise<void> {
             await page.locator(selector).first().click();
         },
+        async typeText(selector: string, text: string): Promise<void> {
+            // pressSequentially focuses the element (without clicking, so an
+            // existing selection — e.g. a CodeMirror cursor position — is
+            // preserved) and dispatches real key events per character.
+            await page.locator(selector).first().pressSequentially(text);
+        },
+        async evaluate<T>(fn: (arg: unknown) => Promise<T> | T, arg?: unknown): Promise<T> {
+            return page.evaluate(fn, arg);
+        },
+        async getTextContents(selector: string): Promise<string[]> {
+            return page.locator(selector).allTextContents();
+        },
         async close(): Promise<void> {
             await page.close();
         },

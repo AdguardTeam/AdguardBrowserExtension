@@ -24,7 +24,7 @@ import { observer } from 'mobx-react';
 import cn from 'classnames';
 
 import { translator } from '../../../../../common/translators/translator';
-import { Icon } from '../../../../common/components/ui/Icon';
+import { CloseIcon } from '../../../../common/components/ui/CloseIcon';
 import { rootStore } from '../../../stores/RootStore';
 import { TelemetryEventName, TelemetryScreenName } from '../../../../../common/telemetry';
 import desktopAppPromoImage from '../../../../../../assets/images/desktop-app-promo.svg';
@@ -92,11 +92,7 @@ export const DesktopAppPromo = observer(() => {
                 onClick={handleCloseClick}
                 aria-label={translator.getMessage('close_button_title')}
             >
-                <Icon
-                    id="#cross"
-                    className="icon--24 icon--gray-default"
-                    aria-hidden="true"
-                />
+                <CloseIcon />
             </button>
         </div>
     );

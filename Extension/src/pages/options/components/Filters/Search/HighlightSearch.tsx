@@ -21,38 +21,33 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
-import cn from 'classnames';
-
 import { rootStore } from '../../../stores/RootStore';
-import { containsIgnoreCase, findChunks } from '../../../../helpers';
+import { containsIgnoreCase } from '../../../../helpers';
+import { Highlight } from '../../../../common/components/ui/Highlight';
 
-const HighlightSearch = observer(({ string }) => {
+import './search.pcss';
+
+const highlightClass = 'filter__search';
+
+/**
+ * Props for the {@link HighlightSearch} component.
+ */
+type HighlightSearchProps = {
+    /**
+     * The text to render, highlighting occurrences of the current search input.
+     */
+    string: string;
+};
+
+const HighlightSearch = observer(({ string }: HighlightSearchProps) => {
     const { settingsStore: { searchInput } } = useContext(rootStore);
 
-    const renderStr = () => {
-        const strChunks = findChunks(string, searchInput);
+    if (searchInput.length === 0 || !containsIgnoreCase(string, searchInput)) {
+        // eslint-disable-next-line react/jsx-no-useless-fragment
+        return <>{string}</>;
+    }
 
-        const displayName = strChunks.map((chunk, i) => {
-            const isSearchMatch = chunk.toLowerCase() === searchInput.toLowerCase();
-            const chunkClassName = cn({
-                filter__search: isSearchMatch,
-            });
-            return (
-                <span
-                    key={i} // eslint-disable-line react/no-array-index-key
-                    className={chunkClassName}
-                >
-                    {chunk}
-                </span>
-            );
-        });
-
-        return displayName;
-    };
-
-    return searchInput.length > 0 && containsIgnoreCase(string, searchInput)
-        ? renderStr()
-        : string;
+    return <Highlight text={string} term={searchInput} highlightClassName={highlightClass} />;
 });
 
 export { HighlightSearch };

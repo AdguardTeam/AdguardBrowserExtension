@@ -28,9 +28,10 @@ import classnames from 'classnames';
 
 import { NOTIFICATION_TTL_MS } from '../../../../common/constants';
 import { TIME_TO_REMOVE_NOTIFICATION_MS } from '../../constants';
-import { Icon } from '../ui/Icon';
-import { NotificationType, type NotificationParams } from '../../types';
+import { CloseIcon } from '../ui/CloseIcon';
+import { type NotificationParams, NotificationType } from '../../types';
 import { translator } from '../../../../common/translators/translator';
+import { Icon } from '../ui/Icon';
 
 /**
  * Notification with id.
@@ -159,11 +160,7 @@ export const Notification = (props: NotificationProps) => {
                 onClick={handleCloseClick}
                 aria-label={translator.getMessage('close_button_title')}
             >
-                <Icon
-                    id="#cross"
-                    className="icon--24 icon--gray-default"
-                    aria-hidden="true"
-                />
+                <CloseIcon />
             </button>
         </div>
     );

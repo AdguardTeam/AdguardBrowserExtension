@@ -23,6 +23,7 @@ import { observer } from 'mobx-react';
 import { Icon } from '../../../../common/components/ui/Icon';
 import { rootStore } from '../../../stores/RootStore';
 import { MenuDropDown } from '../../../../common/components/ui/MenuDropDown';
+import { translator } from '../../../../../common/translators/translator';
 import { filterStatusOptions } from '../../Filters/constants';
 import { type SearchFilters } from '../../Filters/Search/constants';
 
@@ -38,7 +39,9 @@ export const FilterSortMenu = observer(() => {
     };
 
     return (
-        <MenuDropDown>
+        <MenuDropDown
+            ariaLabel={translator.getMessage('options_filters_search_filter')}
+        >
             {filterStatusOptions.map(({ value, title }) => {
                 const isSelected = value === settingsStore.searchSelect;
 
