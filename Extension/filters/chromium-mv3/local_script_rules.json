@@ -182,6 +182,22 @@
                 "restrictedDomains": []
             }
         ],
+        "document.addEventListener('click',function(e){var t=e.target.closest('.click_coupons_code');if(!t)return;e.stopPropagation();e.preventDefault();var u=t.dataset.hrefAlt||null;if(u)location.href=u},true);": [
+            {
+                "permittedDomains": [
+                    "pepper.ru"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "(function(){var i=setInterval(function(){var f=window.CashbackOpenCouponGlobal;if(f){window.CashbackOpenCouponGlobal=function(a){if(a&&a.IS_CODE){try{Cookies.set('CASHBACK_OPEN_OFFER',a.ID,{expires:new Date(Date.now()+1800000)});Cookies.set('CASHBACK_SCROLL_TOP',window.scrollY,{expires:new Date(Date.now()+1800000)})}catch(e){}var u=new URL(location.href);u.hash='';u.searchParams.delete('ncc');u.searchParams.delete('pr');u.searchParams.set('ncc','1');location.href=u.toString();return}return f(a)};clearInterval(i)}},5)})();": [
+            {
+                "permittedDomains": [
+                    "promokodi.net"
+                ],
+                "restrictedDomains": []
+            }
+        ],
         "!function(){const p={apply:(p,e,n)=>{const r=Reflect.apply(p,e,n),s=r?.[0]?.props?.data;return s&&null===s.user&&(r[0].props.data.user=\"guest\"),r}};window.JSON.parse=new Proxy(window.JSON.parse,p)}();": [
             {
                 "permittedDomains": [
@@ -1036,14 +1052,6 @@
                 "restrictedDomains": []
             }
         ],
-        "\"use strict\"; window.Function.prototype.apply = new Proxy(window.Function.prototype.apply, { apply(Target, ThisArg, Args) { let FunctionContext = ThisArg.toString(); if (FunctionContext.includes('veta') && FunctionContext.includes('http') && FunctionContext.includes('/gfp/') && FunctionContext.includes('().mark((')) { return Reflect.apply(Target, async () => false, []); } return Reflect.apply(Target, ThisArg, Args); } });": [
-            {
-                "permittedDomains": [
-                    "chzzk.naver.com"
-                ],
-                "restrictedDomains": []
-            }
-        ],
         "(()=>{const e=document.documentElement;new MutationObserver((()=>{const e=document.querySelector('body > div[role=\"dialog\"].neon-border-purple > p.text-center + button.neon-button-purple');e&&e.textContent.includes(\"I Understand\")&&e.click()})).observe(e,{attributes:!0,childList:!0,subtree:!0})})();": [
             {
                 "permittedDomains": [
@@ -1229,6 +1237,14 @@
                 "permittedDomains": [
                     "game8.vn",
                     "shippuden-naruto.com"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "(()=>{const e={apply:(e,t,n)=>{const o=Reflect.apply(e,t,n);try{o instanceof HTMLIFrameElement&&\"\"===o.src&&o.contentWindow&&(o.contentWindow.fetch=window.fetch,o.contentWindow.getComputedStyle=window.getComputedStyle)}catch(e){}return o}};Node.prototype.appendChild=new Proxy(Node.prototype.appendChild,e)})();": [
+            {
+                "permittedDomains": [
+                    "cloudfam.io"
                 ],
                 "restrictedDomains": []
             }
@@ -1508,7 +1524,7 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{const e=/free-download-form|'\\),_0x|\\)\\]\\(function\\(_0x/,o={apply:(e,o,t)=>{const n=t[0];\"boolean\"==typeof n&&!0===n&&(t[0]=!1),setTimeout((()=>Reflect.apply(e,o,t)),2e3)}},t={apply:(t,n,r)=>{const i=r[0];return\"function\"==typeof i&&e.test(i.toString())&&(r[0]=new Proxy(r[0],o)),Reflect.apply(t,n,r)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t),window.addEventListener(\"load\",(()=>{const e=document.querySelector(\"form#go-link button#link-button\");if(e){const o=e.cloneNode(!0);e.parentNode.replaceChild(o,e),o.removeAttribute(\"disabled\")}}))})();": [
+        "(()=>{const e=/free-download-form|'\\),_0x|\\)\\]\\(function\\(_0x|=>\\{return/,o={apply:(e,o,t)=>{const n=t[0];\"boolean\"==typeof n&&!0===n&&(t[0]=!1),setTimeout((()=>Reflect.apply(e,o,t)),2e3)}},t={apply:(t,n,r)=>{const i=r[0];return\"function\"==typeof i&&e.test(i.toString())&&(r[0]=new Proxy(r[0],o)),Reflect.apply(t,n,r)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t),window.addEventListener(\"load\",(()=>{const e=document.querySelector(\"form#go-link button#link-button\");if(e){const o=e.cloneNode(!0);e.parentNode.replaceChild(o,e),o.removeAttribute(\"disabled\")}}))})();": [
             {
                 "permittedDomains": [
                     "upfilesgo.com",
@@ -2723,6 +2739,7 @@
         "(()=>{const e={apply:(e,t,l)=>{if(!t.matches('a[href][target=\"_blank\"]'))return Reflect.apply(e,t,l)}};window.HTMLElement.prototype.click=new Proxy(window.HTMLElement.prototype.click,e)})();": [
             {
                 "permittedDomains": [
+                    "embedsun.cc",
                     "vidmoly.me",
                     "vidmoly.net",
                     "vidmoly.to"
@@ -3060,7 +3077,7 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{const t={apply:(t,n,e)=>{const o=Reflect.apply(t,n,e);try{o instanceof HTMLIFrameElement&&(\"\"===o.src||\"about:blank\"===o.src)&&o.contentWindow&&(o.contentWindow.String=window.String,o.contentWindow.Function.prototype.call=window.Function.prototype.call,o.contentWindow.JSON.parse=window.JSON.parse,o.contentWindow.XMLHttpRequest.prototype=window.XMLHttpRequest.prototype)}catch(t){}return o}};window.Node.prototype.appendChild=new Proxy(window.Node.prototype.appendChild,t),window.Element.prototype.insertAdjacentElement=new Proxy(window.Element.prototype.insertAdjacentElement,t)})();": [
+        "(()=>{const t={apply:(t,e,o)=>{const n=Reflect.apply(t,e,o);try{n instanceof HTMLIFrameElement&&(\"\"===n.src||\"about:blank\"===n.src)&&n.contentWindow&&(n.contentWindow.String=window.String,n.contentWindow.Function.prototype.call=window.Function.prototype.call,n.contentWindow.JSON.parse=window.JSON.parse,n.contentWindow.XMLHttpRequest.prototype=window.XMLHttpRequest.prototype)}catch(t){}return n}};window.Node.prototype.appendChild=new Proxy(window.Node.prototype.appendChild,t),window.Node.prototype.insertBefore=new Proxy(window.Node.prototype.insertBefore,t),window.Element.prototype.insertAdjacentElement=new Proxy(window.Element.prototype.insertAdjacentElement,t)})();": [
             {
                 "permittedDomains": [
                     "facebook.com",
@@ -3330,6 +3347,11 @@
         "(()=>{const e=/html-load\\.com|loader\\.min\\.js|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\.|:\\/\\/loader\\.|core\\.js|\\/sdk\\.js/,t={filter:Array.prototype.filter,includes:String.prototype.includes,regexTest:RegExp.prototype.test},o=()=>(new Error).stack,l=o=>t.regexTest.call(e,o),r={construct:(e,r,n)=>{const c=o();return l(c)&&r[0]&&t.includes.call(r[0],\"adshield\")&&(r[0]=[\"(function(){})();\"]),Reflect.construct(e,r,n)}};window.Blob=new Proxy(window.Blob,r);const n={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&(t.includes.call(n[0],\"new Error\")||t.includes.call(n[0],\".apply(this\"))&&(n[0]=()=>{}),Reflect.apply(e,r,n)}};window.setTimeout=new Proxy(window.setTimeout,n);const c={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&r?.includes?.(\"setTimeout\")&&(r=t.filter.call(r,(e=>!t.includes.call(e,\"setTimeout\")))),Reflect.apply(e,r,n)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,c)})();": [
             {
                 "permittedDomains": [
+                    "gamebanana.com",
+                    "weerplaza.nl",
+                    "coolmathgames.com",
+                    "cardcluster.com",
+                    "tbsradio.jp",
                     "mopo.de",
                     "kurashiru.com",
                     "advnture.com",
@@ -3567,6 +3589,14 @@
                 "restrictedDomains": []
             }
         ],
+        "(()=>{let t=!1;const i={apply:(i,n,a)=>{try{!t&&window.ytInitialData&&(window.ytInitialData=JSON.parse(JSON.stringify(window.ytInitialData)),t=!0)}catch(t){}return Reflect.apply(i,n,a)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,i)})();": [
+            {
+                "permittedDomains": [
+                    "www.youtube.com"
+                ],
+                "restrictedDomains": []
+            }
+        ],
         "(()=>{const t={apply:(t,e,n)=>{if(location.href.includes(\"/shorts/\")||location.href.includes(\"youtube.com/tv\")||location.href.includes(\"youtube.com/embed/\"))return Reflect.apply(t,e,n);try{const a=n[0];if(!a?.context?.client)return Reflect.apply(t,e,n);const o=String(Date.now());a.playbackContext&&void 0===a.playbackContext.adPlaybackContext&&(a.playbackContext.contentPlaybackContext.lactMilliseconds=o),a.playerRequest&&void 0===a.playerRequest.playbackContext?.adPlaybackContext&&(a.playerRequest.playbackContext.contentPlaybackContext.lactMilliseconds=o),n[0]=a}catch(t){}return Reflect.apply(t,e,n)}};window.JSON.stringify=new Proxy(window.JSON.stringify,t)})();": [
             {
                 "permittedDomains": [
@@ -3667,6 +3697,14 @@
             {
                 "permittedDomains": [
                     "play.nova.bg"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "(()=>{window.addEventListener(\"click\",(function(t){const e=t?.target?.closest?.(\".BottomRecirc a[href].Post-item\");e&&(t.preventDefault(),location.assign(e.href))}),!0);})();": [
+            {
+                "permittedDomains": [
+                    "imgur.com"
                 ],
                 "restrictedDomains": []
             }
@@ -4281,6 +4319,16 @@
         "window.addEventListener(\"contextmenu\",function(a){a.stopPropagation()},!0);": [
             {
                 "permittedDomains": [
+                    "vidbasic.live",
+                    "embdmstrplayer.com",
+                    "kisskh.*",
+                    "anixtv.pro",
+                    "anixtv.in",
+                    "anixtv.us.cc",
+                    "anixx.fun",
+                    "cloudorchestranova.com",
+                    "nextgencloudfabric.com",
+                    "anixx.fun",
                     "streamingnow.mov",
                     "vidmoly.*",
                     "vidmoly.biz",
@@ -4567,14 +4615,6 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{let t=!1;const i={apply:(i,n,a)=>{try{!t&&window.ytInitialData&&(window.ytInitialData=JSON.parse(JSON.stringify(window.ytInitialData)),t=!0)}catch(t){}return Reflect.apply(i,n,a)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,i)})();": [
-            {
-                "permittedDomains": [
-                    "www.youtube.com"
-                ],
-                "restrictedDomains": []
-            }
-        ],
         "(()=>{const t=Function.prototype.call;let e=!1,o=!1,n=!1;const c={apply:(c,r,a)=>{const i=a[0];if(i?.requestNumber&&i?.snapshot)try{o=((t,e=5)=>{if(\"object\"!=typeof t||null===t)return!1;const o=new Array(1e3);let c=0;const r=new WeakSet;for(o[c++]={obj:t,depth:0};c>0&&!n;){const{obj:t,depth:a}=o[--c];if(a>e||\"object\"!=typeof t||null===t||r.has(t))continue;let i;r.add(t);try{i=Object.hasOwn(t,\"backoffTimeMs\")}catch(t){}if(i)return void 0!==t.backoffTimeMs||(n=!0,!1);for(const e in t)if(Object.hasOwn(t,e)){let n;try{n=t[e]}catch(t){}null!==n&&\"object\"==typeof n&&!r.has(n)&&c<o.length&&(o[c++]={obj:n,depth:a+1})}}return!1})(i),e=!0,(o||n)&&(Function.prototype.call=t)}catch(t){}return Reflect.apply(c,r,a)}};window.Function.prototype.call=new Proxy(window.Function.prototype.call,c);window.addEventListener(\"load\",(async()=>{if(Function.prototype.call=t,!o&&e)return;const n=window.location.search,c=new URLSearchParams(n).get(\"v\");if(!c)return;const r=await(a=\"#movie_player\",i=200,l=1e4,new Promise((t=>{if(!a||!i||!l)return void t(null);const e=Date.now()+l,o=()=>{const n=document.querySelector(a);n?t(n):Date.now()>e?t(null):setTimeout(o,i)};o()})));var a,i,l;if(!r)return;const s=new URLSearchParams(n).get(\"t\")??\"0\",u=parseInt(s,10);if(\"function\"==typeof r.loadVideoById&&!location.search.includes(\"&rco=\"))try{r.loadVideoById(c,u)}catch(t){}}))})();": [
             {
                 "permittedDomains": [
@@ -4701,6 +4741,7 @@
         "(()=>{const t={apply:(t,e,n)=>{try{if((new Error).stack.includes(\"Popup\"))return Reflect.apply(t,e,n);const o=e;\"function\"==typeof o&&(o.toString().includes(\"adBlockerDetected\")||o.toString().includes(\"pub_300x250m\")||o.toString().includes(\".offsetHeight||0===\"))&&(e=()=>new Promise((t=>t(!1))))}catch(t){}return Reflect.apply(t,e,n)}};window.Function.prototype.apply=new Proxy(window.Function.prototype.apply,t)})();": [
             {
                 "permittedDomains": [
+                    "nieuwsvandedag.nl",
                     "radio10.nl",
                     "kijk.nl",
                     "hartvannederland.nl",

@@ -134,6 +134,11 @@ const mv3Entries = e2eMatrix.filter((entry) => entry.isMv3);
 
 if (mv3Entries.length === 0) {
     logInfo('[rule-limits] No MV3 entries in matrix — skipping');
+    // Register a skipped suite so this file is not flagged as having no
+    // tests when the selected matrix contains no MV3 entries (e.g. when
+    // running only the Firefox MV2 matrix). Vitest fails test files that
+    // collect zero test suites; an explicit skip keeps the run green.
+    describe.skip('[rule-limits] no MV3 entries in matrix', () => {});
 }
 
 mv3Entries.forEach((entry) => {
