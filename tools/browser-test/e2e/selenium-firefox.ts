@@ -59,6 +59,17 @@ const FIREFOX_BIDI_SETUP_TIMEOUT_MS = 10_000;
 const FIREFOX_APP_INIT_TIMEOUT_MS = 30_000;
 
 /**
+ * Pinned Firefox version for E2E runs.
+ *
+ * Without a pin, selenium-manager downloads the latest stable Firefox at run
+ * time, so CI silently changes browser version whenever Mozilla ships a
+ * release (e.g. Firefox 153 broke all browser-level navigation to
+ * `moz-extension://` URLs). Bump this version deliberately after verifying
+ * the harness against it. Ignored when `E2E_FIREFOX_BIN` is set.
+ */
+const FIREFOX_PINNED_VERSION = '153.0';
+
+/**
  * Internal tab for filtering-log E2E (no manifest content_scripts on about: pages).
  */
 const FIREFOX_FILTERING_LOG_TAB_URL = 'about:newtab';
@@ -254,12 +265,20 @@ export const createFirefoxExtensionUrl = (pagePath: string): string => {
  * @returns Nothing.
  */
 const createFirefoxE2ETab = async (driver: firefox.Driver): Promise<void> => {
-    await driver.executeAsyncScript(
-        'var cb = arguments[arguments.length - 1];'
-        + `browser.tabs.create({ url: "${FIREFOX_FILTERING_LOG_TAB_URL}" })`
-        + '.then(function(tab) { document.location.hash = String(tab.id); cb(); })'
-        + '.catch(function() { cb(); });',
-    );
+    await driver.wait(async () => {
+        try {
+            await driver.executeAsyncScript(
+                'var cb = arguments[arguments.length - 1];'
+                + 'if (typeof browser === "undefined") { cb(false); return; }'
+                + `browser.tabs.create({ url: "${FIREFOX_FILTERING_LOG_TAB_URL}" })`
+                + '.then(function(tab) { document.location.hash = String(tab.id); cb(true); })'
+                + '.catch(function() { cb(false); });',
+            );
+            return true;
+        } catch {
+            return false;
+        }
+    }, FIREFOX_APP_INIT_TIMEOUT_MS, 'Firefox E2E tab creation timed out');
 };
 
 /**
@@ -272,27 +291,222 @@ const createFirefoxE2ETab = async (driver: firefox.Driver): Promise<void> => {
  * @returns Nothing.
  */
 const closeFirefoxInstallFlowTabs = async (driver: firefox.Driver): Promise<void> => {
-    await driver.executeAsyncScript(
-        'var cb = arguments[arguments.length - 1];'
-        + 'browser.tabs.query({})'
-        + '.then(function(tabs) {'
-        + '  var ids = tabs.filter(function(t) {'
-        + '    if (!t.url) { return false; }'
-        + '    return t.url.indexOf("/pages/post-install.html") !== -1'
-        + '      || t.url.indexOf("welcome.adguard.com") !== -1'
-        + '      || /\\/thankyou\\.html/i.test(t.url);'
-        + '  }).map(function(t) { return t.id; });'
-        + '  if (ids.length === 0) { return []; }'
-        + '  return browser.tabs.remove(ids);'
-        + '})'
-        + '.then(function() { cb(); })'
-        + '.catch(function() { cb(); });',
-    );
+    await driver.wait(async () => {
+        try {
+            await driver.executeAsyncScript(
+                'var cb = arguments[arguments.length - 1];'
+                + 'if (typeof browser === "undefined") { cb(false); return; }'
+                + 'browser.tabs.query({})'
+                + '.then(function(tabs) {'
+                + '  var ids = tabs.filter(function(t) {'
+                + '    if (!t.url) { return false; }'
+                + '    return t.url.indexOf("/pages/post-install.html") !== -1'
+                + '      || t.url.indexOf("welcome.adguard.com") !== -1'
+                + '      || /\\/thankyou\\.html/i.test(t.url);'
+                + '  }).map(function(t) { return t.id; });'
+                + '  if (ids.length === 0) { return []; }'
+                + '  return browser.tabs.remove(ids);'
+                + '})'
+                + '.then(function() { cb(true); })'
+                + '.catch(function() { cb(false); });',
+            );
+            return true;
+        } catch {
+            return false;
+        }
+    }, FIREFOX_APP_INIT_TIMEOUT_MS, 'Firefox install flow tab cleanup timed out');
+};
+
+/**
+ * Switches the WebDriver session to the first tab whose URL satisfies the
+ * given predicate.
+ *
+ * @param driver Selenium WebDriver instance.
+ * @param matches Predicate applied to each tab URL.
+ *
+ * @returns True if a matching tab was found and switched to, false otherwise.
+ */
+const trySwitchToFirefoxTab = async (
+    driver: firefox.Driver,
+    matches: (url: string) => boolean,
+): Promise<boolean> => {
+    try {
+        const handles = await driver.getAllWindowHandles();
+
+        // eslint-disable-next-line no-restricted-syntax
+        for (const handle of handles) {
+            // eslint-disable-next-line no-await-in-loop
+            await driver.switchTo().window(handle);
+            // eslint-disable-next-line no-await-in-loop
+            const url = await driver.getCurrentUrl();
+            if (matches(url)) {
+                return true;
+            }
+        }
+        return false;
+    } catch {
+        return false;
+    }
+};
+
+/**
+ * Waits until any tab in the browser is showing an extension page and switches
+ * the WebDriver session to it.
+ *
+ * Starting with Firefox 153, navigation to `moz-extension://` URLs is blocked
+ * for browser-level commands: both the geckodriver "Navigate To" command
+ * (`driver.get`) and the BiDi navigate command (`browsingContext.navigate`)
+ * fail with "Navigation to URL is not allowed in this context". The only way
+ * to reach an extension page is from within an extension-origin context, so
+ * the harness bootstraps from the post-install tab that the extension opens
+ * on first run.
+ *
+ * @param driver Selenium WebDriver instance.
+ * @param timeoutMs Maximum time to wait for an extension tab to appear.
+ * @param timeoutMessage Error message on timeout.
+ *
+ * @returns Nothing.
+ */
+const switchToFirefoxExtensionContext = async (
+    driver: firefox.Driver,
+    timeoutMs: number,
+    timeoutMessage: string,
+): Promise<void> => {
+    const extensionOrigin = `${E2EExtensionScheme.MozExtension}://${FIREFOX_EXTENSION_HOST}/`;
+
+    await driver.wait(async () => {
+        return trySwitchToFirefoxTab(driver, (url) => url.startsWith(extensionOrigin));
+    }, timeoutMs, timeoutMessage);
+};
+
+/**
+ * Waits until the document in the current WebDriver context reaches the
+ * `interactive` or `complete` ready-state.
+ *
+ * @param driver Selenium WebDriver instance.
+ * @param timeoutMs Maximum time to wait for the page to reach the expected state.
+ * @param timeoutMessage Error message on timeout.
+ *
+ * @returns Nothing.
+ */
+const waitForFirefoxDocumentReady = async (
+    driver: firefox.Driver,
+    timeoutMs: number,
+    timeoutMessage: string,
+): Promise<void> => {
+    const expectedStates = ['interactive', 'complete'];
+
+    await driver.wait(async () => {
+        try {
+            const readyState = await driver.executeScript(
+                'return document.readyState;',
+            ) as string;
+            return expectedStates.includes(readyState);
+        } catch {
+            return false;
+        }
+    }, timeoutMs, timeoutMessage);
+};
+
+/**
+ * Opens the given extension URL in a new tab via `browser.tabs.create` and
+ * switches the WebDriver session to it.
+ *
+ * A dedicated tab is used instead of reusing the post-install tab, because the
+ * background updates the post-install tab to the external thank-you page
+ * during the install flow and would race with the harness navigation. Each
+ * attempt re-acquires an extension-origin context first, so the whole step is
+ * resilient to that redirect happening mid-attempt.
+ *
+ * @param driver Selenium WebDriver instance.
+ * @param url Target `moz-extension://` URL to open.
+ * @param timeoutMs Maximum time to wait for the tab to open and load.
+ * @param timeoutMessage Error message on timeout.
+ *
+ * @returns Nothing.
+ */
+const openFirefoxExtensionTab = async (
+    driver: firefox.Driver,
+    url: string,
+    timeoutMs: number,
+    timeoutMessage: string,
+): Promise<void> => {
+    const extensionOrigin = `${E2EExtensionScheme.MozExtension}://${FIREFOX_EXTENSION_HOST}/`;
+
+    await driver.wait(async () => {
+        try {
+            // If the target tab already exists (e.g. created on a previous
+            // attempt), just switch to it.
+            if (await trySwitchToFirefoxTab(driver, (currentUrl) => currentUrl === url)) {
+                return true;
+            }
+
+            // Re-acquire an extension-origin context where `browser.tabs` is
+            // available, then open the target tab from it.
+            if (!(await trySwitchToFirefoxTab(driver, (currentUrl) => currentUrl.startsWith(extensionOrigin)))) {
+                return false;
+            }
+
+            await driver.executeAsyncScript(
+                'var cb = arguments[arguments.length - 1];'
+                + 'if (typeof browser === "undefined") { cb(false); return; }'
+                + `browser.tabs.create({ url: "${url}" })`
+                + '.then(function() { cb(true); })'
+                + '.catch(function() { cb(false); });',
+            );
+
+            return await trySwitchToFirefoxTab(driver, (currentUrl) => currentUrl === url);
+        } catch {
+            return false;
+        }
+    }, timeoutMs, timeoutMessage);
+
+    await waitForFirefoxDocumentReady(driver, timeoutMs, timeoutMessage);
+};
+
+/**
+ * Navigates the current tab to the given extension URL and waits for the
+ * document to reach the `interactive` or `complete` ready-state.
+ *
+ * Must be called while the current WebDriver context is an extension page:
+ * same-origin `window.location.href` assignment is the only navigation path
+ * to `moz-extension://` URLs that Firefox 153+ still allows, since
+ * browser-level commands (the geckodriver "Navigate To" command via
+ * `driver.get` and the BiDi navigate command via `browsingContext.navigate`)
+ * fail with "Navigation to URL is not allowed in this context".
+ *
+ * @param driver Selenium WebDriver instance.
+ * @param url Target `moz-extension://` URL to navigate to.
+ * @param timeoutMs Maximum time to wait for the page to reach the expected state.
+ * @param timeoutMessage Error message on timeout.
+ *
+ * @returns Nothing.
+ */
+const navigateToExtensionUrlAndWait = async (
+    driver: firefox.Driver,
+    url: string,
+    timeoutMs: number,
+    timeoutMessage: string,
+): Promise<void> => {
+    await driver.executeScript(`window.location.href = ${JSON.stringify(url)};`);
+
+    // Wait for the navigation to land on the target URL.
+    await driver.wait(async () => {
+        try {
+            const currentUrl = await driver.getCurrentUrl();
+            return currentUrl === url;
+        } catch {
+            return false;
+        }
+    }, timeoutMs, timeoutMessage);
+
+    await waitForFirefoxDocumentReady(driver, timeoutMs, timeoutMessage);
 };
 
 /**
  * Waits until the Firefox extension background has fully initialized.
- * Opens the popup page, sends a `GetIsAppInitialized` message, and waits
+ * Bootstraps into the extension origin via the post-install tab, opens a
+ * dedicated popup tab, sends a `GetIsAppInitialized` message, and waits
  * until the background replies with `true`.
  *
  * @param driver Selenium WebDriver instance.
@@ -301,17 +515,41 @@ const closeFirefoxInstallFlowTabs = async (driver: firefox.Driver): Promise<void
  */
 const waitForFirefoxAppInitialized = async (driver: firefox.Driver): Promise<void> => {
     const popupUrl = createFirefoxExtensionUrl('/pages/popup.html');
-    await driver.get(popupUrl);
+
+    // Wait for the post-install tab the extension opens on first run: it is
+    // the only reachable extension-origin context (Firefox 153+ blocks all
+    // browser-level navigation to moz-extension:// URLs).
+    await switchToFirefoxExtensionContext(
+        driver,
+        FIREFOX_APP_INIT_TIMEOUT_MS,
+        'Firefox extension post-install tab did not appear',
+    );
+
+    // Open a dedicated extension tab for the harness, since the background
+    // redirects the post-install tab to an external page during install flow.
+    await openFirefoxExtensionTab(
+        driver,
+        popupUrl,
+        FIREFOX_PAGE_LOAD_TIMEOUT_MS,
+        'Firefox popup page load timed out during app init',
+    );
 
     await driver.wait(async () => {
-        const result = await driver.executeAsyncScript(
-            'var cb = arguments[arguments.length - 1];'
-            + 'browser.runtime.sendMessage('
-            + `{ handlerName: "${APP_MESSAGE_HANDLER_NAME}", type: "${MessageType.GetIsAppInitialized}" })`
-            + '.then(function(r) { cb(r === true); })'
-            + '.catch(function() { cb(false); });',
-        );
-        return result === true;
+        try {
+            const result = await driver.executeAsyncScript(
+                'var cb = arguments[arguments.length - 1];'
+                + 'if (typeof browser === "undefined") { cb(false); return; }'
+                + 'browser.runtime.sendMessage('
+                + `{ handlerName: "${APP_MESSAGE_HANDLER_NAME}", type: "${MessageType.GetIsAppInitialized}" })`
+                + '.then(function(r) { cb(r === true); })'
+                + '.catch(function() { cb(false); });',
+            );
+            return result === true;
+        } catch {
+            // The install flow may redirect or close tabs around this moment;
+            // retry until the extension context responds.
+            return false;
+        }
     }, FIREFOX_APP_INIT_TIMEOUT_MS, 'Firefox extension app initialization timed out');
 };
 
@@ -339,6 +577,16 @@ export const launchFirefoxE2ESession = async (
         options.addArguments('-headless');
     }
 
+    // Allows testing against a specific Firefox build instead of the pinned
+    // version resolved by selenium-manager.
+    if (process.env.E2E_FIREFOX_BIN) {
+        options.setBinary(process.env.E2E_FIREFOX_BIN);
+    } else {
+        // Pin the browser version so selenium-manager downloads a known-good
+        // Firefox instead of the latest stable release.
+        options.setBrowserVersion(FIREFOX_PINNED_VERSION);
+    }
+
     options.enableBidi();
 
     const driver = await new Builder()
@@ -349,7 +597,7 @@ export const launchFirefoxE2ESession = async (
     await driver.manage().setTimeouts({
         implicit: 0,
         pageLoad: FIREFOX_PAGE_LOAD_TIMEOUT_MS,
-        script: 10_000,
+        script: 30_000,
     });
 
     await driver.installAddon(extensionPath, true);
@@ -430,12 +678,26 @@ export const openFirefoxE2ESurface = async (
 
     const surfaceUrl = createFirefoxExtensionUrl(surface.path);
 
+    // Firefox 153+ blocks browser-level navigation (driver.get, BiDi
+    // browsingContext.navigate) to moz-extension:// URLs, so re-acquire an
+    // extension-origin tab and navigate via same-origin window.location.href.
+    // navigateToExtensionUrlAndWait already waits for document.readyState to
+    // reach 'interactive' or 'complete'.
+    await switchToFirefoxExtensionContext(
+        session.driver,
+        FIREFOX_PAGE_LOAD_TIMEOUT_MS,
+        `Firefox extension context not found for surface: ${surface.id}`,
+    );
     await withTimeout(
-        session.driver.get(surfaceUrl),
+        navigateToExtensionUrlAndWait(
+            session.driver,
+            surfaceUrl,
+            FIREFOX_PAGE_LOAD_TIMEOUT_MS,
+            `Firefox page load timed out: ${surface.id}`,
+        ),
         FIREFOX_PAGE_LOAD_TIMEOUT_MS,
         `Firefox page load timed out: ${surface.id}`,
     );
-    await waitForFirefoxPageReadyState(session.driver, surface.waitUntil, surface.id);
 
     // Update the foreground BiDi browsing context so the error listener can
     // distinguish between background errors and foreground page errors.
@@ -487,11 +749,22 @@ export const openFirefoxE2ESurface = async (
             await session.driver.actions().sendKeys(text).perform();
         },
         async evaluate<T>(fn: (arg: unknown) => Promise<T> | T, arg?: unknown): Promise<T> {
-            // Selenium's executeScript requires a string, so we serialize the
-            // function and pass the argument via the arguments array.
+            // Selenium's executeScript does not await Promises returned by the
+            // evaluated function in geckodriver. Use executeAsyncScript with a
+            // callback wrapper so async functions (e.g. saveUserRules) complete
+            // before evaluate returns. The function is serialized to a string
+            // and the argument is passed via the arguments array.
             const fnStr = fn.toString();
-            const script = `return (${fnStr})(arguments[0]);`;
-            return session.driver.executeScript(script, arg) as Promise<T>;
+            const script = [
+                'var cb = arguments[arguments.length - 1];',
+                `var result = (${fnStr})(arguments[0]);`,
+                'if (result && typeof result.then === "function") {',
+                '  result.then(function(r) { cb(r); }).catch(function(e) { cb(); });',
+                '} else {',
+                '  cb(result);',
+                '}',
+            ].join('\n');
+            return session.driver.executeAsyncScript(script, arg) as Promise<T>;
         },
         async getTextContents(selector: string): Promise<string[]> {
             const elements = await session.driver.findElements({ css: selector });
@@ -560,34 +833,6 @@ const collectPageErrors = async (
         url: err.url,
         timestamp: new Date().toISOString(),
     }));
-};
-
-/**
- * Waits until Firefox page reaches requested document readiness state.
- *
- * @param driver Selenium WebDriver instance.
- * @param waitUntil Shared surface readiness state.
- * @param surfaceId E2E surface id.
- *
- * @returns Nothing.
- */
-const waitForFirefoxPageReadyState = async (
-    driver: firefox.Driver,
-    waitUntil: E2ESurface['waitUntil'],
-    surfaceId: E2ESurfaceId,
-): Promise<void> => {
-    const expectedStates = waitUntil === 'domcontentloaded'
-        ? ['interactive', 'complete']
-        : ['complete'];
-
-    await driver.wait(
-        async () => {
-            const readyState = await driver.executeScript('return document.readyState;') as string;
-            return expectedStates.includes(readyState);
-        },
-        FIREFOX_PAGE_LOAD_TIMEOUT_MS,
-        `Firefox page readiness timed out: ${surfaceId}`,
-    );
 };
 
 /**
