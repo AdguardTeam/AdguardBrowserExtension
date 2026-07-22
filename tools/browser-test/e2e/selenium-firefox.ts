@@ -80,106 +80,16 @@ const FIREFOX_FILTERING_LOG_TAB_URL = 'about:newtab';
  * Used by the BiDi error listener to distinguish background-page errors
  * from foreground-page console entries.
  *
- * Note: this must be a BiDi browsing-context id (resolved from the BiDi
- * browsing-context tree), NOT a Selenium window handle returned by
- * `driver.getWindowHandle()`. In Firefox these are different id spaces, so
- * comparing a window handle against `entry.source.browsingContextId` never
- * matches and foreground errors leak into the background error collector.
+ * WebDriver window handles and top-level BiDi browsing-context ids share the
+ * same value in Firefox (verified empirically: BiDi commands accept a window
+ * handle as `context`), so the E2E tab window handle is retained for this
+ * comparison.
  */
 type BrowsingContextRef = {
     /**
      * Current BiDi browsing-context id, or null if not yet captured.
      */
     current: string | null;
-};
-
-/**
- * Raw BiDi `browsingContext.getTree` response context entry.
- */
-type BidiContextInfo = {
-    /**
-     * BiDi browsing-context id.
-     */
-    context: string;
-
-    /**
-     * Document URL loaded in the browsing context.
-     */
-    url: string;
-
-    /**
-     * Child browsing contexts.
-     */
-    children?: BidiContextInfo[];
-
-    /**
-     * Parent browsing context id, if any.
-     */
-    parent?: string | null;
-};
-
-/**
- * Resolves the BiDi browsing-context id for the page currently loaded in the
- * foreground tab by matching its URL against the BiDi browsing-context tree.
- *
- * Selenium's `getWindowHandle()` returns a WebDriver window handle which is NOT
- * the same value as a BiDi browsing-context id in Firefox. Comparing the two
- * never matches, so foreground console errors were incorrectly collected as
- * background errors. This helper queries the BiDi tree and returns the real
- * context id for the given URL.
- *
- * @param driver Selenium WebDriver instance.
- * @param expectedUrl URL (prefix) of the foreground page to resolve.
- *
- * @returns BiDi browsing-context id, or null if not found.
- */
-const getFirefoxBidiContextId = async (
-    driver: WebDriver,
-    expectedUrl: string,
-): Promise<string | null> => {
-    try {
-        const bidi = await driver.getBidi();
-        const result = await bidi.send({
-            method: 'browsingContext.getTree',
-            params: {},
-        }) as { result?: { contexts?: BidiContextInfo[] } };
-
-        const contexts = result?.result?.contexts;
-        if (!Array.isArray(contexts)) {
-            return null;
-        }
-
-        // Search recursively through the browsing-context tree.
-        // Firefox may nest tab contexts under a top-level window context,
-        // so a flat top-level search is not sufficient.
-
-        /**
-         * Recursively searches the BiDi browsing-context tree for a context
-         * whose URL starts with the expected prefix.
-         *
-         * @param nodes Current level of browsing contexts to search.
-         *
-         * @returns Matching BiDi browsing-context id, or null if not found.
-         */
-        const findContext = (nodes: BidiContextInfo[]): string | null => {
-            for (const ctx of nodes) {
-                if (typeof ctx?.url === 'string' && ctx.url.startsWith(expectedUrl)) {
-                    return ctx.context;
-                }
-                if (Array.isArray(ctx?.children)) {
-                    const found = findContext(ctx.children);
-                    if (found !== null) {
-                        return found;
-                    }
-                }
-            }
-            return null;
-        };
-
-        return findContext(contexts);
-    } catch {
-        return null;
-    }
 };
 
 /**
@@ -318,68 +228,6 @@ const closeFirefoxInstallFlowTabs = async (driver: firefox.Driver): Promise<void
 };
 
 /**
- * Switches the WebDriver session to the first tab whose URL satisfies the
- * given predicate.
- *
- * @param driver Selenium WebDriver instance.
- * @param matches Predicate applied to each tab URL.
- *
- * @returns True if a matching tab was found and switched to, false otherwise.
- */
-const trySwitchToFirefoxTab = async (
-    driver: firefox.Driver,
-    matches: (url: string) => boolean,
-): Promise<boolean> => {
-    try {
-        const handles = await driver.getAllWindowHandles();
-
-        // eslint-disable-next-line no-restricted-syntax
-        for (const handle of handles) {
-            // eslint-disable-next-line no-await-in-loop
-            await driver.switchTo().window(handle);
-            // eslint-disable-next-line no-await-in-loop
-            const url = await driver.getCurrentUrl();
-            if (matches(url)) {
-                return true;
-            }
-        }
-        return false;
-    } catch {
-        return false;
-    }
-};
-
-/**
- * Waits until any tab in the browser is showing an extension page and switches
- * the WebDriver session to it.
- *
- * Starting with Firefox 153, navigation to `moz-extension://` URLs is blocked
- * for browser-level commands: both the geckodriver "Navigate To" command
- * (`driver.get`) and the BiDi navigate command (`browsingContext.navigate`)
- * fail with "Navigation to URL is not allowed in this context". The only way
- * to reach an extension page is from within an extension-origin context, so
- * the harness bootstraps from the post-install tab that the extension opens
- * on first run.
- *
- * @param driver Selenium WebDriver instance.
- * @param timeoutMs Maximum time to wait for an extension tab to appear.
- * @param timeoutMessage Error message on timeout.
- *
- * @returns Nothing.
- */
-const switchToFirefoxExtensionContext = async (
-    driver: firefox.Driver,
-    timeoutMs: number,
-    timeoutMessage: string,
-): Promise<void> => {
-    const extensionOrigin = `${E2EExtensionScheme.MozExtension}://${FIREFOX_EXTENSION_HOST}/`;
-
-    await driver.wait(async () => {
-        return trySwitchToFirefoxTab(driver, (url) => url.startsWith(extensionOrigin));
-    }, timeoutMs, timeoutMessage);
-};
-
-/**
  * Waits until the document in the current WebDriver context reaches the
  * `interactive` or `complete` ready-state.
  *
@@ -409,73 +257,19 @@ const waitForFirefoxDocumentReady = async (
 };
 
 /**
- * Opens the given extension URL in a new tab via `browser.tabs.create` and
- * switches the WebDriver session to it.
+ * Navigates the E2E tab to the given extension URL and waits for the document
+ * to reach the `interactive` or `complete` ready-state.
  *
- * A dedicated tab is used instead of reusing the post-install tab, because the
- * background updates the post-install tab to the external thank-you page
- * during the install flow and would race with the harness navigation. Each
- * attempt re-acquires an extension-origin context first, so the whole step is
- * resilient to that redirect happening mid-attempt.
- *
- * @param driver Selenium WebDriver instance.
- * @param url Target `moz-extension://` URL to open.
- * @param timeoutMs Maximum time to wait for the tab to open and load.
- * @param timeoutMessage Error message on timeout.
- *
- * @returns Nothing.
- */
-const openFirefoxExtensionTab = async (
-    driver: firefox.Driver,
-    url: string,
-    timeoutMs: number,
-    timeoutMessage: string,
-): Promise<void> => {
-    const extensionOrigin = `${E2EExtensionScheme.MozExtension}://${FIREFOX_EXTENSION_HOST}/`;
-
-    await driver.wait(async () => {
-        try {
-            // If the target tab already exists (e.g. created on a previous
-            // attempt), just switch to it.
-            if (await trySwitchToFirefoxTab(driver, (currentUrl) => currentUrl === url)) {
-                return true;
-            }
-
-            // Re-acquire an extension-origin context where `browser.tabs` is
-            // available, then open the target tab from it.
-            if (!(await trySwitchToFirefoxTab(driver, (currentUrl) => currentUrl.startsWith(extensionOrigin)))) {
-                return false;
-            }
-
-            await driver.executeAsyncScript(
-                'var cb = arguments[arguments.length - 1];'
-                + 'if (typeof browser === "undefined") { cb(false); return; }'
-                + `browser.tabs.create({ url: "${url}" })`
-                + '.then(function() { cb(true); })'
-                + '.catch(function() { cb(false); });',
-            );
-
-            return await trySwitchToFirefoxTab(driver, (currentUrl) => currentUrl === url);
-        } catch {
-            return false;
-        }
-    }, timeoutMs, timeoutMessage);
-
-    await waitForFirefoxDocumentReady(driver, timeoutMs, timeoutMessage);
-};
-
-/**
- * Navigates the current tab to the given extension URL and waits for the
- * document to reach the `interactive` or `complete` ready-state.
- *
- * Must be called while the current WebDriver context is an extension page:
- * same-origin `window.location.href` assignment is the only navigation path
- * to `moz-extension://` URLs that Firefox 153+ still allows, since
- * browser-level commands (the geckodriver "Navigate To" command via
- * `driver.get` and the BiDi navigate command via `browsingContext.navigate`)
- * fail with "Navigation to URL is not allowed in this context".
+ * Firefox blocks browser-level WebDriver navigation to `moz-extension://`
+ * URLs by default: both the geckodriver "Navigate To" command (`driver.get`)
+ * and the BiDi navigate command (`browsingContext.navigate`) fail with
+ * "Navigation to URL is not allowed in this context". The harness launches
+ * geckodriver with the `--allow-system-access` flag (see
+ * `launchFirefoxE2ESession`), which grants the session system access and
+ * re-enables navigation to extension URLs.
  *
  * @param driver Selenium WebDriver instance.
+ * @param windowHandle Window handle of the E2E tab to navigate.
  * @param url Target `moz-extension://` URL to navigate to.
  * @param timeoutMs Maximum time to wait for the page to reach the expected state.
  * @param timeoutMessage Error message on timeout.
@@ -484,52 +278,43 @@ const openFirefoxExtensionTab = async (
  */
 const navigateToExtensionUrlAndWait = async (
     driver: firefox.Driver,
+    windowHandle: string,
     url: string,
     timeoutMs: number,
     timeoutMessage: string,
 ): Promise<void> => {
-    await driver.executeScript(`window.location.href = ${JSON.stringify(url)};`);
-
-    // Wait for the navigation to land on the target URL.
-    await driver.wait(async () => {
-        try {
-            const currentUrl = await driver.getCurrentUrl();
-            return currentUrl === url;
-        } catch {
-            return false;
-        }
-    }, timeoutMs, timeoutMessage);
+    // The first-install flow opens and may activate onboarding tabs, so make
+    // sure the E2E tab is the current WebDriver context before navigating.
+    await driver.switchTo().window(windowHandle);
+    await driver.get(url);
 
     await waitForFirefoxDocumentReady(driver, timeoutMs, timeoutMessage);
 };
 
 /**
  * Waits until the Firefox extension background has fully initialized.
- * Bootstraps into the extension origin via the post-install tab, opens a
- * dedicated popup tab, sends a `GetIsAppInitialized` message, and waits
- * until the background replies with `true`.
+ * Navigates the E2E tab to the popup page, sends a `GetIsAppInitialized`
+ * message, and waits until the background replies with `true`.
  *
  * @param driver Selenium WebDriver instance.
+ * @param windowHandle Window handle of the E2E tab.
  *
  * @returns Nothing.
  */
-const waitForFirefoxAppInitialized = async (driver: firefox.Driver): Promise<void> => {
+const waitForFirefoxAppInitialized = async (
+    driver: firefox.Driver,
+    windowHandle: string,
+): Promise<void> => {
     const popupUrl = createFirefoxExtensionUrl('/pages/popup.html');
 
-    // Wait for the post-install tab the extension opens on first run: it is
-    // the only reachable extension-origin context (Firefox 153+ blocks all
-    // browser-level navigation to moz-extension:// URLs).
-    await switchToFirefoxExtensionContext(
-        driver,
-        FIREFOX_APP_INIT_TIMEOUT_MS,
-        'Firefox extension post-install tab did not appear',
-    );
-
-    // Open a dedicated extension tab for the harness, since the background
-    // redirects the post-install tab to an external page during install flow.
-    await openFirefoxExtensionTab(
-        driver,
-        popupUrl,
+    await withTimeout(
+        navigateToExtensionUrlAndWait(
+            driver,
+            windowHandle,
+            popupUrl,
+            FIREFOX_PAGE_LOAD_TIMEOUT_MS,
+            'Firefox popup page load timed out during app init',
+        ),
         FIREFOX_PAGE_LOAD_TIMEOUT_MS,
         'Firefox popup page load timed out during app init',
     );
@@ -581,17 +366,28 @@ export const launchFirefoxE2ESession = async (
     // version resolved by selenium-manager.
     if (process.env.E2E_FIREFOX_BIN) {
         options.setBinary(process.env.E2E_FIREFOX_BIN);
-    } else {
+    } else if (process.platform === 'linux') {
         // Pin the browser version so selenium-manager downloads a known-good
-        // Firefox instead of the latest stable release.
+        // Firefox instead of the latest stable release (Firefox 153 broke the
+        // previous navigation approach without any code changes). Linux (CI)
+        // only: selenium-manager fails to extract recent Firefox DMGs on
+        // macOS ("cpio archive error"), so macOS uses the system Firefox or
+        // the `E2E_FIREFOX_BIN` override.
         options.setBrowserVersion(FIREFOX_PINNED_VERSION);
     }
 
     options.enableBidi();
 
+    // Firefox blocks WebDriver navigation to privileged pages such as
+    // moz-extension:// URLs unless geckodriver grants the session system
+    // access. This geckodriver instance is local to the E2E test process.
+    const service = new firefox.ServiceBuilder()
+        .addArguments('--allow-system-access');
+
     const driver = await new Builder()
         .forBrowser('firefox')
         .setFirefoxOptions(options)
+        .setFirefoxService(service)
         .build() as firefox.Driver;
 
     await driver.manage().setTimeouts({
@@ -600,22 +396,20 @@ export const launchFirefoxE2ESession = async (
         script: 30_000,
     });
 
+    const initialWindowHandle = await driver.getWindowHandle();
+
     await driver.installAddon(extensionPath, true);
-    await waitForFirefoxAppInitialized(driver);
+    await waitForFirefoxAppInitialized(driver, initialWindowHandle);
     await closeFirefoxInstallFlowTabs(driver);
 
     const backgroundErrors = new E2EErrorCollector();
-    const foregroundContext: BrowsingContextRef = { current: null };
+
+    // Window handles double as top-level BiDi browsing-context ids, so the
+    // E2E tab handle lets the error listener tell foreground errors apart
+    // from background ones.
+    const foregroundContext: BrowsingContextRef = { current: initialWindowHandle };
 
     await bindFirefoxBackgroundErrorListeners(driver, backgroundErrors, entry.id, foregroundContext);
-
-    // Capture the initial foreground BiDi browsing context (the popup page opened during app init).
-    // Selenium's window handle is NOT a BiDi browsing-context id in Firefox, so
-    // resolve the real context id from the BiDi tree by matching the popup URL.
-    foregroundContext.current = await getFirefoxBidiContextId(
-        driver,
-        createFirefoxExtensionUrl('/pages/popup.html'),
-    );
 
     return {
         driver,
@@ -677,20 +471,21 @@ export const openFirefoxE2ESurface = async (
     const backgroundCursor = session.backgroundErrors.getCursor();
 
     const surfaceUrl = createFirefoxExtensionUrl(surface.path);
+    const windowHandle = session.foregroundContext.current;
 
-    // Firefox 153+ blocks browser-level navigation (driver.get, BiDi
-    // browsingContext.navigate) to moz-extension:// URLs, so re-acquire an
-    // extension-origin tab and navigate via same-origin window.location.href.
-    // navigateToExtensionUrlAndWait already waits for document.readyState to
-    // reach 'interactive' or 'complete'.
-    await switchToFirefoxExtensionContext(
-        session.driver,
-        FIREFOX_PAGE_LOAD_TIMEOUT_MS,
-        `Firefox extension context not found for surface: ${surface.id}`,
-    );
+    if (!windowHandle) {
+        throw new Error('Firefox foreground browsing context not found');
+    }
+
+    // Navigation to moz-extension:// URLs works through the classic
+    // "Navigate To" command because geckodriver runs with system access
+    // (see launchFirefoxE2ESession). navigateToExtensionUrlAndWait switches
+    // back to the E2E tab and waits for document.readyState to reach
+    // 'interactive' or 'complete'.
     await withTimeout(
         navigateToExtensionUrlAndWait(
             session.driver,
+            windowHandle,
             surfaceUrl,
             FIREFOX_PAGE_LOAD_TIMEOUT_MS,
             `Firefox page load timed out: ${surface.id}`,
@@ -698,13 +493,6 @@ export const openFirefoxE2ESurface = async (
         FIREFOX_PAGE_LOAD_TIMEOUT_MS,
         `Firefox page load timed out: ${surface.id}`,
     );
-
-    // Update the foreground BiDi browsing context so the error listener can
-    // distinguish between background errors and foreground page errors.
-    // Selenium's window handle is NOT a BiDi browsing-context id in Firefox,
-    // so resolve the real context id from the BiDi tree by matching the URL.
-    // Resolved before `createFirefoxE2ETab` mutates the filtering-log URL hash.
-    session.foregroundContext.current = await getFirefoxBidiContextId(session.driver, surfaceUrl);
 
     if (surface.id === E2ESurfaceId.FilteringLog) {
         await createFirefoxE2ETab(session.driver);
