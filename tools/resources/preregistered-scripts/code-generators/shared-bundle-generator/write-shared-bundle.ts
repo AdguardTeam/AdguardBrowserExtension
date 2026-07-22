@@ -33,7 +33,7 @@ import { compileSharedScriptletsBundle } from './shared-bundle-generator';
  *
  * @param scriptletNames Set of unique scriptlet names used across all domains.
  * @param outputDir Directory to write the shared bundle file into.
- * @param coordinationKey Random per-build `window` property name,
+ * @param coordinationKey Random per-build coordination key (bare identifier),
  * shared with the per-hash files and the cleanup file.
  *
  * @returns Promise that resolves when the file has been written (or immediately

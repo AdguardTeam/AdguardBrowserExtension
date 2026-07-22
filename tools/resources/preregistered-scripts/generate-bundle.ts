@@ -47,11 +47,11 @@ import {
  * 1. `scriptlets-bundle.js` — shared bundle with all scriptlet function
  *    definitions and the coordination-key runner (see `coordination-key.ts`).
  * 2. `{hash}.js` — one file per unique rule (scriptlet invocation or JS rule).
- *    Scriptlets: contains `window[coordinationKey].r(name, source, args, hash)`.
+ *    Scriptlets: contains `<coordinationKey>.r(name, source, args, hash)`.
  *    JS rules: contains the rule body wrapped in a dedup guard.
- * 3. `cleanup.js` — deletes the coordination property before any page script
- *    can run. Always registered as the last entry in a domain's `js` array
- *    (see `PreregisteredScriptsService.buildDomainScripts`).
+ * 3. `cleanup.js` — reassigns the coordination binding to `undefined` before
+ *    any page script can run. Always registered as the last entry in a
+ *    domain's `js` array (see `PreregisteredScriptsService.buildDomainScripts`).
  * 4. `domains.js` — ES module exporting `preregisteredDomains` (string[])
  *    of domains that have at least one blocking rule.
  *
