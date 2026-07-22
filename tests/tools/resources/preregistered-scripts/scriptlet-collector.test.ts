@@ -162,6 +162,24 @@ describe('isRuleTargetsDomain', () => {
         expect(isRuleTargetsDomain(rule, 'youtube.com')).toBe(false);
         expect(isRuleTargetsDomain(rule, 'example.com')).toBe(true);
     });
+
+    it('returns true for a negative-only domain list when the target domain is not restricted', () => {
+        // Applies everywhere EXCEPT example.com/foo.com — including youtube.com.
+        const rule = parseRule('~example.com,~foo.com##+js(set-constant, foo, bar)') as ScriptletInjectionRule;
+        expect(isRuleTargetsDomain(rule, 'youtube.com')).toBe(true);
+    });
+
+    it('returns false for a negative-only domain list when the target domain itself is restricted', () => {
+        const rule = parseRule('~youtube.com,~foo.com##+js(set-constant, foo, bar)') as ScriptletInjectionRule;
+        expect(isRuleTargetsDomain(rule, 'youtube.com')).toBe(false);
+    });
+
+    it('returns false for a negative-only domain list when a subdomain of the target is restricted', () => {
+        const rule = parseRule('~m.youtube.com##+js(set-constant, foo, bar)') as ScriptletInjectionRule;
+        expect(isRuleTargetsDomain(rule, 'm.youtube.com')).toBe(false);
+        // The apex is unaffected — only the excluded subdomain is restricted.
+        expect(isRuleTargetsDomain(rule, 'youtube.com')).toBe(true);
+    });
 });
 
 describe('extractScriptletNameAndArgs', () => {
@@ -333,5 +351,29 @@ describe('ScriptletCollector.collect', () => {
 
         expect(rules.size).toBe(2);
         expect(domains.sort()).toEqual(['m.youtube.com', 'youtube.com']);
+    });
+
+    it('collects a rule with a negative-only domain list that does not restrict the preregistered domain', async () => {
+        setupRulesets(['~example.com##+js(set-constant, foo, bar)']);
+
+        const collector = new ScriptletCollector('/fake/declarative');
+        const { rules, domains } = await collector.collect();
+
+        // The rule applies everywhere except example.com, so it targets
+        // youtube.com even though youtube.com is never explicitly mentioned.
+        expect(rules.size).toBe(1);
+        expect(domains).toEqual(['youtube.com']);
+    });
+
+    it('excludes a rule with a negative-only domain list that restricts the preregistered domain', async () => {
+        setupRulesets(['~youtube.com##+js(set-constant, foo, bar)']);
+
+        const collector = new ScriptletCollector('/fake/declarative');
+        const { rules, domains } = await collector.collect();
+
+        expect(rules.size).toBe(0);
+        // youtube.com is still recorded (as the literal excluded domain), so
+        // the runtime can query it and populate `excludeMatches` correctly.
+        expect(domains).toEqual(['youtube.com']);
     });
 });

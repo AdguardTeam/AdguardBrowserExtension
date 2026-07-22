@@ -30,6 +30,7 @@ import {
 } from '../../constants';
 
 import { ScriptletCollector } from './scriptlet-collector';
+import { assertHashCompleteness } from './assert-hash-completeness';
 import {
     writeSharedBundle,
     writePerHashFiles,
@@ -69,16 +70,20 @@ export const generatePreregisteredDomainBundles = async (
         const collector = new ScriptletCollector(declarativeFolder);
         const { rules, scriptletNames, domains } = await collector.collect();
 
-        // 2. Build and write the shared scriptlets bundle.
+        // 2. Fail fast if the real engine would match a rule at runtime that
+        // wasn't collected.
+        await assertHashCompleteness(declarativeFolder, rules);
+
+        // 3. Build and write the shared scriptlets bundle.
         await writeSharedBundle(scriptletNames, tempDir);
 
-        // 3. Write per-hash files (one per unique rule).
+        // 4. Write per-hash files (one per unique rule).
         await writePerHashFiles(rules, tempDir);
 
-        // 4. Write the domains list.
+        // 5. Write the domains list.
         await writeDomainsList(domains, tempDir);
 
-        // 5. Replace the old output with the newly generated one.
+        // 6. Replace the old output with the newly generated one.
         await fs.rm(outputDir, { recursive: true, force: true });
         await fs.rename(tempDir, outputDir);
     } catch (error) {

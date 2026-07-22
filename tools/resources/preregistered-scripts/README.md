@@ -13,9 +13,10 @@ flowchart TD
     GEN -->|1 collect| SC[scriptlet-collector.ts]
     SC -->|AST predicates| AG[agtree / dnr-rulesets]
     SC -->|hash rules| HASH[hasher.ts]
-    GEN -->|2 shared bundle| SB[shared-bundle-generator]
-    GEN -->|3 per-hash files| PH[per-hash-generator]
-    GEN -->|4 domains list| DL[domains-list.ts]
+    GEN -->|2 completeness check| AHC[assert-hash-completeness.ts]
+    GEN -->|3 shared bundle| SB[shared-bundle-generator]
+    GEN -->|4 per-hash files| PH[per-hash-generator]
+    GEN -->|5 domains list| DL[domains-list.ts]
     RT[PreregisteredScriptsService] -->|same hasher.ts| HASH
     RT --> CP[chrome.scripting]
     PH --> CP
@@ -32,20 +33,32 @@ hashes.
 
 ## Pipeline
 
-`generate-bundle.ts` runs 4 steps per MV3 browser target:
+`generate-bundle.ts` runs the following steps per MV3 browser target:
 
 | Step | Function | Purpose |
 |------|----------|---------|
 | 1. Collect | `ScriptletCollector.collect()` (`scriptlet-collector.ts`) | Walk all DNR rulesets, extract JS/scriptlet rules targeting preregistered domains, dedup by hash |
-| 2. Shared bundle | `writeSharedBundle` (`code-generators/shared-bundle-generator/`) | Compile `scriptlets-bundle.js` — every unique scriptlet function used, deduplicated |
-| 3. Per-hash files | `writePerHashFiles` (`code-generators/per-hash-generator/`) | Compile one `{hash}.js` per unique rule (scriptlet invocation or JS rule body) |
-| 4. Domains list | `writeDomainsList` (`code-generators/domains-list.ts`) | Write `domains.js` — the list of domains that have at least one collected rule |
+| 2. Completeness check | `assertHashCompleteness()` (`assert-hash-completeness.ts`) | Independently re-derive, using the real `@adguard/tsurlfilter` `Engine`, which hashes are reachable per domain, and fail the build if any of them wasn't collected in step 1 |
+| 3. Shared bundle | `writeSharedBundle` (`code-generators/shared-bundle-generator/`) | Compile `scriptlets-bundle.js` — every unique scriptlet function used, deduplicated |
+| 4. Per-hash files | `writePerHashFiles` (`code-generators/per-hash-generator/`) | Compile one `{hash}.js` per unique rule (scriptlet invocation or JS rule body) |
+| 5. Domains list | `writeDomainsList` (`code-generators/domains-list.ts`) | Write `domains.js` — the list of domains that have at least one collected rule |
+| 6. Atomic swap | `generatePreregisteredDomainBundles` (`generate-bundle.ts`) | Write everything to a temp dir, then `fs.rename` it over the old output dir, so a failure never leaves partially-written output in place |
 
 `ScriptletCollector` does **not** resolve filter enable/disable, allowlist, or
 user-rule state at build time — it only records which domains/rules exist in
 the local filters. Exceptions (`#@#`/`#@%#`) and all other engine-side
 resolution are handled at runtime by `PreregisteredScriptsService`, which
 queries the live engine (`getCosmeticResult`) per domain.
+
+`isRuleTargetsDomain` (used by step 1) mirrors the engine's own domain-list
+semantics: a domain list made up **only** of exception entries (e.g.
+`~a.com,~b.com##...`) applies globally except on the listed domains, exactly
+like a fully generic rule minus the exclusions — it is *not* treated as
+"matches nothing". Step 2 exists specifically to catch future regressions
+of this kind before they reach production: if the build-time predicate ever
+diverges from the engine's real matching again, the build fails instead of
+silently shipping a domain registration that references a missing
+`{hash}.js` file (which Chrome rejects at runtime).
 
 ## Generated bundle structure
 
@@ -77,8 +90,9 @@ export const preregisteredDomains = ["youtube.com", "m.youtube.com", ...];
 |------|---------|
 | `config.ts` | `preregisteredDomains` — domains to generate bundles for. Add a domain here to register it. |
 | `constants.ts` | `DOMAINS_LIST_FILENAME` and `minifyJs` (shared Terser options) |
-| `generate-bundle.ts` | Orchestrator — runs collect → shared bundle → per-hash files → domains list |
+| `generate-bundle.ts` | Orchestrator — runs collect → completeness check → shared bundle → per-hash files → domains list |
 | `scriptlet-collector.ts` | AST predicates (`isGenericCosmeticRule`, `isScriptletRule`, `isRuleTargetsDomain`, `extractScriptletNameAndArgs`) + the `ScriptletCollector` class |
+| `assert-hash-completeness.ts` | `assertHashCompleteness` — cross-validates collected hashes against a real `@adguard/tsurlfilter` `Engine` instance |
 | `code-generators/shared-bundle-generator/` | `shared-bundle-template.js` (runtime template) + `shared-bundle-generator.ts` (compiler) |
 | `code-generators/per-hash-generator/` | `js-rule-guard-template.js` (runtime template) + `write-per-hash-files.ts` (compiler) |
 | `code-generators/domains-list.ts` | `writeDomainsList` |

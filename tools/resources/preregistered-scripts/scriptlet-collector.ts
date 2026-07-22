@@ -112,22 +112,21 @@ export const isRuleTargetsDomain = (
         return true;
     }
 
-    // `isGenericCosmeticRule` already covers a missing/empty domain list for
-    // well-formed rules. `domains` is typed as always present on the AST, but
-    // guard explicitly (rather than with a non-null assertion) since malformed
-    // input parsed with `tolerant: true` could theoretically produce a node
-    // without it.
     const { domains } = ruleNode;
     if (!domains) {
         return false;
     }
 
-    return domains.children.some((domainNode) => {
-        if (domainNode.exception) {
-            return false;
-        }
-        return isDomainOrSubdomain(domainNode.value, preregisteredDomain);
-    });
+    const permitted = domains.children.filter((domainNode) => !domainNode.exception);
+    const restricted = domains.children.filter((domainNode) => domainNode.exception);
+
+    if (permitted.length === 0) {
+        return !restricted.some(
+            (domainNode) => isDomainOrSubdomain(preregisteredDomain, domainNode.value),
+        );
+    }
+
+    return permitted.some((domainNode) => isDomainOrSubdomain(domainNode.value, preregisteredDomain));
 };
 
 /**
@@ -392,6 +391,10 @@ export class ScriptletCollector {
      * wildcard registration.
      *
      * For generic rules: adds all preregistered domains.
+     * For negative-only domain lists, which apply
+     * globally except the listed domains): adds every preregistered domain
+     * that isn't restricted, plus the restricted domains themselves (via the
+     * loop below) so the runtime can register the exclusion correctly.
      * For domain-specific rules: adds each domain from the rule that is a
      * subdomain of (or equal to) a preregistered domain.
      *
@@ -405,7 +408,25 @@ export class ScriptletCollector {
             return;
         }
 
-        ruleNode.domains.children.forEach((domainNode) => {
+        const { domains } = ruleNode;
+        if (!domains) {
+            return;
+        }
+
+        const hasPermittedDomain = domains.children.some((domainNode) => !domainNode.exception);
+
+        if (!hasPermittedDomain) {
+            preregisteredDomains.forEach((preregisteredDomain) => {
+                const isRestricted = domains.children.some(
+                    (domainNode) => isDomainOrSubdomain(preregisteredDomain, domainNode.value),
+                );
+                if (!isRestricted) {
+                    this.domainsWithRules.add(preregisteredDomain);
+                }
+            });
+        }
+
+        domains.children.forEach((domainNode) => {
             const { value: domain } = domainNode;
             if (preregisteredDomains.some((d) => isDomainOrSubdomain(domain, d))) {
                 this.domainsWithRules.add(normalizeDomain(domain));
