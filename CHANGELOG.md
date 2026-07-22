@@ -55,6 +55,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `co.uk`, `com.au`) while still rejecting single-label TLDs [#3587].
 - The request for additional permissions is not asked when importing extension
   settings [#2754].
+- monkeytype.com fails to load — requests stuck "Pending" with AdGuard MV2 enabled [#3565].
 
 [#3537]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3537
 [#1486]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1486
@@ -67,6 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2524]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2524
 [#3525]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3525
 [#3558]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3558
+[#3565]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3565
 [#3587]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3587
 [tsurlfilter#111]: https://github.com/AdguardTeam/tsurlfilter/issues/111
 [tsurlfilter#167]: https://github.com/AdguardTeam/tsurlfilter/issues/167
