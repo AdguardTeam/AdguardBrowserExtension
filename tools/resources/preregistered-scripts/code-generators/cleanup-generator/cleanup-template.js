@@ -22,26 +22,27 @@
 /* eslint-disable */
 
 /**
- * Template for the idempotency guard wrapping each JS rule in a per-hash file.
+ * Template for `cleanup.js` — the last file loaded for a domain, after the
+ * shared bundle and every per-hash rule file (see `preregistered-scripts-service.ts`,
+ * which always appends this file to the end of the `js` array).
  *
  * ## Build-time
  *
- * `__KEY__` is replaced with the rule's SHA-256 hash.
- * `__CODE__` is replaced with the rule's source code.
  * `__PROP__` is replaced with `JSON.stringify(coordinationKey)` — the same
- * random `window` property name used by the shared bundle (see
- * `coordination-key.ts`).
+ * random `window` property name used by the shared bundle and per-hash files.
+ *
+ * ## Runtime (MAIN world, `document_start`)
+ *
+ * Deletes the coordination property so it never survives into the page's
+ * own script execution. Content scripts registered with `document_start`
+ * all run, in registration order, before the page's own scripts get a
+ * chance to run, so by the time page code executes, `window[__PROP__]` is
+ * already gone — page code can never observe or call it.
  */
-export const JS_RULE_GUARD_TEMPLATE = () => {
+export const CLEANUP_TEMPLATE = () => {
     // __BODY_START__
     try {
-        const ruleKey = __KEY__; /* replaced with JSON.stringify(ruleHash) */
-        const dedupSet = window[__PROP__].b;
-        if (dedupSet.has(ruleKey)) {
-            return;
-        }
-        dedupSet.add(ruleKey);
-        __CODE__; /* replaced with rule source code */
-    } catch (err) {}
+        delete window[__PROP__];
+    } catch (e) {}
     // __BODY_END__
 };

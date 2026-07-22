@@ -30,46 +30,55 @@
  * 1. Calls `.toString()` to extract the body.
  * 2. Replaces `__FUNCTIONS__` with all used scriptlet function sources.
  * 3. Replaces `__REGISTRY__` with `{"name": fnRef, ...}`.
- * 4. Wraps in `(function(){...})()` and minifies with terser.
+ * 4. Replaces `__PROP__` with `JSON.stringify(coordinationKey)` — a random,
+ *    per-build `window` property name (see `coordination-key.ts`).
+ * 5. Wraps in `(function(){...})()` and minifies with terser.
  *
  * ## Runtime (MAIN world, `document_start`)
  *
- * Loaded once per page (guard: `if (window._ag) return`).
+ * Loaded once per page (guard: `if (window[__PROP__]) return`).
  *
  * - Defines all scriptlet functions (registry maps name → function).
- * - Creates `window._ag = { r, b }` — the only public API.
- * - `_ag.r(name, source, args, key)` — deduplicates by `key`, sets
+ * - Defines `window[__PROP__] = { r, b }` as a non-enumerable property — the
+ *   only public API, and only public for the brief window before the
+ *   cleanup file (loaded last, see `code-generators/cleanup-generator/`)
+ *   deletes it, before any page script runs.
+ * - `.r(name, source, args, key)` — deduplicates by `key`, sets
  *   `source.domainName` from `document.location.hostname`, then executes
  *   the scriptlet function (no-op if not found). `source.verbose` stays
  *   baked in as `false` — `debugScriptlets` isn't available in MAIN world.
- * - `_ag.b` — `Set` of executed rule keys for dedup (shared with JS rule guards).
+ * - `.b` — `Set` of executed rule keys for dedup (shared with JS rule guards).
  */
 export const BUNDLE_TEMPLATE = () => {
     // __BODY_START__
-    if (window._ag) {
+    if (window[__PROP__]) {
         return;
     }
     let dedupSet = new Set();
     __FUNCTIONS__ /* replaced with minified scriptlet function sources */
     let functionRegistry = __REGISTRY__; /* replaced with {"name": fnRef, ...} */
 
-    window._ag = {
-        r: function agRun(scriptletName, source, args, ruleKey) {
-            try {
-                if (dedupSet.has(ruleKey)) {
-                    return;
+    Object.defineProperty(window, __PROP__, {
+        value: {
+            r: function agRun(scriptletName, source, args, ruleKey) {
+                try {
+                    if (dedupSet.has(ruleKey)) {
+                        return;
+                    }
+                    dedupSet.add(ruleKey);
+                    let fn = functionRegistry[scriptletName];
+                    if (fn) {
+                        source.domainName = document.location.hostname;
+                        fn.apply(null, [source, args]);
+                    }
+                } catch (e) {
+                    // Swallow — never break the page.
                 }
-                dedupSet.add(ruleKey);
-                let fn = functionRegistry[scriptletName];
-                if (fn) {
-                    source.domainName = document.location.hostname;
-                    fn.apply(null, [source, args]);
-                }
-            } catch (e) {
-                // Swallow — never break the page.
-            }
+            },
+            b: dedupSet,
         },
-        b: dedupSet,
-    };
+        configurable: true,
+        enumerable: false,
+    });
     // __BODY_END__
 };

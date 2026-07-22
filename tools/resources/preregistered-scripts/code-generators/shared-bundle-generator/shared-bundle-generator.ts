@@ -38,28 +38,34 @@ const BODY_START_MARKER = '// __BODY_START__';
 const BODY_END_MARKER = '// __BODY_END__';
 
 /**
- * Builds the shared bundle body by filling `__FUNCTIONS__` and `__REGISTRY__`
- * markers in {@link BUNDLE_TEMPLATE}.
+ * Builds the shared bundle body by filling `__FUNCTIONS__`, `__REGISTRY__`
+ * and `__PROP__` markers in {@link BUNDLE_TEMPLATE}.
  *
  * @param functions Compiled scriptlet function definitions (minified).
  * @param registryEntries Comma-separated `"name": fnName` entries.
+ * @param coordinationKey Random per-build `window` property name (see
+ * `coordination-key.ts`), shared with the per-hash files and the cleanup file.
  *
  * @returns Assembled bundle body.
  */
 const assembleTemplate = (
     functions: string[],
     registryEntries: string,
+    coordinationKey: string,
 ): string => {
     const source = BUNDLE_TEMPLATE.toString();
     const bodyStart = source.indexOf(BODY_START_MARKER) + BODY_START_MARKER.length;
     const bodyEnd = source.indexOf(BODY_END_MARKER);
 
+    const propLiteral = JSON.stringify(coordinationKey);
+
     const filled = source
         .slice(bodyStart, bodyEnd)
         .replace('__FUNCTIONS__', () => functions.join(NEWLINE_CHAR_UNIX))
-        .replace('__REGISTRY__', () => `{${registryEntries}}`);
+        .replace('__REGISTRY__', () => `{${registryEntries}}`)
+        .replace(/__PROP__/g, () => propLiteral);
 
-    assertNoTemplateSentinels(filled, ['__FUNCTIONS__', '__REGISTRY__']);
+    assertNoTemplateSentinels(filled, ['__FUNCTIONS__', '__REGISTRY__', '__PROP__']);
 
     return filled;
 };
@@ -68,15 +74,18 @@ const assembleTemplate = (
  * Compiles the shared scriptlets bundle (`scriptlets-bundle.js`).
  *
  * Loaded once per page. Contains deduplicated scriptlet function definitions
- * and the `window._ag` runner. Multiple loads are harmless — the IIFE is
- * guarded by `if (window._ag) return`.
+ * and the coordination-key runner. Multiple loads are harmless — the IIFE is
+ * guarded by `if (window[__PROP__]) return`.
  *
  * @param scriptletNames Set of unique scriptlet names used across all domains.
+ * @param coordinationKey Random per-build `window` property name (see
+ * `coordination-key.ts`), shared with the per-hash files and the cleanup file.
  *
  * @returns Compiled shared bundle string, or `null` if no scriptlets.
  */
 export const compileSharedScriptletsBundle = async (
     scriptletNames: Set<string>,
+    coordinationKey: string,
 ): Promise<string | null> => {
     const rawFunctions: string[] = [];
 
@@ -105,7 +114,7 @@ export const compileSharedScriptletsBundle = async (
         .filter((entry): entry is string => entry !== null)
         .join(',');
 
-    const filled = assembleTemplate(rawFunctions, registryEntries);
+    const filled = assembleTemplate(rawFunctions, registryEntries, coordinationKey);
     const source = `(function () {${NEWLINE_CHAR_UNIX}${filled.trim()}${NEWLINE_CHAR_UNIX}})();`;
 
     const minified = await minifyJs(source);

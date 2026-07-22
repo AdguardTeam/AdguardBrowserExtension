@@ -18,7 +18,23 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { writeSharedBundle } from './shared-bundle-generator';
-export { writePerHashFiles } from './per-hash-generator';
-export { writeDomainsList } from './domains-list';
-export { writeCleanupFile } from './cleanup-generator';
+import crypto from 'node:crypto';
+
+/**
+ * Number of random bytes used to build a coordination key. 8 bytes (16 hex
+ * chars) is more than enough to make the property name unguessable within a
+ * single build.
+ */
+const KEY_RANDOM_BYTES = 8;
+
+/**
+ * Generates a random `window` property name shared by the bundle, per-hash
+ * files, and the cleanup file within one build. Changes every build so pages
+ * can't hardcode it. Combined with the cleanup file deleting it before page
+ * scripts run, pages can't detect it.
+ *
+ * @returns A `window`-property-safe random string, e.g. `"__ag_3f9a1c2b8e4d5601"`.
+ */
+export const generateCoordinationKey = (): string => {
+    return `__ag_${crypto.randomBytes(KEY_RANDOM_BYTES).toString('hex')}`;
+};

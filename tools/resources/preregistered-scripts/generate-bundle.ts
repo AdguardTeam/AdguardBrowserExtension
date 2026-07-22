@@ -31,10 +31,12 @@ import {
 
 import { ScriptletCollector } from './scriptlet-collector';
 import { assertHashCompleteness } from './assert-hash-completeness';
+import { generateCoordinationKey } from './code-generators/coordination-key';
 import {
     writeSharedBundle,
     writePerHashFiles,
     writeDomainsList,
+    writeCleanupFile,
 } from './code-generators';
 
 /**
@@ -43,14 +45,17 @@ import {
  * Output files (in `filters/<browser>/preregistered-scripts/`):
  *
  * 1. `scriptlets-bundle.js` — shared bundle with all scriptlet function
- *    definitions and the `window._ag` runner.
+ *    definitions and the coordination-key runner (see `coordination-key.ts`).
  * 2. `{hash}.js` — one file per unique rule (scriptlet invocation or JS rule).
- *    Scriptlets: contains `_ag.r(name, source, args, hash)`.
+ *    Scriptlets: contains `window[coordinationKey].r(name, source, args, hash)`.
  *    JS rules: contains the rule body wrapped in a dedup guard.
- * 3. `domains.js` — ES module exporting `preregisteredDomains` (string[])
+ * 3. `cleanup.js` — deletes the coordination property before any page script
+ *    can run. Always registered as the last entry in a domain's `js` array
+ *    (see `PreregisteredScriptsService.buildDomainScripts`).
+ * 4. `domains.js` — ES module exporting `preregisteredDomains` (string[])
  *    of domains that have at least one blocking rule.
  *
- * @param browser Target MV3 browser identifier (e.g. `"chrome-mv3"`).
+ * @param browser Target MV3 browser identifier (e.g. `"chromium-mv3"`).
  *
  * @returns Promise that resolves when all files have been written.
  */
@@ -74,16 +79,24 @@ export const generatePreregisteredDomainBundles = async (
         // wasn't collected.
         await assertHashCompleteness(declarativeFolder, rules);
 
-        // 3. Build and write the shared scriptlets bundle.
-        await writeSharedBundle(scriptletNames, tempDir);
+        // 3. Random per-build coordination key, shared by the bundle below,
+        // the per-hash files, and the cleanup file.
+        const coordinationKey = generateCoordinationKey();
 
-        // 4. Write per-hash files (one per unique rule).
-        await writePerHashFiles(rules, tempDir);
+        // 4. Build and write the shared scriptlets bundle.
+        await writeSharedBundle(scriptletNames, tempDir, coordinationKey);
 
-        // 5. Write the domains list.
+        // 5. Write per-hash files (one per unique rule).
+        await writePerHashFiles(rules, tempDir, coordinationKey);
+
+        // 6. Write the cleanup file that deletes the coordination property
+        // before any page script can run.
+        await writeCleanupFile(coordinationKey, tempDir);
+
+        // 7. Write the domains list.
         await writeDomainsList(domains, tempDir);
 
-        // 6. Replace the old output with the newly generated one.
+        // 8. Replace the old output with the newly generated one.
         await fs.rm(outputDir, { recursive: true, force: true });
         await fs.rename(tempDir, outputDir);
     } catch (error) {

@@ -44,21 +44,23 @@ const BODY_END_MARKER = '// __BODY_END__';
 /**
  * Compiles a single scriptlet invocation file.
  *
- * Emits a call to `_ag.r(name, source, args, hash)` which delegates execution
- * to the shared scriptlets bundle loaded before this file.
+ * Emits a call to `window[coordinationKey].r(name, source, args, hash)` which
+ * delegates execution to the shared scriptlets bundle loaded before this file.
  *
- * `source.domainName` is omitted — `_ag.r` fills it in at runtime from
+ * `source.domainName` is omitted — `.r` fills it in at runtime from
  * `document.location.hostname`. `source.verbose` is hardcoded to `false`;
  * debug scriptlet output isn't available on preregistered domains since
  * `debugScriptlets` lives in `chrome.storage`, unreachable from MAIN world.
  *
  * @param entry Collected rule entry for a scriptlet.
+ * @param coordinationKey Random per-build `window` property name (see
+ * `coordination-key.ts`), matching the one baked into the shared bundle.
  *
  * @returns Compiled JavaScript string for the `{hash}.js` file.
  *
  * @throws When entry is missing scriptlet name or args.
  */
-const compileScriptletFile = (entry: CollectedRuleEntry): string => {
+const compileScriptletFile = (entry: CollectedRuleEntry, coordinationKey: string): string => {
     const { hash, scriptletName, scriptletArgs } = entry;
 
     if (!scriptletName || !scriptletArgs) {
@@ -70,11 +72,11 @@ const compileScriptletFile = (entry: CollectedRuleEntry): string => {
         args: scriptletArgs,
         engine: 'extension',
         version: SCRIPTLETS_VERSION,
-        // See @note above: overwritten at runtime by `_ag.r`.
+        // See @note above: overwritten at runtime by `.r`.
         verbose: false,
     };
 
-    const statement = `_ag.r(${JSON.stringify(scriptletName)}, ${JSON.stringify(source)}, ${JSON.stringify(scriptletArgs)}, "${hash}");`;
+    const statement = `window[${JSON.stringify(coordinationKey)}].r(${JSON.stringify(scriptletName)}, ${JSON.stringify(source)}, ${JSON.stringify(scriptletArgs)}, "${hash}");`;
 
     return `(function () {${NEWLINE_CHAR_UNIX}${statement}${NEWLINE_CHAR_UNIX}})();${NEWLINE_CHAR_UNIX}`;
 };
@@ -82,19 +84,22 @@ const compileScriptletFile = (entry: CollectedRuleEntry): string => {
 /**
  * Compiles a single JS injection rule file.
  *
- * Wraps the rule body with a dedup guard using `window._ag.b`
+ * Wraps the rule body with a dedup guard using `window[coordinationKey].b`
  * (defined in the shared `scriptlets-bundle.js`).
  *
  * Uses {@link JS_RULE_GUARD_TEMPLATE} — replaces `__KEY__` with the
- * rule's unique SHA-256 hash and `__CODE__` with the rule source.
+ * rule's unique SHA-256 hash, `__CODE__` with the rule source, and `__PROP__`
+ * with the coordination key.
  *
  * @param entry Collected rule entry for a JS rule.
+ * @param coordinationKey Random per-build `window` property name (see
+ * `coordination-key.ts`), matching the one baked into the shared bundle.
  *
  * @returns Compiled JavaScript string for the `{hash}.js` file.
  *
  * @throws When entry is missing body.
  */
-const compileJsRuleFile = (entry: CollectedRuleEntry): string => {
+const compileJsRuleFile = (entry: CollectedRuleEntry, coordinationKey: string): string => {
     const { hash, jsBody } = entry;
 
     if (!jsBody) {
@@ -108,9 +113,10 @@ const compileJsRuleFile = (entry: CollectedRuleEntry): string => {
     const body = source
         .slice(bodyStart, bodyEnd)
         .replace('__KEY__', () => JSON.stringify(hash))
-        .replace('__CODE__', () => jsBody);
+        .replace('__CODE__', () => jsBody)
+        .replace('__PROP__', () => JSON.stringify(coordinationKey));
 
-    assertNoTemplateSentinels(body, ['__KEY__', '__CODE__']);
+    assertNoTemplateSentinels(body, ['__KEY__', '__CODE__', '__PROP__']);
 
     return `(function () {${NEWLINE_CHAR_UNIX}${body}${NEWLINE_CHAR_UNIX}})();${NEWLINE_CHAR_UNIX}`;
 };
@@ -118,24 +124,27 @@ const compileJsRuleFile = (entry: CollectedRuleEntry): string => {
 /**
  * Writes one `{hash}.js` file per unique rule entry.
  *
- * - Scriptlet rules emit a file containing `_ag.r(...)` call.
+ * - Scriptlet rules emit a file containing a `window[coordinationKey].r(...)` call.
  * - JS injection rules emit a file containing the rule body wrapped in a
  *   dedup guard.
  *
  * @param rules Map of hash → rule entry.
  * @param outputDir Directory to write files into.
+ * @param coordinationKey Random per-build `window` property name (see
+ * `coordination-key.ts`), matching the one baked into the shared bundle.
  */
 export const writePerHashFiles = async (
     rules: Map<string, CollectedRuleEntry>,
     outputDir: string,
+    coordinationKey: string,
 ): Promise<void> => {
     for (const [hash, entry] of rules) {
         let content: string;
 
         if (entry.scriptletName) {
-            content = compileScriptletFile(entry);
+            content = compileScriptletFile(entry, coordinationKey);
         } else if (entry.jsBody) {
-            content = compileJsRuleFile(entry);
+            content = compileJsRuleFile(entry, coordinationKey);
         } else {
             throw new Error(`Rule entry ${hash} has neither scriptletName nor jsBody`);
         }

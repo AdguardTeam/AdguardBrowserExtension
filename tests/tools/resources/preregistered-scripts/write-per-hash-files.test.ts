@@ -39,6 +39,8 @@ import { type CollectedRuleEntry } from '../../../../tools/resources/preregister
 describe('writePerHashFiles', () => {
     let outputDir: string;
 
+    const TEST_KEY = '__ag_test0123456789ab';
+
     afterEach(async () => {
         if (outputDir) {
             await fs.rm(outputDir, { recursive: true, force: true });
@@ -55,12 +57,13 @@ describe('writePerHashFiles', () => {
             jsBody,
         };
 
-        await writePerHashFiles(new Map([[hash, entry]]), outputDir);
+        await writePerHashFiles(new Map([[hash, entry]]), outputDir, TEST_KEY);
 
         const content = await fs.readFile(path.join(outputDir, `${hash}.js`), 'utf-8');
 
         expect(content).not.toContain('__KEY__');
         expect(content).not.toContain('__CODE__');
+        expect(content).not.toContain('__PROP__');
         // The compiled body must retain the "$&$&" sequence from jsBody unchanged
         // (the minifier drops the redundant "\" before "$", since "\$" and "$" are
         // the same string literal in JS — that's fine, only corruption into a
@@ -74,6 +77,68 @@ describe('writePerHashFiles', () => {
         const hash = 'emptyentryhash01';
         const entry: CollectedRuleEntry = { hash };
 
-        await expect(writePerHashFiles(new Map([[hash, entry]]), outputDir)).rejects.toThrow();
+        await expect(writePerHashFiles(new Map([[hash, entry]]), outputDir, TEST_KEY)).rejects.toThrow();
+    });
+
+    it('emits a scriptlet invocation via window[coordinationKey].r, not a fixed "_ag" name', async () => {
+        outputDir = await fs.mkdtemp(path.join(os.tmpdir(), 'per-hash-files-'));
+
+        const hash = 'scriptlethash0001';
+        const entry: CollectedRuleEntry = {
+            hash,
+            scriptletName: 'abort-on-property-read',
+            scriptletArgs: ['foo'],
+        };
+
+        await writePerHashFiles(new Map([[hash, entry]]), outputDir, TEST_KEY);
+
+        const content = await fs.readFile(path.join(outputDir, `${hash}.js`), 'utf-8');
+
+        // Minified to `window.__ag_....r(...)` (dot notation) since the key is a
+        // valid JS identifier — functionally identical to bracket notation.
+        expect(content).toContain(`window.${TEST_KEY}.r(`);
+        expect(content).not.toContain('_ag.r');
+        expect(content).not.toContain('window._ag');
+    });
+
+    it('wraps a JS rule dedup guard in window[coordinationKey].b, not a fixed "_ag" name', async () => {
+        outputDir = await fs.mkdtemp(path.join(os.tmpdir(), 'per-hash-files-'));
+
+        const hash = 'jsrulehash00000001';
+        const entry: CollectedRuleEntry = {
+            hash,
+            jsBody: "console.log('hi');",
+        };
+
+        await writePerHashFiles(new Map([[hash, entry]]), outputDir, TEST_KEY);
+
+        const content = await fs.readFile(path.join(outputDir, `${hash}.js`), 'utf-8');
+
+        expect(content).toContain(`window.${TEST_KEY}.b`);
+        expect(content).not.toContain('_ag.b');
+        expect(content).not.toContain('window._ag');
+    });
+
+    it('uses a different coordination key per call, and only that key appears in the output', async () => {
+        outputDir = await fs.mkdtemp(path.join(os.tmpdir(), 'per-hash-files-'));
+
+        const keyA = '__ag_aaaaaaaaaaaaaaaa';
+        const keyB = '__ag_bbbbbbbbbbbbbbbb';
+        const hash = 'keyisolationhash1';
+        const entry: CollectedRuleEntry = {
+            hash,
+            scriptletName: 'abort-on-property-read',
+            scriptletArgs: ['foo'],
+        };
+
+        await writePerHashFiles(new Map([[hash, entry]]), outputDir, keyA);
+        const contentA = await fs.readFile(path.join(outputDir, `${hash}.js`), 'utf-8');
+        expect(contentA).toContain(keyA);
+        expect(contentA).not.toContain(keyB);
+
+        await writePerHashFiles(new Map([[hash, entry]]), outputDir, keyB);
+        const contentB = await fs.readFile(path.join(outputDir, `${hash}.js`), 'utf-8');
+        expect(contentB).toContain(keyB);
+        expect(contentB).not.toContain(keyA);
     });
 });

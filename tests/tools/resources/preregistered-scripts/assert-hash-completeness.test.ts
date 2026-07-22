@@ -121,9 +121,6 @@ describe('assertHashCompleteness', () => {
 
     it('checks each filter in isolation so one filter\'s exception cannot hide another\'s missing hash', async () => {
         const jsBody = "console.log('only-in-one-filter');";
-        // ruleset_1 excepts this rule, ruleset_2 has the (uncollected) blocking
-        // rule. A real user could enable ruleset_2 alone, without ruleset_1,
-        // so the exception must not suppress the check for ruleset_2's rule.
         setupRulesets([
             `youtube.com#@%#${jsBody}`,
             `youtube.com#%#${jsBody}`,
