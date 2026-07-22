@@ -81,7 +81,7 @@ const LOCAL_SCRIPT_RULES_FILE_NAME = 'local_script_rules.js';
  *
  * @returns Function name or null if not found.
  */
-export const extractAgFunctionName = (code: string): string | null => {
+const extractAgFunctionName = (code: string): string | null => {
     const match = code.match(AG_FUNCTION_REGEX);
 
     if (!match) {
@@ -98,7 +98,7 @@ export const extractAgFunctionName = (code: string): string | null => {
  *
  * @returns Array of AG_ function names.
  */
-export const findAgFunctionUsages = (code: string): string[] => {
+const findAgFunctionUsages = (code: string): string[] => {
     const matches = code.match(AG_USAGE_REGEX) || [];
     return [...new Set(matches)];
 };
@@ -227,7 +227,7 @@ ${rawComment.split(LF).map((line) => (line ? ` * ${line}` : ' *')).join(LF)}
  *
  * @returns Unique ID.
  */
-export const calculateUniqueId = (text: string): string => {
+const calculateUniqueId = (text: string): string => {
     return crypto.createHash('md5').update(text).digest('hex');
 };
 
@@ -239,7 +239,7 @@ export const calculateUniqueId = (text: string): string => {
  *
  * @returns Wrapped script code.
  */
-export const wrapScriptCode = (uniqueId: string, code: string): string => {
+const wrapScriptCode = (uniqueId: string, code: string): string => {
     return `
         try {
             const flag = 'done';
