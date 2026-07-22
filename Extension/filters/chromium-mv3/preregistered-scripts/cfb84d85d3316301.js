@@ -1,1 +1,1 @@
-_ag.r("prevent-addEventListener",{name:"prevent-addEventListener",args:["click","window.open"],engine:"extension",version:"2.4.2",verbose:!1},["click","window.open"],"cfb84d85d3316301");
+__ag_b97602f7fcbce387.r("prevent-addEventListener",{name:"prevent-addEventListener",args:["click","window.open"],engine:"extension",version:"2.4.2",verbose:!1},["click","window.open"],"cfb84d85d3316301");

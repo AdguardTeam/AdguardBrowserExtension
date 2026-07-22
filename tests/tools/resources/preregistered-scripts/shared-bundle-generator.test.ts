@@ -52,25 +52,31 @@ describe('compileSharedScriptletsBundle', () => {
         expect(result).toBeNull();
     });
 
-    it('wraps output in an IIFE', async () => {
+    it('declares the coordination key as a top-level `let` binding wrapping an inner IIFE', async () => {
         const result = await compileSharedScriptletsBundle(
             new Set(['abort-on-property-read']),
             TEST_KEY,
         );
         expect(result).not.toBeNull();
-        expect(result).toMatch(/^\(function\s*\(\)/);
-        expect(result).toContain('})();');
+        // Terser drops the (syntactically optional, in this position) parens
+        // around the function expression, e.g. `let __ag_...=function(){...}();`
+        expect(result).toMatch(/^let\s/);
+        expect(result).toMatch(/=function\s*\(\)\s*\{/);
+        expect(result).toContain('}();');
     });
 
-    it('defines the coordination property using the provided key, not a fixed "_ag" name', async () => {
+    it('defines the coordination key using the provided key, not a fixed "_ag" name or window property', async () => {
         const result = await compileSharedScriptletsBundle(
             new Set(['abort-on-property-read']),
             TEST_KEY,
         );
         expect(result).not.toBeNull();
-        expect(result).toContain(JSON.stringify(TEST_KEY));
-        // The old hardcoded `window._ag` dot-access form must be gone.
+        expect(result).toContain(TEST_KEY);
+        // The old hardcoded `window._ag` dot-access form, and any `window`
+        // reference at all for the coordination key, must be gone.
         expect(result).not.toContain('window._ag');
+        expect(result).not.toContain(`window.${TEST_KEY}`);
+        expect(result).not.toContain(`window["${TEST_KEY}"]`);
     });
 
     it('uses a different coordination key per call, and only that key appears in the output', async () => {
@@ -78,22 +84,32 @@ describe('compileSharedScriptletsBundle', () => {
         const keyB = '__ag_bbbbbbbbbbbbbbbb';
         const resultA = await compileSharedScriptletsBundle(new Set(['abort-on-property-read']), keyA);
         const resultB = await compileSharedScriptletsBundle(new Set(['abort-on-property-read']), keyB);
-        expect(resultA).toContain(JSON.stringify(keyA));
+        expect(resultA).toContain(keyA);
         expect(resultA).not.toContain(keyB);
-        expect(resultB).toContain(JSON.stringify(keyB));
+        expect(resultB).toContain(keyB);
         expect(resultB).not.toContain(keyA);
     });
 
-    it('includes a guard against double execution keyed off the coordination property', async () => {
+    it('throws if evaluated twice in the same realm (redeclaration = implicit re-injection guard)', async () => {
         const result = await compileSharedScriptletsBundle(
             new Set(['abort-on-property-read']),
             TEST_KEY,
         );
         expect(result).not.toBeNull();
-        // Member access on `window` for a valid-identifier key gets minified to
-        // dot notation (`window.__ag_...`) by terser — functionally identical to
-        // `window["__ag_..."]`, just shorter.
-        expect(result).toContain(`window.${TEST_KEY}`);
+
+        const sandbox: { window: Record<string, unknown>; document: { location: { hostname: string } } } = {
+            window: {},
+            document: { location: { hostname: 'example.com' } },
+        };
+        vm.createContext(sandbox);
+        vm.runInContext(result as string, sandbox);
+
+        // A second evaluation in the SAME realm conflicts with the already-declared
+        // top-level `let` and throws — instead of silently overwriting state. This
+        // scenario isn't expected in practice (chrome.scripting.registerContentScripts
+        // injects each file at most once per matching document), but the failure
+        // mode is a loud one, not a silent one.
+        expect(() => vm.runInContext(result as string, sandbox)).toThrow(/already been declared/);
     });
 
     it('includes the deduplication Set in the output', async () => {
@@ -173,7 +189,7 @@ describe('compileSharedScriptletsBundle', () => {
         expect(result).toContain('\\$&');
     });
 
-    it('defines the coordination property as non-enumerable, and deletable by the cleanup file', async () => {
+    it('declares the coordination key as a lexical binding invisible to window enumeration', async () => {
         const result = await compileSharedScriptletsBundle(
             new Set(['abort-on-property-read']),
             TEST_KEY,
@@ -187,18 +203,24 @@ describe('compileSharedScriptletsBundle', () => {
         vm.createContext(sandbox);
         vm.runInContext(result as string, sandbox);
 
-        // The property exists and is reachable by direct access...
-        expect(TEST_KEY in sandbox.window).toBe(true);
-        // ...but does not show up via enumeration (for...in / Object.keys / JSON.stringify)...
+        // Reachable directly as a bare identifier (lexical binding, not a
+        // `window` property)...
+        expect(vm.runInContext(`typeof ${TEST_KEY}`, sandbox)).not.toBe('undefined');
+        // ...but not an own property of `window` at all — invisible to every
+        // enumeration mechanism, including `Object.getOwnPropertyNames` (unlike
+        // the old `Object.defineProperty`-based approach, which was only
+        // non-*enumerable*, still discoverable via `getOwnPropertyNames`).
+        expect(TEST_KEY in sandbox.window).toBe(false);
+        expect(Object.getOwnPropertyNames(sandbox.window)).not.toContain(TEST_KEY);
         expect(Object.keys(sandbox.window)).not.toContain(TEST_KEY);
         expect(JSON.stringify(sandbox.window)).not.toContain(TEST_KEY);
-        // ...while still being discoverable via Object.getOwnPropertyNames, and
-        // therefore still needing the cleanup file's deletion for real protection.
-        expect(Object.getOwnPropertyNames(sandbox.window)).toContain(TEST_KEY);
 
-        // Cleanup (mirrors what cleanup.js does) must be able to delete it.
-        // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
-        delete sandbox.window[TEST_KEY];
-        expect(TEST_KEY in sandbox.window).toBe(false);
+        // Cleanup (mirrors what cleanup.js does) reassigns it to `undefined` —
+        // a lexical `let`/`const` binding has no `delete` operation, so this is
+        // the closest equivalent, and it's just as effective: `typeof` can't
+        // tell "declared and undefined" apart from "never declared", even for
+        // a page that already knows the exact identifier.
+        vm.runInContext(`${TEST_KEY} = undefined;`, sandbox);
+        expect(vm.runInContext(`typeof ${TEST_KEY}`, sandbox)).toBe('undefined');
     });
 });

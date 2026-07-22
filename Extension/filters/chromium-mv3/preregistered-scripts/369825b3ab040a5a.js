@@ -1,1 +1,1 @@
-_ag.r("set-constant",{name:"set-constant",args:["player.vroll","noopFunc"],engine:"extension",version:"2.4.2",verbose:!1},["player.vroll","noopFunc"],"369825b3ab040a5a");
+__ag_b97602f7fcbce387.r("set-constant",{name:"set-constant",args:["player.vroll","noopFunc"],engine:"extension",version:"2.4.2",verbose:!1},["player.vroll","noopFunc"],"369825b3ab040a5a");

@@ -1,1 +1,1 @@
-_ag.r("prevent-xhr",{name:"prevent-xhr",args:["/advert.js"],engine:"extension",version:"2.4.2",verbose:!1},["/advert.js"],"6e46157997e04ba8");
+__ag_56b498d70a63796a.r("prevent-xhr",{name:"prevent-xhr",args:["/advert.js"],engine:"extension",version:"2.4.2",verbose:!1},["/advert.js"],"6e46157997e04ba8");

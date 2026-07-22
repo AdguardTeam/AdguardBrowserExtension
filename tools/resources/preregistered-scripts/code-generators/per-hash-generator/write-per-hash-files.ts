@@ -44,8 +44,9 @@ const BODY_END_MARKER = '// __BODY_END__';
 /**
  * Compiles a single scriptlet invocation file.
  *
- * Emits a call to `window[coordinationKey].r(name, source, args, hash)` which
- * delegates execution to the shared scriptlets bundle loaded before this file.
+ * Emits a call to `coordinationKey.r(name, source, args, hash)` — a bare
+ * reference to the top-level `let` binding declared by the shared bundle
+ * (see `shared-bundle-template.js`), which delegates execution to it.
  *
  * `source.domainName` is omitted — `.r` fills it in at runtime from
  * `document.location.hostname`. `source.verbose` is hardcoded to `false`;
@@ -53,8 +54,8 @@ const BODY_END_MARKER = '// __BODY_END__';
  * `debugScriptlets` lives in `chrome.storage`, unreachable from MAIN world.
  *
  * @param entry Collected rule entry for a scriptlet.
- * @param coordinationKey Random per-build `window` property name (see
- * `coordination-key.ts`), matching the one baked into the shared bundle.
+ * @param coordinationKey Random per-build identifier (see
+ * `coordination-key.ts`), matching the one declared by the shared bundle.
  *
  * @returns Compiled JavaScript string for the `{hash}.js` file.
  *
@@ -76,7 +77,7 @@ const compileScriptletFile = (entry: CollectedRuleEntry, coordinationKey: string
         verbose: false,
     };
 
-    const statement = `window[${JSON.stringify(coordinationKey)}].r(${JSON.stringify(scriptletName)}, ${JSON.stringify(source)}, ${JSON.stringify(scriptletArgs)}, "${hash}");`;
+    const statement = `${coordinationKey}.r(${JSON.stringify(scriptletName)}, ${JSON.stringify(source)}, ${JSON.stringify(scriptletArgs)}, "${hash}");`;
 
     return `(function () {${NEWLINE_CHAR_UNIX}${statement}${NEWLINE_CHAR_UNIX}})();${NEWLINE_CHAR_UNIX}`;
 };
@@ -84,16 +85,17 @@ const compileScriptletFile = (entry: CollectedRuleEntry, coordinationKey: string
 /**
  * Compiles a single JS injection rule file.
  *
- * Wraps the rule body with a dedup guard using `window[coordinationKey].b`
- * (defined in the shared `scriptlets-bundle.js`).
+ * Wraps the rule body with a dedup guard using `coordinationKey.b` (defined
+ * in the shared `scriptlets-bundle.js`, a bare top-level `let` reference,
+ * not a `window` property).
  *
  * Uses {@link JS_RULE_GUARD_TEMPLATE} — replaces `__KEY__` with the
  * rule's unique SHA-256 hash, `__CODE__` with the rule source, and `__PROP__`
- * with the coordination key.
+ * with the coordination key identifier.
  *
  * @param entry Collected rule entry for a JS rule.
- * @param coordinationKey Random per-build `window` property name (see
- * `coordination-key.ts`), matching the one baked into the shared bundle.
+ * @param coordinationKey Random per-build identifier (see
+ * `coordination-key.ts`), matching the one declared by the shared bundle.
  *
  * @returns Compiled JavaScript string for the `{hash}.js` file.
  *
@@ -114,7 +116,7 @@ const compileJsRuleFile = (entry: CollectedRuleEntry, coordinationKey: string): 
         .slice(bodyStart, bodyEnd)
         .replace('__KEY__', () => JSON.stringify(hash))
         .replace('__CODE__', () => jsBody)
-        .replace('__PROP__', () => JSON.stringify(coordinationKey));
+        .replace('__PROP__', () => coordinationKey);
 
     assertNoTemplateSentinels(body, ['__KEY__', '__CODE__', '__PROP__']);
 
@@ -124,14 +126,14 @@ const compileJsRuleFile = (entry: CollectedRuleEntry, coordinationKey: string): 
 /**
  * Writes one `{hash}.js` file per unique rule entry.
  *
- * - Scriptlet rules emit a file containing a `window[coordinationKey].r(...)` call.
+ * - Scriptlet rules emit a file containing a `coordinationKey.r(...)` call.
  * - JS injection rules emit a file containing the rule body wrapped in a
  *   dedup guard.
  *
  * @param rules Map of hash → rule entry.
  * @param outputDir Directory to write files into.
- * @param coordinationKey Random per-build `window` property name (see
- * `coordination-key.ts`), matching the one baked into the shared bundle.
+ * @param coordinationKey Random per-build identifier (see
+ * `coordination-key.ts`), matching the one declared by the shared bundle.
  */
 export const writePerHashFiles = async (
     rules: Map<string, CollectedRuleEntry>,

@@ -57,10 +57,12 @@ describe('writeCleanupFile', () => {
 
         const content = await fs.readFile(path.join(outputDir, 'cleanup.js'), 'utf-8');
 
-        // Minified to `delete window.__ag_...` (dot notation) since the key is a
-        // valid JS identifier — functionally identical to bracket notation.
+        // Compiles to `<coordinationKey>=undefined` (a reassignment of the
+        // top-level `let` the bundle declares), not `delete window[...]`.
         expect(content).toContain(TEST_KEY);
         expect(content).not.toContain('__PROP__');
+        expect(content).not.toContain('delete window');
+        expect(content).not.toContain(`window.${TEST_KEY}`);
     });
 
     it('produces valid JavaScript syntax', async () => {
@@ -76,7 +78,7 @@ describe('writeCleanupFile', () => {
         }).not.toThrow();
     });
 
-    it('deletes the coordination property created by the shared bundle', async () => {
+    it('reassigns the coordination binding created by the shared bundle to undefined', async () => {
         outputDir = await fs.mkdtemp(path.join(os.tmpdir(), 'cleanup-file-'));
 
         const bundle = await compileSharedScriptletsBundle(
@@ -96,13 +98,14 @@ describe('writeCleanupFile', () => {
 
         // Simulates the runtime order: shared bundle loads first...
         vm.runInContext(bundle as string, sandbox);
-        expect(TEST_KEY in sandbox.window).toBe(true);
+        expect(vm.runInContext(`typeof ${TEST_KEY}`, sandbox)).not.toBe('undefined');
 
         // ...cleanup.js loads last, after every per-hash file...
         vm.runInContext(cleanup, sandbox);
 
-        // ...and by the time a page script could run, the property is gone.
-        expect(TEST_KEY in sandbox.window).toBe(false);
+        // ...and by the time a page script could run, the binding is undefined —
+        // indistinguishable from never having been declared to any `typeof` check.
+        expect(vm.runInContext(`typeof ${TEST_KEY}`, sandbox)).toBe('undefined');
     });
 
     it('does not throw when the coordination property was never created', async () => {

@@ -24,42 +24,31 @@
 /**
  * Template for the shared scriptlets bundle (`scriptlets-bundle.js`).
  *
- * ## Build-time
+ * `shared-bundle-generator.ts` replaces `__FUNCTIONS__`/`__REGISTRY__`/`__PROP__`
+ * (bare coordination key identifier, not a string) in the stringified body,
+ * then minifies it. Terser doesn't mangle top-level names by default, so
+ * `__PROP__` stays identical across the independently-minified bundle,
+ * per-hash files and cleanup.js.
  *
- * **Never executed directly.** `shared-bundle-generator.ts`:
- * 1. Calls `.toString()` to extract the body.
- * 2. Replaces `__FUNCTIONS__` with all used scriptlet function sources.
- * 3. Replaces `__REGISTRY__` with `{"name": fnRef, ...}`.
- * 4. Replaces `__PROP__` with `JSON.stringify(coordinationKey)` — a random,
- *    per-build `window` property name (see `coordination-key.ts`).
- * 5. Wraps in `(function(){...})()` and minifies with terser.
+ * `let __PROP__ = (...)` must stay at the top level (no wrapping IIFE) —
+ * a lexical binding, not a `window` property, so it's invisible to
+ * enumeration (`Object.keys`, `getOwnPropertyNames`, etc.). Other classic
+ * scripts in the same realm (per-hash files, cleanup.js) can reference it
+ * directly since it's a top-level declaration. No double-injection guard
+ * needed: `registerContentScripts` injects each file once per document;
+ * a real re-evaluation would throw on redeclaration anyway.
  *
- * ## Runtime (MAIN world, `document_start`)
- *
- * Loaded once per page (guard: `if (window[__PROP__]) return`).
- *
- * - Defines all scriptlet functions (registry maps name → function).
- * - Defines `window[__PROP__] = { r, b }` as a non-enumerable property — the
- *   only public API, and only public for the brief window before the
- *   cleanup file (loaded last, see `code-generators/cleanup-generator/`)
- *   deletes it, before any page script runs.
- * - `.r(name, source, args, key)` — deduplicates by `key`, sets
- *   `source.domainName` from `document.location.hostname`, then executes
- *   the scriptlet function (no-op if not found). `source.verbose` stays
- *   baked in as `false` — `debugScriptlets` isn't available in MAIN world.
- * - `.b` — `Set` of executed rule keys for dedup (shared with JS rule guards).
+ * `.r(name, source, args, key)` runs a scriptlet once per `key` (dedup via
+ * `.b`, shared with JS-rule guards).
  */
 export const BUNDLE_TEMPLATE = () => {
     // __BODY_START__
-    if (window[__PROP__]) {
-        return;
-    }
-    let dedupSet = new Set();
-    __FUNCTIONS__ /* replaced with minified scriptlet function sources */
-    let functionRegistry = __REGISTRY__; /* replaced with {"name": fnRef, ...} */
+    let __PROP__ = (function () {
+        let dedupSet = new Set();
+        __FUNCTIONS__ /* replaced with minified scriptlet function sources */
+        let functionRegistry = __REGISTRY__; /* replaced with {"name": fnRef, ...} */
 
-    Object.defineProperty(window, __PROP__, {
-        value: {
+        return {
             r: function agRun(scriptletName, source, args, ruleKey) {
                 try {
                     if (dedupSet.has(ruleKey)) {
@@ -76,9 +65,7 @@ export const BUNDLE_TEMPLATE = () => {
                 }
             },
             b: dedupSet,
-        },
-        configurable: true,
-        enumerable: false,
-    });
+        };
+    })();
     // __BODY_END__
 };

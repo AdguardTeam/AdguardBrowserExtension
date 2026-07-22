@@ -1,1 +1,1 @@
-_ag.r("abort-current-inline-script",{name:"abort-current-inline-script",args:["EventTarget.prototype.addEventListener","delete window"],engine:"extension",version:"2.4.2",verbose:!1},["EventTarget.prototype.addEventListener","delete window"],"0acc6be824c35bac");
+__ag_56b498d70a63796a.r("abort-current-inline-script",{name:"abort-current-inline-script",args:["EventTarget.prototype.addEventListener","delete window"],engine:"extension",version:"2.4.2",verbose:!1},["EventTarget.prototype.addEventListener","delete window"],"0acc6be824c35bac");

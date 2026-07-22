@@ -1,1 +1,1 @@
-_ag.r("remove-node-text",{name:"remove-node-text",args:["script","LAST_POP"],engine:"extension",version:"2.4.2",verbose:!1},["script","LAST_POP"],"76a7aa05dbbc6b2d");
+__ag_56b498d70a63796a.r("remove-node-text",{name:"remove-node-text",args:["script","LAST_POP"],engine:"extension",version:"2.4.2",verbose:!1},["script","LAST_POP"],"76a7aa05dbbc6b2d");

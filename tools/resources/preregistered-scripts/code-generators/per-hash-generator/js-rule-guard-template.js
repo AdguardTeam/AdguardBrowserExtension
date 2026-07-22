@@ -28,15 +28,15 @@
  *
  * `__KEY__` is replaced with the rule's SHA-256 hash.
  * `__CODE__` is replaced with the rule's source code.
- * `__PROP__` is replaced with `JSON.stringify(coordinationKey)` — the same
- * random `window` property name used by the shared bundle (see
- * `coordination-key.ts`).
+ * `__PROP__` is replaced with the bare coordination key identifier — the
+ * same top-level `let` binding declared by the shared bundle (see
+ * `coordination-key.ts` and `shared-bundle-template.js`).
  */
 export const JS_RULE_GUARD_TEMPLATE = () => {
     // __BODY_START__
     try {
         const ruleKey = __KEY__; /* replaced with JSON.stringify(ruleHash) */
-        const dedupSet = window[__PROP__].b;
+        const dedupSet = __PROP__.b;
         if (dedupSet.has(ruleKey)) {
             return;
         }

@@ -1,1 +1,1 @@
-_ag.r("json-prune",{name:"json-prune",args:["playerResponse.messages.[].youThereRenderer"],engine:"extension",version:"2.4.2",verbose:!1},["playerResponse.messages.[].youThereRenderer"],"5bae0246da10b1c7");
+__ag_b97602f7fcbce387.r("json-prune",{name:"json-prune",args:["playerResponse.messages.[].youThereRenderer"],engine:"extension",version:"2.4.2",verbose:!1},["playerResponse.messages.[].youThereRenderer"],"5bae0246da10b1c7");

@@ -28,12 +28,12 @@ import crypto from 'node:crypto';
 const KEY_RANDOM_BYTES = 8;
 
 /**
- * Generates a random `window` property name shared by the bundle, per-hash
- * files, and the cleanup file within one build. Changes every build so pages
- * can't hardcode it. Combined with the cleanup file deleting it before page
- * scripts run, pages can't detect it.
+ * Generates a random identifier shared by the bundle, per-hash files, and
+ * the cleanup file within one build. Used as a top-level `let` variable
+ * name (a lexical binding, not a `window` property), changing every build
+ * so pages can't hardcode it across versions.
  *
- * @returns A `window`-property-safe random string, e.g. `"__ag_3f9a1c2b8e4d5601"`.
+ * @returns A valid-JS-identifier random string, e.g. `"__ag_3f9a1c2b8e4d5601"`.
  */
 export const generateCoordinationKey = (): string => {
     return `__ag_${crypto.randomBytes(KEY_RANDOM_BYTES).toString('hex')}`;

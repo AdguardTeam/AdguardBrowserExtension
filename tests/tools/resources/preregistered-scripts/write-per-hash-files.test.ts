@@ -80,7 +80,7 @@ describe('writePerHashFiles', () => {
         await expect(writePerHashFiles(new Map([[hash, entry]]), outputDir, TEST_KEY)).rejects.toThrow();
     });
 
-    it('emits a scriptlet invocation via window[coordinationKey].r, not a fixed "_ag" name', async () => {
+    it('emits a scriptlet invocation via <coordinationKey>.r, not a fixed "_ag" name/window prop', async () => {
         outputDir = await fs.mkdtemp(path.join(os.tmpdir(), 'per-hash-files-'));
 
         const hash = 'scriptlethash0001';
@@ -94,14 +94,16 @@ describe('writePerHashFiles', () => {
 
         const content = await fs.readFile(path.join(outputDir, `${hash}.js`), 'utf-8');
 
-        // Minified to `window.__ag_....r(...)` (dot notation) since the key is a
-        // valid JS identifier — functionally identical to bracket notation.
-        expect(content).toContain(`window.${TEST_KEY}.r(`);
+        // Bare identifier reference (lexical `let` binding declared by the
+        // shared bundle), not a `window` property access.
+        expect(content).toContain(`${TEST_KEY}.r(`);
         expect(content).not.toContain('_ag.r');
         expect(content).not.toContain('window._ag');
+        expect(content).not.toContain(`window.${TEST_KEY}`);
+        expect(content).not.toContain(`window["${TEST_KEY}"]`);
     });
 
-    it('wraps a JS rule dedup guard in window[coordinationKey].b, not a fixed "_ag" name', async () => {
+    it('wraps a JS rule dedup guard in <coordinationKey>.b, not a fixed "_ag" name or a window property', async () => {
         outputDir = await fs.mkdtemp(path.join(os.tmpdir(), 'per-hash-files-'));
 
         const hash = 'jsrulehash00000001';
@@ -114,9 +116,10 @@ describe('writePerHashFiles', () => {
 
         const content = await fs.readFile(path.join(outputDir, `${hash}.js`), 'utf-8');
 
-        expect(content).toContain(`window.${TEST_KEY}.b`);
+        expect(content).toContain(`${TEST_KEY}.b`);
         expect(content).not.toContain('_ag.b');
         expect(content).not.toContain('window._ag');
+        expect(content).not.toContain(`window.${TEST_KEY}`);
     });
 
     it('uses a different coordination key per call, and only that key appears in the output', async () => {

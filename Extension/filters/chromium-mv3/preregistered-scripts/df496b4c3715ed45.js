@@ -1,1 +1,1 @@
-_ag.r("spoof-css",{name:"spoof-css",args:["body > * > * > * > div[id][class]","display","block"],engine:"extension",version:"2.4.2",verbose:!1},["body > * > * > * > div[id][class]","display","block"],"df496b4c3715ed45");
+__ag_b97602f7fcbce387.r("spoof-css",{name:"spoof-css",args:["body > * > * > * > div[id][class]","display","block"],engine:"extension",version:"2.4.2",verbose:!1},["body > * > * > * > div[id][class]","display","block"],"df496b4c3715ed45");

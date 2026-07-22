@@ -23,26 +23,16 @@
 
 /**
  * Template for `cleanup.js` — the last file loaded for a domain, after the
- * shared bundle and every per-hash rule file (see `preregistered-scripts-service.ts`,
- * which always appends this file to the end of the `js` array).
+ * shared bundle and every per-hash rule file.
  *
- * ## Build-time
- *
- * `__PROP__` is replaced with `JSON.stringify(coordinationKey)` — the same
- * random `window` property name used by the shared bundle and per-hash files.
- *
- * ## Runtime (MAIN world, `document_start`)
- *
- * Deletes the coordination property so it never survives into the page's
- * own script execution. Content scripts registered with `document_start`
- * all run, in registration order, before the page's own scripts get a
- * chance to run, so by the time page code executes, `window[__PROP__]` is
- * already gone — page code can never observe or call it.
+ * `__PROP__` is the bare coordination key identifier (same one declared by
+ * the shared bundle as a top-level `let`). Reassigns it to `undefined` —
+ * `let` can't be deleted or redeclared, but it can be reassigned.
  */
 export const CLEANUP_TEMPLATE = () => {
     // __BODY_START__
     try {
-        delete window[__PROP__];
+        __PROP__ = undefined;
     } catch (e) {}
     // __BODY_END__
 };

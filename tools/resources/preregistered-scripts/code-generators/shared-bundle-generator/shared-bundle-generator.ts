@@ -43,8 +43,10 @@ const BODY_END_MARKER = '// __BODY_END__';
  *
  * @param functions Compiled scriptlet function definitions (minified).
  * @param registryEntries Comma-separated `"name": fnName` entries.
- * @param coordinationKey Random per-build `window` property name (see
- * `coordination-key.ts`), shared with the per-hash files and the cleanup file.
+ * @param coordinationKey Random per-build identifier (see
+ * `coordination-key.ts`), shared with the per-hash files and the cleanup
+ * file. Substituted as a bare identifier (not a string literal) since
+ * {@link BUNDLE_TEMPLATE} declares it as a top-level `let` variable name.
  *
  * @returns Assembled bundle body.
  */
@@ -57,13 +59,11 @@ const assembleTemplate = (
     const bodyStart = source.indexOf(BODY_START_MARKER) + BODY_START_MARKER.length;
     const bodyEnd = source.indexOf(BODY_END_MARKER);
 
-    const propLiteral = JSON.stringify(coordinationKey);
-
     const filled = source
         .slice(bodyStart, bodyEnd)
         .replace('__FUNCTIONS__', () => functions.join(NEWLINE_CHAR_UNIX))
         .replace('__REGISTRY__', () => `{${registryEntries}}`)
-        .replace(/__PROP__/g, () => propLiteral);
+        .replace(/__PROP__/g, () => coordinationKey);
 
     assertNoTemplateSentinels(filled, ['__FUNCTIONS__', '__REGISTRY__', '__PROP__']);
 
@@ -74,11 +74,13 @@ const assembleTemplate = (
  * Compiles the shared scriptlets bundle (`scriptlets-bundle.js`).
  *
  * Loaded once per page. Contains deduplicated scriptlet function definitions
- * and the coordination-key runner. Multiple loads are harmless — the IIFE is
- * guarded by `if (window[__PROP__]) return`.
+ * and the coordination-key runner, exposed as a top-level `let` binding.
+ * Not wrapped in an outer IIFE here, since that would trap the `let`
+ * declaration and hide it from the separately-loaded per-hash files and
+ * `cleanup.js`.
  *
  * @param scriptletNames Set of unique scriptlet names used across all domains.
- * @param coordinationKey Random per-build `window` property name (see
+ * @param coordinationKey Random per-build identifier (see
  * `coordination-key.ts`), shared with the per-hash files and the cleanup file.
  *
  * @returns Compiled shared bundle string, or `null` if no scriptlets.
@@ -115,7 +117,7 @@ export const compileSharedScriptletsBundle = async (
         .join(',');
 
     const filled = assembleTemplate(rawFunctions, registryEntries, coordinationKey);
-    const source = `(function () {${NEWLINE_CHAR_UNIX}${filled.trim()}${NEWLINE_CHAR_UNIX}})();`;
+    const source = `${filled.trim()}${NEWLINE_CHAR_UNIX}`;
 
     const minified = await minifyJs(source);
 

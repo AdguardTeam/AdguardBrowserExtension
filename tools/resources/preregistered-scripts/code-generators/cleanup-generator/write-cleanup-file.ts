@@ -40,17 +40,17 @@ const BODY_START_MARKER = '// __BODY_START__';
 const BODY_END_MARKER = '// __BODY_END__';
 
 /**
- * Compiles and writes `cleanup.js` — deletes the coordination property the
- * shared bundle created on `window`, so it never survives into the page's
- * own script execution.
+ * Compiles and writes `cleanup.js` — reassigns the coordination `let`
+ * binding to `undefined`, so it never survives into the page's own script
+ * execution as an observable value.
  *
  * Must be registered as the last entry in a domain's `js` array (see
  * `PreregisteredScriptsService.buildDomainScripts`), after the shared bundle
  * and every per-hash file.
  *
- * @param coordinationKey Random per-build `window` property name (see
- * `coordination-key.ts`), matching the one baked into the shared bundle and
- * per-hash files.
+ * @param coordinationKey Random per-build identifier,
+ * matching the one declared by the shared bundle and
+ * referenced by the per-hash files.
  * @param outputDir Directory to write the file into.
  *
  * @returns Promise that resolves when the file has been written.
@@ -65,7 +65,7 @@ export const writeCleanupFile = async (
 
     const body = source
         .slice(bodyStart, bodyEnd)
-        .replace('__PROP__', () => JSON.stringify(coordinationKey));
+        .replace('__PROP__', () => coordinationKey);
 
     assertNoTemplateSentinels(body, ['__PROP__']);
 

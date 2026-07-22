@@ -42,10 +42,10 @@ hashes.
 |------|----------|---------|
 | 1. Collect | `ScriptletCollector.collect()` (`scriptlet-collector.ts`) | Walk all DNR rulesets, extract JS/scriptlet rules targeting preregistered domains, dedup by hash |
 | 2. Completeness check | `assertHashCompleteness()` (`assert-hash-completeness.ts`) | Independently re-derive, using the real `@adguard/tsurlfilter` `Engine`, which hashes are reachable per domain, and fail the build if any of them wasn't collected in step 1 |
-| 3. Coordination key | `generateCoordinationKey()` (`code-generators/coordination-key.ts`) | Generate a random per-build `window` property name shared by the shared bundle, per-hash files, and the cleanup file |
+| 3. Coordination key | `generateCoordinationKey()` (`code-generators/coordination-key.ts`) | Generate a random per-build identifier shared by the shared bundle, per-hash files, and the cleanup file |
 | 4. Shared bundle | `writeSharedBundle` (`code-generators/shared-bundle-generator/`) | Compile `scriptlets-bundle.js` — every unique scriptlet function used, deduplicated |
 | 5. Per-hash files | `writePerHashFiles` (`code-generators/per-hash-generator/`) | Compile one `{hash}.js` per unique rule (scriptlet invocation or JS rule body) |
-| 6. Cleanup file | `writeCleanupFile` (`code-generators/cleanup-generator/`) | Compile `cleanup.js`, which deletes the coordination property before any page script can run |
+| 6. Cleanup file | `writeCleanupFile` (`code-generators/cleanup-generator/`) | Compile `cleanup.js`, which reassigns the coordination binding to `undefined` before any page script can run |
 | 7. Domains list | `writeDomainsList` (`code-generators/domains-list.ts`) | Write `domains.js` — the list of domains that have at least one collected rule |
 | 8. Atomic swap | `generatePreregisteredDomainBundles` (`generate-bundle.ts`) | Write everything to a temp dir, then `fs.rename` it over the old output dir, so a failure never leaves partially-written output in place |
 
@@ -69,49 +69,53 @@ silently shipping a domain registration that references a missing
 
 Each domain's registration loads three kinds of files, always in this order:
 `scriptlets-bundle.js` → its `{hash}.js` files → `cleanup.js` (see
-`PreregisteredScriptsService.buildDomainScripts`, which builds this exact
-`js` array). All of them coordinate through a **single random `window`
-property**, generated once per build (`coordination-key.ts`) — never a fixed
-name like `_ag`. This exists to avoid leaving a stable, guessable,
-page-readable global behind: see [Why a random coordination key + cleanup
-file](#why-a-random-coordination-key--cleanup-file) below.
+`PreregisteredScriptsService.buildDomainScripts`). All of them coordinate
+through a single random top-level `let` variable, generated once per build
+(`coordination-key.ts`) — never a fixed name like `_ag`. See
+[Why a random coordination key + cleanup file](#why-a-random-coordination-key--cleanup-file).
 
 ### `scriptlets-bundle.js`
 
-An IIFE loaded once per page (guard: `if (window[coordinationKey]) return`).
-Defines the coordination object as a **non-enumerable** property (so it
-doesn't show up via `for...in`/`Object.keys`/`JSON.stringify`, though it's
-still visible via `Object.getOwnPropertyNames` — hence the cleanup file):
+Declares `let <coordinationKey> = (...)` at the top level (not inside any
+wrapping IIFE, not a `window` property) — a lexical binding, invisible to
+`Object.keys`/`getOwnPropertyNames`/`for...in`. Other classic scripts in the
+same realm (per-hash files, `cleanup.js`) reference the bare identifier
+directly (standard JS semantics for scripts sharing one realm).
 
-- `.r(name, source, args, key)` — run a scriptlet with dedup by `key`.
+- `.r(name, source, args, key)` — run a scriptlet, deduped by `key`.
 - `.b` — `Set` used for dedup, shared with JS rule guards.
+
+No double-injection guard needed: `registerContentScripts` injects each
+file once per document; redeclaring the `let` would throw `SyntaxError`
+anyway if it somehow ran twice.
 
 ### `{hash}.js`
 
 One file per unique rule, named after its SHA-256 hash (see `hasher.ts`):
 
-- Scriptlet rules: `window[coordinationKey].r("name", {...source}, [...args], "hash")`.
+- Scriptlet rules: `<coordinationKey>.r("name", {...source}, [...args], "hash")`.
 - JS injection rules: rule body wrapped in a dedup guard against
-  `window[coordinationKey].b` (see `js-rule-guard-template.js`).
+  `<coordinationKey>.b` (see `js-rule-guard-template.js`).
 
 ### `cleanup.js`
 
-`delete window[coordinationKey];` wrapped in a try/catch. Always registered
-as the **last** entry in a domain's `js` array. Content scripts registered
-with `runAt: 'document_start'` all run, in order, before the page's own
-scripts get a chance to run — so by the time page code executes, the
-coordination property is already gone; page code never observes it.
+`<coordinationKey> = undefined;` in a try/catch — reassigns the bundle's
+`let` (lexical bindings can't be `delete`d). Always the last entry in a
+domain's `js` array; `document_start` guarantees it runs before any page
+script, so `typeof <name>` is already `'undefined'` by the time the page
+runs, indistinguishable from never having existed — even if the page knows
+the exact identifier.
 
 ### Why a random coordination key + cleanup file
 
-Without this, a fixed global like `window._ag` would let any page detect the
-extension (`window._ag?.b instanceof Set && typeof window._ag?.r === 'function'`),
-read `.b` to learn which specific rule hashes fired on the page, and call
-`.r(name, source, args, key)` directly with attacker-controlled arguments to
-invoke any bundled scriptlet by name. Randomizing the property name alone,
-or making it non-enumerable alone, is insufficient — page code can still
-enumerate `Object.getOwnPropertyNames(window)` to find it. Deleting it before
-any page script runs closes that gap regardless of the name.
+A fixed global like `window._ag` would let any page detect the extension,
+read `.b` to see which rule hashes fired, and call `.r(...)` directly with
+attacker-controlled args. Randomizing the name alone isn't enough against an
+attacker who extracts the literal identifier from a published build. Using
+a lexical `let` (not a `window` property) closes enumeration; reassigning it
+to `undefined` in cleanup (instead of `delete`, which `let` doesn't support)
+closes the remaining "does it still exist" signal, since `typeof` can't tell
+"declared and `undefined`" apart from "never declared".
 
 ### `domains.js`
 
@@ -128,7 +132,7 @@ export const preregisteredDomains = ["youtube.com", "m.youtube.com", ...];
 | `generate-bundle.ts` | Orchestrator — runs collect → completeness check → coordination key → shared bundle → per-hash files → cleanup file → domains list |
 | `scriptlet-collector.ts` | AST predicates (`isGenericCosmeticRule`, `isScriptletRule`, `isRuleTargetsDomain`, `extractScriptletNameAndArgs`) + the `ScriptletCollector` class |
 | `assert-hash-completeness.ts` | `assertHashCompleteness` — cross-validates collected hashes against a real `@adguard/tsurlfilter` `Engine` instance |
-| `code-generators/coordination-key.ts` | `generateCoordinationKey` — random per-build `window` property name |
+| `code-generators/coordination-key.ts` | `generateCoordinationKey` — random per-build top-level `let` identifier |
 | `code-generators/shared-bundle-generator/` | `shared-bundle-template.js` (runtime template) + `shared-bundle-generator.ts` (compiler) |
 | `code-generators/per-hash-generator/` | `js-rule-guard-template.js` (runtime template) + `write-per-hash-files.ts` (compiler) |
 | `code-generators/cleanup-generator/` | `cleanup-template.js` (runtime template) + `write-cleanup-file.ts` (compiler) |

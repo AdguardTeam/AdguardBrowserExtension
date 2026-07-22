@@ -1,1 +1,1 @@
-_ag.r("json-prune",{name:"json-prune",args:["entries.[-].command.reelWatchEndpoint.adClientParams.isAd"],engine:"extension",version:"2.4.2",verbose:!1},["entries.[-].command.reelWatchEndpoint.adClientParams.isAd"],"8c15bfff88a874bd");
+__ag_b97602f7fcbce387.r("json-prune",{name:"json-prune",args:["entries.[-].command.reelWatchEndpoint.adClientParams.isAd"],engine:"extension",version:"2.4.2",verbose:!1},["entries.[-].command.reelWatchEndpoint.adClientParams.isAd"],"8c15bfff88a874bd");

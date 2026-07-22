@@ -1,1 +1,1 @@
-_ag.r("prevent-addEventListener",{name:"prevent-addEventListener",args:["DOMContentLoaded","app_advert"],engine:"extension",version:"2.4.2",verbose:!1},["DOMContentLoaded","app_advert"],"46c4523e53467902");
+__ag_b97602f7fcbce387.r("prevent-addEventListener",{name:"prevent-addEventListener",args:["DOMContentLoaded","app_advert"],engine:"extension",version:"2.4.2",verbose:!1},["DOMContentLoaded","app_advert"],"46c4523e53467902");
