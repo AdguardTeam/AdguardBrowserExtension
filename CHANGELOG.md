@@ -56,6 +56,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The request for additional permissions is not asked when importing extension
   settings [#2754].
 - monkeytype.com fails to load — requests stuck "Pending" with AdGuard MV2 enabled [#3565].
+- Cosmetic rules with a regex in the `$domain` modifier containing multiple escaped
+  separators (e.g. `[$domain=/example\d*\.(live\|com\|icu\|org)$/]##body`) not
+  being applied.
 
 [#3537]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3537
 [#1486]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1486
