@@ -291,7 +291,7 @@ const UserRules = observer(() => {
                 titleIcon={(<Icon id="#user-rules" className="icon--24" aria-hidden="true" />)}
                 title={translator.getMessage('options_userfilter')}
                 mode="smallContainer"
-                className="user-rules__switch-row"
+                className="settings__group--editor-switch"
                 inlineControl={(<UserRulesSwitcher labelId={switchTitleId} />)}
             />
             <DynamicRulesLimitsWarning />

@@ -52,6 +52,7 @@ import { type EditorHandle } from '../../../common/components/Editor/editor-hand
 import { SavingErrorMessage } from '../../../common/components/SavingButton';
 import { usePreventUnload } from '../../../common/hooks/usePreventUnload';
 import { UserAgent } from '../../../../common/user-agent';
+import { Icon } from '../../../common/components/ui/Icon';
 
 import { AllowlistMenu } from './AllowlistMenu';
 import { AllowlistSavingButton } from './AllowlistSavingButton';
@@ -255,10 +256,7 @@ const Allowlist = observer(() => {
     return (
         <>
             <SettingsSection
-                id={switchId}
                 title={translator.getMessage('options_allowlist')}
-                titleId={switchTitleId}
-                mode="smallContainer"
                 description={settings.values[DefaultAllowlistMode]
                     ? translator.getMessage('options_allowlist_desc')
                     : (
@@ -279,7 +277,6 @@ const Allowlist = observer(() => {
                             </span>
                         </div>
                     )}
-                inlineControl={(<AllowlistSwitcher labelId={switchTitleId} />)}
                 actions={(
                     <AllowlistMenu
                         onImportClick={importClickHandler}
@@ -287,6 +284,15 @@ const Allowlist = observer(() => {
                         exportDisabled={!settingsStore.allowlist}
                     />
                 )}
+            />
+            <SettingsSection
+                id={switchId}
+                titleId={switchTitleId}
+                titleIcon={(<Icon id="#user-rules" className="icon--24" aria-hidden="true" />)}
+                title={translator.getMessage('options_allowlist')}
+                mode="smallContainer"
+                className="settings__group--editor-switch"
+                inlineControl={(<AllowlistSwitcher labelId={switchTitleId} />)}
             />
             <DynamicRulesLimitsWarning />
             {UserAgent.isFirefoxMobile && <ClipboardPermissionWarning />}
