@@ -24,19 +24,17 @@ import {
     type AnyRule,
     CosmeticRuleType,
     type ScriptletInjectionRule,
-    QuoteUtils,
     RuleCategory,
     type JsInjectionRule,
-    getScriptletName,
 } from '@adguard/agtree';
 import { FilterListParser, defaultParserOptions } from '@adguard/agtree/parser';
-import { CosmeticRuleBodyGenerator } from '@adguard/agtree/generator';
 import { isJsInjectionRule } from '@adguard/dnr-rulesets';
 import {
-    computeJsRuleHash,
-    computeScriptletHash,
-    normalizeDomain,
-} from '@adguard/tswebextension/mv3/preregistered-scripts/hasher';
+    CosmeticRule,
+    FILTER_LIST_ID_NONE,
+    RULE_INDEX_NONE,
+} from '@adguard/tsurlfilter';
+import { computeRuleHash, normalizeDomain } from '@adguard/tswebextension/mv3/preregistered-scripts/hasher';
 
 import { extractPreprocessedRawFilterList, readMetadataRuleSet } from '../filter-extractor';
 
@@ -130,51 +128,8 @@ export const isRuleTargetsDomain = (
 };
 
 /**
- * Extracts scriptlet name and arguments from a scriptlet injection rule AST node.
- *
- * The name is extracted via agtree's {@link getScriptletName} (the same helper
- * agtree's own converters use), so build-time hashing matches runtime hashing
- * from `rule.getScriptletData().params`. Arguments are extracted the same way
- * agtree extracts the name, for consistency.
- *
- * @note Only the first scriptlet call in the rule body is extracted. This
- * matches `@adguard/tsurlfilter`'s `CosmeticRule`, which also only ever reads
- * `body.children[0]`, so calls beyond the first are never executed by the
- * engine regardless of preregistration.
- *
- * @param ruleNode Parsed scriptlet injection rule AST node.
- *
- * @returns Object with `name` (string) and `args` (string array).
- *
- * @throws If the rule body has no scriptlet call, or the scriptlet name is empty.
- */
-export const extractScriptletNameAndArgs = (
-    ruleNode: ScriptletInjectionRule,
-): { name: string; args: string[] } => {
-    const paramList = ruleNode.body.children[0];
-    if (!paramList) {
-        throw new Error('ScriptletInjectionRule has no scriptlet calls in body');
-    }
-
-    if (ruleNode.body.children.length > 1) {
-        console.warn(
-            `[ext.extractScriptletNameAndArgs]: Rule has ${ruleNode.body.children.length} scriptlet calls; `
-                + 'only the first will be preregistered (matches @adguard/tsurlfilter\'s CosmeticRule behavior).',
-        );
-    }
-
-    const name = QuoteUtils.removeQuotesAndUnescape(getScriptletName(paramList));
-    const args = paramList.children.slice(1).map(
-        (param) => (param === null ? '' : QuoteUtils.removeQuotesAndUnescape(param.value)),
-    );
-
-    return { name, args };
-};
-
-/**
- * Raw generated body of a JS injection rule.
- * Produced by {@link CosmeticRuleBodyGenerator.generate} — ready to be inlined
- * into a per-hash file with a deduplication guard.
+ * Raw generated body of a JS injection rule — ready to be inlined into a
+ * per-hash file with a deduplication guard.
  */
 export type RuleBody = string;
 
@@ -321,25 +276,36 @@ export class ScriptletCollector {
                 continue;
             }
 
-            if (isJsInjectionRule(ruleNode)) {
-                const rawBody = CosmeticRuleBodyGenerator.generate(ruleNode);
-                const hash = await computeJsRuleHash(rawBody);
-                this.addRule(hash, { jsBody: rawBody });
-            } else if (isScriptletRule(ruleNode)) {
-                try {
-                    const { name, args } = extractScriptletNameAndArgs(ruleNode);
-                    const hash = await computeScriptletHash(name, args);
-                    this.scriptletNames.add(name);
+            let rule: CosmeticRule;
+            try {
+                rule = new CosmeticRule('', FILTER_LIST_ID_NONE, RULE_INDEX_NONE, ruleNode);
+            } catch (error) {
+                console.warn(
+                    `[ext.ScriptletCollector.processRuleSet]: Failed to construct CosmeticRule: ${error instanceof Error ? error.message : String(error)}`,
+                );
+                continue;
+            }
+
+            try {
+                const hash = await computeRuleHash(rule);
+                if (rule.isScriptlet) {
+                    const data = rule.getScriptletData();
+                    if (!data) {
+                        throw new Error('getScriptletData() returned null');
+                    }
+                    this.scriptletNames.add(data.params.name);
                     this.addRule(hash, {
-                        scriptletName: name,
-                        scriptletArgs: args,
+                        scriptletName: data.params.name,
+                        scriptletArgs: data.params.args,
                     });
-                } catch (error) {
-                    console.warn(
-                        `[ext.ScriptletCollector.processRuleSet]: Failed to extract scriptlet data: ${error instanceof Error ? error.message : String(error)}`,
-                    );
-                    throw error;
+                } else {
+                    this.addRule(hash, { jsBody: rule.getContent() });
                 }
+            } catch (error) {
+                console.warn(
+                    `[ext.ScriptletCollector.processRuleSet]: Failed to hash rule: ${error instanceof Error ? error.message : String(error)}`,
+                );
+                throw error;
             }
         }
     }

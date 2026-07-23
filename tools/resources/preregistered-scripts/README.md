@@ -130,7 +130,7 @@ export const preregisteredDomains = ["youtube.com", "m.youtube.com", ...];
 | `config.ts` | `preregisteredDomains` — domains to generate bundles for. Add a domain here to register it. |
 | `constants.ts` | `DOMAINS_LIST_FILENAME` and `minifyJs` (shared Terser options) |
 | `generate-bundle.ts` | Orchestrator — runs collect → completeness check → coordination key → shared bundle → per-hash files → cleanup file → domains list |
-| `scriptlet-collector.ts` | AST predicates (`isGenericCosmeticRule`, `isScriptletRule`, `isRuleTargetsDomain`, `extractScriptletNameAndArgs`) + the `ScriptletCollector` class |
+| `scriptlet-collector.ts` | AST predicates (`isGenericCosmeticRule`, `isScriptletRule`, `isRuleTargetsDomain`) + the `ScriptletCollector` class |
 | `assert-hash-completeness.ts` | `assertHashCompleteness` — cross-validates collected hashes against a real `@adguard/tsurlfilter` `Engine` instance |
 | `code-generators/coordination-key.ts` | `generateCoordinationKey` — random per-build top-level `let` identifier |
 | `code-generators/shared-bundle-generator/` | `shared-bundle-template.js` (runtime template) + `shared-bundle-generator.ts` (compiler) |

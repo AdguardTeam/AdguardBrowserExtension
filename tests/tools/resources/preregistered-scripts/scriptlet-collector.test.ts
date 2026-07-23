@@ -35,7 +35,6 @@ import {
     isScriptletRule,
     isDomainOrSubdomain,
     isRuleTargetsDomain,
-    extractScriptletNameAndArgs,
     ScriptletCollector,
 } from '../../../../tools/resources/preregistered-scripts/scriptlet-collector';
 import { readMetadataRuleSet, extractPreprocessedRawFilterList } from '../../../../tools/resources/filter-extractor';
@@ -179,30 +178,6 @@ describe('isRuleTargetsDomain', () => {
         expect(isRuleTargetsDomain(rule, 'm.youtube.com')).toBe(false);
         // The apex is unaffected — only the excluded subdomain is restricted.
         expect(isRuleTargetsDomain(rule, 'youtube.com')).toBe(true);
-    });
-});
-
-describe('extractScriptletNameAndArgs', () => {
-    it('extracts name and args from a uBO-style scriptlet rule', () => {
-        const rule = parseRule('youtube.com##+js(set-constant, foo, bar)') as ScriptletInjectionRule;
-        expect(extractScriptletNameAndArgs(rule)).toEqual({ name: 'set-constant', args: ['foo', 'bar'] });
-    });
-
-    it('extracts name and args from an ABP-style scriptlet rule with quoted params', () => {
-        const rule = parseRule("youtube.com#%#//scriptlet('set-constant', 'foo', 'bar')") as ScriptletInjectionRule;
-        expect(extractScriptletNameAndArgs(rule)).toEqual({ name: 'set-constant', args: ['foo', 'bar'] });
-    });
-
-    it('unescapes escaped quotes inside quoted arguments', () => {
-        const rule = parseRule(
-            String.raw`youtube.com#%#//scriptlet('set-constant', 'it\'s', 'bar')`,
-        ) as ScriptletInjectionRule;
-        expect(extractScriptletNameAndArgs(rule)).toEqual({ name: 'set-constant', args: ["it's", 'bar'] });
-    });
-
-    it('returns an empty args array for a scriptlet with no arguments', () => {
-        const rule = parseRule('youtube.com##+js(set-constant)') as ScriptletInjectionRule;
-        expect(extractScriptletNameAndArgs(rule)).toEqual({ name: 'set-constant', args: [] });
     });
 });
 
