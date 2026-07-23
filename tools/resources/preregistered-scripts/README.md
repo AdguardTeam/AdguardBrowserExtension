@@ -28,7 +28,7 @@ flowchart TD
 
 Build-time (this folder) and runtime
 (`@adguard/tswebextension`'s `PreregisteredScriptsService`) both import the
-**same** `hasher.ts` from `@adguard/tswebextension/mv3/preregistered-scripts`
+**same** `hasher.ts` from `@adguard/tswebextension/mv3/preregistered-scripts/hasher`
 to compute rule hashes. This shared contract is what lets the runtime map
 "cosmetic rules the engine returns for a domain" to "which `{hash}.js` files
 to register", without ever transmitting rule content at runtime — only
@@ -144,8 +144,9 @@ The shared hash contract (`hashString`, `computeScriptletHash`,
 `CLEANUP_BUNDLE_FILENAME`, `PREREGISTERED_SCRIPTS_DIR`) lives in
 `@adguard/tswebextension`
 (`src/lib/mv3/background/preregistered-scripts/hasher.ts`), exported via the
-`@adguard/tswebextension/mv3/preregistered-scripts` entry point — not in this
-folder.
+`@adguard/tswebextension/mv3/preregistered-scripts/hasher` entry point (a
+separate, Node-safe entry — importing it does not pull in the browser-only
+`PreregisteredScriptsService`) — not in this folder.
 
 ## Adding a new domain
 

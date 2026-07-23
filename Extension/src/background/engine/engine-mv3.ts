@@ -30,7 +30,7 @@ import {
     type ConfigurationResult,
     FilterList,
 } from '@adguard/tswebextension/mv3';
-import { PREREGISTERED_SCRIPTS_DIR } from '@adguard/tswebextension/mv3/preregistered-scripts';
+import { PREREGISTERED_SCRIPTS_DIR } from '@adguard/tswebextension/mv3/preregistered-scripts/hasher';
 
 import { logger } from '../../common/logger';
 import { WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS } from '../../../../constants';
@@ -321,8 +321,10 @@ export class Engine implements TsWebExtensionEngine {
             settings,
             filtersPath: 'filters/',
             ruleSetsPath: 'filters/declarative',
-            preregisteredScriptDomains: preregisteredDomains,
-            preregisteredScriptsPath: `filters/${PREREGISTERED_SCRIPTS_DIR}`,
+            preregisteredScripts: {
+                domains: preregisteredDomains,
+                path: `filters/${PREREGISTERED_SCRIPTS_DIR}`,
+            },
             trustedDomains,
         };
     }
