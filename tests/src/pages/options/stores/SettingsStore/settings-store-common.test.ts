@@ -173,33 +173,7 @@ describe('SettingsStoreCommon', () => {
             categories: [],
         },
         fullscreenUserRulesEditorIsOpen: false,
-        showGeneralSettingsPromo: false,
         ...overrides,
-    });
-
-    describe('showGeneralSettingsPromo initialization from applyOptionsData', () => {
-        it('should set showGeneralSettingsPromo from options data', async () => {
-            const { store } = await createStore();
-
-            store.testApplyOptionsData(
-                createOptionsData({ showGeneralSettingsPromo: true }),
-            );
-            expect(store.showGeneralSettingsPromo).toBe(true);
-        });
-
-        it('should update showGeneralSettingsPromo on subsequent applyOptionsData calls', async () => {
-            const { store } = await createStore();
-
-            store.testApplyOptionsData(
-                createOptionsData({ showGeneralSettingsPromo: true }),
-            );
-            expect(store.showGeneralSettingsPromo).toBe(true);
-
-            store.testApplyOptionsData(
-                createOptionsData({ showGeneralSettingsPromo: false }),
-            );
-            expect(store.showGeneralSettingsPromo).toBe(false);
-        });
     });
 
     describe('availableUpdateVersion initialization from applyOptionsData', () => {

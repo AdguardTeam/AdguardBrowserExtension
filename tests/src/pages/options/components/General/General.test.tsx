@@ -238,7 +238,6 @@ const setupAndRender = async (options: {
                 values: {},
             },
             allowAcceptableAds: false,
-            showGeneralSettingsPromo: false,
             checkLimitations: mocks.checkLimitations,
             setAllowAcceptableAdsState: vi.fn(),
             updateSetting: vi.fn(),

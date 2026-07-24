@@ -361,15 +361,6 @@ export abstract class MessengerCommon {
     };
 
     /**
-     * Sends a message to the background page to open the compare page.
-     *
-     * @returns Promise that resolves after the message is sent.
-     */
-    openComparePage = async (): Promise<ExtractMessageResponse<MessageType.OpenComparePage>> => {
-        return this.sendMessage(MessageType.OpenComparePage);
-    };
-
-    /**
      * Sends a message to the background page to open the Chrome extensions settings page.
      *
      * @returns Promise that resolves after the message is sent.

@@ -56,13 +56,6 @@ vi.mock('../../../../../../Extension/src/pages/common/components/ui/Icon', () =>
     Icon: () => React.createElement('svg', { 'data-testid': 'icon-cross' }),
 }));
 
-const footerCss = {
-    container: 'footer-container',
-    description: 'footer-description',
-    rateButton: 'footer-rateButton',
-    close: 'footer-close',
-};
-
 const sidebarCss = {
     container: 'sidebar-container',
     description: 'sidebar-description',
@@ -71,21 +64,15 @@ const sidebarCss = {
 };
 
 vi.mock(
-    '../../../../../../Extension/src/pages/options/components/RateNotification/rate-notification-footer.module.pcss',
-    () => ({ default: footerCss }),
-);
-
-vi.mock(
-    '../../../../../../Extension/src/pages/options/components/RateNotification/rate-notification-sidebar.module.pcss',
+    '../../../../../../Extension/src/pages/options/components/RateNotification/rate-notification.module.pcss',
     () => ({ default: sidebarCss }),
 );
 
 const createMockRootStore = (overrides: Record<string, unknown> = {}) => {
     const store = {
         settingsStore: {
-            footerRateShowState: true,
-            showGeneralSettingsPromo: false,
-            hideFooterRateShow: vi.fn(),
+            rateShowState: true,
+            hideRateShow: vi.fn(),
             ...overrides,
         },
         telemetryStore: {
@@ -106,8 +93,8 @@ describe('RateNotification', () => {
         vi.restoreAllMocks();
     });
 
-    it('should return null when footerRateShowState is false', async () => {
-        const { context } = createMockRootStore({ footerRateShowState: false });
+    it('should return null when rateShowState is false', async () => {
+        const { context } = createMockRootStore({ rateShowState: false });
 
         vi.doMock('../../../../../../Extension/src/pages/options/stores/RootStore', () => ({
             rootStore: context,
@@ -122,33 +109,9 @@ describe('RateNotification', () => {
         expect(container.innerHTML).toBe('');
     });
 
-    it('should use footer styles when showGeneralSettingsPromo is false', async () => {
+    it('should use sidebar styles', async () => {
         const { context } = createMockRootStore({
-            footerRateShowState: true,
-            showGeneralSettingsPromo: false,
-        });
-
-        vi.doMock('../../../../../../Extension/src/pages/options/stores/RootStore', () => ({
-            rootStore: context,
-        }));
-
-        const { RateNotification } = await import(
-            '../../../../../../Extension/src/pages/options/components/RateNotification/RateNotification'
-        );
-
-        render(React.createElement(RateNotification));
-
-        const alert = screen.getByRole('alert');
-        expect(alert.className).toBe('footer-container');
-
-        const rateButton = screen.getByText('options_footer_like_us_cta');
-        expect(rateButton.className).toContain('button--s');
-    });
-
-    it('should use sidebar styles when showGeneralSettingsPromo is true', async () => {
-        const { context } = createMockRootStore({
-            footerRateShowState: true,
-            showGeneralSettingsPromo: true,
+            rateShowState: true,
         });
 
         vi.doMock('../../../../../../Extension/src/pages/options/stores/RootStore', () => ({
@@ -164,12 +127,12 @@ describe('RateNotification', () => {
         const alert = screen.getByRole('alert');
         expect(alert.className).toBe('sidebar-container');
 
-        const rateButton = screen.getByText('options_footer_like_us_cta');
+        const rateButton = screen.getByText('options_rate_us_cta');
         expect(rateButton.className).toContain('button--m');
     });
 
-    it('should call hideFooterRateShow when close button is clicked', async () => {
-        const { context, store } = createMockRootStore({ footerRateShowState: true });
+    it('should call hideRateShow when close button is clicked', async () => {
+        const { context, store } = createMockRootStore({ rateShowState: true });
 
         vi.doMock('../../../../../../Extension/src/pages/options/stores/RootStore', () => ({
             rootStore: context,
@@ -184,11 +147,11 @@ describe('RateNotification', () => {
         const closeButton = screen.getByLabelText('close_button_title');
         fireEvent.click(closeButton);
 
-        expect(store.settingsStore.hideFooterRateShow).toHaveBeenCalledOnce();
+        expect(store.settingsStore.hideRateShow).toHaveBeenCalledOnce();
     });
 
     it('should render close button as accessible button element', async () => {
-        const { context } = createMockRootStore({ footerRateShowState: true });
+        const { context } = createMockRootStore({ rateShowState: true });
 
         vi.doMock('../../../../../../Extension/src/pages/options/stores/RootStore', () => ({
             rootStore: context,

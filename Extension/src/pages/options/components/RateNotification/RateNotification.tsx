@@ -29,31 +29,25 @@ import { CloseIcon } from '../../../common/components/ui/CloseIcon';
 import { rootStore } from '../../stores/RootStore';
 import { TelemetryEventName, TelemetryScreenName } from '../../../../common/telemetry';
 
-import footerStyles from './rate-notification-footer.module.pcss';
-import sidebarStyles from './rate-notification-sidebar.module.pcss';
+import styles from './rate-notification.module.pcss';
 
 /**
  * Notification prompting users to rate the extension.
- * Renders as a horizontal footer bar in A-variant,
- * or as a sidebar card in B-variant (General Settings promo test).
+ * Renders as a card in the options page sidebar.
  */
 export const RateNotification = observer(() => {
     const { settingsStore, telemetryStore } = useContext(rootStore);
 
-    if (!settingsStore.footerRateShowState) {
+    if (!settingsStore.rateShowState) {
         return null;
     }
-
-    const isSidebarVariant = settingsStore.showGeneralSettingsPromo;
-    const styles = isSidebarVariant ? sidebarStyles : footerStyles;
-    const buttonSize = isSidebarVariant ? 'button--m' : 'button--s';
 
     const hideRate = () => {
         telemetryStore.sendCustomEvent(
             TelemetryEventName.CloseRateUsClick,
             TelemetryScreenName.MainPage,
         );
-        settingsStore.hideFooterRateShow();
+        settingsStore.hideRateShow();
     };
 
     const handleRateClick = async () => {
@@ -63,7 +57,7 @@ export const RateNotification = observer(() => {
         );
 
         await messenger.openExtensionStore();
-        settingsStore.hideFooterRateShow();
+        settingsStore.hideRateShow();
     };
 
     return (
@@ -73,10 +67,10 @@ export const RateNotification = observer(() => {
             </div>
             <button
                 type="button"
-                className={cn(styles.rateButton, 'button', 'button--green-bg', buttonSize)}
+                className={cn(styles.rateButton, 'button', 'button--green-bg', 'button--m')}
                 onClick={handleRateClick}
             >
-                {translator.getMessage('options_footer_like_us_cta')}
+                {translator.getMessage('options_rate_us_cta')}
             </button>
             <button
                 type="button"

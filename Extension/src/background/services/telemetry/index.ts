@@ -30,6 +30,5 @@ export type {
     SessionStartResponse,
 } from './abtest';
 export {
-    AG_52622_GENERAL_SETTINGS_PROMO_B,
     AG_52740_RULE_LIMITS_B,
 } from './abtest/constants';

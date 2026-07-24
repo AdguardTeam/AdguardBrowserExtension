@@ -470,7 +470,7 @@ export const General = observer(() => {
                     {translator.getMessage('options_leave_feedback')}
                 </button>
             </div>
-            {settingsStore.showGeneralSettingsPromo && <DesktopAppPromo />}
+            <DesktopAppPromo />
         </>
     );
 });

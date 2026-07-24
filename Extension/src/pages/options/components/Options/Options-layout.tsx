@@ -26,11 +26,10 @@ import { rootStore } from '../../stores/RootStore';
 import { SkipToContentButton } from '../SkipToContentButton';
 import { Sidebar } from '../Sidebar';
 import { Notifications } from '../Notifications';
-import { RateNotification } from '../RateNotification';
 
 export const OptionsLayout = observer(() => {
     const mainRef = useRef(null);
-    const { uiStore, settingsStore } = useContext(rootStore);
+    const { uiStore } = useContext(rootStore);
 
     return (
         <>
@@ -45,7 +44,6 @@ export const OptionsLayout = observer(() => {
                     <Notifications />
                     <Outlet />
                 </main>
-                {!settingsStore.showGeneralSettingsPromo && <RateNotification />}
             </div>
         </>
     );

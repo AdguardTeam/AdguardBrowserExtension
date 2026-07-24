@@ -239,12 +239,6 @@ export abstract class SettingsStoreCommon {
     userRulesViewMode: ViewModeValue = readViewMode();
 
     /**
-     * Whether the General Settings promo A/B test B-variant is active (AG-52622).
-     */
-    @observable
-    showGeneralSettingsPromo = false;
-
-    /**
      * Whether the Rule Limits A/B test B-variant is active (AG-54586).
      */
     @observable
@@ -372,7 +366,6 @@ export abstract class SettingsStoreCommon {
         this.setStripTrackingParameters(data.filtersMetadata.filters);
         this.isChrome = data.environmentOptions.isChrome;
         this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
-        this.showGeneralSettingsPromo = data.showGeneralSettingsPromo;
         this.showRuleLimitsVariantB = data.showRuleLimitsVariantB;
         this.optionsReadyToRender = true;
     }
@@ -963,20 +956,26 @@ export abstract class SettingsStoreCommon {
         );
     }
 
+    /**
+     * Whether the rate-us card should be shown.
+     */
     @computed
-    get footerRateShowState(): boolean {
+    get rateShowState(): boolean {
         if (!this.settings) {
-            logger.debug('[ext.SettingsStoreCommon.footerRateShowState]: settings is not initialized yet');
+            logger.debug('[ext.SettingsStoreCommon.rateShowState]: settings is not initialized yet');
             return false;
         }
 
         return !this.settings.values[this.settings.names.HideRateBlock];
     }
 
+    /**
+     * Dismisses the rate-us card by persisting the HideRateBlock setting.
+     */
     @action
-    async hideFooterRateShow(): Promise<void> {
+    async hideRateShow(): Promise<void> {
         if (!this.settings) {
-            logger.debug('[ext.SettingsStoreCommon.hideFooterRateShow]: settings is not initialized yet');
+            logger.debug('[ext.SettingsStoreCommon.hideRateShow]: settings is not initialized yet');
             return;
         }
         await this.updateSetting(this.settings.names.HideRateBlock, true);
