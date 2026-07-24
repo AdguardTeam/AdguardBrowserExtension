@@ -98,7 +98,6 @@ export enum MessageType {
     OpenAssistant = 'openAssistant',
     OpenAbuseTab = 'openAbuseTab',
     OpenSiteReportTab = 'openSiteReportTab',
-    OpenComparePage = 'openComparePage',
     OpenChromeExtensionsSettingsPage = 'openChromeExtensionsSettingsPage',
     OpenExtensionDetailsPage = 'openExtensionDetailsPage',
     ResetUserRulesForPage = 'resetUserRulesForPage',
@@ -287,10 +286,6 @@ export type GetAllowlistDomainsMessage = {
 
 export type ResetBlockedAdsCountMessage = {
     type: MessageType.ResetBlockedAdsCount;
-};
-
-export type OpenComparePageMessage = {
-    type: MessageType.OpenComparePage;
 };
 
 export type OpenChromeExtensionsSettingsPageMessage = {
@@ -823,10 +818,6 @@ export type MessageMap = {
     };
     [MessageType.OpenExtensionStore]: {
         message: OpenExtensionStoreMessage;
-        response: void;
-    };
-    [MessageType.OpenComparePage]: {
-        message: OpenComparePageMessage;
         response: void;
     };
     [MessageType.OpenChromeExtensionsSettingsPage]: {

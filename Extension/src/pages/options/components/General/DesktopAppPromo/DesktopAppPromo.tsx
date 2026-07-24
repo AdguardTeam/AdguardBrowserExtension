@@ -34,7 +34,7 @@ import styles from './desktop-app-promo.module.pcss';
 
 /**
  * Promo card encouraging users to install the AdGuard desktop app.
- * Shown on the General Settings page in the B-variant of the A/B test (AG-52622).
+ * Shown on the General Settings page.
  * Displays an OS-dependent CTA button (Windows/Mac/Linux) linking to the
  * corresponding product page. Hidden when the user dismisses the promo.
  */
@@ -71,6 +71,8 @@ export const DesktopAppPromo = observer(() => {
                     rel="noopener noreferrer"
                     className={cn(styles.button, 'button', 'button--green-bg', 'button--m')}
                     onClick={() => {
+                        // CompareClick now means "desktop app promo CTA click"
+                        // since the Compare widget removal (see handleCloseClick).
                         telemetryStore.sendCustomEvent(
                             TelemetryEventName.CompareClick,
                             TelemetryScreenName.MainPage,

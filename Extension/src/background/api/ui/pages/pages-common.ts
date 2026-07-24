@@ -173,14 +173,6 @@ export abstract class PagesApiCommon {
     private extensionStoreUrlPromise?: Promise<string>;
 
     /**
-     * Compare page url.
-     */
-    private static readonly comparePageUrl = Forward.get({
-        action: ForwardAction.Compare,
-        from: ForwardFrom.Options,
-    });
-
-    /**
      * Opens the settings tab and focuses on it if there is no open setting tab.
      * Otherwise only focuses on the open setting tab.
      */
@@ -495,13 +487,6 @@ export abstract class PagesApiCommon {
      */
     public static async openPostInstallPage(): Promise<void> {
         await browser.tabs.create({ url: PagesApiCommon.postInstallPageUrl });
-    }
-
-    /**
-     * Opens compare page.
-     */
-    public static async openComparePage(): Promise<void> {
-        await browser.tabs.create({ url: PagesApiCommon.comparePageUrl });
     }
 
     /**

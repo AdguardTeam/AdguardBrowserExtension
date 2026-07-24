@@ -41,8 +41,6 @@ export type ExperimentRegistry = Readonly<VariantCache>;
  */
 export const EXPERIMENT_REGISTRY: ExperimentRegistry = {
     experiment_1: 'AG-52740-rule-limits',
-    experiment_2: 'AG-52622-general-settings-promo',
 };
 
-export const AG_52622_GENERAL_SETTINGS_PROMO_B = 'AG-52622-general-settings-promo-b';
 export const AG_52740_RULE_LIMITS_B = 'AG-52740-rule-limits-b';

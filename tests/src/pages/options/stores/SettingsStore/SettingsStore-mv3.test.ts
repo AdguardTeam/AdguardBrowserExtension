@@ -70,7 +70,6 @@ vi.mock('../../../../../../Extension/src/pages/options/services/messenger', () =
             filtersInfo: { rulesCount: 100 },
             filtersMetadata: { filters: [], categories: [] },
             fullscreenUserRulesEditorIsOpen: false,
-            showGeneralSettingsPromo: false,
             runtimeInfo: {
                 areFilterLimitsExceeded: false,
                 isExtensionUpdateAvailable: false,
