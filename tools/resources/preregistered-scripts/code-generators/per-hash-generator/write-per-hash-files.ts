@@ -23,7 +23,7 @@
 import path from 'node:path';
 
 import { SCRIPTLETS_VERSION } from '@adguard/scriptlets';
-import { getPathPatternRegex } from '@adguard/tswebextension/mv3/preregistered-scripts/hasher';
+import { SimpleRegex } from '@adguard/tsurlfilter';
 
 import { NEWLINE_CHAR_UNIX } from '../../../../../Extension/src/common/constants';
 import { minifyJs } from '../../constants';
@@ -125,11 +125,32 @@ const compileJsRuleFile = (entry: CollectedRuleEntry, coordinationKey: string): 
 };
 
 /**
- * Wraps compiled rule content with a runtime `$path` guard, so it only
- * executes when `location.pathname` matches the rule's original path
- * pattern. Rules are collected regardless of path (see
- * {@link ScriptletCollector}) — this is where the deferred path condition is
- * actually enforced, in the browser, at injection time.
+ * Converts a `$path` pattern into a regex, the same way tsurlfilter's
+ * `Pattern` class does internally ({@link SimpleRegex.patternToRegexp}).
+ * Can't reuse `Pattern` directly here since the result is embedded as a
+ * runtime guard in a file that runs in the page's MAIN world, not Node.js.
+ *
+ * @param pathPattern Raw `$path` modifier pattern text
+ * (`rule.pathModifier.pattern`).
+ *
+ * @returns Regex source and flags for `new RegExp(source, flags)`.
+ */
+const getPathPatternRegex = (pathPattern: string): { source: string; flags: string } => {
+    if (pathPattern === '') {
+        return { source: '^/$', flags: '' };
+    }
+
+    return {
+        source: SimpleRegex.patternToRegexp(pathPattern),
+        flags: 'i',
+    };
+};
+
+/**
+ * Wraps compiled rule content with a runtime `$path` guard, so it only runs
+ * when `location.pathname` matches the rule's path pattern. Rules are
+ * collected regardless of path (see {@link ScriptletCollector}) — this is
+ * where that condition is finally enforced, in the browser.
  *
  * @param content Compiled rule content (from {@link compileScriptletFile} or
  * {@link compileJsRuleFile}).
