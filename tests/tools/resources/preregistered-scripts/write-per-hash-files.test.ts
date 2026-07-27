@@ -144,4 +144,79 @@ describe('writePerHashFiles', () => {
         expect(contentB).toContain(keyB);
         expect(contentB).not.toContain(keyA);
     });
+
+    it('wraps a JS rule with a $path modifier in a runtime path guard', async () => {
+        outputDir = await fs.mkdtemp(path.join(os.tmpdir(), 'per-hash-files-'));
+
+        const hash = 'pathguardjsrule01';
+        const entry: CollectedRuleEntry = {
+            hash,
+            jsBody: "console.log('path-scoped');",
+            pathPattern: '/watch',
+        };
+
+        await writePerHashFiles(new Map([[hash, entry]]), outputDir, TEST_KEY);
+        const content = await fs.readFile(path.join(outputDir, `${hash}.js`), 'utf-8');
+
+        expect(content).toContain('new RegExp(');
+        expect(content).toContain('location.pathname');
+
+        // eslint-disable-next-line @typescript-eslint/no-implied-eval -- sandbox-testing codegen output
+        const globalObj: Record<string, unknown> = {
+            location: { pathname: '/watch' },
+            console: { log: () => {} },
+        };
+        globalObj[TEST_KEY] = { b: new Set() };
+        // eslint-disable-next-line @typescript-eslint/no-implied-eval -- sandbox-testing codegen output
+        const runInSandbox = new Function(...Object.keys(globalObj), content);
+        expect(() => runInSandbox(...Object.values(globalObj))).not.toThrow();
+    });
+
+    it('does not execute a $path-guarded rule when the path does not match', async () => {
+        outputDir = await fs.mkdtemp(path.join(os.tmpdir(), 'per-hash-files-'));
+
+        const hash = 'pathguardjsrule02';
+        let executed = false;
+        const entry: CollectedRuleEntry = {
+            hash,
+            jsBody: 'globalThis.__executed = true;',
+            pathPattern: '/watch',
+        };
+
+        await writePerHashFiles(new Map([[hash, entry]]), outputDir, TEST_KEY);
+        const content = await fs.readFile(path.join(outputDir, `${hash}.js`), 'utf-8');
+
+        const globalObj: Record<string, unknown> = {
+            location: { pathname: '/unrelated' },
+            globalThis: {
+                get __executed() {
+                    return executed;
+                },
+                set __executed(value: boolean) {
+                    executed = value;
+                },
+            },
+        };
+        globalObj[TEST_KEY] = { b: new Set() };
+        // eslint-disable-next-line @typescript-eslint/no-implied-eval -- sandbox-testing codegen output
+        const runInSandbox = new Function(...Object.keys(globalObj), content);
+        runInSandbox(...Object.values(globalObj));
+
+        expect(executed).toBe(false);
+    });
+
+    it('does not wrap a rule without a pathPattern in a path guard', async () => {
+        outputDir = await fs.mkdtemp(path.join(os.tmpdir(), 'per-hash-files-'));
+
+        const hash = 'nopathguardjsrule';
+        const entry: CollectedRuleEntry = {
+            hash,
+            jsBody: "console.log('no-path');",
+        };
+
+        await writePerHashFiles(new Map([[hash, entry]]), outputDir, TEST_KEY);
+        const content = await fs.readFile(path.join(outputDir, `${hash}.js`), 'utf-8');
+
+        expect(content).not.toContain('location.pathname');
+    });
 });

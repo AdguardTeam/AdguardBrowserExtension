@@ -21,111 +21,35 @@
 /* eslint-disable no-console */
 
 import {
-    type AnyRule,
-    CosmeticRuleType,
-    type ScriptletInjectionRule,
-    RuleCategory,
-    type JsInjectionRule,
-} from '@adguard/agtree';
-import { FilterListParser, defaultParserOptions } from '@adguard/agtree/parser';
-import { isJsInjectionRule } from '@adguard/dnr-rulesets';
-import {
-    CosmeticRule,
-    FILTER_LIST_ID_NONE,
-    RULE_INDEX_NONE,
+    type CosmeticRule,
+    Engine,
+    Request,
+    RequestType,
 } from '@adguard/tsurlfilter';
 import { computeRuleHash, normalizeDomain } from '@adguard/tswebextension/mv3/preregistered-scripts/hasher';
 
 import { extractPreprocessedRawFilterList, readMetadataRuleSet } from '../filter-extractor';
 
-import { preregisteredDomains as rawPreregisteredDomains } from './config';
+import { preregisteredDomains } from './config';
 
 /**
- * Normalized preregistered domains list — the single source of truth used
- * for all domain comparisons in this module.
+ * Hostnames queried against the real `@adguard/tsurlfilter` `Engine` — each
+ * preregistered domain (normalized via {@link normalizeDomain} so config
+ * typos/casing/`www.` prefixes can't cause a mismatch) contributes two
+ * entries: the apex itself and its `www.` alias. Subdomains other than
+ * `www.` are intentionally NOT covered — matches the runtime's exact-domain
+ * (+ `www.` alias) content-script registration.
+ *
+ * The apex domain a hostname belongs to is not stored alongside it here —
+ * it's always recoverable by re-applying {@link normalizeDomain} (which
+ * strips a leading `www.`), so `processRuleSet` derives it at the point of
+ * use instead of carrying a redundant field.
  */
-const preregisteredDomains: readonly string[] = rawPreregisteredDomains.map(normalizeDomain);
-
-/**
- * Returns `true` if a cosmetic rule is "generic" — not restricted to specific domains.
- *
- * @param ruleNode Parsed cosmetic rule AST node (JS or scriptlet injection).
- *
- * @returns `true` if the rule has no domain restriction or only `*`.
- */
-export const isGenericCosmeticRule = (
-    ruleNode: JsInjectionRule | ScriptletInjectionRule,
-): boolean => {
-    return (
-        !ruleNode.domains
-        || ruleNode.domains.children.length === 0
-        || (ruleNode.domains.children.length === 1 && ruleNode.domains.children[0]?.value === '*')
-    );
-};
-
-/**
- * Returns `true` if the rule node is a scriptlet injection rule.
- *
- * @param ruleNode Rule node to check.
- *
- * @returns `true` if the node is a {@link ScriptletInjectionRule}.
- */
-export const isScriptletRule = (
-    ruleNode: AnyRule | null,
-): ruleNode is ScriptletInjectionRule => {
-    return !!ruleNode
-        && ruleNode.category === RuleCategory.Cosmetic
-        && ruleNode.type === CosmeticRuleType.ScriptletInjectionRule;
-};
-
-/**
- * Returns `true` if `domain` is equal to `preregisteredDomain` or a subdomain of it.
- *
- * @param domain Domain to check.
- * @param preregisteredDomain Apex domain to match against (e.g. `"youtube.com"`).
- *
- * @returns `true` if `domain` is the preregistered domain or its subdomain.
- */
-export const isDomainOrSubdomain = (
-    domain: string,
-    preregisteredDomain: string,
-): boolean => {
-    const normalizedDomain = normalizeDomain(domain);
-    return normalizedDomain === preregisteredDomain || normalizedDomain.endsWith(`.${preregisteredDomain}`);
-};
-
-/**
- * Returns `true` if the rule targets the given domain or its subdomains.
- *
- * @param ruleNode Parsed rule AST node (JS or scriptlet injection).
- * @param preregisteredDomain Apex domain to match against (e.g. `"youtube.com"`).
- *
- * @returns `true` if the rule explicitly permits this domain.
- */
-export const isRuleTargetsDomain = (
-    ruleNode: ScriptletInjectionRule | JsInjectionRule,
-    preregisteredDomain: string,
-): boolean => {
-    if (isGenericCosmeticRule(ruleNode)) {
-        return true;
-    }
-
-    const { domains } = ruleNode;
-    if (!domains) {
-        return false;
-    }
-
-    const permitted = domains.children.filter((domainNode) => !domainNode.exception);
-    const restricted = domains.children.filter((domainNode) => domainNode.exception);
-
-    if (permitted.length === 0) {
-        return !restricted.some(
-            (domainNode) => isDomainOrSubdomain(preregisteredDomain, domainNode.value),
-        );
-    }
-
-    return permitted.some((domainNode) => isDomainOrSubdomain(domainNode.value, preregisteredDomain));
-};
+const preregisteredHostnames: readonly string[] = (
+    preregisteredDomains
+        .map(normalizeDomain)
+        .flatMap((domain) => [domain, `www.${domain}`])
+);
 
 /**
  * Raw generated body of a JS injection rule — ready to be inlined into a
@@ -162,6 +86,15 @@ export interface CollectedRuleEntry {
      * Scriptlet arguments (only for scriptlet rules).
      */
     scriptletArgs?: string[];
+
+    /**
+     * Raw `$path` modifier pattern text (`rule.pathModifier.pattern`), if the
+     * rule has one. The rule was collected regardless of path (domain-only
+     * match, see {@link ScriptletCollector}) — this is embedded as a runtime
+     * guard in the generated `{hash}.js` file so the path condition is still
+     * enforced, just deferred to the browser instead of the collector.
+     */
+    pathPattern?: string;
 }
 
 /**
@@ -190,6 +123,13 @@ export interface CollectedScriptlets {
 /**
  * Walks all DNR rulesets in the declarative filter folder and collects
  * scriptlet invocations and JS injection rules.
+ *
+ * Domain applicability and rule type filtering are NOT done by hand — for
+ * each ruleset, a real `@adguard/tsurlfilter` `Engine` is built from its raw
+ * filter list text, and `Engine.getJsRulesIgnoringPath(request)` is queried
+ * once per preregistered domain (+ its `www.` alias). This is the exact same
+ * lookup the runtime engine performs, so there is no separate hand-rolled
+ * matching implementation that could drift from it.
  *
  * Unlike the previous `FilterCollector`, this class does NOT perform any
  * exception cancellation. Exceptions are handled at runtime by the engine
@@ -250,165 +190,85 @@ export class ScriptletCollector {
     }
 
     /**
-     * Processes a single ruleset: parses the filter list and collects
-     * blocking JS rules and scriptlet invocations.
+     * Processes a single ruleset: builds a real `Engine` from its raw filter
+     * list text and, for every preregistered hostname, queries
+     * `Engine.getJsRulesIgnoringPath(request)` for the JS/scriptlet rules
+     * that hostname matches.
      *
-     * Exception rules (`#@%#...`, `#@#+js(...)`) are silently skipped —
-     * they are handled by the engine at runtime.
+     * `getJsRulesIgnoringPath` is already type-isolated to JS/scriptlet rules
+     * and excludes exception/allowlist rules, so no separate rule-type or
+     * exception filtering is needed here.
      *
      * @param ruleSetId Ruleset identifier (e.g. `"ruleset_2"`).
      */
     private async processRuleSet(ruleSetId: string): Promise<void> {
         const rawFilterList = await extractPreprocessedRawFilterList(ruleSetId, this.declarativeFolder);
-        const filterListNode = FilterListParser.parse(rawFilterList, {
-            ...defaultParserOptions,
-            includeRaws: false,
-            isLocIncluded: false,
-            tolerant: true,
-        });
+        const engine = Engine.createSync({ filters: [{ id: 1, content: rawFilterList }] });
 
-        for (const ruleNode of filterListNode.children) {
-            if (isJsInjectionRule(ruleNode) || isScriptletRule(ruleNode)) {
-                this.recordTargetDomains(ruleNode);
-            }
+        const seenRules = new Set<CosmeticRule>();
 
-            if (!ScriptletCollector.isCollectibleBlockingRule(ruleNode, preregisteredDomains)) {
-                continue;
-            }
+        await Promise.all(
+            preregisteredHostnames.map(async (hostname) => {
+                const request = new Request(`https://${hostname}/`, null, RequestType.Document);
+                const matchedRules = engine.getJsRulesIgnoringPath(request);
 
-            let rule: CosmeticRule;
-            try {
-                rule = new CosmeticRule('', FILTER_LIST_ID_NONE, RULE_INDEX_NONE, ruleNode);
-            } catch (error) {
-                console.warn(
-                    `[ext.ScriptletCollector.processRuleSet]: Failed to construct CosmeticRule: ${error instanceof Error ? error.message : String(error)}`,
-                );
-                continue;
-            }
+                if (matchedRules.length === 0) {
+                    return;
+                }
+                this.domainsWithRules.add(normalizeDomain(hostname));
 
-            try {
-                const hash = await computeRuleHash(rule);
-                if (rule.isScriptlet) {
-                    const data = rule.getScriptletData();
-                    if (!data) {
-                        throw new Error('getScriptletData() returned null');
+                for (const rule of matchedRules) {
+                    if (seenRules.has(rule)) {
+                        continue;
                     }
-                    this.scriptletNames.add(data.params.name);
-                    this.addRule(hash, {
-                        scriptletName: data.params.name,
-                        scriptletArgs: data.params.args,
-                    });
-                } else {
-                    this.addRule(hash, { jsBody: rule.getContent() });
+                    seenRules.add(rule);
+                    await this.recordRule(rule);
                 }
-            } catch (error) {
-                console.warn(
-                    `[ext.ScriptletCollector.processRuleSet]: Failed to hash rule: ${error instanceof Error ? error.message : String(error)}`,
-                );
-                throw error;
-            }
-        }
+            }),
+        );
     }
 
     /**
-     * Determines whether a rule should be collected.
+     * Hashes a matched rule and records it in the accumulators.
      *
-     * Checks that the rule is a non-exception JS injection or scriptlet rule
-     * that applies to at least one preregistered domain.
-     *
-     * @param ruleNode Parsed rule AST node.
-     * @param domains List of preregistered domains.
-     *
-     * @returns `true` if the rule is a collectible blocking rule.
+     * @param rule Matched cosmetic rule (scriptlet or JS injection).
      */
-    private static isCollectibleBlockingRule(
-        ruleNode: AnyRule,
-        domains: readonly string[],
-    ): ruleNode is JsInjectionRule | ScriptletInjectionRule {
-        return (isJsInjectionRule(ruleNode) || isScriptletRule(ruleNode))
-                && !ruleNode.exception
-                && ScriptletCollector.ruleAppliesToPreregisteredDomains(ruleNode, domains);
-    }
-
-    /**
-     * Checks whether a rule applies to at least one preregistered domain.
-     *
-     * Generic rules (no domain restriction) apply to all domains.
-     * Domain-specific rules are checked against the preregistered domain list.
-     *
-     * @param ruleNode Parsed rule AST node (JS or scriptlet injection).
-     * @param domains List of preregistered domains.
-     *
-     * @returns `true` if the rule applies to at least one preregistered domain.
-     */
-    private static ruleAppliesToPreregisteredDomains(
-        ruleNode: ScriptletInjectionRule | JsInjectionRule,
-        domains: readonly string[],
-    ): boolean {
-        return domains.some((d) => isRuleTargetsDomain(ruleNode, d));
-    }
-
-    /**
-     * Records ALL domains from a rule (including exception domains) into
-     * the domains list.
-     *
-     * Exception domains are needed so the runtime can query the engine for
-     * them and add them to `excludeMatches` of their parent domain's
-     * wildcard registration.
-     *
-     * For generic rules: adds all preregistered domains.
-     * For negative-only domain lists, which apply
-     * globally except the listed domains): adds every preregistered domain
-     * that isn't restricted, plus the restricted domains themselves (via the
-     * loop below) so the runtime can register the exclusion correctly.
-     * For domain-specific rules: adds each domain from the rule that is a
-     * subdomain of (or equal to) a preregistered domain.
-     *
-     * @param ruleNode Parsed rule AST node (JS or scriptlet injection).
-     */
-    private recordTargetDomains(
-        ruleNode: ScriptletInjectionRule | JsInjectionRule,
-    ): void {
-        if (isGenericCosmeticRule(ruleNode)) {
-            preregisteredDomains.forEach((d) => this.domainsWithRules.add(d));
-            return;
-        }
-
-        const { domains } = ruleNode;
-        if (!domains) {
-            return;
-        }
-
-        const hasPermittedDomain = domains.children.some((domainNode) => !domainNode.exception);
-
-        if (!hasPermittedDomain) {
-            preregisteredDomains.forEach((preregisteredDomain) => {
-                const isRestricted = domains.children.some(
-                    (domainNode) => isDomainOrSubdomain(preregisteredDomain, domainNode.value),
-                );
-                if (!isRestricted) {
-                    this.domainsWithRules.add(preregisteredDomain);
+    private async recordRule(rule: CosmeticRule): Promise<void> {
+        try {
+            const hash = await computeRuleHash(rule);
+            const pathPattern = rule.pathModifier?.pattern;
+            if (rule.isScriptlet) {
+                const data = rule.getScriptletData();
+                if (!data) {
+                    throw new Error('getScriptletData() returned null');
                 }
-            });
-        }
-
-        domains.children.forEach((domainNode) => {
-            const { value: domain } = domainNode;
-            if (preregisteredDomains.some((d) => isDomainOrSubdomain(domain, d))) {
-                this.domainsWithRules.add(normalizeDomain(domain));
+                this.scriptletNames.add(data.params.name);
+                this.addRule(hash, {
+                    scriptletName: data.params.name,
+                    scriptletArgs: data.params.args,
+                    pathPattern,
+                });
+            } else {
+                this.addRule(hash, { jsBody: rule.getContent(), pathPattern });
             }
-        });
+        } catch (error) {
+            console.warn(
+                `[ext.ScriptletCollector.recordRule]: Failed to hash rule: ${error instanceof Error ? error.message : String(error)}`,
+            );
+            throw error;
+        }
     }
 
     /**
      * Adds a rule entry if not already present (dedup by hash).
      *
      * @param hash Stable hash of the rule.
-     * @param rule Rule data: `jsBody` for JS rules, `scriptletName` + `scriptletArgs` for scriptlets.
+     * @param rule Rule data: `jsBody` for JS rules, `scriptletName` + `scriptletArgs` for
+     * scriptlets, and an optional `pathPattern` for either.
      */
     private addRule(
         hash: string,
-        rule: Pick<CollectedRuleEntry, 'jsBody' | 'scriptletName' | 'scriptletArgs'>,
+        rule: Pick<CollectedRuleEntry, 'jsBody' | 'scriptletName' | 'scriptletArgs' | 'pathPattern'>,
     ): void {
         if (!this.rules.has(hash)) {
             this.rules.set(hash, { hash, ...rule });

@@ -11,14 +11,13 @@ Bundles are injected at `document_start` via MV3's
 flowchart TD
     CFG[config.ts] -->|preregisteredDomains| GEN[generate-bundle.ts]
     GEN -->|1 collect| SC[scriptlet-collector.ts]
-    SC -->|AST predicates| AG[agtree / dnr-rulesets]
-    SC -->|hash rules| HASH[hasher.ts]
-    GEN -->|2 completeness check| AHC[assert-hash-completeness.ts]
-    GEN -->|3 coordination key| CK[coordination-key.ts]
-    GEN -->|4 shared bundle| SB[shared-bundle-generator]
-    GEN -->|5 per-hash files| PH[per-hash-generator]
-    GEN -->|6 cleanup file| CL[cleanup-generator]
-    GEN -->|7 domains list| DL[domains-list.ts]
+    SC -->|builds a real Engine per ruleset| TSURL["@adguard/tsurlfilter Engine"]
+    SC -->|hash matched rules| HASH[hasher.ts]
+    GEN -->|2 coordination key| CK[coordination-key.ts]
+    GEN -->|3 shared bundle| SB[shared-bundle-generator]
+    GEN -->|4 per-hash files| PH[per-hash-generator]
+    GEN -->|5 cleanup file| CL[cleanup-generator]
+    GEN -->|6 domains list| DL[domains-list.ts]
     RT[PreregisteredScriptsService] -->|same hasher.ts| HASH
     RT --> CP[chrome.scripting]
     PH --> CP
@@ -40,14 +39,13 @@ hashes.
 
 | Step | Function | Purpose |
 |------|----------|---------|
-| 1. Collect | `ScriptletCollector.collect()` (`scriptlet-collector.ts`) | Walk all DNR rulesets, extract JS/scriptlet rules targeting preregistered domains, dedup by hash |
-| 2. Completeness check | `assertHashCompleteness()` (`assert-hash-completeness.ts`) | Independently re-derive, using the real `@adguard/tsurlfilter` `Engine`, which hashes are reachable per domain, and fail the build if any of them wasn't collected in step 1 |
-| 3. Coordination key | `generateCoordinationKey()` (`code-generators/coordination-key.ts`) | Generate a random per-build identifier shared by the shared bundle, per-hash files, and the cleanup file |
-| 4. Shared bundle | `writeSharedBundle` (`code-generators/shared-bundle-generator/`) | Compile `scriptlets-bundle.js` — every unique scriptlet function used, deduplicated |
-| 5. Per-hash files | `writePerHashFiles` (`code-generators/per-hash-generator/`) | Compile one `{hash}.js` per unique rule (scriptlet invocation or JS rule body) |
-| 6. Cleanup file | `writeCleanupFile` (`code-generators/cleanup-generator/`) | Compile `cleanup.js`, which reassigns the coordination binding to `undefined` before any page script can run |
-| 7. Domains list | `writeDomainsList` (`code-generators/domains-list.ts`) | Write `domains.js` — the list of domains that have at least one collected rule |
-| 8. Atomic swap | `generatePreregisteredDomainBundles` (`generate-bundle.ts`) | Write everything to a temp dir, then `fs.rename` it over the old output dir, so a failure never leaves partially-written output in place |
+| 1. Collect | `ScriptletCollector.collect()` (`scriptlet-collector.ts`) | For each DNR ruleset, build a real `@adguard/tsurlfilter` `Engine` from its raw filter list text and query `Engine.getJsRulesIgnoringPath(request)` per preregistered domain (+ `www.` alias); dedup matched rules by hash |
+| 2. Coordination key | `generateCoordinationKey()` (`code-generators/coordination-key.ts`) | Generate a random per-build identifier shared by the shared bundle, per-hash files, and the cleanup file |
+| 3. Shared bundle | `writeSharedBundle` (`code-generators/shared-bundle-generator/`) | Compile `scriptlets-bundle.js` — every unique scriptlet function used, deduplicated |
+| 4. Per-hash files | `writePerHashFiles` (`code-generators/per-hash-generator/`) | Compile one `{hash}.js` per unique rule (scriptlet invocation or JS rule body); wraps the body in a runtime `location.pathname` guard when the rule has a `$path` modifier |
+| 5. Cleanup file | `writeCleanupFile` (`code-generators/cleanup-generator/`) | Compile `cleanup.js`, which reassigns the coordination binding to `undefined` before any page script can run |
+| 6. Domains list | `writeDomainsList` (`code-generators/domains-list.ts`) | Write `domains.js` — the list of domains that have at least one collected rule |
+| 7. Atomic swap | `generatePreregisteredDomainBundles` (`generate-bundle.ts`) | Write everything to a temp dir, then `fs.rename` it over the old output dir, so a failure never leaves partially-written output in place |
 
 `ScriptletCollector` does **not** resolve filter enable/disable, allowlist, or
 user-rule state at build time — it only records which domains/rules exist in
@@ -55,15 +53,15 @@ the local filters. Exceptions (`#@#`/`#@%#`) and all other engine-side
 resolution are handled at runtime by `PreregisteredScriptsService`, which
 queries the live engine (`getCosmeticResult`) per domain.
 
-`isRuleTargetsDomain` (used by step 1) mirrors the engine's own domain-list
-semantics: a domain list made up **only** of exception entries (e.g.
-`~a.com,~b.com##...`) applies globally except on the listed domains, exactly
-like a fully generic rule minus the exclusions — it is *not* treated as
-"matches nothing". Step 2 exists specifically to catch future regressions
-of this kind before they reach production: if the build-time predicate ever
-diverges from the engine's real matching again, the build fails instead of
-silently shipping a domain registration that references a missing
-`{hash}.js` file (which Chrome rejects at runtime).
+Step 1 queries the *same* real engine that resolves rules at runtime
+(`Engine.getJsRulesIgnoringPath`, type-isolated to JS/scriptlet rules and
+already excluding exception/allowlist rules) — there is no separate
+hand-rolled domain-matching predicate to keep in sync with the engine, and
+therefore no separate completeness-check step: what the engine matches *is*
+what gets collected. This also means filter list conversion (e.g. uBO-syntax
+scriptlet calls resolved to their AdGuard `ubo-`-prefixed counterpart via
+`RawRuleConverter.convertToAdg`) is applied consistently, since collection
+goes through the exact same `FilterList` loading path the runtime engine uses.
 
 ## Generated bundle structure
 
@@ -120,7 +118,7 @@ closes the remaining "does it still exist" signal, since `typeof` can't tell
 ### `domains.js`
 
 ```typescript
-export const preregisteredDomains = ["youtube.com", "m.youtube.com", ...];
+export const preregisteredDomains = ["youtube.com", ...];
 ```
 
 ## Files
@@ -129,9 +127,8 @@ export const preregisteredDomains = ["youtube.com", "m.youtube.com", ...];
 |------|---------|
 | `config.ts` | `preregisteredDomains` — domains to generate bundles for. Add a domain here to register it. |
 | `constants.ts` | `DOMAINS_LIST_FILENAME` and `minifyJs` (shared Terser options) |
-| `generate-bundle.ts` | Orchestrator — runs collect → completeness check → coordination key → shared bundle → per-hash files → cleanup file → domains list |
-| `scriptlet-collector.ts` | AST predicates (`isGenericCosmeticRule`, `isScriptletRule`, `isRuleTargetsDomain`) + the `ScriptletCollector` class |
-| `assert-hash-completeness.ts` | `assertHashCompleteness` — cross-validates collected hashes against a real `@adguard/tsurlfilter` `Engine` instance |
+| `generate-bundle.ts` | Orchestrator — runs collect → coordination key → shared bundle → per-hash files → cleanup file → domains list |
+| `scriptlet-collector.ts` | `ScriptletCollector` — builds a real `@adguard/tsurlfilter` `Engine` per ruleset and queries it per preregistered domain |
 | `code-generators/coordination-key.ts` | `generateCoordinationKey` — random per-build top-level `let` identifier |
 | `code-generators/shared-bundle-generator/` | `shared-bundle-template.js` (runtime template) + `shared-bundle-generator.ts` (compiler) |
 | `code-generators/per-hash-generator/` | `js-rule-guard-template.js` (runtime template) + `write-per-hash-files.ts` (compiler) |

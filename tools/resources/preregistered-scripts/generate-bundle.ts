@@ -30,7 +30,6 @@ import {
 } from '../../constants';
 
 import { ScriptletCollector } from './scriptlet-collector';
-import { assertHashCompleteness } from './assert-hash-completeness';
 import { generateCoordinationKey } from './code-generators/coordination-key';
 import {
     writeSharedBundle,
@@ -71,32 +70,28 @@ export const generatePreregisteredDomainBundles = async (
     await fs.mkdir(tempDir, { recursive: true });
 
     try {
-        // 1. Collect rules from all rulesets.
+        // 1. Collect rules from all rulesets
         const collector = new ScriptletCollector(declarativeFolder);
         const { rules, scriptletNames, domains } = await collector.collect();
 
-        // 2. Fail fast if the real engine would match a rule at runtime that
-        // wasn't collected.
-        await assertHashCompleteness(declarativeFolder, rules);
-
-        // 3. Random per-build coordination key, shared by the bundle below,
+        // 2. Random per-build coordination key, shared by the bundle below,
         // the per-hash files, and the cleanup file.
         const coordinationKey = generateCoordinationKey();
 
-        // 4. Build and write the shared scriptlets bundle.
+        // 3. Build and write the shared scriptlets bundle.
         await writeSharedBundle(scriptletNames, tempDir, coordinationKey);
 
-        // 5. Write per-hash files (one per unique rule).
+        // 4. Write per-hash files (one per unique rule).
         await writePerHashFiles(rules, tempDir, coordinationKey);
 
-        // 6. Write the cleanup file that deletes the coordination property
+        // 5. Write the cleanup file that deletes the coordination property
         // before any page script can run.
         await writeCleanupFile(coordinationKey, tempDir);
 
-        // 7. Write the domains list.
+        // 6. Write the domains list.
         await writeDomainsList(domains, tempDir);
 
-        // 8. Replace the old output with the newly generated one.
+        // 7. Replace the old output with the newly generated one.
         await fs.rm(outputDir, { recursive: true, force: true });
         await fs.rename(tempDir, outputDir);
     } catch (error) {

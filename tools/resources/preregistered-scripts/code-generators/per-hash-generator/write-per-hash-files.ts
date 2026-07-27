@@ -23,6 +23,7 @@
 import path from 'node:path';
 
 import { SCRIPTLETS_VERSION } from '@adguard/scriptlets';
+import { getPathPatternRegex } from '@adguard/tswebextension/mv3/preregistered-scripts/hasher';
 
 import { NEWLINE_CHAR_UNIX } from '../../../../../Extension/src/common/constants';
 import { minifyJs } from '../../constants';
@@ -124,11 +125,34 @@ const compileJsRuleFile = (entry: CollectedRuleEntry, coordinationKey: string): 
 };
 
 /**
+ * Wraps compiled rule content with a runtime `$path` guard, so it only
+ * executes when `location.pathname` matches the rule's original path
+ * pattern. Rules are collected regardless of path (see
+ * {@link ScriptletCollector}) — this is where the deferred path condition is
+ * actually enforced, in the browser, at injection time.
+ *
+ * @param content Compiled rule content (from {@link compileScriptletFile} or
+ * {@link compileJsRuleFile}).
+ * @param pathPattern Raw `$path` modifier pattern text
+ * (`rule.pathModifier.pattern`).
+ *
+ * @returns `content` wrapped in an `if (...)` guard.
+ */
+const wrapWithPathGuard = (content: string, pathPattern: string): string => {
+    const { source, flags } = getPathPatternRegex(pathPattern);
+    const condition = `new RegExp(${JSON.stringify(source)}, ${JSON.stringify(flags)}).test(location.pathname)`;
+
+    return `if (${condition}) {${NEWLINE_CHAR_UNIX}${content}}${NEWLINE_CHAR_UNIX}`;
+};
+
+/**
  * Writes one `{hash}.js` file per unique rule entry.
  *
  * - Scriptlet rules emit a file containing a `coordinationKey.r(...)` call.
  * - JS injection rules emit a file containing the rule body wrapped in a
  *   dedup guard.
+ * - Rules with a `$path` modifier are additionally wrapped in a runtime path
+ *   guard (see {@link wrapWithPathGuard}).
  *
  * @param rules Map of hash → rule entry.
  * @param outputDir Directory to write files into.
@@ -149,6 +173,10 @@ export const writePerHashFiles = async (
             content = compileJsRuleFile(entry, coordinationKey);
         } else {
             throw new Error(`Rule entry ${hash} has neither scriptletName nor jsBody`);
+        }
+
+        if (entry.pathPattern !== undefined) {
+            content = wrapWithPathGuard(content, entry.pathPattern);
         }
 
         content = await minifyJs(content);

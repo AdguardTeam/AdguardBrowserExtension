@@ -26,17 +26,8 @@ import {
     vi,
 } from 'vitest';
 
-import { FilterListParser, defaultParserOptions } from '@adguard/agtree/parser';
-import { type AnyRule, type ScriptletInjectionRule } from '@adguard/agtree';
-
 /* eslint-disable max-len */
-import {
-    isGenericCosmeticRule,
-    isScriptletRule,
-    isDomainOrSubdomain,
-    isRuleTargetsDomain,
-    ScriptletCollector,
-} from '../../../../tools/resources/preregistered-scripts/scriptlet-collector';
+import { ScriptletCollector } from '../../../../tools/resources/preregistered-scripts/scriptlet-collector';
 import { readMetadataRuleSet, extractPreprocessedRawFilterList } from '../../../../tools/resources/filter-extractor';
 /* eslint-enable max-len */
 
@@ -44,179 +35,6 @@ vi.mock('../../../../tools/resources/filter-extractor', () => ({
     readMetadataRuleSet: vi.fn(),
     extractPreprocessedRawFilterList: vi.fn(),
 }));
-
-/**
- * Parses a single raw filter rule string into its AST node via the real
- * agtree parser (`tolerant: true`, matching `ScriptletCollector`'s own usage).
- *
- * @param ruleText Raw filter rule text.
- *
- * @returns Parsed rule AST node.
- *
- * @throws If the rule text cannot be parsed into at least one rule node.
- */
-const parseRule = (ruleText: string): AnyRule => {
-    const filterListNode = FilterListParser.parse(ruleText, {
-        ...defaultParserOptions,
-        includeRaws: false,
-        isLocIncluded: false,
-        tolerant: true,
-    });
-    const [ruleNode] = filterListNode.children;
-    if (!ruleNode) {
-        throw new Error(`Failed to parse rule: ${ruleText}`);
-    }
-    return ruleNode;
-};
-
-describe('isGenericCosmeticRule', () => {
-    it('returns true for a rule with no domains', () => {
-        const rule = parseRule('##+js(set-constant, foo, bar)') as ScriptletInjectionRule;
-        expect(isGenericCosmeticRule(rule)).toBe(true);
-    });
-
-    it('returns true for a rule whose only domain is the wildcard "*"', () => {
-        const rule = parseRule('*##+js(set-constant, foo, bar)') as ScriptletInjectionRule;
-        expect(isGenericCosmeticRule(rule)).toBe(true);
-    });
-
-    it('returns false for a rule with an explicit domain', () => {
-        const rule = parseRule('youtube.com##+js(set-constant, foo, bar)') as ScriptletInjectionRule;
-        expect(isGenericCosmeticRule(rule)).toBe(false);
-    });
-});
-
-describe('isScriptletRule', () => {
-    it('returns true for a uBO-style scriptlet rule', () => {
-        const rule = parseRule('youtube.com##+js(set-constant, foo, bar)');
-        expect(isScriptletRule(rule)).toBe(true);
-    });
-
-    it('returns true for an ABP-style scriptlet rule', () => {
-        const rule = parseRule("youtube.com#%#//scriptlet('set-constant', 'foo', 'bar')");
-        expect(isScriptletRule(rule)).toBe(true);
-    });
-
-    it('returns false for a plain JS injection rule', () => {
-        const rule = parseRule('youtube.com#%#console.log(1);');
-        expect(isScriptletRule(rule)).toBe(false);
-    });
-
-    it('returns false for null', () => {
-        expect(isScriptletRule(null)).toBe(false);
-    });
-
-    it('returns false for a non-cosmetic (network) rule', () => {
-        const rule = parseRule('||example.com^');
-        expect(isScriptletRule(rule)).toBe(false);
-    });
-});
-
-describe('isDomainOrSubdomain', () => {
-    it('returns true for an exact match', () => {
-        expect(isDomainOrSubdomain('youtube.com', 'youtube.com')).toBe(true);
-    });
-
-    it('returns true for a subdomain', () => {
-        expect(isDomainOrSubdomain('m.youtube.com', 'youtube.com')).toBe(true);
-    });
-
-    it('returns false for an unrelated domain', () => {
-        expect(isDomainOrSubdomain('google.com', 'youtube.com')).toBe(false);
-    });
-
-    it('returns false for a domain that merely ends with the target (not a real subdomain)', () => {
-        expect(isDomainOrSubdomain('notyoutube.com', 'youtube.com')).toBe(false);
-    });
-
-    it('normalizes case and surrounding dots before comparing', () => {
-        expect(isDomainOrSubdomain('YouTube.COM', 'youtube.com')).toBe(true);
-        expect(isDomainOrSubdomain('.m.youtube.com.', 'youtube.com')).toBe(true);
-    });
-});
-
-describe('isRuleTargetsDomain', () => {
-    it('returns true for a generic rule regardless of domain', () => {
-        const rule = parseRule('##+js(set-constant, foo, bar)') as ScriptletInjectionRule;
-        expect(isRuleTargetsDomain(rule, 'youtube.com')).toBe(true);
-    });
-
-    it('returns true when the rule explicitly lists the domain', () => {
-        const rule = parseRule('youtube.com##+js(set-constant, foo, bar)') as ScriptletInjectionRule;
-        expect(isRuleTargetsDomain(rule, 'youtube.com')).toBe(true);
-    });
-
-    it('returns true when the rule targets a subdomain of the given domain', () => {
-        const rule = parseRule('m.youtube.com##+js(set-constant, foo, bar)') as ScriptletInjectionRule;
-        expect(isRuleTargetsDomain(rule, 'youtube.com')).toBe(true);
-    });
-
-    it('returns false when the rule targets an unrelated domain', () => {
-        const rule = parseRule('example.com##+js(set-constant, foo, bar)') as ScriptletInjectionRule;
-        expect(isRuleTargetsDomain(rule, 'youtube.com')).toBe(false);
-    });
-
-    it('ignores exception (~) domain entries when matching', () => {
-        const rule = parseRule('~youtube.com,example.com##+js(set-constant, foo, bar)') as ScriptletInjectionRule;
-        expect(isRuleTargetsDomain(rule, 'youtube.com')).toBe(false);
-        expect(isRuleTargetsDomain(rule, 'example.com')).toBe(true);
-    });
-
-    it('returns true for a negative-only domain list when the target domain is not restricted', () => {
-        // Applies everywhere EXCEPT example.com/foo.com — including youtube.com.
-        const rule = parseRule('~example.com,~foo.com##+js(set-constant, foo, bar)') as ScriptletInjectionRule;
-        expect(isRuleTargetsDomain(rule, 'youtube.com')).toBe(true);
-    });
-
-    it('returns false for a negative-only domain list when the target domain itself is restricted', () => {
-        const rule = parseRule('~youtube.com,~foo.com##+js(set-constant, foo, bar)') as ScriptletInjectionRule;
-        expect(isRuleTargetsDomain(rule, 'youtube.com')).toBe(false);
-    });
-
-    it('returns false for a negative-only domain list when a subdomain of the target is restricted', () => {
-        const rule = parseRule('~m.youtube.com##+js(set-constant, foo, bar)') as ScriptletInjectionRule;
-        expect(isRuleTargetsDomain(rule, 'm.youtube.com')).toBe(false);
-        // The apex is unaffected — only the excluded subdomain is restricted.
-        expect(isRuleTargetsDomain(rule, 'youtube.com')).toBe(true);
-    });
-});
-
-describe('ScriptletCollector.isCollectibleBlockingRule', () => {
-    const isCollectible = (
-        ruleNode: AnyRule,
-        domains: readonly string[] = ['youtube.com'],
-    ): boolean => (ScriptletCollector as any).isCollectibleBlockingRule(ruleNode, domains);
-
-    it('returns true for a non-exception scriptlet rule targeting a preregistered domain', () => {
-        const rule = parseRule('youtube.com##+js(set-constant, foo, bar)');
-        expect(isCollectible(rule)).toBe(true);
-    });
-
-    it('returns true for a non-exception JS injection rule targeting a preregistered domain', () => {
-        const rule = parseRule('youtube.com#%#console.log(1);');
-        expect(isCollectible(rule)).toBe(true);
-    });
-
-    it('returns false for an exception scriptlet rule', () => {
-        const rule = parseRule('youtube.com#@#+js(set-constant, foo, bar)');
-        expect(isCollectible(rule)).toBe(false);
-    });
-
-    it('returns false for an exception JS injection rule', () => {
-        const rule = parseRule('youtube.com#@%#console.log(1);');
-        expect(isCollectible(rule)).toBe(false);
-    });
-
-    it('returns false for a rule targeting an unrelated domain', () => {
-        const rule = parseRule('example.com##+js(set-constant, foo, bar)');
-        expect(isCollectible(rule)).toBe(false);
-    });
-
-    it('returns false for a non-JS/scriptlet cosmetic rule (element hiding)', () => {
-        const rule = parseRule('youtube.com##.ad-banner');
-        expect(isCollectible(rule)).toBe(false);
-    });
-});
 
 describe('ScriptletCollector.collect', () => {
     afterEach(() => {
@@ -246,11 +64,16 @@ describe('ScriptletCollector.collect', () => {
         const { rules, scriptletNames, domains } = await collector.collect();
 
         expect(rules.size).toBe(1);
-        expect(scriptletNames).toEqual(new Set(['set-constant']));
+        // The real engine resolves uBO-syntax scriptlet calls to their
+        // dialect-specific `ubo-` counterpart during filter list conversion
+        // (`RawRuleConverter.convertToAdg`) — going through the real `Engine`
+        // (instead of hand-constructing a `CosmeticRule` from a raw AST node)
+        // picks this up automatically.
+        expect(scriptletNames).toEqual(new Set(['ubo-set-constant']));
         expect(domains).toEqual(['youtube.com']);
 
         const [entry] = [...rules.values()];
-        expect(entry).toMatchObject({ scriptletName: 'set-constant', scriptletArgs: ['foo', 'bar'] });
+        expect(entry).toMatchObject({ scriptletName: 'ubo-set-constant', scriptletArgs: ['foo', 'bar'] });
     });
 
     it('deduplicates identical scriptlet rules across and within rulesets by hash', async () => {
@@ -287,6 +110,20 @@ describe('ScriptletCollector.collect', () => {
         expect(domains).toEqual(['youtube.com']);
     });
 
+    it('excludes a generic rule cancelled by a domain-specific exception', async () => {
+        setupRulesets([
+            '##+js(set-constant, foo, bar)\nyoutube.com#@#+js(set-constant, foo, bar)',
+        ]);
+
+        const collector = new ScriptletCollector('/fake/declarative');
+        const { rules, domains } = await collector.collect();
+
+        // The domain-specific exception cancels the generic rule for
+        // youtube.com specifically, so no rule is collected for it.
+        expect(rules.size).toBe(0);
+        expect(domains).toEqual([]);
+    });
+
     it('collects JS injection rules with a body-based hash', async () => {
         setupRulesets(["youtube.com#%#console.log('hello');"]);
 
@@ -301,7 +138,7 @@ describe('ScriptletCollector.collect', () => {
         expect(entry.jsBody).toContain("console.log('hello')");
     });
 
-    it('excludes exception rules from the collected rule set', async () => {
+    it('excludes rules cancelled by a matching exception rule', async () => {
         setupRulesets([
             'youtube.com##+js(set-constant, foo, bar)\nyoutube.com#@#+js(set-constant, foo, bar)',
         ]);
@@ -309,23 +146,52 @@ describe('ScriptletCollector.collect', () => {
         const collector = new ScriptletCollector('/fake/declarative');
         const { rules, domains } = await collector.collect();
 
-        // Only the non-exception rule is collected...
-        expect(rules.size).toBe(1);
-        // ...but the exception rule's domain is still recorded, so the
-        // runtime knows to query the engine for it.
-        expect(domains).toEqual(['youtube.com']);
+        // The exception cancels the matching scriptlet rule entirely — neither
+        // contributes a collected rule or a domain.
+        expect(rules.size).toBe(0);
+        expect(domains).toEqual([]);
     });
 
-    it('records subdomains with different rule sets as separate domain entries', async () => {
-        setupRulesets([
-            'youtube.com##+js(set-constant, foo, bar)\nm.youtube.com##+js(set-constant, foo, baz)',
-        ]);
+    it('does not collect a rule scoped only to an unrelated subdomain (e.g. m.youtube.com)', async () => {
+        setupRulesets(['m.youtube.com##+js(set-constant, foo, bar)']);
 
         const collector = new ScriptletCollector('/fake/declarative');
         const { rules, domains } = await collector.collect();
 
-        expect(rules.size).toBe(2);
-        expect(domains.sort()).toEqual(['m.youtube.com', 'youtube.com']);
+        // Subdomains other than `www.` are intentionally not covered.
+        expect(rules.size).toBe(0);
+        expect(domains).toEqual([]);
+    });
+
+    it('collects a rule scoped only to the www. alias of a preregistered domain', async () => {
+        setupRulesets(['www.youtube.com##+js(set-constant, foo, bar)']);
+
+        const collector = new ScriptletCollector('/fake/declarative');
+        const { rules, domains } = await collector.collect();
+
+        expect(rules.size).toBe(1);
+        expect(domains).toEqual(['youtube.com']);
+    });
+
+    it('captures the $path modifier pattern on the collected rule entry', async () => {
+        setupRulesets(["[$domain=youtube.com,path=/watch]#%#//scriptlet('set-constant', 'foo', 'bar')"]);
+
+        const collector = new ScriptletCollector('/fake/declarative');
+        const { rules } = await collector.collect();
+
+        expect(rules.size).toBe(1);
+        const [entry] = [...rules.values()];
+        expect(entry).toMatchObject({ pathPattern: '/watch' });
+    });
+
+    it('leaves pathPattern undefined for a rule without a $path modifier', async () => {
+        setupRulesets(['youtube.com##+js(set-constant, foo, bar)']);
+
+        const collector = new ScriptletCollector('/fake/declarative');
+        const { rules } = await collector.collect();
+
+        const [entry] = [...rules.values()];
+        expect(entry?.pathPattern).toBeUndefined();
     });
 
     it('collects a rule with a negative-only domain list that does not restrict the preregistered domain', async () => {
@@ -347,8 +213,16 @@ describe('ScriptletCollector.collect', () => {
         const { rules, domains } = await collector.collect();
 
         expect(rules.size).toBe(0);
-        // youtube.com is still recorded (as the literal excluded domain), so
-        // the runtime can query it and populate `excludeMatches` correctly.
-        expect(domains).toEqual(['youtube.com']);
+        expect(domains).toEqual([]);
+    });
+
+    it('excludes a non-JS/scriptlet cosmetic rule (element hiding)', async () => {
+        setupRulesets(['youtube.com##.ad-banner']);
+
+        const collector = new ScriptletCollector('/fake/declarative');
+        const { rules, domains } = await collector.collect();
+
+        expect(rules.size).toBe(0);
+        expect(domains).toEqual([]);
     });
 });

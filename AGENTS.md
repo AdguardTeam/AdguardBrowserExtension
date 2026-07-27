@@ -304,6 +304,11 @@ The `background/` directory has **stricter** JSDoc rules (enforced via
 functions, and methods require JSDoc with descriptions, `@param`, and `@returns`.
 Descriptions must be complete sentences.
 
+Keep JSDoc short — one sentence per tag when possible. Do not repeat what's
+already obvious from the parameter/method name, don't restate the
+implementation, and don't add usage examples or rationale unless the
+behavior is genuinely non-obvious. Long descriptions don't get read.
+
 #### Logging
 
 - Use `logger` from `Extension/src/common/logger` instead of `console.*`
