@@ -2119,6 +2119,75 @@
                 "restrictedDomains": []
             }
         ],
+        "(()=>{const t={apply:(t,e,o)=>{try{o[0]?.toString().includes(\"detected:\")&&(o[0]=()=>{})}catch(t){}return Reflect.apply(t,e,o)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t)})();": [
+            {
+                "permittedDomains": [
+                    "benchmark.pl",
+                    "select.wp.pl",
+                    "so-magazyn.pl",
+                    "kafeteria.pl",
+                    "informacje.wp.pl",
+                    "wplatform.media",
+                    "pcformat.pl",
+                    "staszownews.pl",
+                    "zdrowienews.pl",
+                    "kurierostrowiecki.pl",
+                    "ostrowiec24.info",
+                    "kielce112.pl",
+                    "lublinnews.pl",
+                    "lovelifestyle.pl",
+                    "telefan24.pl",
+                    "marketing-zone.pl",
+                    "panoramaplock.pl",
+                    "ipolska24.pl",
+                    "dzieckopoznan.pl",
+                    "historiapoznania.pl",
+                    "sportpoznan.pl",
+                    "pysznosci.pl",
+                    "kultura.wp.pl",
+                    "jastrzabpost.pl",
+                    "wirtualnemedia.pl",
+                    "open.fm",
+                    "deliciousmagazine.pl",
+                    "poczta.wp.pl",
+                    "pilot.wp.pl",
+                    "polygamia.pl",
+                    "abczdrowie.pl",
+                    "money.pl",
+                    "dobreprogramy.pl",
+                    "o2.pl",
+                    "gadzetomania.pl",
+                    "komorkomania.pl",
+                    "autocentrum.pl",
+                    "pudelek.pl",
+                    "vpolshchi.pl",
+                    "parenting.pl",
+                    "autokult.pl",
+                    "fotoblogia.pl",
+                    "dom.wp.pl",
+                    "pogoda.wp.pl",
+                    "gry.wp.pl",
+                    "wroclaw.wp.pl",
+                    "moto.wp.pl",
+                    "wideo.wp.pl",
+                    "kuchnia.wp.pl",
+                    "facet.wp.pl",
+                    "sportowefakty.wp.pl",
+                    "turystyka.wp.pl",
+                    "magazyn.wp.pl",
+                    "kobieta.wp.pl",
+                    "ksiazki.wp.pl",
+                    "tech.wp.pl",
+                    "opinie.wp.pl",
+                    "teleshow.wp.pl",
+                    "gwiazdy.wp.pl",
+                    "film.wp.pl",
+                    "wiadomosci.wp.pl",
+                    "finanse.wp.pl"
+                ],
+                "restrictedDomains": []
+            }
+        ],
         "(()=>{const t={apply:(t,p,e)=>{try{e.length>0&&(\"visibility\"===e[0]||e[0]?.startsWith?.(\"shim:\"))&&1===e[1]&&(e[1]=0)}catch(t){}return Reflect.apply(t,p,e)}};window.Map.prototype.set=new Proxy(window.Map.prototype.set,t)})();": [
             {
                 "permittedDomains": [
@@ -2898,17 +2967,10 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{let e,t=!1;const n=function(){},o=function(t,n){if(\"function\"==typeof n)try{window.KalturaPlayer?n([]):e=n}catch(e){console.error(e)}};let r;Object.defineProperty(window,\"PWT\",{value:{requestBids:o,generateConfForGPT:o,addKeyValuePairsToGPTSlots:n,generateDFPURL:n}}),Object.defineProperty(window,\"KalturaPlayer\",{get:function(){return r},set:function(n){r=n,t||(t=!0,e([]))}})})();": [
-            {
-                "permittedDomains": [
-                    "zeenews.india.com"
-                ],
-                "restrictedDomains": []
-            }
-        ],
         "(()=>{let e,t=!1;const n=function(){},o=function(t,n){if(\"function\"==typeof n)try{window.KalturaPlayer?n([]):e=n}catch(e){console.error(e)}};let r;Object.defineProperty(window,\"PWT\",{get:()=>({requestBids:o,generateConfForGPT:o,addKeyValuePairsToGPTSlots:n,generateDFPURL:n}),set(){}}),Object.defineProperty(window,\"KalturaPlayer\",{get:function(){return r},set:function(n){r=n,!t&&e&&(t=!0,e([]))}})})();": [
             {
                 "permittedDomains": [
+                    "zeenews.india.com",
                     "thepublive.com",
                     "wionews.com"
                 ],
@@ -3113,7 +3175,7 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{const t={apply:(t,e,o)=>{const n=Reflect.apply(t,e,o);try{n instanceof HTMLIFrameElement&&(\"\"===n.src||\"about:blank\"===n.src)&&n.contentWindow&&(n.contentWindow.String=window.String,n.contentWindow.Function.prototype.call=window.Function.prototype.call,n.contentWindow.JSON.parse=window.JSON.parse,n.contentWindow.XMLHttpRequest.prototype=window.XMLHttpRequest.prototype)}catch(t){}return n}};window.Node.prototype.appendChild=new Proxy(window.Node.prototype.appendChild,t),window.Node.prototype.insertBefore=new Proxy(window.Node.prototype.insertBefore,t),window.Element.prototype.insertAdjacentElement=new Proxy(window.Element.prototype.insertAdjacentElement,t)})();": [
+        "(()=>{const e=e=>{try{e.String=window.String,e.Function.prototype.call=window.Function.prototype.call,e.JSON.parse=window.JSON.parse,e.XMLHttpRequest.prototype=window.XMLHttpRequest.prototype}catch(e){}},t=e=>e instanceof HTMLIFrameElement&&(\"\"===e.src||\"about:blank\"===e.src)&&e.contentWindow,n={apply:(n,o,p)=>{const r=Reflect.apply(n,o,p);try{t(r)?e(r.contentWindow):\"append\"!==n?.name&&\"prepend\"!==n?.name||!t(p[0])||e(p[0].contentWindow)}catch(e){}return r}};window.Node.prototype.appendChild=new Proxy(window.Node.prototype.appendChild,n),window.Node.prototype.insertBefore=new Proxy(window.Node.prototype.insertBefore,n),window.Element.prototype.append=new Proxy(window.Element.prototype.append,n),window.Element.prototype.prepend=new Proxy(window.Element.prototype.prepend,n),window.Element.prototype.insertAdjacentElement=new Proxy(window.Element.prototype.insertAdjacentElement,n)})();": [
             {
                 "permittedDomains": [
                     "facebook.com",
@@ -3380,9 +3442,10 @@
                 "restrictedDomains": []
             }
         ],
-        "(()=>{const e=/html-load\\.com|loader\\.min\\.js|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\.|:\\/\\/loader\\.|core\\.js|\\/sdk\\.js/,t={filter:Array.prototype.filter,includes:String.prototype.includes,regexTest:RegExp.prototype.test},o=()=>(new Error).stack,l=o=>t.regexTest.call(e,o),r={construct:(e,r,n)=>{const c=o();return l(c)&&r[0]&&t.includes.call(r[0],\"adshield\")&&(r[0]=[\"(function(){})();\"]),Reflect.construct(e,r,n)}};window.Blob=new Proxy(window.Blob,r);const n={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&(t.includes.call(n[0],\"new Error\")||t.includes.call(n[0],\".apply(this\"))&&(n[0]=()=>{}),Reflect.apply(e,r,n)}};window.setTimeout=new Proxy(window.setTimeout,n);const c={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&r?.includes?.(\"setTimeout\")&&(r=t.filter.call(r,(e=>!t.includes.call(e,\"setTimeout\")))),Reflect.apply(e,r,n)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,c)})();": [
+        "(()=>{const e=/html-load\\.com|loader\\.min\\.js|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\.|:\\/\\/loader\\.|core\\.js|\\/sdk\\.js|\\/app\\.js/,t={filter:Array.prototype.filter,includes:String.prototype.includes,regexTest:RegExp.prototype.test},o=()=>(new Error).stack,l=o=>t.regexTest.call(e,o),r={construct:(e,r,n)=>{const c=o();return l(c)&&r[0]&&t.includes.call(r[0],\"adshield\")&&(r[0]=[\"(function(){})();\"]),Reflect.construct(e,r,n)}};window.Blob=new Proxy(window.Blob,r);const n={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&(t.includes.call(n[0],\"new Error\")||t.includes.call(n[0],\".apply(this\"))&&(n[0]=()=>{}),Reflect.apply(e,r,n)}};window.setTimeout=new Proxy(window.setTimeout,n);const c={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&r?.includes?.(\"setTimeout\")&&(r=t.filter.call(r,(e=>!t.includes.call(e,\"setTimeout\")))),Reflect.apply(e,r,n)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,c)})();": [
             {
                 "permittedDomains": [
+                    "jikayosha.jp",
                     "gamebanana.com",
                     "weerplaza.nl",
                     "coolmathgames.com",
@@ -3459,7 +3522,19 @@
                     "edmontonsun.com",
                     "calgaryherald.com",
                     "theprovince.com",
-                    "notebookcheck.*",
+                    "notebookcheck.com",
+                    "notebookcheck.net",
+                    "notebookcheck.org",
+                    "notebookcheck.biz",
+                    "notebookcheck.it",
+                    "notebookcheck.nl",
+                    "notebookcheck.pl",
+                    "notebookcheck.info",
+                    "notebookcheck-ru.com",
+                    "notebookcheck-tr.com",
+                    "notebookcheck.se",
+                    "notebookcheck-cn.com",
+                    "notebookcheck-hu.com",
                     "driving.ca",
                     "vancouversun.com",
                     "financialpost.com",
