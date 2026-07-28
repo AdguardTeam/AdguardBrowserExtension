@@ -1,1 +1,0 @@
-__ag_56b498d70a63796a.r("prevent-addEventListener",{name:"prevent-addEventListener",args:["click","window.open"],engine:"extension",version:"2.4.2",verbose:!1},["click","window.open"],"cfb84d85d3316301");

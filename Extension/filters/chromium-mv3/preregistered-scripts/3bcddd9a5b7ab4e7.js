@@ -1,1 +1,0 @@
-__ag_b97602f7fcbce387.r("json-prune",{name:"json-prune",args:["playerResponse.adPlacements playerResponse.playerAds playerResponse.adSlots adPlacements playerAds adSlots"],engine:"extension",version:"2.4.2",verbose:!1},["playerResponse.adPlacements playerResponse.playerAds playerResponse.adSlots adPlacements playerAds adSlots"],"3bcddd9a5b7ab4e7");

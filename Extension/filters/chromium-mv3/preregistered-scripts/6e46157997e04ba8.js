@@ -1,1 +1,0 @@
-__ag_b97602f7fcbce387.r("prevent-xhr",{name:"prevent-xhr",args:["/advert.js"],engine:"extension",version:"2.4.2",verbose:!1},["/advert.js"],"6e46157997e04ba8");

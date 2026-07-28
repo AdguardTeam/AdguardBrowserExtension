@@ -70,7 +70,7 @@ describe('ScriptletCollector.collect', () => {
         // (instead of hand-constructing a `CosmeticRule` from a raw AST node)
         // picks this up automatically.
         expect(scriptletNames).toEqual(new Set(['ubo-set-constant']));
-        expect(domains).toEqual(['youtube.com']);
+        expect(domains).toEqual(['www.youtube.com', 'youtube.com']);
 
         const [entry] = [...rules.values()];
         expect(entry).toMatchObject({ scriptletName: 'ubo-set-constant', scriptletArgs: ['foo', 'bar'] });
@@ -107,7 +107,7 @@ describe('ScriptletCollector.collect', () => {
         const { rules, domains } = await collector.collect();
 
         expect(rules.size).toBe(1);
-        expect(domains).toEqual(['youtube.com']);
+        expect(domains).toEqual(['www.youtube.com', 'youtube.com']);
     });
 
     it('excludes a generic rule cancelled by a domain-specific exception', async () => {
@@ -170,7 +170,9 @@ describe('ScriptletCollector.collect', () => {
         const { rules, domains } = await collector.collect();
 
         expect(rules.size).toBe(1);
-        expect(domains).toEqual(['youtube.com']);
+        // Only the www. hostname matched — the apex is not added, since
+        // hostnames are no longer collapsed into one another.
+        expect(domains).toEqual(['www.youtube.com']);
     });
 
     it('captures the $path modifier pattern on the collected rule entry', async () => {
@@ -203,7 +205,7 @@ describe('ScriptletCollector.collect', () => {
         // The rule applies everywhere except example.com, so it targets
         // youtube.com even though youtube.com is never explicitly mentioned.
         expect(rules.size).toBe(1);
-        expect(domains).toEqual(['youtube.com']);
+        expect(domains).toEqual(['www.youtube.com', 'youtube.com']);
     });
 
     it('excludes a rule with a negative-only domain list that restricts the preregistered domain', async () => {

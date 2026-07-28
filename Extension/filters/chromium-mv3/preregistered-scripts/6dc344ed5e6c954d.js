@@ -1,1 +1,0 @@
-__ag_b97602f7fcbce387.r("trusted-replace-node-text",{name:"trusted-replace-node-text",args:["script","AdblockCheck","/AdblockCheck\\.on\\(!0,adBlockDetected\\)/","AdblockCheck.on(!0,adBlockUndetected)"],engine:"extension",version:"2.4.2",verbose:!1},["script","AdblockCheck","/AdblockCheck\\.on\\(!0,adBlockDetected\\)/","AdblockCheck.on(!0,adBlockUndetected)"],"6dc344ed5e6c954d");

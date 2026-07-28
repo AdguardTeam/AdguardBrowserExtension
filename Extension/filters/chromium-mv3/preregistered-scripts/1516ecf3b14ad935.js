@@ -1,1 +1,0 @@
-__ag_b97602f7fcbce387.r("prevent-setTimeout",{name:"prevent-setTimeout",args:["offsetHeight === 0"],engine:"extension",version:"2.4.2",verbose:!1},["offsetHeight === 0"],"1516ecf3b14ad935");

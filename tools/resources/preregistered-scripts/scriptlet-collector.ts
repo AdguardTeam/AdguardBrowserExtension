@@ -37,13 +37,12 @@ import { preregisteredDomains } from './config';
  * preregistered domain (normalized via {@link normalizeDomain} so config
  * typos/casing/`www.` prefixes can't cause a mismatch) contributes two
  * entries: the apex itself and its `www.` alias. Subdomains other than
- * `www.` are intentionally NOT covered — matches the runtime's exact-domain
- * (+ `www.` alias) content-script registration.
+ * `www.` are intentionally NOT covered.
  *
- * The apex domain a hostname belongs to is not stored alongside it here —
- * it's always recoverable by re-applying {@link normalizeDomain} (which
- * strips a leading `www.`), so `processRuleSet` derives it at the point of
- * use instead of carrying a redundant field.
+ * Each hostname is recorded independently in {@link CollectedScriptlets.domains}
+ * — apex and `www.` are never collapsed into one another, since
+ * `PreregisteredScriptsService` registers a separate content script per
+ * hostname.
  */
 const preregisteredHostnames: readonly string[] = (
     preregisteredDomains
@@ -115,7 +114,8 @@ export interface CollectedScriptlets {
     scriptletNames: Set<string>;
 
     /**
-     * Domains that have at least one blocking rule (scriptlet or JS rule).
+     * Hostnames (apex domain and/or its `www.` alias, kept as separate
+     * entries) that have at least one blocking rule.
      */
     domains: string[];
 }
@@ -149,7 +149,7 @@ export class ScriptletCollector {
     /** Accumulator: unique scriptlet names (for shared bundle generation). */
     private scriptletNames: Set<string>;
 
-    /** Accumulator: domains that have at least one blocking rule. */
+    /** Accumulator: hostnames that have at least one blocking rule. */
     private domainsWithRules: Set<string>;
 
     /**
@@ -215,7 +215,7 @@ export class ScriptletCollector {
                 if (matchedRules.length === 0) {
                     return;
                 }
-                this.domainsWithRules.add(normalizeDomain(hostname));
+                this.domainsWithRules.add(hostname);
 
                 for (const rule of matchedRules) {
                     if (seenRules.has(rule)) {

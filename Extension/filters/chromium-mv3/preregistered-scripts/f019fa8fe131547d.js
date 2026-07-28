@@ -1,1 +1,0 @@
-__ag_b97602f7fcbce387.r("prevent-window-open",{name:"prevent-window-open",args:[],engine:"extension",version:"2.4.2",verbose:!1},[],"f019fa8fe131547d");

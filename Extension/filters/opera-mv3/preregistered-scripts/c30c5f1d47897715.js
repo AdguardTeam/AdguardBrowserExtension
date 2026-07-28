@@ -1,1 +1,1 @@
-__ag_56b498d70a63796a.r("set-constant",{name:"set-constant",args:["navigator.getBattery","noopPromiseResolve"],engine:"extension",version:"2.4.2",verbose:!1},["navigator.getBattery","noopPromiseResolve"],"c30c5f1d47897715");
+__ag_0fd38e542ef1538b.r("set-constant",{name:"set-constant",args:["navigator.getBattery","noopPromiseResolve"],engine:"extension",version:"2.4.2",verbose:!1},["navigator.getBattery","noopPromiseResolve"],"c30c5f1d47897715");

@@ -1,1 +1,0 @@
-__ag_56b498d70a63796a.r("spoof-css",{name:"spoof-css",args:["body > * > * > * > *:not(div)[id][class] ~ *:not(div)[id][class] > *:not(div)[class] article","display","block"],engine:"extension",version:"2.4.2",verbose:!1},["body > * > * > * > *:not(div)[id][class] ~ *:not(div)[id][class] > *:not(div)[class] article","display","block"],"a9285c4bcfbf0e51");

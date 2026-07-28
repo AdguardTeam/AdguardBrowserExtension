@@ -1,1 +1,0 @@
-__ag_56b498d70a63796a.r("remove-node-text",{name:"remove-node-text",args:["script","window.open"],engine:"extension",version:"2.4.2",verbose:!1},["script","window.open"],"866b74023da20fe0");
