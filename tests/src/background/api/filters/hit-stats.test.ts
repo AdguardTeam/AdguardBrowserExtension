@@ -19,7 +19,6 @@
  */
 
 import browser, { type Storage } from 'webextension-polyfill';
-import waitForExpect from 'wait-for-expect';
 import { merge } from 'lodash-es';
 import {
     afterEach,
@@ -183,65 +182,168 @@ describe('Hit Stats Api', () => {
             throw new Error('maxTotalHits is not defined');
         }
 
-        // Mock the static member
-        Object.defineProperty(HitStatsApi, 'maxTotalHits', merge(originalMaxTotalHits, { value: 5 }));
-
         const sendHitStatsSpy = vi.spyOn(network, 'sendHitStats').mockImplementation(async () => {});
         const cleanupSpy = vi.spyOn(HitStatsApi, 'cleanup');
         vi.spyOn(FiltersStorage, 'get').mockResolvedValue(filter);
 
-        await HitStatsApi.init();
+        // lodash debounce is a no-op in tests (see vitest.setup.ts), so each
+        // addRuleHit would otherwise fire saveAndSendHitStats immediately and race
+        // concurrent sends. Collect hits with the scheduler stubbed, then flush once.
+        const scheduleSpy = vi.spyOn(
+            HitStatsApi as unknown as { debounceSaveAndSendHitStats: () => void },
+            'debounceSaveAndSendHitStats',
+        ).mockImplementation(() => {});
 
-        // Initially, both filter has version '1'
-        vi.spyOn(filterVersionStorage, 'get').mockReturnValue(filterVersionDataMock);
+        try {
+            await HitStatsApi.init();
 
-        // Add hits to both filters
-        HitStatsApi.addRuleHit(FIRST_FILTER_ID, 0);
+            // Initially, both filter has version '1'
+            vi.spyOn(filterVersionStorage, 'get').mockReturnValue(filterVersionDataMock);
 
-        HitStatsApi.addRuleHit(SECOND_FILTER_ID, 0);
-        HitStatsApi.addRuleHit(SECOND_FILTER_ID, 0);
-        HitStatsApi.addRuleHit(SECOND_FILTER_ID, 16);
+            // Add hits to both filters
+            HitStatsApi.addRuleHit(FIRST_FILTER_ID, 0);
 
-        // Now let's simulate that the version of the first filter has increased
-        vi.spyOn(filterVersionStorage, 'get').mockImplementation((filterId: number) => {
-            if (filterId === FIRST_FILTER_ID) {
-                return {
-                    ...filterVersionDataMock,
-                    version: '2',
-                };
-            }
+            HitStatsApi.addRuleHit(SECOND_FILTER_ID, 0);
+            HitStatsApi.addRuleHit(SECOND_FILTER_ID, 0);
+            HitStatsApi.addRuleHit(SECOND_FILTER_ID, 16);
 
-            return filterVersionDataMock;
-        });
+            // Now let's simulate that the version of the first filter has increased
+            vi.spyOn(filterVersionStorage, 'get').mockImplementation((filterId: number) => {
+                if (filterId === FIRST_FILTER_ID) {
+                    return {
+                        ...filterVersionDataMock,
+                        version: '2',
+                    };
+                }
 
-        // Add a hit to the first filter again to trigger the sending of stats
-        HitStatsApi.addRuleHit(FIRST_FILTER_ID, ruleIndex);
+                return filterVersionDataMock;
+            });
 
-        // addRuleHit is a sync method, but it calls saveAndSendHitStats which is async,
-        // so we need wait for it to be called
-        await waitForExpect(
-            () => {
-                expect(sendHitStatsSpy).toHaveBeenCalled();
-            },
-            // use a short timeout, since its a mocked test and we don't need to wait too long
-            500,
-        );
+            // Record one more hit so the first filter stays in the cache, then flush.
+            HitStatsApi.addRuleHit(FIRST_FILTER_ID, ruleIndex);
 
-        expect(sendHitStatsSpy).toHaveBeenCalledWith({
-            filters: {
-                [SECOND_FILTER_ID]: {
-                    'example.com##h1': 2,
-                    '||example.org^$document': 1,
+            Object.defineProperty(HitStatsApi, 'maxTotalHits', merge(originalMaxTotalHits, { value: 1 }));
+
+            await (HitStatsApi as unknown as {
+                saveAndSendHitStats: () => Promise<void>;
+            }).saveAndSendHitStats();
+
+            expect(sendHitStatsSpy).toHaveBeenCalledTimes(1);
+            expect(sendHitStatsSpy).toHaveBeenCalledWith({
+                filters: {
+                    [SECOND_FILTER_ID]: {
+                        'example.com##h1': 2,
+                        '||example.org^$document': 1,
+                    },
                 },
-            },
-        });
+            });
 
-        expect(cleanupSpy).toHaveBeenCalled();
+            expect(cleanupSpy).toHaveBeenCalled();
+        } finally {
+            scheduleSpy.mockRestore();
+            Object.defineProperty(HitStatsApi, 'maxTotalHits', originalMaxTotalHits);
+            vi.clearAllMocks();
+        }
+    });
 
-        vi.clearAllMocks();
+    it('Sends valid collected hit stats content to backend', async () => {
+        const FIRST_FILTER_ID = AntiBannerFiltersId.EnglishFilterId;
+        const SECOND_FILTER_ID = AntiBannerFiltersId.TrackingFilterId;
+        const FIRST_RULE_INDEX = 0;
+        const SECOND_RULE_INDEX = 16;
+        const FIRST_RULE_TEXT = 'example.com##h1';
+        const SECOND_RULE_TEXT = '||example.org^$document';
+        const UNKNOWN_RULE_INDEX = 999;
 
-        // Restore the original value
-        Object.defineProperty(HitStatsApi, 'maxTotalHits', originalMaxTotalHits);
+        // Save the original value
+        const originalMaxTotalHits = Object.getOwnPropertyDescriptor(HitStatsApi, 'maxTotalHits');
+
+        if (!originalMaxTotalHits) {
+            throw new Error('maxTotalHits is not defined');
+        }
+
+        const sendHitStatsSpy = vi.spyOn(network, 'sendHitStats').mockImplementation(async () => {});
+        const cleanupSpy = vi.spyOn(HitStatsApi, 'cleanup');
+
+        // lodash debounce is a no-op in tests (see vitest.setup.ts), so each
+        // addRuleHit would otherwise fire saveAndSendHitStats immediately and race
+        // concurrent sends. Collect hits with the scheduler stubbed, then flush once.
+        const scheduleSpy = vi.spyOn(
+            HitStatsApi as unknown as { debounceSaveAndSendHitStats: () => void },
+            'debounceSaveAndSendHitStats',
+        ).mockImplementation(() => {});
+
+        try {
+            await HitStatsApi.init();
+
+            vi.spyOn(filterVersionStorage, 'get').mockReturnValue(filterVersionDataMock);
+
+            // Collect hits for two supported filters / rules
+            HitStatsApi.addRuleHit(FIRST_FILTER_ID, FIRST_RULE_INDEX);
+            HitStatsApi.addRuleHit(FIRST_FILTER_ID, FIRST_RULE_INDEX);
+            HitStatsApi.addRuleHit(FIRST_FILTER_ID, SECOND_RULE_INDEX);
+            // Unknown rule index must be skipped and must not break valid entries
+            HitStatsApi.addRuleHit(FIRST_FILTER_ID, UNKNOWN_RULE_INDEX);
+            HitStatsApi.addRuleHit(SECOND_FILTER_ID, FIRST_RULE_INDEX);
+
+            const expectedPayload = {
+                filters: {
+                    [FIRST_FILTER_ID]: {
+                        [FIRST_RULE_TEXT]: 2,
+                        [SECOND_RULE_TEXT]: 1,
+                    },
+                    [SECOND_FILTER_ID]: {
+                        [FIRST_RULE_TEXT]: 1,
+                    },
+                },
+            };
+
+            // Allow send on the single controlled flush below
+            Object.defineProperty(HitStatsApi, 'maxTotalHits', merge(originalMaxTotalHits, { value: 1 }));
+
+            await (HitStatsApi as unknown as {
+                saveAndSendHitStats: () => Promise<void>;
+            }).saveAndSendHitStats();
+
+            // Backend expects rule texts (not indexes) and correct hit counts — exactly once
+            expect(sendHitStatsSpy).toHaveBeenCalledTimes(1);
+            expect(sendHitStatsSpy).toHaveBeenCalledWith(expectedPayload);
+
+            const sentPayload = sendHitStatsSpy.mock.calls[0]?.[0];
+            expect(sentPayload).toEqual(expectedPayload);
+
+            // Content validity: keys are rule texts (not indexes), values are positive integers.
+            const filters = sentPayload?.filters;
+            expect(filters).toBeDefined();
+
+            Object.entries(filters!).forEach(([filterIdKey, ruleHits]) => {
+                expect(Number.isInteger(Number(filterIdKey))).toBe(true);
+                expect(ruleHits).toBeDefined();
+                expect(Object.keys(ruleHits).length).toBeGreaterThan(0);
+
+                Object.entries(ruleHits).forEach(([ruleText, hits]) => {
+                    // Rule text must be real filter content, not a numeric index left unconverted
+                    expect(ruleText.length).toBeGreaterThan(0);
+                    expect(Number.isNaN(Number(ruleText))).toBe(true);
+                    expect(Number.isInteger(hits)).toBe(true);
+                    expect(hits).toBeGreaterThan(0);
+                });
+            });
+
+            // Unknown rule index is not present in the sent payload
+            expect(JSON.stringify(sentPayload)).not.toContain(String(UNKNOWN_RULE_INDEX));
+
+            expect(cleanupSpy).toHaveBeenCalledTimes(1);
+
+            // After a successful send, local stats storage is cleaned up
+            expect(await storage.get(HIT_STATISTIC_KEY)).toStrictEqual({
+                [HIT_STATISTIC_KEY]: JSON.stringify({}),
+            });
+        } finally {
+            scheduleSpy.mockRestore();
+            Object.defineProperty(HitStatsApi, 'maxTotalHits', originalMaxTotalHits);
+            vi.clearAllMocks();
+        }
     });
 
     it('Sends valid collected hit stats content to backend', async () => {
