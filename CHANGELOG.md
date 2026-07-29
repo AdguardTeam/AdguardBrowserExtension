@@ -27,6 +27,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Aligned `RuleActionType` enum casing to PascalCase (`BLOCK` → `Block`, etc.) to
   match the `@adguard/dnr-converter` API.
 - User rules error reporting in MV3 now logs dynamic rule conversion errors.
+- Updated [@adguard/agtree] to v4.2.0.
+- Updated [@adguard/dnr-converter] to v1.1.0.
+- Updated [@adguard/rules-editor] to v2.0.0.
+- Updated [@adguard/scriptlets] to v2.5.0.
+- Updated [@adguard/tsurlfilter] to v6.0.2.
+- Updated [@adguard/tswebextension] to v5.0.0.
+- Updated [@adguard/extended-css] to v2.2.0 (sub-dependency of [@adguard/tswebextension]).
 
 ### Fixed
 
@@ -1131,9 +1138,12 @@ The extension is now fully compatible with MV3.
 
 [@adguard/agtree]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/agtree/CHANGELOG.md
 [@adguard/assistant]: https://github.com/AdguardTeam/AdguardAssistant/blob/master/CHANGELOG.md
+[@adguard/dnr-converter]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/dnr-converter/CHANGELOG.md
 [@adguard/dnr-rulesets]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/dnr-rulesets/CHANGELOG.md
+[@adguard/extended-css]: https://github.com/AdguardTeam/ExtendedCss/blob/master/CHANGELOG.md
 [@adguard/filters-downloader]: https://github.com/AdguardTeam/FiltersDownloader/blob/master/CHANGELOG.md
 [@adguard/logger]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/logger/CHANGELOG.md
+[@adguard/rules-editor]: https://github.com/AdguardTeam/rules-editor/blob/master/CHANGELOG.md
 [@adguard/scriptlets]: https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md
 [@adguard/tswebextension]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md
 [@adguard/tsurlfilter]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md

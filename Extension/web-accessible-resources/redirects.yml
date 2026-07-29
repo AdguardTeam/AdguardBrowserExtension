@@ -1,6 +1,6 @@
 #
 #    AdGuard Scriptlets (Redirects Source)
-#    Version 2.4.2
+#    Version 2.5.0
 #
 - title: 1x1-transparent.gif
   added: v1.0.4
@@ -1611,6 +1611,18 @@
             var getStringValue = function getStringValue(value) {
                 return typeof value === "string" && value.length > 0 ? value : null;
             };
+            var normalizeStreamRequestUi = function normalizeStreamRequestUi(value) {
+                if (!isRecord(value)) {
+                    return {
+                        custom: null
+                    };
+                }
+                var normalizedUi = Object.assign({
+                    custom: null
+                }, value);
+                normalizedUi.custom = isRecord(normalizedUi.custom) ? normalizedUi.custom : null;
+                return normalizedUi;
+            };
             var initializeEventHandler = function initializeEventHandler(instance) {
                 instance.listeners = new Map;
             };
@@ -1638,10 +1650,14 @@
                 instance.networkCode = null;
                 instance.omidAccessModeRules = null;
                 instance.streamActivityMonitorId = null;
+                instance.ui = {
+                    custom: null
+                };
                 if (isRecord(streamRequest)) {
                     Object.assign(instance, streamRequest);
                 }
                 instance.adTagParameters = toStringRecord(instance.adTagParameters);
+                instance.ui = normalizeStreamRequestUi(instance.ui);
                 if (typeof instance.format !== "string" || instance.format.length === 0) {
                     instance.format = "hls";
                 }
@@ -1696,9 +1712,14 @@
                     }
                 }
             };
+            var streamFormats = {
+                DASH: "dash",
+                HLS: "hls"
+            };
             var StreamRequest = function StreamRequest(streamRequest) {
                 initializeStreamRequest(this, streamRequest);
             };
+            StreamRequest.StreamFormat = streamFormats;
             var LiveStreamRequest = function LiveStreamRequest(liveStreamRequest) {
                 initializeStreamRequest(this, liveStreamRequest);
                 this.assetKey = typeof this.assetKey === "string" ? this.assetKey : "";
@@ -1760,14 +1781,110 @@
                 return this.streamData;
             };
             var UiSettings = function UiSettings() {
-                this.locale = "";
+                this.locale = "en";
             };
             UiSettings.prototype.getLocale = function() {
                 return this.locale;
             };
             UiSettings.prototype.setLocale = function(locale) {
-                this.locale = locale;
+                if (typeof locale === "string" && locale.length > 0) {
+                    this.locale = locale;
+                }
             };
+            var uiKeys = {
+                ABOUT_THIS_AD_FALLBACK_IMAGE: "aboutThisAdFallbackImage",
+                ABOUT_THIS_AD_ICON: "aboutThisAdIcon",
+                AD_TITLE: "adTitle",
+                ATTRIBUTION: "attribution",
+                AUTHOR_ICON: "authorIcon",
+                AUTHOR_TITLE: "authorTitle",
+                CALL_TO_ACTION: "callToAction",
+                PRE_SKIP: "preSkip",
+                SKIP_BUTTON: "skipButton",
+                VIDEO_OVERLAY: "videoOverlay"
+            };
+            var clickThroughNavigation = {
+                EXTERNAL: "external",
+                NOT_SUPPORTED: "notSupported"
+            };
+            var UiImage = function UiImage(uiImage) {
+                this.altText = "";
+                this.height = 0;
+                this.url = "";
+                this.width = 0;
+                if (isRecord(uiImage)) {
+                    Object.assign(this, uiImage);
+                }
+                this.altText = getStringValue(this.altText) || "";
+                this.height = typeof this.height === "number" ? this.height : 0;
+                this.url = getStringValue(this.url) || "";
+                this.width = typeof this.width === "number" ? this.width : 0;
+            };
+            var UiData = function UiData(uiData) {
+                this.clickable = false;
+                this.required = false;
+                if (isRecord(uiData)) {
+                    Object.assign(this, uiData);
+                }
+                this.clickable = Boolean(this.clickable);
+                this.required = Boolean(this.required);
+                if (Array.isArray(this.imageVariants)) {
+                    var imageVariants = [];
+                    for (var imageVariantIndex = 0; imageVariantIndex < this.imageVariants.length; imageVariantIndex += 1) {
+                        imageVariants.push(new UiImage(this.imageVariants[imageVariantIndex]));
+                    }
+                    this.imageVariants = imageVariants;
+                }
+            };
+            UiData.UiImage = UiImage;
+            var UiOptions = function UiOptions(uiOptions) {
+                this.aboutThisAdSupport = false;
+                this.clickThroughNavigation = clickThroughNavigation.NOT_SUPPORTED;
+                this.skippableSupport = false;
+                if (isRecord(uiOptions)) {
+                    Object.assign(this, uiOptions);
+                }
+                this.aboutThisAdSupport = Boolean(this.aboutThisAdSupport);
+                this.clickThroughNavigation = this.clickThroughNavigation === clickThroughNavigation.EXTERNAL ? clickThroughNavigation.EXTERNAL : clickThroughNavigation.NOT_SUPPORTED;
+                this.skippableSupport = Boolean(this.skippableSupport);
+            };
+            UiOptions.ClickThroughNavigation = clickThroughNavigation;
+            var CustomUiOptions = function CustomUiOptions(uiOptions) {
+                this.aboutThisAdSupport = false;
+                this.skippableSupport = false;
+                if (isRecord(uiOptions)) {
+                    Object.assign(this, uiOptions);
+                }
+                this.aboutThisAdSupport = Boolean(this.aboutThisAdSupport);
+                this.skippableSupport = Boolean(this.skippableSupport);
+            };
+            var uiDelegates = new WeakMap;
+            var Ui = function Ui(uiDelegate) {
+                uiDelegates.set(this, isRecord(uiDelegate) ? uiDelegate : {});
+            };
+            Ui.prototype.onClick = function(uiKey, eventData) {
+                var uiDelegate = uiDelegates.get(this);
+                if (uiDelegate && typeof uiDelegate.onClick === "function") {
+                    uiDelegate.onClick(uiKey, eventData);
+                }
+            };
+            Ui.prototype.setVisibleElements = function(uiElements) {
+                var uiDelegate = uiDelegates.get(this);
+                if (uiDelegate && typeof uiDelegate.setVisibleElements === "function") {
+                    uiDelegate.setVisibleElements(uiElements);
+                }
+            };
+            Ui.prototype.getConfig = function() {
+                var uiDelegate = uiDelegates.get(this);
+                if (!uiDelegate || typeof uiDelegate.getConfig !== "function") {
+                    return new Map;
+                }
+                var uiConfig = uiDelegate.getConfig();
+                return uiConfig instanceof Map ? uiConfig : new Map;
+            };
+            Ui.UiData = UiData;
+            Ui.UiKey = uiKeys;
+            Ui.UiOptions = UiOptions;
             var daiSdkFeatureFlagsStorage = new WeakMap;
             var getStoredDaiSdkFeatureFlags = function getStoredDaiSdkFeatureFlags(instance) {
                 var storedFeatureFlags = daiSdkFeatureFlagsStorage.get(instance);
@@ -2116,6 +2233,9 @@
                 return typeof contentTime === "number" ? contentTime : 0;
             };
             var api = {
+                customUi: {
+                    UiOptions: CustomUiOptions
+                },
                 DaiSdkSettings: new DaiSdkSettingsContainer,
                 LiveStreamRequest: LiveStreamRequest,
                 PodStreamRequest: PodStreamRequest,
@@ -2123,6 +2243,7 @@
                 StreamEvent: StreamEvent,
                 StreamManager: StreamManager,
                 StreamRequest: StreamRequest,
+                ui: Ui,
                 UiSettings: UiSettings,
                 VideoStitcherLiveStreamRequest: VideoStitcherLiveStreamRequest,
                 VideoStitcherVodStreamRequest: VideoStitcherVodStreamRequest,
@@ -2178,7 +2299,7 @@
         name: "google-ima3-dai",
         args: []
     }, []);
-  file: google-ima3-dai.ts
+  file: google-ima3-dai.js
 
 - title: google-ima3
   comment: Mocks the IMA SDK of Google.
@@ -3102,6 +3223,7 @@
                 var clickUrl = "";
                 var collapseEmptyDiv = null;
                 var services = new Set;
+                var config = {};
                 var slot = {
                     addService(e) {
                         services.add(e);
@@ -3136,6 +3258,21 @@
                     },
                     getCollapseEmptyDiv: function getCollapseEmptyDiv() {
                         return collapseEmptyDiv;
+                    },
+                    getConfig: function getConfig(keys) {
+                        var configKeys = Array.isArray(keys) ? keys : [ keys ];
+                        var googleTagServicesConfig = {};
+                        for (var i = 0; i < configKeys.length; i += 1) {
+                            var key = configKeys[i];
+                            if (key === "clickUrl") {
+                                googleTagServicesConfig[key] = clickUrl;
+                            } else if (key === "targeting") {
+                                googleTagServicesConfig[key] = targeting;
+                            } else {
+                                googleTagServicesConfig[key] = config[key];
+                            }
+                        }
+                        return Object.freeze(googleTagServicesConfig);
                     },
                     getContentUrl: function getContentUrl() {
                         return "";
@@ -3204,6 +3341,23 @@
                         collapseEmptyDiv = !!v;
                         return slot;
                     },
+                    setConfig(obj) {
+                        try {
+                            var entries = Object.entries(obj);
+                            for (var i = 0; i < entries.length; i += 1) {
+                                var entry = entries[i];
+                                var key = entry[0];
+                                var value = entry[1];
+                                if (key === "clickUrl") {
+                                    clickUrl = value;
+                                } else if (key === "targeting") {
+                                    updateTargeting(targeting, value);
+                                } else {
+                                    config[key] = value;
+                                }
+                            }
+                        } catch (ex) {}
+                    },
                     setSafeFrameConfig: noopThis,
                     setTagForChildDirectedTreatment: noopThis,
                     setTargeting(k, v) {
@@ -3223,6 +3377,7 @@
                 slotCreatives.set(optDiv, creatives);
                 return slot;
             };
+            var initialLoadDisabled = false;
             var pubAdsService = {
                 addEventListener: addEventListener,
                 removeEventListener: removeEventListener,
@@ -3243,7 +3398,9 @@
                 definePassback() {
                     return new PassbackSlot;
                 },
-                disableInitialLoad: noopFunc,
+                disableInitialLoad() {
+                    initialLoadDisabled = true;
+                },
                 display: noopFunc,
                 enableAsyncRendering: noopFunc,
                 enableLazyLoad: noopFunc,
@@ -3255,7 +3412,9 @@
                 getTargeting: noopArray,
                 getTargetingKeys: noopArray,
                 getSlots: noopArray,
-                isInitialLoadDisabled: trueFunc,
+                isInitialLoadDisabled: function isInitialLoadDisabled() {
+                    return initialLoadDisabled;
+                },
                 refresh: noopFunc,
                 set: noopThis,
                 setCategoryExclusion: noopThis,
@@ -3272,6 +3431,7 @@
                 setVideoContent: noopThis,
                 updateCorrelator: noopFunc
             };
+            var config = {};
             var {googletag: googletag = {}} = window;
             var {cmd: cmd = []} = googletag;
             googletag.apiReady = true;
@@ -3307,12 +3467,44 @@
                 displaySlot(slotsById.get(id));
             };
             googletag.enableServices = noopFunc;
+            googletag.getConfig = function(keys) {
+                var configKeys = Array.isArray(keys) ? keys : [ keys ];
+                var googleTagServicesConfig = {};
+                for (var i = 0; i < configKeys.length; i += 1) {
+                    var key = configKeys[i];
+                    if (key === "disableInitialLoad") {
+                        googleTagServicesConfig[key] = initialLoadDisabled;
+                    } else if (key === "targeting") {
+                        googleTagServicesConfig[key] = gTargeting;
+                    } else {
+                        googleTagServicesConfig[key] = config[key];
+                    }
+                }
+                return Object.freeze(googleTagServicesConfig);
+            };
             googletag.getVersion = noopStr;
             googletag.pubads = function() {
                 return pubAdsService;
             };
             googletag.pubadsReady = true;
             googletag.setAdIframeTitle = noopFunc;
+            googletag.setConfig = function(obj) {
+                try {
+                    var entries = Object.entries(obj);
+                    for (var i = 0; i < entries.length; i += 1) {
+                        var entry = entries[i];
+                        var key = entry[0];
+                        var value = entry[1];
+                        if (key === "disableInitialLoad") {
+                            initialLoadDisabled = !!value;
+                        } else if (key === "targeting") {
+                            updateTargeting(gTargeting, value);
+                        } else {
+                            config[key] = value;
+                        }
+                    }
+                } catch (ex) {}
+            };
             googletag.sizeMapping = function() {
                 return new SizeMappingBuilder;
             };
@@ -3984,13 +4176,7 @@
 
 - title: prevent-bab
   comment: Prevents BlockAdblock script from detecting an ad blocker.
-  aliases:
-    - nobab.js
-    - ubo-nobab.js
-    - bab-defuser.js
-    - ubo-bab-defuser.js
-    - ubo-nobab
-    - ubo-bab-defuser
+  aliases: []
   contentType: application/javascript
   content: |-
     (function(source, args) {

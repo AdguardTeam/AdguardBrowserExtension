@@ -4,21 +4,16 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
-overrides:
-  '@adguard/tswebextension': link:../tsurlfilter/packages/tswebextension
-  '@adguard/tsurlfilter': link:../tsurlfilter/packages/tsurlfilter
-  '@adguard/dnr-rulesets': link:../tsurlfilter/packages/dnr-rulesets
-
 importers:
 
   .:
     dependencies:
       '@adguard/agtree':
-        specifier: 4.1.1
-        version: 4.1.1
+        specifier: 4.2.0
+        version: 4.2.0
       '@adguard/dnr-converter':
-        specifier: 1.0.0-alpha.2
-        version: 1.0.0-alpha.2(@adguard/re2-wasm@1.2.0)(typescript@5.6.3)
+        specifier: 1.1.0
+        version: 1.1.0(@adguard/re2-wasm@1.2.0)(typescript@5.6.3)
       '@adguard/filters-downloader':
         specifier: 2.4.4
         version: 2.4.4
@@ -26,11 +21,11 @@ importers:
         specifier: 2.0.0
         version: 2.0.0
       '@adguard/rules-editor':
-        specifier: 2.0.0-alpha.1
-        version: 2.0.0-alpha.1(@codemirror/commands@6.10.3)(@codemirror/language@6.12.3)(@codemirror/search@6.7.0)(@codemirror/state@6.6.0)(@codemirror/view@6.43.0)(@lezer/highlight@1.2.3)(vscode-oniguruma@2.0.1)
+        specifier: 2.0.0
+        version: 2.0.0(@codemirror/commands@6.10.3)(@codemirror/language@6.12.3)(@codemirror/search@6.7.0)(@codemirror/state@6.6.0)(@codemirror/view@6.43.0)(@lezer/highlight@1.2.3)(vscode-oniguruma@2.0.1)
       '@adguard/scriptlets':
-        specifier: 2.4.2
-        version: 2.4.2
+        specifier: 2.5.0
+        version: 2.5.0
       '@adguard/text-encoding':
         specifier: 0.8.3
         version: 0.8.3
@@ -38,11 +33,11 @@ importers:
         specifier: 2.0.1
         version: 2.0.1
       '@adguard/tsurlfilter':
-        specifier: link:../tsurlfilter/packages/tsurlfilter
-        version: link:../tsurlfilter/packages/tsurlfilter
+        specifier: 6.0.2
+        version: 6.0.2
       '@adguard/tswebextension':
-        specifier: link:../tsurlfilter/packages/tswebextension
-        version: link:../tsurlfilter/packages/tswebextension
+        specifier: 5.0.0
+        version: 5.0.0(@adguard/re2-wasm@1.2.0)(typescript@5.6.3)
       '@codemirror/commands':
         specifier: 6.10.3
         version: 6.10.3
@@ -171,8 +166,8 @@ importers:
         version: 3.4.0(zod@3.24.4)
     devDependencies:
       '@adguard/dnr-rulesets':
-        specifier: link:../tsurlfilter/packages/dnr-rulesets
-        version: link:../tsurlfilter/packages/dnr-rulesets
+        specifier: ~5.0.1
+        version: 5.0.1(typescript@5.6.3)
       '@adguard/eslint-plugin-logger-context':
         specifier: 1.0.1
         version: 1.0.1
@@ -446,9 +441,12 @@ importers:
 
 packages:
 
-  '@adguard/agtree@4.1.1':
-    resolution: {integrity: sha512-8wJzItrJtDU3MVssSTjn9bBx7FhqZjWLzUMf0itUno0PJnSH0taTDBNvvyYdwLuIkJPK2MxY0Mwqc1PfpKqz0Q==}
+  '@adguard/agtree@4.2.0':
+    resolution: {integrity: sha512-rpdSH2oRESO2d0OhhLrvUPAh4nsX3uSCEz+1bNevUkGKtysGG404ZevSlSZEFEDNAuOPmyaCKA5dbQ5T2G20BA==}
     engines: {node: '>=22'}
+
+  '@adguard/assistant@4.4.13':
+    resolution: {integrity: sha512-ATeccs1PSWg9yoqN/4SZ1L2UfTgEN375WEGw4uhHXVllPbjJkSjsr9Rk6tsRb6IvZT9YNOAP3R/kQfc0/opLbA==}
 
   '@adguard/css-tokenizer@1.2.0':
     resolution: {integrity: sha512-cUj5j/AU5z/T4//5M6KnIJBpykAY4QbDsoiQ2DaWX/r2XkepMkTb8DhIbUHJD/QLGEyLeQLpi+nlxAgf4NTRRQ==}
@@ -458,15 +456,23 @@ packages:
     engines: {node: '>=20'}
     hasBin: true
 
-  '@adguard/dnr-converter@1.0.0-alpha.2':
-    resolution: {integrity: sha512-AZ5ElPhpBZQSrNB4w0QYEjR/79lNzVeUUDZRw9FHigVn/kfMV7ZGpqyH41b5Tc+1lCgxl/tPFCvenhICYblnnQ==}
+  '@adguard/dnr-converter@1.1.0':
+    resolution: {integrity: sha512-aGfLzcEv9NmJ6Gq+iasyExiREtU6ZVZg7fsnZz6CSICQjS4803AuAop4xn6uzY9nPir0cD3w/+EuRWb4T4Thkg==}
     engines: {node: '>=22'}
     hasBin: true
     peerDependencies:
       '@adguard/re2-wasm': 1.2.0
 
+  '@adguard/dnr-rulesets@5.0.1':
+    resolution: {integrity: sha512-8g6J1kC/J8Wi5BF7FRr0RqCRLdtoVlkStpxQJxpFU4+JsmSY5o7eSxLghY5PR6129bXNGbOBqzOROzRz9xFFnQ==}
+    hasBin: true
+
   '@adguard/eslint-plugin-logger-context@1.0.1':
     resolution: {integrity: sha512-KfHD0UrCkkHQK7cq5nBvY9cJ/kDJoMwKfq66cJngLRKnCkCYGKGBT+HPmwapkXK96UItfPswW07i1VWIaZSgpA==}
+
+  '@adguard/extended-css@2.2.0':
+    resolution: {integrity: sha512-LCSQDGV1yvtbehNsFmv0nMFHxLtYAzu8by9QJd9zmS07ZsgL6n5YQ3TZzqaUdLvBIuTIuG4Lfn73xwuRk5J9Og==}
+    engines: {node: '>=16'}
 
   '@adguard/filters-downloader@2.4.4':
     resolution: {integrity: sha512-fW1aH8nFHM17OO+TfTtOG5ioMq0JX5KbdB03Pvynx3Rw1b9f4Y5sdg0mjGciLbtu+2amUOXAJ0qN4l4U/ktCvw==}
@@ -480,8 +486,8 @@ packages:
     resolution: {integrity: sha512-yMtEJfThxN9rEYm2Zg3X8jUKaPYq5wByc90JbMspSWJo7MXw664gTvLD7/wijl6y79VSuAs77bXUIgBXutMp7A==}
     engines: {node: '>=10'}
 
-  '@adguard/rules-editor@2.0.0-alpha.1':
-    resolution: {integrity: sha512-2Okb/8tRzYPGU1X/5EFm5+dJ5ToUhm+38O1+41Jd8CaFFqUx+pVTE53LApnAhx7YzQLCELdTPYIO01bFlXbshw==}
+  '@adguard/rules-editor@2.0.0':
+    resolution: {integrity: sha512-aQvuUNWdnqYRSOG0E9OsaNE+UI+HMAE7Fqg1SCJDevA9SMe+s5q+AtpChxTFKCSeNoUkXsI6T9HU7BaNWujXLg==}
     engines: {node: '>=22', pnpm: '>=10.33.4 <11'}
     peerDependencies:
       '@codemirror/commands': ^6.10.3
@@ -492,14 +498,24 @@ packages:
       '@lezer/highlight': ^1.2.3
       vscode-oniguruma: ^2.0.1
 
-  '@adguard/scriptlets@2.4.2':
-    resolution: {integrity: sha512-poh0KyNiN9nIa7DkzabcGa/HwrfjvNzk2wRj6jcgeySnWEPaYK61SyhC1L6pFn3fFVQdUJLTVCCFowcuEmW3Lg==}
+  '@adguard/scriptlets@2.5.0':
+    resolution: {integrity: sha512-1DISQycmS1+KkYYvn9bl6PQIV84MdykM/Jyyu+iI8h3xpWJCudH0KR/b5g4qDYmKGBoGg6LclMsyLxzPdeje0A==}
+    engines: {pnpm: '>=10.33.4 <11'}
 
   '@adguard/text-encoding@0.8.3':
     resolution: {integrity: sha512-LA0bsY+YYnQqItGaYMoVL0l55JDi/uwvUca53V6M6mvKNHtaYDTlf3yAeW2PafsTfWvoYH7gObGu8eCvPh69tg==}
 
   '@adguard/translate@2.0.1':
     resolution: {integrity: sha512-wMtm1p6/wzsoiRteIKLtUIX9zPDEQBz7wOyt7eRNr4EGxbcCMccPN0KgNVb0DXvKtvGKzOBrrarIMaScBAMNNQ==}
+
+  '@adguard/tsurlfilter@6.0.2':
+    resolution: {integrity: sha512-AAf0FLA0ySAJq31WMad/AluBr1OFaFX/XAwwfDb1Kg/Sq0nAAERyogfwYw2gOzZ5agcvNpDZoziSspxDIOMZ3g==}
+    engines: {node: '>=22'}
+
+  '@adguard/tswebextension@5.0.0':
+    resolution: {integrity: sha512-OCNt9sQVR2DzJOI/mLUKW6dx2NepvurzAezfM+E/9shUOPgKU6ZK90U3ZElmviMLhpUkuxOIZOiJzIzItcCGXw==}
+    engines: {node: '>=22'}
+    hasBin: true
 
   '@asamuzakjp/css-color@3.1.1':
     resolution: {integrity: sha512-hpRD68SV2OMcZCsrbdkccTw5FXjNDLo5OuqSHyHZfwweGsDWZwDJ2+gONyNAbazZclobMirACLw0lk8WVxIqxA==}
@@ -2352,6 +2368,9 @@ packages:
   boolbase@1.0.0:
     resolution: {integrity: sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==}
 
+  bowser@2.11.0:
+    resolution: {integrity: sha512-AlcaJBi/pqqJBIQ8U9Mcpc9i8Aqxn88Skv5d+xBX006BY5u8N3mGLHa5Lgppa7L/HfwgwLgZ6NYs+Ag6uUmJRA==}
+
   brace-expansion@1.1.11:
     resolution: {integrity: sha512-iCuPHDFgrHX7H2vEI/5xpz07zSHB00TpugqhmYtVmMO6518mCuRMoOYFldEBl0g187ufozdaHgWKcYFb61qGiA==}
 
@@ -2467,9 +2486,28 @@ packages:
     resolution: {integrity: sha512-7VT13fmjotKpGipCW9JEQAusEPE+Ei8nl6/g4FBAmIm0GOOLMua9NDDo/DWp0ZAxCr3cPq5ZpBqmPAQgDda2Pw==}
     engines: {node: '>= 8.10.0'}
 
+  chokidar@4.0.3:
+    resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
+    engines: {node: '>= 14.16.0'}
+
   chrome-trace-event@1.0.4:
     resolution: {integrity: sha512-rNjApaLzuwaOTjCiT8lSDdGN1APCiqkChLMJxJPWLunPAt5fy8xgU9/jNOchV84wfIxrA0lRQB7oCT8jrn/wrQ==}
     engines: {node: '>=6.0'}
+
+  chrome-types@0.1.435:
+    resolution: {integrity: sha512-JCJ1mkEmqfULW5O6bc+uL3RfuqhHhsR2CDJ/fVo90AyUTbeOu+AM8l0JvJol8uub0hyTfwy2rEaqvnVneBzRdg==}
+
+  cidr-regex@3.1.1:
+    resolution: {integrity: sha512-RBqYd32aDwbCMFJRL6wHOlDNYJsPNTt8vC82ErHF5vKt8QQzxm1FrkW8s/R5pVrXMf17sba09Uoy91PKiddAsw==}
+    engines: {node: '>=10'}
+
+  cidr-regex@4.0.3:
+    resolution: {integrity: sha512-HOwDIy/rhKeMf6uOzxtv7FAbrz8zPjmVKfSpM+U7/bNBXC5rtOyr758jxcptiSx6ZZn5LOhPJT5WWxPAGDV8dw==}
+    engines: {node: '>=14'}
+
+  cidr-tools@6.4.2:
+    resolution: {integrity: sha512-KZC8t2ipCqU2M+ISmTxRDGu9bku5MRU3V1cWyGEFJTZEzRhGvBJvVsbpZO5UAu12fExRFihtYGXAlgFFpmK9jw==}
+    engines: {node: '>=16'}
 
   cipher-base@1.0.6:
     resolution: {integrity: sha512-3Ek9H3X6pj5TgenXYtNWdaBon1tgYCaebd+XPg0keyjEbEfkD4KkmAxkQ/i1vYvxdcT5nscLBfq9VJRmCBcFSw==}
@@ -3634,9 +3672,17 @@ packages:
     resolution: {integrity: sha512-4gd7VpWNQNB4UKKCFFVcp1AVv+FMOgs9NKzjHKusc8jTMhd5eL1NqQqOpE0KzMds804/yHlglp3uxgluOqAPLw==}
     engines: {node: '>= 0.4'}
 
+  ip-bigint@7.3.0:
+    resolution: {integrity: sha512-2qVAe0Q9+Y+5nGvmogwK9y4kefD5Ks5l/IG0Jo1lhU9gIF34jifhqrwXwzkIl+LC594Q6SyAlngs4p890xsXVw==}
+    engines: {node: '>=16'}
+
   ip-regex@4.3.0:
     resolution: {integrity: sha512-B9ZWJxHHOHUhUjCPrMpLD4xEq35bUTClHM1S6CBU5ixQnkZmwipwgc96vAd7AAGM9TGHvJR+Uss+/Ak6UphK+Q==}
     engines: {node: '>=8'}
+
+  ip-regex@5.0.0:
+    resolution: {integrity: sha512-fOCG6lhoKKakwv+C6KdsOnGvgXnmgfmp0myi3bcNwj3qfwPAxRKWEuFhvEFF7ceYIz6+1jRZ+yguLFAmUNPEfw==}
+    engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
   ipaddr.js@1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
@@ -3679,6 +3725,10 @@ packages:
   is-callable@1.2.7:
     resolution: {integrity: sha512-1BC0BVFhS/p0qtw6enp8e+8OD0UrK0oFLztSjNzhcKA3WDuJxxAPXzPuPtKkjEY9UUoEWlX/8fgKeu2S8i9JTA==}
     engines: {node: '>= 0.4'}
+
+  is-cidr@4.0.2:
+    resolution: {integrity: sha512-z4a1ENUajDbEl/Q6/pVBpTR1nBjjEE1X7qb7bmWYanNnPoKAvUCPFKeXV6Fe4mgTkWKBqiHIcwsI3SndiO5FeA==}
+    engines: {node: '>=10'}
 
   is-core-module@2.16.1:
     resolution: {integrity: sha512-UfoeMA6fIJ8wTYFEUjelnaGI67v6+N7qXJEvQuIGa99l4xsCruSYOVSQ0uPANn4dAzm8lkYPaKLrrijLq7x23w==}
@@ -4209,6 +4259,11 @@ packages:
   nanoid@3.3.6:
     resolution: {integrity: sha512-BGcqMMJuToF7i1rt+2PWSNVnWIkGCU78jBG3RxO/bZlnZPK2Cmi2QaffxGO/2RvWi9sL+FAiRiXMgsyxQ1DIDA==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
+
+  nanoid@5.1.16:
+    resolution: {integrity: sha512-kVrnsrJqMR8+oLJnGEmSWw9BivK5mt7H3FZatVRjrc5wGqFYuBxX1yG7+A7Gi5AefkX6t/oCkizcQgpu0cY1dQ==}
+    engines: {node: ^18 || >=20}
     hasBin: true
 
   natural-compare@1.4.0:
@@ -4874,6 +4929,10 @@ packages:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==}
     engines: {node: '>=8.10.0'}
 
+  readdirp@4.1.2:
+    resolution: {integrity: sha512-GDhwkLfywWL2s6vEjyhri+eXmfH6j1L7JE27WhqLeYzoh/A3DBaYGEj2H/HFZCn/kMfim73FXxEJTw06WtxQwg==}
+    engines: {node: '>= 14.18.0'}
+
   reflect.getprototypeof@1.0.10:
     resolution: {integrity: sha512-00o4I+DVrefhv+nX0ulyi3biSHCPDe+yLv5o/p6d/UVlirijB8E16FtfwSAi4g3tcqrQ4lRAqQSoFEZJehYEcw==}
     engines: {node: '>= 0.4'}
@@ -5228,6 +5287,9 @@ packages:
   string-argv@0.3.2:
     resolution: {integrity: sha512-aqD2Q0144Z+/RqG52NeHEkZauTAUWJO8c6yTftGJKO3Tja5tUgIfmIl6kExvhtxSDP7fXB6DvzkfMpCd/F3G+Q==}
     engines: {node: '>=0.6.19'}
+
+  string-natural-compare@3.0.1:
+    resolution: {integrity: sha512-n3sPwynL1nwKi3WJ6AIsClwBMa0zTi54fn2oLU6ndfTSIO05xaznjSf15PcBZU6FNWbmN5Q6cxT4V5hGvB4taw==}
 
   string-width@4.2.3:
     resolution: {integrity: sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==}
@@ -5960,7 +6022,7 @@ packages:
 
 snapshots:
 
-  '@adguard/agtree@4.1.1':
+  '@adguard/agtree@4.2.0':
     dependencies:
       '@adguard/css-tokenizer': 1.2.0
       camelcase-keys: 7.0.2
@@ -5972,6 +6034,8 @@ snapshots:
       tldts: 5.7.112
       zod: 3.24.4
 
+  '@adguard/assistant@4.4.13': {}
+
   '@adguard/css-tokenizer@1.2.0': {}
 
   '@adguard/diff-builder@1.1.4':
@@ -5979,19 +6043,37 @@ snapshots:
       commander: 11.1.0
       crypto-js: 4.2.0
 
-  '@adguard/dnr-converter@1.0.0-alpha.2(@adguard/re2-wasm@1.2.0)(typescript@5.6.3)':
+  '@adguard/dnr-converter@1.1.0(@adguard/re2-wasm@1.2.0)(typescript@5.6.3)':
     dependencies:
-      '@adguard/agtree': 4.1.1
+      '@adguard/agtree': 4.2.0
       '@adguard/logger': 2.0.0
       '@adguard/re2-wasm': 1.2.0
-      '@adguard/scriptlets': 2.4.2
+      '@adguard/scriptlets': 2.5.0
       commander: 12.1.0
       punycode: 2.3.1
       valibot: 1.4.2(typescript@5.6.3)
     transitivePeerDependencies:
       - typescript
 
+  '@adguard/dnr-rulesets@5.0.1(typescript@5.6.3)':
+    dependencies:
+      '@adguard/agtree': 4.2.0
+      '@adguard/dnr-converter': 1.1.0(@adguard/re2-wasm@1.2.0)(typescript@5.6.3)
+      '@adguard/logger': 2.0.0
+      '@adguard/re2-wasm': 1.2.0
+      axios: 1.15.0
+      chokidar: 4.0.3
+      commander: 12.1.0
+      fast-glob: 3.3.3
+      fs-extra: 11.3.0
+      zod: 3.24.4
+    transitivePeerDependencies:
+      - debug
+      - typescript
+
   '@adguard/eslint-plugin-logger-context@1.0.1': {}
+
+  '@adguard/extended-css@2.2.0': {}
 
   '@adguard/filters-downloader@2.4.4':
     dependencies:
@@ -6005,7 +6087,7 @@ snapshots:
 
   '@adguard/re2-wasm@1.2.0': {}
 
-  '@adguard/rules-editor@2.0.0-alpha.1(@codemirror/commands@6.10.3)(@codemirror/language@6.12.3)(@codemirror/search@6.7.0)(@codemirror/state@6.6.0)(@codemirror/view@6.43.0)(@lezer/highlight@1.2.3)(vscode-oniguruma@2.0.1)':
+  '@adguard/rules-editor@2.0.0(@codemirror/commands@6.10.3)(@codemirror/language@6.12.3)(@codemirror/search@6.7.0)(@codemirror/state@6.6.0)(@codemirror/view@6.43.0)(@lezer/highlight@1.2.3)(vscode-oniguruma@2.0.1)':
     dependencies:
       '@codemirror/commands': 6.10.3
       '@codemirror/language': 6.12.3
@@ -6017,15 +6099,57 @@ snapshots:
       vscode-oniguruma: 2.0.1
       vscode-textmate: 9.3.2
 
-  '@adguard/scriptlets@2.4.2':
+  '@adguard/scriptlets@2.5.0':
     dependencies:
-      '@adguard/agtree': 4.1.1
+      '@adguard/agtree': 4.2.0
       '@types/trusted-types': 2.0.7
       js-yaml: 3.14.1
 
   '@adguard/text-encoding@0.8.3': {}
 
   '@adguard/translate@2.0.1': {}
+
+  '@adguard/tsurlfilter@6.0.2':
+    dependencies:
+      '@adguard/agtree': 4.2.0
+      '@adguard/css-tokenizer': 1.2.0
+      '@adguard/logger': 2.0.0
+      '@adguard/scriptlets': 2.5.0
+      cidr-tools: 6.4.2
+      is-cidr: 4.0.2
+      is-ip: 3.1.0
+      lru-cache: 11.0.2
+      punycode: 2.3.1
+      tldts: 5.7.112
+      zod: 3.24.4
+      zod-validation-error: 3.4.0(zod@3.24.4)
+
+  '@adguard/tswebextension@5.0.0(@adguard/re2-wasm@1.2.0)(typescript@5.6.3)':
+    dependencies:
+      '@adguard/agtree': 4.2.0
+      '@adguard/assistant': 4.4.13
+      '@adguard/dnr-converter': 1.1.0(@adguard/re2-wasm@1.2.0)(typescript@5.6.3)
+      '@adguard/extended-css': 2.2.0
+      '@adguard/logger': 2.0.0
+      '@adguard/scriptlets': 2.5.0
+      '@adguard/text-encoding': 0.8.3
+      '@adguard/tsurlfilter': 6.0.2
+      bowser: 2.11.0
+      chrome-types: 0.1.435
+      commander: 12.1.0
+      fs-extra: 11.3.0
+      idb: 8.0.2
+      lodash-es: 4.17.21
+      lru-cache: 11.0.2
+      nanoid: 5.1.16
+      superjson: 2.2.1
+      tldts: 5.7.112
+      tslib: 2.8.1
+      webextension-polyfill: 0.12.0
+      zod: 3.24.4
+    transitivePeerDependencies:
+      - '@adguard/re2-wasm'
+      - typescript
 
   '@asamuzakjp/css-color@3.1.1':
     dependencies:
@@ -7865,6 +7989,8 @@ snapshots:
 
   boolbase@1.0.0: {}
 
+  bowser@2.11.0: {}
+
   brace-expansion@1.1.11:
     dependencies:
       balanced-match: 1.0.2
@@ -8015,7 +8141,28 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
+  chokidar@4.0.3:
+    dependencies:
+      readdirp: 4.1.2
+
   chrome-trace-event@1.0.4: {}
+
+  chrome-types@0.1.435: {}
+
+  cidr-regex@3.1.1:
+    dependencies:
+      ip-regex: 4.3.0
+
+  cidr-regex@4.0.3:
+    dependencies:
+      ip-regex: 5.0.0
+
+  cidr-tools@6.4.2:
+    dependencies:
+      cidr-regex: 4.0.3
+      ip-bigint: 7.3.0
+      ip-regex: 5.0.0
+      string-natural-compare: 3.0.1
 
   cipher-base@1.0.6:
     dependencies:
@@ -9440,7 +9587,11 @@ snapshots:
       hasown: 2.0.2
       side-channel: 1.1.0
 
+  ip-bigint@7.3.0: {}
+
   ip-regex@4.3.0: {}
+
+  ip-regex@5.0.0: {}
 
   ipaddr.js@1.9.1: {}
 
@@ -9483,6 +9634,10 @@ snapshots:
   is-buffer@1.1.6: {}
 
   is-callable@1.2.7: {}
+
+  is-cidr@4.0.2:
+    dependencies:
+      cidr-regex: 3.1.1
 
   is-core-module@2.16.1:
     dependencies:
@@ -9983,6 +10138,8 @@ snapshots:
   nanoid@3.3.11: {}
 
   nanoid@3.3.6: {}
+
+  nanoid@5.1.16: {}
 
   natural-compare@1.4.0: {}
 
@@ -10731,6 +10888,8 @@ snapshots:
     dependencies:
       picomatch: 2.3.1
 
+  readdirp@4.1.2: {}
+
   reflect.getprototypeof@1.0.10:
     dependencies:
       call-bind: 1.0.8
@@ -11200,6 +11359,8 @@ snapshots:
       - react-native-b4a
 
   string-argv@0.3.2: {}
+
+  string-natural-compare@3.0.1: {}
 
   string-width@4.2.3:
     dependencies:

@@ -1,10 +1,17 @@
-! Checksum: 5rQb0Uv8rALy7WaznETvHg
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1778680264-3600.patch
+! Checksum: bhdT1eQeHVcGgfN26J1Spg
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1785236382-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.13.42
-! TimeUpdated: 2026-05-13T13:48:12+00:00
+! Version: 2.0.13.76
+! TimeUpdated: 2026-07-28T10:56:38+00:00
 ! Expires: 10 days (update frequency)
+$removeparam=/^weekend-reading-link-\d{6}$/
+$removeparam=x-clickref
+$removeparam=x-source
+$removeparam=x-a-medium
+$removeparam=ranMID
+$removeparam=ranEAID
+$removeparam=ranSiteID
 $removeparam=eml-name
 $removeparam=eml-mediaplan
 $removeparam=eml-publisher
@@ -162,8 +169,12 @@ $removeparam=hsa_src
 $removeparam=hsa_tgt
 $removeparam=hsa_ver
 $removeparam=hsCtaTracking
+$removeparam=clckid
 $removeparam=ysclid
 $removeparam=yclid
+$removeparam=ym_tracking_id
+$removeparam=/referrer=appmetrica_tracking_id/
+$removeparam=referrer=appmetrica_tracking_id
 $removeparam=aiad_clid
 $removeparam=_sgm_campaign
 $removeparam=_sgm_source
@@ -190,6 +201,7 @@ $removeparam=itm_medium
 $removeparam=itm_campaign
 $removeparam=itm_content
 $removeparam=itm_term
+$removeparam=utm_roistat
 $removeparam=utm_compaign
 $removeparam=utm_prid
 $removeparam=utm_wave
@@ -326,6 +338,63 @@ $removeparam=erid
 $removeparam=oly_enc_id
 $removeparam=_ga
 $removeparam=tduid
+||fairstone.ca^$removeparam=adplacementid
+||loan.fairstone.ca^$removeparam=jumpsource
+||loan.fairstone.ca^$removeparam=priority
+||steuer.check24.de^$removeparam=wpset
+||steuer.check24.de^$removeparam=tc
+||movieboxonline.net^$removeparam=page_from
+||movieboxonline.net^$removeparam=type
+||movieboxonline.net^$removeparam=id
+||number.bunshun.jp^$removeparam=rf
+||ladysavings.com^$removeparam=lsadname2
+||ladysavings.com^$removeparam=lsed
+||claude.ai^$removeparam=from
+||livesex.com^$removeparam=psid
+||livesex.com^$removeparam=dpid
+||livesex.com^$removeparam=ms_rnd
+||livesex.com^$removeparam=pstool
+||livesex.com^$removeparam=psprogram
+||livesex.com^$removeparam=jumpReferrer
+||livesex.com^$removeparam=mr
+||onetwotrip.com^$removeparam=meta_redirectid
+||onetwotrip.com^$removeparam=srcmarker2
+||ups.com^$removeparam=src
+||cdn.modrinth.com/data/$removeparam=mr_download_reason
+||cdn.modrinth.com/data/$removeparam=mr_game_version
+||cdn.modrinth.com/data/$removeparam=mr_loader
+||tally.so^$removeparam=version
+||tally.so^$removeparam=device
+||owlclick.com^$removeparam=source
+||owlclick.com^$removeparam=campaign_id
+||github.com^$removeparam=email_source
+||github.com^$removeparam=email_token
+||pages.tmall.com^$removeparam=tkSid
+||pages.tmall.com^$removeparam=xMktId
+||theepochtimes.com^$removeparam=ea_med
+||theepochtimes.com^$removeparam=ea_src
+||oricon.co.jp^$removeparam=ref_cd
+||adguard-dns.io^$removeparam=clid
+||chexy.co^$removeparam=_caid
+||chexy.co^$removeparam=_cvid
+||bestbuycreators.7tiv.net^$removeparam=sharedid
+||bestbuycreators.7tiv.net^$removeparam=adcampaignid
+||bestbuycreators.7tiv.net^$removeparam=svlink
+||bestbuycreators.7tiv.net^$removeparam=subId1
+||bestbuycreators.7tiv.net^$removeparam=subId2
+||bestbuycreators.7tiv.net^$removeparam=subId3
+||bestbuy.7tiv.net^$removeparam=subid1
+||bestbuy.7tiv.net^$removeparam=subid2
+||bestbuy.7tiv.net^$removeparam=subid3
+||www.bestbuy.com^$removeparam=id
+||www.bestbuy.com^$removeparam=mpid
+||www.bestbuy.com^$removeparam=acampid
+||artlist.io^$removeparam=artlist_aid
+||newegg.com^$removeparam=AFFID
+||newegg.com^$removeparam=AFFNAME
+||newegg.com^$removeparam=ACRID
+||newegg.com^$removeparam=ASUBID
+||newegg.com^$removeparam=ASID
 ||taboolanews.com^$removeparam=dc_data
 ||bubilet.com.tr^$removeparam=ref
 ||onelink.me^$removeparam=af_sub1
@@ -578,11 +647,11 @@ $removeparam=s-id,domain=item.rakuten.co.jp|www.rakuten.co.jp
 ||operanewsapp.com^$removeparam=request_id
 ||operanewsapp.com^$removeparam=share_from
 ||sprinklr.com/api/livechat/event/$removeparam=cursor
-||hepsiburada.com^$removeparam=wt_ds
 ||hepsiburada.com^$removeparam=wt_pc
 ||akakce.com/r/?c=$removeparam=u
 ||domclick.ru^$removeparam=from
 ||buydomains.com/lander/*?domain=$removeparam
+||duckduckgo.com^$removeparam=origin
 ||duckduckgo.com/y.js$removeparam=ad_provider
 ||duckduckgo.com/y.js$removeparam=ad_domain
 ||duckduckgo.com/y.js$removeparam=click_metadata
@@ -608,6 +677,7 @@ $removeparam=s-id,domain=item.rakuten.co.jp|www.rakuten.co.jp
 *$removeparam=service_id,domain=m-emart.ssg.com|emart.ssg.com
 ||gettranny.com^$removeparam=campaign
 ||stanby.com^$removeparam=sr_fr
+||youtu.be^$removeparam=is
 ||youtube.com/shorts/$removeparam=si
 ://youtube.com/@*?si=$removeparam=si
 ||youtu.be^$removeparam=si
@@ -796,10 +866,6 @@ $removeparam=phfp,domain=protonvpn.com|proton.me
 ||vpnpay.io$removeparam=sr
 ||vpnpay.io$removeparam=pr
 ||vpnpay.io$removeparam=arf
-||fanatical.com^$removeparam=cj_pid
-||fanatical.com^$removeparam=cj_aid
-||fanatical.com^$removeparam=aff_track
-||fanatical.com^$removeparam=CJEVENT
 ||ca.indeed.com/cmp^$removeparam=from
 ||ca.indeed.com/cmp^$removeparam=tk
 ||ca.indeed.com/cmp^$removeparam=fromjk
@@ -1070,14 +1136,12 @@ $removeparam=from,domain=doujinnomori.com|shinshi-manga.net|echiman.com|dojin-na
 ||finance.yahoo.co.jp^$removeparam=cpt_s
 ||sbisec.co.jp^$removeparam=waad
 ||ejje.weblio.jp^$removeparam=erl
-||qjweb.jp^$removeparam=from
 ||map.yahoo.co.jp^$removeparam=from_srv
 ||quora.com^$removeparam=share
 ||tcgplayer.com^$removeparam=source
 ||kyujin.navitime.co.jp^$removeparam=from
 ||avira.com^$removeparam=track
 ||foodpanda.$removeparam=src
-||plusgaming.yandex.ru^$removeparam=clckid
 ||iotransfer.itopvpn.com^$removeparam=ref
 ||tradingview.com^$removeparam=exchange
 ||tradingview.com^$removeparam=aff_id
@@ -1100,7 +1164,6 @@ $removeparam=from,domain=doujinnomori.com|shinshi-manga.net|echiman.com|dojin-na
 ||zapiska.substack.com^$removeparam=publication_id
 ||zapiska.substack.com^$removeparam=post_id
 ||zapiska.substack.com^$removeparam=r
-||youtu.be^$removeparam=si
 ||eplus.by^$removeparam=de_utm_source
 ||travelist.pl^$removeparam=MWID
 ||perfo.salestube.pl^$removeparam=aff_click_id
@@ -1133,9 +1196,6 @@ $removeparam=from,domain=doujinnomori.com|shinshi-manga.net|echiman.com|dojin-na
 ||smartrecruiters.com^$removeparam=km_adgroup
 ||smartrecruiters.com^$removeparam=km_matchtype
 ||smartrecruiters.com^$removeparam=km_partner
-||nuuvem.com^$removeparam=ranMID
-||nuuvem.com^$removeparam=ranEAID
-||nuuvem.com^$removeparam=ranSiteID
 ||gog.com^$removeparam=pp
 ||chitai-gorod.ru^$removeparam=partnerId
 ||mall.kinarino.jp^$removeparam=karea
@@ -1144,7 +1204,6 @@ $removeparam=from,domain=doujinnomori.com|shinshi-manga.net|echiman.com|dojin-na
 ||gelocal.it^$removeparam=ref
 ||gelocal.it^$removeparam=cnt
 ||allabout.co.jp^$removeparam=FM
-||mora.jp^$removeparam=fmid
 ||dvdfab.org^$removeparam=soft
 ||dvdfab.org^$removeparam=ad
 ||dvdfab.org^$removeparam=ver
@@ -1414,9 +1473,6 @@ mailchimp.com$removeparam=amp%3Bafl
 ||productcatalog.channeladvisor.com^$document,removeparam=profileId
 ||go.skimresources.com^$document,removeparam=id
 ||go.skimresources.com^$document,removeparam=xcust
-||chemistwarehouse.com.au^$removeparam=ranMID
-||chemistwarehouse.com.au^$removeparam=ranEAID
-||chemistwarehouse.com.au^$removeparam=ranSiteID
 ||playstation.com$removeparam=emcid
 ||epicgames.com^$removeparam=epic_gameId
 ||epicgames.com^$removeparam=epic_affiliate
@@ -1449,7 +1505,6 @@ $removeparam=urrad,domain=u-s-s.jp|belta.co.jp
 ||7net.omni7.jp^$removeparam=intpr2
 ||dietpartner.jp^$removeparam=from
 ||mailtrack.io/trace/link/$removeparam=userId
-||trendyol.com^$removeparam=adjust_t
 ||kitizawa.com^$removeparam=ref
 ||smart-flash.jp^$removeparam=rf
 ||chunichi.co.jp^$removeparam=rct
@@ -1551,6 +1606,13 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ||click.speee-ad.jp^$removeparam=sess_id
 ||click.speee-ad.jp^$removeparam=slot_index
 ||click.speee-ad.jp^$removeparam=v
+||tiktok.com^$removeparam=ug_btm
+||tiktok.com^$removeparam=user_id
+||tiktok.com^$removeparam=sec_user_id
+||tiktok.com^$removeparam=trackParams
+||tiktok.com^$removeparam=share_region
+||tiktok.com^$removeparam=social_share_type
+||tiktok.com/view/product/$removeheader=request:referer
 ||tiktok.com^$removeparam=_t
 ||tiktok.com$removeparam=referer_video_id
 ||tiktok.com^$removeparam=embed_source
@@ -1593,7 +1655,6 @@ $removeparam=ici,domain=shein.co.uk|shein.com
 ||bbc.$removeparam=facebook_page
 ||bbc.$removeparam=at_bbc_team
 ||event.hoken-mammoth.jp^$removeparam=s_mf
-||cinematoday.jp^$removeparam=g_clk
 $removeparam=afid,domain=123chat.jp|kanochat.jp|live.fc2.com
 ||basketballking.jp^$removeparam=cx_art
 ||cnet.com^$removeparam=medium
@@ -1881,7 +1942,6 @@ $removeparam=union_lens,domain=tmall.com|taobao.com
 ||aliexpress.$removeparam=pdp_npi
 ||aliexpress.$removeparam=aff_trace_key
 ||aliexpress.$removeparam=aff_platform
-||aliexpress.$removeparam=aff_short_key
 ||aliexpress.$removeparam=spm
 ||aliexpress.$removeparam=scm
 ||aliexpress.$removeparam=scm_id
@@ -1889,11 +1949,12 @@ $removeparam=union_lens,domain=tmall.com|taobao.com
 ||aliexpress.$removeparam=utparam
 ||aliexpress.$removeparam=aff_fcid
 ||aliexpress.$removeparam=terminal_id
-||aliexpress.$removeparam=aff_trace_key
 ||aliexpress.$removeparam=aff_fsk
 ||aliexpress.$removeparam=pvid
 ||aliexpress.$removeparam=dp
 ||aliexpress.$removeparam=sk
+!+ NOT_PLATFORM(ext_chromium_mv3)
+||aliexpress.$removeparam=aff_short_key
 ||agoda.com^$removeparam=tag
 ||editor.flixier.com^$removeparam=/fx_(source|medium|campaign)/
 ||github.com/signup$removeparam=source
@@ -2081,7 +2142,7 @@ $removeparam=igshid,domain=instagram.com|threads.com|threads.net
 ||digikey.com^$removeparam=/^utm_cid/
 ||nicovideo.jp^$removeparam=via
 ||www.nicovideo.jp^$removeparam=at
-||nicovideo.jp^$removeparam=state
+||www.nicovideo.jp/watch/$removeparam=state
 ||nicovideo.jp^$removeparam=transition_id
 ||nicovideo.jp^$removeparam=transition_type
 ||nicovideo.jp^$removeparam=rf
@@ -2131,11 +2192,10 @@ $removeparam=search_domain,domain=ya.ru|yandex.*
 ||market.yandex.$removeparam=vid
 ||market.yandex.$removeparam=mclid
 ||market.yandex.$removeparam=clid
-!+ NOT_PLATFORM(android)
-||market.yandex.$removeparam=uniqueId
 ||www.yandex.$removeparam=clid
 ://yandex.$removeparam=clid
 ://yandex.$removeparam=source
+||alice.yandex.ru^$removeparam=utm_to
 ||browser.yandex.ru^$removeparam=from
 ||docs.yandex.$removeparam=uid
 ||amc.yandex.ru^$removeparam=cmn_id
@@ -2154,7 +2214,6 @@ $removeparam=search_domain,domain=ya.ru|yandex.*
 ||google.*/search$removeparam=sclient
 ||google.*/search$removeparam=ved
 ||google.*/search$removeparam=oq
-||google.*/search$removeparam=gs_l
 ||google.*/search$removeparam=oe
 ||google.*/websearch$removeparam=visit_id
 ||google.*/search$removeparam=biw
@@ -2196,6 +2255,13 @@ $removeparam=search_domain,domain=ya.ru|yandex.*
 $removeparam=asc_campaign,domain=aboutamazon.com|amazon.*|amzn.to
 $removeparam=asc_refurl,domain=aboutamazon.com|amazon.*|amzn.to
 $removeparam=asc_source,domain=aboutamazon.com|amazon.*|amzn.to
+||amazon.*/stores/$removeparam=lp_asin
+||amazon.*/stores/$removeparam=store_ref
+||amazon.*&linkCode=*&tag=*&linkId=$removeparam=crid
+||amazon.*&linkCode=*&tag=*&linkId=$removeparam=sprefix
+||amazon.*&linkCode=*&tag=*&linkId=$removeparam=linkCode
+||amazon.*&linkCode=*&tag=*&linkId=$removeparam=tag
+||amazon.*&linkCode=*&tag=*&linkId=$removeparam=linkId
 ||amazon.*$removeparam=ascsubtag
 ||amazon.*$removeparam=isDramIntegrated
 ||amazon.*$removeparam=shoppingPortalEnabled
@@ -2379,7 +2445,7 @@ $removeparam=s,domain=twitter.com|x.com
 ||bilibili.com^$removeparam=from_spmid
 ||bilibili.com^$removeparam=msource
 ||bilibili.com^$removeparam=csource
-||bilibili.com^$removeparam=source
+||www.bilibili.com^$removeparam=source
 ||bilibili.com^$removeparam=share_from
 ||bilibili.com^$removeparam=spmid
 ||bilibili.com^$removeparam=plat_id
@@ -2422,6 +2488,7 @@ $removeparam=s,domain=twitter.com|x.com
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_tracking_params
 !+ NOT_PLATFORM(windows, mac, android, cli, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
+@@||shopify.com/authentication/$removeparam=analytics_trace_id,domain=momogo.de
 @@/e/er?$removeparam=elqTrackId,domain=s1740541080.t.eloqua.com|app.econnect.utexas.edu|clk.texaslonghorns.com
 @@/e/er?$removeparam=elq,domain=s1740541080.t.eloqua.com|app.econnect.utexas.edu|clk.texaslonghorns.com
 @@/e/er?$removeparam=elqaid,domain=s1740541080.t.eloqua.com|app.econnect.utexas.edu|clk.texaslonghorns.com
