@@ -268,11 +268,9 @@ export const General = observer(() => {
 
         uiStore.addNotification({
             type: isSucceeded ? NotificationType.Success : NotificationType.Error,
-            text: translator.getMessage(
-                isSucceeded
-                    ? 'options_popup_import_success_title'
-                    : 'options_popup_import_error_title',
-            ),
+            text: isSucceeded
+                ? translator.getMessage('options_popup_import_success_title')
+                : translator.getMessage('options_popup_import_error_title'),
         });
     };
 

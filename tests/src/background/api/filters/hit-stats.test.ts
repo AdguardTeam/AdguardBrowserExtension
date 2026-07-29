@@ -243,4 +243,107 @@ describe('Hit Stats Api', () => {
         // Restore the original value
         Object.defineProperty(HitStatsApi, 'maxTotalHits', originalMaxTotalHits);
     });
+
+    it('Sends valid collected hit stats content to backend', async () => {
+        const FIRST_FILTER_ID = AntiBannerFiltersId.EnglishFilterId;
+        const SECOND_FILTER_ID = AntiBannerFiltersId.TrackingFilterId;
+        const FIRST_RULE_INDEX = 0;
+        const SECOND_RULE_INDEX = 16;
+        const FIRST_RULE_TEXT = 'example.com##h1';
+        const SECOND_RULE_TEXT = '||example.org^$document';
+        const UNKNOWN_RULE_INDEX = 999;
+
+        // Save the original value
+        const originalMaxTotalHits = Object.getOwnPropertyDescriptor(HitStatsApi, 'maxTotalHits');
+
+        if (!originalMaxTotalHits) {
+            throw new Error('maxTotalHits is not defined');
+        }
+
+        // Note: lodash debounce is a no-op in tests (see vitest.setup.ts), so each
+        // addRuleHit schedules save/send immediately. Keep the threshold equal to the
+        // number of hits below so sending is triggered after the batch is collected.
+        Object.defineProperty(HitStatsApi, 'maxTotalHits', merge(originalMaxTotalHits, { value: 5 }));
+
+        const sendHitStatsSpy = vi.spyOn(network, 'sendHitStats').mockImplementation(async () => {});
+        const cleanupSpy = vi.spyOn(HitStatsApi, 'cleanup');
+
+        await HitStatsApi.init();
+
+        vi.spyOn(filterVersionStorage, 'get').mockReturnValue(filterVersionDataMock);
+
+        // Collect hits for two supported filters / rules
+        HitStatsApi.addRuleHit(FIRST_FILTER_ID, FIRST_RULE_INDEX);
+        HitStatsApi.addRuleHit(FIRST_FILTER_ID, FIRST_RULE_INDEX);
+        HitStatsApi.addRuleHit(FIRST_FILTER_ID, SECOND_RULE_INDEX);
+        // Unknown rule index must be skipped and must not break valid entries
+        HitStatsApi.addRuleHit(FIRST_FILTER_ID, UNKNOWN_RULE_INDEX);
+        HitStatsApi.addRuleHit(SECOND_FILTER_ID, FIRST_RULE_INDEX);
+
+        const expectedPayload = {
+            filters: {
+                [FIRST_FILTER_ID]: {
+                    [FIRST_RULE_TEXT]: 2,
+                    [SECOND_RULE_TEXT]: 1,
+                },
+                [SECOND_FILTER_ID]: {
+                    [FIRST_RULE_TEXT]: 1,
+                },
+            },
+        };
+
+        // addRuleHit is sync but save/send is async
+        await waitForExpect(
+            () => {
+                expect(sendHitStatsSpy).toHaveBeenCalled();
+            },
+            // short timeout: mocked debounce is sync, only the async save path remains
+            500,
+        );
+
+        // Backend expects rule texts (not indexes) and correct hit counts
+        expect(sendHitStatsSpy).toHaveBeenCalledWith(expectedPayload);
+
+        const sentPayload = sendHitStatsSpy.mock.calls.find(
+            (call) => call[0]?.filters?.[FIRST_FILTER_ID]
+                && call[0]?.filters?.[SECOND_FILTER_ID],
+        )?.[0];
+
+        expect(sentPayload).toEqual(expectedPayload);
+
+        // Content validity: keys are rule texts (not indexes), values are positive integers.
+        const filters = sentPayload?.filters;
+        expect(filters).toBeDefined();
+
+        Object.entries(filters!).forEach(([filterIdKey, ruleHits]) => {
+            expect(Number.isInteger(Number(filterIdKey))).toBe(true);
+            expect(ruleHits).toBeDefined();
+            expect(Object.keys(ruleHits).length).toBeGreaterThan(0);
+
+            Object.entries(ruleHits).forEach(([ruleText, hits]) => {
+                // Rule text must be real filter content, not a numeric index left unconverted
+                expect(ruleText.length).toBeGreaterThan(0);
+                expect(Number.isNaN(Number(ruleText))).toBe(true);
+                expect(Number.isInteger(hits)).toBe(true);
+                expect(hits).toBeGreaterThan(0);
+            });
+        });
+
+        // Unknown rule index is not present in the sent payload
+        expect(JSON.stringify(sentPayload)).not.toContain(String(UNKNOWN_RULE_INDEX));
+
+        expect(cleanupSpy).toHaveBeenCalled();
+
+        // After a successful send, local stats storage is cleaned up
+        await waitForExpect(async () => {
+            expect(await storage.get(HIT_STATISTIC_KEY)).toStrictEqual({
+                [HIT_STATISTIC_KEY]: JSON.stringify({}),
+            });
+        }, 500);
+
+        vi.clearAllMocks();
+
+        // Restore the original value
+        Object.defineProperty(HitStatsApi, 'maxTotalHits', originalMaxTotalHits);
+    });
 });
