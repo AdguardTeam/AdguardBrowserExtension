@@ -29,6 +29,7 @@ import {
     type MockInstance,
     vi,
 } from 'vitest';
+import waitForExpect from 'wait-for-expect';
 
 import { FilterList } from '@adguard/tswebextension';
 import { getRulesetId, getRulesetPath } from '@adguard/dnr-converter';
