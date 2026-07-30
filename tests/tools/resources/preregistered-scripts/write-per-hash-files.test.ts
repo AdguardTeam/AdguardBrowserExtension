@@ -116,7 +116,11 @@ describe('writePerHashFiles', () => {
 
         const content = await fs.readFile(path.join(outputDir, `${hash}.js`), 'utf-8');
 
+        // The minifier aliases `<key>.b` into a local variable, so assert
+        // the dedup-guard shape: one `<key>.b` reference feeding has/add.
         expect(content).toContain(`${TEST_KEY}.b`);
+        expect(content).toContain('.has(');
+        expect(content).toContain('.add(');
         expect(content).not.toContain('_ag.b');
         expect(content).not.toContain('window._ag');
         expect(content).not.toContain(`window.${TEST_KEY}`);
@@ -166,7 +170,7 @@ describe('writePerHashFiles', () => {
             location: { pathname: '/watch' },
             console: { log: () => {} },
         };
-        globalObj[TEST_KEY] = { b: new Set() };
+        globalObj[TEST_KEY] = { b: new Set(), x: () => false };
         // eslint-disable-next-line @typescript-eslint/no-implied-eval -- sandbox-testing codegen output
         const runInSandbox = new Function(...Object.keys(globalObj), content);
         expect(() => runInSandbox(...Object.values(globalObj))).not.toThrow();
@@ -197,12 +201,50 @@ describe('writePerHashFiles', () => {
                 },
             },
         };
-        globalObj[TEST_KEY] = { b: new Set() };
+        globalObj[TEST_KEY] = { b: new Set(), x: () => false };
         // eslint-disable-next-line @typescript-eslint/no-implied-eval -- sandbox-testing codegen output
         const runInSandbox = new Function(...Object.keys(globalObj), content);
         runInSandbox(...Object.values(globalObj));
 
         expect(executed).toBe(false);
+    });
+
+    it('executes a $path-guarded rule when the pattern matches only via the query string', async () => {
+        outputDir = await fs.mkdtemp(path.join(os.tmpdir(), 'per-hash-files-'));
+
+        // Regression: tsurlfilter matches $path against path + query (and
+        // hash), so the runtime guard must test the same target — a pattern
+        // that only matches query text must still let the rule run.
+        const hash = 'pathguardquery01';
+        let executed = false;
+        const entry: CollectedRuleEntry = {
+            hash,
+            jsBody: 'globalThis.__executed = true;',
+            pathPattern: 'v=123',
+        };
+
+        await writePerHashFiles(new Map([[hash, entry]]), outputDir, TEST_KEY);
+        const content = await fs.readFile(path.join(outputDir, `${hash}.js`), 'utf-8');
+
+        expect(content).toContain('location.search');
+
+        const globalObj: Record<string, unknown> = {
+            location: { pathname: '/watch', search: '?v=123', hash: '' },
+            globalThis: {
+                get __executed() {
+                    return executed;
+                },
+                set __executed(value: boolean) {
+                    executed = value;
+                },
+            },
+        };
+        globalObj[TEST_KEY] = { b: new Set(), x: () => false };
+        // eslint-disable-next-line @typescript-eslint/no-implied-eval -- sandbox-testing codegen output
+        const runInSandbox = new Function(...Object.keys(globalObj), content);
+        runInSandbox(...Object.values(globalObj));
+
+        expect(executed).toBe(true);
     });
 
     it('does not wrap a rule without a pathPattern in a path guard', async () => {

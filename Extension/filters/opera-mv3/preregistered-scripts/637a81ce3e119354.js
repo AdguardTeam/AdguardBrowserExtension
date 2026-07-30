@@ -1,1 +1,0 @@
-new RegExp("\\/channel\\.html\\?id=","i").test(location.pathname)&&__ag_57c37e04dac39d6c.r("set-constant",{name:"set-constant",args:["window.config.adv.enabled","0"],engine:"extension",version:"2.4.2",verbose:!1},["window.config.adv.enabled","0"],"637a81ce3e119354");

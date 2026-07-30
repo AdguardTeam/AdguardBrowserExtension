@@ -24,48 +24,53 @@
 /**
  * Template for the shared scriptlets bundle (`scriptlets-bundle.js`).
  *
- * `shared-bundle-generator.ts` replaces `__FUNCTIONS__`/`__REGISTRY__`/`__PROP__`
- * (bare coordination key identifier, not a string) in the stringified body,
- * then minifies it. Terser doesn't mangle top-level names by default, so
- * `__PROP__` stays identical across the independently-minified bundle,
- * per-hash files and cleanup.js.
+ * `__FUNCTIONS__`/`__REGISTRY__`/`__PROP__` are replaced with the scriptlet
+ * sources, the name→fn registry and the bare coordination key identifier,
+ * then minified (Terser keeps top-level names, so `__PROP__` stays
+ * identical across the independently-minified files).
  *
- * `let __PROP__ = (...)` must stay at the top level (no wrapping IIFE) —
- * a lexical binding, not a `window` property, so it's invisible to
- * enumeration (`Object.keys`, `getOwnPropertyNames`, etc.). Other classic
- * scripts in the same realm (per-hash files, cleanup.js) can reference it
- * directly since it's a top-level declaration. No double-injection guard
- * needed: `registerContentScripts` injects each file once per document;
- * a real re-evaluation would throw on redeclaration anyway.
+ * `let __PROP__` must stay top-level: other classic scripts (per-hash
+ * files, cleanup.js) reference it directly, and a lexical binding is
+ * invisible to `window` enumeration.
  *
  * `.r(name, source, args, key)` runs a scriptlet once per `key` (dedup via
  * `.b`, shared with JS-rule guards).
  */
 export const BUNDLE_TEMPLATE = () => {
     // __BODY_START__
-    let __PROP__ = (function () {
-        let dedupSet = new Set();
-        __FUNCTIONS__ /* replaced with minified scriptlet function sources */
-        let functionRegistry = __REGISTRY__; /* replaced with {"name": fnRef, ...} */
+    let __PROP__;
+    try {
+        __PROP__ = (function () {
+            let dedupSet = new Set();
+            __FUNCTIONS__ /* replaced with minified scriptlet function sources */
+            let functionRegistry = __REGISTRY__; /* replaced with {"name": fnRef, ...} */
 
-        return {
-            r: function agRun(scriptletName, source, args, ruleKey) {
-                try {
-                    if (dedupSet.has(ruleKey)) {
-                        return;
+            return {
+                r: function agRun(scriptletName, source, args, ruleKey) {
+                    try {
+                        if (dedupSet.has(ruleKey)) {
+                            return;
+                        }
+                        dedupSet.add(ruleKey);
+                        let fn = functionRegistry[scriptletName];
+                        if (fn) {
+                            source.domainName = document.location.hostname;
+                            fn.apply(null, [source, args]);
+                        }
+                    } catch (e) {
+                        // Swallow — never break the page.
                     }
-                    dedupSet.add(ruleKey);
-                    let fn = functionRegistry[scriptletName];
-                    if (fn) {
-                        source.domainName = document.location.hostname;
-                        fn.apply(null, [source, args]);
-                    }
-                } catch (e) {
-                    // Swallow — never break the page.
-                }
-            },
-            b: dedupSet,
+                },
+                b: dedupSet,
+            };
+        })();
+    } catch (e) {
+        // Corrupted bundle (e.g. truncated write) must not break the page
+        // or the per-hash files referencing __PROP__ — install a no-op shim.
+        __PROP__ = {
+            r: function () {},
+            b: new Set(),
         };
-    })();
+    }
     // __BODY_END__
 };

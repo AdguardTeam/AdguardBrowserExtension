@@ -22,12 +22,9 @@
 /* eslint-disable */
 
 /**
- * Template for `cleanup.js` — the last file loaded for a domain, after the
- * shared bundle and every per-hash rule file.
- *
- * `__PROP__` is the bare coordination key identifier (same one declared by
- * the shared bundle as a top-level `let`). Reassigns it to `undefined` —
- * `let` can't be deleted or redeclared, but it can be reassigned.
+ * Template for `cleanup.js` — the last file loaded for a domain. Reassigns
+ * the coordination binding (`__PROP__`) to `undefined` (`let` can't be
+ * deleted, but can be reassigned).
  */
 export const CLEANUP_TEMPLATE = () => {
     // __BODY_START__

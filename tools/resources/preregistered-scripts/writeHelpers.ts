@@ -22,12 +22,41 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import vm from 'node:vm';
 
+/** Sentinel comments delimiting the extractable body in code templates. */
+const BODY_START_MARKER = '// __BODY_START__';
+const BODY_END_MARKER = '// __BODY_END__';
+
 /**
- * Asserts that none of the given template sentinel markers remain in
- * `content`. Intended to be called right after filling in a code template,
- * to catch cases where a marker was left unreplaced (e.g. a typo in the
- * marker name, or a template change that removed a marker the generator
- * still expects to fill).
+ * Extracts the marker-delimited body from a stringified code template.
+ *
+ * @param templateFunction Zero-arg template function delimited by
+ * `// __BODY_START__` / `// __BODY_END__` comments. Its name is used in the
+ * error message.
+ *
+ * @returns Raw template body between the markers.
+ *
+ * @throws {Error} When the markers are missing or malformed.
+ */
+export const extractTemplateBody = (
+    templateFunction: () => unknown,
+): string => {
+    const source = templateFunction.toString();
+    const bodyStartIdx = source.indexOf(BODY_START_MARKER);
+    const bodyEndIdx = source.indexOf(BODY_END_MARKER);
+
+    if (bodyStartIdx < 0 || bodyEndIdx < 0 || bodyEndIdx <= bodyStartIdx) {
+        throw new Error(
+            `${templateFunction.name} template markers not found or malformed — `
+            + 'the toolchain likely stripped comments from the template',
+        );
+    }
+
+    return source.slice(bodyStartIdx + BODY_START_MARKER.length, bodyEndIdx);
+};
+
+/**
+ * Asserts that none of the given template markers remain in `content`,
+ * catching unreplaced markers right after a template is filled.
  *
  * @param content Assembled template content to check.
  * @param sentinels Marker strings that must not appear in `content`.
@@ -42,10 +71,8 @@ export const assertNoTemplateSentinels = (content: string, sentinels: string[]):
 };
 
 /**
- * Validates the syntax of `content` and writes it to `filePath`.
- *
- * The `vm.Script` constructor is used solely for syntax validation —
- * the script is never executed.
+ * Validates the syntax of `content` via `vm.Script` (never executed) and
+ * writes it to `filePath`.
  *
  * @param content JavaScript source code to write.
  * @param filePath Absolute path of the output file.

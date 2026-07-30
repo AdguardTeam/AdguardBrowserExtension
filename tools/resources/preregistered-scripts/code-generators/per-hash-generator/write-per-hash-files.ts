@@ -23,40 +23,30 @@
 import path from 'node:path';
 
 import { SCRIPTLETS_VERSION } from '@adguard/scriptlets';
-import { SimpleRegex } from '@adguard/tsurlfilter';
 
 import { NEWLINE_CHAR_UNIX } from '../../../../../Extension/src/common/constants';
 import { minifyJs } from '../../constants';
-import { writeBundle, assertNoTemplateSentinels } from '../../writeHelpers';
+import {
+    writeBundle,
+    assertNoTemplateSentinels,
+    extractTemplateBody,
+} from '../../writeHelpers';
 import { type CollectedRuleEntry } from '../../scriptlet-collector';
 
 import { JS_RULE_GUARD_TEMPLATE } from './js-rule-guard-template';
+import { getPathTest } from './path-pattern';
 
 /**
- * Explicit sentinel comments marking the extractable body inside
- * {@link JS_RULE_GUARD_TEMPLATE}. Using explicit markers (instead of locating
- * the first `{`/last `}` in the stringified function) keeps extraction
- * correct regardless of how the template's signature or surrounding code is
- * written.
- */
-const BODY_START_MARKER = '// __BODY_START__';
-const BODY_END_MARKER = '// __BODY_END__';
-
-/**
- * Compiles a single scriptlet invocation file.
+ * Compiles a single scriptlet invocation file: a call to
+ * `coordinationKey.r(name, source, args, hash)` — a bare reference to the
+ * top-level `let` binding declared by the shared bundle.
  *
- * Emits a call to `coordinationKey.r(name, source, args, hash)` — a bare
- * reference to the top-level `let` binding declared by the shared bundle
- * (see `shared-bundle-template.js`), which delegates execution to it.
- *
- * `source.domainName` is omitted — `.r` fills it in at runtime from
- * `document.location.hostname`. `source.verbose` is hardcoded to `false`;
- * debug scriptlet output isn't available on preregistered domains since
- * `debugScriptlets` lives in `chrome.storage`, unreachable from MAIN world.
+ * `source.domainName` is filled by `.r` at runtime; `verbose` is hardcoded
+ * `false` (`debugScriptlets` lives in `chrome.storage`, unreachable from
+ * MAIN world).
  *
  * @param entry Collected rule entry for a scriptlet.
- * @param coordinationKey Random per-build identifier (see
- * `coordination-key.ts`), matching the one declared by the shared bundle.
+ * @param coordinationKey Identifier declared by the shared bundle.
  *
  * @returns Compiled JavaScript string for the `{hash}.js` file.
  *
@@ -74,33 +64,27 @@ const compileScriptletFile = (entry: CollectedRuleEntry, coordinationKey: string
         args: scriptletArgs,
         engine: 'extension',
         version: SCRIPTLETS_VERSION,
-        // See @note above: overwritten at runtime by `.r`.
+        // Overwritten at runtime by `.r`.
         verbose: false,
     };
 
     const statement = `${coordinationKey}.r(${JSON.stringify(scriptletName)}, ${JSON.stringify(source)}, ${JSON.stringify(scriptletArgs)}, "${hash}");`;
 
-    return `(function () {${NEWLINE_CHAR_UNIX}${statement}${NEWLINE_CHAR_UNIX}})();${NEWLINE_CHAR_UNIX}`;
+    return `(function () {${NEWLINE_CHAR_UNIX}try {${NEWLINE_CHAR_UNIX}${statement}${NEWLINE_CHAR_UNIX}} catch (e) {}${NEWLINE_CHAR_UNIX}})();${NEWLINE_CHAR_UNIX}`;
 };
 
 /**
- * Compiles a single JS injection rule file.
- *
- * Wraps the rule body with a dedup guard using `coordinationKey.b` (defined
- * in the shared `scriptlets-bundle.js`, a bare top-level `let` reference,
- * not a `window` property).
- *
- * Uses {@link JS_RULE_GUARD_TEMPLATE} — replaces `__KEY__` with the
- * rule's unique SHA-256 hash, `__CODE__` with the rule source, and `__PROP__`
- * with the coordination key identifier.
+ * Compiles a single JS injection rule file: the rule body wrapped in a
+ * dedup guard referencing `coordinationKey.b` from the shared bundle.
+ * Replaces `__KEY__` (rule hash), `__CODE__` (rule source) and `__PROP__`
+ * (coordination key identifier) in {@link JS_RULE_GUARD_TEMPLATE}.
  *
  * @param entry Collected rule entry for a JS rule.
- * @param coordinationKey Random per-build identifier (see
- * `coordination-key.ts`), matching the one declared by the shared bundle.
+ * @param coordinationKey Identifier declared by the shared bundle.
  *
  * @returns Compiled JavaScript string for the `{hash}.js` file.
  *
- * @throws When entry is missing body.
+ * @throws When entry is missing body or the guard template markers are gone.
  */
 const compileJsRuleFile = (entry: CollectedRuleEntry, coordinationKey: string): string => {
     const { hash, jsBody } = entry;
@@ -109,48 +93,19 @@ const compileJsRuleFile = (entry: CollectedRuleEntry, coordinationKey: string): 
         throw new Error(`JS rule entry ${hash} is missing body`);
     }
 
-    const source = JS_RULE_GUARD_TEMPLATE.toString();
-    const bodyStart = source.indexOf(BODY_START_MARKER) + BODY_START_MARKER.length;
-    const bodyEnd = source.indexOf(BODY_END_MARKER);
-
-    const body = source
-        .slice(bodyStart, bodyEnd)
+    const body = extractTemplateBody(JS_RULE_GUARD_TEMPLATE)
         .replace('__KEY__', () => JSON.stringify(hash))
         .replace('__CODE__', () => jsBody)
         .replace('__PROP__', () => coordinationKey);
 
     assertNoTemplateSentinels(body, ['__KEY__', '__CODE__', '__PROP__']);
 
-    return `(function () {${NEWLINE_CHAR_UNIX}${body}${NEWLINE_CHAR_UNIX}})();${NEWLINE_CHAR_UNIX}`;
-};
-
-/**
- * Converts a `$path` pattern into a regex, the same way tsurlfilter's
- * `Pattern` class does internally ({@link SimpleRegex.patternToRegexp}).
- * Can't reuse `Pattern` directly here since the result is embedded as a
- * runtime guard in a file that runs in the page's MAIN world, not Node.js.
- *
- * @param pathPattern Raw `$path` modifier pattern text
- * (`rule.pathModifier.pattern`).
- *
- * @returns Regex source and flags for `new RegExp(source, flags)`.
- */
-const getPathPatternRegex = (pathPattern: string): { source: string; flags: string } => {
-    if (pathPattern === '') {
-        return { source: '^/$', flags: '' };
-    }
-
-    return {
-        source: SimpleRegex.patternToRegexp(pathPattern),
-        flags: 'i',
-    };
+    return `{${NEWLINE_CHAR_UNIX}${body}${NEWLINE_CHAR_UNIX}}${NEWLINE_CHAR_UNIX}`;
 };
 
 /**
  * Wraps compiled rule content with a runtime `$path` guard, so it only runs
- * when `location.pathname` matches the rule's path pattern. Rules are
- * collected regardless of path (see {@link ScriptletCollector}) — this is
- * where that condition is finally enforced, in the browser.
+ * when the page URL's path + query + hash matches the rule's path pattern.
  *
  * @param content Compiled rule content (from {@link compileScriptletFile} or
  * {@link compileJsRuleFile}).
@@ -160,25 +115,19 @@ const getPathPatternRegex = (pathPattern: string): { source: string; flags: stri
  * @returns `content` wrapped in an `if (...)` guard.
  */
 const wrapWithPathGuard = (content: string, pathPattern: string): string => {
-    const { source, flags } = getPathPatternRegex(pathPattern);
-    const condition = `new RegExp(${JSON.stringify(source)}, ${JSON.stringify(flags)}).test(location.pathname)`;
+    const condition = getPathTest(pathPattern);
 
     return `if (${condition}) {${NEWLINE_CHAR_UNIX}${content}}${NEWLINE_CHAR_UNIX}`;
 };
 
 /**
- * Writes one `{hash}.js` file per unique rule entry.
- *
- * - Scriptlet rules emit a file containing a `coordinationKey.r(...)` call.
- * - JS injection rules emit a file containing the rule body wrapped in a
- *   dedup guard.
- * - Rules with a `$path` modifier are additionally wrapped in a runtime path
- *   guard (see {@link wrapWithPathGuard}).
+ * Writes one `{hash}.js` file per unique rule entry: a
+ * `coordinationKey.r(...)` call for scriptlets, a dedup-guarded body for JS
+ * rules, optionally wrapped in a runtime `$path` guard.
  *
  * @param rules Map of hash → rule entry.
  * @param outputDir Directory to write files into.
- * @param coordinationKey Random per-build identifier (see
- * `coordination-key.ts`), matching the one declared by the shared bundle.
+ * @param coordinationKey Identifier declared by the shared bundle.
  */
 export const writePerHashFiles = async (
     rules: Map<string, CollectedRuleEntry>,

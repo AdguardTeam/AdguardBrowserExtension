@@ -31,18 +31,13 @@ import { computeRuleHash, normalizeDomain } from '@adguard/tswebextension/mv3/pr
 import { extractPreprocessedRawFilterList, readMetadataRuleSet } from '../filter-extractor';
 
 import { preregisteredDomains } from './config';
+import { assertNoPathScopedExceptions } from './path-exception-guard';
 
 /**
- * Hostnames queried against the real `@adguard/tsurlfilter` `Engine` — each
- * preregistered domain (normalized via {@link normalizeDomain} so config
- * typos/casing/`www.` prefixes can't cause a mismatch) contributes two
- * entries: the apex itself and its `www.` alias. Subdomains other than
- * `www.` are intentionally NOT covered.
- *
- * Each hostname is recorded independently in {@link CollectedScriptlets.domains}
- * — apex and `www.` are never collapsed into one another, since
- * `PreregisteredScriptsService` registers a separate content script per
- * hostname.
+ * Hostnames queried against the engine: each preregistered domain
+ * (normalized via {@link normalizeDomain}) plus its `www.` alias. Other
+ * subdomains are not covered. Apex and alias stay separate entries — the
+ * runtime registers a content script per hostname.
  */
 const preregisteredHostnames: readonly string[] = (
     preregisteredDomains
@@ -50,94 +45,54 @@ const preregisteredHostnames: readonly string[] = (
         .flatMap((domain) => [domain, `www.${domain}`])
 );
 
-/**
- * Raw generated body of a JS injection rule — ready to be inlined into a
- * per-hash file with a deduplication guard.
- */
-export type RuleBody = string;
-
-/**
- * Unique scriptlet descriptor: name + JSON-serialised args.
- * Used as a Map key for deduplication.
- */
-export type ScriptletKey = string;
-
-/**
- * A unique rule entry (scriptlet or JS rule) collected from the rulesets.
- */
+/** A unique rule entry (scriptlet or JS rule) collected from the rulesets. */
 export interface CollectedRuleEntry {
-    /**
-     * Stable hash of the rule (SHA-256 of name+args for scriptlets, SHA-256 of body for JS rules).
-     */
+    /** SHA-256 of name+args (scriptlets) or body (JS rules). */
     hash: string;
 
-    /**
-     * JS rule body (only for JS injection rules).
-     */
+    /** JS rule body (JS injection rules only). */
     jsBody?: string | null;
 
-    /**
-     * Scriptlet name (only for scriptlet rules).
-     */
+    /** Scriptlet name (scriptlet rules only). */
     scriptletName?: string;
 
-    /**
-     * Scriptlet arguments (only for scriptlet rules).
-     */
+    /** Scriptlet arguments (scriptlet rules only). */
     scriptletArgs?: string[];
 
     /**
-     * Raw `$path` modifier pattern text (`rule.pathModifier.pattern`), if the
-     * rule has one. The rule was collected regardless of path (domain-only
-     * match, see {@link ScriptletCollector}) — this is embedded as a runtime
-     * guard in the generated `{hash}.js` file so the path condition is still
-     * enforced, just deferred to the browser instead of the collector.
+     * Raw `$path` pattern, embedded as a runtime guard in the generated
+     * file (collection is domain-only).
      */
     pathPattern?: string;
 }
 
 /**
  * Result of {@link ScriptletCollector.collect}: all unique rules hashed,
- * plus the set of unique scriptlet names for the shared bundle and the list
- * of domains that have at least one rule.
+ * plus the set of unique scriptlet names and the list of domains that have
+ * at least one rule.
  */
 export interface CollectedScriptlets {
-    /**
-     * Unique rule entries (one per distinct hash).
-     * Used to generate `{hash}.js` files.
-     */
+    /** Unique rule entries keyed by hash; one `{hash}.js` file each. */
     rules: Map<string, CollectedRuleEntry>;
 
-    /**
-     * Unique scriptlet names across all rules (for shared bundle generation).
-     */
+    /** Unique scriptlet names, for shared bundle generation. */
     scriptletNames: Set<string>;
 
-    /**
-     * Hostnames (apex domain and/or its `www.` alias, kept as separate
-     * entries) that have at least one blocking rule.
-     */
+    /** Hostnames (apex and/or `www.` alias, kept separate) with rules. */
     domains: string[];
 }
 
 /**
- * Walks all DNR rulesets in the declarative filter folder and collects
- * scriptlet invocations and JS injection rules.
+ * Collects scriptlet invocations and JS injection rules from all DNR
+ * rulesets: builds a real tsurlfilter `Engine` per ruleset and queries
+ * `Engine.getJsRulesIgnoringPath(request)` per preregistered hostname —
+ * the same lookup the runtime performs.
  *
- * Domain applicability and rule type filtering are NOT done by hand — for
- * each ruleset, a real `@adguard/tsurlfilter` `Engine` is built from its raw
- * filter list text, and `Engine.getJsRulesIgnoringPath(request)` is queried
- * once per preregistered domain (+ its `www.` alias). This is the exact same
- * lookup the runtime engine performs, so there is no separate hand-rolled
- * matching implementation that could drift from it.
- *
- * Unlike the previous `FilterCollector`, this class does NOT perform any
- * exception cancellation. Exceptions are handled at runtime by the engine
- * (via `getCosmeticResult`), which correctly accounts for filter enable/disable,
- * user rules, and allowlist entries.
- *
- * {@link collect} resets its accumulators on every call, so a single instance
- * can safely be reused for repeated collection runs.
+ * Domain-wide exceptions are already applied by the engine during
+ * collection; a `$path`-scoped exception cancelling a collected rule is a
+ * hard error (see {@link assertNoPathScopedExceptions}) — preregistered
+ * scripts are registered per hostname and cannot honor it.
+ * A single instance can be reused: `collect` resets its accumulators.
  */
 export class ScriptletCollector {
     /** Path to the DNR declarative filter folder. */
@@ -163,10 +118,7 @@ export class ScriptletCollector {
     }
 
     /**
-     * Walks all rulesets and collects rules into the accumulators.
-     *
-     * Resets the accumulators first, so calling this more than once on the
-     * same instance does not produce duplicate entries.
+     * Walks all rulesets and collects rules into the accumulators (reset first).
      *
      * @returns Collected unique rules, scriptlet names, and domains with rules.
      */
@@ -190,14 +142,11 @@ export class ScriptletCollector {
     }
 
     /**
-     * Processes a single ruleset: builds a real `Engine` from its raw filter
-     * list text and, for every preregistered hostname, queries
-     * `Engine.getJsRulesIgnoringPath(request)` for the JS/scriptlet rules
-     * that hostname matches.
-     *
-     * `getJsRulesIgnoringPath` is already type-isolated to JS/scriptlet rules
-     * and excludes exception/allowlist rules, so no separate rule-type or
-     * exception filtering is needed here.
+     * Queries one ruleset's engine for the JS/scriptlet rules of every
+     * preregistered hostname. `getJsRulesIgnoringPath` already excludes
+     * domain-wide exceptions; a `$path`-scoped exception cancelling an
+     * already-collected rule is a hard error
+     * (see {@link assertNoPathScopedExceptions}).
      *
      * @param ruleSetId Ruleset identifier (e.g. `"ruleset_2"`).
      */
@@ -222,40 +171,37 @@ export class ScriptletCollector {
                         continue;
                     }
                     seenRules.add(rule);
-                    await this.recordRule(rule);
+                    this.recordRule(await computeRuleHash(rule), rule);
                 }
             }),
         );
+
+        assertNoPathScopedExceptions(rawFilterList, ruleSetId, this.rules, preregisteredHostnames);
     }
 
     /**
-     * Hashes a matched rule and records it in the accumulators.
+     * Records a matched rule in the accumulators.
      *
+     * @param hash Precomputed stable hash of the rule.
      * @param rule Matched cosmetic rule (scriptlet or JS injection).
+     *
+     * @throws When a scriptlet rule has no scriptlet data.
      */
-    private async recordRule(rule: CosmeticRule): Promise<void> {
-        try {
-            const hash = await computeRuleHash(rule);
-            const pathPattern = rule.pathModifier?.pattern;
-            if (rule.isScriptlet) {
-                const data = rule.getScriptletData();
-                if (!data) {
-                    throw new Error('getScriptletData() returned null');
-                }
-                this.scriptletNames.add(data.params.name);
-                this.addRule(hash, {
-                    scriptletName: data.params.name,
-                    scriptletArgs: data.params.args,
-                    pathPattern,
-                });
-            } else {
-                this.addRule(hash, { jsBody: rule.getContent(), pathPattern });
+    private recordRule(hash: string, rule: CosmeticRule): void {
+        const pathPattern = rule.pathModifier?.pattern;
+        if (rule.isScriptlet) {
+            const data = rule.getScriptletData();
+            if (!data) {
+                throw new Error('getScriptletData() returned null');
             }
-        } catch (error) {
-            console.warn(
-                `[ext.ScriptletCollector.recordRule]: Failed to hash rule: ${error instanceof Error ? error.message : String(error)}`,
-            );
-            throw error;
+            this.scriptletNames.add(data.params.name);
+            this.addRule(hash, {
+                scriptletName: data.params.name,
+                scriptletArgs: data.params.args,
+                pathPattern,
+            });
+        } else {
+            this.addRule(hash, { jsBody: rule.getContent(), pathPattern });
         }
     }
 
@@ -263,8 +209,7 @@ export class ScriptletCollector {
      * Adds a rule entry if not already present (dedup by hash).
      *
      * @param hash Stable hash of the rule.
-     * @param rule Rule data: `jsBody` for JS rules, `scriptletName` + `scriptletArgs` for
-     * scriptlets, and an optional `pathPattern` for either.
+     * @param rule Rule data.
      */
     private addRule(
         hash: string,

@@ -227,4 +227,72 @@ describe('ScriptletCollector.collect', () => {
         expect(rules.size).toBe(0);
         expect(domains).toEqual([]);
     });
+
+    it('fails the build when a $path-scoped exception cancels a collected rule', async () => {
+        // The blocking rule is uBO-syntax and is resolved to `ubo-set-constant`
+        // by the engine, so the ADG-syntax exception targets that name.
+        setupRulesets([
+            'youtube.com##+js(set-constant, foo, bar)\n'
+            + "[$domain=youtube.com,path=/shorts]#@%#//scriptlet('ubo-set-constant', 'foo', 'bar')",
+        ]);
+
+        const collector = new ScriptletCollector('/fake/declarative');
+
+        // The guard rejects the whole collection — per-hostname preregistration
+        // cannot honor path-scoped exceptions (see path-exception-guard.ts).
+        await expect(collector.collect()).rejects.toThrow(/ruleset_1/);
+        await expect(collector.collect()).rejects.toThrow(/set-constant/);
+    });
+
+    it('fails the build when the $path exception is declared in another ruleset', async () => {
+        setupRulesets([
+            'youtube.com##+js(set-constant, foo, bar)',
+            "[$domain=youtube.com,path=/shorts]#@%#//scriptlet('ubo-set-constant', 'foo', 'bar')",
+        ]);
+
+        const collector = new ScriptletCollector('/fake/declarative');
+
+        // The guard checks exceptions from all rulesets against all collected
+        // rules — cross-filter cancellation trips it as well.
+        await expect(collector.collect()).rejects.toThrow(/ruleset_2/);
+    });
+
+    it('does not fail when the $path exception targets an unused scriptlet', async () => {
+        setupRulesets([
+            'youtube.com##+js(set-constant, foo, bar)\n'
+            + "[$domain=youtube.com,path=/shorts]#@%#//scriptlet('json-prune')",
+        ]);
+
+        const collector = new ScriptletCollector('/fake/declarative');
+        const { rules, domains } = await collector.collect();
+
+        expect(rules.size).toBe(1);
+        expect(domains).toEqual(['www.youtube.com', 'youtube.com']);
+    });
+
+    it('does not fail when the $path exception is for an unrelated domain', async () => {
+        setupRulesets([
+            'youtube.com##+js(set-constant, foo, bar)\n'
+            + "[$domain=example.com,path=/shorts]#@%#//scriptlet('ubo-set-constant', 'foo', 'bar')",
+        ]);
+
+        const collector = new ScriptletCollector('/fake/declarative');
+        const { rules, domains } = await collector.collect();
+
+        expect(rules.size).toBe(1);
+        expect(domains).toEqual(['www.youtube.com', 'youtube.com']);
+    });
+
+    it('collects rules normally alongside element-hiding $path exceptions', async () => {
+        setupRulesets([
+            'youtube.com##+js(set-constant, foo, bar)\n'
+            + '[$path=/jobs]youtube.com#@#.ad-banner',
+        ]);
+
+        const collector = new ScriptletCollector('/fake/declarative');
+        const { rules, domains } = await collector.collect();
+
+        expect(rules.size).toBe(1);
+        expect(domains).toEqual(['www.youtube.com', 'youtube.com']);
+    });
 });

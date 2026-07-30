@@ -19,14 +19,8 @@
  */
 
 /**
- * List of domains for which preregistered-script bundles are generated.
- *
- * All scriptlets and JS rules from all enabled filters that target a
- * listed domain are automatically included — no manual allowlisting
- * or exclusion configuration needed.
- *
- * To add a new preregistered domain, add it here and run
- * `pnpm resources:mv3`.
+ * Domains for which preregistered-script bundles are generated. Add a
+ * domain here and run `pnpm resources:mv3`.
  */
 export const preregisteredDomains: readonly string[] = [
     'youtube.com',

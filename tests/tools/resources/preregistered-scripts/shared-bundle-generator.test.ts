@@ -59,10 +59,12 @@ describe('compileSharedScriptletsBundle', () => {
         );
         expect(result).not.toBeNull();
         // Terser drops the (syntactically optional, in this position) parens
-        // around the function expression, e.g. `let __ag_...=function(){...}();`
+        // around the function expression, e.g. `let __ag_...;try{__ag_...=function(){...}()}catch...`
         expect(result).toMatch(/^let\s/);
         expect(result).toMatch(/=function\s*\(\)\s*\{/);
-        expect(result).toContain('}();');
+        // The IIFE is invoked inside a try block (init-guard fallback on rethrow):
+        // minified form is `...=function(){...}()}catch(e){...}`.
+        expect(result).toMatch(/\}\(\)\}\s*catch\s*\(\w+\)\s*\{/);
     });
 
     it('defines the coordination key using the provided key, not a fixed "_ag" name or window property', async () => {

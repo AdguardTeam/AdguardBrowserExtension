@@ -26,31 +26,20 @@ import { CLEANUP_BUNDLE_FILENAME } from '@adguard/tswebextension/mv3/preregister
 
 import { NEWLINE_CHAR_UNIX } from '../../../../../Extension/src/common/constants';
 import { minifyJs } from '../../constants';
-import { writeBundle, assertNoTemplateSentinels } from '../../writeHelpers';
+import {
+    writeBundle,
+    assertNoTemplateSentinels,
+    extractTemplateBody,
+} from '../../writeHelpers';
 
 import { CLEANUP_TEMPLATE } from './cleanup-template';
 
 /**
- * Explicit sentinel comments marking the extractable body inside
- * {@link CLEANUP_TEMPLATE}. Using explicit markers (instead of locating the
- * first `{`/last `}` in the stringified function) keeps extraction correct
- * regardless of how the template's signature or surrounding code is written.
- */
-const BODY_START_MARKER = '// __BODY_START__';
-const BODY_END_MARKER = '// __BODY_END__';
-
-/**
  * Compiles and writes `cleanup.js` — reassigns the coordination `let`
- * binding to `undefined`, so it never survives into the page's own script
- * execution as an observable value.
+ * binding to `undefined`. Registered as the last entry in a domain's `js`
+ * array, after the shared bundle and the per-hash files.
  *
- * Must be registered as the last entry in a domain's `js` array (see
- * `PreregisteredScriptsService.buildDomainScripts`), after the shared bundle
- * and every per-hash file.
- *
- * @param coordinationKey Random per-build identifier,
- * matching the one declared by the shared bundle and
- * referenced by the per-hash files.
+ * @param coordinationKey Identifier declared by the shared bundle.
  * @param outputDir Directory to write the file into.
  *
  * @returns Promise that resolves when the file has been written.
@@ -59,12 +48,7 @@ export const writeCleanupFile = async (
     coordinationKey: string,
     outputDir: string,
 ): Promise<void> => {
-    const source = CLEANUP_TEMPLATE.toString();
-    const bodyStart = source.indexOf(BODY_START_MARKER) + BODY_START_MARKER.length;
-    const bodyEnd = source.indexOf(BODY_END_MARKER);
-
-    const body = source
-        .slice(bodyStart, bodyEnd)
+    const body = extractTemplateBody(CLEANUP_TEMPLATE)
         .replace('__PROP__', () => coordinationKey);
 
     assertNoTemplateSentinels(body, ['__PROP__']);

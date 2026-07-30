@@ -20,21 +20,28 @@
 
 import crypto from 'node:crypto';
 
-/**
- * Number of random bytes used to build a coordination key. 8 bytes (16 hex
- * chars) is more than enough to make the property name unguessable within a
- * single build.
- */
-const KEY_RANDOM_BYTES = 8;
+import { SCRIPTLETS_VERSION } from '@adguard/scriptlets';
+
+/** Hex chars kept from the SHA-256 digest (64 bits — collision-free here). */
+const KEY_HASH_HEX_CHARS = 16;
 
 /**
- * Generates a random identifier shared by the bundle, per-hash files, and
- * the cleanup file within one build. Used as a top-level `let` variable
- * name (a lexical binding, not a `window` property), changing every build
- * so pages can't hardcode it across versions.
+ * Derives the identifier shared by the bundle, per-hash files and cleanup
+ * file within one build; used as a top-level `let` variable name.
  *
- * @returns A valid-JS-identifier random string, e.g. `"__ag_3f9a1c2b8e4d5601"`.
+ * Deterministic (derived from the scriptlets library version): identical
+ * inputs produce byte-identical bundles, and persisted content-script
+ * registrations keep working across filter-only releases since both
+ * generations share the key.
+ *
+ * @returns A valid-JS-identifier string, e.g. `"__ag_3f9a1c2b8e4d5601"`.
  */
 export const generateCoordinationKey = (): string => {
-    return `__ag_${crypto.randomBytes(KEY_RANDOM_BYTES).toString('hex')}`;
+    const digest = crypto
+        .createHash('sha256')
+        .update(`__ag_${SCRIPTLETS_VERSION}`)
+        .digest('hex')
+        .slice(0, KEY_HASH_HEX_CHARS);
+
+    return `__ag_${digest}`;
 };

@@ -26,7 +26,10 @@ import { minify as terserMinify } from 'terser';
 export const DOMAINS_LIST_FILENAME = 'domains.js';
 
 /**
- * Minifies JavaScript code using shared {@link PREREG_TERSER_OPTIONS}.
+ * Minifies JavaScript code with Terser.
+ *
+ * `bare_returns` is deliberately not enabled: generated files must stay
+ * syntactically strict so a stray top-level `return` can't change semantics.
  *
  * @param code JavaScript source to minify.
  *
@@ -39,9 +42,6 @@ export const minifyJs = async (code: string): Promise<string> => {
         compress: {
             sequences: false,
             negate_iife: false,
-        },
-        parse: {
-            bare_returns: true,
         },
     });
 

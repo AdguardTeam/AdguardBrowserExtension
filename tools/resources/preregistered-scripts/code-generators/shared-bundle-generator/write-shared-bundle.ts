@@ -33,11 +33,9 @@ import { compileSharedScriptletsBundle } from './shared-bundle-generator';
  *
  * @param scriptletNames Set of unique scriptlet names used across all domains.
  * @param outputDir Directory to write the shared bundle file into.
- * @param coordinationKey Random per-build coordination key (bare identifier),
- * shared with the per-hash files and the cleanup file.
+ * @param coordinationKey Identifier declared by the shared bundle.
  *
- * @returns Promise that resolves when the file has been written (or immediately
- *   if `scriptletNames` is empty or the compiled bundle is empty).
+ * @returns Resolves when written (immediately if there is nothing to write).
  */
 export const writeSharedBundle = async (
     scriptletNames: Set<string>,

@@ -1,0 +1,1 @@
+try{const t="cfc9f8a2a7ce1169",o=__ag_7d8a978ba755ed70.b;if(!o.has(t)){o.add(t);(()=>{const t={apply:(t,o,e)=>{const n=e[0];return"function"==typeof n&&n.toString().includes("onAbnormalityDetected")&&(e[0]=function(){}),Reflect.apply(t,o,e)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t)})()}}catch(t){}

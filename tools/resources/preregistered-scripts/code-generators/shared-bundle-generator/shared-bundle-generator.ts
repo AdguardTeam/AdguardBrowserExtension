@@ -24,18 +24,9 @@ import { scriptlets } from '@adguard/scriptlets';
 
 import { NEWLINE_CHAR_UNIX } from '../../../../../Extension/src/common/constants';
 import { minifyJs } from '../../constants';
-import { assertNoTemplateSentinels } from '../../writeHelpers';
+import { assertNoTemplateSentinels, extractTemplateBody } from '../../writeHelpers';
 
 import { BUNDLE_TEMPLATE } from './shared-bundle-template';
-
-/**
- * Explicit sentinel comments marking the extractable body inside
- * {@link BUNDLE_TEMPLATE}. Using explicit markers (instead of locating the
- * first `{`/last `}` in the stringified function) keeps extraction correct
- * regardless of how the template's signature or surrounding code is written.
- */
-const BODY_START_MARKER = '// __BODY_START__';
-const BODY_END_MARKER = '// __BODY_END__';
 
 /**
  * Builds the shared bundle body by filling `__FUNCTIONS__`, `__REGISTRY__`
@@ -43,10 +34,8 @@ const BODY_END_MARKER = '// __BODY_END__';
  *
  * @param functions Compiled scriptlet function definitions (minified).
  * @param registryEntries Comma-separated `"name": fnName` entries.
- * @param coordinationKey Random per-build identifier (see
- * `coordination-key.ts`), shared with the per-hash files and the cleanup
- * file. Substituted as a bare identifier (not a string literal) since
- * {@link BUNDLE_TEMPLATE} declares it as a top-level `let` variable name.
+ * @param coordinationKey Substituted as a bare identifier (the template
+ * declares it as a top-level `let` name).
  *
  * @returns Assembled bundle body.
  */
@@ -55,12 +44,7 @@ const assembleTemplate = (
     registryEntries: string,
     coordinationKey: string,
 ): string => {
-    const source = BUNDLE_TEMPLATE.toString();
-    const bodyStart = source.indexOf(BODY_START_MARKER) + BODY_START_MARKER.length;
-    const bodyEnd = source.indexOf(BODY_END_MARKER);
-
-    const filled = source
-        .slice(bodyStart, bodyEnd)
+    const filled = extractTemplateBody(BUNDLE_TEMPLATE)
         .replace('__FUNCTIONS__', () => functions.join(NEWLINE_CHAR_UNIX))
         .replace('__REGISTRY__', () => `{${registryEntries}}`)
         .replace(/__PROP__/g, () => coordinationKey);
@@ -71,17 +55,14 @@ const assembleTemplate = (
 };
 
 /**
- * Compiles the shared scriptlets bundle (`scriptlets-bundle.js`).
- *
- * Loaded once per page. Contains deduplicated scriptlet function definitions
- * and the coordination-key runner, exposed as a top-level `let` binding.
- * Not wrapped in an outer IIFE here, since that would trap the `let`
- * declaration and hide it from the separately-loaded per-hash files and
- * `cleanup.js`.
+ * Compiles the shared scriptlets bundle (`scriptlets-bundle.js`): deduped
+ * scriptlet function definitions plus the coordination-key runner, exposed
+ * as a top-level `let` binding (no wrapping IIFE — it would hide the
+ * binding from the per-hash files and `cleanup.js`).
  *
  * @param scriptletNames Set of unique scriptlet names used across all domains.
- * @param coordinationKey Random per-build identifier (see
- * `coordination-key.ts`), shared with the per-hash files and the cleanup file.
+ * @param coordinationKey Identifier shared with the per-hash files and the
+ * cleanup file.
  *
  * @returns Compiled shared bundle string, or `null` if no scriptlets.
  */
@@ -89,7 +70,7 @@ export const compileSharedScriptletsBundle = async (
     scriptletNames: Set<string>,
     coordinationKey: string,
 ): Promise<string | null> => {
-    const rawFunctions: string[] = [];
+    const uniqueFunctions = new Map<(...args: unknown[]) => unknown, string[]>();
 
     for (const scriptletName of scriptletNames) {
         const scriptletFn = scriptlets.getScriptletFunction(scriptletName);
@@ -98,22 +79,22 @@ export const compileSharedScriptletsBundle = async (
             continue;
         }
 
-        rawFunctions.push(scriptletFn.toString());
+        const aliases = uniqueFunctions.get(scriptletFn);
+        if (aliases) {
+            aliases.push(scriptletName);
+        } else {
+            uniqueFunctions.set(scriptletFn, [scriptletName]);
+        }
     }
 
-    if (rawFunctions.length === 0) {
+    if (uniqueFunctions.size === 0) {
         return null;
     }
 
-    const registryEntries = [...scriptletNames]
-        .map((name) => {
-            const fn = scriptlets.getScriptletFunction(name);
-            if (!fn) {
-                return null;
-            }
-            return `${JSON.stringify(name)}: ${fn.name}`;
-        })
-        .filter((entry): entry is string => entry !== null)
+    const rawFunctions = [...uniqueFunctions.keys()].map((fn) => fn.toString());
+
+    const registryEntries = [...uniqueFunctions.entries()]
+        .flatMap(([fn, aliases]) => aliases.map((name) => `${JSON.stringify(name)}: ${fn.name}`))
         .join(',');
 
     const filled = assembleTemplate(rawFunctions, registryEntries, coordinationKey);

@@ -56,12 +56,6 @@ const resourcesMv3 = async (skipLocalResources = false) => {
             updateLocalResourcesForMv3(AssetsFiltersBrowser.OperaMv3),
         ]);
         console.log('Local resources for MV3 updated');
-
-        await Promise.all([
-            generatePreregisteredDomainBundles(AssetsFiltersBrowser.ChromiumMv3),
-            generatePreregisteredDomainBundles(AssetsFiltersBrowser.OperaMv3),
-        ]);
-        console.log('Preregistered domain bundles generated');
     } else {
         console.log('Skipping update of local resources for MV3 (--skip-local-resources flag set)');
     }
@@ -91,6 +85,16 @@ const resourcesMv3 = async (skipLocalResources = false) => {
             limit: 4900,
         }),
     ]);
+
+    // Generate after unsafe-rule exclusion so the collected rules match the
+    // shipped rulesets.
+    if (!skipLocalResources) {
+        await Promise.all([
+            generatePreregisteredDomainBundles(AssetsFiltersBrowser.ChromiumMv3),
+            generatePreregisteredDomainBundles(AssetsFiltersBrowser.OperaMv3),
+        ]);
+        console.log('Preregistered domain bundles generated');
+    }
 };
 
 (async () => {

@@ -22,26 +22,19 @@
 /* eslint-disable */
 
 /**
- * Template for the idempotency guard wrapping each JS rule in a per-hash file.
- *
- * ## Build-time
- *
- * `__KEY__` is replaced with the rule's SHA-256 hash.
- * `__CODE__` is replaced with the rule's source code.
- * `__PROP__` is replaced with the bare coordination key identifier — the
- * same top-level `let` binding declared by the shared bundle (see
- * `coordination-key.ts` and `shared-bundle-template.js`).
+ * Template for the idempotency guard wrapping each JS rule in a per-hash
+ * file. `__KEY__` → rule hash, `__CODE__` → rule source, `__PROP__` → bare
+ * coordination key identifier (the shared bundle's top-level `let`).
  */
 export const JS_RULE_GUARD_TEMPLATE = () => {
     // __BODY_START__
     try {
         const ruleKey = __KEY__; /* replaced with JSON.stringify(ruleHash) */
         const dedupSet = __PROP__.b;
-        if (dedupSet.has(ruleKey)) {
-            return;
+        if (!dedupSet.has(ruleKey)) {
+            dedupSet.add(ruleKey);
+            __CODE__; /* replaced with rule source code */
         }
-        dedupSet.add(ruleKey);
-        __CODE__; /* replaced with rule source code */
     } catch (err) {}
     // __BODY_END__
 };
