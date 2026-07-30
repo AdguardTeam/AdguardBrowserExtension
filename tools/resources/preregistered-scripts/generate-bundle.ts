@@ -21,7 +21,11 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
-import { MANIFEST_FILENAME, PREREGISTERED_SCRIPTS_DIR } from '@adguard/tswebextension/mv3/preregistered-scripts/hasher';
+import {
+    MANIFEST_FILENAME,
+    PREREGISTERED_SCRIPTS_DIR,
+    type PreregisteredScriptsManifest,
+} from '@adguard/tswebextension/mv3/preregistered-scripts/hasher';
 
 import {
     FILTERS_DEST,
@@ -37,15 +41,6 @@ import {
     writeDomainsList,
     writeCleanupFile,
 } from './code-generators';
-
-/** Shape of the `manifest.json` written next to the generated artifacts. */
-interface PreregisteredScriptsManifest {
-    /** Coordination key baked into this generation's shared bundle. */
-    coordinationKey: string;
-
-    /** Hashes of this generation's per-rule files. */
-    hashes: string[];
-}
 
 /**
  * Reads the previous generation's manifest.
