@@ -22,14 +22,14 @@
 /* eslint-disable */
 
 /**
- * Template for `cleanup.js` — the last file loaded for a domain. Reassigns
- * the coordination binding (`__PROP__`) to `undefined` (`let` can't be
- * deleted, but can be reassigned).
+ * Template for the cleanup file — the last file loaded for a domain.
+ * Deletes the coordination `window` property (`__PROP__`), leaving no
+ * trace a page script could probe for.
  */
 export const CLEANUP_TEMPLATE = () => {
     // __BODY_START__
     try {
-        __PROP__ = undefined;
+        delete window.__PROP__;
     } catch (e) {}
     // __BODY_END__
 };

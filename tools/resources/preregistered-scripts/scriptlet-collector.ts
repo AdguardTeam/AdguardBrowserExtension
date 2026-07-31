@@ -118,7 +118,10 @@ export class ScriptletCollector {
     }
 
     /**
-     * Walks all rulesets and collects rules into the accumulators (reset first).
+     * Walks all rulesets and collects rules into the accumulators (reset
+     * first). The `$path`-exception guard runs after ALL rulesets are
+     * collected: an exception must cancel its rule globally, not just
+     * within its own ruleset.
      *
      * @returns Collected unique rules, scriptlet names, and domains with rules.
      */
@@ -130,8 +133,14 @@ export class ScriptletCollector {
         const metadataRuleSet = await readMetadataRuleSet(this.declarativeFolder);
         const ruleSetIds = metadataRuleSet.getRuleSetIds();
 
+        const rawFilterLists = new Map<string, string>();
+
         for (const ruleSetId of ruleSetIds) {
-            await this.processRuleSet(ruleSetId);
+            rawFilterLists.set(ruleSetId, await this.processRuleSet(ruleSetId));
+        }
+
+        for (const [ruleSetId, rawFilterList] of rawFilterLists) {
+            assertNoPathScopedExceptions(rawFilterList, ruleSetId, this.rules, preregisteredHostnames);
         }
 
         return {
@@ -144,13 +153,14 @@ export class ScriptletCollector {
     /**
      * Queries one ruleset's engine for the JS/scriptlet rules of every
      * preregistered hostname. `getJsRulesIgnoringPath` already excludes
-     * domain-wide exceptions; a `$path`-scoped exception cancelling an
-     * already-collected rule is a hard error
-     * (see {@link assertNoPathScopedExceptions}).
+     * domain-wide exceptions.
      *
      * @param ruleSetId Ruleset identifier (e.g. `"ruleset_2"`).
+     *
+     * @returns The ruleset's raw filter list, for the deferred
+     * `$path`-exception guard.
      */
-    private async processRuleSet(ruleSetId: string): Promise<void> {
+    private async processRuleSet(ruleSetId: string): Promise<string> {
         const rawFilterList = await extractPreprocessedRawFilterList(ruleSetId, this.declarativeFolder);
         const engine = Engine.createSync({ filters: [{ id: 1, content: rawFilterList }] });
 
@@ -176,7 +186,7 @@ export class ScriptletCollector {
             }),
         );
 
-        assertNoPathScopedExceptions(rawFilterList, ruleSetId, this.rules, preregisteredHostnames);
+        return rawFilterList;
     }
 
     /**

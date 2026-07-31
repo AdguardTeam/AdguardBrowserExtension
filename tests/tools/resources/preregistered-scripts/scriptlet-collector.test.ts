@@ -257,6 +257,19 @@ describe('ScriptletCollector.collect', () => {
         await expect(collector.collect()).rejects.toThrow(/ruleset_2/);
     });
 
+    it('fails the build when the $path exception is declared in an EARLIER ruleset than the rule', async () => {
+        setupRulesets([
+            "[$domain=youtube.com,path=/shorts]#@%#//scriptlet('ubo-set-constant', 'foo', 'bar')",
+            'youtube.com##+js(set-constant, foo, bar)',
+        ]);
+
+        const collector = new ScriptletCollector('/fake/declarative');
+
+        // The guard runs after ALL rulesets are collected, so the ruleset
+        // order does not matter.
+        await expect(collector.collect()).rejects.toThrow(/ruleset_1/);
+    });
+
     it('does not fail when the $path exception targets an unused scriptlet', async () => {
         setupRulesets([
             'youtube.com##+js(set-constant, foo, bar)\n'

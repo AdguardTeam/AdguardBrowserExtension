@@ -24,7 +24,7 @@
 /**
  * Template for the idempotency guard wrapping each JS rule in a per-hash
  * file. `__KEY__` → rule hash, `__CODE__` → rule source, `__PROP__` → bare
- * coordination key identifier (the shared bundle's top-level `let`).
+ * coordination key identifier (a `window` property set by the shared bundle).
  */
 export const JS_RULE_GUARD_TEMPLATE = () => {
     // __BODY_START__

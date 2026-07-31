@@ -34,8 +34,7 @@ import { BUNDLE_TEMPLATE } from './shared-bundle-template';
  *
  * @param functions Compiled scriptlet function definitions (minified).
  * @param registryEntries Comma-separated `"name": fnName` entries.
- * @param coordinationKey Substituted as a bare identifier (the template
- * declares it as a top-level `let` name).
+ * @param coordinationKey Substituted into the `window.<key>` assignment.
  *
  * @returns Assembled bundle body.
  */
@@ -55,28 +54,31 @@ const assembleTemplate = (
 };
 
 /**
- * Compiles the shared scriptlets bundle (`scriptlets-bundle.js`): deduped
- * scriptlet function definitions plus the coordination-key runner, exposed
- * as a top-level `let` binding (no wrapping IIFE — it would hide the
- * binding from the per-hash files and `cleanup.js`).
+ * Compiles the shared scriptlets bundle: deduped scriptlet function
+ * definitions plus the coordination-key runner, assigned to a `window`
+ * property so the cleanup file can fully `delete` it.
+ *
+ * The bundle is emitted even for an empty name set: per-hash JS-rule files
+ * still need `<key>.b` for deduplication.
  *
  * @param scriptletNames Set of unique scriptlet names used across all domains.
  * @param coordinationKey Identifier shared with the per-hash files and the
  * cleanup file.
  *
- * @returns Compiled shared bundle string, or `null` if no scriptlets.
+ * @returns Compiled shared bundle string.
  */
 export const compileSharedScriptletsBundle = async (
     scriptletNames: Set<string>,
     coordinationKey: string,
-): Promise<string | null> => {
+): Promise<string> => {
     const uniqueFunctions = new Map<(...args: unknown[]) => unknown, string[]>();
 
     for (const scriptletName of scriptletNames) {
         const scriptletFn = scriptlets.getScriptletFunction(scriptletName);
         if (!scriptletFn) {
-            console.warn(`[generate-preregistered-domain-bundles] Unknown scriptlet: "${scriptletName}", skipping`);
-            continue;
+            throw new Error(
+                `Unknown scriptlet "${scriptletName}" — update @adguard/scriptlets or fix the filter rule`,
+            );
         }
 
         const aliases = uniqueFunctions.get(scriptletFn);
@@ -85,10 +87,6 @@ export const compileSharedScriptletsBundle = async (
         } else {
             uniqueFunctions.set(scriptletFn, [scriptletName]);
         }
-    }
-
-    if (uniqueFunctions.size === 0) {
-        return null;
     }
 
     const rawFunctions = [...uniqueFunctions.keys()].map((fn) => fn.toString());

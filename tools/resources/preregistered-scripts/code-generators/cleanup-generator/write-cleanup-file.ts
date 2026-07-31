@@ -22,7 +22,7 @@
 
 import path from 'node:path';
 
-import { CLEANUP_BUNDLE_FILENAME } from '@adguard/tswebextension/mv3/preregistered-scripts/hasher';
+import { CLEANUP_FILENAME } from '@adguard/tswebextension/mv3/preregistered-scripts/hasher';
 
 import { NEWLINE_CHAR_UNIX } from '../../../../../Extension/src/common/constants';
 import { minifyJs } from '../../constants';
@@ -35,9 +35,9 @@ import {
 import { CLEANUP_TEMPLATE } from './cleanup-template';
 
 /**
- * Compiles and writes `cleanup.js` — reassigns the coordination `let`
- * binding to `undefined`. Registered as the last entry in a domain's `js`
- * array, after the shared bundle and the per-hash files.
+ * Compiles and writes the cleanup file — deletes the coordination `window`
+ * property. Registered as the last entry in a domain's `js` array, after
+ * the shared bundle and the per-hash files.
  *
  * @param coordinationKey Identifier declared by the shared bundle.
  * @param outputDir Directory to write the file into.
@@ -56,7 +56,7 @@ export const writeCleanupFile = async (
     const content = `(function () {${NEWLINE_CHAR_UNIX}${body.trim()}${NEWLINE_CHAR_UNIX}})();${NEWLINE_CHAR_UNIX}`;
     const minified = await minifyJs(content);
 
-    const outputPath = path.join(outputDir, CLEANUP_BUNDLE_FILENAME);
+    const outputPath = path.join(outputDir, CLEANUP_FILENAME);
     await writeBundle(minified, outputPath);
-    console.log(`[ext.writeCleanupFile]: Wrote ${CLEANUP_BUNDLE_FILENAME}`);
+    console.log(`[ext.writeCleanupFile]: Wrote ${CLEANUP_FILENAME}`);
 };

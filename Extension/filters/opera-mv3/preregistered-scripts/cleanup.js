@@ -1,1 +1,1 @@
-(function(){try{__ag_7d8a978ba755ed70=void 0}catch(a){}})();
+(function(){try{delete window.__ag_7d8a978ba755ed70}catch(a){}})();

@@ -23,6 +23,7 @@
 import path from 'node:path';
 
 import { SCRIPTLETS_VERSION } from '@adguard/scriptlets';
+import { getRuleFilename } from '@adguard/tswebextension/mv3/preregistered-scripts/hasher';
 
 import { NEWLINE_CHAR_UNIX } from '../../../../../Extension/src/common/constants';
 import { minifyJs } from '../../constants';
@@ -39,7 +40,7 @@ import { getPathTest } from './path-pattern';
 /**
  * Compiles a single scriptlet invocation file: a call to
  * `coordinationKey.r(name, source, args, hash)` — a bare reference to the
- * top-level `let` binding declared by the shared bundle.
+ * `window` property declared by the shared bundle.
  *
  * `source.domainName` is filled by `.r` at runtime; `verbose` is hardcoded
  * `false` (`debugScriptlets` lives in `chrome.storage`, unreachable from
@@ -48,7 +49,7 @@ import { getPathTest } from './path-pattern';
  * @param entry Collected rule entry for a scriptlet.
  * @param coordinationKey Identifier declared by the shared bundle.
  *
- * @returns Compiled JavaScript string for the `{hash}.js` file.
+ * @returns Compiled JavaScript string for the rule file.
  *
  * @throws When entry is missing scriptlet name or args.
  */
@@ -82,7 +83,7 @@ const compileScriptletFile = (entry: CollectedRuleEntry, coordinationKey: string
  * @param entry Collected rule entry for a JS rule.
  * @param coordinationKey Identifier declared by the shared bundle.
  *
- * @returns Compiled JavaScript string for the `{hash}.js` file.
+ * @returns Compiled JavaScript string for the rule file.
  *
  * @throws When entry is missing body or the guard template markers are gone.
  */
@@ -151,7 +152,7 @@ export const writePerHashFiles = async (
 
         content = await minifyJs(content);
 
-        const fileName = `${hash}.js`;
+        const fileName = getRuleFilename(hash);
         await writeBundle(content, path.join(outputDir, fileName));
 
         const kb = (Buffer.byteLength(content, 'utf-8') / 1024).toFixed(1);

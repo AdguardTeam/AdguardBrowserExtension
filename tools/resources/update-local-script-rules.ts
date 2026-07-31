@@ -41,12 +41,17 @@ import { minify } from 'terser';
 import { some } from 'lodash-es';
 
 import {
+    CosmeticRuleType,
+    RuleCategory,
+    type AnyRule,
+    type JsInjectionRule,
+} from '@adguard/agtree';
+import {
     CosmeticRuleParser,
     defaultParserOptions,
     FilterListParser,
 } from '@adguard/agtree/parser';
 import { CosmeticRuleBodyGenerator } from '@adguard/agtree/generator';
-import { isJsInjectionRule } from '@adguard/dnr-rulesets';
 
 import { ADGUARD_FILTERS_IDS } from '../../constants';
 import {
@@ -60,6 +65,18 @@ import {
 
 import { extractPreprocessedRawFilterList, readMetadataRuleSet } from './filter-extractor';
 import { TESTCASES_RULES } from './testcases-rules';
+
+/**
+ * Checks if a rule node is a JS injection rule.
+ *
+ * @param ruleNode Rule node to check.
+ *
+ * @returns True if the rule node is a JS injection rule.
+ */
+const isJsInjectionRule = (ruleNode: AnyRule): ruleNode is JsInjectionRule => {
+    return ruleNode.category === RuleCategory.Cosmetic
+        && ruleNode.type === CosmeticRuleType.JsInjectionRule;
+};
 
 const exec = promisify(execCallback);
 

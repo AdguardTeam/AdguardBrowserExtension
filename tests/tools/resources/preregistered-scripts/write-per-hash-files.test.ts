@@ -29,12 +29,23 @@ import {
     afterEach,
 } from 'vitest';
 
+import { getRuleFilename } from '@adguard/tswebextension/mv3/preregistered-scripts/hasher';
+
 /* eslint-disable max-len */
 import {
     writePerHashFiles,
 } from '../../../../tools/resources/preregistered-scripts/code-generators/per-hash-generator/write-per-hash-files';
 import { type CollectedRuleEntry } from '../../../../tools/resources/preregistered-scripts/scriptlet-collector';
 /* eslint-enable max-len */
+
+/**
+ * Per-rule filename, mirroring the generator's output.
+ *
+ * @param hash Rule hash.
+ *
+ * @returns Filename.
+ */
+const ruleFileName = (hash: string): string => getRuleFilename(hash);
 
 describe('writePerHashFiles', () => {
     let outputDir: string;
@@ -59,7 +70,7 @@ describe('writePerHashFiles', () => {
 
         await writePerHashFiles(new Map([[hash, entry]]), outputDir, TEST_KEY);
 
-        const content = await fs.readFile(path.join(outputDir, `${hash}.js`), 'utf-8');
+        const content = await fs.readFile(path.join(outputDir, ruleFileName(hash)), 'utf-8');
 
         expect(content).not.toContain('__KEY__');
         expect(content).not.toContain('__CODE__');
@@ -80,7 +91,7 @@ describe('writePerHashFiles', () => {
         await expect(writePerHashFiles(new Map([[hash, entry]]), outputDir, TEST_KEY)).rejects.toThrow();
     });
 
-    it('emits a scriptlet invocation via <coordinationKey>.r, not a fixed "_ag" name/window prop', async () => {
+    it('emits a scriptlet invocation via <coordinationKey>.r, a bare reference to the window property', async () => {
         outputDir = await fs.mkdtemp(path.join(os.tmpdir(), 'per-hash-files-'));
 
         const hash = 'scriptlethash0001';
@@ -92,18 +103,17 @@ describe('writePerHashFiles', () => {
 
         await writePerHashFiles(new Map([[hash, entry]]), outputDir, TEST_KEY);
 
-        const content = await fs.readFile(path.join(outputDir, `${hash}.js`), 'utf-8');
+        const content = await fs.readFile(path.join(outputDir, ruleFileName(hash)), 'utf-8');
 
-        // Bare identifier reference (lexical `let` binding declared by the
-        // shared bundle), not a `window` property access.
+        // Bare identifier reference resolving to the `window` property the
+        // shared bundle assigns (in a page's MAIN world `window` IS the
+        // global object).
         expect(content).toContain(`${TEST_KEY}.r(`);
         expect(content).not.toContain('_ag.r');
         expect(content).not.toContain('window._ag');
-        expect(content).not.toContain(`window.${TEST_KEY}`);
-        expect(content).not.toContain(`window["${TEST_KEY}"]`);
     });
 
-    it('wraps a JS rule dedup guard in <coordinationKey>.b, not a fixed "_ag" name or a window property', async () => {
+    it('wraps a JS rule dedup guard in <coordinationKey>.b from the shared bundle', async () => {
         outputDir = await fs.mkdtemp(path.join(os.tmpdir(), 'per-hash-files-'));
 
         const hash = 'jsrulehash00000001';
@@ -114,7 +124,7 @@ describe('writePerHashFiles', () => {
 
         await writePerHashFiles(new Map([[hash, entry]]), outputDir, TEST_KEY);
 
-        const content = await fs.readFile(path.join(outputDir, `${hash}.js`), 'utf-8');
+        const content = await fs.readFile(path.join(outputDir, ruleFileName(hash)), 'utf-8');
 
         // The minifier aliases `<key>.b` into a local variable, so assert
         // the dedup-guard shape: one `<key>.b` reference feeding has/add.
@@ -123,7 +133,6 @@ describe('writePerHashFiles', () => {
         expect(content).toContain('.add(');
         expect(content).not.toContain('_ag.b');
         expect(content).not.toContain('window._ag');
-        expect(content).not.toContain(`window.${TEST_KEY}`);
     });
 
     it('uses a different coordination key per call, and only that key appears in the output', async () => {
@@ -139,12 +148,12 @@ describe('writePerHashFiles', () => {
         };
 
         await writePerHashFiles(new Map([[hash, entry]]), outputDir, keyA);
-        const contentA = await fs.readFile(path.join(outputDir, `${hash}.js`), 'utf-8');
+        const contentA = await fs.readFile(path.join(outputDir, ruleFileName(hash)), 'utf-8');
         expect(contentA).toContain(keyA);
         expect(contentA).not.toContain(keyB);
 
         await writePerHashFiles(new Map([[hash, entry]]), outputDir, keyB);
-        const contentB = await fs.readFile(path.join(outputDir, `${hash}.js`), 'utf-8');
+        const contentB = await fs.readFile(path.join(outputDir, ruleFileName(hash)), 'utf-8');
         expect(contentB).toContain(keyB);
         expect(contentB).not.toContain(keyA);
     });
@@ -160,7 +169,7 @@ describe('writePerHashFiles', () => {
         };
 
         await writePerHashFiles(new Map([[hash, entry]]), outputDir, TEST_KEY);
-        const content = await fs.readFile(path.join(outputDir, `${hash}.js`), 'utf-8');
+        const content = await fs.readFile(path.join(outputDir, ruleFileName(hash)), 'utf-8');
 
         expect(content).toContain('new RegExp(');
         expect(content).toContain('location.pathname');
@@ -188,7 +197,7 @@ describe('writePerHashFiles', () => {
         };
 
         await writePerHashFiles(new Map([[hash, entry]]), outputDir, TEST_KEY);
-        const content = await fs.readFile(path.join(outputDir, `${hash}.js`), 'utf-8');
+        const content = await fs.readFile(path.join(outputDir, ruleFileName(hash)), 'utf-8');
 
         const globalObj: Record<string, unknown> = {
             location: { pathname: '/unrelated' },
@@ -224,7 +233,7 @@ describe('writePerHashFiles', () => {
         };
 
         await writePerHashFiles(new Map([[hash, entry]]), outputDir, TEST_KEY);
-        const content = await fs.readFile(path.join(outputDir, `${hash}.js`), 'utf-8');
+        const content = await fs.readFile(path.join(outputDir, ruleFileName(hash)), 'utf-8');
 
         expect(content).toContain('location.search');
 
@@ -257,7 +266,7 @@ describe('writePerHashFiles', () => {
         };
 
         await writePerHashFiles(new Map([[hash, entry]]), outputDir, TEST_KEY);
-        const content = await fs.readFile(path.join(outputDir, `${hash}.js`), 'utf-8');
+        const content = await fs.readFile(path.join(outputDir, ruleFileName(hash)), 'utf-8');
 
         expect(content).not.toContain('location.pathname');
     });

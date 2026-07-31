@@ -29,27 +29,21 @@ import { writeBundle } from '../../writeHelpers';
 import { compileSharedScriptletsBundle } from './shared-bundle-generator';
 
 /**
- * Builds and writes the shared scriptlets bundle.
+ * Builds and writes the shared scriptlets bundle. Written unconditionally:
+ * per-hash JS-rule files need its dedup set even when no scriptlets are used.
  *
  * @param scriptletNames Set of unique scriptlet names used across all domains.
  * @param outputDir Directory to write the shared bundle file into.
  * @param coordinationKey Identifier declared by the shared bundle.
  *
- * @returns Resolves when written (immediately if there is nothing to write).
+ * @returns Resolves when written.
  */
 export const writeSharedBundle = async (
     scriptletNames: Set<string>,
     outputDir: string,
     coordinationKey: string,
 ): Promise<void> => {
-    if (scriptletNames.size === 0) {
-        return;
-    }
-
     const shared = await compileSharedScriptletsBundle(scriptletNames, coordinationKey);
-    if (!shared) {
-        return;
-    }
 
     const sharedPath = path.join(outputDir, SHARED_BUNDLE_FILENAME);
     await writeBundle(shared, sharedPath);

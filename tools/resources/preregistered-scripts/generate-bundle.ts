@@ -22,6 +22,8 @@ import { promises as fs } from 'node:fs';
 import path from 'node:path';
 
 import {
+    COORDINATION_KEY,
+    getRuleFilename,
     MANIFEST_FILENAME,
     PREREGISTERED_SCRIPTS_DIR,
     type PreregisteredScriptsManifest,
@@ -34,7 +36,6 @@ import {
 } from '../../constants';
 
 import { ScriptletCollector } from './scriptlet-collector';
-import { generateCoordinationKey } from './code-generators/coordination-key';
 import {
     writeSharedBundle,
     writePerHashFiles,
@@ -61,51 +62,66 @@ const readPreviousManifest = async (outputDir: string): Promise<PreregisteredScr
 };
 
 /**
- * Copies previous-generation per-hash files absent from the new rule set
- * into the new output: persisted content-script registrations from the
- * previous extension version still reference them. Applies only while both
- * generations share the coordination key.
+ * Copies previous-generation per-rule files into the new output: persisted
+ * content-script registrations from the previous extension version still
+ * reference them. Applies for one release: retained files are absent from
+ * the new manifest's `hashes`, so the next build does not re-retain them.
+ * Only files dropped from the new rule set are copied — the bundle, the
+ * cleanup file and surviving per-rule files are regenerated under the same
+ * stable names.
  *
  * @param previous Previous generation's manifest.
  * @param rules New rule set (keys are the new hashes).
- * @param coordinationKey This generation's coordination key.
  * @param outputDir Previous output directory (source of the old files).
  * @param tempDir New output directory being assembled.
  */
 const retainPreviousGenerationFiles = async (
     previous: PreregisteredScriptsManifest,
     rules: ReadonlyMap<string, unknown>,
-    coordinationKey: string,
     outputDir: string,
     tempDir: string,
 ): Promise<void> => {
-    if (previous.coordinationKey !== coordinationKey) {
-        return;
-    }
+    const copies = previous.hashes
+        .filter((hash) => !rules.has(hash))
+        .map((hash) => {
+            const filename = getRuleFilename(hash);
 
-    await Promise.all(previous.hashes.map(async (hash) => {
-        if (rules.has(hash)) {
-            return;
-        }
+            // A missing retained file degrades to dynamic injection for that rule.
+            return fs.copyFile(path.join(outputDir, filename), path.join(tempDir, filename))
+                .catch((e) => {
+                    // eslint-disable-next-line no-console
+                    console.warn(`[generate-preregistered-domain-bundles] Could not retain ${filename}: ${e}`);
+                });
+        });
 
-        await fs.copyFile(path.join(outputDir, `${hash}.js`), path.join(tempDir, `${hash}.js`));
-    }));
+    await Promise.all(copies);
+};
+
+/**
+ * Removes stale temp directories left by crashed previous generations.
+ *
+ * @param filtersFolder Parent folder of the output directory.
+ */
+const sweepStaleTempDirs = async (filtersFolder: string): Promise<void> => {
+    const prefix = `${PREREGISTERED_SCRIPTS_DIR}.tmp-`;
+    const entries = await fs.readdir(filtersFolder, { withFileTypes: true });
+
+    await Promise.all(entries
+        .filter((entry) => entry.isDirectory() && entry.name.startsWith(prefix))
+        .map((entry) => fs.rm(path.join(filtersFolder, entry.name), { recursive: true, force: true })));
 };
 
 /**
  * Writes the manifest describing the generation's artifacts.
  *
- * @param coordinationKey This generation's coordination key.
  * @param hashes Hashes of this generation's per-rule files.
  * @param outputDir Directory to write the manifest into.
  */
 const writeManifest = async (
-    coordinationKey: string,
     hashes: string[],
     outputDir: string,
 ): Promise<void> => {
     const manifest: PreregisteredScriptsManifest = {
-        coordinationKey,
         hashes: [...hashes].sort(),
     };
 
@@ -120,16 +136,17 @@ const writeManifest = async (
  * Generates preregistered-script bundles and the domains list for a target
  * MV3 browser, into `filters/<browser>/preregistered-scripts/`:
  *
- * 1. `scriptlets-bundle.js` — scriptlet functions + coordination-key runner.
- * 2. `{hash}.js` — one file per unique rule (scriptlet call or guarded JS body).
- * 3. `cleanup.js` — reassigns the coordination binding to `undefined`;
+ * 1. `scriptlets-bundle.js` — scriptlet functions + runner.
+ * 2. `{hash}.js` — one file per unique rule (scriptlet call or
+ *    guarded JS body).
+ * 3. `cleanup.js` — deletes the coordination `window` property;
  *    registered last in each domain's `js` array.
  * 4. `domains.js` — ES module with the domains that have blocking rules.
- * 5. `manifest.json` — coordination key plus current hashes, read at
- *    runtime.
+ * 5. `manifest.json` — current hashes, read at runtime.
  *
- * Previous-generation per-hash files dropped from the rule set are retained
- * for one release.
+ * Dropped per-rule files of the previous generation are retained for one
+ * release because persisted content-script registrations still reference
+ * them.
  *
  * @param browser Target MV3 browser identifier (e.g. `"chromium-mv3"`).
  *
@@ -141,6 +158,8 @@ export const generatePreregisteredDomainBundles = async (
     const filtersFolder = FILTERS_DEST.replace('%browser', browser);
     const outputDir = path.join(filtersFolder, PREREGISTERED_SCRIPTS_DIR);
     const declarativeFolder = DECLARATIVE_FILTERS_DEST.replace('%browser', browser);
+
+    await sweepStaleTempDirs(filtersFolder);
 
     const tempDir = `${outputDir}.tmp-${process.pid}`;
     await fs.rm(tempDir, { recursive: true, force: true });
@@ -155,38 +174,33 @@ export const generatePreregisteredDomainBundles = async (
             domains,
         } = await collector.collect();
 
-        // 2. Deterministic coordination key (derived from the scriptlets
-        // library version), shared by the bundle below, the per-hash files,
-        // and the cleanup file.
-        const coordinationKey = generateCoordinationKey();
+        const coordinationKey = COORDINATION_KEY;
 
-        // 3. Build and write the shared scriptlets bundle.
+        // 2. Build and write the shared scriptlets bundle.
         await writeSharedBundle(scriptletNames, tempDir, coordinationKey);
 
-        // 4. Write per-hash files (one per unique rule).
+        // 3. Write per-hash files (one per unique rule).
         await writePerHashFiles(rules, tempDir, coordinationKey);
 
-        // 5. Retain previous-generation per-hash files still referenced by
-        // persisted content-script registrations from the previous extension
-        // version. Retained files are absent from the new manifest's
-        // `hashes`, so the next build does not re-retain them.
+        // 4. Retain previous-generation files still referenced by persisted
+        // content-script registrations from the previous extension version.
         const previousManifest = await readPreviousManifest(outputDir);
 
         if (previousManifest) {
-            await retainPreviousGenerationFiles(previousManifest, rules, coordinationKey, outputDir, tempDir);
+            await retainPreviousGenerationFiles(previousManifest, rules, outputDir, tempDir);
         }
 
-        // 6. Write the cleanup file that deletes the coordination property
+        // 5. Write the cleanup file that deletes the coordination property
         // before any page script can run.
         await writeCleanupFile(coordinationKey, tempDir);
 
-        // 7. Write the domains list.
+        // 6. Write the domains list.
         await writeDomainsList(domains, tempDir);
 
-        // 8. Write the manifest describing this generation's artifacts.
-        await writeManifest(coordinationKey, [...rules.keys()], tempDir);
+        // 7. Write the manifest describing this generation's artifacts.
+        await writeManifest([...rules.keys()], tempDir);
 
-        // 9. Replace the old output with the newly generated one.
+        // 8. Replace the old output with the newly generated one.
         await fs.rm(outputDir, { recursive: true, force: true });
         await fs.rename(tempDir, outputDir);
     } catch (error) {

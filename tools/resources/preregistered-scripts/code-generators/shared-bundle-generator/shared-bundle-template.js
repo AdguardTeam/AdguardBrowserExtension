@@ -22,25 +22,22 @@
 /* eslint-disable */
 
 /**
- * Template for the shared scriptlets bundle (`scriptlets-bundle.js`).
+ * Template for the shared scriptlets bundle.
  *
  * `__FUNCTIONS__`/`__REGISTRY__`/`__PROP__` are replaced with the scriptlet
- * sources, the name→fn registry and the bare coordination key identifier,
- * then minified (Terser keeps top-level names, so `__PROP__` stays
- * identical across the independently-minified files).
+ * sources, the name→fn registry and the coordination key.
  *
- * `let __PROP__` must stay top-level: other classic scripts (per-hash
- * files, cleanup.js) reference it directly, and a lexical binding is
- * invisible to `window` enumeration.
+ * The coordination object is a `window` property: per-hash files and the
+ * cleanup file reference it as a bare identifier, and cleanup can fully
+ * `delete` it (a lexical `let` binding would survive forever).
  *
  * `.r(name, source, args, key)` runs a scriptlet once per `key` (dedup via
  * `.b`, shared with JS-rule guards).
  */
 export const BUNDLE_TEMPLATE = () => {
     // __BODY_START__
-    let __PROP__;
     try {
-        __PROP__ = (function () {
+        window.__PROP__ = (function () {
             let dedupSet = new Set();
             __FUNCTIONS__ /* replaced with minified scriptlet function sources */
             let functionRegistry = __REGISTRY__; /* replaced with {"name": fnRef, ...} */
@@ -67,7 +64,7 @@ export const BUNDLE_TEMPLATE = () => {
     } catch (e) {
         // Corrupted bundle (e.g. truncated write) must not break the page
         // or the per-hash files referencing __PROP__ — install a no-op shim.
-        __PROP__ = {
+        window.__PROP__ = {
             r: function () {},
             b: new Set(),
         };
