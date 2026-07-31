@@ -1116,19 +1116,20 @@ rules-editor uses this WASM module to instantiate the Oniguruma regex engine,
 which drives the TextMate grammar for full (token-level) syntax highlighting of
 AdGuard filter rules.
 
-Because MV3 extension pages disallow WebAssembly compilation by default, the
-build sets `'wasm-unsafe-eval'` in the `extension_pages` Content Security
-Policy. This is configured in `tools/helpers.ts` (`getEnvPolicy`), which
-produces:
+Extension pages disallow WebAssembly compilation unless the CSP allows it.
+`tools/helpers.ts` (`getEnvPolicy`) therefore sets `'wasm-unsafe-eval'` for all
+targets:
 
-```
-script-src 'self' 'wasm-unsafe-eval'; object-src 'self'
-```
+- MV3 (`chrome-mv3`, `opera-mv3`):
+  `script-src 'self' 'wasm-unsafe-eval'; object-src 'self'`
+- MV2 beta/release (Chrome, Edge, Opera, Firefox):
+  `script-src 'self' 'wasm-unsafe-eval' '<click-to-load-sha>'; object-src 'self'`
+- MV2 dev: same as beta/release, plus `'unsafe-eval'` for HMR / tooling
 
-for Chrome MV3 and Opera MV3 builds. This CSP directive is also required by
-`@adguard/re2-wasm` (the RE2 regex engine used elsewhere in the extension). If it
-is removed, code that depends on WASM — including editor highlighting — will
-fail to load at runtime.
+This directive is also required by `@adguard/re2-wasm` (the RE2 regex engine).
+If it is removed, code that depends on WASM — including User rules editor
+highlighting — fails with `WasmLoadError` / `CompileError` even when `onig.wasm`
+fetches successfully (HTTP 200).
 
 The `onig.wasm` asset must be present in the build output; it is emitted by
 Rspack from the `vscode-oniguruma` package (configured in

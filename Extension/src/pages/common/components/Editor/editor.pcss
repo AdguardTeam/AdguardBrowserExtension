@@ -11,6 +11,16 @@
     padding: 0 10px 0 16px;
     max-width: 100%;
 
+    /*
+     * Host node for @adguard/rules-editor / CodeMirror 6. The library hides it
+     * after init (`element.style.display = "none"`), but until then — especially
+     * while User rules loads the Oniguruma WASM — the bare <textarea> flashes.
+     * Hide it immediately so only the sized .editor shell is visible.
+     */
+    & > textarea {
+        display: none;
+    }
+
     &:after {
         content: '';
         display: block;
