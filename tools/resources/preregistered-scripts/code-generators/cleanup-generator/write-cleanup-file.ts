@@ -30,7 +30,7 @@ import {
     writeBundle,
     assertNoTemplateSentinels,
     extractTemplateBody,
-} from '../../writeHelpers';
+} from '../../write-helpers';
 
 import { CLEANUP_TEMPLATE } from './cleanup-template';
 

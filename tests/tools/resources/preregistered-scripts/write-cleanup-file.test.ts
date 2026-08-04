@@ -87,7 +87,7 @@ describe('writeCleanupFile', () => {
     it('deletes the coordination property created by the shared bundle', async () => {
         outputDir = await fs.mkdtemp(path.join(os.tmpdir(), 'cleanup-file-'));
 
-        const bundle = await compileSharedScriptletsBundle(new Set(['abort-on-property-read']), TEST_KEY);
+        const bundle = await compileSharedScriptletsBundle(TEST_KEY);
         await writeCleanupFile(TEST_KEY, outputDir);
         const cleanup = await fs.readFile(path.join(outputDir, TEST_CLEANUP_FILENAME), 'utf-8');
 

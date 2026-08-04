@@ -24,8 +24,12 @@
 /**
  * Template for the shared scriptlets bundle.
  *
- * `__FUNCTIONS__`/`__REGISTRY__`/`__PROP__` are replaced with the scriptlet
- * sources, the name→fn registry and the coordination key.
+ * `__PROP__` is replaced with the coordination key.
+ *
+ * The bundle carries only the runner — scriptlet implementations live in
+ * per-function files registered separately, so each host downloads just the
+ * functions its rules actually use. Per-function files populate the `.f`
+ * registry before per-hash files invoke `.r`.
  *
  * The coordination object is a `window` property: per-hash files and the
  * cleanup file reference it as a bare identifier, and cleanup can fully
@@ -39,8 +43,6 @@ export const BUNDLE_TEMPLATE = () => {
     try {
         window.__PROP__ = (function () {
             let dedupSet = new Set();
-            __FUNCTIONS__ /* replaced with minified scriptlet function sources */
-            let functionRegistry = __REGISTRY__; /* replaced with {"name": fnRef, ...} */
 
             return {
                 r: function agRun(scriptletName, source, args, ruleKey) {
@@ -49,7 +51,7 @@ export const BUNDLE_TEMPLATE = () => {
                             return;
                         }
                         dedupSet.add(ruleKey);
-                        let fn = functionRegistry[scriptletName];
+                        let fn = window.__PROP__.f[scriptletName];
                         if (fn) {
                             source.domainName = document.location.hostname;
                             fn.apply(null, [source, args]);
@@ -59,6 +61,7 @@ export const BUNDLE_TEMPLATE = () => {
                     }
                 },
                 b: dedupSet,
+                f: {},
             };
         })();
     } catch (e) {
@@ -67,6 +70,7 @@ export const BUNDLE_TEMPLATE = () => {
         window.__PROP__ = {
             r: function () {},
             b: new Set(),
+            f: {},
         };
     }
     // __BODY_END__

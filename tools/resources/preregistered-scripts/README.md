@@ -22,28 +22,40 @@ registered via MV3's `chrome.scripting.registerContentScripts` at
    property before any page script runs, so rotation buys no stealth, and a
    stable key keeps filenames stable across releases.
 3. **Shared bundle** (`code-generators/shared-bundle-generator/`) —
-   `scriptlets-bundle.js`, one copy of every unique scriptlet
-   function used. Assigns `window.<key> = { r, b }`: `r(name, source, args,
-   hash)` runs a scriptlet (deduped by hash), `b` is the dedup `Set` shared
-   with JS rule guards. Emitted even for an empty name set — JS rule files
-   still need `<key>.b`.
-4. **Per-hash files** (`code-generators/per-hash-generator/`) — one
+   `scriptlets-bundle.js`, runner only (no embedded functions, so it stays
+   small). Assigns `window.<key> = { r, b, f }`: `r(name, source, args,
+   hash)` runs a scriptlet from the `f` registry (deduped by hash), `b` is
+   the dedup `Set` shared with JS rule guards, `f` is the name→function
+   registry populated by per-function files. Emitted even for an empty
+   name set — JS rule files still need `<key>.b`.
+4. **Per-function files** (`code-generators/scriptlet-function-generator/`)
+   — one `s-{hash}.js` per unique scriptlet function (aliases sharing an
+   implementation get one file; the filename is a content hash, stable
+   across generations). Each file registers its function under every alias
+   in `window.<key>.f`. A host's registration includes only the function
+   files its rules use, instead of the whole scriptlets library.
+5. **Per-hash files** (`code-generators/per-hash-generator/`) — one
    `{hash}.js` per unique rule. Scriptlets call `<key>.r(...)`; JS
    rules are wrapped in a dedup guard against `<key>.b`, plus a runtime
    `location.pathname + search + hash` guard if the rule has a `$path`
    modifier (matching tsurlfilter's `$path` semantics).
-5. **Cleanup file** (`code-generators/cleanup-generator/`) —
+6. **Cleanup file** (`code-generators/cleanup-generator/`) —
    `cleanup.js`, `delete window.<key>` in a try/catch — always last,
    so the page's own scripts cannot observe the injected code.
-6. **Manifest** — `manifest.json` with `{ hashes }`. Required at sync time:
-   the runtime registers only rules with a matching generated file.
-7. **Domains list** (`code-generators/domains-list.ts`) — `domains.js`,
+7. **Manifest** — `manifest.json` with `{ hashes, scriptletFiles,
+   retainedScriptletFiles }`. Required at sync time: the runtime registers
+   only rules with a matching generated file, and includes the function
+   file mapped to each scriptlet name.
+8. **Domains list** (`code-generators/domains-list.ts`) — `domains.js`,
    hostnames with at least one collected rule.
-8. **Atomic swap + retention** — output goes to a temp dir, then replaces
-   the old output. Dropped per-rule files of the previous generation are
-   retained for one release (persisted registrations in users' browsers
-   still reference them until the next sync). Stale `.tmp-*` dirs are
-   swept.
+9. **Atomic swap + retention** — output goes to a temp dir, then replaces
+   the old output. Dropped per-rule and per-function files of the previous
+   generation are replaced with empty stubs (persisted registrations in
+   users' browsers still reference them): a missing file would break the
+   whole registration at browser startup, while an executable copy would
+   keep running already-revoked code. Stub hashes/filenames stay listed in
+   the manifest, so later builds keep the stubs until every client has
+   synced its registrations. Stale `.tmp-*` dirs are swept.
 
 Collection only records which rules/domains exist in the local filters —
 domain-wide exceptions are already resolved by the collection engine, while
@@ -53,8 +65,9 @@ engine.
 
 ## Generated files
 
-Each domain loads, in order: `scriptlets-bundle.js` → its
-`{hash}.js` files → `cleanup.js` (see
+Each domain loads, in order: `scriptlets-bundle.js` → the `s-{hash}.js`
+function files of the scriptlets its rules use → its `{hash}.js` rule
+files → `cleanup.js` (see
 `PreregisteredScriptsService.buildDomainScripts`).
 
 ## Files
@@ -66,8 +79,8 @@ Each domain loads, in order: `scriptlets-bundle.js` → its
 | `generate-bundle.ts` | Orchestrates the pipeline above |
 | `scriptlet-collector.ts` | `ScriptletCollector` — collects rules per domain via a real Engine |
 | `path-exception-guard.ts` | Fails the build when a `$path`-scoped exception cancels a collected rule |
-| `code-generators/` | One subfolder per generated file (shared bundle, per-hash files, cleanup, domains list) |
-| `writeHelpers.ts` | Validates generated JS syntax and writes it to disk |
+| `code-generators/` | One subfolder per generated file (shared bundle, per-function files, per-hash files, cleanup, domains list) |
+| `write-helpers.ts` | Validates generated JS syntax and writes it to disk |
 
 The hash contract (`hashString`, `computeScriptletHash`,
 `computeJsRuleHash`, `computeRuleHash`, `normalizeDomain`, filename

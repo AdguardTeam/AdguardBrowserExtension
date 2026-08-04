@@ -30,7 +30,7 @@ import {
     afterEach,
 } from 'vitest';
 
-import { writeBundle } from '../../../../tools/resources/preregistered-scripts/writeHelpers';
+import { writeBundle } from '../../../../tools/resources/preregistered-scripts/write-helpers';
 
 describe('writeBundle', () => {
     let tempDir: string;

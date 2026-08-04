@@ -55,51 +55,34 @@ const createPageSandbox = (): Record<string, unknown> => {
 };
 
 describe('compileSharedScriptletsBundle', () => {
-    it('compiles an empty-registry bundle for an empty name set (JS-rule files need the dedup set)', async () => {
-        const result = await compileSharedScriptletsBundle(new Set(), TEST_KEY);
-
-        expect(result).toContain(`window.${TEST_KEY}=`);
-        expect(result).toMatch(/new Set/);
-        expect(() => {
-            // eslint-disable-next-line no-new
-            new vm.Script(result);
-        }).not.toThrow();
-    });
-
-    it('throws on an unknown scriptlet name (a bundled rule would silently no-op otherwise)', async () => {
-        await expect(compileSharedScriptletsBundle(
-            new Set(['abort-on-property-read', 'totally-unknown-scriptlet']),
-            TEST_KEY,
-        )).rejects.toThrow(/totally-unknown-scriptlet/);
-    });
-
     it('assigns the coordination object to a window property named by the key, surviving minification', async () => {
-        const result = await compileSharedScriptletsBundle(
-            new Set(['abort-on-property-read']),
-            TEST_KEY,
-        );
+        const result = await compileSharedScriptletsBundle(TEST_KEY);
 
         // Terser never mangles property names — the key must appear verbatim.
         expect(result).toContain(`window.${TEST_KEY}=`);
         expect(result).toMatch(/\}\(\)\}\s*catch\s*\(\w+\)\s*\{/);
     });
 
-    it('uses a different coordination key per call, and only that key appears in the output', async () => {
+    it('uses the given coordination key, and only that key appears in the output', async () => {
         const keyA = '__ag_aaaaaaaaaaaaaaaa';
         const keyB = '__ag_bbbbbbbbbbbbbbbb';
-        const resultA = await compileSharedScriptletsBundle(new Set(['abort-on-property-read']), keyA);
-        const resultB = await compileSharedScriptletsBundle(new Set(['abort-on-property-read']), keyB);
+        const resultA = await compileSharedScriptletsBundle(keyA);
+        const resultB = await compileSharedScriptletsBundle(keyB);
         expect(resultA).toContain(keyA);
         expect(resultA).not.toContain(keyB);
         expect(resultB).toContain(keyB);
         expect(resultB).not.toContain(keyA);
     });
 
-    it('exposes the coordination object as a window property with the runner and the dedup set', async () => {
-        const result = await compileSharedScriptletsBundle(
-            new Set(['abort-on-property-read']),
-            TEST_KEY,
-        );
+    it('contains no scriptlet implementations — those live in per-function files', async () => {
+        const result = await compileSharedScriptletsBundle(TEST_KEY);
+
+        expect(result).not.toContain('__FUNCTIONS__');
+        expect(result).not.toContain('__REGISTRY__');
+    });
+
+    it('exposes the runner, the dedup set and the function registry on the coordination object', async () => {
+        const result = await compileSharedScriptletsBundle(TEST_KEY);
 
         const sandbox = createPageSandbox();
         vm.runInContext(result, sandbox);
@@ -107,54 +90,43 @@ describe('compileSharedScriptletsBundle', () => {
         // Reachable both as a bare identifier and via window — they are the
         // same global object in a page's MAIN world.
         expect(vm.runInContext(`typeof ${TEST_KEY}`, sandbox)).toBe('object');
-        const coordination = sandbox[TEST_KEY] as { r: unknown; b: unknown };
+        const coordination = sandbox[TEST_KEY] as { r: unknown; b: unknown; f: unknown };
         expect(typeof coordination.r).toBe('function');
         // Cross-realm check: the sandbox's Set is not the host realm's Set.
         expect(vm.runInContext(`${TEST_KEY}.b instanceof Set`, sandbox)).toBe(true);
+        expect(coordination.f).toEqual({});
 
         // Deletable — the cleanup file relies on it.
         vm.runInContext(`delete window.${TEST_KEY}`, sandbox);
         expect(vm.runInContext(`typeof ${TEST_KEY}`, sandbox)).toBe('undefined');
     });
 
-    it('exposes a runner function as the "r" property of the coordination object', async () => {
-        const result = await compileSharedScriptletsBundle(
-            new Set(['abort-on-property-read']),
-            TEST_KEY,
-        );
-        expect(result).toMatch(/\br:/);
-    });
+    it('runs scriptlets registered in the function registry once per rule key', async () => {
+        const result = await compileSharedScriptletsBundle(TEST_KEY);
 
-    it('includes all requested scriptlet functions when multiple names are provided', async () => {
-        const result = await compileSharedScriptletsBundle(
-            new Set(['abort-on-property-read', 'set-constant']),
-            TEST_KEY,
-        );
-        expect(result).toContain('"abort-on-property-read"');
-        expect(result).toContain('"set-constant"');
+        const sandbox = createPageSandbox();
+        vm.runInContext(result, sandbox);
+
+        vm.runInContext(`
+            hits = [];
+            ${TEST_KEY}.f['noop'] = function (source, args) {
+                hits.push([source.domainName, args[0]]);
+            };
+            ${TEST_KEY}.r('noop', {}, ['x'], 'rule-1');
+            ${TEST_KEY}.r('noop', {}, ['x'], 'rule-1');
+            ${TEST_KEY}.r('noop', {}, ['y'], 'rule-2');
+            ${TEST_KEY}.r('missing', {}, [], 'rule-3');
+        `, sandbox);
+
+        expect(sandbox.hits).toEqual([['example.com', 'x'], ['example.com', 'y']]);
     });
 
     it('produces valid JavaScript syntax', async () => {
-        const result = await compileSharedScriptletsBundle(
-            new Set(['abort-on-property-read']),
-            TEST_KEY,
-        );
+        const result = await compileSharedScriptletsBundle(TEST_KEY);
         // If syntax were invalid, vm.Script would throw.
         expect(() => {
             // eslint-disable-next-line no-new
             new vm.Script(result);
         }).not.toThrow();
-    });
-
-    it('does not corrupt scriptlet source containing "$&" via String.replace special patterns', async () => {
-        const result = await compileSharedScriptletsBundle(
-            new Set(['abort-on-property-read', 'set-constant', 'json-prune']),
-            TEST_KEY,
-        );
-        expect(result).not.toContain('__FUNCTIONS__');
-        expect(result).not.toContain('__REGISTRY__');
-        expect(result).not.toContain('__PROP__');
-        // The regex-escaping helper's replacement string must survive intact.
-        expect(result).toContain('\\$&');
     });
 });

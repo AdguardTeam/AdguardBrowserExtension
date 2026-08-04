@@ -31,7 +31,7 @@ import {
     writeBundle,
     assertNoTemplateSentinels,
     extractTemplateBody,
-} from '../../writeHelpers';
+} from '../../write-helpers';
 import { type CollectedRuleEntry } from '../../scriptlet-collector';
 
 import { JS_RULE_GUARD_TEMPLATE } from './js-rule-guard-template';

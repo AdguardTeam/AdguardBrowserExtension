@@ -20,84 +20,34 @@
 
 /* eslint-disable no-console */
 
-import { scriptlets } from '@adguard/scriptlets';
-
 import { NEWLINE_CHAR_UNIX } from '../../../../../Extension/src/common/constants';
 import { minifyJs } from '../../constants';
-import { assertNoTemplateSentinels, extractTemplateBody } from '../../writeHelpers';
+import { assertNoTemplateSentinels, extractTemplateBody } from '../../write-helpers';
 
 import { BUNDLE_TEMPLATE } from './shared-bundle-template';
 
 /**
- * Builds the shared bundle body by filling `__FUNCTIONS__`, `__REGISTRY__`
- * and `__PROP__` markers in {@link BUNDLE_TEMPLATE}.
+ * Compiles the shared scriptlets bundle: the coordination-key runner
+ * assigned to a `window` property so the cleanup file can fully `delete`
+ * it. Scriptlet implementations are NOT embedded — per-function files
+ * populate the `.f` registry instead, so each host loads only the
+ * functions its rules use.
  *
- * @param functions Compiled scriptlet function definitions (minified).
- * @param registryEntries Comma-separated `"name": fnName` entries.
- * @param coordinationKey Substituted into the `window.<key>` assignment.
+ * The bundle is emitted even when no scriptlets are used: per-hash JS-rule
+ * files still need `<key>.b` for deduplication.
  *
- * @returns Assembled bundle body.
- */
-const assembleTemplate = (
-    functions: string[],
-    registryEntries: string,
-    coordinationKey: string,
-): string => {
-    const filled = extractTemplateBody(BUNDLE_TEMPLATE)
-        .replace('__FUNCTIONS__', () => functions.join(NEWLINE_CHAR_UNIX))
-        .replace('__REGISTRY__', () => `{${registryEntries}}`)
-        .replace(/__PROP__/g, () => coordinationKey);
-
-    assertNoTemplateSentinels(filled, ['__FUNCTIONS__', '__REGISTRY__', '__PROP__']);
-
-    return filled;
-};
-
-/**
- * Compiles the shared scriptlets bundle: deduped scriptlet function
- * definitions plus the coordination-key runner, assigned to a `window`
- * property so the cleanup file can fully `delete` it.
- *
- * The bundle is emitted even for an empty name set: per-hash JS-rule files
- * still need `<key>.b` for deduplication.
- *
- * @param scriptletNames Set of unique scriptlet names used across all domains.
- * @param coordinationKey Identifier shared with the per-hash files and the
- * cleanup file.
+ * @param coordinationKey Identifier shared with the per-function files,
+ * the per-hash files and the cleanup file.
  *
  * @returns Compiled shared bundle string.
  */
-export const compileSharedScriptletsBundle = async (
-    scriptletNames: Set<string>,
-    coordinationKey: string,
-): Promise<string> => {
-    const uniqueFunctions = new Map<(...args: unknown[]) => unknown, string[]>();
+export const compileSharedScriptletsBundle = async (coordinationKey: string): Promise<string> => {
+    const filled = extractTemplateBody(BUNDLE_TEMPLATE)
+        .replace(/__PROP__/g, () => coordinationKey);
 
-    for (const scriptletName of scriptletNames) {
-        const scriptletFn = scriptlets.getScriptletFunction(scriptletName);
-        if (!scriptletFn) {
-            throw new Error(
-                `Unknown scriptlet "${scriptletName}" — update @adguard/scriptlets or fix the filter rule`,
-            );
-        }
+    assertNoTemplateSentinels(filled, ['__PROP__']);
 
-        const aliases = uniqueFunctions.get(scriptletFn);
-        if (aliases) {
-            aliases.push(scriptletName);
-        } else {
-            uniqueFunctions.set(scriptletFn, [scriptletName]);
-        }
-    }
-
-    const rawFunctions = [...uniqueFunctions.keys()].map((fn) => fn.toString());
-
-    const registryEntries = [...uniqueFunctions.entries()]
-        .flatMap(([fn, aliases]) => aliases.map((name) => `${JSON.stringify(name)}: ${fn.name}`))
-        .join(',');
-
-    const filled = assembleTemplate(rawFunctions, registryEntries, coordinationKey);
     const source = `${filled.trim()}${NEWLINE_CHAR_UNIX}`;
-
     const minified = await minifyJs(source);
 
     return `${minified}${NEWLINE_CHAR_UNIX}`;

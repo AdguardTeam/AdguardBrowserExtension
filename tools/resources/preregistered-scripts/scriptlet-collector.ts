@@ -22,7 +22,6 @@
 
 import {
     type CosmeticRule,
-    Engine,
     Request,
     RequestType,
 } from '@adguard/tsurlfilter';
@@ -31,18 +30,19 @@ import { computeRuleHash, normalizeDomain } from '@adguard/tswebextension/mv3/pr
 import { extractPreprocessedRawFilterList, readMetadataRuleSet } from '../filter-extractor';
 
 import { preregisteredDomains } from './config';
+import { getEngineForFilterList } from './engine-cache';
 import { assertNoPathScopedExceptions } from './path-exception-guard';
 
 /**
  * Hostnames queried against the engine: each preregistered domain
- * (normalized via {@link normalizeDomain}) plus its `www.` alias. Other
- * subdomains are not covered. Apex and alias stay separate entries — the
- * runtime registers a content script per hostname.
+ * (normalized via {@link normalizeDomain}) plus its `www.` alias when not
+ * already prefixed. Other subdomains are not covered. Apex and alias stay
+ * separate entries — the runtime registers a content script per hostname.
  */
 const preregisteredHostnames: readonly string[] = (
     preregisteredDomains
         .map(normalizeDomain)
-        .flatMap((domain) => [domain, `www.${domain}`])
+        .flatMap((domain) => (domain.startsWith('www.') ? [domain] : [domain, `www.${domain}`]))
 );
 
 /** A unique rule entry (scriptlet or JS rule) collected from the rulesets. */
@@ -162,7 +162,8 @@ export class ScriptletCollector {
      */
     private async processRuleSet(ruleSetId: string): Promise<string> {
         const rawFilterList = await extractPreprocessedRawFilterList(ruleSetId, this.declarativeFolder);
-        const engine = Engine.createSync({ filters: [{ id: 1, content: rawFilterList }] });
+        // Shared across browser targets: identical lists compile only once.
+        const engine = getEngineForFilterList(rawFilterList);
 
         const seenRules = new Set<CosmeticRule>();
 

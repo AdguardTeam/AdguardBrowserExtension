@@ -18,8 +18,4 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { writeSharedBundle } from './shared-bundle-generator';
-export { writeScriptletFunctionFiles } from './scriptlet-function-generator';
-export { writePerHashFiles } from './per-hash-generator';
-export { writeDomainsList } from './domains-list';
-export { writeCleanupFile } from './cleanup-generator';
+export { writeScriptletFunctionFiles } from './write-scriptlet-function-files';
