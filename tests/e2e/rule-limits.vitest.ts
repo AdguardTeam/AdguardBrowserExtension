@@ -56,9 +56,10 @@ const e2eMatrix = getE2EMatrix();
 
 /**
  * Timeout for waiting for a DOM element to appear, in milliseconds.
- * Large rulesets can keep the SW busy on slow CI hosts.
+ * Large rulesets can keep the SW busy on slow CI hosts, so the popup may
+ * take a while to become interactive.
  */
-const SELECTOR_WAIT_TIMEOUT_MS = 30_000;
+const SELECTOR_WAIT_TIMEOUT_MS = 60_000;
 
 /**
  * Locale-independent selector for the rule limits notification button.
