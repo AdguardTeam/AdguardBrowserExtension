@@ -85,7 +85,7 @@ function padAndTrim(
  *
  * If `data.updated` is older than the current hour/day/month, empty buckets
  * are appended and oldest buckets trimmed to maintain fixed window sizes
- * (24h / 30d / 3mo).
+ * (24h / 30d / 12mo).
  *
  * This is a pure function — it does not read from or write to storage.
  *

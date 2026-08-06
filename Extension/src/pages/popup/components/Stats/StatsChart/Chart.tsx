@@ -28,6 +28,7 @@ import c3 from 'c3';
 import 'c3/c3.css';
 
 import { translator } from '../../../../../common/translators/translator';
+import { DAYS_PER_WEEK } from '../../../../../common/constants';
 import { TimeRange } from '../../../constants';
 import { useObservePopupHeight, POPUP_DEFAULT_HEIGHT } from '../../../hooks/useObservePopupHeight';
 import { type GetStatisticsDataResponse } from '../../../../../background/api/page-stats';
@@ -166,7 +167,6 @@ const getCategoriesLines = (
     const lines: Array<{ value: number }> = [];
 
     const HOURS_PER_DAY = 24;
-    const DAYS_PER_WEEK = 7;
     const DAYS_PER_MONTH = 30;
     const MONTHS_PER_YEAR = 12;
 

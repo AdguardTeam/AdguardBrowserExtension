@@ -29,6 +29,11 @@ import { type ForwardFrom } from './forward';
  */
 export const APP_SCHEMA_VERSION = 15;
 
+/**
+ * Number of days in the week statistics window shown in the popup "Week" tab.
+ */
+export const DAYS_PER_WEEK = 7;
+
 export const CLIENT_ID_KEY = 'client-id';
 export const APP_VERSION_KEY = 'app-version';
 export const SCHEMA_VERSION_KEY = 'schema-version';
