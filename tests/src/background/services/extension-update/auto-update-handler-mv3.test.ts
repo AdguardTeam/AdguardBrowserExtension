@@ -32,7 +32,7 @@ import {
 } from '../../../../../Extension/src/background/services/extension-update/auto-update-handler-mv3';
 import {
     BackendUpdateChecker,
-} from '../../../../../Extension/src/background/services/extension-update/backend-update-checker-mv3';
+} from '../../../../../Extension/src/background/services/extension-update/backend-update-checker';
 import {
     AutoUpdateStateManager,
 } from '../../../../../Extension/src/background/services/extension-update/auto-update-state-manager-mv3';
@@ -43,7 +43,7 @@ import {
 
 // Mock BackendUpdateChecker
 vi.mock(
-    '../../../../../Extension/src/background/services/extension-update/backend-update-checker-mv3',
+    '../../../../../Extension/src/background/services/extension-update/backend-update-checker',
     () => ({
         BackendUpdateChecker: {
             checkUpdate: vi.fn(),
@@ -139,7 +139,7 @@ describe('AutoUpdateHandler', () => {
         await vi.advanceTimersByTimeAsync(21_000);
     }
 
-    describe('checkConditions — backend analytics (fire-and-forget)', () => {
+    describe('checkConditions - backend analytics (fire-and-forget)', () => {
         it('applies update and makes fire-and-forget backend call', async () => {
             vi.mocked(BackendUpdateChecker.checkUpdate).mockResolvedValue({
                 status: UpdateCheckStatus.UpdateAvailable,
@@ -160,7 +160,7 @@ describe('AutoUpdateHandler', () => {
 
             await triggerCheckConditions();
 
-            // Update proceeds regardless — backend is fire-and-forget
+            // Update proceeds regardless: backend is fire-and-forget.
             expect(onUpdateApplyStart).toHaveBeenCalledTimes(1);
             expect(mockReload).toHaveBeenCalledTimes(1);
         });

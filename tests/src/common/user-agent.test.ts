@@ -25,6 +25,7 @@ import {
     test,
     vi,
 } from 'vitest';
+import browser from 'sinon-chrome';
 
 /* eslint-disable max-len */
 describe('UserAgent', () => {
@@ -105,6 +106,88 @@ describe('UserAgent', () => {
 
         const systemInfo = await UserAgent.getSystemInfo();
         expect(systemInfo).toBe(expectedSystemInfo);
+    });
+
+    describe('getIsAndroid', () => {
+        const FIREFOX_ANDROID_UA = 'Mozilla/5.0 (Android 10; Mobile; rv:121.0) Gecko/121.0 Firefox/121.0';
+        const CHROME_DESKTOP_UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36';
+
+        // Default mock from vitest.setup.ts
+        const DEFAULT_PLATFORM_INFO = { os: 'mac', arch: 'x86-64' };
+
+        /**
+         * Helper to mock navigator.userAgentData.
+         *
+         * @param mobile Whether the device is mobile, or undefined to simulate
+         * userAgentData being unavailable.
+         */
+        function mockUserAgentData(mobile: boolean | undefined) {
+            if (mobile === undefined) {
+                Object.defineProperty(window.navigator, 'userAgentData', {
+                    value: undefined,
+                    configurable: true,
+                    writable: true,
+                });
+            } else {
+                Object.defineProperty(window.navigator, 'userAgentData', {
+                    value: { mobile },
+                    configurable: true,
+                    writable: true,
+                });
+            }
+        }
+
+        test('returns false for desktop-class Android (userAgentData.mobile === false)', async () => {
+            vi.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue(CHROME_DESKTOP_UA);
+            mockUserAgentData(false);
+
+            const { UserAgent } = await import('../../../Extension/src/common/user-agent');
+
+            // Even though getPlatformInfo returns 'android', the userAgentData.mobile === false
+            // check should short-circuit and return false.
+            const result = await UserAgent.getIsAndroid();
+            expect(result).toBe(false);
+        });
+
+        test('returns true for mobile Android (userAgentData.mobile === true)', async () => {
+            vi.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue(FIREFOX_ANDROID_UA);
+            mockUserAgentData(true);
+
+            // Mock getPlatformInfo to return 'android' for this test
+            browser.runtime.getPlatformInfo.resolves({ os: 'android', arch: 'arm' });
+
+            const { UserAgent } = await import('../../../Extension/src/common/user-agent');
+
+            const result = await UserAgent.getIsAndroid();
+            expect(result).toBe(true);
+        });
+
+        test('falls back to getPlatformInfo when userAgentData is undefined', async () => {
+            vi.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue(FIREFOX_ANDROID_UA);
+            mockUserAgentData(undefined);
+
+            // Reset getPlatformInfo to default mock (returns 'mac')
+            browser.runtime.getPlatformInfo.resolves(DEFAULT_PLATFORM_INFO);
+
+            const { UserAgent } = await import('../../../Extension/src/common/user-agent');
+
+            // getPlatformInfo returns { os: 'mac' }, which is not 'android'
+            const result = await UserAgent.getIsAndroid();
+            expect(result).toBe(false);
+        });
+
+        test('falls back to UA string when getPlatformInfo throws and userAgentData is undefined', async () => {
+            vi.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue(FIREFOX_ANDROID_UA);
+            mockUserAgentData(undefined);
+
+            // Mock getPlatformInfo to throw using sinon's rejects
+            browser.runtime.getPlatformInfo.rejects(new Error('not supported'));
+
+            const { UserAgent } = await import('../../../Extension/src/common/user-agent');
+
+            const result = await UserAgent.getIsAndroid();
+            expect(result).toBe(true);
+        });
     });
 });
 

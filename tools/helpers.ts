@@ -103,15 +103,24 @@ const getClickToLoadSha = () => {
  * @param browser The target browser.
  */
 const getEnvPolicy = (env: BuildTargetEnv, browser: Browser) => {
+    // 'wasm-unsafe-eval' is required so the bundled WASM modules can instantiate:
+    //   - @adguard/re2-wasm (RE2 regex engine)
+    //   - vscode-oniguruma's onig.wasm (regex grammar powering the CodeMirror syntax highlighter).
+    // Without it, Chromium rejects WebAssembly.instantiateStreaming with a CompileError
+    // and User rules / Allowlist editor highlighting fails to load.
     switch (browser) {
         case Browser.ChromeMv3:
         case Browser.OperaMv3:
-            return { content_security_policy: { extension_pages: "script-src 'self'; object-src 'self'" } };
+            // eslint-disable-next-line max-len
+            return { content_security_policy: { extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'" } };
         default:
             return env === BuildTargetEnv.Dev
+                // Dev keeps 'unsafe-eval' for HMR / tooling; 'wasm-unsafe-eval' covers
+                // Oniguruma / RE2 WASM the same way as beta/release.
                 // eslint-disable-next-line max-len
-                ? { content_security_policy: `script-src 'self' 'unsafe-eval' '${getClickToLoadSha()}'; object-src 'self'` }
-                : { content_security_policy: `script-src 'self' '${getClickToLoadSha()}'; object-src 'self'` };
+                ? { content_security_policy: `script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval' '${getClickToLoadSha()}'; object-src 'self'` }
+                // eslint-disable-next-line max-len
+                : { content_security_policy: `script-src 'self' 'wasm-unsafe-eval' '${getClickToLoadSha()}'; object-src 'self'` };
     }
 };
 

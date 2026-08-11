@@ -27,6 +27,9 @@ import {
     BACKGROUND_OUTPUT,
     BLOCKING_BLOCKED_OUTPUT,
     CONTENT_SCRIPT_START_OUTPUT,
+    DNR_CONVERTER_VENDOR_OUTPUT,
+    AGTREE_VENDOR_OUTPUT,
+    CSS_TOKENIZER_VENDOR_OUTPUT,
     INDEX_HTML_FILE_NAME,
 } from '../../constants';
 
@@ -41,7 +44,15 @@ import {
 import { genCommonConfig } from './rspack.common';
 
 export const genMv3CommonConfig = (browserConfig: BrowserConfig, options: BuildOptions = {}): Configuration => {
-    const commonConfig = genCommonConfig(browserConfig, options);
+    const commonConfig = genCommonConfig(
+        browserConfig,
+        options,
+        // MV3-only: append the dnr-converter vendor chunk to the shared
+        // dependOn arrays for this call only, without mutating the
+        // module-level constants (which would duplicate entries across
+        // repeated calls, e.g. chrome-mv3 + opera-mv3 in one process).
+        [DNR_CONVERTER_VENDOR_OUTPUT],
+    );
 
     return merge(commonConfig, {
         entry: {
@@ -59,6 +70,15 @@ export const genMv3CommonConfig = (browserConfig: BrowserConfig, options: BuildO
             [CONTENT_SCRIPT_START_OUTPUT]: {
                 import: path.resolve(CONTENT_SCRIPT_START_PATH, 'mv3.ts'),
                 runtime: false,
+            },
+            // DNR converter vendor chunk — used by options, filtering-log,
+            // and fullscreen-user-rules pages.
+            [DNR_CONVERTER_VENDOR_OUTPUT]: {
+                import: '@adguard/dnr-converter',
+                dependOn: [
+                    AGTREE_VENDOR_OUTPUT,
+                    CSS_TOKENIZER_VENDOR_OUTPUT,
+                ],
             },
         },
         plugins: [

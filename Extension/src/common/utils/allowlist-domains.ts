@@ -76,7 +76,12 @@ export const normalizeAllowlistEntry = (entry: string): string | null => {
     }
 
     // Validate the domain part with tldts.
-    const { hostname, domain, isIp } = parse(domainPart);
+    const {
+        hostname,
+        domain,
+        isIp,
+        publicSuffix,
+    } = parse(domainPart);
 
     if (!hostname) {
         return null;
@@ -89,9 +94,14 @@ export const normalizeAllowlistEntry = (entry: string): string | null => {
         return `${prefix}${hostname}${suffix}`;
     }
 
-    // Reject bare TLDs (e.g., "com", ".com") and single-label hostnames.
-    // tldts returns domain=null for bare TLDs and invalid single-label hostnames.
-    // Allow: localhost, IP addresses, and entries with a valid domain.
+    const isCompoundPublicSuffix = publicSuffix !== null
+        && hostname === publicSuffix
+        && publicSuffix.includes('.');
+    if (isCompoundPublicSuffix) {
+        return hostname;
+    }
+
+    // Reject values without a registrable domain, except localhost and IP addresses.
     if (hostname !== 'localhost' && !isIp && !domain) {
         return null;
     }

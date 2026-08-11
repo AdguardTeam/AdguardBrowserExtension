@@ -51,6 +51,13 @@ export type GetOptionsDataResponseCommon = {
     appVersion: string;
 
     /**
+     * Available extension update version, if any.
+     * Used in the About section to show update availability.
+     * Undefined if no update is available or not yet checked.
+     */
+    availableUpdateVersion?: string;
+
+    /**
      * Versions of the libraries used in the extension.
      */
     libVersions: {
@@ -106,7 +113,7 @@ export type GetOptionsDataResponseCommon = {
     fullscreenUserRulesEditorIsOpen: boolean;
 
     /**
-     * Whether the General Settings promo A/B test B-variant is active.
+     * Whether the Rule Limits A/B test B-variant is active (AG-54586).
      */
-    showGeneralSettingsPromo: boolean;
+    showRuleLimitsVariantB: boolean;
 };

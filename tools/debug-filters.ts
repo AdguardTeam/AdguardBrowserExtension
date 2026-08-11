@@ -24,6 +24,9 @@ import assert from 'node:assert';
 
 import { Option, program } from 'commander';
 
+import { AssetsLoader } from '@adguard/dnr-rulesets';
+import { convertFilters } from '@adguard/dnr-converter/cli';
+
 import {
     Browser,
     MV3_BROWSERS,
@@ -45,13 +48,13 @@ program
         const browser = options.browser as Mv3Browser;
         const dnrRulesetsBrowser = MV3_BROWSER_TO_DNR_BROWSER_MAP[browser];
 
-        const command = `pnpm exec dnr-rulesets load \\
-                            --latest-filters \\
-                            --browser ${dnrRulesetsBrowser} \\
-                            ./build/dev/${browser}/filters`;
+        const loader = new AssetsLoader();
+        const dest = `./build/dev/${browser}/filters`;
 
-        const result = await exec(command);
-        assert.ok(result.stderr === '', 'No errors during execution');
+        await loader.load(dest, {
+            latestFilters: true,
+            browser: dnrRulesetsBrowser,
+        });
     });
 
 program
@@ -61,14 +64,12 @@ program
     .action(async (options) => {
         const browser = options.browser as Mv3Browser;
 
-        const command = `pnpm exec tsurlfilter convert \\
-                            --debug \\
-                            ./build/dev/${browser}/filters \\
-                            /web-accessible-resources/redirects \\
-                            ./build/dev/${browser}/filters/declarative`;
-
-        const result = await exec(command);
-        assert.ok(result.stderr === '', 'No errors during execution');
+        await convertFilters(
+            `./build/dev/${browser}/filters`,
+            '/web-accessible-resources/redirects',
+            `./build/dev/${browser}/filters/declarative`,
+            { debug: true },
+        );
     });
 
 program

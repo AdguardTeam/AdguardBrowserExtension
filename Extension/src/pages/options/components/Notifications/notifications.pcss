@@ -37,7 +37,7 @@
 
 .notification {
     padding: 12px;
-    max-width: 360px;
+    width: 360px;
     display: flex;
     align-items: flex-start;
     border-radius: 4px;
@@ -46,7 +46,13 @@
     animation: notify-show 0.3s ease-in;
 
     @media (max-width: 640px) {
+        width: unset;
         max-width: 100%;
+    }
+
+    & > svg {
+        /* Offset to align icon center */
+        margin-top: -3px;
     }
 
     &--error > svg {

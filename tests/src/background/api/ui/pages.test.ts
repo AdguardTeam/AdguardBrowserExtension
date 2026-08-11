@@ -28,13 +28,13 @@ import {
 } from 'vitest';
 import browser from 'webextension-polyfill';
 
-import { pagesApi } from '../../../../../Extension/src/background/api/ui/pages';
+import { PagesApi, pagesApi } from '../../../../../Extension/src/background/api/ui/pages';
 import { PagesApiCommon } from '../../../../../Extension/src/background/api/ui/pages/pages-common';
 import { SettingsApi } from '../../../../../Extension/src/background/api/settings';
 import { FilterStateStorage } from '../../../../../Extension/src/background/storages/filter-state';
 import { GroupStateStorage } from '../../../../../Extension/src/background/storages/group-state';
-import { ForwardFrom } from '../../../../../Extension/src/common/forward';
-import { appContext, AppContextKey } from '../../../../../Extension/src/background/storages/app';
+import { ForwardAction, ForwardFrom } from '../../../../../Extension/src/common/forward';
+import { UserAgent } from '../../../../../Extension/src/common/user-agent';
 import { browserStorage } from '../../../../../Extension/src/background/storages/shared-instances';
 import { TabsApi, WindowsApi } from '../../../../../Extension/src/common/api/extension';
 
@@ -169,6 +169,236 @@ describe('PagesApi', () => {
         });
     });
 
+    describe('openExtensionStorePage', () => {
+        const chromeWebStoreHomepageUrl = (
+            'https://chromewebstore.google.com/detail/bgnkhhnnamicmpeenaelnjfhikgbkllg'
+        );
+        const edgeAddonsHomepageUrl = (
+            'https://microsoftedge.microsoft.com/addons/detail/pdffkfellgipmhklpdmokmckkkfcopbh'
+        );
+        const standaloneUpdateUrl = 'https://static.adtidy.org/extensions/adguardadblocker/beta/update.xml';
+        const expectedChromeStoreAction = __IS_MV3__
+            ? ForwardAction.ChromeMv3Store
+            : ForwardAction.ChromeMv2Store;
+        const originalUserAgentFlags = {
+            isOpera: UserAgent.isOpera,
+            isFirefox: UserAgent.isFirefox,
+            isEdge: UserAgent.isEdge,
+            isYandex: UserAgent.isYandex,
+            isChromium: UserAgent.isChromium,
+        };
+        const originalManagement = browser.management;
+        const originalTabsCreate = browser.tabs.create;
+
+        let testPagesApi: PagesApi;
+
+        beforeEach(() => {
+            Object.defineProperties(UserAgent, {
+                isOpera: { value: false, configurable: true },
+                isFirefox: { value: false, configurable: true },
+                isEdge: { value: true, configurable: true },
+                isYandex: { value: false, configurable: true },
+                isChromium: { value: true, configurable: true },
+            });
+
+            // Cast is needed because sinon-chrome's mock types don't match
+            // webextension-polyfill's function signatures.
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            browser.tabs.create = vi.fn().mockResolvedValue({ id: 1 }) as any;
+            Object.assign(browser, {
+                management: {
+                    ...browser.management,
+                    getSelf: vi.fn(),
+                },
+            });
+
+            testPagesApi = new PagesApi();
+        });
+
+        afterEach(() => {
+            Object.defineProperties(UserAgent, {
+                isOpera: { value: originalUserAgentFlags.isOpera, configurable: true },
+                isFirefox: { value: originalUserAgentFlags.isFirefox, configurable: true },
+                isEdge: { value: originalUserAgentFlags.isEdge, configurable: true },
+                isYandex: { value: originalUserAgentFlags.isYandex, configurable: true },
+                isChromium: { value: originalUserAgentFlags.isChromium, configurable: true },
+            });
+            Object.assign(browser, {
+                management: originalManagement,
+            });
+            browser.tabs.create = originalTabsCreate;
+            vi.restoreAllMocks();
+        });
+
+        /**
+         * Returns the forwarding action from the URL opened in the current test.
+         *
+         * @returns Forwarding action query parameter.
+         */
+        const getOpenedStoreAction = (): string | null => {
+            const createTab = vi.mocked(browser.tabs.create);
+            expect(createTab).toHaveBeenCalledOnce();
+
+            const { url } = createTab.mock.calls[0]![0];
+            return new URL(url!).searchParams.get('action');
+        };
+
+        it('uses Chrome Web Store for a CWS installation running in Edge', async () => {
+            vi.mocked(browser.management.getSelf).mockResolvedValue({
+                homepageUrl: chromeWebStoreHomepageUrl,
+            } as browser.Management.ExtensionInfo);
+
+            await testPagesApi.openExtensionStorePage();
+
+            expect(getOpenedStoreAction()).toBe(expectedChromeStoreAction);
+            expect(browser.management.getSelf).toHaveBeenCalledOnce();
+        });
+
+        it('calculates the extension store URL only once', async () => {
+            vi.mocked(browser.management.getSelf).mockResolvedValue({
+                homepageUrl: chromeWebStoreHomepageUrl,
+            } as browser.Management.ExtensionInfo);
+
+            await Promise.all([
+                testPagesApi.openExtensionStorePage(),
+                testPagesApi.openExtensionStorePage(),
+            ]);
+
+            expect(browser.management.getSelf).toHaveBeenCalledOnce();
+            expect(browser.tabs.create).toHaveBeenCalledTimes(2);
+
+            const openedActions = vi.mocked(browser.tabs.create).mock.calls.map(([{ url }]) => (
+                new URL(url!).searchParams.get('action')
+            ));
+            expect(openedActions).toEqual([expectedChromeStoreAction, expectedChromeStoreAction]);
+        });
+
+        it('uses Chrome Web Store for a CWS installation running in Opera', async () => {
+            Object.defineProperties(UserAgent, {
+                isOpera: { value: true, configurable: true },
+                isEdge: { value: false, configurable: true },
+            });
+            vi.mocked(browser.management.getSelf).mockResolvedValue({
+                homepageUrl: chromeWebStoreHomepageUrl,
+            } as browser.Management.ExtensionInfo);
+
+            await testPagesApi.openExtensionStorePage();
+
+            expect(getOpenedStoreAction()).toBe(expectedChromeStoreAction);
+            expect(browser.management.getSelf).toHaveBeenCalledOnce();
+        });
+
+        it('uses Opera Add-ons for an Opera Add-ons installation', async () => {
+            Object.defineProperties(UserAgent, {
+                isOpera: { value: true, configurable: true },
+                isEdge: { value: false, configurable: true },
+            });
+            vi.mocked(browser.management.getSelf).mockResolvedValue({
+                homepageUrl: 'https://addons.opera.com/extensions/details/adguard/',
+            } as browser.Management.ExtensionInfo);
+
+            await testPagesApi.openExtensionStorePage();
+
+            expect(getOpenedStoreAction()).toBe(ForwardAction.OperaStore);
+            expect(browser.management.getSelf).toHaveBeenCalledOnce();
+        });
+
+        it('uses Opera Add-ons for an unpacked installation in Opera', async () => {
+            Object.defineProperties(UserAgent, {
+                isOpera: { value: true, configurable: true },
+                isEdge: { value: false, configurable: true },
+            });
+            vi.mocked(browser.management.getSelf).mockResolvedValue({
+                installType: 'development',
+            } as browser.Management.ExtensionInfo);
+
+            await testPagesApi.openExtensionStorePage();
+
+            expect(getOpenedStoreAction()).toBe(ForwardAction.OperaStore);
+            expect(browser.management.getSelf).toHaveBeenCalledOnce();
+        });
+
+        it('uses Microsoft Edge Add-ons for an Edge Add-ons installation', async () => {
+            vi.mocked(browser.management.getSelf).mockResolvedValue({
+                homepageUrl: edgeAddonsHomepageUrl,
+            } as browser.Management.ExtensionInfo);
+
+            await testPagesApi.openExtensionStorePage();
+
+            expect(getOpenedStoreAction()).toBe(ForwardAction.EdgeStore);
+            expect(browser.management.getSelf).toHaveBeenCalledOnce();
+        });
+
+        it('uses Microsoft Edge Add-ons for an unpacked installation in Edge', async () => {
+            vi.mocked(browser.management.getSelf).mockResolvedValue({
+                installType: 'development',
+            } as browser.Management.ExtensionInfo);
+
+            await testPagesApi.openExtensionStorePage();
+
+            expect(getOpenedStoreAction()).toBe(ForwardAction.EdgeStore);
+            expect(browser.management.getSelf).toHaveBeenCalledOnce();
+        });
+
+        it('uses Microsoft Edge Add-ons for a standalone installation in Edge', async () => {
+            vi.mocked(browser.management.getSelf).mockResolvedValue({
+                installType: 'normal',
+                updateUrl: standaloneUpdateUrl,
+            } as browser.Management.ExtensionInfo);
+
+            await testPagesApi.openExtensionStorePage();
+
+            expect(getOpenedStoreAction()).toBe(ForwardAction.EdgeStore);
+            expect(browser.management.getSelf).toHaveBeenCalledOnce();
+        });
+
+        it('uses Microsoft Edge Add-ons when extension metadata cannot be read', async () => {
+            vi.mocked(browser.management.getSelf).mockRejectedValue(new Error('Management API unavailable'));
+
+            await testPagesApi.openExtensionStorePage();
+
+            expect(getOpenedStoreAction()).toBe(ForwardAction.EdgeStore);
+            expect(browser.management.getSelf).toHaveBeenCalledOnce();
+        });
+
+        it('uses Chrome Web Store in Yandex Browser without reading installation metadata', async () => {
+            Object.defineProperties(UserAgent, {
+                isEdge: { value: false, configurable: true },
+                isYandex: { value: true, configurable: true },
+            });
+            testPagesApi = new PagesApi();
+
+            await testPagesApi.openExtensionStorePage();
+
+            expect(getOpenedStoreAction()).toBe(expectedChromeStoreAction);
+            expect(browser.management.getSelf).not.toHaveBeenCalled();
+        });
+
+        it('uses Chrome Web Store in other Chromium browsers without reading installation metadata', async () => {
+            Object.defineProperty(UserAgent, 'isEdge', { value: false, configurable: true });
+            testPagesApi = new PagesApi();
+
+            await testPagesApi.openExtensionStorePage();
+
+            expect(getOpenedStoreAction()).toBe(expectedChromeStoreAction);
+            expect(browser.management.getSelf).not.toHaveBeenCalled();
+        });
+
+        it('uses Firefox Add-ons without reading installation metadata', async () => {
+            Object.defineProperties(UserAgent, {
+                isFirefox: { value: true, configurable: true },
+                isEdge: { value: false, configurable: true },
+                isChromium: { value: false, configurable: true },
+            });
+            testPagesApi = new PagesApi();
+
+            await testPagesApi.openExtensionStorePage();
+
+            expect(getOpenedStoreAction()).toBe(ForwardAction.FirefoxStore);
+            expect(browser.management.getSelf).not.toHaveBeenCalled();
+        });
+    });
+
     describe('forward URLs should not contain "undefined"', () => {
         beforeEach(() => {
             // Cast is needed because sinon-chrome's mock types don't match
@@ -211,9 +441,6 @@ describe('PagesApi', () => {
         });
 
         it('openThankYouPage produces a valid URL', async () => {
-            // openThankYouPage requires a client ID to be set
-            appContext.set(AppContextKey.ClientId, 'test-client-id');
-
             await pagesApi.openThankYouPage();
 
             const spy = vi.mocked(browser.tabs.create);

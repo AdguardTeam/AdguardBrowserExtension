@@ -48,6 +48,7 @@ import { asyncWrapper } from '../../../filtering-log/stores/helpers';
 import { TOTAL_BLOCKED_STATS_GROUP_ID } from '../../../../common/constants';
 import { UserAgent } from '../../../../common/user-agent';
 import { TelemetryStore } from '../../../common/telemetry';
+import { type NotificationParams } from '../../../common/types';
 
 type BlockedStatsInfo = {
     tabId: number;
@@ -117,14 +118,6 @@ export class PopupStoreCommon {
     @observable
     showInfoAboutFullVersion = true;
 
-    /**
-     * Alternative protection button visibility state.
-     *
-     * State for AG-51010.
-     */
-    @observable
-    showAlternativeProtectionButton = true;
-
     @observable
     isEdgeBrowser = false;
 
@@ -152,6 +145,17 @@ export class PopupStoreCommon {
     @observable
     settings: SettingsData | null = null;
 
+    /**
+     * Notification about update result to display in popup.
+     * Default implementation returns null — overridden as a computed accessor
+     * in {@link PopupStore} (MV3) via the version-specific file pattern.
+     */
+    // eslint-disable-next-line class-methods-use-this
+    @computed
+    get updateNotification(): NotificationParams | null {
+        return null;
+    }
+
     currentTabId?: number | null = null;
 
     domainName: string | null = null;
@@ -174,6 +178,17 @@ export class PopupStoreCommon {
                 this.appState = state.value;
             });
         });
+    }
+
+    /**
+     * Cleans up resources owned by this store.
+     *
+     * Must be called when the popup unmounts to prevent callbacks from
+     * mutating detached store instances.
+     */
+    // eslint-disable-next-line class-methods-use-this
+    dispose(): void {
+        // Common cleanup — subclasses may override to add version-specific cleanup.
     }
 
     /**
@@ -274,7 +289,6 @@ export class PopupStoreCommon {
         this.isEdgeBrowser = options.isEdgeBrowser;
         this.promoNotification = options.notification;
         this.hasUserRulesToReset = options.hasUserRulesToReset;
-        this.showAlternativeProtectionButton = options.showAlternativeProtectionButton;
         this.showSearchAccessWarning = options.showSearchAccessWarning;
 
         // stats

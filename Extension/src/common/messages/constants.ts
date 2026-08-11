@@ -73,6 +73,7 @@ export enum MessageType {
     ApplySettingsJson = 'applySettingsJson',
     OpenFilteringLog = 'openFilteringLog',
     OpenFullscreenUserRules = 'openFullscreenUserRules',
+    CloseFullscreenUserRules = 'closeFullscreenUserRules',
     UpdateFullscreenUserRulesTheme = 'updateFullscreenUserRulesTheme',
     ResetBlockedAdsCount = 'resetBlockedAdsCount',
     ResetSettings = 'resetSettings',
@@ -97,7 +98,6 @@ export enum MessageType {
     OpenAssistant = 'openAssistant',
     OpenAbuseTab = 'openAbuseTab',
     OpenSiteReportTab = 'openSiteReportTab',
-    OpenComparePage = 'openComparePage',
     OpenChromeExtensionsSettingsPage = 'openChromeExtensionsSettingsPage',
     OpenExtensionDetailsPage = 'openExtensionDetailsPage',
     ResetUserRulesForPage = 'resetUserRulesForPage',
@@ -269,6 +269,10 @@ export type CheckExtensionUpdateMessageMv3 = {
     type: MessageType.CheckExtensionUpdateMv3;
 };
 
+export type ManualCheckResult = {
+    lastCheckTimeMs: number | null;
+};
+
 export type UpdateExtensionMessageMv3 = {
     type: MessageType.UpdateExtensionMv3;
     data: {
@@ -284,10 +288,6 @@ export type ResetBlockedAdsCountMessage = {
     type: MessageType.ResetBlockedAdsCount;
 };
 
-export type OpenComparePageMessage = {
-    type: MessageType.OpenComparePage;
-};
-
 export type OpenChromeExtensionsSettingsPageMessage = {
     type: MessageType.OpenChromeExtensionsSettingsPage;
 };
@@ -298,6 +298,10 @@ export type OpenExtensionDetailsPageMessage = {
 
 export type OpenFullscreenUserRulesMessage = {
     type: MessageType.OpenFullscreenUserRules;
+};
+
+export type CloseFullscreenUserRulesMessage = {
+    type: MessageType.CloseFullscreenUserRules;
 };
 
 export type OpenExtensionStoreMessage = {
@@ -802,7 +806,7 @@ export type MessageMap = {
     };
     [MessageType.CheckExtensionUpdateMv3]: {
         message: CheckExtensionUpdateMessageMv3;
-        response: void;
+        response: ManualCheckResult;
     };
     [MessageType.UpdateExtensionMv3]: {
         message: UpdateExtensionMessageMv3;
@@ -816,10 +820,6 @@ export type MessageMap = {
         message: OpenExtensionStoreMessage;
         response: void;
     };
-    [MessageType.OpenComparePage]: {
-        message: OpenComparePageMessage;
-        response: void;
-    };
     [MessageType.OpenChromeExtensionsSettingsPage]: {
         message: OpenChromeExtensionsSettingsPageMessage;
         response: void;
@@ -830,6 +830,10 @@ export type MessageMap = {
     };
     [MessageType.OpenFullscreenUserRules]: {
         message: OpenFullscreenUserRulesMessage;
+        response: void;
+    };
+    [MessageType.CloseFullscreenUserRules]: {
+        message: CloseFullscreenUserRulesMessage;
         response: void;
     };
     [MessageType.ResetBlockedAdsCount]: {

@@ -24,57 +24,17 @@ import { observer } from 'mobx-react';
 import cn from 'classnames';
 
 import { translator } from '../../../../../common/translators/translator';
-import { UserAgent } from '../../../../../common/user-agent';
-import { Icon } from '../../../../common/components/ui/Icon';
+import { CloseIcon } from '../../../../common/components/ui/CloseIcon';
 import { rootStore } from '../../../stores/RootStore';
-import {
-    Forward,
-    ForwardAction,
-    ForwardFrom,
-} from '../../../../../common/forward';
 import { TelemetryEventName, TelemetryScreenName } from '../../../../../common/telemetry';
 import desktopAppPromoImage from '../../../../../../assets/images/desktop-app-promo.svg';
+import { getCtaByOs } from '../../common/desktop-app-cta';
 
 import styles from './desktop-app-promo.module.pcss';
 
 /**
- * Returns the CTA button text and URL based on user's OS.
- *
- * @returns Object with `text` and `url` properties.
- */
-export const getCtaByOs = (): { text: string; url: string } => {
-    if (UserAgent.isMacOs) {
-        return {
-            text: translator.getMessage('options_desktop_app_promo_button_mac'),
-            url: Forward.get({
-                action: ForwardAction.DesktopAppPromoMac,
-                from: ForwardFrom.Options,
-            }),
-        };
-    }
-
-    if (UserAgent.isWindows) {
-        return {
-            text: translator.getMessage('options_desktop_app_promo_button_windows'),
-            url: Forward.get({
-                action: ForwardAction.DesktopAppPromoWindows,
-                from: ForwardFrom.Options,
-            }),
-        };
-    }
-
-    return {
-        text: translator.getMessage('options_desktop_app_promo_button_linux'),
-        url: Forward.get({
-            action: ForwardAction.DesktopAppPromoLinux,
-            from: ForwardFrom.Options,
-        }),
-    };
-};
-
-/**
  * Promo card encouraging users to install the AdGuard desktop app.
- * Shown on the General Settings page in the B-variant of the A/B test (AG-52622).
+ * Shown on the General Settings page.
  * Displays an OS-dependent CTA button (Windows/Mac/Linux) linking to the
  * corresponding product page. Hidden when the user dismisses the promo.
  */
@@ -111,6 +71,8 @@ export const DesktopAppPromo = observer(() => {
                     rel="noopener noreferrer"
                     className={cn(styles.button, 'button', 'button--green-bg', 'button--m')}
                     onClick={() => {
+                        // CompareClick now means "desktop app promo CTA click"
+                        // since the Compare widget removal (see handleCloseClick).
                         telemetryStore.sendCustomEvent(
                             TelemetryEventName.CompareClick,
                             TelemetryScreenName.MainPage,
@@ -132,11 +94,7 @@ export const DesktopAppPromo = observer(() => {
                 onClick={handleCloseClick}
                 aria-label={translator.getMessage('close_button_title')}
             >
-                <Icon
-                    id="#cross"
-                    className="icon--24 icon--gray-default"
-                    aria-hidden="true"
-                />
+                <CloseIcon />
             </button>
         </div>
     );

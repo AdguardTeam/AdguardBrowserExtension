@@ -73,6 +73,7 @@ import { contextMenuEvents, settingsEvents } from '../events';
 import { KeepAlive } from '../keep-alive';
 import { getZodErrorMessage } from '../../common/error';
 import { NotImplementedError } from '../errors/not-implemented-error';
+import { updateCheckService } from '../services/update-check/update-check-service';
 
 /**
  * This class is app entry point.
@@ -134,6 +135,9 @@ export abstract class AppCommon {
 
         // Reads persisted data from session storage.
         await engine.api.initStorage();
+
+        // Must be after initStorage() and before engine.start().
+        this.exposeEngineHooks();
 
         // Initializes connection and message handler as soon as possible
         // to prevent connection errors from extension pages
@@ -231,6 +235,7 @@ export abstract class AppCommon {
         eventService.init();
 
         await this.manifestSpecificInit();
+        await this.initUpdateCheckService();
 
         /**
          * Called after eventService init and manifestSpecificInit, otherwise it won't handle messages.
@@ -287,10 +292,28 @@ export abstract class AppCommon {
     }
 
     /**
+     * Hook for exposing engine APIs needed by integration tests.
+     * Called after storage is initialized and before the engine starts.
+     * Override in MV3 to expose the configure function on the global object.
+     *
+     * @throws NotImplementedError if not overridden.
+     */
+    protected static exposeEngineHooks(): void {
+        throw new NotImplementedError();
+    }
+
+    /**
      * Hook for initializing manifest-specific (MV2 or MV3) services.
      */
     protected static async manifestSpecificInit(): Promise<void> {
         throw new NotImplementedError();
+    }
+
+    /**
+     * Initializes the periodic extension update check service.
+     */
+    protected static async initUpdateCheckService(): Promise<void> {
+        await updateCheckService.init();
     }
 
     /**

@@ -18,6 +18,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { type Configuration } from '@adguard/tswebextension/mv3';
+
 import { logInfo } from '../logger';
 
 import type { E2EPageHandle } from './page-handle';
@@ -66,19 +68,29 @@ const getE2EHeadlessMode = (): string => {
  *
  * @param entry E2E matrix entry.
  * @param extensionPath Unpacked extension path.
+ * @param options.cleanProfile If false, reuse the persistent profile (default: true).
+ * @param options.config Configuration to inject, null to skip, or undefined for default.
  *
  * @returns E2E session.
  */
 export const launchE2ESession = async (
     entry: E2EMatrixEntry,
     extensionPath: string,
+    { cleanProfile = true, config }: {
+        cleanProfile?: boolean;
+        config?: Configuration | null;
+    } = {},
 ): Promise<E2ESession> => {
     if (entry.engine === E2EBrowserEngine.PlaywrightChromium) {
         logInfo(`[${entry.id}] launching Chromium (${getE2EHeadlessMode()})`);
 
         return {
             engine: E2EBrowserEngine.PlaywrightChromium,
-            session: await launchChromiumE2ESession(entry, extensionPath),
+            session: await launchChromiumE2ESession(
+                entry,
+                extensionPath,
+                { cleanProfile, config },
+            ),
         };
     }
 

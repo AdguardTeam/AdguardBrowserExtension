@@ -196,7 +196,10 @@
         "message": "केवल अनुमति सूचीबद्ध वेबसाइटों पर विज्ञापन और ट्रैकर्स को अवरुद्ध करता है"
     },
     "options_allowlist_alert_invert": {
-        "message": "अनुमति सूची उलटी है। विज्ञापन केवल इसमें जोड़ी गई वेबसाइटों पर अवरुद्ध किए जाते हैं। <a>अक्षम<\/a>"
+        "message": "अनुमति सूची उलटी है। विज्ञापन केवल उन वेबसाइटों पर अवरोधित होते हैं जो इसमें जोड़ी गई हैं।"
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>उलटना बंद करें<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "अनुमति सूची में आपके सारे परिवर्तन खो जाएंगे"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "अपडेट किया गया: %date%"
+    },
+    "options_filters_last_checked": {
+        "message": "अंतिम जाँच: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "प्रचलन"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "लॉग साफ करें"
     },
+    "filtering_log_actions_menu": {
+        "message": "निस्पंदन नियम क्रिया"
+    },
     "filtering_type_all": {
         "message": "सभी"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "आयात"
     },
+    "options_user_rules_delete_all": {
+        "message": "सभी हटाएँ"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "सभी को हटाएं?"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "सभी उपयोगकर्ता नियम स्थायी रूप से हटा दिए जाएंगे"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "सभी उपयोगकर्ता नियम हटा दिए गए"
+    },
+    "options_user_rules_import_success": {
+        "message": "उपयोगकर्ता नियम सफलतापूर्वक आयात किए गए"
+    },
+    "options_user_rules_import_error": {
+        "message": "उपयोगकर्ता नियम आयात करने में विफल। पुनः प्रयास करें"
+    },
+    "options_user_rules_menu": {
+        "message": "उपयोगकर्ता नियम क्रिया"
+    },
+    "options_allowlist_menu": {
+        "message": "अनुमति सूची क्रिया"
+    },
     "options_userfilter_description_key": {
         "message": "आप यहां अपने स्वयं के नियम जोड़ सकते हैं। HTML\/CSS से परिचित उन्नत उपयोगकर्ताओं के लिए यह विकल्प अनुशंसित है. अपने स्वयं के <a>फ़िल्टर नियमों<\/a> को लिखने का तरीका जानने के लिए फ़िल्टर नियम ट्यूटोरियल पढ़ें।"
     },
     "options_userfilter_subtitle_key": {
         "message": "आपको अपने खुद के फ़िल्टर नियम जोड़ने की अनुमति देता है"
+    },
+    "options_user_rules_description_key": {
+        "message": "विज्ञापनों या पूरी वेबसाइटों के अवरुद्ध करना और अवरुध हटाएँ के लिए आपके नियम"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "अभी तक कोई नियम नहीं"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "खोज"
+    },
+    "options_user_rules_clear_search": {
+        "message": "खोज साफ करें"
+    },
+    "options_user_rules_create_rule": {
+        "message": "नियम बनाएँ"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "नियम संपादित करें"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "नियम हटाएं"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "उपयोगकर्ता नियम हटा दिया गया:"
+    },
+    "options_user_rules_undo": {
+        "message": "पूर्ववत"
+    },
+    "options_user_rules_no_match": {
+        "message": "कुछ नहीं मिला"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "संपादक दृश्य में बदलें"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "सूची दृश्य में बदलें"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "नियमों को हाइलाइट किया जा रहा है…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "लाइन ब्रेक"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "क्या आपको AdGuard पसंद है?"
     },
-    "options_footer_like_us_cta": {
-        "message": "इसे रेट करें!"
+    "options_rate_us_cta": {
+        "message": "इसे रेट करें"
     },
     "options_miscellaneous_settings": {
         "message": "अतिरिक्त सेटिंग्स"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "विकल्प 3. यदि आप वर्तमान में सक्षम डिफ़ॉल्ट फ़िल्टर से संतुष्ट हैं, तो <a>इस चेतावनी को बंद करें<\/a>।"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "सीमा तक पहुँच गए — कुछ फ़िल्टर निष्क्रिय कर दिए गए"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "यहाँ आप क्या कर सकते हैं"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "अन्य विज्ञापन अवरोधक हटाएं"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "ब्राउज़र विस्तार समान नियम सीमा साझा करते हैं। अन्य विज्ञापन अवरोधक हटाने से एडगार्ड ब्राउज़र एक्सटेंशन के लिए अधिक नियम मुक्त हो सकते हैं"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "विस्तार प्रबंध करें"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "उपलब्ध फ़िल्टर की समीक्षा करें"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "जिन फ़िल्टर की आपको आवश्यकता है उन्हें सक्रिय करें। भाषा-विशिष्ट और गोपनीयता फ़िल्टर कई नियमों का उपयोग कर सकते हैं"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "फ़िल्टरस में जाएं"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "डेस्कटॉप ऐप इंस्टॉल करें"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "नियम सीमाओं को हटाए और सभी ब्राउज़र में काम करने वाली विस्तारित सुरक्षा प्राप्त करें"
     },
     "options_all_limits_exceeded_warning": {
         "message": "आप सक्रिय अंतर्निहित नियमों की सीमा तक पहुँच गए हैं। आपके ब्राउज़र ने सक्रिय अंतर्निहित फ़िल्टर की सूची को संशोधित किया है। सक्षम फ़िल्टरों की संख्या %expected% से %current% में बदल गई है।"
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "संस्करण"
+    },
+    "options_about_update_available": {
+        "message": "संस्करण %version% उपलब्ध है। इसे स्वचालित रूप से डाउनलोड और इंस्टॉल किया जाएगा।"
     },
     "options_about_libs": {
         "message": "उपयुक्त पुस्तकालयें"

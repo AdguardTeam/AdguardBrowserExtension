@@ -196,7 +196,10 @@
         "message": "حظر الإعلانات وأدوات التتبع على المواقع المضافة الى القائمة البيضاء فقط"
     },
     "options_allowlist_alert_invert": {
-        "message": "تم عكس القائمة البيضاء. يتم حظر الإعلانات فقط على المواقع المضافة إليها. <a>تعطيل<\/a>"
+        "message": "تم عكس قائمة السماح. يتم حظر الإعلانات فقط على المواقع المضافة إليها."
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>إيقاف العكس<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "سوف تفقد التغييرات التي أجريتها على القائمة البيضاء"
@@ -259,7 +262,10 @@
         "message": "القواعد: %rules_count%"
     },
     "options_antibanner_updated": {
-        "message": "محدّث في: %date%"
+        "message": "محدث في: %date%"
+    },
+    "options_filters_last_checked": {
+        "message": "آخر تحقق: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "مخصص"
@@ -454,7 +460,7 @@
         "message": "خطأ في تحديث التصفية"
     },
     "options_popup_update_not_found": {
-        "message": "مرشحاتك محدثة"
+        "message": "أنت تستخدم أحدث إصدار بالفعل"
     },
     "options_popup_update_error": {
         "message": "فشل الحصول على التحديثات. يرجى المحاولة مرة أخرى لاحقاً."
@@ -587,6 +593,9 @@
     },
     "filtering_clear_log_events": {
         "message": "محو السجل"
+    },
+    "filtering_log_actions_menu": {
+        "message": "إجراءات سجل الفلترة"
     },
     "filtering_type_all": {
         "message": "الكل"
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "استيراد"
     },
+    "options_user_rules_delete_all": {
+        "message": "حذف الكل"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "حذف الكل؟"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "سوف يتم حذف جميع قواعد المستخدم بشكل دائم"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "تم حذف جميع قواعد المستخدم"
+    },
+    "options_user_rules_import_success": {
+        "message": "تم استيراد قواعد المستخدم بنجاح"
+    },
+    "options_user_rules_import_error": {
+        "message": "فشل في استيراد قواعد المستخدم. يرجى المحاولة مرة أخرى"
+    },
+    "options_user_rules_menu": {
+        "message": "إجراءات قواعد المستخدم"
+    },
+    "options_allowlist_menu": {
+        "message": "إجراءات قائمة السماح"
+    },
     "options_userfilter_description_key": {
         "message": "يمكنك إضافة قواعدك الخاصة هنا. يُنصح بهذا الخيار للمستخدمين المتقدمين الذين لديهم خبرة في HTML\/CSS. اقرأ البرنامج التعليمي <a>لقواعد التصفية<\/a> لمعرفة كيفية كتابة قواعد التصفية الخاصة بك."
     },
     "options_userfilter_subtitle_key": {
         "message": "يتيح لك إضافة قواعد التصفية الخاصة بك"
+    },
+    "options_user_rules_description_key": {
+        "message": "قواعدك الخاصة بحجب ورفع الحجب عن الإعلانات أو المواقع بأكملها"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "لا توجد قواعد بعد"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "بحث"
+    },
+    "options_user_rules_clear_search": {
+        "message": "مسح البحث"
+    },
+    "options_user_rules_create_rule": {
+        "message": "إنشاء قاعدة"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "تعديل القاعدة"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "حذف القاعدة"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "تم حذف قاعدة المستخدم:"
+    },
+    "options_user_rules_undo": {
+        "message": "تراجع"
+    },
+    "options_user_rules_no_match": {
+        "message": "لم يتم العثور على شيء"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "التبديل إلى عرض المحرر"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "التبديل إلى عرض القائمة"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "جارٍ تمييز القواعد…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "فاصل سطر"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "هل يعجبك AdGuard؟"
     },
-    "options_footer_like_us_cta": {
-        "message": "قيمنا!"
+    "options_rate_us_cta": {
+        "message": "قيمنا"
     },
     "options_miscellaneous_settings": {
         "message": "الإعدادات الإضافية"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "الخيار 3. إذا كنت راضيًا عن التصفية الافتراضية المفعلة الان، <a>أغلق هذا التحذير.<\/a>"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "تم الوصول إلى الحد — تم تعطيل بعض الفلاتر"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "إليك ما يمكنك فعله"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "إزالة مانعات الإعلانات الأخرى"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "تشارك إضافات المتصفح نفس حد القواعد. قد يؤدي إزالة مانعات الإعلانات الأخرى إلى إتاحة المزيد من القواعد لـ AdGuard Browser Extension"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "إدارة الإضافات"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "مراجعة الفلاتر المتاحة"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "قم بتمكين الفلاتر التي تحتاجها. قد تستخدم الفلاتر الخاصة باللغة وفلاتر الخصوصية العديد من القواعد"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "انتقل إلى الفلاتر"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "تثبيت تطبيق سطح المكتب"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "قم بإزالة حدود القواعد و احصل على حماية ممتدة تعمل عبر جميع المتصفحات"
     },
     "options_all_limits_exceeded_warning": {
         "message": "لقد وصلت إلى الحد الأقصى للقواعد المضافة النشطة. قام المتصفح بتعديل قائمة التصفية المضافة النشطة. تم تغيير عدد التصفية المفعلة من %expected% إلى %current%."
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "الإصدار"
+    },
+    "options_about_update_available": {
+        "message": "الإصدار %version% متاح. سيتم تحميله وتحميله تلقائيًا."
     },
     "options_about_libs": {
         "message": "المكتبات المستعملة"

@@ -22,6 +22,7 @@ import { companiesDbService } from 'tswebextension';
 
 import { logger } from '../../../common/logger';
 import { translator } from '../../../common/translators/translator';
+import { DAYS_PER_WEEK } from '../../../common/constants';
 import { type PageStatsDataItem, pageStatsValidator } from '../../schema';
 import { PageStatsStorage, pageStatsStorage } from '../../storages/page-stats';
 import { getZodErrorMessage } from '../../../common/error';
@@ -236,7 +237,7 @@ export class PageStatsApi {
     /**
      * Updates stats data.
      *
-     * We store last 24 hours, 30 days and all past months stats.
+     * We store last 24 hours, 30 days and 12 months stats.
      *
      * @param companyCategoryId Category id.
      * @param blocked Count of blocked requests.
@@ -281,9 +282,9 @@ export class PageStatsApi {
 
         return {
             today: stats.hours,
-            lastWeek: stats.days.slice(-7),
-            lastMonth: stats.days.slice(-30),
-            lastYear: stats.months.slice(-12),
+            lastWeek: stats.days.slice(-DAYS_PER_WEEK),
+            lastMonth: stats.days.slice(-PageStatsStorage.MAX_DAYS_HISTORY),
+            lastYear: stats.months.slice(-PageStatsStorage.MAX_MONTHS_HISTORY),
             overall: stats.months,
             blockedCategories: PageStatsApi.getGroups(),
         };

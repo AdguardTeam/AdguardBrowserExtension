@@ -23,7 +23,6 @@ import React, { useState, useRef } from 'react';
 import cn from 'classnames';
 
 import { Icon } from '../Icon';
-import { translator } from '../../../../../common/translators/translator';
 import { useOutsideClick } from '../../../hooks/useOutsideClick';
 
 import styles from './MenuDropDown.module.pcss';
@@ -31,9 +30,13 @@ import styles from './MenuDropDown.module.pcss';
 export const MenuDropDown = ({
     children,
     className,
+    ariaLabel,
+    onButtonClick,
 }: {
     children: React.ReactNode;
     className?: string;
+    ariaLabel: string;
+    onButtonClick?: () => void;
 }) => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -52,9 +55,12 @@ export const MenuDropDown = ({
             <button
                 type="button"
                 className={styles.menuButton}
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => {
+                    onButtonClick?.();
+                    setIsOpen((prev) => !prev);
+                }}
                 onKeyDown={handleButtonKeyDown}
-                aria-label={translator.getMessage('options_filters_search_filter')}
+                aria-label={ariaLabel}
                 aria-expanded={isOpen}
                 aria-haspopup="menu"
             >

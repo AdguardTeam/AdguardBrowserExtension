@@ -361,15 +361,6 @@ export abstract class MessengerCommon {
     };
 
     /**
-     * Sends a message to the background page to open the compare page.
-     *
-     * @returns Promise that resolves after the message is sent.
-     */
-    openComparePage = async (): Promise<ExtractMessageResponse<MessageType.OpenComparePage>> => {
-        return this.sendMessage(MessageType.OpenComparePage);
-    };
-
-    /**
      * Sends a message to the background page to open the Chrome extensions settings page.
      *
      * @returns Promise that resolves after the message is sent.
@@ -496,6 +487,16 @@ export abstract class MessengerCommon {
      */
     openFullscreenUserRules = async (): Promise<ExtractMessageResponse<MessageType.OpenFullscreenUserRules>> => {
         return this.sendMessage(MessageType.OpenFullscreenUserRules);
+    };
+
+    /**
+     * Sends a message to the background page to close the fullscreen user rules
+     * editor window if it is open.
+     *
+     * @returns Promise that resolves after the message is sent.
+     */
+    closeFullscreenUserRules = async (): Promise<ExtractMessageResponse<MessageType.CloseFullscreenUserRules>> => {
+        return this.sendMessage(MessageType.CloseFullscreenUserRules);
     };
 
     /**

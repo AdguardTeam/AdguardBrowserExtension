@@ -6,7 +6,7 @@ plan:
   name: browser extension - build release
 
 stages:
-  - Size and locales check:
+  - Size check:
       manual: false
       final: false
       jobs:
@@ -37,19 +37,13 @@ Check Bundle Size:
             # Fix mixed logs
             exec 2>&1
 
-            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
-            ./bamboo-specs/scripts/clone-tsurlfilter.sh
-
             export DOCKER_BUILDKIT=1
 
-            # Build with named context for tsurlfilter
-            # Docker checksums the context content for cache invalidation
             docker build \
               --file Dockerfile \
               --progress plain \
               --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
               --build-arg BUILD_TYPE=release \
-              --build-context tsurlfilter=../tsurlfilter \
               --target bundle-size-check-output \
               --output type=local,dest=output \
               .
@@ -80,18 +74,12 @@ Check translations:
             # Fix mixed logs
             exec 2>&1
 
-            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
-            ./bamboo-specs/scripts/clone-tsurlfilter.sh
-
             export DOCKER_BUILDKIT=1
 
-            # Build with named context for tsurlfilter
-            # Docker checksums the context content for cache invalidation
             docker build \
               --file Dockerfile \
               --progress plain \
               --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
-              --build-context tsurlfilter=../tsurlfilter \
               --target locales-check-output \
               --output type=local,dest=output \
               .
@@ -118,9 +106,6 @@ Build:
             # Fix mixed logs
             exec 2>&1
 
-            # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
-            ./bamboo-specs/scripts/clone-tsurlfilter.sh
-
             export DOCKER_BUILDKIT=1
 
             # Generate find-compatible .gitignore exclusions on the host (where .git is available).
@@ -133,7 +118,6 @@ Build:
               --file Dockerfile \
               --progress plain \
               --build-arg TEST_RUN_ID=${bamboo.buildNumber} \
-              --build-context tsurlfilter=../tsurlfilter \
               --target release-build-output \
               --output type=local,dest=output \
               .

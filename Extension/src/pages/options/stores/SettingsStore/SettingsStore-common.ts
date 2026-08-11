@@ -37,7 +37,7 @@ import {
 import { logger } from '../../../../common/logger';
 import { sleep } from '../../../../common/sleep-utils';
 import { UserAgent } from '../../../../common/user-agent';
-import { type SettingOption, type Settings } from '../../../../background/schema/settings';
+import { SettingOption, type Settings } from '../../../../background/schema/settings';
 import { type GetOptionsDataResponse } from '../../../../background/services/settings';
 import { type CustomFilterSubscriptionData } from '../../../../common/messages/constants';
 import { type FilterMetadata } from '../../../../background/api/filters/main';
@@ -58,6 +58,11 @@ import {
 } from '../../components/Filters/helpers';
 import { optionsStorage } from '../../options-storage';
 import { type AppearanceTheme } from '../../../../common/constants';
+import {
+    readViewMode,
+    writeViewMode,
+    type ViewModeValue,
+} from '../../../common/components/UserRulesEditor/view-mode';
 import { type RootStore } from '../RootStore';
 import { type default as UiStore } from '../UiStore';
 import { type TelemetryStore } from '../../../common/telemetry';
@@ -174,6 +179,9 @@ export abstract class SettingsStoreCommon {
     appVersion: string | null = null;
 
     @observable
+    availableUpdateVersion: string | undefined;
+
+    @observable
     libVersions: GetOptionsDataResponse['libVersions'] | null = null;
 
     @observable
@@ -225,10 +233,16 @@ export abstract class SettingsStoreCommon {
     fullscreenUserRulesEditorIsOpen = false;
 
     /**
-     * Whether the General Settings promo A/B test B-variant is active (AG-52622).
+     * Current presentation mode (list/editor) of the User Rules section.
      */
     @observable
-    showGeneralSettingsPromo = false;
+    userRulesViewMode: ViewModeValue = readViewMode();
+
+    /**
+     * Whether the Rule Limits A/B test B-variant is active (AG-54586).
+     */
+    @observable
+    showRuleLimitsVariantB = false;
 
     @observable
     allowlistSizeReset = false;
@@ -268,7 +282,7 @@ export abstract class SettingsStoreCommon {
      * No-op on MV2; overridden in SettingsStore-mv3.
      */
     /* eslint-disable class-methods-use-this */
-    @action
+    @action.bound
     async checkLimitations(): Promise<void> {
         // No-op. Overridden in MV3 subclass.
     }
@@ -345,14 +359,20 @@ export abstract class SettingsStoreCommon {
             this.setGroups(data.filtersMetadata.categories);
         }
         this.appVersion = data.appVersion;
+        this.setAvailableUpdateVersion(data.availableUpdateVersion);
         this.libVersions = data.libVersions;
         this.setAllowAcceptableAds(data.filtersMetadata.filters);
         this.setBlockKnownTrackers(data.filtersMetadata.filters);
         this.setStripTrackingParameters(data.filtersMetadata.filters);
         this.isChrome = data.environmentOptions.isChrome;
         this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
-        this.showGeneralSettingsPromo = data.showGeneralSettingsPromo;
+        this.showRuleLimitsVariantB = data.showRuleLimitsVariantB;
         this.optionsReadyToRender = true;
+    }
+
+    @action
+    setAvailableUpdateVersion(version: string | undefined): void {
+        this.availableUpdateVersion = version;
     }
 
     @action
@@ -775,6 +795,20 @@ export abstract class SettingsStoreCommon {
     }
 
     /**
+     * Used to display the last check time on the Filters tab.
+     *
+     * @returns The latest check time of all filters.
+     */
+    @computed
+    get latestCheckTimeMs() {
+        return Math.max(...this.filters
+            .map(({ lastScheduledCheckTime, lastCheckTime }) => Math.max(
+                lastScheduledCheckTime || 0,
+                lastCheckTime || 0,
+            )));
+    }
+
+    /**
      * We do not sort filters on every filters data update for better UI experience
      * Filters sort happens when user exits from filters group, or changes search filters
      */
@@ -922,20 +956,26 @@ export abstract class SettingsStoreCommon {
         );
     }
 
+    /**
+     * Whether the rate-us card should be shown.
+     */
     @computed
-    get footerRateShowState(): boolean {
+    get rateShowState(): boolean {
         if (!this.settings) {
-            logger.debug('[ext.SettingsStoreCommon.footerRateShowState]: settings is not initialized yet');
+            logger.debug('[ext.SettingsStoreCommon.rateShowState]: settings is not initialized yet');
             return false;
         }
 
         return !this.settings.values[this.settings.names.HideRateBlock];
     }
 
+    /**
+     * Dismisses the rate-us card by persisting the HideRateBlock setting.
+     */
     @action
-    async hideFooterRateShow(): Promise<void> {
+    async hideRateShow(): Promise<void> {
         if (!this.settings) {
-            logger.debug('[ext.SettingsStoreCommon.hideFooterRateShow]: settings is not initialized yet');
+            logger.debug('[ext.SettingsStoreCommon.hideRateShow]: settings is not initialized yet');
             return;
         }
         await this.updateSetting(this.settings.names.HideRateBlock, true);
@@ -946,23 +986,32 @@ export abstract class SettingsStoreCommon {
         this.fullscreenUserRulesEditorIsOpen = isOpen;
     }
 
+    /**
+     * Updates the User Rules view mode and persists it to localStorage.
+     *
+     * @param mode New view mode.
+     */
+    @action
+    setUserRulesViewMode(mode: ViewModeValue): void {
+        writeViewMode(mode);
+        this.userRulesViewMode = mode;
+    }
+
     @computed
     get isFullscreenUserRulesEditorOpen(): boolean {
         return this.fullscreenUserRulesEditorIsOpen;
     }
 
-    @computed
-    get userFilterEnabledSettingId(): SettingOption.UserFilterEnabled | null {
-        if (!this.settings) {
-            logger.debug('[ext.SettingsStoreCommon.userFilterEnabledSettingId]: settings is not initialized yet');
-            return null;
-        }
-        return this.settings.names.UserFilterEnabled;
-    }
+    /**
+     * Setting id for the user filter enabled toggle. `SettingsData.names` is
+     * the static {@link SettingOption} enum, so the id does not depend on the
+     * loaded settings and is always available.
+     */
+    readonly userFilterEnabledSettingId = SettingOption.UserFilterEnabled;
 
     @computed
     get userFilterEnabled(): boolean | null {
-        if (!this.settings || !this.userFilterEnabledSettingId) {
+        if (!this.settings) {
             logger.debug('[ext.SettingsStoreCommon.userFilterEnabled]: settings is not initialized yet');
             return null;
         }

@@ -104,42 +104,36 @@
     }
 
     &__cta {
-        width: 100%;
-        text-align: center;
-        padding: 0 16px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        align-content: center;
+        flex-wrap: wrap;
         overflow: hidden;
+
+        text-align: center;
         text-overflow: ellipsis;
         white-space: nowrap;
+
+        gap: 8px;
+        width: 100%;
+        max-width: 225px;
+        min-height: 40px;
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: 0.5px solid var(--stroke-icons-black-icons-default);
+        background: var(--fills-backgrounds-page-background-default);
 
         &--link {
             font-size: 14px;
             line-height: 1.3;
+            text-decoration: none;
             color: var(--text-description-description-default);
             transition: var(--t3) color;
 
             &:hover {
                 color: var(--text-main-text-main-default);
             }
-        }
-    }
-
-    &__cta_alternative {
-        display: flex;
-        max-width: 225px;
-        min-height: 40px;
-        padding: 8px 16px;
-        justify-content: center;
-        align-items: center;
-        align-content: center;
-        gap: 8px;
-        flex-wrap: wrap;
-
-        border-radius: 8px;
-        border: 0.5px solid var(--stroke-icons-black-icons-default);
-        background: var(--fills-backgrounds-page-background-default);
-
-        & a {
-            text-decoration: none;
         }
     }
 }
@@ -259,6 +253,72 @@
 
             &--off {
                 color: var(--stroke-icons-error-icon-pressed);
+            }
+        }
+    }
+}
+
+@media (forced-colors: active) {
+    .switcher {
+        &__track {
+            forced-color-adjust: none;
+            background-color: Highlight;
+            border: 1px solid Highlight;
+
+            &--disabled {
+                background-color: Canvas;
+                border-color: CanvasText;
+            }
+        }
+
+        &__handle {
+            forced-color-adjust: none;
+            background-color: Canvas;
+            border: 1px solid CanvasText;
+
+            &:before {
+                background-color: Canvas;
+            }
+
+            &--disabled {
+                background-color: CanvasText;
+                border-color: Canvas;
+
+                &:before {
+                    background-color: CanvasText;
+                }
+            }
+        }
+
+        &__icon {
+            forced-color-adjust: none;
+
+            &--on {
+                color: CanvasText;
+            }
+
+            &--off {
+                color: Canvas;
+            }
+        }
+
+        &:hover {
+            & .switcher__track {
+                background-color: Highlight;
+
+                &--disabled {
+                    background-color: Canvas;
+                }
+            }
+
+            & .switcher__icon {
+                &--on {
+                    color: CanvasText;
+                }
+
+                &--off {
+                    color: Canvas;
+                }
             }
         }
     }

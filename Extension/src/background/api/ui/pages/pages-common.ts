@@ -102,6 +102,11 @@ export abstract class PagesApiCommon {
     private static readonly PRODUCT_TYPE = 'ext';
 
     /**
+     * Chrome Web Store listing URL prefix returned in extension metadata.
+     */
+    private static readonly CHROME_WEB_STORE_HOMEPAGE_URL_PREFIX = 'https://chromewebstore.google.com/';
+
+    /**
      * Settings page url.
      */
     private static readonly settingsUrl = PagesApiCommon.getExtensionPageUrl(OPTIONS_OUTPUT);
@@ -157,26 +162,15 @@ export abstract class PagesApiCommon {
     protected abstract thankYouPageUrl: string;
 
     /**
-     * Chrome extension store forward action.
-     *
-     * Defined as a getter (not a field) so that it lives on the prototype
-     * and is available during base class field initialization.
+     * Chrome Web Store forward action for the current manifest version.
      */
     protected abstract get chromeExtensionStoreForwardAction():
         ForwardAction.ChromeMv3Store | ForwardAction.ChromeMv2Store | ForwardAction.ChromeMv3BetaStore;
 
     /**
-     * Compare page url.
+     * Lazily calculated extension store URL.
      */
-    private static readonly comparePageUrl = Forward.get({
-        action: ForwardAction.Compare,
-        from: ForwardFrom.Options,
-    });
-
-    /**
-     * Extension browser store url.
-     */
-    private readonly extensionStoreUrl = this.getExtensionStoreUrl();
+    private extensionStoreUrlPromise?: Promise<string>;
 
     /**
      * Opens the settings tab and focuses on it if there is no open setting tab.
@@ -214,6 +208,17 @@ export abstract class PagesApiCommon {
             focused: true,
             ...PagesApiCommon.defaultPopupWindowState,
         });
+    }
+
+    /**
+     * Closes the fullscreen user rules page window if it is open.
+     */
+    public static async closeFullscreenUserRulesPage(): Promise<void> {
+        const tab = await TabsApi.findOne({ url: `${PagesApiCommon.fullscreenUserRulesPageUrl}*` });
+
+        if (tab?.id) {
+            await browser.tabs.remove(tab.id);
+        }
     }
 
     /**
@@ -485,13 +490,6 @@ export abstract class PagesApiCommon {
     }
 
     /**
-     * Opens compare page.
-     */
-    public static async openComparePage(): Promise<void> {
-        await browser.tabs.create({ url: PagesApiCommon.comparePageUrl });
-    }
-
-    /**
      * Opens thank you page.
      */
     public openThankYouPage = async (): Promise<void> => {
@@ -514,9 +512,12 @@ export abstract class PagesApiCommon {
 
     /**
      * Opens extension store page.
+     *
+     * @returns A promise that resolves when the store page tab is created.
      */
     public openExtensionStorePage = async (): Promise<void> => {
-        await browser.tabs.create({ url: this.extensionStoreUrl });
+        const extensionStoreUrl = await this.getExtensionStoreUrl();
+        await browser.tabs.create({ url: extensionStoreUrl });
     };
 
     /**
@@ -691,19 +692,51 @@ export abstract class PagesApiCommon {
     }
 
     /**
-     * Returns extension store url based on UA data.
+     * Checks whether the extension was installed from Chrome Web Store.
+     *
+     * @returns True if extension metadata points to Chrome Web Store; otherwise, false.
+     */
+    private static async isInstalledFromChromeWebStore(): Promise<boolean> {
+        try {
+            const { homepageUrl } = await browser.management.getSelf();
+            return homepageUrl?.startsWith(PagesApiCommon.CHROME_WEB_STORE_HOMEPAGE_URL_PREFIX) ?? false;
+        } catch (error) {
+            const message = getErrorMessage(error);
+            logger.warn(
+                `[ext.PagesApiCommon.isInstalledFromChromeWebStore]: Failed to get extension info: ${message}`,
+            );
+            return false;
+        }
+    }
+
+    /**
+     * Returns the cached extension store URL, calculating it on first use.
      *
      * @returns Extension store url.
      */
-    private getExtensionStoreUrl(): string {
+    private getExtensionStoreUrl(): Promise<string> {
+        this.extensionStoreUrlPromise ??= this.calculateExtensionStoreUrl();
+        return this.extensionStoreUrlPromise;
+    }
+
+    /**
+     * Calculates store URL by browser and installation source,
+     * defaulting to Chrome Web Store for other Chromium browsers.
+     *
+     * @returns Extension store url.
+     */
+    private async calculateExtensionStoreUrl(): Promise<string> {
         let action: ForwardAction = this.chromeExtensionStoreForwardAction;
 
-        if (UserAgent.isOpera) {
-            action = ForwardAction.OperaStore;
-        } else if (UserAgent.isFirefox) {
+        if (UserAgent.isFirefox) {
             action = ForwardAction.FirefoxStore;
-        } else if (UserAgent.isEdge) {
-            action = ForwardAction.EdgeStore;
+        } else if (UserAgent.isOpera || UserAgent.isEdge) {
+            const isInstalledFromChromeWebStore = await PagesApiCommon.isInstalledFromChromeWebStore();
+            if (!isInstalledFromChromeWebStore) {
+                action = UserAgent.isOpera
+                    ? ForwardAction.OperaStore
+                    : ForwardAction.EdgeStore;
+            }
         }
 
         return Forward.get({

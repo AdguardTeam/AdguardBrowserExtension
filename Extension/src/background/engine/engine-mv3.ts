@@ -51,8 +51,8 @@ import { UserRulesService } from '../services/userrules';
 import { NotifierType } from '../../common/constants';
 import { SettingOption } from '../schema/settings/enum';
 import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rules';
-import { FiltersStorage } from '../storages/filters';
 import { CommonFilterUtils } from '../../common/common-filter-utils';
+import { FiltersStoragesAdapter } from '../storages/filters-adapter';
 import { isUserScriptsApiSupported } from '../../common/user-scripts-api/user-scripts-api-mv3';
 
 import { type TsWebExtensionEngine } from './interface';
@@ -103,8 +103,13 @@ export class Engine implements TsWebExtensionEngine {
         TsWebExtension.setLocalScriptRules(localScriptRules);
 
         this.handleMessage = this.api.getMessageHandler();
+    }
 
-        // Expose for integration tests.
+    /**
+     * Exposes the tswebextension configure function on the global object for integration tests.
+     * Must be called after storage is initialized.
+     */
+    exposeConfigureHook(): void {
         // eslint-disable-next-line no-restricted-globals
         Object.assign(self, {
             adguard: {
@@ -130,7 +135,7 @@ export class Engine implements TsWebExtensionEngine {
         const result = await this.api.start(configuration);
 
         rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
-        UserRulesService.checkUserRulesRegexpErrors(result);
+        UserRulesService.checkUserRulesErrors(result);
 
         await Engine.checkAppliedStealthSettings(configuration.settings, result.stealthResult);
 
@@ -178,7 +183,7 @@ export class Engine implements TsWebExtensionEngine {
         const result = await this.api.configure(configuration);
 
         rulesLimitsService.updateConfigurationResult(result, configuration.settings.filteringEnabled);
-        UserRulesService.checkUserRulesRegexpErrors(result);
+        UserRulesService.checkUserRulesErrors(result);
 
         await Engine.checkAppliedStealthSettings(configuration.settings, result.stealthResult);
 
@@ -287,7 +292,7 @@ export class Engine implements TsWebExtensionEngine {
                 .filter((f) => CustomFilterApi.isCustomFilterMetadata(f));
 
             customFilters = await Promise.all(customFiltersWithMetadata.map(async ({ filterId, trusted }) => {
-                let filterList = await FiltersStorage.get(filterId);
+                let filterList = await FiltersStoragesAdapter.get(filterId);
 
                 if (!filterList) {
                     filterList = FilterList.createEmpty();
@@ -320,7 +325,7 @@ export class Engine implements TsWebExtensionEngine {
             allowlist,
             settings,
             filtersPath: 'filters/',
-            ruleSetsPath: 'filters/declarative',
+            rulesetsPath: 'filters/declarative',
             trustedDomains,
         };
     }

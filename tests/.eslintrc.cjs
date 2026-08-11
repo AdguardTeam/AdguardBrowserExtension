@@ -30,5 +30,8 @@ module.exports = {
     'rules': {
         'jsdoc/require-file-overview': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
+        // Disable JSX-specific indentation rules in favor of the base indent rule
+        'react/jsx-indent': 'off',
+        'react/jsx-indent-props': 'off',
     },
 };

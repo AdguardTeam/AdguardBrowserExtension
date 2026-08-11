@@ -22,7 +22,7 @@ import React, { type ReactNode } from 'react';
 
 import cn from 'classnames';
 
-import { Icon } from '../ui/Icon';
+import { CloseIcon } from '../ui/CloseIcon';
 import { translator } from '../../../../common/translators/translator';
 
 import modalStyles from '../../styles/modal.module.pcss';
@@ -62,7 +62,7 @@ const ModalContentWrapper = ({
             onClick={closeModalHandler}
             title={translator.getMessage('close_button_title')}
         >
-            <Icon id="#cross" aria-hidden="true" />
+            <CloseIcon />
         </button>
     );
 

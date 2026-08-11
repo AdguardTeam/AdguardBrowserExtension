@@ -80,6 +80,14 @@ export class App extends AppCommon {
     /**
      * @inheritdoc
      */
+    // eslint-disable-next-line class-methods-use-this
+    protected static override exposeEngineHooks(): void {
+        // MV2 does not need to expose engine hooks.
+    }
+
+    /**
+     * @inheritdoc
+     */
     protected static override async manifestSpecificInit(): Promise<void> {
         // Initializes language detector for auto-enabling relevant filters
         localeDetect.init();

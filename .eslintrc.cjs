@@ -124,9 +124,9 @@ module.exports = {
                     { 'pattern': 'extension-update-service', 'group': 'internal', 'position': 'after' },
                     // Place rules-limits-service alias after internal
                     { 'pattern': 'rules-limits-service', 'group': 'internal', 'position': 'after' },
-                    // Separate group for all .pcss styles
+                    // Separate group for all .pcss styles and theme
                     // eslint-disable-next-line max-len, object-curly-newline
-                    { 'pattern': '*.pcss', 'group': 'object', 'patternOptions': { 'matchBase': true }, 'position': 'after' },
+                    { 'pattern': '{*.pcss,theme}', 'group': 'object', 'patternOptions': { 'matchBase': true }, 'position': 'after' },
                 ],
                 'pathGroupsExcludedImportTypes': ['builtin', 'react'],
                 'newlines-between': 'always',
@@ -212,6 +212,10 @@ module.exports = {
 
         'jsx-a11y/control-has-associated-label': 'off',
         'jsx-a11y/label-has-associated-control': 'off',
+
+        // Use 4-space indentation for JSX to match the project's indent rule
+        'react/jsx-indent': ['error', 4],
+        'react/jsx-indent-props': ['error', 4],
 
         // These rules are enabled for background only see Extension/src/background/.eslintrc.cjs
         // TODO: consider enabling them for the whole project later
@@ -319,6 +323,7 @@ module.exports = {
             files: [
                 '**/*-mv2?(.test).{ts,tsx,js,jsx}',
                 '**/*-mv3?(.test).{ts,tsx,js,jsx}',
+                '**/*.test.{ts,tsx,js,jsx}',
             ],
             rules: {
                 'no-restricted-imports': 'off',

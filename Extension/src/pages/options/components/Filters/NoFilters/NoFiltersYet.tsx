@@ -23,16 +23,16 @@ import React from 'react';
 import { translator } from '../../../../../common/translators/translator';
 import { Icon } from '../../../../common/components/ui/Icon';
 
-import './no-filters.pcss';
+import '../../common/no-search-match.pcss';
 
 /**
  * Custom filters tab: Text and icon displayed when user has 0 total custom filters
  */
 const NoFiltersYet = () => (
-    <div className="no-filters">
+    <div className="no-search-match">
         <Icon
             id="#no-filters-yet"
-            className="no-filters__no-filters-yet-icon icon--gray-default"
+            className="no-search-match__icon icon--gray-default"
             aria-hidden="true"
         />
         <div>{translator.getMessage('options_empty_custom_filter')}</div>

@@ -27,7 +27,12 @@ import { type ForwardFrom } from './forward';
  *
  * Note: Do not to be confused with the protocol version of the imported config.
  */
-export const APP_SCHEMA_VERSION = 14;
+export const APP_SCHEMA_VERSION = 15;
+
+/**
+ * Number of days in the week statistics window shown in the popup "Week" tab.
+ */
+export const DAYS_PER_WEEK = 7;
 
 export const CLIENT_ID_KEY = 'client-id';
 export const APP_VERSION_KEY = 'app-version';
@@ -43,19 +48,42 @@ export const HIT_STATISTIC_KEY = 'filters-hit-count';
 export const ANNOYANCES_CONSENT_KEY = 'annoyances-consent';
 export const RULES_LIMITS_KEY = 'rules-limits';
 export const MANUAL_EXTENSION_UPDATE_KEY = 'manual-extension-update';
+
+/**
+ * Marker key indicating that {@link MANUAL_EXTENSION_UPDATE_KEY} data
+ * has already been processed by handleReload and the target page was opened.
+ *
+ * Prevents re-opening the page on subsequent service worker restarts.
+ */
+export const MANUAL_EXTENSION_UPDATE_PAGE_OPENED_KEY = 'manual-extension-update-page-opened';
+
 /**
  * Storage key to prevent double injection of content scripts after extension update.
  * Set before extension reload, checked and cleared after reload.
  */
 export const CONTENT_SCRIPT_INJECTION_FLAG = 'content-script-injection-flag';
+
 /**
  * Storage key for auto-update state data, used only in MV3.
  */
 export const AUTO_UPDATE_STATE_KEY_MV3 = 'auto-update-state-mv3';
+
 /**
  * Storage key for auto-update configuration override, used only in MV3 for testing.
  */
 export const AUTO_UPDATE_CONFIG_KEY_MV3 = 'auto-update-config-mv3';
+
+/**
+ * Storage keys for the periodic extension update check service.
+ *
+ * - `timestamp`: Timestamp of the last successful check, used to determine if 24h has elapsed.
+ * - `availableVersion`: Version reported by the backend as available.
+ *   Absent/undefined means no update is available.
+ */
+export const EXTENSION_UPDATE_CHECK_KEYS = {
+    timestamp: 'extension-update-check-timestamp',
+    availableVersion: 'extension-update-available-version',
+} as const;
 
 /**
  * Storage key for filtering log window state (position and size),
@@ -157,6 +185,7 @@ export enum NotifierType {
     SettingUpdated = 'event.update.setting.value',
     FiltersUpdateCheckReady = 'event.update.filters.check',
     ExtensionUpdateStateChange = 'event.update.extension.state.change',
+    AvailableUpdateVersionChanged = 'event.update.available.version.changed',
     // Filtering log events.
     TabAdded = 'log.tab.added',
     TabClose = 'log.tab.close',

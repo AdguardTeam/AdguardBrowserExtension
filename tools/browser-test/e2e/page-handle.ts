@@ -57,6 +57,47 @@ export type E2EPageHandle = {
     getBackgroundErrors(): Promise<E2EError[]>;
 
     /**
+     * Clicks the first element matching a CSS selector.
+     *
+     * @param selector CSS selector.
+     */
+    clickSelector(selector: string): Promise<void>;
+
+    /**
+     * Focuses the first element matching a CSS selector and types the given
+     * text using real key events. Unlike `evaluate`-based DOM manipulation,
+     * key events are handled by rich-text widgets (e.g. CodeMirror) in all
+     * browsers.
+     *
+     * @param selector CSS selector of the element to type into.
+     * @param text Text to type.
+     */
+    typeText(selector: string, text: string): Promise<void>;
+
+    /**
+     * Evaluates a function in the browser page context and returns its result.
+     *
+     * The function body closes over no Node-scope variables — arguments are
+     * passed as the second parameter because the callback executes in the
+     * browser page.
+     *
+     * @param fn Function to evaluate in the browser context.
+     * @param arg Argument to pass to the function.
+     *
+     * @returns Result of the function evaluation.
+     */
+    evaluate<T>(fn: (arg: unknown) => Promise<T> | T, arg?: unknown): Promise<T>;
+
+    /**
+     * Returns the text content of all elements matching a CSS selector.
+     *
+     * @param selector CSS selector.
+     *
+     * @returns Array of text contents (empty strings for elements with no text).
+     */
+    getTextContents(selector: string): Promise<string[]>;
+
+    /**
      * Closes the page (Chromium) or is a no-op (Firefox, since driver reuses window).
      *
      * @returns Nothing.

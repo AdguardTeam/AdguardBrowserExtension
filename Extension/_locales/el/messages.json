@@ -196,7 +196,10 @@
         "message": "Αποκλείει διαφημίσεις και ιχνηλάτες μόνο σε ιστοσελίδες της λίστας επιτρεπομένων"
     },
     "options_allowlist_alert_invert": {
-        "message": "Η λίστα επιτρεπόμενων είναι ανεστραμμένη. Οι διαφημίσεις αποκλείονται μόνο σε ιστότοπους που προστίθενται εδώ. <a>Απενεργοποίηση<\/a>"
+        "message": "Η λίστα επιτρεπόμενων είναι ανεστραμμένη. Οι διαφημίσεις αποκλείονται μόνο σε ιστοσελίδες που έχουν προστεθεί σε αυτή."
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>Διακοπή αναστροφής<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "Οι αλλαγές σας στη λίστα επιτρεπόμενων θα χαθούν"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "Ενημέρωση: %date%"
+    },
+    "options_filters_last_checked": {
+        "message": "Τελευταίος έλεγχος: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Προσαρμοσμένα"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "Εκκαθάριση καταγραφών"
     },
+    "filtering_log_actions_menu": {
+        "message": "Ενέργειες μητρώου φιλτραρίσματος"
+    },
     "filtering_type_all": {
         "message": "Όλα"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "Εισαγωγή"
     },
+    "options_user_rules_delete_all": {
+        "message": "Διαγραφή όλων"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "Διαγραφή όλων;"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "Όλοι οι κανόνες χρήστη θα διαγραφούν οριστικά"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "Όλοι οι κανόνες χρήστη διαγράφηκαν"
+    },
+    "options_user_rules_import_success": {
+        "message": "Οι κανόνες χρήστη εισήχθησαν επιτυχώς"
+    },
+    "options_user_rules_import_error": {
+        "message": "Αποτυχία στο εισαγωγή κανόνων χρήστης. Παρακαλώ προσπαθήστε ξανά"
+    },
+    "options_user_rules_menu": {
+        "message": "Ενέργειες κανόνων χρήστη"
+    },
+    "options_allowlist_menu": {
+        "message": "Ενέργειες λίστας επιτρεπόμενων"
+    },
     "options_userfilter_description_key": {
         "message": "Μπορείτε να προσθέσετε τους δικούς σας κανόνες εδώ. Αυτή η επιλογή συνιστάται για προχωρημένους χρήστες εξοικειωμένους με HTML\/CSS. Διαβάστε τον <a>οδηγό κανόνων φίλτρου<\/a> για να μάθετε πώς να γράφετε τους δικούς σας κανόνες φίλτρου."
     },
     "options_userfilter_subtitle_key": {
         "message": "Σας επιτρέπει να προσθέτετε τους δικούς σας κανόνες φιλτραρίσματος"
+    },
+    "options_user_rules_description_key": {
+        "message": "Οι κανόνες σας για αποκλεισμό και άρση αποκλεισμού διαφημίσεων ή ολόκληρων ιστοσελίδων"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "Δεν υπάρχουν προς το παρόν κανόνες"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "Αναζήτηση"
+    },
+    "options_user_rules_clear_search": {
+        "message": "Εκκαθάριση αναζήτησης"
+    },
+    "options_user_rules_create_rule": {
+        "message": "Δημιουργία κανόνα"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "Επεξεργασία κανόνα"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "Διαγραφή κανόνα"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "Ο κανόνας χρήστη διαγράφηκε:"
+    },
+    "options_user_rules_undo": {
+        "message": "Αναίρεση"
+    },
+    "options_user_rules_no_match": {
+        "message": "Δεν βρέθηκε τίποτα"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "Εναλλαγή σε προβολή επεξεργαστή"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "Εναλλαγή σε προβολή λίστας"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "Επισήμανση κανόνων…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "Διακοπή γραμμής"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "Σας αρέσει το AdGuard;"
     },
-    "options_footer_like_us_cta": {
-        "message": "Βαθμολογήστε το!"
+    "options_rate_us_cta": {
+        "message": "Βαθμολογήστε το"
     },
     "options_miscellaneous_settings": {
         "message": "Επιπρόσθετες ρυθμίσεις"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "Επιλογή 3. Εάν είστε ικανοποιημένοι με τα ενεργοποιημένα προεπιλεγμένα φίλτρα, <a>κλείστε αυτή την προειδοποίηση.<\/a>"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "Το όριο επιτεύχθηκε — ορισμένα φίλτρα απενεργοποιήθηκαν"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "Δείτε τι μπορείτε να κάνετε"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "Αφαίρεση άλλων αποκλεισμών διαφημίσεων"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "Οι επεκτάσεις προγράμματος περιήγησης μοιράζονται το ίδιο όριο κανόνων. Η αφαίρεση άλλων αποκλεισμών διαφημίσεων ενδέχεται να ελευθερώσει περισσότερους κανόνες για το AdGuard Browser Extension"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "Διαχείριση επεκτάσεων"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "Προβολή διαθέσιμων φίλτρων"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "Ενεργοποιήστε τα φίλτρα που χρειάζεστε. Τα φίλτρα ανά γλώσσα και τα φίλτρα απορρήτου ενδέχεται να χρησιμοποιούν πολλούς κανόνες"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "Μεταβείτε στα φίλτρα"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "Εγκατάσταση εφαρμογής επιφάνειας εργασίας"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "Αφαιρέστε τα όρια κανόνων και αποκτήστε Εκτεταμένη προστασία που λειτουργεί σε όλα τα προγράμματα περιήγησης"
     },
     "options_all_limits_exceeded_warning": {
         "message": "Έχετε φτάσει το όριο των ενεργών ενσωματωμένων κανόνων. Το πρόγραμμα περιήγησής σας έχει τροποποιήσει τη λίστα των ενεργών ενσωματωμένων φίλτρων. Ο αριθμός των ενεργοποιημένων φίλτρων έχει αλλάξει από %expected% σε %current%."
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "Έκδοση"
+    },
+    "options_about_update_available": {
+        "message": "Η έκδοση %version% είναι διαθέσιμη. Θα ληφθεί και θα εγκατασταθεί αυτόματα."
     },
     "options_about_libs": {
         "message": "Χρησιμοποιηθείσες βιβλιοθήκες"

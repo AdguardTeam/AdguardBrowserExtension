@@ -33,21 +33,18 @@ import { Icon } from '../../../common/components/ui/Icon';
 import { rootStore } from '../../stores/RootStore';
 import { OptionsPageSections } from '../../../../common/nav';
 import { Nav } from '../Nav';
-import { messenger } from '../../../services/messenger';
 import { translator } from '../../../../common/translators/translator';
 import { MOBILE_BREAKPOINT_PX } from '../../../common/constants';
-import { TelemetryEventName, TelemetryScreenName } from '../../../../common/telemetry';
 import { RateNotification } from '../RateNotification';
 
-import { Compare } from './Compare';
-import { FilterSortMenu, PageActionsMenu } from './SidebarMenu';
+import { FilterSortMenu } from './SidebarMenu';
 
 import './sidebar.pcss';
 
 const SIDEBAR_ID = 'sidebar';
 
 const Sidebar = observer(() => {
-    const { settingsStore, uiStore, telemetryStore } = useContext(rootStore);
+    const { uiStore } = useContext(rootStore);
     const location = useLocation();
 
     const { isSidebarOpen, openSidebar, closeSidebar } = uiStore;
@@ -92,22 +89,6 @@ const Sidebar = observer(() => {
         closeSidebar();
     };
 
-    const handleCompareClick = async () => {
-        telemetryStore.sendCustomEvent(
-            TelemetryEventName.CompareClick,
-            TelemetryScreenName.MainPage,
-        );
-        await messenger.openComparePage();
-    };
-
-    const hideCompare = async () => {
-        telemetryStore.sendCustomEvent(
-            TelemetryEventName.CloseCompareClick,
-            TelemetryScreenName.MainPage,
-        );
-        await settingsStore.hideAdguardPromoInfo();
-    };
-
     const className = classNames('sidebar', {
         /* styles only for mobile markup */
         'sidebar--open': isSidebarOpen,
@@ -117,10 +98,6 @@ const Sidebar = observer(() => {
     });
 
     const isFiltersPage = location.pathname.startsWith(`/${OptionsPageSections.filters}`);
-    const isAllowListPage = location.pathname.startsWith(`/${OptionsPageSections.allowlist}`);
-    const isUserFilterPage = location.pathname.startsWith(`/${OptionsPageSections.userFilter}`);
-
-    const showPageActionsMenu = isAllowListPage || isUserFilterPage;
 
     return (
         <>
@@ -142,7 +119,6 @@ const Sidebar = observer(() => {
                 <div className="sidebar__actions">
                     {isFiltersPage && <UpdateButtonMobile />}
                     {isFiltersPage && <FilterSortMenu />}
-                    {showPageActionsMenu && <PageActionsMenu />}
                 </div>
             </div>
             {/* eslint-disable-next-line max-len */}
@@ -157,16 +133,7 @@ const Sidebar = observer(() => {
                     <div className="logo" />
                 </div>
                 <Nav onLinkClick={closeSidebarWrapper} />
-                {settingsStore.showGeneralSettingsPromo ? (
-                    <RateNotification />
-                ) : (
-                    settingsStore.showAdguardPromoInfo && (
-                        <Compare
-                            onCompareClick={handleCompareClick}
-                            onCloseClick={hideCompare}
-                        />
-                    )
-                )}
+                <RateNotification />
             </div>
         </>
     );

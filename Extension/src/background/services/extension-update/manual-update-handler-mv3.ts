@@ -18,22 +18,23 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { MANUAL_EXTENSION_UPDATE_KEY, MIN_UPDATE_DISPLAY_DURATION_MS } from '../../../common/constants';
+import { MANUAL_EXTENSION_UPDATE_KEY, MANUAL_EXTENSION_UPDATE_PAGE_OPENED_KEY } from '../../../common/constants';
 import { logger } from '../../../common/logger';
-import { sleepIfNecessary } from '../../../common/sleep-utils';
 import { ForwardFrom } from '../../../common/forward';
 import { FilterUpdateApi, PagesApi } from '../../api';
 import { browserStorage } from '../../storages';
 import { getRunInfo } from '../../utils/run-info';
 import { Version } from '../../utils/version';
 import { ContentScriptInjector } from '../../content-script-injector';
+import { FilterUpdateService } from '../filter-update/filter-update-mv3';
+import { type ManualCheckResult } from '../../../common/messages';
 
 import {
     type ManualUpdateMetadata,
     ManualUpdateMetadataValidator,
     UpdateCheckStatus,
 } from './types';
-import { BackendUpdateChecker } from './backend-update-checker-mv3';
+import { BackendUpdateChecker } from './backend-update-checker';
 import { type AutoUpdateStateManager } from './auto-update-state-manager-mv3';
 import { AutoUpdateStateField } from './types';
 
@@ -142,12 +143,13 @@ export class ManualUpdateHandler {
      * 3. If update confirmed, calls chrome.runtime.requestUpdateCheck().
      * 4. Waits for Chrome to download update.
      * 5. Fires callbacks for FSM coordination.
+     *
+     * @returns Result object with `lastCheckTimeMs` — the persisted timestamp in milliseconds,
+     * or `null` if saving failed or the check was skipped (update in progress).
      */
-    public async check(): Promise<void> {
+    public async check(): Promise<ManualCheckResult> {
         // Mark this as manual check
         this.stateManager.set(AutoUpdateStateField.isManualCheck, true);
-
-        const start = Date.now();
 
         // We set timeout for the whole update check operation since it consists
         // of multiple steps with not-determined duration.
@@ -173,16 +175,11 @@ export class ManualUpdateHandler {
             shouldWaitForUpdateEvent = await ManualUpdateHandler.requestUpdateCheck();
         }
 
-        // Wait for more smooth user experience
-        // NOTE: it has to be done here and not in the UI components
-        // because UI notifications strictly depend on the state machine states
-        await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
-
         // Here we should wait for onUpdateAvailable event from Chrome when
         // browser will download the update in background.
         if (isUpdateAvailable && shouldWaitForUpdateEvent) {
             // Do nothing, just wait for onUpdateAvailable event from Chrome.
-            return;
+            return { lastCheckTimeMs: null };
         }
 
         // Update custom filters even if no extension update is available,
@@ -196,11 +193,27 @@ export class ManualUpdateHandler {
             logger.error('[ext.ManualUpdateHandler.check]: Failed to update custom filters:', e);
         }
 
+        let lastCheckTimeMs: number | null = null;
+        try {
+            lastCheckTimeMs = Date.now();
+            await FilterUpdateService.setLastCheckTimeMs(lastCheckTimeMs);
+        } catch (e) {
+            logger.error('[ext.ManualUpdateHandler.check]: Failed to save last check time:', e);
+            lastCheckTimeMs = null;
+        }
+        // Clear the checking timeout to prevent a stale UpdateFailed event
+        // from firing during a subsequent manual check. Without this, a leftover
+        // 10-minute timeout from this check could transition a new "Checking"
+        // state to "Failed" incorrectly.
+        this.clearCheckTimeout();
+
         // Notify that update is not available
         this.onUpdateCheckComplete(false);
 
         // Reset manual check flag
         this.stateManager.set(AutoUpdateStateField.isManualCheck, false);
+
+        return { lastCheckTimeMs };
     }
 
     /**
@@ -259,8 +272,6 @@ export class ManualUpdateHandler {
         from: ForwardFrom.Options | ForwardFrom.Popup,
         clearAutoUpdateState: () => Promise<void>,
     ): Promise<void> {
-        const start = Date.now();
-
         this.onUpdateApplyStart();
 
         let isExtensionUpdated = false;
@@ -272,6 +283,10 @@ export class ManualUpdateHandler {
                 pageToOpenAfterReload: from,
                 isOk: true,
             };
+            // Reset page-opened flag for the new update cycle so handleReload()
+            // can open the target page again after reload.
+            await browserStorage.remove(MANUAL_EXTENSION_UPDATE_PAGE_OPENED_KEY);
+
             // IMPORTANT: saving to storage should be done before the extension reload
             await browserStorage.set(MANUAL_EXTENSION_UPDATE_KEY, JSON.stringify(manualExtensionDataToSave));
 
@@ -281,11 +296,6 @@ export class ManualUpdateHandler {
             // Clear auto-update state on manual update since it contains
             // `isManualCheck` flag which should be reset after update.
             await clearAutoUpdateState();
-
-            // wait for more smooth user experience
-            // NOTE: it has to be done here and not in the UI components
-            // because UI notifications strictly depend on the state machine states
-            await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
 
             ManualUpdateHandler.reloadExtension();
             isExtensionUpdated = true;
@@ -299,10 +309,6 @@ export class ManualUpdateHandler {
         // since its success is handled after the extension reload
         if (!isExtensionUpdated) {
             logger.debug('[ext.ManualUpdateHandler.applyUpdate]: Extension update failed');
-            // wait for more smooth user experience
-            // NOTE: it has to be done here and not in the UI components
-            // because UI notifications strictly depend on the state machine states
-            await sleepIfNecessary(start, MIN_UPDATE_DISPLAY_DURATION_MS);
             this.onUpdateApplyFailed();
         }
     }
@@ -320,6 +326,9 @@ export class ManualUpdateHandler {
         const manualExtensionUpdateData = await ManualUpdateHandler.retrieveUpdateData();
 
         if (!manualExtensionUpdateData) {
+            // Metadata was consumed by UI or never existed — clean up stale
+            // page-opened flag from a previous cycle.
+            await browserStorage.remove(MANUAL_EXTENSION_UPDATE_PAGE_OPENED_KEY);
             logger.debug('[ext.ManualUpdateHandler.handleReload]: No manual extension update data after reload found');
             return;
         }
@@ -333,31 +342,38 @@ export class ManualUpdateHandler {
         if (!pageToOpenAfterReload) {
             logger.warn('[ext.ManualUpdateHandler.handleReload]: No pageToOpenAfterReload found');
             await browserStorage.remove(MANUAL_EXTENSION_UPDATE_KEY);
+            await browserStorage.remove(MANUAL_EXTENSION_UPDATE_PAGE_OPENED_KEY);
+            return;
+        }
+
+        // If the page was already opened on a previous SW lifecycle, do not
+        // re-open it. The flag is reset by applyUpdate() when new metadata is
+        // written for the next update cycle, and cleaned up here when metadata
+        // has been consumed (see the absent-metadata branch above).
+        const wasPageOpened = await browserStorage.get(MANUAL_EXTENSION_UPDATE_PAGE_OPENED_KEY);
+        if (wasPageOpened) {
+            logger.debug('[ext.ManualUpdateHandler.handleReload]: Page was already opened on a previous start, skipping');
             return;
         }
 
         /**
-         * Note 1:
-         * MANUAL_EXTENSION_UPDATE_KEY is not removed here
-         * and it will be removed after the needed page is opened.
-         * It is needed for the notification showing.
-         *
-         * Note 2:
          * If `pageToOpenAfterReload` is present in the storage,
          * it means that the extension update was triggered by a user.
-         * Due to the Note 1, if this data is present and it is not an update (isUpdate === false),
-         * it means that the update failed, and `isOk` should be set to `false`
-         * before the page is opened, so it is to be retrieved on the page
-         * to show the "failed update" notification.
+         * If the update failed (isUpdate === false), `isOk` is set to `false`
+         * so the FSM initialization via the Init event on the next service-worker
+         * start can derive the correct `isUpdateFailedAfterReload` flag.
+         *
+         * The data persists after opening the page so the asynchronously-loading
+         * UI can consume it. The UI removes the data via getUpdateData().
          */
         if (!isUpdate) {
-            const manualExtensionUpdateData: ManualUpdateMetadata = {
+            const updatedMetadata: ManualUpdateMetadata = {
                 initVersion,
                 pageToOpenAfterReload,
                 isOk: false,
             };
 
-            await browserStorage.set(MANUAL_EXTENSION_UPDATE_KEY, JSON.stringify(manualExtensionUpdateData));
+            await browserStorage.set(MANUAL_EXTENSION_UPDATE_KEY, JSON.stringify(updatedMetadata));
         }
 
         if (pageToOpenAfterReload === ForwardFrom.Options) {
@@ -367,6 +383,38 @@ export class ManualUpdateHandler {
             logger.info('[ext.ManualUpdateHandler.handleReload]: Opening popup...');
             await PagesApi.openExtensionPopup();
         }
+
+        // Set flag to prevent re-opening the page on subsequent
+        // service-worker restarts. The main key stays for UI consumption.
+        await browserStorage.set(MANUAL_EXTENSION_UPDATE_PAGE_OPENED_KEY, true);
+        logger.debug('[ext.ManualUpdateHandler.handleReload]: Page opened, flag set — waiting for UI to consume metadata');
+    }
+
+    /**
+     * Checks whether manual update data exists in storage without reading or removing it.
+     * Used during background startup to determine if the extension was reloaded after an update.
+     *
+     * @returns True if manual extension update data exists in storage, false otherwise.
+     */
+    public static async hasUpdateData(): Promise<boolean> {
+        const manualExtensionUpdateStr = await browserStorage.get(MANUAL_EXTENSION_UPDATE_KEY);
+        return typeof manualExtensionUpdateStr === 'string';
+    }
+
+    /**
+     * Reads manual update data from storage without removing it.
+     *
+     * Unlike {@link ManualUpdateHandler.getUpdateData}, this method does not consume
+     * the data, so it can still be retrieved later by {@link ManualUpdateHandler.handleReload}
+     * or the UI layer.
+     *
+     * Intended for background startup FSM initialization where the data must be
+     * inspected but preserved for subsequent handlers.
+     *
+     * @returns Manual extension update data or null if not found or invalid.
+     */
+    public static async peekUpdateData(): Promise<ManualUpdateMetadata | null> {
+        return ManualUpdateHandler.retrieveUpdateData();
     }
 
     /**
@@ -382,6 +430,11 @@ export class ManualUpdateHandler {
         const manualExtensionUpdateData = await ManualUpdateHandler.retrieveUpdateData();
 
         await browserStorage.remove(MANUAL_EXTENSION_UPDATE_KEY);
+        // NOTE: Do NOT remove MANUAL_EXTENSION_UPDATE_PAGE_OPENED_KEY here.
+        // Its lifecycle is managed by handleReload(), not by UI consumption.
+        // Removing it here would allow repeated page re-openings when the UI
+        // consumes metadata from one cycle but the flag should persist until
+        // the next handleReload() call resets it (e.g., in applyUpdate()).
 
         return manualExtensionUpdateData;
     }

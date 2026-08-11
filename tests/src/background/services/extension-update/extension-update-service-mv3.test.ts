@@ -81,6 +81,10 @@ vi.mock(
             static handleReload = vi.fn().mockResolvedValue(undefined);
 
             static getUpdateData = vi.fn().mockResolvedValue(null);
+
+            static peekUpdateData = vi.fn().mockResolvedValue(null);
+
+            static hasUpdateData = vi.fn().mockResolvedValue(false);
         }
         return { ManualUpdateHandler: MockManualUpdateHandler };
     },
@@ -171,7 +175,6 @@ describe.skipIf(!__IS_MV3__)('ExtensionUpdateService.init — stale state handli
     });
 
     it('clears stale state when nextVersion equals current version', async () => {
-        // Extension was updated to 5.3.0.0, persisted state still has nextVersion: 5.3.0.0
         mockPrefsVersion.value = '5.3.0.0';
         await seedAutoUpdateState({
             nextVersion: '5.3.0.0',
@@ -180,8 +183,17 @@ describe.skipIf(!__IS_MV3__)('ExtensionUpdateService.init — stale state handli
 
         await ExtensionUpdateService.init();
 
-        // FSM should start but stay in Idle — no UpdateAvailable event sent
         expect(mockActorStart).toHaveBeenCalledTimes(1);
+
+        // Init is sent but with isUpdateAvailable: false (stale state cleared)
+        expect(mockActorSend).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: ExtensionUpdateFSMEvent.Init,
+                isUpdateAvailable: false,
+            }),
+        );
+
+        // No UpdateAvailable event sent
         expect(mockActorSend).not.toHaveBeenCalledWith(
             expect.objectContaining({ type: ExtensionUpdateFSMEvent.UpdateAvailable }),
         );
@@ -192,7 +204,6 @@ describe.skipIf(!__IS_MV3__)('ExtensionUpdateService.init — stale state handli
     });
 
     it('clears stale state when nextVersion is older than current version', async () => {
-        // Downgrade scenario: extension at 5.4.0.0, persisted nextVersion is 5.3.0.0
         mockPrefsVersion.value = '5.4.0.0';
         await seedAutoUpdateState({
             nextVersion: '5.3.0.0',
@@ -201,6 +212,14 @@ describe.skipIf(!__IS_MV3__)('ExtensionUpdateService.init — stale state handli
 
         await ExtensionUpdateService.init();
 
+        // Init is sent but with isUpdateAvailable: false
+        expect(mockActorSend).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: ExtensionUpdateFSMEvent.Init,
+                isUpdateAvailable: false,
+            }),
+        );
+
         expect(mockActorSend).not.toHaveBeenCalledWith(
             expect.objectContaining({ type: ExtensionUpdateFSMEvent.UpdateAvailable }),
         );
@@ -209,8 +228,7 @@ describe.skipIf(!__IS_MV3__)('ExtensionUpdateService.init — stale state handli
         expect(rawState[AUTO_UPDATE_STATE_KEY_MV3]).toBeUndefined();
     });
 
-    it('preserves valid state when nextVersion is newer than current version', async () => {
-        // Legitimate SW restart: update 5.4.0.0 is available, extension is at 5.3.0.0
+    it('preserves valid state and sends Init with isUpdateAvailable true', async () => {
         mockPrefsVersion.value = '5.3.0.0';
         await seedAutoUpdateState({
             nextVersion: '5.4.0.0',
@@ -219,23 +237,42 @@ describe.skipIf(!__IS_MV3__)('ExtensionUpdateService.init — stale state handli
 
         await ExtensionUpdateService.init();
 
-        // FSM should receive UpdateAvailable event
+        // Init event sent with isUpdateAvailable: true
+        expect(mockActorSend).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: ExtensionUpdateFSMEvent.Init,
+                isUpdateAvailable: true,
+                isReloadedOnUpdate: false,
+            }),
+        );
+
+        // UpdateAvailable event also sent (for side effects)
         expect(mockActorSend).toHaveBeenCalledWith(
             expect.objectContaining({ type: ExtensionUpdateFSMEvent.UpdateAvailable }),
         );
     });
 
-    it('returns early with no side effects when no persisted state exists', async () => {
-        // Clean startup — no state in storage
+    it('sends Init with defaults and has no other side effects when no persisted state exists', async () => {
         await ExtensionUpdateService.init();
 
         expect(mockActorStart).toHaveBeenCalledTimes(1);
+
+        // Init is sent with default flags
+        expect(mockActorSend).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: ExtensionUpdateFSMEvent.Init,
+                isUpdateAvailable: false,
+                isReloadedOnUpdate: false,
+            }),
+        );
+
+        // No UpdateAvailable event sent
         expect(mockActorSend).not.toHaveBeenCalledWith(
             expect.objectContaining({ type: ExtensionUpdateFSMEvent.UpdateAvailable }),
         );
     });
 
-    it('clears state defensively when nextVersion is malformed', async () => {
+    it('clears state defensively when nextVersion is malformed and sends Init with defaults', async () => {
         mockPrefsVersion.value = '5.3.0.0';
         await seedAutoUpdateState({
             nextVersion: 'invalid..version',
@@ -244,13 +281,120 @@ describe.skipIf(!__IS_MV3__)('ExtensionUpdateService.init — stale state handli
 
         await ExtensionUpdateService.init();
 
-        // Should not throw, should not send UpdateAvailable
+        // Init sent with defaults (state cleared due to malformed version)
+        expect(mockActorSend).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: ExtensionUpdateFSMEvent.Init,
+                isUpdateAvailable: false,
+            }),
+        );
+
         expect(mockActorSend).not.toHaveBeenCalledWith(
             expect.objectContaining({ type: ExtensionUpdateFSMEvent.UpdateAvailable }),
         );
 
-        // State should be cleared
         const rawState = await browser.storage.local.get(AUTO_UPDATE_STATE_KEY_MV3);
         expect(rawState[AUTO_UPDATE_STATE_KEY_MV3]).toBeUndefined();
+    });
+
+    it('sends Init event with isUpdateAvailable true when persisted nextVersion is newer', async () => {
+        mockPrefsVersion.value = '5.3.0.0';
+        await seedAutoUpdateState({
+            nextVersion: '5.4.0.0',
+            updateAvailableTimestamp: Date.now() - 100000,
+        });
+
+        await ExtensionUpdateService.init();
+
+        expect(mockActorSend).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: ExtensionUpdateFSMEvent.Init,
+                isUpdateAvailable: true,
+                isReloadedOnUpdate: false,
+            }),
+        );
+    });
+
+    it('sends Init event with both flags false when no persisted state exists', async () => {
+        await ExtensionUpdateService.init();
+
+        expect(mockActorSend).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: ExtensionUpdateFSMEvent.Init,
+                isUpdateAvailable: false,
+                isReloadedOnUpdate: false,
+            }),
+        );
+    });
+
+    it('sends Init event with isReloadedOnUpdate true when manual update data exists', async () => {
+        // Need to import the mocked module to override hasUpdateData for this test
+        const { ManualUpdateHandler } = await import(
+            '../../../../../Extension/src/background/services/extension-update/manual-update-handler-mv3'
+        );
+        (ManualUpdateHandler.hasUpdateData as ReturnType<typeof vi.fn>).mockResolvedValue(true);
+
+        await ExtensionUpdateService.init();
+
+        expect(mockActorSend).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: ExtensionUpdateFSMEvent.Init,
+                isUpdateAvailable: false,
+                isReloadedOnUpdate: true,
+            }),
+        );
+
+        // Restore the default mock behavior
+        (ManualUpdateHandler.hasUpdateData as ReturnType<typeof vi.fn>).mockResolvedValue(false);
+    });
+
+    it('uses non-destructive peekUpdateData instead of getUpdateData during init', async () => {
+        const { ManualUpdateHandler } = await import(
+            '../../../../../Extension/src/background/services/extension-update/manual-update-handler-mv3'
+        );
+
+        (ManualUpdateHandler.hasUpdateData as ReturnType<typeof vi.fn>).mockResolvedValue(true);
+        (ManualUpdateHandler.peekUpdateData as ReturnType<typeof vi.fn>).mockResolvedValue({
+            initVersion: '5.2.0.0',
+            pageToOpenAfterReload: 'options_screen',
+            isOk: true,
+        });
+
+        await ExtensionUpdateService.init();
+
+        // init() should use peekUpdateData (non-destructive), not getUpdateData (destructive)
+        expect(ManualUpdateHandler.peekUpdateData).toHaveBeenCalled();
+        expect(ManualUpdateHandler.getUpdateData).not.toHaveBeenCalled();
+
+        // Restore defaults
+        (ManualUpdateHandler.hasUpdateData as ReturnType<typeof vi.fn>).mockResolvedValue(false);
+        (ManualUpdateHandler.peekUpdateData as ReturnType<typeof vi.fn>).mockResolvedValue(null);
+    });
+
+    it('sends Init with isUpdateFailedAfterReload true when peeked data has isOk false', async () => {
+        const { ManualUpdateHandler } = await import(
+            '../../../../../Extension/src/background/services/extension-update/manual-update-handler-mv3'
+        );
+
+        (ManualUpdateHandler.hasUpdateData as ReturnType<typeof vi.fn>).mockResolvedValue(true);
+        (ManualUpdateHandler.peekUpdateData as ReturnType<typeof vi.fn>).mockResolvedValue({
+            initVersion: '5.2.0.0',
+            pageToOpenAfterReload: 'options_screen',
+            isOk: false,
+        });
+
+        await ExtensionUpdateService.init();
+
+        expect(mockActorSend).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: ExtensionUpdateFSMEvent.Init,
+                isReloadedOnUpdate: true,
+                isUpdateFailedAfterReload: true,
+            }),
+        );
+
+        // Restore defaults
+        (ManualUpdateHandler.hasUpdateData as ReturnType<typeof vi.fn>).mockResolvedValue(false);
+        (ManualUpdateHandler.peekUpdateData as ReturnType<typeof vi.fn>).mockResolvedValue(null);
     });
 });

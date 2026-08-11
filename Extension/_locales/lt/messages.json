@@ -196,7 +196,10 @@
         "message": "Blokuoja reklamas ir seklius tik sąraše esančiose svetainėse"
     },
     "options_allowlist_alert_invert": {
-        "message": "Leidinių sąrašas yra apverstas. Skelbimai blokuojami tik į jį įtrauktose svetainėse. <a>Išjungti<\/a>"
+        "message": "Leidimų sąrašas yra apverstas. Reklamos blokuojamos tik į jį įtrauktose svetainėse."
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>Nutraukti apvertimą<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "Jūsų pakeitimai į Leidimų sąrašą bus prarasti"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "Atnaujinta: %date%"
+    },
+    "options_filters_last_checked": {
+        "message": "Paskutinį kartą tikrinta: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Nuosavi"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "Išvalyti žurnalą"
     },
+    "filtering_log_actions_menu": {
+        "message": "Filtravimo žurnalo veiksmai"
+    },
     "filtering_type_all": {
         "message": "Visi"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "Importas"
     },
+    "options_user_rules_delete_all": {
+        "message": "Ištrinti viską"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "Ištrinti viską?"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "Visos naudotojo taisyklės bus pašalintos visam laikui"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "Visos naudotojo taisyklės pašalintos"
+    },
+    "options_user_rules_import_success": {
+        "message": "Naudotojo taisyklės sėkmingai importuotos."
+    },
+    "options_user_rules_import_error": {
+        "message": "Nepavyko importuoti naudotojo taisyklių. Prašome bandyti dar kartą"
+    },
+    "options_user_rules_menu": {
+        "message": "Naudotojo taisyklių veiksmai"
+    },
+    "options_allowlist_menu": {
+        "message": "Leidimų sąrašo veiksmai"
+    },
     "options_userfilter_description_key": {
         "message": "Čia galite įtraukti savo taisykles. Ši parinktis rekomenduojama patyrusiems vartotojams, susipažinusiems su HTML\/CSS. Perskaitykite <a> filtravimo taisyklių pamoką <\/a>, kad sužinotumėte, kaip rašyti savo filtro taisykles."
     },
     "options_userfilter_subtitle_key": {
         "message": "Leidžia pridėti savo filtravimo taisykles"
+    },
+    "options_user_rules_description_key": {
+        "message": "Jūsų taisyklės dėl reklamų arba visų svetainių blokavimo ir atblokavimo"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "Dar nėra taisyklių"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "Paieška"
+    },
+    "options_user_rules_clear_search": {
+        "message": "Išvalyti paiešką"
+    },
+    "options_user_rules_create_rule": {
+        "message": "Sukurti taisyklę"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "Redaguoti taisyklę"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "Pašalinti iš naudotojo filtrų"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "Naudotojo taisyklė ištrinta:"
+    },
+    "options_user_rules_undo": {
+        "message": "Anuliuoti"
+    },
+    "options_user_rules_no_match": {
+        "message": "Nieko nerasta"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "Perjungti į redaktoriaus rodinį"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "Perjungti į sąrašo rodinį"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "Paryškinamos taisyklės…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "Eilutės lūžis"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "Ar jums patinka AdGuard?"
     },
-    "options_footer_like_us_cta": {
-        "message": "Įvertinkite programėlę!"
+    "options_rate_us_cta": {
+        "message": "Įvertinkite programėlę"
     },
     "options_miscellaneous_settings": {
         "message": "Įvairūs"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "3 parinktis. Jei esate patenkinti šiuo metu įgalintais numatytaisiais filtrais, <a>uždarykite šį įspėjimą.<\/a>"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "Pasiektas limitas — kai kurie filtrai buvo išjungti"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "Štai ką galite padaryti"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "Pašalinti kitas reklamos blokuokles"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "Naršyklės plėtiniai dalijasi tuo pačiu taisyklių limitu. Pašalinus kitas reklamos blokuokles gali atsirasti daugiau taisyklių AdGuard naršyklės plėtiniui"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "Valdyti plėtinius"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "Peržiūrėti galimus filtrus"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "Įjunkite jums reikalingus filtrus. Kalbai skirti ir privatumo filtrai gali naudoti daug taisyklių"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "Eiti į filtrus"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "Įdiegti darbalaukio programą"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "Pašalinkite taisyklių apribojimus ir gaukite išplėstinę apsaugą, kuri veikia visose naršyklėse"
     },
     "options_all_limits_exceeded_warning": {
         "message": "Pasiekėte aktyvių integruotų filtrų limitą. Jūsų naršyklė pakeitė aktyvių integruotų filtrų sąrašą. Įjungtų filtrų skaičius pasikeitė nuo %expected% iki %current%."
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "Versija"
+    },
+    "options_about_update_available": {
+        "message": "Versija %version% yra prieinama. Ji bus automatiškai parsisiųsta ir įdiegta."
     },
     "options_about_libs": {
         "message": "Naudojamos bibliotekos"

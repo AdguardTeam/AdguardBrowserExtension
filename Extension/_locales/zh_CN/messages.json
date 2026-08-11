@@ -196,7 +196,10 @@
         "message": "仅拦截白名单网站上的广告与跟踪器"
     },
     "options_allowlist_alert_invert": {
-        "message": "白名单已倒置。仅拦截添加到其中的网站上的广告。<a>禁用<\/a>"
+        "message": "白名单已反转。广告仅在添加到列表中的网站上被拦截。"
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>停止反转<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "白名单的更改将丢失"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "已更新：%date%"
+    },
+    "options_filters_last_checked": {
+        "message": "上次检查时间：%date%"
     },
     "options_antibanner_custom_group": {
         "message": "自定义"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "清除日志"
     },
+    "filtering_log_actions_menu": {
+        "message": "过滤日志操作"
+    },
     "filtering_type_all": {
         "message": "全部"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "导入"
     },
+    "options_user_rules_delete_all": {
+        "message": "清除所有规则"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "清除所有规则?"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "将永久删除所有用户规则"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "所有用户规则已删除"
+    },
+    "options_user_rules_import_success": {
+        "message": "用户规则导入成功"
+    },
+    "options_user_rules_import_error": {
+        "message": "用户规则导入失败。请重试。"
+    },
+    "options_user_rules_menu": {
+        "message": "用户规则操作"
+    },
+    "options_allowlist_menu": {
+        "message": "白名单操作"
+    },
     "options_userfilter_description_key": {
         "message": "您可以在这里添加自己的规则。建议熟悉 HTML\/CSS 的高级用户使用此选项。阅读 <a>过滤器规则教程<\/a>来学习如何编写您自己的过滤器规则。"
     },
     "options_userfilter_subtitle_key": {
         "message": "允许添加自定义过滤规则"
+    },
+    "options_user_rules_description_key": {
+        "message": "您用于拦截和解除拦截广告或整个网站的规则"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "暂无规则"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "搜索"
+    },
+    "options_user_rules_clear_search": {
+        "message": "清除搜索"
+    },
+    "options_user_rules_create_rule": {
+        "message": "创建规则"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "编辑规则"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "移除规则"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "用户规则已删除："
+    },
+    "options_user_rules_undo": {
+        "message": "撤销"
+    },
+    "options_user_rules_no_match": {
+        "message": "没找到"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "切换到编辑器视图"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "切换到列表视图"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "正在高亮显示规则…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "换行"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "您喜欢 AdGuard 吗？"
     },
-    "options_footer_like_us_cta": {
-        "message": "给我们评分！"
+    "options_rate_us_cta": {
+        "message": "评分"
     },
     "options_miscellaneous_settings": {
         "message": "附加设置"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "选项 3：如果您可以接受当前启用的默认过滤器，即可<a>关闭此警告<\/a>。"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "已达上限，部分过滤器已停用。"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "您可以采取以下措施"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "移除其他广告拦截程序"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "浏览器扩展共享相同的规则上限。移除其他广告拦截程序可能为 AdGuard 浏览器扩展释放更多规则。"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "管理扩展程序"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "检查可用的过滤器"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "启用所需的过滤器。特定语言和隐私过滤器可能使用大量规则。"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "转到过滤器"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "安装桌面应用"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "解除规则上限，获得适用于所有浏览器的增强保护。"
     },
     "options_all_limits_exceeded_warning": {
         "message": "您已达到内置规则激活上限。 浏览器已修改了内置规则过滤器列表。 启用的过滤器数量已从 %expected% 个更改为 %current% 个。"
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "版本"
+    },
+    "options_about_update_available": {
+        "message": "版本 %version% 已发布，将自动下载并安装。"
     },
     "options_about_libs": {
         "message": "已使用的库"

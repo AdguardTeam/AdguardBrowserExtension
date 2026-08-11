@@ -25,7 +25,7 @@ import escape from 'css.escape';
 import chrome from 'sinon-chrome/extensions';
 import { type DebouncedFunc } from 'lodash-es/debounce';
 
-import { ResourceType } from '@adguard/tsurlfilter/es/declarative-converter';
+import { ResourceType } from '@adguard/dnr-converter';
 
 import { MANIFEST_ENV } from './tools/constants';
 import {
@@ -90,6 +90,19 @@ vi.mock('nanoid', () => ({
 
 // Mock log to hide all logger message
 vi.mock('./Extension/src/common/logger.ts');
+
+// Polyfill ResizeObserver for jsdom (not natively supported)
+// eslint-disable-next-line class-methods-use-this
+global.ResizeObserver = class ResizeObserver {
+    // eslint-disable-next-line class-methods-use-this
+    observe() {}
+
+    // eslint-disable-next-line class-methods-use-this
+    unobserve() {}
+
+    // eslint-disable-next-line class-methods-use-this
+    disconnect() {}
+};
 
 vi.mock('@adguard/tswebextension', async () => ({
     ...(await vi.importActual('@adguard/tswebextension')),

@@ -196,7 +196,10 @@
         "message": "Blochează reclamele și trackerele numai pe site-urile web permise"
     },
     "options_allowlist_alert_invert": {
-        "message": "Lista de autorizări este inversată. Reclamele sunt blocate numai pe site-urile web adăugate la aceasta. <a>Dezactivare<\/a>"
+        "message": "Lista de autorizări este inversată. Reclamele sunt Blocat numai pe site-urile web adăugate la aceasta."
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>Opriți inversarea<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "Modificările dvs. la lista permisă se vor pierde"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "Actualizat: %date%"
+    },
+    "options_filters_last_checked": {
+        "message": "Ultima verificare: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Personalizat"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "Resetați raportul"
     },
+    "filtering_log_actions_menu": {
+        "message": "Acțiuni jurnal de filtrare"
+    },
     "filtering_type_all": {
         "message": "Toate"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "Import"
     },
+    "options_user_rules_delete_all": {
+        "message": "Elimină toate"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "Ștergeți totul?"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "Toate regulile utilizatorului vor fi șterse definitiv"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "Toate regulile utilizatorului au fost șterse"
+    },
+    "options_user_rules_import_success": {
+        "message": "Regulile utilizatorului au fost importate cu succes"
+    },
+    "options_user_rules_import_error": {
+        "message": "Importul regulilor utilizatorului a eșuat. Vă rugăm să încercați din nou"
+    },
+    "options_user_rules_menu": {
+        "message": "Acțiuni reguli utilizator"
+    },
+    "options_allowlist_menu": {
+        "message": "Acțiuni listă de autorizări"
+    },
     "options_userfilter_description_key": {
         "message": "Puteți adăuga propriile reguli aici. Această opțiune este recomandată pentru utilizatorii avansați, familiarizați cu HTML\/CSS. Citiți tutorialul <a>Tutorial de reguli de filtrare<\/a> pentru a afla cum să scrieți propriile reguli de filtrare."
     },
     "options_userfilter_subtitle_key": {
         "message": "Vă permite să adăugați propriile reguli de filtrare"
+    },
+    "options_user_rules_description_key": {
+        "message": "Regulile dvs. pentru blocarea și deblocarea reclamelor sau a întregilor site-uri web"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "Încă nu există reguli"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "Caută"
+    },
+    "options_user_rules_clear_search": {
+        "message": "Goliți căutarea"
+    },
+    "options_user_rules_create_rule": {
+        "message": "Creează regulă"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "Editați regula"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "Ștergeți regula"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "Regulă utilizator ștearsă:"
+    },
+    "options_user_rules_undo": {
+        "message": "Anulare"
+    },
+    "options_user_rules_no_match": {
+        "message": "Nimic găsit"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "Comutați la vizualizarea editor"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "Comutați la vizualizarea listă"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "Se evidențiază regulile…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "Sfârșit de linie"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "Vă place AdGuard?"
     },
-    "options_footer_like_us_cta": {
-        "message": "Cotați-ne!"
+    "options_rate_us_cta": {
+        "message": "Cotați-ne"
     },
     "options_miscellaneous_settings": {
         "message": "Setări suplimentare"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "Opțiunea 3. Dacă sunteți mulțumit de filtrele implicite activate curent, <a>închideți acest avertisment<\/a>"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "Limita a fost atinsă — unele filtre au fost dezactivate"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "Iată ce puteți face"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "Eliminați alte blocante de reclame"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "Extensiile de browser partajează aceeași limită de reguli. Eliminarea altor blocante de reclame poate elibera mai multe reguli pentru AdGuard Browser Extension"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "Gestiona extensiile"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "Revizuiți filtrele disponibile"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "Activați filtrele de care aveți nevoie. Filtrele specifice limbii și de confidențialitate pot utiliza multe reguli"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "Mergi la filtre"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "Instalați aplicația desktop"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "Eliminați limitele regulilor și obțineți protecție extinsă care funcționează în toate browserele"
     },
     "options_all_limits_exceeded_warning": {
         "message": "Ați atins limita regulilor încorporate active. Browserul dvs. a modificat lista de filtre active încorporate. Numărul de filtre activate s-a modificat de la %expected% la %current%."
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "Versiune"
+    },
+    "options_about_update_available": {
+        "message": "Versiunea %version% este disponibilă. Va fi descărcată și instalată automat."
     },
     "options_about_libs": {
         "message": "Biblioteci utilizate"

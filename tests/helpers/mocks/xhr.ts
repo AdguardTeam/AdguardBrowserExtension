@@ -21,8 +21,11 @@
 import sinon from 'sinon';
 import escapeStringRegexp from 'escape-string-regexp';
 
-import { METADATA_RULESET_ID, MetadataRuleSet } from '@adguard/tsurlfilter/es/declarative-converter';
-import { getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
+import {
+    METADATA_RULESET_ID,
+    MetadataRuleset,
+    getRulesetPath,
+} from '@adguard/dnr-converter';
 
 import { RootOption, FiltersOption } from '../../../Extension/src/background/schema';
 import { REMOTE_METADATA_FILE_NAME, REMOTE_I18N_METADATA_FILE_NAME } from '../../../constants';
@@ -40,10 +43,10 @@ const SETTINGS_V_1_0 = getSettingsV1();
 const metadata = getMetadataFixture();
 const i18nMetadata = getI18nMetadataFixture();
 const filterText = getFilterTextFixture();
-const metadataRuleSet = new MetadataRuleSet();
-metadataRuleSet.setAdditionalProperty('metadata', metadata);
-const serializedMetadataRuleSet = metadataRuleSet.serialize();
-const metadataRuleSetPath = getRuleSetPath(METADATA_RULESET_ID, 'filters/declarative');
+const metadataRuleset = new MetadataRuleset();
+metadataRuleset.setAdditionalProperty('metadata', metadata);
+const serializedMetadataRuleset = metadataRuleset.serialize();
+const metadataRulesetPath = getRulesetPath(METADATA_RULESET_ID, 'filters/declarative');
 
 // TODO: change case to UPPER_SNAKE_CASE
 export const mockFilterPath = 'test-filter.txt';
@@ -62,10 +65,10 @@ export const mockXhrRequests = (): sinon.SinonFakeServer => {
     });
 
     if (__IS_MV3__) {
-        server.respondWith('GET', new RegExp(escapeStringRegexp(metadataRuleSetPath)), [
+        server.respondWith('GET', new RegExp(escapeStringRegexp(metadataRulesetPath)), [
             200,
             { 'Content-Type': 'application/json' },
-            serializedMetadataRuleSet,
+            serializedMetadataRuleset,
         ]);
     }
 

@@ -22,12 +22,13 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import { addMinDelayLoader } from '../../../common/components/helpers';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../common/telemetry';
 import { rootStore } from '../../stores/RootStore';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { type SettingOption } from '../../../../background/schema';
 
 export const UserRulesSwitcher = observer(({ labelId }: { labelId: string }) => {
-    const { settingsStore, uiStore } = useContext(rootStore);
+    const { settingsStore, uiStore, telemetryStore } = useContext(rootStore);
 
     const updateSettingWithLimitCheck = async (settingId: SettingOption, value: boolean) => {
         await settingsStore.updateSetting(settingId, value);
@@ -37,6 +38,11 @@ export const UserRulesSwitcher = observer(({ labelId }: { labelId: string }) => 
     };
 
     const handleUserGroupToggle = async ({ id, data }: { id: SettingOption; data: boolean }) => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.UserRulesSwitchClick,
+            TelemetryScreenName.UserRulesScreen,
+        );
+
         await addMinDelayLoader(
             uiStore.setShowLoader,
             updateSettingWithLimitCheck,

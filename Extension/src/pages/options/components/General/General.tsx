@@ -35,6 +35,7 @@ import { TelemetryScreenName } from '../../../../common/telemetry';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { SettingsSetCheckbox } from '../Settings/SettingsSetCheckbox';
 import { SettingSetSelect } from '../Settings/SettingSetSelect';
+import { ConfirmModal } from '../../../common/components/ConfirmModal';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
 import { handleFileUpload } from '../../../helpers';
@@ -57,6 +58,7 @@ import { AppearanceTheme, FiltersUpdateTime } from '../../../../common/constants
 import { StaticFiltersLimitsWarning } from '../Warnings';
 import { logger } from '../../../../common/logger';
 import { ExtensionUsageDataModal } from '../Miscellaneous/ExtensionUsageDataModal/ExtensionUsageDataModal';
+import { Permissions } from '../../../../common/permissions';
 
 import { DesktopAppPromo } from './DesktopAppPromo';
 
@@ -109,14 +111,15 @@ const APPEARANCE_THEMES_OPTIONS = [
 const AllowAcceptableAds = 'allowAcceptableAds';
 
 /**
- * We need to handle privacy permission on user action.
- * That is why we check for privacy permission on the UI.
+ * Extracts the WebRTC blocking setting from exported settings.
  *
- * @param content JSON string content to parse.
+ * @param content JSON string content to parse
  *
- * @throws error if privacy permission is required, but it wasn't given
+ * @returns Whether WebRTC blocking is enabled
+ *
+ * @throws Error if the setting cannot be parsed
  */
-const handlePrivacyPermissionForWebRtc = (content: string): Promise<boolean> => {
+const getBlockWebRtcSetting = (content: string): boolean => {
     const json: unknown = JSON.parse(content);
 
     const blockWebRtc = Unknown.get(json, 'stealth.stealth-block-webrtc');
@@ -125,7 +128,7 @@ const handlePrivacyPermissionForWebRtc = (content: string): Promise<boolean> => 
         throw new Error('Was not able to parse file content');
     }
 
-    return ensurePermission(blockWebRtc);
+    return blockWebRtc;
 };
 
 export const General = observer(() => {
@@ -141,6 +144,7 @@ export const General = observer(() => {
 
     const importInputRef = useRef<HTMLInputElement>(null);
     const [isUsageDataModalOpen, setIsUsageDataModalOpen] = useState(false);
+    const [pendingImportContent, setPendingImportContent] = useState<string | null>(null);
 
     if (!settings) {
         return null;
@@ -166,6 +170,16 @@ export const General = observer(() => {
         importInputRef.current.click();
     };
 
+    const applySettings = async (content: string): Promise<boolean> => {
+        const result = await messenger.applySettingsJson(content);
+
+        if (result && __IS_MV3__) {
+            await settingsStore.checkLimitations();
+        }
+
+        return result;
+    };
+
     const inputChangeHandler = async (event: React.ChangeEvent<HTMLInputElement>) => {
         event.persist();
         const file = event.target.files?.[0];
@@ -178,23 +192,16 @@ export const General = observer(() => {
 
         try {
             const content = await handleFileUpload(file, 'json');
-            const success = await handlePrivacyPermissionForWebRtc(content);
-            if (!success) {
-                uiStore.addNotification({
-                    type: NotificationType.Error,
-                    text: translator.getMessage('options_popup_import_error_required_privacy_permission'),
-                });
-                event.target.value = '';
-                return;
+            if (getBlockWebRtcSetting(content)) {
+                const hasPrivacyPermission = await Permissions.hasPrivacy();
+                if (!hasPrivacyPermission) {
+                    setPendingImportContent(content);
+                    event.target.value = '';
+                    return;
+                }
             }
 
-            const result = await messenger.applySettingsJson(content);
-
-            if (result) {
-                if (__IS_MV3__) {
-                    await settingsStore.checkLimitations();
-                }
-            } else {
+            if (!await applySettings(content)) {
                 isSucceeded = false;
             }
         } catch (e) {
@@ -222,6 +229,49 @@ export const General = observer(() => {
 
         // eslint-disable-next-line no-param-reassign
         event.target.value = '';
+    };
+
+    /**
+     * Confirms the pending WebRTC-enabling import and applies it.
+     *
+     * Must be invoked directly from a user gesture handler (e.g. a modal
+     * button's `onClick`), with `ensurePermission` as the first `await`.
+     * `browser.permissions.request()` requires an active user gesture to show
+     * its prompt; any `await` before calling it (e.g. reading the imported
+     * file) loses that gesture context, causing the permission request to be
+     * silently skipped or rejected.
+     */
+    const handlePendingImportConfirm = async () => {
+        if (!pendingImportContent) {
+            return;
+        }
+
+        let isSucceeded = true;
+
+        try {
+            const permissionGranted = await ensurePermission(true);
+            if (!permissionGranted) {
+                uiStore.addNotification({
+                    type: NotificationType.Error,
+                    text: translator.getMessage('options_popup_import_error_required_privacy_permission'),
+                });
+                return;
+            }
+
+            if (!await applySettings(pendingImportContent)) {
+                isSucceeded = false;
+            }
+        } catch (e) {
+            logger.error('[ext.General]: error:', e);
+            isSucceeded = false;
+        }
+
+        uiStore.addNotification({
+            type: isSucceeded ? NotificationType.Success : NotificationType.Error,
+            text: isSucceeded
+                ? translator.getMessage('options_popup_import_success_title')
+                : translator.getMessage('options_popup_import_error_title'),
+        });
     };
 
     const inputChangeHandlerWrapper = addMinDelayLoader(
@@ -359,6 +409,19 @@ export const General = observer(() => {
                 closeModalHandler={() => setIsUsageDataModalOpen(false)}
                 isOpen={isUsageDataModalOpen}
             />
+            <ConfirmModal
+                isOpen={pendingImportContent !== null}
+                setIsOpen={(isOpen) => {
+                    if (!isOpen) {
+                        setPendingImportContent(null);
+                    }
+                }}
+                onConfirm={handlePendingImportConfirm}
+                title={translator.getMessage('options_import_configuration_confirm_title')}
+                subtitle={translator.getMessage('options_import_configuration_confirm_subtitle')}
+                customConfirmTitle={translator.getMessage('options_import_configuration_confirm_button')}
+                isConsent
+            />
             <div className="links-menu links-menu--section">
                 <button
                     type="button"
@@ -405,7 +468,7 @@ export const General = observer(() => {
                     {translator.getMessage('options_leave_feedback')}
                 </button>
             </div>
-            {settingsStore.showGeneralSettingsPromo && <DesktopAppPromo />}
+            <DesktopAppPromo />
         </>
     );
 });

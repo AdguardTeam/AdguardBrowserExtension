@@ -29,8 +29,8 @@ export const getEmptyStatisticDataFixture = (): GetStatisticsDataResponse => {
         today: Array(24).fill(emptyStats),
         lastWeek: Array(7).fill(emptyStats),
         lastMonth: Array(30).fill(emptyStats),
-        lastYear: Array(3).fill(emptyStats),
-        overall: Array(3).fill(emptyStats),
+        lastYear: Array(PageStatsStorage.MAX_MONTHS_HISTORY).fill(emptyStats),
+        overall: Array(PageStatsStorage.MAX_MONTHS_HISTORY).fill(emptyStats),
         blockedCategories: [
             { categoryId: 'total', categoryName: translator.getMessage('popup_statistics_all_categories') },
             { categoryId: 'Advertising', categoryName: translator.getMessage('popup_statistics_category_advertising') },

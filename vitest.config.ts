@@ -58,6 +58,14 @@ const createProjectForManifestVersion = (
     test: {
         name: `mv${manifestVersion}`,
         exclude: ['**/node_modules/**', '**/vendor/**'],
+        server: {
+            deps: {
+                // `@adguard/rules-editor` is ESM but imports named exports from
+                // the CommonJS `vscode-oniguruma`. Inlining lets vitest transform
+                // them so the interop works when tests use the real renderer.
+                inline: [/@adguard\/rules-editor/, 'vscode-oniguruma'],
+            },
+        },
         setupFiles: [
             // Setup all needed stuff: mocks, etc.
             'fake-indexeddb/auto',

@@ -18,6 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import fs from 'node:fs';
 import path from 'node:path';
 
 import {
@@ -28,6 +29,8 @@ import {
     type WebError,
     type Worker,
 } from 'playwright';
+
+import { type Configuration } from '@adguard/tswebextension/mv3';
 
 import { MessageType } from '../../../Extension/src/common/messages/constants';
 import { setTsWebExtensionConfig } from '../page-injections';
@@ -131,13 +134,23 @@ export const isChromiumEngineStartedLog = (message: string): boolean => {
  *
  * @param entry E2E matrix entry.
  * @param extensionPath Unpacked extension path.
+ * @param options.cleanProfile If false, reuse the persistent profile (default: true).
+ * @param options.config Configuration to inject, null to skip, undefined for DEFAULT_EXTENSION_CONFIG.
  *
  * @returns Chromium E2E session.
  */
 export const launchChromiumE2ESession = async (
     entry: E2EMatrixEntry,
     extensionPath: string,
+    { cleanProfile = true, config }: {
+        cleanProfile?: boolean;
+        config?: Configuration | null;
+    } = {},
 ): Promise<ChromiumE2ESession> => {
+    if (cleanProfile) {
+        fs.rmSync(path.join('tmp', 'e2e', entry.id), { recursive: true, force: true });
+    }
+
     const userDataDir = path.join('tmp', 'e2e', entry.id, 'chromium-profile');
     const args = [
         ...createChromiumLaunchArgs(extensionPath, entry.isMv3 ? 3 : 2),
@@ -157,7 +170,7 @@ export const launchChromiumE2ESession = async (
     if (entry.isMv3) {
         backgroundTarget = await getMv3BackgroundTarget(context);
         extensionId = getExtensionIdFromUrl(backgroundTarget.url());
-        await configureChromiumTsWebExtension(backgroundTarget);
+        await configureChromiumTsWebExtension(backgroundTarget, config);
     } else {
         backgroundTarget = await getMv2BackgroundTarget(context);
         extensionId = getExtensionIdFromUrl(backgroundTarget.url());
@@ -235,6 +248,21 @@ export const openChromiumE2ESurface = async (
         },
         async getBackgroundErrors(): Promise<E2EError[]> {
             return session.backgroundErrors.sliceFrom(backgroundCursor);
+        },
+        async clickSelector(selector: string): Promise<void> {
+            await page.locator(selector).first().click();
+        },
+        async typeText(selector: string, text: string): Promise<void> {
+            // pressSequentially focuses the element (without clicking, so an
+            // existing selection — e.g. a CodeMirror cursor position — is
+            // preserved) and dispatches real key events per character.
+            await page.locator(selector).first().pressSequentially(text);
+        },
+        async evaluate<T>(fn: (arg: unknown) => Promise<T> | T, arg?: unknown): Promise<T> {
+            return page.evaluate(fn, arg);
+        },
+        async getTextContents(selector: string): Promise<string[]> {
+            return page.locator(selector).allTextContents();
         },
         async close(): Promise<void> {
             await page.close();
@@ -387,18 +415,30 @@ const waitForChromiumEngineStartedFromContext = (context: BrowserContext): Promi
 };
 
 /**
- * Applies the default browser-test TSWebExtension configuration.
+ * Applies the browser-test TSWebExtension configuration.
+ *
+ * When config is null, only waits for the config hook (SW ready) without injecting.
  *
  * @param target Extension background target.
+ * @param config Configuration to inject, null to skip, or undefined for default.
  *
  * @returns Nothing.
  */
-const configureChromiumTsWebExtension = async (target: Page | Worker): Promise<void> => {
+const configureChromiumTsWebExtension = async (
+    target: Page | Worker,
+    config?: Configuration | null,
+): Promise<void> => {
     await waitForChromiumTsWebExtensionConfigHook(target);
 
-    await target.evaluate<void, typeof DEFAULT_EXTENSION_CONFIG>(
+    if (config === null) {
+        return;
+    }
+
+    const configToUse = config ?? DEFAULT_EXTENSION_CONFIG;
+
+    await target.evaluate<void, Configuration>(
         setTsWebExtensionConfig,
-        DEFAULT_EXTENSION_CONFIG,
+        configToUse,
     );
 };
 

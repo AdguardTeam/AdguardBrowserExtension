@@ -56,13 +56,14 @@ import { CosmeticRuleBodyGenerator } from '@adguard/agtree/generator';
 import { ADGUARD_FILTERS_IDS } from '../../constants';
 import {
     AssetsFiltersBrowser,
+    DEFAULT_REGISTERED_SCRIPT_TEXT,
     FILTERS_DEST,
     LOCAL_SCRIPT_RULES_COMMENT_CHROME_MV3,
     LOCAL_SCRIPT_RULES_COMMENT,
     type Mv3AssetsFiltersBrowser,
 } from '../constants';
 
-import { extractPreprocessedRawFilterList, readMetadataRuleSet } from './filter-extractor';
+import { extractPreprocessedFilterContent, readMetadataRuleset } from './filter-extractor';
 import { TESTCASES_RULES } from './testcases-rules';
 
 const exec = promisify(execCallback);
@@ -141,6 +142,13 @@ const updateLocalScriptRulesForBrowser = async (browser: AssetsFiltersBrowser) =
         comment: LOCAL_SCRIPT_RULES_COMMENT,
         rules: {},
     };
+
+    // Pre-fill predefined scripts that must always be present in the bundle,
+    // regardless of filter contents. These help with CSP and Trusted Types
+    // testing on testcases.agrd.dev and distinguish different script sources.
+    rules.rules[DEFAULT_REGISTERED_SCRIPT_TEXT] = [
+        { permittedDomains: [], restrictedDomains: [] },
+    ];
 
     // eslint-disable-next-line no-restricted-syntax
     for (const filterId of ADGUARD_FILTERS_IDS) {
@@ -342,6 +350,11 @@ const updateLocalScriptRulesForMv3 = async (
     jsRules: Set<string>,
     browser: Mv3AssetsFiltersBrowser,
 ) => {
+    // Pre-fill predefined scripts that must always be present in the bundle.
+    // These are added first so they appear at the top of the generated file,
+    // and help with CSP and Trusted Types testing on testcases.agrd.dev.
+    jsRules.add(DEFAULT_REGISTERED_SCRIPT_TEXT);
+
     // First, process testcases rules
     TESTCASES_RULES.forEach((rawRule) => {
         const ruleNode = CosmeticRuleParser.parse(rawRule);
@@ -444,15 +457,15 @@ export const updateLocalResourcesForMv3 = async (browser: Mv3AssetsFiltersBrowse
         'declarative',
     );
 
-    const metadataRuleSet = await readMetadataRuleSet(folder);
-    const ruleSetIds = metadataRuleSet.getRuleSetIds();
+    const metadataRuleset = await readMetadataRuleset(folder);
+    const rulesetIds = metadataRuleset.getRulesetIds();
 
     const jsRules: Set<string> = new Set();
 
     // eslint-disable-next-line no-restricted-syntax
-    for (const ruleSetId of ruleSetIds) {
-        const rawFilterList = await extractPreprocessedRawFilterList(ruleSetId, folder);
-        const filterListNode = FilterListParser.parse(rawFilterList, {
+    for (const rulesetId of rulesetIds) {
+        const filterContent = await extractPreprocessedFilterContent(rulesetId, folder);
+        const filterListNode = FilterListParser.parse(filterContent, {
             ...defaultParserOptions,
             includeRaws: false,
             isLocIncluded: false,

@@ -18,7 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { type DeclarativeRule, RuleActionType } from '@adguard/tsurlfilter/es/declarative-converter';
+import { type DeclarativeRule, RuleActionType } from '@adguard/dnr-converter';
 
 import { type DeclarativeRuleInfo } from 'tswebextension';
 
@@ -47,7 +47,7 @@ export const getDeclarativeStatusMode = (declarativeRuleInfo: DeclarativeRuleInf
     const rule = JSON.parse(declarativeRuleJson) as DeclarativeRule;
 
     // Small hack to show rules with $redirect as blocked for keep legacy logic.
-    if (rule.action.type === RuleActionType.REDIRECT
+    if (rule.action.type === RuleActionType.Redirect
         && sourceRules.some(({ sourceRule }) => (
             sourceRule.includes('$redirect=')
             || sourceRule.includes(',redirect=')
@@ -57,18 +57,18 @@ export const getDeclarativeStatusMode = (declarativeRuleInfo: DeclarativeRuleInf
     }
 
     switch (rule.action.type) {
-        case RuleActionType.BLOCK: {
+        case RuleActionType.Block: {
             return StatusMode.Blocked;
         }
 
-        case RuleActionType.MODIFY_HEADERS:
-        case RuleActionType.REDIRECT: {
+        case RuleActionType.ModifyHeaders:
+        case RuleActionType.Redirect: {
             return StatusMode.Modified;
         }
 
-        case RuleActionType.ALLOW_ALL_REQUESTS:
-        case RuleActionType.UPGRADE_SCHEME:
-        case RuleActionType.ALLOW: {
+        case RuleActionType.AllowAllRequests:
+        case RuleActionType.UpgradeScheme:
+        case RuleActionType.Allow: {
             return StatusMode.Allowed;
         }
 
@@ -93,6 +93,7 @@ export const getStatusMode = (event: UIFilteringLogEvent) => {
         requestRule,
         removeParam,
         removeHeader,
+        urlTransform,
         isModifyingCookieRule,
         declarativeRuleInfo,
     } = event;
@@ -135,7 +136,7 @@ export const getStatusMode = (event: UIFilteringLogEvent) => {
             // $stealth allowlist rules are not being marked as allowed
             // to prevent log cluttering and conform with desktop applications
             mode = StatusMode.Allowed;
-        } else if (cssRule || scriptRule || removeParam || removeHeader) {
+        } else if (cssRule || scriptRule || removeParam || removeHeader || urlTransform) {
             mode = StatusMode.Modified;
         } else if (cookieRule) {
             if (isModifyingCookieRule) {
