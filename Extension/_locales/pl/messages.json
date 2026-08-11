@@ -196,7 +196,10 @@
         "message": "Blokuje reklamy i trackery tylko na dozwolonych stronach"
     },
     "options_allowlist_alert_invert": {
-        "message": "Lista dozwolonych jest odwrócona. Reklamy są blokowane tylko na stronach do niej dodanych. <a>Dezaktywuj<\/a>"
+        "message": "Lista dozwolonych jest odwrócona. Reklamy są Zablokowane tylko na stronach internetowych dodanych do niej."
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>Zatrzymaj odwracanie<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "Wprowadzone zmiany w liście dozwolonych zostaną utracone"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "Zaktualizowano: %date%"
+    },
+    "options_filters_last_checked": {
+        "message": "Ostatnie sprawdzenie: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Niestandardowy"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "Wyczyść dziennik"
     },
+    "filtering_log_actions_menu": {
+        "message": "Działania logu filtrowania"
+    },
     "filtering_type_all": {
         "message": "Wszystko"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "Importuj"
     },
+    "options_user_rules_delete_all": {
+        "message": "Usuń wszystko"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "Usuń wszystko?"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "Wszystkie reguły użytkownika zostaną trwale usunięte"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "Wszystkie reguły użytkownika zostały usunięte"
+    },
+    "options_user_rules_import_success": {
+        "message": "Reguły użytkownika zaimportowane pomyślnie"
+    },
+    "options_user_rules_import_error": {
+        "message": "Nie udało się zaimportować reguł użytkownika. Spróbuj ponownie"
+    },
+    "options_user_rules_menu": {
+        "message": "Działania reguł użytkownika"
+    },
+    "options_allowlist_menu": {
+        "message": "Działania listy dozwolonych"
+    },
     "options_userfilter_description_key": {
         "message": "Tutaj możesz dodać własne reguły. Ta opcja jest zalecana dla zaawansowanych użytkowników znających HTML\/CSS. Przeczytaj <a>samouczek dotyczący reguł filtrowania<\/a>, aby dowiedzieć się, jak napisać własne reguły filtrowania."
     },
     "options_userfilter_subtitle_key": {
         "message": "Pozwala na dodawanie własnych reguł filtrowania"
+    },
+    "options_user_rules_description_key": {
+        "message": "Twoje reguły do blokowania i odblokowywania reklam lub całych stron internetowych"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "Brak reguł"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "Wyszukaj"
+    },
+    "options_user_rules_clear_search": {
+        "message": "Wyczyść wyszukiwanie"
+    },
+    "options_user_rules_create_rule": {
+        "message": "Utwórz regułę"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "Edytuj regułę"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "Usuń regułę"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "Reguła użytkownika usunięta:"
+    },
+    "options_user_rules_undo": {
+        "message": "Cofnij"
+    },
+    "options_user_rules_no_match": {
+        "message": "Nic nie znaleziono"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "Przełącz do poglądu edytora"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "Przełącz do poglądu listy"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "Wyróżnianie reguł…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "Podział wiersza"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "Lubisz AdGuard?"
     },
-    "options_footer_like_us_cta": {
-        "message": "Oceń nas!"
+    "options_rate_us_cta": {
+        "message": "Oceń nas"
     },
     "options_miscellaneous_settings": {
         "message": "Dodatkowe ustawienia"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "Opcja 3. Jeśli odpowiadają Ci obecnie włączone filtry, <a>zamknij to ostrzeżenie.<\/a>"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "Osiągnięto limit — niektóre filtry zostały wyłączone"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "Oto, co możesz zrobić"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "Usuń inne blokery reklam"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "Rozszerzenia przeglądarki udostępniają ten sam limit reguł. Usunięcie innych blokerów reklam może zwolnić więcej reguł dla AdGuard Browser Extension"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "Zarządzaj rozszerzeniami"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "Przejrzyj dostępne filtry"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "Włącz filtry, których potrzebujesz. Filtry specyficzne dla języka i prywatności mogą używać wielu reguł"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "Przejdź do filtrów"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "Zainstaluj aplikację desktop"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "Usuń ograniczenia reguł i uzyskaj rozszerzoną ochronę, która działa we wszystkich przeglądarkach"
     },
     "options_all_limits_exceeded_warning": {
         "message": "Osiągnięto limit aktywnych wbudowanych reguł. Przeglądarka zmodyfikowała listę aktywnych wbudowanych filtrów. Zmieniono aktywne filtry z %expected% na %current%."
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "Wersja"
+    },
+    "options_about_update_available": {
+        "message": "Wersja %version% jest dostępna. Zostanie pobrana i zainstalowana automatycznie."
     },
     "options_about_libs": {
         "message": "Użyte biblioteki"

@@ -196,7 +196,10 @@
         "message": "Estää mainokset ja seurantalaitteet vain sallittujen verkkosivustojen kohdalla"
     },
     "options_allowlist_alert_invert": {
-        "message": "Käänteinen sallittujen lista on käytössä. Mainokset estetään vain listalla olevilla sivustoilla. <a>Poista käytöstä<\/a>"
+        "message": "Sallittujen lista on käännetty päinvastaiseksi. Mainokset estetään vain sivustoilla, jotka on lisätty siihen."
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>Lopeta kääntäminen<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "Muutokset sallittujen luetteloon menetetään"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "Päivitetty: %date%"
+    },
+    "options_filters_last_checked": {
+        "message": "Viimeksi tarkistettu: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Mukautettu"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "Tyhjennä historia"
     },
+    "filtering_log_actions_menu": {
+        "message": "Lokitoimintojen suodattaminen"
+    },
     "filtering_type_all": {
         "message": "Kaikki"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "Tuo"
     },
+    "options_user_rules_delete_all": {
+        "message": "Poista kaikki"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "Poistetaanko kaikki?"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "Kaikki käyttäjän säännöt poistetaan pysyvästi."
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "Kaikki käyttäjän säännöt poistettiin"
+    },
+    "options_user_rules_import_success": {
+        "message": "Käyttäjän säännöt tuotiin onnistuneesti"
+    },
+    "options_user_rules_import_error": {
+        "message": "Käyttäjäsääntöjen tuonti epäonnistui. Yritä uudelleen"
+    },
+    "options_user_rules_menu": {
+        "message": "Käyttäjäsääntöjen toiminnot"
+    },
+    "options_allowlist_menu": {
+        "message": "Sallittujen luettelon toiminnot"
+    },
     "options_userfilter_description_key": {
         "message": "Tässä voit lisätä omia sääntöjäsi. Tämä vaihtoehto soveltuu edistyneille käyttäjille, jotka ymmärtävät HTML\/CSS-ohjelmointikieliä. Lue <a>suodatussääntöjen opas<\/a> oppiaksesi miten luot omia sääntöjä."
     },
     "options_userfilter_subtitle_key": {
         "message": "Mahdollistaa omien suodatussääntöjen lisäämisen"
+    },
+    "options_user_rules_description_key": {
+        "message": "Omat sääntösi mainosten tai kokonaisien verkkosivujen estämiseen ja sallimiseen."
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "Ei vielä sääntöjä"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "Haku"
+    },
+    "options_user_rules_clear_search": {
+        "message": "Tyhjennä haku"
+    },
+    "options_user_rules_create_rule": {
+        "message": "Luo sääntö"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "Muokkaa sääntöä"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "Poista sääntö"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "Käyttäjäsääntö poistettu:"
+    },
+    "options_user_rules_undo": {
+        "message": "Kumoa"
+    },
+    "options_user_rules_no_match": {
+        "message": "Ei tuloksia"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "Vaihda editori-näkymään"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "Vaihda luettelonäkymään"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "Sääntöjen korostaminen…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "Rivinvaihto"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "Pidätkö AdGuardista?"
     },
-    "options_footer_like_us_cta": {
-        "message": "Arvioi se!"
+    "options_rate_us_cta": {
+        "message": "Arvostele tämä"
     },
     "options_miscellaneous_settings": {
         "message": "Muut asetukset"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "Vaihtoehto 3. Jos olet tyytyväinen tällä hetkellä käytössä oleviin oletussuodattimiin, <a>sulje tämä varoitus<\/a>"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "Raja saavutettu — jotkut suodattimet poistettiin käytöstä"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "Voit toimia seuraavasti"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "Poista muut mainosten estäjät"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "Selainlaajennukset jakavat saman sääntörajan. Muiden mainosten estäjien poistaminen voi vapauttaa lisää sääntöjä AdGuard-selainlaajennukselle"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "Hallitse laajennuksia"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "Tarkista käytettävissä olevat suodattimet"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "Ota tarvitsemasi suodattimet käyttöön. Kielikohtaisissa ja tietosuojasuodattimissa voi olla useita sääntöjä"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "Siirry suodattimiin"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "Asenna työpöytäsovellus"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "Poista sääntöjen rajoitukset ja hanki laajennettu suojaus, joka toimii kaikissa selaimissa"
     },
     "options_all_limits_exceeded_warning": {
         "message": "Olet saavuttanut aktiivisten sisäänrakennettujen sääntöjen rajan. Selaimesi on muokannut aktiivisten sisäänrakennettujen suodattimien luetteloa. Käytössä olevien suodattimien määrä on muuttunut arvosta %expected% arvoon %current%."
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "Versio"
+    },
+    "options_about_update_available": {
+        "message": "Versio %version% on saatavilla. Se ladataan ja asennetaan automaattisesti."
     },
     "options_about_libs": {
         "message": "Käytetyt kirjastot"

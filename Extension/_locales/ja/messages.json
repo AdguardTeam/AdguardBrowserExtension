@@ -54,7 +54,7 @@
         "message": "ファイル拡張子は %extension% になっている必要があります"
     },
     "popup_resume_protection_button": {
-        "message": "修正する"
+        "message": "再開する"
     },
     "popup_adguard_for_ios": {
         "message": "AdGuard for iOS"
@@ -196,7 +196,10 @@
         "message": "ホワイトリストに登録されたウェブサイトでのみ広告とトラッカーをブロックします。"
     },
     "options_allowlist_alert_invert": {
-        "message": "ホワイトリスト逆転中（リストにあるサイトでのみ広告をブロック）。<a>逆転をオフにする<\/a>"
+        "message": "ホワイトリスト反転中。リストにあるウェブサイトでのみ、広告がブロックされます。"
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>反転をオフにする<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "ホワイトリストへの変更は失われます"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "最終更新日時: %date%"
+    },
+    "options_filters_last_checked": {
+        "message": "最終確認: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "カスタム"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "ログをクリアする"
     },
+    "filtering_log_actions_menu": {
+        "message": "フィルタリングログのアクションメニュー"
+    },
     "filtering_type_all": {
         "message": "全て"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "インポート"
     },
+    "options_user_rules_delete_all": {
+        "message": "全部削除する"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "全部削除しますか？"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "すべてのユーザールールが完全に削除されます。"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "すべてのユーザールールが削除されました"
+    },
+    "options_user_rules_import_success": {
+        "message": "ユーザールールが正常にインポートされました。"
+    },
+    "options_user_rules_import_error": {
+        "message": "ユーザールールのインポートに失敗しました。もう一度お試しください"
+    },
+    "options_user_rules_menu": {
+        "message": "ユーザールールのアクションメニュー"
+    },
+    "options_allowlist_menu": {
+        "message": "ホワイトリストのアクションメニュー"
+    },
     "options_userfilter_description_key": {
         "message": "ここで独自のルールを追加することができます。このオプションは、HTML\/CSSに精通した上級ユーザーにお勧めです。独自のフィルタールールの書き方を学ぶには<a>こちらのフィルタールール作成方法説明<\/a> を読んでください。"
     },
     "options_userfilter_subtitle_key": {
         "message": "独自のフィルタリングルールを追加できます。"
+    },
+    "options_user_rules_description_key": {
+        "message": "広告、要素、ウェブサイトごとのブロック・ブロック解除をご自身で設定できるルールです。"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "まだルールがありません"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "検索"
+    },
+    "options_user_rules_clear_search": {
+        "message": "検索をクリア"
+    },
+    "options_user_rules_create_rule": {
+        "message": "ルールを作成"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "ルールを編集"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "ルールを削除する"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "以下のユーザールールが削除されました:"
+    },
+    "options_user_rules_undo": {
+        "message": "元に戻す"
+    },
+    "options_user_rules_no_match": {
+        "message": "何も見つかりません"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "エディタ表示に切り替える"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "リスト表示に切り替える"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "ルールをハイライトしています…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "改行"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "AdGuardを気に入っていますか？"
     },
-    "options_footer_like_us_cta": {
-        "message": "評価する！"
+    "options_rate_us_cta": {
+        "message": "評価をつける"
     },
     "options_miscellaneous_settings": {
         "message": "追加設定"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "オプション 3. 現在有効になっているデフォルトフィルタで十分な場合は、 <a>この警告を閉じ<\/a>て結構です。"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "上限に達したため、一部のフィルターが無効になりました"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "対処法は以下のとおりです："
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "他の広告ブロッカーを削除する"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "ブラウザ拡張機能は複数でも同じルール上限の対象です。他の広告ブロッカーを削除すると、AdGuardブラウザ拡張機能でより多くのルールを利用できる可能性があります。"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "拡張機能の管理へ"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "有効になっているフィルタを確認する"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "必要でないフィルタを無効にすることで、使用中のルールを減らすことができます。（なかでも、言語別フィルタやプライバシーフィルタがルール多いです。）"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "フィルターを確認する"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "AdGuardアプリをインストールする"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "ルール制限なしですべてのブラウザで広告ブロックできます。"
     },
     "options_all_limits_exceeded_warning": {
         "message": "有効な組み込みルール数の上限に達しました。お使いのブラウザは有効な組み込みフィルタのリストを変更しました。有効になっているフィルタの数が %expected% から %current% に変更されました。"
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "バージョン"
+    },
+    "options_about_update_available": {
+        "message": "バージョン %version% が利用可能です。自動的にダウンロード・インストールされます。"
     },
     "options_about_libs": {
         "message": "使用したライブラリ"
