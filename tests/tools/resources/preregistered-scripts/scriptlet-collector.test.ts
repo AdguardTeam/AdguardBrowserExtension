@@ -90,6 +90,20 @@ describe('ScriptletCollector.collect', () => {
         expect(rules.size).toBe(1);
     });
 
+    it('throws when the same JS body is collected under different $path modifiers', async () => {
+        setupRulesets([
+            "[$domain=youtube.com,path=/a]#%#console.log('x');\n"
+            + "[$domain=youtube.com,path=/b]#%#console.log('x');",
+        ]);
+
+        const collector = new ScriptletCollector('/fake/declarative');
+
+        // One file per hash would run the shared body once per matching
+        // rule at runtime, while dynamic injection dedups by body — the
+        // build must fail loudly instead of silently diverging.
+        await expect(collector.collect()).rejects.toThrow('JS body shared by rules');
+    });
+
     it('excludes rules that do not target any preregistered domain', async () => {
         setupRulesets(['unrelated.com##+js(set-constant, foo, bar)']);
 

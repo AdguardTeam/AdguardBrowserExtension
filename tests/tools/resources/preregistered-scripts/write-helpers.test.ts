@@ -43,12 +43,20 @@ describe('writeBundle', () => {
         await fs.rm(tempDir, { recursive: true, force: true });
     });
 
-    it('writes valid JavaScript content to disk', async () => {
+    it('writes valid JavaScript content to disk with a trailing newline', async () => {
         const filePath = path.join(tempDir, 'test.js');
         await writeBundle('var x = 1;', filePath);
 
         const written = await fs.readFile(filePath, 'utf-8');
-        expect(written).toBe('var x = 1;');
+        expect(written).toBe('var x = 1;\n');
+    });
+
+    it('does not double-append a trailing newline', async () => {
+        const filePath = path.join(tempDir, 'newline.js');
+        await writeBundle('var x = 1;\n', filePath);
+
+        const written = await fs.readFile(filePath, 'utf-8');
+        expect(written).toBe('var x = 1;\n');
     });
 
     it('writes an empty string without throwing', async () => {
@@ -56,7 +64,7 @@ describe('writeBundle', () => {
         await expect(writeBundle('', filePath)).resolves.toBeUndefined();
 
         const written = await fs.readFile(filePath, 'utf-8');
-        expect(written).toBe('');
+        expect(written).toBe('\n');
     });
 
     it('writes a complex valid IIFE', async () => {
@@ -65,7 +73,7 @@ describe('writeBundle', () => {
         await writeBundle(code, filePath);
 
         const written = await fs.readFile(filePath, 'utf-8');
-        expect(written).toBe(code);
+        expect(written).toBe(`${code}\n`);
     });
 
     it('throws for a syntax error and includes the file name in the message, without writing the file', async () => {

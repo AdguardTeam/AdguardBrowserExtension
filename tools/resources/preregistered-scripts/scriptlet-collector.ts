@@ -113,6 +113,9 @@ export class ScriptletCollector {
     /** Accumulator: hostnames that have at least one blocking rule. */
     private domainsWithRules: Set<string>;
 
+    /** JS body → first-seen hash, for {@link addRule}'s same-body check. */
+    private jsBodyHashes: Map<string, string>;
+
     /**
      * @param declarativeFolder Path to the DNR declarative filter folder.
      */
@@ -121,6 +124,7 @@ export class ScriptletCollector {
         this.rules = new Map();
         this.scriptletNames = new Set();
         this.domainsWithRules = new Set();
+        this.jsBodyHashes = new Map();
     }
 
     /**
@@ -135,6 +139,7 @@ export class ScriptletCollector {
         this.rules = new Map();
         this.scriptletNames = new Set();
         this.domainsWithRules = new Set();
+        this.jsBodyHashes = new Map();
 
         const metadataRuleSet = await readMetadataRuleSet(this.declarativeFolder);
         const ruleSetIds = metadataRuleSet.getRuleSetIds();
@@ -264,11 +269,31 @@ export class ScriptletCollector {
      *
      * @param hash Stable hash of the rule.
      * @param rule Rule data.
+     *
+     * @throws When the same JS body appears under different hashes: that is
+     * the same rule with different `$path` modifiers. Dynamic injection
+     * dedups by body, while the preregistered path runs one guarded file
+     * per hash, so such pairs would execute twice. Never observed in
+     * filters today — fix by merging the rules in the source filter list
+     * or by adding body-hash dedup to the generated bundle.
      */
     private addRule(
         hash: string,
         rule: Pick<CollectedRuleEntry, 'jsBody' | 'scriptletName' | 'scriptletArgs' | 'pathPattern'>,
     ): void {
+        if (rule.jsBody != null) {
+            const firstHash = this.jsBodyHashes.get(rule.jsBody);
+            if (firstHash === undefined) {
+                this.jsBodyHashes.set(rule.jsBody, hash);
+            } else if (firstHash !== hash) {
+                throw new Error(
+                    `[scriptlet-collector] JS body shared by rules ${firstHash} and ${hash};`
+                    + ' it would run once per matching rule instead of once per page.'
+                    + ' Merge the rules in the filter list or add body-hash dedup to the bundle.',
+                );
+            }
+        }
+
         if (!this.rules.has(hash)) {
             this.rules.set(hash, { hash, ...rule });
         }

@@ -50,8 +50,14 @@ import {
  */
 type BuildTimeManifest = PreregisteredScriptsManifest & {
     /**
+     * Stubbed per-rule hashes kept on disk for persisted registrations of
+     * the immediately previous extension version.
+     */
+    stubHashes?: string[];
+
+    /**
      * Stubbed per-function filenames kept on disk for persisted
-     * registrations of previous extension versions.
+     * registrations of the immediately previous extension version.
      */
     retainedScriptletFiles?: string[];
 };
@@ -86,8 +92,10 @@ const STUB_FILE_CONTENT = '// Stub for a revoked preregistered artifact;'
  * previous extension version still reference those files: a missing file
  * breaks the whole registration at browser startup, while an executable
  * copy would keep running code the current filters have already revoked.
- * Stub hashes stay in the new manifest's `hashes`, so later builds keep
- * re-writing them until every client has synced its registrations.
+ * Stubs are retained ONE generation back: previous-generation stubs
+ * (listed in the manifest's `stubHashes`) are not re-stubbed, so a client
+ * skipping a version may reference removed files until the extension's
+ * startup sync rewrites its registrations.
  *
  * @param previous Previous generation's manifest.
  * @param rules New rule set (keys are the new hashes).
@@ -96,11 +104,19 @@ const STUB_FILE_CONTENT = '// Stub for a revoked preregistered artifact;'
  * @returns Hashes of the written stub files.
  */
 const retainPreviousGenerationFiles = async (
-    previous: PreregisteredScriptsManifest,
+    previous: BuildTimeManifest,
     rules: ReadonlyMap<string, unknown>,
     tempDir: string,
 ): Promise<string[]> => {
-    const stubHashes = previous.hashes.filter((hash) => !rules.has(hash));
+    // Only real previous-generation rules are re-stubbed; hashes already
+    // stubbed once expire. Manifests predating `stubHashes` are treated as
+    // all-real, which just retains them one extra generation.
+    const previousRealHashes = new Set(previous.hashes);
+    for (const stubHash of previous.stubHashes ?? []) {
+        previousRealHashes.delete(stubHash);
+    }
+
+    const stubHashes = [...previousRealHashes].filter((hash) => !rules.has(hash));
 
     await Promise.all(stubHashes.map(async (hash) => {
         await fs.writeFile(path.join(tempDir, getRuleFilename(hash)), STUB_FILE_CONTENT);
@@ -113,8 +129,8 @@ const retainPreviousGenerationFiles = async (
  * Writes empty stub files for previous-generation scriptlet function
  * files no longer referenced by the new name→file map, for the same
  * persisted-registration reason as {@link retainPreviousGenerationFiles}.
- * Returned filenames stay in the manifest's `retainedScriptletFiles`, so
- * later builds keep re-writing the stubs.
+ * Like rule stubs, they are retained ONE generation back: files already
+ * stubbed once are not re-stubbed.
  *
  * @param previous Previous generation's manifest.
  * @param scriptletFiles New name→filename map.
@@ -128,10 +144,7 @@ const retainPreviousScriptletFunctionFiles = async (
     tempDir: string,
 ): Promise<string[]> => {
     const currentFilenames = new Set(Object.values(scriptletFiles));
-    const previousFilenames = new Set([
-        ...Object.values(previous.scriptletFiles ?? {}),
-        ...(previous.retainedScriptletFiles ?? []),
-    ]);
+    const previousFilenames = new Set(Object.values(previous.scriptletFiles ?? {}));
 
     const stubFilenames = [...previousFilenames].filter((filename) => !currentFilenames.has(filename));
 
@@ -159,16 +172,18 @@ const sweepStaleTempDirs = async (filtersFolder: string): Promise<void> => {
 /**
  * Writes the manifest describing the generation's artifacts.
  *
- * @param hashes Hashes of this generation's per-rule files plus retained
- * stub hashes.
+ * @param hashes Hashes of this generation's per-rule files.
  * @param scriptletFiles Scriptlet name → function filename map.
+ * @param stubHashes Stubbed rule hashes kept for persisted registrations
+ * of the previous version.
  * @param retainedScriptletFiles Stubbed function filenames kept for
- * persisted registrations.
+ * persisted registrations of the previous version.
  * @param outputDir Directory to write the manifest into.
  */
 const writeManifest = async (
     hashes: string[],
     scriptletFiles: Record<string, string>,
+    stubHashes: string[],
     retainedScriptletFiles: string[],
     outputDir: string,
 ): Promise<void> => {
@@ -179,12 +194,13 @@ const writeManifest = async (
     const manifest: BuildTimeManifest = {
         hashes: [...hashes].sort(),
         scriptletFiles: sortedScriptletFiles,
+        stubHashes: [...stubHashes].sort(),
         retainedScriptletFiles: [...retainedScriptletFiles].sort(),
     };
 
     await fs.writeFile(
         path.join(outputDir, MANIFEST_FILENAME),
-        JSON.stringify(manifest),
+        `${JSON.stringify(manifest)}\n`,
         'utf-8',
     );
 };
@@ -202,12 +218,12 @@ const writeManifest = async (
  * 4. `cleanup.js` — deletes the coordination `window` property;
  *    registered last in each domain's `js` array.
  * 5. `domains.js` — ES module with the domains that have blocking rules.
- * 6. `manifest.json` — current hashes (plus retained stub hashes) and the
- *    scriptlet name→file map, read at runtime.
+ * 6. `manifest.json` — current hashes, stub hashes and the scriptlet
+ *    name→file map, read at runtime and by the next generation.
  *
- * Dropped per-rule and per-function files of the previous generation are
- * replaced with empty stubs because persisted content-script
- * registrations still reference them.
+ * Dropped per-rule and per-function files of the immediately previous
+ * generation are replaced with empty stubs because persisted
+ * content-script registrations still reference them.
  *
  * @param browser Target MV3 browser identifier (e.g. `"chromium-mv3"`).
  *
@@ -269,8 +285,9 @@ export const generatePreregisteredDomainBundles = async (
         // 8. Write the manifest describing this generation's artifacts,
         // including the retained stub hashes and function files.
         await writeManifest(
-            [...rules.keys(), ...stubHashes],
+            [...rules.keys()],
             scriptletFiles,
+            stubHashes,
             retainedScriptletFiles,
             tempDir,
         );

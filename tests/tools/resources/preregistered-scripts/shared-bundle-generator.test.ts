@@ -121,6 +121,24 @@ describe('compileSharedScriptletsBundle', () => {
         expect(sandbox.hits).toEqual([['example.com', 'x'], ['example.com', 'y']]);
     });
 
+    it('strips one leading "www." label from domainName, mirroring the dynamic injection path', async () => {
+        const result = await compileSharedScriptletsBundle(TEST_KEY);
+
+        const sandbox = createPageSandbox();
+        sandbox.document = { location: { hostname: 'www.example.com' } };
+        vm.runInContext(result, sandbox);
+
+        vm.runInContext(`
+            hits = [];
+            ${TEST_KEY}.f['noop'] = function (source) {
+                hits.push(source.domainName);
+            };
+            ${TEST_KEY}.r('noop', {}, [], 'rule-1');
+        `, sandbox);
+
+        expect(sandbox.hits).toEqual(['example.com']);
+    });
+
     it('produces valid JavaScript syntax', async () => {
         const result = await compileSharedScriptletsBundle(TEST_KEY);
         // If syntax were invalid, vm.Script would throw.

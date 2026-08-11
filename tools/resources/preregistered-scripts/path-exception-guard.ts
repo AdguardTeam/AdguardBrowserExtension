@@ -18,23 +18,17 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { RawRuleConverter } from '@adguard/agtree';
 import {
     CosmeticRule,
     Request,
     RequestType,
 } from '@adguard/tsurlfilter';
 
+import { type CollectedRuleEntry } from './scriptlet-collector';
+
 /** Subset of the collector's `CollectedRuleEntry` used for targeting. */
-interface CollectedRuleLike {
-    /** Scriptlet name (scriptlet rules only). */
-    scriptletName?: string;
-
-    /** Scriptlet arguments (scriptlet rules only). */
-    scriptletArgs?: string[];
-
-    /** JS rule body (JS injection rules only). */
-    jsBody?: string | null;
-}
+type CollectedRuleLike = Pick<CollectedRuleEntry, 'scriptletName' | 'scriptletArgs' | 'jsBody'>;
 
 /**
  * Checks whether an exception cancels a collected rule: JS by body equality,
@@ -99,36 +93,46 @@ export const assertNoPathScopedExceptions = (
             continue;
         }
 
-        let exception: CosmeticRule;
+        let candidates: string[];
         try {
-            exception = new CosmeticRule(trimmed, 1);
+            candidates = RawRuleConverter.convertToAdg(trimmed).result;
         } catch {
-            continue;
+            // The engine keeps the original line when conversion fails.
+            candidates = [trimmed];
         }
 
-        if (!exception.isAllowlist() || !exception.pathModifier) {
-            continue;
-        }
-
-        for (const entry of collectedRules.values()) {
-            if (!targetsRule(exception, entry)) {
+        for (const candidate of candidates) {
+            let exception: CosmeticRule;
+            try {
+                exception = new CosmeticRule(candidate, 1);
+            } catch {
                 continue;
             }
 
-            const matchedHostnames = hostnames.filter((hostname) => exception.match(
-                new Request(`https://${hostname}/`, null, RequestType.Document),
-                true,
-            ));
-            if (matchedHostnames.length === 0) {
+            if (!exception.isAllowlist() || !exception.pathModifier) {
                 continue;
             }
 
-            const ruleText = entry.jsBody ?? `//scriptlet('${entry.scriptletName ?? ''}')`;
-            throw new Error(
-                '[ext.assertNoPathScopedExceptions]: '
-                + `"${exception.getText() ?? '<unknown>'}" (ruleset "${rulesetId}") `
-                + `cancels "${ruleText}" on ${matchedHostnames.join(', ')}.`,
-            );
+            for (const entry of collectedRules.values()) {
+                if (!targetsRule(exception, entry)) {
+                    continue;
+                }
+
+                const matchedHostnames = hostnames.filter((hostname) => exception.match(
+                    new Request(`https://${hostname}/`, null, RequestType.Document),
+                    true,
+                ));
+                if (matchedHostnames.length === 0) {
+                    continue;
+                }
+
+                const ruleText = entry.jsBody ?? `//scriptlet('${entry.scriptletName ?? ''}')`;
+                throw new Error(
+                    '[ext.assertNoPathScopedExceptions]: '
+                    + `"${exception.getText() ?? '<unknown>'}" (ruleset "${rulesetId}") `
+                    + `cancels "${ruleText}" on ${matchedHostnames.join(', ')}.`,
+                );
+            }
         }
     }
 };

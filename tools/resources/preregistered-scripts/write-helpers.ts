@@ -72,7 +72,7 @@ export const assertNoTemplateSentinels = (content: string, sentinels: string[]):
 
 /**
  * Validates the syntax of `content` via `vm.Script` (never executed) and
- * writes it to `filePath`.
+ * writes it to `filePath`, ensuring a POSIX trailing newline.
  *
  * @param content JavaScript source code to write.
  * @param filePath Absolute path of the output file.
@@ -87,5 +87,5 @@ export const writeBundle = async (content: string, filePath: string): Promise<vo
         const msg = e instanceof Error ? e.message : String(e);
         throw new Error(`Syntax error in ${path.basename(filePath)}: ${msg}`);
     }
-    await fs.writeFile(filePath, content, 'utf-8');
+    await fs.writeFile(filePath, content.endsWith('\n') ? content : `${content}\n`, 'utf-8');
 };

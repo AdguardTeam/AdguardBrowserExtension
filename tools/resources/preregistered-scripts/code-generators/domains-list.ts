@@ -40,7 +40,7 @@ export const writeDomainsList = async (
 ): Promise<void> => {
     const sortedDomains = [...domains].sort();
 
-    const content = `export const preregisteredDomains = ${JSON.stringify(sortedDomains, null, '\t')};`;
+    const content = `export const preregisteredDomains = ${JSON.stringify(sortedDomains, null, '\t')};\n`;
 
     const outputPath = path.join(outputDir, DOMAINS_LIST_FILENAME);
 

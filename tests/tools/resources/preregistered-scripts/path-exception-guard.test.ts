@@ -120,6 +120,17 @@ describe('assertNoPathScopedExceptions', () => {
             .not.toThrow();
     });
 
+    it('drops mixed-syntax lines the engine also cannot convert (parity)', () => {
+        // uBO/ABP scriptlet bodies cannot carry AdGuard's
+        // `[$domain=...,path=...]` modifiers: the converter rejects mixing
+        // syntaxes, so the engine drops the line — and the guard, which
+        // mirrors the engine via RawRuleConverter, must not throw either.
+        expect(() => runGuard('[$domain=youtube.com,path=/shorts]#@#+js(ubo-set-constant, foo, bar)'))
+            .not.toThrow();
+        expect(() => runGuard('[$domain=youtube.com,path=/shorts]#@$#abort-on-property-read foo'))
+            .not.toThrow();
+    });
+
     it('does not throw on an empty filter list', () => {
         expect(() => runGuard('')).not.toThrow();
     });
