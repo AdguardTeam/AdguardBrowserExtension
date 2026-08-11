@@ -196,7 +196,10 @@
         "message": "Blokira oglase i tragače samo na vebsajtovima sa liste"
     },
     "options_allowlist_alert_invert": {
-        "message": "Lista dozvoljenih je okrenuta. Reklame su blokirane samo na sajtovima koji dodati na listu. <a>Iskljuci<\/a>"
+        "message": "Lista dozvoljenih je okrenuta. Reklame su blokirane samo na sajtovima koji dodati na listu."
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>Zaustavi invertovanje<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "Vaše promene u dozvoljenoj listi će biti izgubljene"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "Ažurirano: %date%"
+    },
+    "options_filters_last_checked": {
+        "message": "Poslednja provera: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Prilagođeno"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "Očisti dnevnik"
     },
+    "filtering_log_actions_menu": {
+        "message": "Radnje u dnevniku filtriranja"
+    },
     "filtering_type_all": {
         "message": "Sve"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "Uvezi"
     },
+    "options_user_rules_delete_all": {
+        "message": "Izbriši sve"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "Želite li da izbrišete sve?"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "Sva korisnička pravila će biti trajno izbrisana"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "Sva korisnička pravila izbrisana"
+    },
+    "options_user_rules_import_success": {
+        "message": "Korisnička pravila uspešno uvezena"
+    },
+    "options_user_rules_import_error": {
+        "message": "Nije uspelo uvoz korisničkih pravila. Pokušajte ponovo"
+    },
+    "options_user_rules_menu": {
+        "message": "Radnje korisničkih pravila"
+    },
+    "options_allowlist_menu": {
+        "message": "Radnje liste dozvoljenih"
+    },
     "options_userfilter_description_key": {
         "message": "Ovde možete dodati vaša pravila. OVo se preporučuje za napredne korisnike koji su upoznati sa HTML\/CSS. pročitajte <a>uputstvo za pravila filtera<\/a> da saznate kako da napišete vaša pravila filtera."
     },
     "options_userfilter_subtitle_key": {
         "message": "Omogućava dodavanje sopstvenih pravila filtriranja"
+    },
+    "options_user_rules_description_key": {
+        "message": "Vaša pravila za blokiranje i deblokiranje oglasa ili celih veb sajtova"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "Još nema pravila"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "Traži"
+    },
+    "options_user_rules_clear_search": {
+        "message": "Obriši pretragu"
+    },
+    "options_user_rules_create_rule": {
+        "message": "Kreiraj pravilo"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "Uredi pravilo"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "ukloni iz korisničkog filtera"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "Pravilo korisnika obrisano:"
+    },
+    "options_user_rules_undo": {
+        "message": "Opozovi"
+    },
+    "options_user_rules_no_match": {
+        "message": "Ništa nije pronađeno"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "Prebaci na prikaz editora"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "Prebaci na prikaz liste"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "Isticanje pravila…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "Prelom reda"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "Dali volite AdGuard?"
     },
-    "options_footer_like_us_cta": {
-        "message": "Ocenite nas!"
+    "options_rate_us_cta": {
+        "message": "Ocenite nas"
     },
     "options_miscellaneous_settings": {
         "message": "Dodatne postavke"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "Opcija 3. Ako ste zadovoljni trenutno omogućenim podrazumevnim filtrima, <a>zatvorite ovo upozorenje.<\/a>"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "Dostignut je limit — neki filteri su onemogućeni"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "Evo šta možete da uradite"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "Uklonite druge blokatore reklama"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "Ekstenzije pregledača dele isti limit pravila. Uklanjanje drugih blokatora reklama može osloboditi više pravila za AdGuard Browser Extension"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "Upravljajte ekstenzijama"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "Pregledajte dostupne filtere"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "Omogućite filtere koji su vam potrebni. Filteri specifični za jezik i privatnost mogu koristiti mnogo pravila"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "Idi na filtere"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "Instalirajte desktop aplikaciju"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "Uklonite ograničenja pravila i dobijte proširenu zaštitu koja radi u svim pregledačima"
     },
     "options_all_limits_exceeded_warning": {
         "message": "Dostigli ste granicu aktivnih ugrađenih pravila. Vaš preglednik je izmenio listu aktivnih ugrađenih filtera. Broj omogućених filtera je promenjen sa %expected% na %current%."
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "Verzija"
+    },
+    "options_about_update_available": {
+        "message": "Verzija %version% je dostupna. Biće preuzeta i instalirana automatski."
     },
     "options_about_libs": {
         "message": "Korišćene biblioteke"

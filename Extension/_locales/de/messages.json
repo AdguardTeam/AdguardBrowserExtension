@@ -166,7 +166,7 @@
         "description": "TEXT MAX LENGTH: 132"
     },
     "popup_tooltip_protection_enabled": {
-        "message": "Schutz ist aktiviert"
+        "message": "Schutz aktiviert"
     },
     "popup_tooltip_protection_disabled": {
         "message": "Schutz deaktiviert"
@@ -196,7 +196,10 @@
         "message": "Blockiert Werbung und Tracker nur auf zugelassenen Websites"
     },
     "options_allowlist_alert_invert": {
-        "message": "Zulassungsliste ist invertiert. Werbung wird nur auf Websites blockiert, die der Liste hinzugefügt wurden. <a>Deaktivieren<\/a>"
+        "message": "Die Zulassungsliste ist umgekehrt. Werbung wird nur auf Webseiten blockiert, die dieser Liste hinzugefügt wurden."
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>Umkehrung beenden<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "Ihre Änderungen an der Zulassungsliste gehen verloren"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "Aktualisiert: %date%"
+    },
+    "options_filters_last_checked": {
+        "message": "Zuletzt überprüft: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Benutzerdefinierte"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "Protokoll leeren"
     },
+    "filtering_log_actions_menu": {
+        "message": "Filterungsprotokoll-Aktionen"
+    },
     "filtering_type_all": {
         "message": "Alle"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "Importieren"
     },
+    "options_user_rules_delete_all": {
+        "message": "Alle entfernen"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "Alle entfernen?"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "Alle Benutzerregeln werden endgültig gelöscht"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "Alle Benutzerregeln gelöscht"
+    },
+    "options_user_rules_import_success": {
+        "message": "Benutzerregeln importiert"
+    },
+    "options_user_rules_import_error": {
+        "message": "Fehler beim Importieren der Benutzerregeln. Bitte versuchen Sie es erneut"
+    },
+    "options_user_rules_menu": {
+        "message": "Aktionen für Benutzerregeln"
+    },
+    "options_allowlist_menu": {
+        "message": "Zulassungslisten-Aktionen"
+    },
     "options_userfilter_description_key": {
         "message": "Hier können Sie Ihre eigenen Regeln hinzufügen, wenn Sie mit HTML\/CSS vertraut sind. Lesen Sie die <a>Tutorial zu Filterregeln<\/a>, um zu erfahren, wie Sie Ihre eigenen Filterregeln erstellen."
     },
     "options_userfilter_subtitle_key": {
         "message": "Ermöglicht es, eigene Filterregeln hinzuzufügen"
+    },
+    "options_user_rules_description_key": {
+        "message": "Ihre Regeln zum Blockieren und Entsperren von Werbung oder ganzen Websites"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "Noch keine Regeln"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "Suchen"
+    },
+    "options_user_rules_clear_search": {
+        "message": "Suchfeld leeren"
+    },
+    "options_user_rules_create_rule": {
+        "message": "Regel erstellen"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "Regel bearbeiten"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "Regel entfernen"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "Benutzerregel gelöscht:"
+    },
+    "options_user_rules_undo": {
+        "message": "Rückgängig"
+    },
+    "options_user_rules_no_match": {
+        "message": "Nichts gefunden"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "Zur Editor-Ansicht wechseln"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "Zur Listenansicht wechseln"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "Regeln hervorheben…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "Zeilenumbruch"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "Gefällt Ihnen AdGuard?"
     },
-    "options_footer_like_us_cta": {
-        "message": "Bewerten Sie uns!"
+    "options_rate_us_cta": {
+        "message": "Bewerten"
     },
     "options_miscellaneous_settings": {
         "message": "Zusätzliche Einstellungen"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "Option 3. Wenn Sie mit den derzeit aktivierten Standardfiltern zufrieden sind, <a>schließen Sie diese Warnung<\/a>."
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "Limit erreicht — einige Filter wurden deaktiviert"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "Das können Sie tun"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "Andere Werbeblocker entfernen"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "Für Browsererweiterungen gilt dieselbe Regelbegrenzung. Durch das Deaktivieren anderer Werbeblocker werden möglicherweise weitere Regeln für die AdGuard-Browsererweiterung freigegeben"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "Erweiterungen verwalten"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "Verfügbare Filter überprüfen"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "Aktivieren Sie die benötigten Filter. Sprachspezifische Filter und Datenschutzfilter können viele Regeln enthalten"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "Filter öffnen"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "Desktop-App installieren"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "Regelbeschränkungen aufheben und vom umfassenden Schutz profitieren, der in allen Browsern funktioniert"
     },
     "options_all_limits_exceeded_warning": {
         "message": "Sie haben die maximale Anzahl der aktiven integrierten Regeln erreicht. Ihr Browser hat die Liste der aktiven integrierten Filter geändert. Die Anzahl der aktivierten Filter hat sich von %expected% zu %current% geändert."
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "Version"
+    },
+    "options_about_update_available": {
+        "message": "Version %version% ist verfügbar. Sie wird automatisch heruntergeladen und installiert."
     },
     "options_about_libs": {
         "message": "Verwendete Bibliotheken"
@@ -1515,7 +1621,7 @@
         "message": "Leeren"
     },
     "update_check": {
-        "message": "Nach Aktualisierungen suchen"
+        "message": "Nach Updates suchen"
     },
     "update_checking_in_progress": {
         "message": "Auf Aktualisierungen wird geprüft …"

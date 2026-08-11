@@ -196,7 +196,10 @@
         "message": "Blokeerib reklaamid ja jälgijad ainult lubatud veebilehtedel"
     },
     "options_allowlist_alert_invert": {
-        "message": "Valge list on ümber pööratud. Reklaami blokeeritakse ainult alljärgnevatel lehekülgedel. <a>Muuda tagasi<\/a>"
+        "message": "Lubamisloend on ümber pööratud. Reklaamid blokeeritakse ainult veebisaitidel, mis on sellesse lisatud."
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>Lõpeta ümberpööramine<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "Teie muudatused lubatud nimekirjas kaovad"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "Uuendatud: %date%"
+    },
+    "options_filters_last_checked": {
+        "message": "Viimati kontrollitud: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Kohandatud"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "Tühjenda logi"
     },
+    "filtering_log_actions_menu": {
+        "message": "Filtreerimislogi toimingud"
+    },
     "filtering_type_all": {
         "message": "Kõik"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "Impordi"
     },
+    "options_user_rules_delete_all": {
+        "message": "Kustuta kõik"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "Kas kustutada kõik?"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "Kõik kasutajareeglid kustutatakse jäädavalt"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "Kõik kasutajareeglid on kustutatud"
+    },
+    "options_user_rules_import_success": {
+        "message": "Kasutajareeglid imporditi edukalt"
+    },
+    "options_user_rules_import_error": {
+        "message": "Kasutajareeglite importimine ebaõnnestus. Palun proovi uuesti"
+    },
+    "options_user_rules_menu": {
+        "message": "Kasutajareeglite toimingud"
+    },
+    "options_allowlist_menu": {
+        "message": "Lubamisloendi toimingud"
+    },
     "options_userfilter_description_key": {
         "message": "Siia saab lisada enda reegleid. Soovitatav kasutajatele, kes on tuttavad HTML\/CSS-iga. Rohkema info saamiseks tutvu <a>filtri loomise abilisega<\/a>."
     },
     "options_userfilter_subtitle_key": {
         "message": "Võimaldab lisada oma filtreerimisreegleid"
+    },
+    "options_user_rules_description_key": {
+        "message": "Teie reeglid reklaamide või tervete veebisaitide blokeerimiseks ja blokeeringu eemaldamiseks"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "Reegleid pole veel"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "Otsida"
+    },
+    "options_user_rules_clear_search": {
+        "message": "Tühjenda otsing"
+    },
+    "options_user_rules_create_rule": {
+        "message": "Loo reegel"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "Muuda reeglit"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "Kustuta reegel"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "Kasutajareegel kustutati:"
+    },
+    "options_user_rules_undo": {
+        "message": "Võta tagasi"
+    },
+    "options_user_rules_no_match": {
+        "message": "Midagi ei leitud"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "Lülitu redaktori vaatesse"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "Lülitu loendivaatesse"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "Reeglite esiletõstmine…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "Rea murdmine"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "Sulle meeldib AdGuard?"
     },
-    "options_footer_like_us_cta": {
-        "message": "Jäta hinnang!"
+    "options_rate_us_cta": {
+        "message": "Jäta hinnang"
     },
     "options_miscellaneous_settings": {
         "message": "Täiendavad seaded"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "Valik 3. Kui olete rahul hetkel aktiveeritud vaikimisi filtritega, <a>sulgege see hoiatus.<\/a>"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "Piirang saavutatud — mõned filtrid on keelatud"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "Siin on, mida saad teha"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "Eemalda teised reklaamiblokeerijad"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "Brauseri laiendused jagavad sama reeglite piirangut. Teiste reklaamiblokeerijate eemaldamine võib vabastada rohkem reegleid AdGuard Browser Extension jaoks"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "Halda laiendusi"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "Vaata üle saadaolevad filtrid"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "Luba vajalikud filtrid. Keelepõhised ja privaatsusfiltrid võivad kasutada palju reegleid"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "Mine filtrite juurde"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "Installi töölauarakendus"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "Eemalda reeglipiirangud ja hanki laiendatud kaitse, mis töötab kõigis brauserites"
     },
     "options_all_limits_exceeded_warning": {
         "message": "Te olete jõudnud aktiivsete sisseehitatud reeglite piirini. Brauser on muutnud aktiivsete sisseehitatud filtrite nimekirja. Filtrite arv on muutunud %expected% -lt %current%-le."
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "Versioon"
+    },
+    "options_about_update_available": {
+        "message": "Versioon %version% on saadaval. See laaditakse alla ja installitakse automaatselt."
     },
     "options_about_libs": {
         "message": "Kasutatud raamatukogud"

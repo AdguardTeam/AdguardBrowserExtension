@@ -196,7 +196,10 @@
         "message": "Bloqueja anuncis i rastrejadors només en llocs web permesos"
     },
     "options_allowlist_alert_invert": {
-        "message": "Llista blanca invertida. Els anuncis es bloquegen només en pàgines web afegides a ella. <a>Desactiveu<\/a>"
+        "message": "La llista blanca està invertida. Els anuncis només es bloquegen als llocs web afegits a aquesta."
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>Deixar d’invertir<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "Els vostres canvis a la llista blanca es perdran"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "Actualitzat: %date%"
+    },
+    "options_filters_last_checked": {
+        "message": "Darrera comprovació: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Personalitzat"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "Esborra el registre"
     },
+    "filtering_log_actions_menu": {
+        "message": "Accions del registre de filtratge"
+    },
     "filtering_type_all": {
         "message": "Tot"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "Importeu"
     },
+    "options_user_rules_delete_all": {
+        "message": "Esborra tot"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "Eliminar tot?"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "Totes les regles d'usuari seran eliminades de forma permanent"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "Totes les regles d'usuari s'han eliminat"
+    },
+    "options_user_rules_import_success": {
+        "message": "Les regles d'usuari s'han importat correctament"
+    },
+    "options_user_rules_import_error": {
+        "message": "No s'han pogut importar les regles d'usuari. Si us plau, torneu-ho a intentar"
+    },
+    "options_user_rules_menu": {
+        "message": "Accions de les regles d'usuari"
+    },
+    "options_allowlist_menu": {
+        "message": "Accions de la llista blanca"
+    },
     "options_userfilter_description_key": {
         "message": "Podeu afegir les vostres pròpies regles aquí. Aquesta opció es recomana per a usuaris avançats familiaritzats amb HTML\/CSS. Llegeix el <a>Tutorial de regles de filtre<\/a> per aprendre a escriure les vostres pròpies regles de filtre."
     },
     "options_userfilter_subtitle_key": {
         "message": "Permet afegir les teves pròpies regles de filtratge"
+    },
+    "options_user_rules_description_key": {
+        "message": "Les teves regles per al bloqueig i desbloqueig d'anuncis o de llocs web sencers"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "Encara no hi ha regles"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "Búsqueda"
+    },
+    "options_user_rules_clear_search": {
+        "message": "Netejar la cerca"
+    },
+    "options_user_rules_create_rule": {
+        "message": "Crear regla"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "Editar regla"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "Elimineu-lo dels filtres d'usuari"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "Regla d'usuari eliminada:"
+    },
+    "options_user_rules_undo": {
+        "message": "Desfer"
+    },
+    "options_user_rules_no_match": {
+        "message": "No s'ha trobat res"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "Canvia a la vista d'editor"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "Canvia a la vista de llista"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "Ressaltant les regles…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "Salt de línia"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "Us agrada AdGuard?"
     },
-    "options_footer_like_us_cta": {
-        "message": "Valoreu-nos!"
+    "options_rate_us_cta": {
+        "message": "Valoreu-nos"
     },
     "options_miscellaneous_settings": {
         "message": "Configuracions addicionals"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "Opció 3. Si esteu satisfets amb els filtres predeterminats actualment habilitats, <a>tanca aquesta advertència.<\/a>"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "S'ha assolit el límit — alguns filtres s'han deshabilitat"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "Això és el que podeu fer"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "Eliminar altres bloquejadors d’anuncis"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "Les extensions del navegador comparteixen el mateix límit de regles. Eliminar altres bloquejadors d’anuncis pot alliberar més regles per a AdGuard Browser Extension"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "Gestionar extensions"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "Revisa els filtres disponibles"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "Habiliteu els filtres que necessiteu. Els filtres específics d’idioma i de privadesa poden utilitzar moltes regles"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "Vés als filtres"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "Instal·lar l’aplicació d’escriptori"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "Elimineu els límits de les regles i obteniu protecció estesa que funciona en tots els navegadors"
     },
     "options_all_limits_exceeded_warning": {
         "message": "Heu arribat al límit de regles integrades actives. El vostre navegador ha modificat la llista de filtres integrats actius. El nombre de filtres habilitats ha canviat de %expected% a %current%."
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "Versió"
+    },
+    "options_about_update_available": {
+        "message": "La versió %version% està disponible. Es descarregarà i s'instal·larà automàticament."
     },
     "options_about_libs": {
         "message": "Biblioteques utilitzades"

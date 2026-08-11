@@ -196,7 +196,10 @@
         "message": "Csak a listán szereplő weboldalakon blokkolja a hirdetéseket és nyomkövetőket"
     },
     "options_allowlist_alert_invert": {
-        "message": "A kivételek listája meg lett fordítva. A hirdetések csak azokon a webhelyeken lesznek blokkolva, amik hozzá lettek adva a kivételekhez. <a>Kikapcsolás<\/a>"
+        "message": "A kivételek listája meg lett fordítva. A hirdetések csak azokon a weboldalakon vannak blokkolva, amelyek hozzá lettek adva."
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>Inverzió leállítása<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "A kivételek listájára tett módosításai elvesznek"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "Frissítve: %date%"
+    },
+    "options_filters_last_checked": {
+        "message": "Utoljára ellenőrizve: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Egyéni"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "Napló törlése"
     },
+    "filtering_log_actions_menu": {
+        "message": "Szűrési napló műveletek"
+    },
     "filtering_type_all": {
         "message": "Mind"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "Importálás"
     },
+    "options_user_rules_delete_all": {
+        "message": "Összes törlése"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "Összes törlése?"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "Az összes felhasználói szabály véglegesen törlődik"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "Minden felhasználói szabály törölve"
+    },
+    "options_user_rules_import_success": {
+        "message": "Felhasználói szabályok sikeresen importálva"
+    },
+    "options_user_rules_import_error": {
+        "message": "Nem sikerült importálni a felhasználói szabályokat. Kérjük, próbálja újra"
+    },
+    "options_user_rules_menu": {
+        "message": "Felhasználói szabályok műveletei"
+    },
+    "options_allowlist_menu": {
+        "message": "Kivételek lista műveletei"
+    },
     "options_userfilter_description_key": {
         "message": "Itt hozzáadhatja saját szabályait. Ezt a lehetőséget csak a HTML\/CSS világában jártas felhasználóinknak ajánljuk. Olvassa el a <a>szűrőszabályokról szóló oktatóanyagot<\/a>, hogy megtanulja, hogyan írhat saját szűrőszabályokat."
     },
     "options_userfilter_subtitle_key": {
         "message": "Lehetővé teszi saját szűrési szabályok hozzáadását"
+    },
+    "options_user_rules_description_key": {
+        "message": "Saját szabályai a hirdetések vagy teljes weboldalak blokkolására illetve feloldására"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "Még nincsenek szabályok"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "Keresés"
+    },
+    "options_user_rules_clear_search": {
+        "message": "Keresés törlése"
+    },
+    "options_user_rules_create_rule": {
+        "message": "Szabály létrehozása"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "Szabály szerkesztése"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "Szabály törlése"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "Felhasználói szabály törölve:"
+    },
+    "options_user_rules_undo": {
+        "message": "Visszavonás"
+    },
+    "options_user_rules_no_match": {
+        "message": "Nincs találat"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "Átváltás szerkesztő nézetre"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "Átváltás lista nézetre"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "Szabályok kiemelése…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "Sortörés"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "Szereti az AdGuardot?"
     },
-    "options_footer_like_us_cta": {
-        "message": "Értékeljen minket!"
+    "options_rate_us_cta": {
+        "message": "Értékeljen minket"
     },
     "options_miscellaneous_settings": {
         "message": "Vegyes"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "3. lehetőség. Ha elégedett a jelenleg engedélyezett alapértelmezett szűrőkkel, <a>zárja be ezt a figyelmeztetést.<\/a>"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "Elérte a korlátot — néhány szűrő le lett tiltva"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "A következőket teheti"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "Távolítsa el a többi hirdetésblokkolót"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "A böngésző kiegészítők ugyanazt a szabálykorlátot használják. Más hirdetésblokkolók eltávolítása több szabályt szabadíthat fel az AdGuard Browser Extension számára"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "Kiegészítők kezelése"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "Elérhető szűrők áttekintése"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "Engedélyezze a szükséges szűrőket. A nyelvspecifikus és adatvédelmi szűrők sok szabályt használhatnak"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "Menj a szűrőkhöz"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "Telepítse az asztali alkalmazást"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "Távolítsa el a szabálykorlátokat, és szerezzen kiterjesztett védelmet, amely minden böngészőben működik"
     },
     "options_all_limits_exceeded_warning": {
         "message": "Elérte az aktív beépített szabályok korlátját. Az Ön böngészője módosította az aktív beépített szűrők listáját. Az engedélyezett szűrők száma %expected% értékről %current% értékre változott."
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "Verzió"
+    },
+    "options_about_update_available": {
+        "message": "A %version% verzió elérhető. Automatikusan letöltődik és települ."
     },
     "options_about_libs": {
         "message": "Használt könyvtárak"

@@ -196,7 +196,10 @@
         "message": "僅封鎖白名單網站上的廣告與追蹤器"
     },
     "options_allowlist_alert_invert": {
-        "message": "允許清單被反向。僅於被加至其中的網站上之廣告被封鎖。<a>禁用<\/a>"
+        "message": "白名單已反轉。廣告僅在新增到清單中的網站上被封鎖。"
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>停止反轉<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "允許清單的更改將丟失"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "已更新：%date%"
+    },
+    "options_filters_last_checked": {
+        "message": "上次檢查時間：%date%"
     },
     "options_antibanner_custom_group": {
         "message": "自訂的"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "清除記錄"
     },
+    "filtering_log_actions_menu": {
+        "message": "過濾紀錄操作"
+    },
     "filtering_type_all": {
         "message": "所有的"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "匯入"
     },
+    "options_user_rules_delete_all": {
+        "message": "全部刪除"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "全部刪除？"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "將永久刪除所有使用者規則"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "所有使用者規則已刪除"
+    },
+    "options_user_rules_import_success": {
+        "message": "使用者規則匯入成功"
+    },
+    "options_user_rules_import_error": {
+        "message": "使用者規則匯入失敗。請重試。"
+    },
+    "options_user_rules_menu": {
+        "message": "使用者規則操作"
+    },
+    "options_allowlist_menu": {
+        "message": "白名單操作"
+    },
     "options_userfilter_description_key": {
         "message": "您可於此新增您自己的規則。對於熟悉 HTML\/CSS 之進階的用戶，此選項是被建議的。閱讀<a>過濾器規則導覽<\/a>以學習如何撰寫您自己的過濾器規則。"
     },
     "options_userfilter_subtitle_key": {
         "message": "允許新增自訂的過濾規則"
+    },
+    "options_user_rules_description_key": {
+        "message": "您用於封鎖和解除封鎖廣告或整個網站的規則"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "暫無規則"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "搜尋"
+    },
+    "options_user_rules_clear_search": {
+        "message": "清除搜尋"
+    },
+    "options_user_rules_create_rule": {
+        "message": "創建規則"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "編輯規則"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "刪除規則"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "使用者規則已刪除："
+    },
+    "options_user_rules_undo": {
+        "message": "復原"
+    },
+    "options_user_rules_no_match": {
+        "message": "沒找到什麼"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "切換到編輯器檢視"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "切換到清單檢視"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "正在突顯規則…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "換行"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "您喜歡 AdGuard 嗎？"
     },
-    "options_footer_like_us_cta": {
-        "message": "對它評分！"
+    "options_rate_us_cta": {
+        "message": "評分"
     },
     "options_miscellaneous_settings": {
         "message": "額外的設定"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "選項 3：如果您對已啟用的預設過濾器感到滿意，請「<a>關閉此警告<\/a>」。"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "已達上限，部分過濾器已停用。"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "您可以採取以下措施"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "移除其他廣告封鎖程式"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "瀏覽器擴充功能共享相同的規則上限。移除其他廣告封鎖程式可能為 AdGuard 瀏覽器擴充功能釋放更多規則。"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "管理擴充功能"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "檢查可用的過濾器"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "啟用所需的過濾器。特定語言和隱私過濾器可能使用大量規則。"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "至過濾器"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "安裝桌面應用程式"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "解除規則上限，獲得適用於所有瀏覽器的增強保護。"
     },
     "options_all_limits_exceeded_warning": {
         "message": "您已達到內置規則啟動上限。 瀏覽器已修改了內置規則過濾器清單。 啟用的過濾器數量已從 %expected% 個更改為 %current% 個。"
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "版本"
+    },
+    "options_about_update_available": {
+        "message": "版本 %version% 已發佈，將自動下載並安裝。"
     },
     "options_about_libs": {
         "message": "使用的庫"
