@@ -3427,6 +3427,11 @@
         "(()=>{const e=/html-load\\.com|loader\\.min\\.js|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\.|:\\/\\/loader\\.|core\\.js|\\/sdk\\.js|\\/app\\.js|\\/main\\.js|\\/vendor\\.js/,t={filter:Array.prototype.filter,includes:String.prototype.includes,regexTest:RegExp.prototype.test},o=()=>(new Error).stack,l=o=>t.regexTest.call(e,o),r={construct:(e,r,n)=>{const c=o();return l(c)&&r[0]&&t.includes.call(r[0],\"adshield\")&&(r[0]=[\"(function(){})();\"]),Reflect.construct(e,r,n)}};window.Blob=new Proxy(window.Blob,r);const n={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&(t.includes.call(n[0],\"new Error\")||t.includes.call(n[0],\".apply(this\"))&&(n[0]=()=>{}),Reflect.apply(e,r,n)}};window.setTimeout=new Proxy(window.setTimeout,n);const c={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&r?.includes?.(\"setTimeout\")&&(r=t.filter.call(r,(e=>!t.includes.call(e,\"setTimeout\")))),Reflect.apply(e,r,n)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,c)})();": [
             {
                 "permittedDomains": [
+                    "thewestmorlandgazette.co.uk",
+                    "fakenhamtimes.co.uk",
+                    "theargus.co.uk",
+                    "yorkshireeveningpost.co.uk",
+                    "lasisa.net",
                     "onlineradiobox.com",
                     "jikayosha.jp",
                     "gamebanana.com",
@@ -4422,6 +4427,7 @@
         "window.addEventListener(\"contextmenu\",function(a){a.stopPropagation()},!0);": [
             {
                 "permittedDomains": [
+                    "allanime.day",
                     "vidbasic.live",
                     "embdmstrplayer.com",
                     "kisskh.*",
@@ -4547,6 +4553,14 @@
                     "nivod2.tv",
                     "nivod4.com",
                     "nivod5.com"
+                ],
+                "restrictedDomains": []
+            }
+        ],
+        "(()=>{const e=Promise.resolve({code:200}),t=()=>{},s=()=>({promise:e}),n=[\"init\",\"add\",\"remove\",\"track\",\"logEvent\",\"identify\",\"groupIdentify\",\"setGroup\",\"revenue\",\"flush\"],r=[\"getDeviceId\",\"setDeviceId\",\"getSessionId\",\"setSessionId\",\"getUserId\",\"setUserId\",\"setOptOut\",\"setTransport\",\"reset\",\"extendSession\"],o=()=>{const e={};return n.forEach(t=>{e[t]=s}),r.forEach(s=>{e[s]=t}),e},i=function(){},c=function(){return this};[\"add\",\"append\",\"clearAll\",\"prepend\",\"set\",\"setOnce\",\"unset\",\"preInsert\",\"postInsert\",\"remove\",\"setProductId\",\"setQuantity\",\"setPrice\",\"setRevenue\",\"setRevenueType\",\"setEventProperties\"].forEach(e=>{i.prototype[e]=c}),i.prototype.getUserProperties=()=>({}),i.prototype.getEventProperties=()=>({});const d=(t,s=[])=>{s.forEach(t=>{t.resolve?.(e)})},p=window.amplitude||{};Object.assign(p,o(),{createInstance:e=>{const t=o();return e&&p._iq&&(p._iq[e]=t),t},runQueuedFunctions:d,Identify:i,Revenue:i}),window.amplitude=p,p.invoked&&(d(0,p._q),p._q=[],Object.keys(p._iq||{}).forEach(e=>{const t=Object.assign(p._iq[e],o());d(0,t._q),t._q=[]}))})();": [
+            {
+                "permittedDomains": [
+                    "parkedin.com"
                 ],
                 "restrictedDomains": []
             }

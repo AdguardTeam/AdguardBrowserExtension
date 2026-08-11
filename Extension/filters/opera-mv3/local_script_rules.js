@@ -11543,6 +11543,56 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "119696f6d27a9b6c225cdaa7954a52fd" due to: ' + e);
         }
     },
+    '(()=>{const e=Promise.resolve({code:200}),t=()=>{},s=()=>({promise:e}),n=["init","add","remove","track","logEvent","identify","groupIdentify","setGroup","revenue","flush"],r=["getDeviceId","setDeviceId","getSessionId","setSessionId","getUserId","setUserId","setOptOut","setTransport","reset","extendSession"],o=()=>{const e={};return n.forEach(t=>{e[t]=s}),r.forEach(s=>{e[s]=t}),e},i=function(){},c=function(){return this};["add","append","clearAll","prepend","set","setOnce","unset","preInsert","postInsert","remove","setProductId","setQuantity","setPrice","setRevenue","setRevenueType","setEventProperties"].forEach(e=>{i.prototype[e]=c}),i.prototype.getUserProperties=()=>({}),i.prototype.getEventProperties=()=>({});const d=(t,s=[])=>{s.forEach(t=>{t.resolve?.(e)})},p=window.amplitude||{};Object.assign(p,o(),{createInstance:e=>{const t=o();return e&&p._iq&&(p._iq[e]=t),t},runQueuedFunctions:d,Identify:i,Revenue:i}),window.amplitude=p,p.invoked&&(d(0,p._q),p._q=[],Object.keys(p._iq||{}).forEach(e=>{const t=Object.assign(p._iq[e],o());d(0,t._q),t._q=[]}))})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["3ab24128eccb37db781483fefedba398"] === e) return;
+            (() => {
+                const e = Promise.resolve({
+                    code: 200
+                }), t = () => {}, r = () => ({
+                    promise: e
+                }), n = [ "init", "add", "remove", "track", "logEvent", "identify", "groupIdentify", "setGroup", "revenue", "flush" ], o = [ "getDeviceId", "setDeviceId", "getSessionId", "setSessionId", "getUserId", "setUserId", "setOptOut", "setTransport", "reset", "extendSession" ], s = () => {
+                    const e = {};
+                    return n.forEach((t => {
+                        e[t] = r;
+                    })), o.forEach((r => {
+                        e[r] = t;
+                    })), e;
+                }, i = function() {}, c = function() {
+                    return this;
+                };
+                [ "add", "append", "clearAll", "prepend", "set", "setOnce", "unset", "preInsert", "postInsert", "remove", "setProductId", "setQuantity", "setPrice", "setRevenue", "setRevenueType", "setEventProperties" ].forEach((e => {
+                    i.prototype[e] = c;
+                })), i.prototype.getUserProperties = () => ({}), i.prototype.getEventProperties = () => ({});
+                const d = (t, r = []) => {
+                    r.forEach((t => {
+                        t.resolve?.(e);
+                    }));
+                }, u = window.amplitude || {};
+                Object.assign(u, s(), {
+                    createInstance: e => {
+                        const t = s();
+                        return e && u._iq && (u._iq[e] = t), t;
+                    },
+                    runQueuedFunctions: d,
+                    Identify: i,
+                    Revenue: i
+                }), window.amplitude = u, u.invoked && (d(0, u._q), u._q = [], Object.keys(u._iq || {}).forEach((e => {
+                    const t = Object.assign(u._iq[e], s());
+                    d(0, t._q), t._q = [];
+                })));
+            })();
+            Object.defineProperty(Window.prototype.toString, "3ab24128eccb37db781483fefedba398", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "3ab24128eccb37db781483fefedba398" due to: ' + e);
+        }
+    },
     '(()=>{const t={detect:()=>({bot:!1})},e={apply:(e,o,n)=>{try{const r=n[0];return"function"==typeof r&&r.toString().includes("Botd.load")?Promise.resolve(t):Reflect.apply(e,o,n)}catch(t){return Reflect.apply(e,o,n)}}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,e)})();': () => {
         try {
             const e = "done";
