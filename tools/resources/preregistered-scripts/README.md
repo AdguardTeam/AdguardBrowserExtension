@@ -11,7 +11,8 @@ registered via MV3's `chrome.scripting.registerContentScripts` at
 
 1. **Collect** (`scriptlet-collector.ts`) — builds a real
    `@adguard/tsurlfilter` `Engine` per DNR ruleset and queries
-   `Engine.getJsRulesIgnoringPath()` for each preregistered domain (+ its
+   `Engine.getCosmeticResult()` with `CosmeticOptionJS` and `ignorePath`
+   for each preregistered domain (+ its
    `www.` alias), deduping matched rules by hash. After all rulesets are
    collected, the `$path`-exception guard (`path-exception-guard.ts`) fails
    the build if a `$path`-scoped scriptlet/JS exception cancels a collected

@@ -21,7 +21,13 @@
 /* eslint-disable no-console */
 
 import {
+    CosmeticRuleParser,
+    CosmeticRuleType,
+    type AnyCosmeticRule,
+} from '@adguard/agtree';
+import {
     type CosmeticRule,
+    CosmeticOption,
     Request,
     RequestType,
 } from '@adguard/tsurlfilter';
@@ -85,8 +91,8 @@ export interface CollectedScriptlets {
 /**
  * Collects scriptlet invocations and JS injection rules from all DNR
  * rulesets: builds a real tsurlfilter `Engine` per ruleset and queries
- * `Engine.getJsRulesIgnoringPath(request)` per preregistered hostname —
- * the same lookup the runtime performs.
+ * `Engine.getCosmeticResult(request, CosmeticOption.CosmeticOptionJS, true)`
+ * per preregistered hostname — the same lookup the runtime performs.
  *
  * Domain-wide exceptions are already applied by the engine during
  * collection; a `$path`-scoped exception cancelling a collected rule is a
@@ -152,8 +158,8 @@ export class ScriptletCollector {
 
     /**
      * Queries one ruleset's engine for the JS/scriptlet rules of every
-     * preregistered hostname. `getJsRulesIgnoringPath` already excludes
-     * domain-wide exceptions.
+     * preregistered hostname. The JS-only cosmetic match with `ignorePath`
+     * already excludes domain-wide exceptions.
      *
      * @param ruleSetId Ruleset identifier (e.g. `"ruleset_2"`).
      *
@@ -170,7 +176,9 @@ export class ScriptletCollector {
         await Promise.all(
             preregisteredHostnames.map(async (hostname) => {
                 const request = new Request(`https://${hostname}/`, null, RequestType.Document);
-                const matchedRules = engine.getJsRulesIgnoringPath(request);
+                const matchedRules = engine
+                    .getCosmeticResult(request, CosmeticOption.CosmeticOptionJS, true)
+                    .getScriptRules();
 
                 if (matchedRules.length === 0) {
                     return;
@@ -205,6 +213,7 @@ export class ScriptletCollector {
             if (!data) {
                 throw new Error('getScriptletData() returned null');
             }
+            ScriptletCollector.warnOnMultipleScriptletCalls(rule);
             this.scriptletNames.add(data.params.name);
             this.addRule(hash, {
                 scriptletName: data.params.name,
@@ -213,6 +222,40 @@ export class ScriptletCollector {
             });
         } else {
             this.addRule(hash, { jsBody: rule.getContent(), pathPattern });
+        }
+    }
+
+    /**
+     * Warns when a scriptlet rule body packs several scriptlet calls into
+     * one rule: only the first call is collected (matching tsurlfilter,
+     * which also reads `body.children[0]` only), so the remaining calls
+     * would silently never run on a preregistered domain.
+     *
+     * @param rule Scriptlet rule to check.
+     */
+    private static warnOnMultipleScriptletCalls(rule: CosmeticRule): void {
+        // Engine rules do not retain their source text (`getText()` returns
+        // `undefined` for indexed rules), so re-parse the normalized ADG
+        // body the engine generated for the rule. Any parse failure means
+        // the body is not a multi-call scriptlet — nothing to warn about.
+        const content = rule.getContent();
+        let parsed: AnyCosmeticRule | null = null;
+        try {
+            parsed = CosmeticRuleParser.parse(`example.com#%#${content}`);
+        } catch {
+            return;
+        }
+
+        if (parsed?.type !== CosmeticRuleType.ScriptletInjectionRule) {
+            return;
+        }
+
+        const callCount = parsed.body.children.length;
+        if (callCount > 1) {
+            console.warn(
+                `[scriptlet-collector] Rule '${content}' has ${callCount} scriptlet calls;`
+                + ' only the first one will be preregistered',
+            );
         }
     }
 
