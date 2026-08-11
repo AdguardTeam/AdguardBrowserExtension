@@ -21,6 +21,7 @@ import { debounce } from 'lodash-es';
 
 // Because this file is already MV2 replacement module, we can import directly
 // from basic MV2 tswebextension without using aliases.
+import { type FilterListConversionError } from '@adguard/tsurlfilter';
 import {
     type ConfigurationMV2,
     MESSAGE_HANDLER_NAME,
@@ -32,7 +33,7 @@ import {
 import { logger } from '../../common/logger';
 import { WEB_ACCESSIBLE_RESOURCES_OUTPUT } from '../../../../constants';
 import { notifier } from '../notifier';
-import { FiltersStorage } from '../storages';
+import { FiltersStoragesAdapter } from '../storages/filters-adapter';
 import {
     FiltersApi,
     AllowlistApi,
@@ -86,7 +87,9 @@ export class Engine implements TsWebExtensionEngine {
         const configuration = await Engine.getConfiguration();
 
         logger.info('[ext.Engine.start]: Start tswebextension...');
-        await this.api.start(configuration);
+        const { conversionErrors } = await this.api.start(configuration);
+
+        Engine.logConversionErrors(conversionErrors);
 
         const rulesCount = this.api.getRulesCount();
         logger.info(`[ext.Engine.start]: tswebextension is started. Rules count: ${rulesCount}`);
@@ -102,7 +105,9 @@ export class Engine implements TsWebExtensionEngine {
         const configuration = await Engine.getConfiguration();
 
         logger.info('[ext.Engine.update]: Update tswebextension configuration...');
-        await this.api.configure(configuration);
+        const { conversionErrors } = await this.api.configure(configuration);
+
+        Engine.logConversionErrors(conversionErrors);
 
         const rulesCount = this.api.getRulesCount();
         logger.info(`[ext.Engine.update]: tswebextension configuration is updated. Rules count: ${rulesCount}`);
@@ -122,7 +127,7 @@ export class Engine implements TsWebExtensionEngine {
 
         const tasks = enabledFilters.map(async (filterId) => {
             try {
-                const filter = await FiltersStorage.get(filterId);
+                const filter = await FiltersStoragesAdapter.get(filterId);
 
                 if (!filter) {
                     logger.error(`[ext.Engine.getConfiguration]: Failed to get filter ${filterId}`);
@@ -189,5 +194,22 @@ export class Engine implements TsWebExtensionEngine {
      */
     public async setFilteringState(isFilteringEnabled: boolean): Promise<void> {
         await this.api.setFilteringEnabled(isFilteringEnabled);
+    }
+
+    /**
+     * Logs filter list conversion errors returned by tswebextension.
+     *
+     * @param errors Conversion errors to log.
+     */
+    private static logConversionErrors(errors: readonly FilterListConversionError[]): void {
+        errors.forEach((error) => {
+            logger.error(
+                '[ext.Engine.logConversionErrors]: Filter list conversion error:',
+                `\nRule: ${error.rule}`,
+                `\nOffset: ${error.offset}`,
+                `\nFilter id: ${error.filterId}`,
+                `\nReason: ${error.message}`,
+            );
+        });
     }
 }

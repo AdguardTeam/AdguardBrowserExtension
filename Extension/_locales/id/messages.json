@@ -196,7 +196,10 @@
         "message": "Memblokir iklan dan pelacak hanya di situs web yang diizinkan"
     },
     "options_allowlist_alert_invert": {
-        "message": "Daftar yang diizinkan dibalik. Iklan hanya diblokir di situs web yang ditambahkan ke dalamnya. <a>Nonaktifkan<\/a>"
+        "message": "Daftar yang diizinkan dibalik. Iklan hanya terblokir di situs web yang ditambahkan ke dalamnya."
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>Hentikan pembalikan<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "Perubahan Anda terhadap daftar putih akan hilang"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "Diperbarui: %date%"
+    },
+    "options_filters_last_checked": {
+        "message": "Terakhir diperiksa: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Kustom"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "Hapus catatan"
     },
+    "filtering_log_actions_menu": {
+        "message": "Tindakan catatan pemfilteran"
+    },
     "filtering_type_all": {
         "message": "Semua"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "Impor"
     },
+    "options_user_rules_delete_all": {
+        "message": "Hapus semua"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "Hapus semua?"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "Semua aturan pengguna akan dihapus secara permanen"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "Semua aturan pengguna dihapus"
+    },
+    "options_user_rules_import_success": {
+        "message": "Aturan pengguna berhasil diimpor"
+    },
+    "options_user_rules_import_error": {
+        "message": "Gagal mengimpor aturan pengguna. Silakan coba lagi"
+    },
+    "options_user_rules_menu": {
+        "message": "Tindakan aturan pengguna"
+    },
+    "options_allowlist_menu": {
+        "message": "Tindakan daftar yang diizinkan"
+    },
     "options_userfilter_description_key": {
         "message": "Anda dapat menambahkan aturan Anda sendiri di sini. Opsi ini direkomendasikan untuk pengguna tingkat lanjut yang terbiasa dengan HTML\/CSS. Baca <a>tutorial aturan filter<\/a> untuk belajar menulis menulis aturan filter Anda sendiri."
     },
     "options_userfilter_subtitle_key": {
         "message": "Memungkinkan Anda menambahkan aturan penyaringan sendiri"
+    },
+    "options_user_rules_description_key": {
+        "message": "Aturan Anda untuk memblokir dan membuka blokir iklan atau seluruh situs web"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "Belum ada aturan"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "Cari"
+    },
+    "options_user_rules_clear_search": {
+        "message": "Hapus pencarian"
+    },
+    "options_user_rules_create_rule": {
+        "message": "Buat aturan"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "Edit aturan"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "Hapus aturan"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "Aturan pengguna dihapus:"
+    },
+    "options_user_rules_undo": {
+        "message": "Urungkan"
+    },
+    "options_user_rules_no_match": {
+        "message": "Tidak ditemukan"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "Beralih ke tampilan editor"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "Beralih ke tampilan daftar"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "Menyorot aturan…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "Jeda baris"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "Anda menyukai AdGuard?"
     },
-    "options_footer_like_us_cta": {
-        "message": "Berikan nilai!"
+    "options_rate_us_cta": {
+        "message": "Berikan nilai"
     },
     "options_miscellaneous_settings": {
         "message": "Pengaturan tambahan"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "Opsi 3. Jika Anda puas dengan filter standar yang aktif saat ini, <a>tutup peringatan ini.<\/a>"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "Batas tercapai — beberapa filter dinonaktifkan"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "Berikut yang dapat Anda lakukan"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "Hapus pemblokir iklan lainnya"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "Ekstensi peramban berbagi batas aturan yang sama. Menghapus pemblokir iklan lain dapat membebaskan lebih banyak aturan untuk AdGuard Browser Extension"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "Mengelola ekstensi"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "Tinjau filter yang tersedia"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "Aktifkan filter yang Anda butuhkan. Filter khusus bahasa dan privasi dapat menggunakan banyak aturan"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "Buka filter"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "Pasang aplikasi desktop"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "Hapus batas aturan dan dapatkan perlindungan yang diperluas yang berfungsi di semua peramban"
     },
     "options_all_limits_exceeded_warning": {
         "message": "Anda telah mencapai batas aturan bawaan yang aktif. Peramban Anda telah mengubah daftar filter bawaan yang aktif. Jumlah filter yang diaktifkan telah berubah dari %expected% menjadi %current%."
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "Versi"
+    },
+    "options_about_update_available": {
+        "message": "Versi %version% tersedia. Akan diunduh dan dipasang secara otomatis."
     },
     "options_about_libs": {
         "message": "Perpustakaan yang digunakan"

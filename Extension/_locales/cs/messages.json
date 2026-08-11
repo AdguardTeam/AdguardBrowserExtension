@@ -196,7 +196,10 @@
         "message": "Blokuje reklamy a slídiče pouze na webových stránkách na seznamu povolených"
     },
     "options_allowlist_alert_invert": {
-        "message": "Seznam povolených je obrácený. Reklamy jsou blokovány pouze na webech z tohoto seznamu. <a>Vypnout<\/a>"
+        "message": "Seznam povolených funguje na principu inverze. Reklamy jsou blokovány pouze na webových stránkách, které jsou do něj zařazeny."
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>Zastavit invertování<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "Vaše změny v seznamu povolených budou ztraceny"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "Aktualizováno: %date%"
+    },
+    "options_filters_last_checked": {
+        "message": "Naposledy zkontrolováno: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Vlastní"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "Vyčistit záznam"
     },
+    "filtering_log_actions_menu": {
+        "message": "Log filtrování skcí"
+    },
     "filtering_type_all": {
         "message": "Vše"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "Importovat"
     },
+    "options_user_rules_delete_all": {
+        "message": "Vymazat vše"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "Vymazat vše?"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "Všechna uživatelská pravidla budou trvale vymazána"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "Všechna uživatelská pravidla smazána"
+    },
+    "options_user_rules_import_success": {
+        "message": "Uživatelská pravidla úspěšně importována"
+    },
+    "options_user_rules_import_error": {
+        "message": "Nepodařilo se importovat uživatelská pravidla. Zkuste to znovu"
+    },
+    "options_user_rules_menu": {
+        "message": "Akce uživatelských pravidel"
+    },
+    "options_allowlist_menu": {
+        "message": "Akce seznamu povolených"
+    },
     "options_userfilter_description_key": {
         "message": "Zde můžete přidat svá vlastní pravidla. Tato možnost je doporučena pro pokročilé uživatele obeznámené s HTML\/CSS. Přečtěte si <a>návod pravidel filtrován <\/a>, kde se dozvíte, jak napsat vlastní pravidla filtrování."
     },
     "options_userfilter_subtitle_key": {
         "message": "Umožňuje přidat vlastní pravidla filtrování"
+    },
+    "options_user_rules_description_key": {
+        "message": "Vaše pravidla pro blokování a odblokování reklam nebo celých webových stránek"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "Zatím žádná pravidla"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "Hledat"
+    },
+    "options_user_rules_clear_search": {
+        "message": "Vyčistit vyhledávání"
+    },
+    "options_user_rules_create_rule": {
+        "message": "Vytvořit pravidlo"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "Upravit pravidlo"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "Odstranit pravidlo"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "Uživatelské pravidlo smazáno:"
+    },
+    "options_user_rules_undo": {
+        "message": "Zpět"
+    },
+    "options_user_rules_no_match": {
+        "message": "Nic nenalezeno"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "Přepnout do zobrazení editoru"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "Přepnout do zobrazení seznamu"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "Zvýrazňování pravidel…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "Zalomení řádků"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "Líbí se vám AdGuard?"
     },
-    "options_footer_like_us_cta": {
-        "message": "Ohodnoťte nás!"
+    "options_rate_us_cta": {
+        "message": "Ohodnoťte nás"
     },
     "options_miscellaneous_settings": {
         "message": "Další nastavení"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "Možnost 3. Pokud vám vyhovují aktuálně povolené výchozí filtry, <a>zavřete toto upozornění.<\/a>"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "Limit dosažen — některé filtry byly deaktivovány"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "Zde je návod, co dělat"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "Odeberte jiné blokátory reklam"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "Rozšíření prohlížeče sdílejí stejný limit počtu pravidel. Odebrání jiných blokátorů reklam může uvolnit více pravidel pro rozšíření prohlížeče AdGuard"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "Spravovat rozšíření"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "Zkontrolujte dostupné filtry"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "Povolte filtry, které potřebujete. Jazykově specifické filtry a filtry pro ochranu soukromí mohou používat mnoho pravidel"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "Přejít na filtry"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "Nainstalujte desktopovou aplikaci"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "Odeberte omezení pravidel a získejte rozšířenou ochranu, která funguje napříč všemi prohlížeči"
     },
     "options_all_limits_exceeded_warning": {
         "message": "Dosáhli jste limitu počtu aktivních vestavěných pravidel. Váš prohlížeč upravil seznam aktivních vestavěných filtrů. Počet povolených filtrů se změnil z %expected% na %current%."
@@ -1119,7 +1222,7 @@
         "message": "Blokuje slídiče a nástroje pro webovou analýzu pomocí AdGuard filtru ochrany sledování"
     },
     "options_third_party_title": {
-        "message": "Odstraněit souborů cookie třetích stran"
+        "message": "Odstranit soubory cookie třetích stran"
     },
     "options_third_party_desc": {
         "message": "Zabraňuje inzerentům sledovat vaše chování na více stránkách tím, že omezuje životnost souborů cookies třetích stran"
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "Verze"
+    },
+    "options_about_update_available": {
+        "message": "Verze %version% je k dispozici. Bude automaticky stažena a nainstalována."
     },
     "options_about_libs": {
         "message": "Použité knihovny"

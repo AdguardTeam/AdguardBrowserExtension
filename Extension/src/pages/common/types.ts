@@ -18,6 +18,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import type React from 'react';
+
 /**
  * Notification type.
  */
@@ -55,7 +57,18 @@ export type NotificationParams = {
     /**
      * Text of the notification.
      */
-    text: string;
+    text: React.ReactNode;
+
+    /**
+     * Stable string key used to deduplicate notifications.
+     *
+     * When provided, notifications are deduped on `type` + `dedupeKey` instead
+     * of comparing `text`. This is required for `React.ReactNode` (JSX) text,
+     * since two separately-constructed fragments are never referentially equal
+     * and would otherwise bypass dedup. Plain string `text` still dedupes
+     * correctly without this field.
+     */
+    dedupeKey?: string;
 
     /**
      * Buttons to be shown in the notification, optional.

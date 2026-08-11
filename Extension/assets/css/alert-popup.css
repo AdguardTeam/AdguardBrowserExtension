@@ -19,56 +19,118 @@
     color-scheme: light dark;
 }
 
-.adguard-popup-alert {
-    font-family: 'Roboto Flex', 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Ubuntu, Arial, sans-serif;
-    font-weight: normal;
-    top: 0;
-    left: 0;
-    max-width: 632px;
-    padding: 16px 60px;
-    color: #ffffff;
-    background-color: #4d4d4d;
-    border-radius: 8px;
-    box-shadow: 0 1px 10px 0 rgba(0, 0, 0, .2);
-    display: block;
-    align: center;
-    margin: 0 auto;
-    animation: popup-show 4s ease-in;
-    box-sizing: border-box;
+html {
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
-@keyframes popup-show {
+/* Update popup shares this file; do not inherit snack bottom alignment. */
+html:has(.adguard-update-popup) {
+    align-items: flex-start;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+@keyframes notify-show {
     0% {
+        transform: translateY(-100%);
         opacity: 0;
     }
-    8% {
-        opacity: 1;
-    }
-    92% {
-        opacity: 1;
-    }
+
     100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes notify-hide {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(100%);
         opacity: 0;
     }
+}
+
+.adguard-popup-alert {
+    font-family: 'Roboto Flex', system-ui;
+    font-weight: 400;
+    display: flex;
+    align-items: flex-start;
+    box-sizing: border-box;
+    width: 100%;
+    padding: 12px;
+    border-radius: 4px;
+    color: #ffffff;
+    background-color: #000000;
+    animation: notify-show 0.3s ease-in;
+}
+
+.adguard-popup-alert--closing {
+    animation: notify-hide 0.3s ease-out forwards;
+}
+
+.adguard-popup-alert__content {
+    width: 100%;
+}
+
+.adguard-popup-alert__title,
+.adguard-popup-alert__desc {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.3;
+    text-align: left;
+    word-break: break-word;
 }
 
 .adguard-popup-alert__title {
-    font-size: 16px;
-    line-height: 18px;
-    padding-bottom: 4px;
-    max-width: 400px;
-    letter-spacing: -0.2px;
+    margin: 0 0 4px;
+    font-weight: 700;
 }
 
 .adguard-popup-alert__desc {
-    font-size: 14px;
-    line-height: 24px;
-    font-weight: 400;
-    text-align: left;
+    margin: 0;
+}
+
+.adguard-popup-alert__close {
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 24px;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath stroke='%23a4a4a4' d='M6.42857 6.42857L17.6043 17.6043' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath stroke='%23a4a4a4' d='M6.42871 17.5714L17.6045 6.39563' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
 }
 
 .adguard-update-popup {
-    font-family: 'Roboto Flex', 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Ubuntu, Arial, sans-serif;
+    font-family: 'Roboto Flex', system-ui;
     font-weight: 600;
     color: #000000;
     display: -webkit-box;
@@ -94,14 +156,14 @@
 }
 
 .adguard-update-popup__close {
-    width: 15px;
-    height: 15px;
+    width: 24px;
+    height: 24px;
     cursor: pointer;
     position: absolute;
     top: 25px;
     right: 25px;
     background-repeat: no-repeat;
-    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCAxNS42NDIgMTUuNjQyIiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCAxNS42NDIgMTUuNjQyIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIj4gIDxwYXRoIGZpbGwtcnVsZT0iZXZlbm9kZCIgZD0iTTguODgyLDcuODIxbDYuNTQxLTYuNTQxYzAuMjkzLTAuMjkzLDAuMjkzLTAuNzY4LDAtMS4wNjEgIGMtMC4yOTMtMC4yOTMtMC43NjgtMC4yOTMtMS4wNjEsMEw3LjgyMSw2Ljc2TDEuMjgsMC4yMmMtMC4yOTMtMC4yOTMtMC43NjgtMC4yOTMtMS4wNjEsMGMtMC4yOTMsMC4yOTMtMC4yOTMsMC43NjgsMCwxLjA2MSAgbDYuNTQxLDYuNTQxTDAuMjIsMTQuMzYyYy0wLjI5MywwLjI5My0wLjI5MywwLjc2OCwwLDEuMDYxYzAuMTQ3LDAuMTQ2LDAuMzM4LDAuMjIsMC41MywwLjIyczAuMzg0LTAuMDczLDAuNTMtMC4yMmw2LjU0MS02LjU0MSAgbDYuNTQxLDYuNTQxYzAuMTQ3LDAuMTQ2LDAuMzM4LDAuMjIsMC41MywwLjIyYzAuMTkyLDAsMC4zODQtMC4wNzMsMC41My0wLjIyYzAuMjkzLTAuMjkzLDAuMjkzLTAuNzY4LDAtMS4wNjFMOC44ODIsNy44MjF6IiBmaWxsPSIjZDlkOWQ5Ii8+PC9zdmc+);
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath stroke='%23333333' d='M6.42857 6.42857L17.6043 17.6043' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath stroke='%23333333' d='M6.42871 17.5714L17.6045 6.39563' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
 }
 
 .adguard-update-popup__logo {
@@ -181,7 +243,7 @@
     top: 4px;
     right: 4px;
     background-repeat: no-repeat;
-    background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgZmlsbD0ibm9uZSI+PHBhdGggc3Ryb2tlPSIjZmZmIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS13aWR0aD0iMS41IiBkPSJNNi40MyA2LjQzIDE3LjYgMTcuNk02LjQzIDE3LjU3IDE3LjYgNi40Ii8+PC9zdmc+");
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath stroke='%23fff' d='M6.42857 6.42857L17.6043 17.6043' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath stroke='%23fff' d='M6.42871 17.5714L17.6045 6.39563' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
 }
 
 .adguard-update-popup__offer-content {
@@ -223,7 +285,7 @@
     transition: 0.3s;
     box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
 }
-    
+
 .adguard-update-popup__btn:active {
     background-color: #39764C;
 }

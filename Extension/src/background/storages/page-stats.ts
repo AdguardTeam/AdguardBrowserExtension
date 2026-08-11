@@ -50,7 +50,11 @@ export class PageStatsStorage extends StringStorage<typeof PAGE_STATISTIC_KEY, P
 
     public static MAX_DAYS_HISTORY = 30;
 
-    public static MAX_MONTHS_HISTORY = 3;
+    /**
+     * Number of month buckets kept in the stats history.
+     * Matches the number of months shown in the popup "Year" tab.
+     */
+    public static MAX_MONTHS_HISTORY = 12;
 
     /**
      * Returns number of total blocked requests.

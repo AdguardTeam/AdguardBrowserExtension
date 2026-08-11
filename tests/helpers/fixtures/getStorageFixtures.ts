@@ -853,3 +853,23 @@ export const getStorageFixturesV14 = (expires: number): StorageData[] => {
         return settings;
     });
 };
+
+/**
+ * Generates storage fixtures for V15.
+ *
+ * V14→V15 migration removes stale static filter data from hybridStorage in MV3.
+ * In MV2 (and without IndexedDB), this is a no-op — only schema-version changes.
+ *
+ * @param expires Expiration timestamp.
+ *
+ * @returns Storage data fixtures for V15.
+ */
+export const getStorageFixturesV15 = (expires: number): StorageData[] => {
+    const storageSettingsFixturesV14 = getStorageFixturesV14(expires);
+
+    return storageSettingsFixturesV14.map((settings) => {
+        settings['schema-version'] = 15;
+
+        return settings;
+    });
+};

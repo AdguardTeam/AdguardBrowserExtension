@@ -196,7 +196,10 @@
         "message": "Блокує рекламу та трекери лише на сайтах зі списку дозволених"
     },
     "options_allowlist_alert_invert": {
-        "message": "Список дозволів інвертовано. Рекламу буде заблоковано лише на сайтах з цього списку. <a>Вимкнути<\/a>"
+        "message": "Список дозволених інвертовано. Реклама заблоковано лише на сайтах, доданих до нього."
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>Зупинити інвертування<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "Ваші зміни списку дозволів буде втрачено"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "Оновлено: %date%"
+    },
+    "options_filters_last_checked": {
+        "message": "Остання перевірка: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Власні"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "Очистити журнал"
     },
+    "filtering_log_actions_menu": {
+        "message": "Дії журналу фільтрації"
+    },
     "filtering_type_all": {
         "message": "Усі"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "Імпорт"
     },
+    "options_user_rules_delete_all": {
+        "message": "Видалити все"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "Видалити все?"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "Усі користувацькі правила будуть остаточно видалені"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "Всі правила користувача видалено"
+    },
+    "options_user_rules_import_success": {
+        "message": "Правила користувача успішно імпортовано"
+    },
+    "options_user_rules_import_error": {
+        "message": "Не вдалося імпортувати правила користувача. Спробуйте ще раз"
+    },
+    "options_user_rules_menu": {
+        "message": "Дії правил користувача"
+    },
+    "options_allowlist_menu": {
+        "message": "Дії списку дозволених"
+    },
     "options_userfilter_description_key": {
         "message": "Ви можете додавати свої правила фільтрування. Проте ми не рекомендуємо це робити, якщо ви не розбираєтесь у HTML\/CSS. Перш ніж додавати свої правила, ознайомтесь з <a>документацією щодо їх створення<\/a>."
     },
     "options_userfilter_subtitle_key": {
         "message": "Дозволяє додавати власні правила фільтрування"
+    },
+    "options_user_rules_description_key": {
+        "message": "Ваші правила для блокування та розблокування реклами або цілих сайтів"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "Ще немає правил"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "Пошук"
+    },
+    "options_user_rules_clear_search": {
+        "message": "Очистити пошук"
+    },
+    "options_user_rules_create_rule": {
+        "message": "Створити правило"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "Редагувати правило"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "Вилучити правило"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "Правило користувача видалено:"
+    },
+    "options_user_rules_undo": {
+        "message": "Скасувати"
+    },
+    "options_user_rules_no_match": {
+        "message": "Нічого не знайдено..."
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "Переключитися до режиму редактора"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "Переключитися до режиму списку"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "Підсвічування правил…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "Розрив рядка"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "Подобається AdGuard?"
     },
-    "options_footer_like_us_cta": {
-        "message": "Оцініть нас!"
+    "options_rate_us_cta": {
+        "message": "Оцініть нас"
     },
     "options_miscellaneous_settings": {
         "message": "Додаткові налаштування"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "Варіант 3. Якщо вас влаштовують увімкнені зараз усталені фільтри, <a>закрийте це попередження<\/a>"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "Досягнуто ліміту — деякі фільтри вимкнено"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "Ось що ви можете зробити"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "Видалити інші блокувальники реклами"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "Розширення браузера обмінюються одним і тим самим лімітом правил. Видалення інших блокувальників реклами може звільнити більше правил для AdGuard Browser Extension"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "Керувати розширеннями"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "Переглянути доступні фільтри"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "Увімкніть потрібні фільтри. Фільтри за мовою та приватністю можуть використовувати багато правил"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "Перейти до фільтрів"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "Встановіть застосунок для настільного ПК"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "Зніміть обмеження правил і отримайте розширений захист, що працює в усіх браузерах"
     },
     "options_all_limits_exceeded_warning": {
         "message": "Ви досягли ліміту активних вбудованих правил. Ваш браузер змінив список активних вбудованих фільтрів. Кількість увімкнутих фільтрів змінилася з %expected% на %current%."
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "Версія"
+    },
+    "options_about_update_available": {
+        "message": "Версія %version% доступна. Її буде автоматично завантажити та встановити."
     },
     "options_about_libs": {
         "message": "Використані бібліотеки"

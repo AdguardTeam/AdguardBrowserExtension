@@ -64,6 +64,11 @@ export const createCommonMessageHandler = (
                 settingsStore.setFullscreenUserRulesEditorState(isOpen);
                 break;
             }
+            case NotifierType.AvailableUpdateVersionChanged: {
+                const [version] = message.data;
+                settingsStore.setAvailableUpdateVersion(version);
+                break;
+            }
             default: {
                 logger.warn('[ext.Options-common]: Undefined message type:', type);
                 break;
@@ -82,4 +87,5 @@ export const COMMON_EVENTS = [
     NotifierType.FiltersUpdateCheckReady,
     NotifierType.SettingUpdated,
     NotifierType.FullscreenUserRulesEditorUpdated,
+    NotifierType.AvailableUpdateVersionChanged,
 ];

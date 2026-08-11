@@ -29,3 +29,6 @@ export type {
     SessionStartRequest,
     SessionStartResponse,
 } from './abtest';
+export {
+    AG_52740_RULE_LIMITS_B,
+} from './abtest/constants';

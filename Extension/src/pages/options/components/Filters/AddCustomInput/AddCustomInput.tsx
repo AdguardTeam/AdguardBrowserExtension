@@ -26,7 +26,7 @@ import React, {
     useRef,
 } from 'react';
 
-import { Icon } from '../../../../common/components/ui/Icon';
+import { CloseIcon } from '../../../../common/components/ui/CloseIcon';
 import { translator } from '../../../../../common/translators/translator';
 
 import './add-custom-input.pcss';
@@ -96,11 +96,7 @@ const AddCustomInput = ({
                         aria-label={translator.getMessage('clear_button_title')}
                         onClick={clearHandler}
                     >
-                        <Icon
-                            id="#cross"
-                            className="icon--24 icon--gray-default"
-                            aria-hidden="true"
-                        />
+                        <CloseIcon />
                     </button>
                 )}
             </div>

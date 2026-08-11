@@ -196,7 +196,10 @@
         "message": "Chỉ chặn quảng cáo và trình theo dõi trên các trang được cho phép"
     },
     "options_allowlist_alert_invert": {
-        "message": "Danh sách cho phép được đảo ngược. Các quảng cáo chỉ bị chặn trên các website được thêm vào. <a>Vô hiệu hoá<\/a>"
+        "message": "Danh sách cho phép bị đảo ngược. Quảng cáo chỉ bị chặn trên các trang web được thêm vào danh sách đó."
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>Dừng đảo ngược<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "Những thay đổi của bạn đối với Danh sách cho phép sẽ bị mất"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "Đã cập nhật: %date%"
+    },
+    "options_filters_last_checked": {
+        "message": "Lần kiểm tra cuối cùng: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Tuỳ chọn"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "Xoá nhật ký"
     },
+    "filtering_log_actions_menu": {
+        "message": "Lọc các hành động nhật ký"
+    },
     "filtering_type_all": {
         "message": "Tất cả"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "Nhập"
     },
+    "options_user_rules_delete_all": {
+        "message": "Xóa tất cả"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "Xóa tất cả?"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "Tất cả các quy tắc người dùng sẽ bị xóa vĩnh viễn"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "Tất cả quy tắc của người dùng đã bị xóa"
+    },
+    "options_user_rules_import_success": {
+        "message": "Quy tắc của người dùng đã được nhập thành công"
+    },
+    "options_user_rules_import_error": {
+        "message": "Không thể nhập quy tắc người dùng. Vui lòng thử lại."
+    },
+    "options_user_rules_menu": {
+        "message": "Hành động theo quy tắc của người dùng"
+    },
+    "options_allowlist_menu": {
+        "message": "Các hành động trong danh sách cho phép"
+    },
     "options_userfilter_description_key": {
         "message": "Bạn có thể thêm quy tắc tại đây. Tính năng này chỉ được khuyến khích cho người dùng nâng cao có hiểu biết về HTML\/CSS. Đọc <a>giới thiệu về bộ lọc<\/a> để biết cách viết quy tắc lọc quảng cáo."
     },
     "options_userfilter_subtitle_key": {
         "message": "Cho phép bạn thêm các quy tắc lọc của riêng mình"
+    },
+    "options_user_rules_description_key": {
+        "message": "Quy tắc của bạn để chặn và bỏ chặn quảng cáo hoặc toàn bộ trang web"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "Chưa có quy tắc nào"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "Tìm kiếm"
+    },
+    "options_user_rules_clear_search": {
+        "message": "Xóa tìm kiếm"
+    },
+    "options_user_rules_create_rule": {
+        "message": "Tạo quy tắc"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "Chỉnh sửa quy tắc"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "Xóa quy tắc"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "Quy tắc người dùng đã bị xóa:"
+    },
+    "options_user_rules_undo": {
+        "message": "Hoàn tác"
+    },
+    "options_user_rules_no_match": {
+        "message": "Không tìm thấy"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "Chuyển sang chế độ trình soạn thảo"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "Chuyển sang chế độ xem danh sách"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "Đang tô sáng quy tắc…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "Ngắt dòng"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "Bạn có thích AdGuard?"
     },
-    "options_footer_like_us_cta": {
-        "message": "Gửi đánh giá!"
+    "options_rate_us_cta": {
+        "message": "Đánh giá ngay"
     },
     "options_miscellaneous_settings": {
         "message": "Cài đặt thêm"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "Tùy chọn 3. Nếu bạn hài lòng với các bộ lọc mặc định hiện đang được bật, <a>hãy đóng cảnh báo này.<\/a>"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "Đã đạt giới hạn — một số bộ lọc đã bị vô hiệu hóa"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "Đây là những gì bạn có thể làm"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "Gỡ bỏ các trình chặn quảng cáo khác"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "Các tiện ích mở rộng trình duyệt dùng chung cùng một giới hạn quy tắc. Việc gỡ bỏ các trình chặn quảng cáo khác có thể giải phóng thêm quy tắc cho Tiện ích mở rộng Trình duyệt AdGuard"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "Quản lý tiện ích mở rộng"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "Xem lại các bộ lọc có sẵn"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "Bật các bộ lọc bạn cần. Các bộ lọc theo ngôn ngữ và quyền riêng tư có thể sử dụng nhiều quy tắc"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "Chuyển đến bộ lọc"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "Cài đặt ứng dụng máy tính"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "Loại bỏ các giới hạn quy tắc và nhận bảo vệ mở rộng hoạt động trên tất cả các trình duyệt"
     },
     "options_all_limits_exceeded_warning": {
         "message": "Bạn đã đạt đến giới hạn các quy tắc tích hợp đang hoạt động. Trình duyệt của bạn đã sửa đổi danh sách các bộ lọc tích hợp đang hoạt động. Số lượng bộ lọc được bật đã thay đổi từ %expected% thành %current%."
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "Phiên bản"
+    },
+    "options_about_update_available": {
+        "message": "Phiên bản %version% hiện có. Nó sẽ được tải xuống và cài đặt tự động."
     },
     "options_about_libs": {
         "message": "Thư viện đã sử dụng"

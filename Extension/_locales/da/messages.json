@@ -166,7 +166,7 @@
         "description": "TEXT MAX LENGTH: 132"
     },
     "popup_tooltip_protection_enabled": {
-        "message": "Beskyttelsen aktiveret"
+        "message": "Beskyttelse aktiveret"
     },
     "popup_tooltip_protection_disabled": {
         "message": "Beskyttelsen er deaktiveret"
@@ -196,7 +196,10 @@
         "message": "Blokerer kun annoncer og trackere på hvidlistede websteder"
     },
     "options_allowlist_alert_invert": {
-        "message": "Hvidliste er inverteret. Adblocking sker kun på websteder, som tilføjes den. <a>Deaktivér<\/a>"
+        "message": "Hvidlisten er inverteret. Annoncer blokeres kun på websteder, som føjes til den."
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>Stop invertering<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "Evt. ændringer til Hvidliste vil gå tabt"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "Opdateret: %date%"
+    },
+    "options_filters_last_checked": {
+        "message": "Sidst kontrolleret: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Tilpasset"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "Ryd log"
     },
+    "filtering_log_actions_menu": {
+        "message": "Filtreringsloghandlinger"
+    },
     "filtering_type_all": {
         "message": "Alle"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "Importér"
     },
+    "options_user_rules_delete_all": {
+        "message": "Slet alle"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "Slet alle?"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "Alle brugerregler slettes permanent"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "Alle brugerregler slettet"
+    },
+    "options_user_rules_import_success": {
+        "message": "Brugerregler er importeret"
+    },
+    "options_user_rules_import_error": {
+        "message": "Import af brugerregler mislykkedes. Forsøg igen"
+    },
+    "options_user_rules_menu": {
+        "message": "Brugerregelhandlinger"
+    },
+    "options_allowlist_menu": {
+        "message": "Hvidlistehandlinger"
+    },
     "options_userfilter_description_key": {
         "message": "Egne regler kan tilføjes her. Muligheden anbefales til avancerede brugere med kendskab til HTML\/CSS. Læs i <a> filterregler-guiden<\/a> om, hvordan man selv skriver filterregler."
     },
     "options_userfilter_subtitle_key": {
         "message": "Muliggør at tilføje egne filtreringsregler"
+    },
+    "options_user_rules_description_key": {
+        "message": "Egne regler til blokering og afblokering af annoncer eller hele websteder"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "Ingen regler endnu"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "Søg"
+    },
+    "options_user_rules_clear_search": {
+        "message": "Ryd søgning"
+    },
+    "options_user_rules_create_rule": {
+        "message": "Opret regel"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "Redigér regel"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "Slet regel"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "Brugerregel slettet:"
+    },
+    "options_user_rules_undo": {
+        "message": "Fortryd"
+    },
+    "options_user_rules_no_match": {
+        "message": "Intet blev fundet"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "Skift til editorvisning"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "Skift til listevisning"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "Fremhævning af regler…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "Linjeskift"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "Synes du om AdGuard?"
     },
-    "options_footer_like_us_cta": {
-        "message": "Bedøm den!"
+    "options_rate_us_cta": {
+        "message": "Bedøm den"
     },
     "options_miscellaneous_settings": {
         "message": "Yderligere indstillinger"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "Mulighed 3. Er de aktuelt aktiverede standardfiltre tilfredsstillende, <a>luk denne advarsel<\/a>"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "Kvote opbrugt — nogle filtre er blevet deaktiveret"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "Her er, hvad der kan gøres"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "Fjern andre adblockere"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "Webbrowserudvidelser deler samme regelkvote. Fjernelse af andre adblockere kan give plads til flere regler til AdGuard Browser Extension"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "Håndtering af udvidelser"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "Gennemgå tilgængelige filtre"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "Aktivér de filtre, der er behov for. Sprogspecifikke og fortrolighedsfiltre kan anvende mange regler"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "Gå til filtre"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "Installér computer-appen"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "Fjern regelkvoterne og få udvidet beskyttelse, der fungerer på tværs af alle webbrowsere"
     },
     "options_all_limits_exceeded_warning": {
         "message": "Grænsen for aktive indbyggede regler er nået. Webbrowseren har ændret listen over aktive indbyggede filtre. Antallet af aktiverede filtre er ændret fra %expected% til %current%."
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "Version"
+    },
+    "options_about_update_available": {
+        "message": "Version %version% er tilgængelig. Den downloades og installeres automatisk."
     },
     "options_about_libs": {
         "message": "Brugte biblioteker"

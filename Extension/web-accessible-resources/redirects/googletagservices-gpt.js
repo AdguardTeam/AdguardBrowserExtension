@@ -158,6 +158,7 @@
             var clickUrl = "";
             var collapseEmptyDiv = null;
             var services = new Set;
+            var config = {};
             var slot = {
                 addService(e) {
                     services.add(e);
@@ -192,6 +193,21 @@
                 },
                 getCollapseEmptyDiv: function getCollapseEmptyDiv() {
                     return collapseEmptyDiv;
+                },
+                getConfig: function getConfig(keys) {
+                    var configKeys = Array.isArray(keys) ? keys : [ keys ];
+                    var googleTagServicesConfig = {};
+                    for (var i = 0; i < configKeys.length; i += 1) {
+                        var key = configKeys[i];
+                        if (key === "clickUrl") {
+                            googleTagServicesConfig[key] = clickUrl;
+                        } else if (key === "targeting") {
+                            googleTagServicesConfig[key] = targeting;
+                        } else {
+                            googleTagServicesConfig[key] = config[key];
+                        }
+                    }
+                    return Object.freeze(googleTagServicesConfig);
                 },
                 getContentUrl: function getContentUrl() {
                     return "";
@@ -260,6 +276,23 @@
                     collapseEmptyDiv = !!v;
                     return slot;
                 },
+                setConfig(obj) {
+                    try {
+                        var entries = Object.entries(obj);
+                        for (var i = 0; i < entries.length; i += 1) {
+                            var entry = entries[i];
+                            var key = entry[0];
+                            var value = entry[1];
+                            if (key === "clickUrl") {
+                                clickUrl = value;
+                            } else if (key === "targeting") {
+                                updateTargeting(targeting, value);
+                            } else {
+                                config[key] = value;
+                            }
+                        }
+                    } catch (ex) {}
+                },
                 setSafeFrameConfig: noopThis,
                 setTagForChildDirectedTreatment: noopThis,
                 setTargeting(k, v) {
@@ -279,6 +312,7 @@
             slotCreatives.set(optDiv, creatives);
             return slot;
         };
+        var initialLoadDisabled = false;
         var pubAdsService = {
             addEventListener: addEventListener,
             removeEventListener: removeEventListener,
@@ -299,7 +333,9 @@
             definePassback() {
                 return new PassbackSlot;
             },
-            disableInitialLoad: noopFunc,
+            disableInitialLoad() {
+                initialLoadDisabled = true;
+            },
             display: noopFunc,
             enableAsyncRendering: noopFunc,
             enableLazyLoad: noopFunc,
@@ -311,7 +347,9 @@
             getTargeting: noopArray,
             getTargetingKeys: noopArray,
             getSlots: noopArray,
-            isInitialLoadDisabled: trueFunc,
+            isInitialLoadDisabled: function isInitialLoadDisabled() {
+                return initialLoadDisabled;
+            },
             refresh: noopFunc,
             set: noopThis,
             setCategoryExclusion: noopThis,
@@ -328,6 +366,7 @@
             setVideoContent: noopThis,
             updateCorrelator: noopFunc
         };
+        var config = {};
         var {googletag: googletag = {}} = window;
         var {cmd: cmd = []} = googletag;
         googletag.apiReady = true;
@@ -363,12 +402,44 @@
             displaySlot(slotsById.get(id));
         };
         googletag.enableServices = noopFunc;
+        googletag.getConfig = function(keys) {
+            var configKeys = Array.isArray(keys) ? keys : [ keys ];
+            var googleTagServicesConfig = {};
+            for (var i = 0; i < configKeys.length; i += 1) {
+                var key = configKeys[i];
+                if (key === "disableInitialLoad") {
+                    googleTagServicesConfig[key] = initialLoadDisabled;
+                } else if (key === "targeting") {
+                    googleTagServicesConfig[key] = gTargeting;
+                } else {
+                    googleTagServicesConfig[key] = config[key];
+                }
+            }
+            return Object.freeze(googleTagServicesConfig);
+        };
         googletag.getVersion = noopStr;
         googletag.pubads = function() {
             return pubAdsService;
         };
         googletag.pubadsReady = true;
         googletag.setAdIframeTitle = noopFunc;
+        googletag.setConfig = function(obj) {
+            try {
+                var entries = Object.entries(obj);
+                for (var i = 0; i < entries.length; i += 1) {
+                    var entry = entries[i];
+                    var key = entry[0];
+                    var value = entry[1];
+                    if (key === "disableInitialLoad") {
+                        initialLoadDisabled = !!value;
+                    } else if (key === "targeting") {
+                        updateTargeting(gTargeting, value);
+                    } else {
+                        config[key] = value;
+                    }
+                }
+            } catch (ex) {}
+        };
         googletag.sizeMapping = function() {
             return new SizeMappingBuilder;
         };

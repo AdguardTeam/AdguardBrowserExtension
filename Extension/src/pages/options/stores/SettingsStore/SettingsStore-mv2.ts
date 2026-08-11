@@ -20,7 +20,6 @@
 
 import {
     action,
-    computed,
     makeObservable,
     observable,
     override,
@@ -126,20 +125,6 @@ export class SettingsStore extends SettingsStoreCommon {
             eventPauseController.cancelChange(ChangeType.Group, groupId);
             throw error;
         }
-    }
-
-    /**
-     * Used to display the last check time under all rules count.
-     *
-     * @returns {number} the latest check time of all filters.
-     */
-    @computed
-    get latestCheckTime() {
-        return Math.max(...this.filters
-            .map(({ lastScheduledCheckTime, lastCheckTime }) => Math.max(
-                lastScheduledCheckTime || 0,
-                lastCheckTime || 0,
-            )));
     }
 
     @action

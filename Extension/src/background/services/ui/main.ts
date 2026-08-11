@@ -157,13 +157,13 @@ export class UiService {
 
         messageHandler.addListener(MessageType.OpenThankYouPage, pagesApi.openThankYouPage);
         messageHandler.addListener(MessageType.OpenExtensionStore, pagesApi.openExtensionStorePage);
-        messageHandler.addListener(MessageType.OpenComparePage, PagesApi.openComparePage);
         messageHandler.addListener(
             MessageType.OpenChromeExtensionsSettingsPage,
             PagesApi.openChromeExtensionsSettingsPage,
         );
         messageHandler.addListener(MessageType.OpenExtensionDetailsPage, PagesApi.openExtensionDetailsPage);
         messageHandler.addListener(MessageType.OpenFullscreenUserRules, PagesApi.openFullscreenUserRulesPage);
+        messageHandler.addListener(MessageType.CloseFullscreenUserRules, PagesApi.closeFullscreenUserRulesPage);
         messageHandler.addListener(
             MessageType.UpdateFullscreenUserRulesTheme,
             PagesApi.updateFullscreenUserRulesPageTheme,

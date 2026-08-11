@@ -21,8 +21,11 @@
 import { readFileSync } from 'fs';
 import path from 'path';
 
-import { METADATA_RULESET_ID, MetadataRuleSet } from '@adguard/tsurlfilter/es/declarative-converter';
-import { getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
+import {
+    MetadataRuleset,
+    METADATA_RULESET_ID,
+    getRulesetPath,
+} from '@adguard/dnr-converter';
 
 import metadataMv2 from '../../../Extension/filters/chromium/filters.json';
 import { metadataValidator, type Metadata } from '../../../Extension/src/background/schema';
@@ -30,21 +33,22 @@ import { metadataValidator, type Metadata } from '../../../Extension/src/backgro
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
-const metadataRuleSetPath = path.join(
+const metadataRulesetPath = path.join(
     __dirname,
-    getRuleSetPath(METADATA_RULESET_ID, '../../../Extension/filters/chromium-mv3/declarative'),
+    getRulesetPath(METADATA_RULESET_ID, '../../../Extension/filters/chromium-mv3/declarative'),
 );
 
 export const getMetadataFixture = (): Metadata => {
     let metadata: unknown;
 
     if (__IS_MV3__) {
-        const rawMetadataRuleSet = readFileSync(metadataRuleSetPath, 'utf8');
-        const metadataRuleSet = MetadataRuleSet.deserialize(rawMetadataRuleSet);
-        const filtersMetadata = metadataRuleSet.getAdditionalProperty('metadata') || {};
+        const rawJson = readFileSync(metadataRulesetPath, 'utf8');
+        const metadataRuleset = MetadataRuleset.deserialize(rawJson);
+
+        const filtersMetadata = metadataRuleset.getAdditionalProperty('metadata') || {};
         metadata = {
-            version: metadataRuleSet.getAdditionalProperty('version'),
-            versionTimestampMs: metadataRuleSet.getAdditionalProperty('versionTimestampMs'),
+            version: metadataRuleset.getAdditionalProperty('version'),
+            versionTimestampMs: metadataRuleset.getAdditionalProperty('versionTimestampMs'),
             ...filtersMetadata,
         };
     } else {

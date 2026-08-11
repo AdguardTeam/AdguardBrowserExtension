@@ -23,8 +23,10 @@ import isString from 'lodash-es/isString';
 import isUndefined from 'lodash-es/isUndefined';
 import isObject from 'lodash-es/isObject';
 import { trimEnd } from 'lodash-es';
+import browser from 'webextension-polyfill';
 
 import { FilterList } from '@adguard/tsurlfilter';
+import { extractRulesetId, METADATA_RULESET_ID } from '@adguard/dnr-converter';
 
 import { logger } from '../../../common/logger';
 import { getZodErrorMessage } from '../../../common/error';
@@ -36,6 +38,7 @@ import {
     browserStorage,
     RawFiltersStorage,
 } from '../../storages';
+import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
 import {
     ADGUARD_SETTINGS_KEY,
     APP_VERSION_KEY,
@@ -93,6 +96,7 @@ export class UpdateApi {
         '11': UpdateApi.migrateFromV11toV12,
         '12': UpdateApi.migrateFromV12toV13,
         '13': UpdateApi.migrateFromV13toV14,
+        '14': UpdateApi.migrateFromV14toV15,
     };
 
     /**
@@ -215,6 +219,80 @@ export class UpdateApi {
     };
 
     /**
+     * Run data migration from schema v14 to schema v15.
+     *
+     * Removes stale static filter data from hybridStorage.
+     *
+     * In MV3, static (bundled) filters are owned by tswebextension, which stores
+     * them in its own IndexedDB (tswebextensionIDB). Before this fix, the extension
+     * also wrote filterContent_<id>, conversionData_<id>, and raw_filterrules_<id>.txt
+     * for static filters into adguardIDB — data that was never read back.
+     * This migration removes those orphaned entries.
+     *
+     * In MV2, this migration is a no-op because there are no static rulesets.
+     *
+     * Also deletes the legacy IndexedDB, which has been unused since the V2→V3 migration.
+     */
+    private static async migrateFromV14toV15(): Promise<void> {
+        // Delete the legacy AdguardRulesStorage IDB that hasn't been used since
+        // the V2→V3 migration.
+        try {
+            await new Promise<void>((resolve, reject) => {
+                const request = indexedDB.deleteDatabase('AdguardRulesStorage');
+                request.onsuccess = (): void => resolve();
+                request.onerror = (): void => reject(request.error);
+                // If another connection is blocking, just skip — the DB is unused anyway.
+                request.onblocked = (): void => resolve();
+            });
+        } catch (e) {
+            logger.debug('[ext.UpdateApi.migrateFromV14toV15]: failed to delete legacy AdguardRulesStorage IDB:', e);
+        }
+
+        if (!__IS_MV3__) {
+            return;
+        }
+
+        const manifest = browser.runtime.getManifest();
+
+        if (!manifest.declarative_net_request) {
+            return;
+        }
+
+        const staticFilterIds = new Set(
+            manifest.declarative_net_request.rule_resources
+                .map(({ id }) => extractRulesetId(id))
+                .filter((id): id is number => id !== null && id !== METADATA_RULESET_ID),
+        );
+
+        if (staticFilterIds.size === 0) {
+            return;
+        }
+
+        const keys = await hybridStorage.keys();
+        const keysToRemove: string[] = [];
+
+        for (const key of keys) {
+            let filterId: number | null = null;
+
+            if (key.startsWith('filterContent_') || key.startsWith('conversionData_')) {
+                const rawId = key.slice(key.indexOf('_') + 1);
+                filterId = parseInt(rawId, 10);
+            } else if (key.startsWith(RAW_FILTER_KEY_PREFIX)) {
+                filterId = RawFiltersStorage.extractFilterIdFromFilterKey(key);
+            }
+
+            if (filterId !== null && !Number.isNaN(filterId) && staticFilterIds.has(filterId)) {
+                keysToRemove.push(key);
+            }
+        }
+
+        if (keysToRemove.length > 0) {
+            logger.info(`[ext.UpdateApi.migrateFromV14toV15]: Removing ${keysToRemove.length} stale static filter entries from hybridStorage`);
+            await hybridStorage.removeMultiple(keysToRemove);
+        }
+    }
+
+    /**
      * Run data migration from schema v13 to schema v14.
      *
      * Adds the new {SettingOption.PreserveLogEnabled} setting with default value false.
@@ -297,7 +375,7 @@ export class UpdateApi {
 
                     // Step 2: Process the original filter list with the new FilterList class.
                     // FilterList will handle rule conversion and generate its own conversion metadata.
-                    const convertedFilterList = new FilterList(originalFilterList);
+                    const convertedFilterList = new FilterList(originalFilterList, id);
 
                     // Step 3: Save in the new format.
                     // We use direct hybridStorage calls instead of FiltersStorage.set()
@@ -352,12 +430,10 @@ export class UpdateApi {
         }
 
         let updatedSettings = await UpdateApi.migrateCombinedAnnoyancesFilter(settings);
-        await FiltersStorage.remove(AntiBannerFiltersId.AnnoyancesCombinedFilterId);
-        await RawFiltersStorage.remove(AntiBannerFiltersId.AnnoyancesCombinedFilterId);
+        await FiltersStoragesAdapter.remove(AntiBannerFiltersId.AnnoyancesCombinedFilterId);
 
         updatedSettings = await UpdateApi.removeDnsFilter(updatedSettings);
-        await FiltersStorage.remove(AntiBannerFiltersId.DnsFilterId);
-        await RawFiltersStorage.remove(AntiBannerFiltersId.DnsFilterId);
+        await FiltersStoragesAdapter.remove(AntiBannerFiltersId.DnsFilterId);
 
         await browserStorage.set(ADGUARD_SETTINGS_KEY, updatedSettings);
     }
@@ -1280,9 +1356,9 @@ export class UpdateApi {
         if (useOldStorage) {
             await FiltersStorageV1.set(AntiBannerFiltersId.QuickFixesFilterId, []);
         } else {
-            await FiltersStorage.set(AntiBannerFiltersId.QuickFixesFilterId, '');
+            await FiltersStoragesAdapter.set(AntiBannerFiltersId.QuickFixesFilterId, '');
         }
-        await RawFiltersStorage.set(AntiBannerFiltersId.QuickFixesFilterId, '');
+        await FiltersStoragesAdapter.setRaw(AntiBannerFiltersId.QuickFixesFilterId, '');
 
         await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
     }
@@ -1333,8 +1409,7 @@ export class UpdateApi {
 
         // Remove deprecated Quick Fixes filter from the storages.
         await FiltersStorageV1.remove(AntiBannerFiltersId.QuickFixesFilterId);
-        await FiltersStorage.remove(AntiBannerFiltersId.QuickFixesFilterId);
-        await RawFiltersStorage.remove(AntiBannerFiltersId.QuickFixesFilterId);
+        await FiltersStoragesAdapter.remove(AntiBannerFiltersId.QuickFixesFilterId);
 
         await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
     }

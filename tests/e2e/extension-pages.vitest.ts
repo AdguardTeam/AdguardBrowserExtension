@@ -26,23 +26,24 @@ import {
     it,
 } from 'vitest';
 
-import { BuildTargetEnv } from '../../constants';
 import { logInfo, logSection } from '../../tools/browser-test/logger';
 import { unpackE2EArtifact } from '../../tools/browser-test/e2e/artifacts';
-import { E2E_MATRIX, E2E_SURFACES } from '../../tools/browser-test/e2e/matrix';
+import { BENIGN_ERROR_PATTERNS, filterBenignErrors } from '../../tools/browser-test/e2e/benign-errors';
 import {
     type E2ESession,
     closeE2ESession,
     launchE2ESession,
     openE2ESurface,
 } from '../../tools/browser-test/e2e/session';
+import { E2ESpecialSurfaceId, E2ESurfaceId } from '../../tools/browser-test/e2e/types';
+
 import {
-    type E2EMatrixEntry,
-    E2ESpecialSurfaceId,
-    E2ESurfaceId,
-    type E2ESurface,
-} from '../../tools/browser-test/e2e/types';
-import { E2E_VITEST_ENV_KEY, E2E_VITEST_MATRIX_IDS_KEY } from '../../tools/browser-test/e2e/vitest-runner';
+    expectNoErrors,
+    getE2EEnv,
+    getE2EMatrix,
+    getE2ESession,
+    getSurface,
+} from './helpers/e2e-helpers';
 
 const e2eEnv = getE2EEnv();
 const e2eMatrix = getE2EMatrix();
@@ -77,8 +78,12 @@ e2eMatrix.forEach((entry) => {
 
                 try {
                     expect(await page.querySelectorCount('#root > *')).toBeGreaterThan(0);
-                    expect(await page.getErrors()).toHaveLength(0);
-                    expect(await page.getBackgroundErrors()).toHaveLength(0);
+
+                    const pageErrors = await page.getErrors();
+                    expectNoErrors(pageErrors, `${entry.id}/${surface.id} page errors`);
+
+                    const bgErrors = await page.getBackgroundErrors();
+                    expectNoErrors(bgErrors, `${entry.id}/${surface.id} background errors`);
                 } finally {
                     await page.close();
                 }
@@ -93,8 +98,12 @@ e2eMatrix.forEach((entry) => {
                 try {
                     await page.waitForSelector('#root .page');
                     expect(await page.querySelectorCount('#root .page')).toBeGreaterThan(0);
-                    expect(await page.getErrors()).toHaveLength(0);
-                    expect(await page.getBackgroundErrors()).toHaveLength(0);
+
+                    const pageErrors = await page.getErrors();
+                    expectNoErrors(pageErrors, `${entry.id}/${surface.id} page errors`);
+
+                    const bgErrors = await page.getBackgroundErrors();
+                    expectNoErrors(bgErrors, `${entry.id}/${surface.id} background errors`);
                 } finally {
                     await page.close();
                 }
@@ -108,8 +117,12 @@ e2eMatrix.forEach((entry) => {
 
                 try {
                     expect(await page.querySelectorCount('#root > *')).toBeGreaterThan(0);
-                    expect(await page.getErrors()).toHaveLength(0);
-                    expect(await page.getBackgroundErrors()).toHaveLength(0);
+
+                    const pageErrors = await page.getErrors();
+                    expectNoErrors(pageErrors, `${entry.id}/${surface.id} page errors`);
+
+                    const bgErrors = await page.getBackgroundErrors();
+                    expectNoErrors(bgErrors, `${entry.id}/${surface.id} background errors`);
                 } finally {
                     await page.close();
                 }
@@ -119,80 +132,11 @@ e2eMatrix.forEach((entry) => {
         describe(E2ESpecialSurfaceId.Background, () => {
             it('has no errors', () => {
                 const session = getE2ESession(e2eSession);
-                const errors = session.session.backgroundErrors.getErrors();
+                const allErrors = session.session.backgroundErrors.getErrors();
+                const errors = filterBenignErrors(allErrors, BENIGN_ERROR_PATTERNS);
 
-                expect(errors).toHaveLength(0);
+                expectNoErrors(errors, `${entry.id} background errors`);
             });
         });
     });
 });
-
-/**
- * Returns E2E build target environment from process env.
- *
- * @returns E2E build target environment.
- *
- * @throws Error if E2E build environment is not set.
- */
-function getE2EEnv(): BuildTargetEnv {
-    const env = process.env[E2E_VITEST_ENV_KEY];
-
-    if (!env || !Object.values(BuildTargetEnv).includes(env as BuildTargetEnv)) {
-        throw new Error('E2E build env is not set. Run pnpm test:e2e <env>.');
-    }
-
-    return env as BuildTargetEnv;
-}
-
-/**
- * Returns selected E2E matrix entries from process env.
- *
- * @returns E2E matrix entries.
- */
-function getE2EMatrix(): E2EMatrixEntry[] {
-    const rawMatrixIds = process.env[E2E_VITEST_MATRIX_IDS_KEY];
-
-    if (!rawMatrixIds) {
-        return E2E_MATRIX;
-    }
-
-    const matrixIds = new Set(rawMatrixIds.split(',').filter(Boolean));
-
-    return E2E_MATRIX.filter((entry) => matrixIds.has(entry.id));
-}
-
-/**
- * Returns a launched E2E session or throws.
- *
- * @param e2eSession Optional E2E session.
- *
- * @returns E2E session.
- *
- * @throws Error if E2E session was not launched.
- */
-function getE2ESession(e2eSession?: E2ESession): E2ESession {
-    if (!e2eSession) {
-        throw new Error('E2E session was not launched.');
-    }
-
-    return e2eSession;
-}
-
-/**
- * Returns surface config by id.
- *
- * @param id Surface id.
- *
- * @returns E2E surface.
- *
- * @throws Error if surface not found.
- */
-function getSurface(id: E2ESurfaceId): E2ESurface {
-    const surface = E2E_SURFACES.find((s) => s.id === id);
-
-    if (!surface) {
-        throw new Error(`E2E surface not found: ${id}`);
-    }
-
-    return surface;
-}

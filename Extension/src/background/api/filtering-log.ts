@@ -75,6 +75,7 @@ export type FilteringLogEvent = {
     requestRule?: FilteringEventRuleData;
     removeParam?: boolean;
     removeHeader?: boolean;
+    urlTransform?: boolean;
     headerName?: string;
     element?: string;
     script?: boolean;
@@ -252,17 +253,26 @@ export class FilteringLogApi {
      * @param isSyntheticTab Is tab is used to send initial requests from new tab in chrome.
      */
     public createTabInfo(tab: Tabs.Tab, isSyntheticTab = false): void {
-        const { id, title, url } = tab;
+        const { id } = tab;
 
-        if (!id || !url || !title) {
+        if (!id) {
             return;
         }
 
-        // Background tab can't be added
         // Synthetic tabs are used to send initial requests from new tab in chrome
-        if (id === BACKGROUND_TAB_ID || isSyntheticTab) {
+        if (isSyntheticTab) {
             return;
         }
+
+        // Skip tabs that have a URL but no title yet (e.g. Edge prerendered new-tab page);
+        // tabs with empty URL (window.open redirect) pass through to capture early events.
+        const url = tab.pendingUrl || tab.url || '';
+
+        if (url && !tab.title) {
+            return;
+        }
+
+        const title = tab.title || url;
 
         const tabInfo: FilteringLogTabInfo = {
             tabId: id,
@@ -289,11 +299,6 @@ export class FilteringLogApi {
             return;
         }
 
-        // Background tab can't be updated
-        if (id === BACKGROUND_TAB_ID) {
-            return;
-        }
-
         const tabInfo = this.getFilteringInfoByTabId(id);
 
         if (!tabInfo) {
@@ -303,6 +308,7 @@ export class FilteringLogApi {
 
         tabInfo.title = title;
         tabInfo.isExtensionTab = isExtensionUrl(url);
+        tabInfo.domain = getDomain(url);
 
         notifier.notifyListeners(NotifierType.TabUpdate, tabInfo);
     }
@@ -313,7 +319,7 @@ export class FilteringLogApi {
      * @param id Tab id.
      */
     public removeTabInfo(id: number): void {
-        // Background tab can't be removed
+        // Background tab can't be removed.
         if (id === BACKGROUND_TAB_ID) {
             return;
         }
@@ -452,6 +458,57 @@ export class FilteringLogApi {
     }
 
     /**
+     * Moves a previously recorded filtering log event from the source tab to
+     * the background tab and merges the provided partial event data into it.
+     *
+     * Used for tabs closed by a `$popup` modifier rule: the original
+     * `SendRequest` event is recorded under the popup tab, but the popup tab
+     * is removed immediately after the rule is applied, so the entry would be
+     * lost on tab cleanup. Re-attaching it to the background tab keeps the
+     * entry visible in the filtering log.
+     *
+     * @param sourceTabId Tab id where the event was originally recorded.
+     * @param eventId Event id to move.
+     * @param data Partial event data to merge into the moved event.
+     */
+    public async moveEventToBackgroundTab(
+        sourceTabId: number,
+        eventId: string,
+        data: Partial<FilteringLogEvent>,
+    ): Promise<void> {
+        if (!this.isOpen()) {
+            return;
+        }
+
+        const sourceTabInfo = this.getFilteringInfoByTabId(sourceTabId);
+        const backgroundTabInfo = this.getFilteringInfoByTabId(BACKGROUND_TAB_ID);
+
+        // Background tab entry is pre-seeded in the constructor, but bail out
+        // defensively just in case.
+        if (!backgroundTabInfo) {
+            return;
+        }
+
+        let event;
+
+        if (sourceTabInfo) {
+            const idx = sourceTabInfo.filteringEvents.findIndex((e) => e.eventId === eventId);
+            if (idx !== -1) {
+                [event] = sourceTabInfo.filteringEvents.splice(idx, 1);
+            }
+        }
+
+        // If no original event was recorded (e.g. filtering log was opened
+        // after `SendRequest`), nothing to update.
+        if (!event) {
+            return;
+        }
+
+        Object.assign(event, data);
+        backgroundTabInfo.filteringEvents.push(event);
+    }
+
+    /**
      * Updates the event data for an already recorded event.
      *
      * @param tabId Tab id.
@@ -477,29 +534,25 @@ export class FilteringLogApi {
             return;
         }
 
-        /**
-         * Search for matching request event inside of filtering events.
-         * If found matching event we assign declarative rule to that event,
-         * otherwise assign it to original event.
-         */
-        const { sourceRules } = declarativeRuleInfo;
-
-        const matchedFilteringEvent = filteringEvents.find((event) => {
-            if (!event.requestRule) {
-                return false;
+        // Merge source rules when multiple DNR rules match the same request.
+        // `sourceRules` accumulate so the log shows every original rule that
+        // contributed to a match, while `declarativeRuleJson` intentionally
+        // keeps the first matched DNR rule (the log renders a single
+        // declarative rule per event).
+        if (event.declarativeRuleInfo) {
+            // Deduplicate by (filterId, sourceRule) before merging to guard
+            // against late or out-of-order `onRuleMatchedDebug` callbacks
+            // attaching the same source rule to the same event twice.
+            const existingRules = event.declarativeRuleInfo.sourceRules;
+            for (const sourceRule of declarativeRuleInfo.sourceRules) {
+                const isDuplicate = existingRules.some((existingRule) => (
+                    existingRule.filterId === sourceRule.filterId
+                    && existingRule.sourceRule === sourceRule.sourceRule
+                ));
+                if (!isDuplicate) {
+                    existingRules.push(sourceRule);
+                }
             }
-
-            const { originalRuleText, appliedRuleText, filterId } = event.requestRule;
-            const ruleText = originalRuleText || appliedRuleText;
-
-            return ruleText && sourceRules.some((rule) => (
-                rule.sourceRule === ruleText
-                && rule.filterId === filterId
-            ));
-        });
-
-        if (matchedFilteringEvent) {
-            matchedFilteringEvent.declarativeRuleInfo = declarativeRuleInfo;
         } else {
             event.declarativeRuleInfo = declarativeRuleInfo;
         }

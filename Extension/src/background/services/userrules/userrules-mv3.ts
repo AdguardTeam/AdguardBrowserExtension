@@ -59,26 +59,33 @@ export class UserRulesService extends UserRulesServiceCommon {
     }
 
     /**
-     * Checks for user rules parsing errors in the configuration result.
+     * Checks for user rules errors in the configuration result.
+     * Logs all errors from dynamic rules conversion, including unsupported
+     * regexp patterns, unsupported modifiers, and other conversion failures.
      *
      * @param result Configuration result from the engine.
      */
-    public static checkUserRulesRegexpErrors(result: ConfigurationResult): void {
+    public static checkUserRulesErrors(result: ConfigurationResult): void {
         if (!UserRulesApi.isEnabled()) {
             return;
         }
 
-        const errors = result.dynamicRules?.errors?.filter((error) => error instanceof UnsupportedRegexpError) || [];
+        const errors = result.dynamicRules?.errors || [];
 
-        if (errors.length > 0) {
-            errors.forEach((error) => {
+        errors.forEach((error) => {
+            if (error instanceof UnsupportedRegexpError) {
                 logger.error(
-                    '[ext.UserRulesService.checkUserRulesRegexpErrors]: User rule parsing error:',
-                    `\nRule: ${RuleGenerator.generate(error.networkRule.node)}`,
+                    '[ext.UserRulesService.checkUserRulesErrors]: User rule conversion error:',
+                    `\nRule: ${RuleGenerator.generate(error.rule.node)}`,
                     '\nReason:',
                     error,
                 );
-            });
-        }
+            } else {
+                logger.error(
+                    '[ext.UserRulesService.checkUserRulesErrors]: User rule error:',
+                    error,
+                );
+            }
+        });
     }
 }

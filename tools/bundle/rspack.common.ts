@@ -50,7 +50,6 @@ import {
     ASSISTANT_INJECT_OUTPUT,
     SCRIPTLETS_VENDOR_OUTPUT,
     TSURLFILTER_VENDOR_OUTPUT,
-    TSURLFILTER_DECLARATIVE_CONVERTER_VENDOR_OUTPUT,
     TSWEBEXTENSION_VENDOR_OUTPUT,
     FILTERING_LOG_OUTPUT,
     DEVTOOLS_ELEMENT_SIDEBAR_OUTPUT,
@@ -58,6 +57,7 @@ import {
     AGTREE_VENDOR_OUTPUT,
     CSS_TOKENIZER_VENDOR_OUTPUT,
     TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
+    DNR_CONVERTER_VENDOR_OUTPUT,
     BACKGROUND_OUTPUT,
     MIN_SUPPORTED_VERSION,
     INDEX_HTML_FILE_NAME,
@@ -113,7 +113,6 @@ export const ENTRY_POINTS_CHUNKS = {
     [BACKGROUND_OUTPUT]: [
         TSWEBEXTENSION_VENDOR_OUTPUT,
         TSURLFILTER_VENDOR_OUTPUT,
-        TSURLFILTER_DECLARATIVE_CONVERTER_VENDOR_OUTPUT,
         SCRIPTLETS_VENDOR_OUTPUT,
         AGTREE_VENDOR_OUTPUT,
         CSS_TOKENIZER_VENDOR_OUTPUT,
@@ -122,7 +121,6 @@ export const ENTRY_POINTS_CHUNKS = {
     [OPTIONS_OUTPUT]: [
         SCRIPTLETS_VENDOR_OUTPUT,
         TSURLFILTER_VENDOR_OUTPUT,
-        TSURLFILTER_DECLARATIVE_CONVERTER_VENDOR_OUTPUT,
         TSWEBEXTENSION_VENDOR_OUTPUT,
         TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
         CSS_TOKENIZER_VENDOR_OUTPUT,
@@ -135,7 +133,6 @@ export const ENTRY_POINTS_CHUNKS = {
     [FILTERING_LOG_OUTPUT]: [
         SCRIPTLETS_VENDOR_OUTPUT,
         TSURLFILTER_VENDOR_OUTPUT,
-        TSURLFILTER_DECLARATIVE_CONVERTER_VENDOR_OUTPUT,
         AGTREE_VENDOR_OUTPUT,
         CSS_TOKENIZER_VENDOR_OUTPUT,
         TSWEBEXTENSION_VENDOR_OUTPUT,
@@ -149,7 +146,6 @@ export const ENTRY_POINTS_CHUNKS = {
         AGTREE_VENDOR_OUTPUT,
         SCRIPTLETS_VENDOR_OUTPUT,
         TSURLFILTER_VENDOR_OUTPUT,
-        TSURLFILTER_DECLARATIVE_CONVERTER_VENDOR_OUTPUT,
         TSWEBEXTENSION_VENDOR_OUTPUT,
         TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
         REACT_VENDOR_OUTPUT,
@@ -159,11 +155,50 @@ export const ENTRY_POINTS_CHUNKS = {
     ],
 };
 
-export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOptions = {}): Configuration => {
+/**
+ * Shared dependOn for the tswebextension vendor chunk.
+ *
+ * NOTE: this array is shared across all builds and must NOT be mutated.
+ * MV3 appends its extra vendor chunks per-call via genCommonConfig()'s
+ * `extraVendorChunks` parameter instead.
+ */
+export const TSWEBEXTENSION_VENDOR_DEPEND_ON = [
+    SCRIPTLETS_VENDOR_OUTPUT,
+    TSURLFILTER_VENDOR_OUTPUT,
+    TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
+];
+
+export const genCommonConfig = (
+    browserConfig: BrowserConfig,
+    options: BuildOptions = {},
+    /**
+     * Additional vendor chunk(s) appended to the shared `ENTRY_POINTS_CHUNKS`
+     * and `TSWEBEXTENSION_VENDOR_DEPEND_ON` dependOn arrays for this call only.
+     *
+     * Used by the MV3 config to add the `dnr-converter` vendor chunk without
+     * mutating the shared module-level constants, which would accumulate
+     * duplicate entries across repeated calls in the same process
+     * (e.g. chrome-mv3 + opera-mv3).
+     */
+    extraVendorChunks: string[] = [],
+): Configuration => {
     const { isWatchMode = false, zip } = options;
     const isDev = BUILD_ENV === BuildTargetEnv.Dev;
     const isMv3 = isBrowserMv3(browserConfig.browser);
     const manifestVersion = isMv3 ? 3 : 2;
+
+    /**
+     * Combines the shared chunk list with the extra vendor chunks for the
+     * current build, returning a fresh array and leaving the source intact.
+     *
+     * @param chunks Shared chunk names from the module-level constants.
+     *
+     * @returns A new dependOn/chunks array with extra vendor chunks appended.
+     */
+    const withExtraVendorChunks = (chunks: string[]): string[] => [
+        ...chunks,
+        ...extraVendorChunks,
+    ];
 
     // Base aliases for MV-specific services and APIs
     const alias: Record<string, string> = {
@@ -211,6 +246,19 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
         'configuration-import-api': path.resolve(__dirname, `../../Extension/src/background/api/settings/configuration-import/configuration-import-api-mv${manifestVersion}.ts`),
         'configuration-export-api': path.resolve(__dirname, `../../Extension/src/background/api/settings/configuration-export/configuration-export-api-mv${manifestVersion}.ts`),
         'fullscreen-user-rules-store': path.resolve(__dirname, `../../Extension/src/pages/fullscreen-user-rules/stores/FullscreenUserRulesStore-mv${manifestVersion}.ts`),
+        'filter-actions': path.resolve(__dirname, `../../Extension/src/pages/options/components/Filters/Filter/FilterActions-mv${manifestVersion}.ts`),
+        // Deduplicate CodeMirror / Lezer / oniguruma.
+        // `@adguard/rules-editor` externalizes these packages, so the linked
+        // library and the extension must resolve to a single physical copy.
+        // Otherwise duplicate `@codemirror/state` instances break `instanceof`
+        // checks ("Unrecognized extension value in extension set").
+        '@codemirror/state': path.resolve(__dirname, '../../node_modules/@codemirror/state'),
+        '@codemirror/view': path.resolve(__dirname, '../../node_modules/@codemirror/view'),
+        '@codemirror/language': path.resolve(__dirname, '../../node_modules/@codemirror/language'),
+        '@codemirror/commands': path.resolve(__dirname, '../../node_modules/@codemirror/commands'),
+        '@codemirror/search': path.resolve(__dirname, '../../node_modules/@codemirror/search'),
+        '@lezer/highlight': path.resolve(__dirname, '../../node_modules/@lezer/highlight'),
+        'vscode-oniguruma': path.resolve(__dirname, '../../node_modules/vscode-oniguruma'),
     };
 
     const configuration: Configuration = {
@@ -222,6 +270,44 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
             runtimeChunk: 'single',
             usedExports: true,
             sideEffects: true,
+            splitChunks: {
+                cacheGroups: {
+                    // Keep agtree in a separate chunk to avoid duplication
+                    // (imported by both tsurlfilter and dnr-converter).
+                    // Regex matches both symlinked and resolved paths.
+                    // Background entry excluded (runtime:false, no external chunks).
+                    [AGTREE_VENDOR_OUTPUT]: {
+                        test: /[\\/](@adguard[\\/]agtree|packages[\\/]agtree)[\\/]/,
+                        name: AGTREE_VENDOR_OUTPUT,
+                        chunks(chunk) {
+                            return chunk.name !== BACKGROUND_OUTPUT;
+                        },
+                        priority: 20,
+                        enforce: true,
+                    },
+                    // Keep dnr-converter in a separate chunk to avoid duplication
+                    // across page entries. Background entry excluded (see above).
+                    [DNR_CONVERTER_VENDOR_OUTPUT]: {
+                        test: /[\\/](@adguard[\\/]dnr-converter|packages[\\/]dnr-converter)[\\/]/,
+                        name: DNR_CONVERTER_VENDOR_OUTPUT,
+                        chunks(chunk) {
+                            return chunk.name !== BACKGROUND_OUTPUT;
+                        },
+                        priority: 20,
+                        enforce: true,
+                    },
+                    // Bundle zod (agtree transitive dep) into the agtree chunk.
+                    zod: {
+                        test: /[\\/]node_modules[\\/]zod[\\/]/,
+                        name: AGTREE_VENDOR_OUTPUT,
+                        chunks(chunk) {
+                            return chunk.name !== BACKGROUND_OUTPUT;
+                        },
+                        priority: 10,
+                        enforce: true,
+                    },
+                },
+            },
         },
         // Enable persistent filesystem caching for faster rebuilds
         cache: isDev,
@@ -231,7 +317,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
         entry: {
             [OPTIONS_OUTPUT]: {
                 import: OPTIONS_PATH,
-                dependOn: ENTRY_POINTS_CHUNKS[OPTIONS_OUTPUT],
+                dependOn: withExtraVendorChunks(ENTRY_POINTS_CHUNKS[OPTIONS_OUTPUT]),
             },
             [POPUP_OUTPUT]: {
                 import: POPUP_PATH,
@@ -258,11 +344,11 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
             },
             [FULLSCREEN_USER_RULES_OUTPUT]: {
                 import: FULLSCREEN_USER_RULES_PATH,
-                dependOn: ENTRY_POINTS_CHUNKS[FULLSCREEN_USER_RULES_OUTPUT],
+                dependOn: withExtraVendorChunks(ENTRY_POINTS_CHUNKS[FULLSCREEN_USER_RULES_OUTPUT]),
             },
             [FILTERING_LOG_OUTPUT]: {
                 import: FILTERING_LOG_PATH,
-                dependOn: ENTRY_POINTS_CHUNKS[FILTERING_LOG_OUTPUT],
+                dependOn: withExtraVendorChunks(ENTRY_POINTS_CHUNKS[FILTERING_LOG_OUTPUT]),
             },
             [SHARED_EDITOR_OUTPUT]: {
                 import: EDITOR_PATH,
@@ -287,19 +373,9 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
                     SCRIPTLETS_VENDOR_OUTPUT,
                 ],
             },
-            [TSURLFILTER_DECLARATIVE_CONVERTER_VENDOR_OUTPUT]: {
-                import: '@adguard/tsurlfilter/es/declarative-converter',
-                dependOn: [
-                    TSURLFILTER_VENDOR_OUTPUT,
-                ],
-            },
             [TSWEBEXTENSION_VENDOR_OUTPUT]: {
                 import: '@adguard/tswebextension',
-                dependOn: [
-                    SCRIPTLETS_VENDOR_OUTPUT,
-                    TSURLFILTER_VENDOR_OUTPUT,
-                    TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
-                ],
+                dependOn: withExtraVendorChunks(TSWEBEXTENSION_VENDOR_DEPEND_ON),
             },
             [SCRIPTLETS_VENDOR_OUTPUT]: {
                 import: '@adguard/scriptlets',
@@ -402,8 +478,20 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
                 },
                 {
                     test: /\.(js|ts)x?$/,
-                    // TODO: Check, maybe it can be removed. Added in AG-28996.
-                    exclude: /node_modules\/(?!@adguard\/tswebextension)/,
+                    exclude: [
+                        // TODO: Check, maybe it can be removed. Added in AG-28996.
+                        /node_modules\/(?!@adguard\/tswebextension)/,
+                        // When @adguard/rules-editor is linked from a sibling
+                        // checkout (CI/local pnpm link), `symlinks: true`
+                        // resolves it to a path outside node_modules, so the
+                        // rule above does not exclude it. Its dist is already a
+                        // pre-built bundle and must not be re-transpiled: SWC's
+                        // `usage` core-js injection would add unresolvable
+                        // `import "core-js/..."` statements relative to the
+                        // linked location. This mirrors how the published npm
+                        // package (inside node_modules) is already excluded.
+                        /[/\\]rules-editor[/\\]dist[/\\]/,
+                    ],
                     use: [
                         {
                             // Rspack has built-in SWC loader
@@ -501,6 +589,13 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
                         filename: 'assets/videos/[name][ext]',
                     },
                 },
+                {
+                    test: /\.wasm$/,
+                    type: 'asset/resource',
+                    generator: {
+                        filename: 'assets/wasm/[name][ext]',
+                    },
+                },
             ],
         },
         plugins: [
@@ -509,7 +604,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
                 template: path.join(OPTIONS_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${OPTIONS_OUTPUT}.html`,
                 chunks: [
-                    ...ENTRY_POINTS_CHUNKS[OPTIONS_OUTPUT],
+                    ...withExtraVendorChunks(ENTRY_POINTS_CHUNKS[OPTIONS_OUTPUT]),
                     OPTIONS_OUTPUT,
                 ],
             }),
@@ -530,7 +625,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
                 template: path.join(FULLSCREEN_USER_RULES_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${FULLSCREEN_USER_RULES_OUTPUT}.html`,
                 chunks: [
-                    ...ENTRY_POINTS_CHUNKS[FULLSCREEN_USER_RULES_OUTPUT],
+                    ...withExtraVendorChunks(ENTRY_POINTS_CHUNKS[FULLSCREEN_USER_RULES_OUTPUT]),
                     FULLSCREEN_USER_RULES_OUTPUT,
                 ],
             }),
@@ -539,7 +634,7 @@ export const genCommonConfig = (browserConfig: BrowserConfig, options: BuildOpti
                 template: path.join(FILTERING_LOG_PATH, INDEX_HTML_FILE_NAME),
                 filename: `${FILTERING_LOG_OUTPUT}.html`,
                 chunks: [
-                    ...ENTRY_POINTS_CHUNKS[FILTERING_LOG_OUTPUT],
+                    ...withExtraVendorChunks(ENTRY_POINTS_CHUNKS[FILTERING_LOG_OUTPUT]),
                     FILTERING_LOG_OUTPUT,
                 ],
             }),

@@ -196,7 +196,10 @@
         "message": "Bloque uniquement les publicités et les traqueurs sur les sites web autorisés"
     },
     "options_allowlist_alert_invert": {
-        "message": "Liste blanche d'autorisation est inversée. Les publicités ne sont bloquées que sur les sites Web ajoutés à la liste. <a>Désactiver<\/a>"
+        "message": "La liste d'autorisation est inversée. Les publicités ne sont bloquées que sur les sites web qui y sont ajoutés."
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>Arrêter l'inversion<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "Vos modifications apportées à la Liste d'autorisation seront perdues"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "Mis à jour : %date%"
+    },
+    "options_filters_last_checked": {
+        "message": "Dernière vérification : %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Personnaliser"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "Effacer le journal"
     },
+    "filtering_log_actions_menu": {
+        "message": "Les actions du Journal de filtrage"
+    },
     "filtering_type_all": {
         "message": "Tout"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "Importer"
     },
+    "options_user_rules_delete_all": {
+        "message": "Tout supprimer"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "Tout supprimer ?"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "Toutes les règles utilisateur seront définitivement supprimées"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "Toutes les règles utilisateur ont été supprimées"
+    },
+    "options_user_rules_import_success": {
+        "message": "Règles utilisateur importées avec succès"
+    },
+    "options_user_rules_import_error": {
+        "message": "Échec de l'importation des règles utilisateur. Veuillez réessayer"
+    },
+    "options_user_rules_menu": {
+        "message": "Actions liées aux règles d'utilisateur"
+    },
+    "options_allowlist_menu": {
+        "message": "Actions de la liste d’autorisation"
+    },
     "options_userfilter_description_key": {
         "message": "Vous pouvez ajouter vos propres règles ici. Cette option est recommandée pour les utilisateurs avancés familiers avec le langage HTML\/CSS. Lisez le <a>tutoriel sur les régles de filtrage<\/a> pour apprendre à écrire vos propres règles."
     },
     "options_userfilter_subtitle_key": {
         "message": "Vous permet d'ajouter vos propres règles de filtrage"
+    },
+    "options_user_rules_description_key": {
+        "message": "Vos règles concernant le blocage et le déblocage des annonces ou de sites web entiers"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "Pas encore de règles"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "Rechercher"
+    },
+    "options_user_rules_clear_search": {
+        "message": "Effacer la recherche"
+    },
+    "options_user_rules_create_rule": {
+        "message": "Créer une règle"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "Modifier la règle"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "Supprimer la règle"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "Règle utilisateur supprimée :"
+    },
+    "options_user_rules_undo": {
+        "message": "Annuler"
+    },
+    "options_user_rules_no_match": {
+        "message": "Rien n'a été trouvé"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "Passer à la vue éditeur"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "Passer à l’affichage en liste"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "Mise en évidence des règles…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "Saut de ligne"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "Avez-vous apprécié AdGuard ?"
     },
-    "options_footer_like_us_cta": {
-        "message": "Évaluez-nous!"
+    "options_rate_us_cta": {
+        "message": "Évaluez-nous"
     },
     "options_miscellaneous_settings": {
         "message": "Divers"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "Option 3. Si vous êtes satisfait des filtres par défaut actuellement activés, <a>fermez cet avertissement <\/a>"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "Limite atteinte — certains filtres ont été désactivés"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "Voici ce que vous pouvez faire"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "Supprimer les autres bloqueurs d'annonces"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "Les extensions de navigateur sont soumises à la même limite de règles. La désinstallation d'autres bloqueurs de publicités peut libérer davantage de règles pour l'Extension de navigateur AdGuard"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "Gérer les extensions"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "Consulter les filtres disponibles"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "Activez les filtres dont vous avez besoin. Les filtres linguistiques et ceux de confidentialité peuvent utiliser de nombreuses règles"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "Aller aux filtres"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "Installer l'application de bureau"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "Supprimez les restrictions liées aux règles et bénéficiez d'une protection étendue compatible avec tous les navigateurs"
     },
     "options_all_limits_exceeded_warning": {
         "message": "Vous avez atteint la limite de règles intégrées actives. Votre navigateur a modifié la liste des filtres intégrés. La quantité des filtres activés est passée de %expected% à %current%."
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "Version"
+    },
+    "options_about_update_available": {
+        "message": "La version %version% est disponible. Elle sera téléchargée et installée automatiquement."
     },
     "options_about_libs": {
         "message": "Bibliothèques utilisées"

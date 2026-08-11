@@ -196,7 +196,10 @@
         "message": "فقط تبلیغات و ردیاب‌ها را در تارنماهای فهرست شده مسدود می‌کند"
     },
     "options_allowlist_alert_invert": {
-        "message": "حالت معکوس برای لیست مجازها فعال است. تبلیغات فقط برای سایت‌هایی که به لیست افزوده شده‌اند فیلتر می‌شوند. <a>غیرفعال<\/a>"
+        "message": "فهرست مجاز به‌صورت معکوس تنظیم شده است. تبلیغات فقط در تارنماهایی که به آن افزوده شده‌اند مسدود می‌شوند."
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>توقف معکوس‌سازی<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "تغییرات شما در لیست مجاز از دست خواهد رفت"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "به‌روزرسانی شد: %date%"
+    },
+    "options_filters_last_checked": {
+        "message": "آخرین بررسی: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "دستي"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "پاکسازی گزارشات"
     },
+    "filtering_log_actions_menu": {
+        "message": "اقدامات وقایع فیلترینگ"
+    },
     "filtering_type_all": {
         "message": "همه"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "وارد کردن"
     },
+    "options_user_rules_delete_all": {
+        "message": "همه را حذف کنید"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "همه حذف شود؟"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "همه قوانین کاربر برای همیشه حذف خواهند شد"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "همه قوانین کاربر حذف شدند"
+    },
+    "options_user_rules_import_success": {
+        "message": "قاعده‌های کاربر با موفقیت وارد شدند"
+    },
+    "options_user_rules_import_error": {
+        "message": "وارد کردن رویه‌های کاربر انجام نشد. لطفاً دوباره تلاش کنید"
+    },
+    "options_user_rules_menu": {
+        "message": "اقدامات رویه‌های کاربر"
+    },
+    "options_allowlist_menu": {
+        "message": "اقدامات فهرست مجاز"
+    },
     "options_userfilter_description_key": {
         "message": "می توانید فیلترهای خودتان را در اینجا اضافه کنید. این گزینه برای کاربرانی که با HTML\/CSS آشنا هستند توصیه می شود. <a>آموزش فیلترهای دستی<\/a> را برای اضافه کردن فیلترهای خود مطالعه کنید."
     },
     "options_userfilter_subtitle_key": {
         "message": "به شما اجازه می‌دهد رویه‌های پالایشی خود را اضافه کنید"
+    },
+    "options_user_rules_description_key": {
+        "message": "رویه‌های شما برای مسدودسازی یا آزادسازی تبلیغات یا کل تارنماها"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "هنوز هیچ قاعده‌ای وجود ندارد"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "جستجو"
+    },
+    "options_user_rules_clear_search": {
+        "message": "پاک کردن جستجو"
+    },
+    "options_user_rules_create_rule": {
+        "message": "قاعده ایجاد کنید"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "ویرایش رویه کاربر"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "حذف قانون"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "رویه کاربر حذف شد:"
+    },
+    "options_user_rules_undo": {
+        "message": "آندو"
+    },
+    "options_user_rules_no_match": {
+        "message": "هیچ چیز یافت نشد"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "تغییر به نمای ویرایشگر"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "تغییر به نمای فهرست"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "در حال برجسته‌سازی رویه‌ها…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "شکست خط"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "آیا AdGuard را دوست دارید؟"
     },
-    "options_footer_like_us_cta": {
-        "message": "امتیاز بدهید!"
+    "options_rate_us_cta": {
+        "message": "امتیاز بدهید"
     },
     "options_miscellaneous_settings": {
         "message": "متفرقه"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "گزینه ۳. اگر از فیلترهای پیش‌فرض فعلی راضی هستید، <a>این هشدار را ببندید.<\/a>"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "به حد رسید — برخی فیلترها غیر فعال شدند"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "در اینجا کاری است که می توانید انجام دهید"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "حذف سایر مسدود کننده‌های تبلیغات"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "افزونه‌های مرورگر از یک محدودیت یکسان برای رویه‌ها استفاده می‌کنند. حذف سایر مسدود کننده‌های تبلیغات ممکن است رویه‌های بیشتری را برای AdGuard Browser Extension آزاد کند"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "مدیریت افزونه‌ها"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "بررسی فیلترهای موجود"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "فیلترهای موردنیاز خود را فعال کنید. فیلترهای مربوط به زبان و حریم خصوصی می‌توانند از رویه‌های زیادی استفاده کنند"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "برو به فیلترها"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "نصب برنامه رایانه رومیزی"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "محدودیت‌های رویه را حذف کنید و محافظت گسترده‌ای دریافت کنید که در تمام مرورگرها کار می‌کند"
     },
     "options_all_limits_exceeded_warning": {
         "message": "شما به حد قواعد داخلی فعال رسیده‌اید. مرورگر شما فهرست فیلترهای داخلی فعال را اصلاح کرده است. تعداد فیلترهای فعال از %expected% به %current% تغییر کرده است."
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "نسخه"
+    },
+    "options_about_update_available": {
+        "message": "نسخه %version% در دسترس است. به‌طور خودکار بارگیری و نصب خواهد شد."
     },
     "options_about_libs": {
         "message": "کتابخانه‌های استفاده‌شده"

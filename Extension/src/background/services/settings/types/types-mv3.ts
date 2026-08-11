@@ -17,6 +17,8 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import { type ExtensionUpdateFSMState } from '../../../../common/constants';
+
 import { type GetOptionsDataResponseCommon } from './types-common';
 
 /**
@@ -40,9 +42,21 @@ type RuntimeInfo = {
     isExtensionReloadedOnUpdate: boolean;
 
     /**
+     * Current FSM state of the extension update process.
+     *
+     * Used by UI stores to derive all update-related flags via computed properties.
+     */
+    extensionUpdateState: ExtensionUpdateFSMState;
+
+    /**
      * Whether the extension update was successful.
      */
     isSuccessfulExtensionUpdate: boolean;
+
+    /**
+     * Timestamp of the last manual filters/extension check in milliseconds.
+     */
+    lastCheckTimeMs: number | null;
 };
 
 /**

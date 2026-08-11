@@ -4,14 +4,27 @@
  */
 
 .adguard-alert-iframe {
-    width: 100%;
+    min-width: 360px;
+    max-width: calc(100vw - 44px);
     border: none;
     position: fixed;
     z-index: 1000;
-    top: 16px;
-    left: 0;
+    top: auto;
+    right: 22px;
+    bottom: 8px;
+    left: auto;
     display: block;
-    margin: 0 auto;
+    margin: 0;
     color-scheme: light dark;
     visibility: hidden;
+}
+
+@media (max-width: 640px) {
+    .adguard-alert-iframe {
+        width: auto;
+        max-width: none;
+        right: 22px;
+        bottom: 22px;
+        left: 22px;
+    }
 }

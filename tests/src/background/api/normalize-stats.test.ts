@@ -59,6 +59,19 @@ function createNonZeroItem(count: number): Record<string, number> {
     };
 }
 
+/**
+ * Creates a months array with distinct sequential values for easy tracking
+ * of bucket positions after normalization.
+ *
+ * @param length Number of month buckets.
+ * @param start Value of the first bucket.
+ *
+ * @returns Array of stats data items with values from `start` to `start + length - 1`.
+ */
+function createSequentialMonths(length: number, start: number): Record<string, number>[] {
+    return Array.from({ length }, (_, i) => createNonZeroItem(start + i));
+}
+
 describe('normalizeStatsData', () => {
     // Task 1.1: Day gap — updated yesterday, popup opens today
     describe('day gap alignment', () => {
@@ -142,6 +155,81 @@ describe('normalizeStatsData', () => {
             // Third-to-last should have the original count (shifted from the end).
             expect(result.months[result.months.length - 3]![PageStatsStorage.TOTAL_GROUP_ID]).toBe(500);
             expect(result.months).toHaveLength(PageStatsStorage.MAX_MONTHS_HISTORY);
+        });
+    });
+
+    // Regression tests for AG-57336: the months window must cover a full year
+    // (the popup "Year" tab shows 12 months). AG-48836 accidentally shrank the
+    // window to 3, wiping history older than 3 months on the first rollover.
+    describe('12-month history window', () => {
+        const MONTHS_PER_YEAR = 12;
+
+        it('keeps 12 months of history when updated is in the current month', () => {
+            const updated = new Date(2026, 2, 1, 10, 0, 0).getTime(); // Mar 1
+            const now = new Date(2026, 2, 18, 15, 0, 0).getTime(); // Mar 18
+
+            const data = createEmptyStatsData(updated);
+            data.months = createSequentialMonths(MONTHS_PER_YEAR, 100);
+
+            const result = normalizeStatsData(data, now);
+
+            // All 12 buckets must survive — no trimming to a shorter window.
+            expect(result.months).toHaveLength(MONTHS_PER_YEAR);
+            result.months.forEach((item, i) => {
+                expect(item[PageStatsStorage.TOTAL_GROUP_ID]).toBe(100 + i);
+            });
+        });
+
+        it('drops only the oldest month on a month rollover', () => {
+            const oneMonthAgo = new Date(2026, 1, 15, 12, 0, 0).getTime(); // Feb 15
+            const now = new Date(2026, 2, 18, 12, 0, 0).getTime(); // Mar 18
+
+            const data = createEmptyStatsData(oneMonthAgo);
+            data.months = createSequentialMonths(MONTHS_PER_YEAR, 100);
+
+            const result = normalizeStatsData(data, now);
+
+            expect(result.months).toHaveLength(MONTHS_PER_YEAR);
+            // The oldest bucket (100) is dropped, values 101..111 are kept,
+            // and one empty bucket for the current month is appended.
+            expect(result.months[0]![PageStatsStorage.TOTAL_GROUP_ID]).toBe(101);
+            expect(result.months[MONTHS_PER_YEAR - 2]![PageStatsStorage.TOTAL_GROUP_ID]).toBe(111);
+            expect(result.months[MONTHS_PER_YEAR - 1]![PageStatsStorage.TOTAL_GROUP_ID]).toBe(0);
+        });
+
+        it('pads skipped months without wiping history older than 3 months', () => {
+            const twoMonthsAgo = new Date(2026, 0, 18, 12, 0, 0).getTime(); // Jan 18
+            const now = new Date(2026, 2, 18, 12, 0, 0).getTime(); // Mar 18
+
+            const data = createEmptyStatsData(twoMonthsAgo);
+            data.months = createSequentialMonths(MONTHS_PER_YEAR, 100);
+
+            const result = normalizeStatsData(data, now);
+
+            expect(result.months).toHaveLength(MONTHS_PER_YEAR);
+            // Buckets 100 and 101 fall out of the window, 102..111 are kept,
+            // the skipped and the current months are appended as empty buckets.
+            expect(result.months[0]![PageStatsStorage.TOTAL_GROUP_ID]).toBe(102);
+            expect(result.months[MONTHS_PER_YEAR - 3]![PageStatsStorage.TOTAL_GROUP_ID]).toBe(111);
+            expect(result.months[MONTHS_PER_YEAR - 2]![PageStatsStorage.TOTAL_GROUP_ID]).toBe(0);
+            expect(result.months[MONTHS_PER_YEAR - 1]![PageStatsStorage.TOTAL_GROUP_ID]).toBe(0);
+        });
+
+        it('does not trim a months history shorter than the window', () => {
+            const oneMonthAgo = new Date(2026, 1, 15, 12, 0, 0).getTime(); // Feb 15
+            const now = new Date(2026, 2, 18, 12, 0, 0).getTime(); // Mar 18
+
+            const data = createEmptyStatsData(oneMonthAgo);
+            // History is still accumulating: only 5 buckets so far.
+            const ACCUMULATED_MONTHS = 5;
+            data.months = createSequentialMonths(ACCUMULATED_MONTHS, 100);
+
+            const result = normalizeStatsData(data, now);
+
+            // Only the current month bucket is appended, nothing is trimmed.
+            expect(result.months).toHaveLength(ACCUMULATED_MONTHS + 1);
+            expect(result.months[0]![PageStatsStorage.TOTAL_GROUP_ID]).toBe(100);
+            expect(result.months[ACCUMULATED_MONTHS]![PageStatsStorage.TOTAL_GROUP_ID]).toBe(0);
         });
     });
 

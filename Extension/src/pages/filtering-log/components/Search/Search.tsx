@@ -27,6 +27,7 @@ import React, {
 import classNames from 'classnames';
 
 import { Icon } from '../../../common/components/ui/Icon';
+import { CloseIcon } from '../../../common/components/ui/CloseIcon';
 import { translator } from '../../../../common/translators/translator';
 
 import './search.pcss';
@@ -87,11 +88,7 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>(({
                     title={translator.getMessage('clear_button_title')}
                     onClick={handleClearClick}
                 >
-                    <Icon
-                        id="#cross"
-                        className="icon--24 icon--gray-default"
-                        aria-hidden="true"
-                    />
+                    <CloseIcon />
                 </button>
             );
         }

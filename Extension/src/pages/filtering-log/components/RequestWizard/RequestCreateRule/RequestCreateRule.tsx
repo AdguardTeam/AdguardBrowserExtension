@@ -31,8 +31,8 @@ import { Icon } from '../../../../common/components/ui/Icon';
 import { useOverflowed } from '../../../../common/hooks/useOverflowed';
 import { AddedRuleState, WizardRequestState } from '../../../constants';
 import { logger } from '../../../../../common/logger';
-import theme from '../../../styles/theme';
 
+import theme from '../../../styles/theme';
 import './request-create-rule.pcss';
 
 const RequestCreateRule = observer(() => {

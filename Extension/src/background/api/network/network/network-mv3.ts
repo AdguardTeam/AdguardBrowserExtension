@@ -20,8 +20,11 @@
 import browser from 'webextension-polyfill';
 
 import { FiltersDownloader, type DownloadResult } from '@adguard/filters-downloader/browser';
-import { getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
-import { METADATA_RULESET_ID, MetadataRuleSet } from '@adguard/tsurlfilter/es/declarative-converter';
+import {
+    getRulesetPath,
+    METADATA_RULESET_ID,
+    MetadataRuleset,
+} from '@adguard/dnr-converter';
 import { TsWebExtension } from '@adguard/tswebextension/mv3';
 
 import { CustomFilterUtils } from '../../../../common/custom-filter-utils';
@@ -92,7 +95,7 @@ export class Network extends NetworkCommon {
             // data is available in the storage before attempting to retrieve it.
             // Note: because this method called before first run of tswebextension,
             // it will use it's own default log level.
-            await TsWebExtension.syncRuleSetWithIdbByFilterId(filterId, 'filters/declarative');
+            await TsWebExtension.syncRulesetWithIdbByFilterId(filterId, 'filters/declarative');
 
             const rawFilterList = await FiltersStoragesAdapter.getFilterContent(filterId);
 
@@ -130,11 +133,11 @@ export class Network extends NetworkCommon {
         // For MV3, the filters metadata is stored in the metadata ruleset.
         // The reason for this is that it allows us to perform extension updates
         // where only the JSON files of the rulesets are changed.
-        const metadataRuleSetPath = getRuleSetPath(
+        const metadataRulesetPath = getRulesetPath(
             METADATA_RULESET_ID,
             `${this.settings.localFiltersFolder}/declarative`,
         );
-        const url = browser.runtime.getURL(metadataRuleSetPath);
+        const url = browser.runtime.getURL(metadataRulesetPath);
 
         let response: ExtensionXMLHttpRequest | ResponseLikeXMLHttpRequest;
 
@@ -150,12 +153,12 @@ export class Network extends NetworkCommon {
         }
 
         try {
-            const metadataRuleSet = MetadataRuleSet.deserialize(response.responseText);
+            const metadataRuleset = MetadataRuleset.deserialize(response.responseText);
             // Filters metadata is stored as an additional property in the metadata ruleset.
-            const filtersMetadata = metadataRuleSet.getAdditionalProperty('metadata') || {};
+            const filtersMetadata = metadataRuleset.getAdditionalProperty('metadata') || {};
             const metadata = {
-                version: metadataRuleSet.getAdditionalProperty('version'),
-                versionTimestampMs: metadataRuleSet.getAdditionalProperty('versionTimestampMs'),
+                version: metadataRuleset.getAdditionalProperty('version'),
+                versionTimestampMs: metadataRuleset.getAdditionalProperty('versionTimestampMs'),
                 ...filtersMetadata,
             };
             return metadataValidator.parse(metadata);

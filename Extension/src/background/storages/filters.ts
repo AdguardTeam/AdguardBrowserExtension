@@ -59,7 +59,7 @@ export class FiltersStorage {
         let converted: FilterList;
 
         if (isString(filter)) {
-            converted = new FilterList(filter);
+            converted = new FilterList(filter, filterId);
         } else {
             converted = filter;
         }
@@ -108,7 +108,7 @@ export class FiltersStorage {
             conversionData = FilterList.createEmptyConversionData();
         }
 
-        return new FilterList(filterContent, conversionData);
+        return new FilterList(filterContent, filterId, conversionData);
     }
 
     /**

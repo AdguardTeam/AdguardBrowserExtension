@@ -22,7 +22,11 @@ import MD5 from 'crypto-js/md5';
 import { type DownloadResult } from '@adguard/filters-downloader/browser';
 
 import { BrowserUtils } from '../../utils/browser-utils';
-import { AntibannerGroupsId, CUSTOM_FILTERS_START_ID } from '../../../common/constants';
+import {
+    AntibannerGroupsId,
+    CUSTOM_FILTERS_START_ID,
+    NEWLINE_CHAR_UNIX,
+} from '../../../common/constants';
 import { logger } from '../../../common/logger';
 import {
     type CustomFilterMetadata,
@@ -34,8 +38,7 @@ import { customFilterMetadataStorage } from '../../storages/custom-filter-metada
 import { filterStateStorage } from '../../storages/filter-state';
 import { groupStateStorage } from '../../storages/group-state';
 import { filterVersionStorage } from '../../storages/filter-version';
-import { RawFiltersStorage } from '../../storages/raw-filters';
-import { FiltersStorage } from '../../storages/filters';
+import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
 import { type Network } from '../network';
 import { CustomFilterUtils } from '../../../common/custom-filter-utils';
 import { createPromiseWithTimeout } from '../../utils/timeouts';
@@ -145,8 +148,8 @@ const emptyDownloadResult: DownloadResult = {
  * Custom metadata is stored in {@link customFilterMetadataStorage}.
  * Filters states is stored in {@link filterStateStorage}.
  * Filters versions is stored in {@link filterVersionStorage}.
- * Filters rules is stored in {@link FiltersStorage}.
- * Raw filter rules (before applying directives) is saved in {@link FiltersStorage}.
+ * Filters rules is stored in {@link FiltersStoragesAdapter}.
+ * Raw filter rules (before applying directives) is saved in {@link FiltersStoragesAdapter}.
  */
 export class CustomFilterApi {
     private static network: Network;
@@ -310,8 +313,8 @@ export class CustomFilterApi {
         // Note: we should join array of rules here, because they contain
         // preprocessed directives, e.g. including another filter via `!#include`
         // directive.
-        await FiltersStorage.set(filterId, rules.join('\n'));
-        await RawFiltersStorage.set(filterId, rawRules);
+        await FiltersStoragesAdapter.set(filterId, rules.join(NEWLINE_CHAR_UNIX));
+        await FiltersStoragesAdapter.setRaw(filterId, rawRules);
 
         const group = groupStateStorage.get(filterMetadata.groupId);
 
@@ -375,7 +378,7 @@ export class CustomFilterApi {
 
             const { customUrl } = filterMetadata;
 
-            const rawFilter = await RawFiltersStorage.get(filterUpdateOption.filterId);
+            const rawFilter = await FiltersStoragesAdapter.getOriginal(filterUpdateOption.filterId);
             const filterRemoteData = await CustomFilterApi.getRemoteFilterData(
                 customUrl,
                 rawFilter,
@@ -447,7 +450,7 @@ export class CustomFilterApi {
 
         const { customUrl } = filterMetadata;
 
-        const rawFilter = await RawFiltersStorage.get(filterUpdateOptions.filterId);
+        const rawFilter = await FiltersStoragesAdapter.getOriginal(filterUpdateOptions.filterId);
         const filterRemoteData = await CustomFilterApi.getRemoteFilterData(
             customUrl,
             rawFilter,
@@ -483,8 +486,7 @@ export class CustomFilterApi {
 
         filterStateStorage.delete(filterId);
 
-        await FiltersStorage.remove(filterId);
-        await RawFiltersStorage.remove(filterId);
+        await FiltersStoragesAdapter.remove(filterId);
 
         logger.info('[ext.CustomFilterApi.removeFilter]: custom filter removed');
 
@@ -594,8 +596,8 @@ export class CustomFilterApi {
         // Note: we should join array of rules here, because they contain
         // preprocessed directives, e.g. including another filter via `!#include`
         // directive.
-        await FiltersStorage.set(filterId, rules.join('\n'));
-        await RawFiltersStorage.set(filterId, rawRules);
+        await FiltersStoragesAdapter.set(filterId, rules.join(NEWLINE_CHAR_UNIX));
+        await FiltersStoragesAdapter.setRaw(filterId, rawRules);
 
         return newFilterMetadata;
     }
@@ -627,7 +629,7 @@ export class CustomFilterApi {
      * @returns MD5 checksum of filter rules text.
      */
     private static getChecksum(rules: string[]): string {
-        const rulesText = rules.join('\n');
+        const rulesText = rules.join(NEWLINE_CHAR_UNIX);
         return MD5(rulesText).toString();
     }
 
@@ -649,7 +651,7 @@ export class CustomFilterApi {
 
         const { customUrl } = filterMetadata;
 
-        const rawFilter = await RawFiltersStorage.get(filterUpdateOptions.filterId);
+        const rawFilter = await FiltersStoragesAdapter.getOriginal(filterUpdateOptions.filterId);
         const filterRemoteData = await CustomFilterApi.getRemoteFilterData(
             customUrl,
             rawFilter,

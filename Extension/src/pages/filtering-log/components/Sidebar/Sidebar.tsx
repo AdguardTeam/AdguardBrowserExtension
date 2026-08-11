@@ -63,7 +63,10 @@ export const Sidebar = observer(() => {
 
     return (
         <div className={styles.sidebar}>
-            <MenuDropDown className={styles.menuDropDown}>
+            <MenuDropDown
+                className={styles.menuDropDown}
+                ariaLabel={translator.getMessage('filtering_log_actions_menu')}
+            >
                 <MenuButton
                     handler={refreshPage}
                     iconId="#reload"

@@ -30,10 +30,10 @@ import { Popover } from '../../../common/components/ui/Popover';
 import { EventsSearch } from '../Filters/EventsSearch';
 import { TabSelector } from '../Filters/TabSelector';
 import { filteringLogStorage } from '../../filtering-log-storage';
-import theme from '../../../common/styles/theme';
 import { TabSelectorMobile } from '../Filters/TabSelector/TabSelectorMobile';
 import { useIsMobile } from '../../../common/hooks/useIsMobile';
 
+import theme from '../../../common/styles/theme';
 import './actions.pcss';
 
 const Actions = observer(() => {

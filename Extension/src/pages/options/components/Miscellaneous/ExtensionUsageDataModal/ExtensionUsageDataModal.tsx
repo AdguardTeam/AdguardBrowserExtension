@@ -25,8 +25,8 @@ import cn from 'classnames';
 import { ModalContentWrapper } from '../../../../common/components/ModalContentWrapper/ModalContentWrapper';
 import { PRIVACY_URL } from '../../../constants';
 import { translator } from '../../../../../common/translators/translator';
-import theme from '../../../../common/styles/theme';
 
+import theme from '../../../../common/styles/theme';
 import styles from './extension-usage-data-modal.module.pcss';
 
 type ExtensionUsageDataModalProps = {

@@ -47,11 +47,12 @@ import { OptionsPageSections } from '../../../../common/nav';
 import { messenger } from '../../../services/messenger';
 import { getStaticWarningMessage } from '../../../common/utils/rules-limits-messages';
 import type { CategoriesGroupData, CategoriesFilterData } from '../../../../background/api';
+import { NoSearchMatch } from '../common/NoSearchMatch';
 
 import { AnnoyancesConsent } from './AnnoyancesConsent';
 import { Group, SearchGroup } from './Group';
 import { Filter } from './Filter';
-import { NoFiltersFound, NoFiltersYet } from './NoFilters';
+import { NoFiltersYet } from './NoFilters';
 import { Search } from './Search';
 import { FiltersUpdate } from './FiltersUpdate';
 import { AddCustomModal } from './AddCustomModal';
@@ -313,7 +314,7 @@ const Filters = observer(() => {
 
         if (!groupsToRender.length) {
             return (
-                <NoFiltersFound />
+                <NoSearchMatch message={translator.getMessage('options_filters_empty_title')} />
             );
         }
 
@@ -487,7 +488,7 @@ const Filters = observer(() => {
             }
 
             if (settingsStore.isSearching) {
-                return <NoFiltersFound />;
+                return <NoSearchMatch message={translator.getMessage('options_filters_empty_title')} />;
             }
 
             if (isCustom) {

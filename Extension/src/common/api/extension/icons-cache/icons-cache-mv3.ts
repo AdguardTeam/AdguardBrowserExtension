@@ -18,7 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { logger } from '@adguard/tsurlfilter';
+import { logger } from '../../../logger';
 
 import { IconsCacheCommon } from './icons-cache-common';
 

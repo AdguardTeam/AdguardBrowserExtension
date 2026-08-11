@@ -5,6 +5,88 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased 5.5
+
+### Added
+
+- `$urltransform` modifier support [tsurlfilter#111].
+- `$removeparam` support for SPA navigations [tsurlfilter#188].
+- Filter rule conversion error logging in MV2.
+- Default registered script is always added to local script rules [tsurlfilter#167].
+- New Rules Editor with dedicated list and editor views.
+
+### Changed
+
+- Migrated declarative network rule conversion from
+  `@adguard/tsurlfilter/es/declarative-converter` to the dedicated
+  `@adguard/dnr-converter` package.
+- Aligned internal `RuleSet`/`ruleSet` identifiers to `Ruleset`/`ruleset` to match
+  the renamed linked libraries (`@adguard/dnr-converter`, `@adguard/tswebextension`).
+- Filtering log now accumulates `declarativeRuleInfo.sourceRules` across multiple
+  DNR matches for the same event instead of overwriting the previous value.
+- Aligned `RuleActionType` enum casing to PascalCase (`BLOCK` → `Block`, etc.) to
+  match the `@adguard/dnr-converter` API.
+- User rules error reporting in MV3 now logs dynamic rule conversion errors.
+- Updated [@adguard/agtree] to v4.2.0.
+- Updated [@adguard/dnr-converter] to v1.1.0.
+- Updated [@adguard/rules-editor] to v2.0.0.
+- Updated [@adguard/scriptlets] to v2.5.0.
+- Updated [@adguard/tsurlfilter] to v6.0.2.
+- Updated [@adguard/tswebextension] to v5.0.0.
+- Updated [@adguard/extended-css] to v2.2.0 (sub-dependency of [@adguard/tswebextension]).
+
+### Fixed
+
+- Element hiding rules not being applied on fast page reload in MV3 [#3537].
+- Filtering log loses events during `window.open()` tab redirects [#2701].
+- Filtering log events for tabs closed by `$popup` modifier rules are now displayed
+  as linked to the background page [#1686].
+- "Send ad filters usage" option with CSS rules containing `::before` or `::after`
+  causes visible content on the page [#1486].
+- WebRTC IP handling policy changed from `disable_non_proxied_udp` to
+  `default_public_interface_only` to reduce VoIP breakage while still
+  preventing IP leaks.
+- Expanded wildcard TLD domains in DNR conversion for `$domain` and `$to`
+  modifiers [tsurlfilter#189].
+- Scriptlet exception rules with comma-containing arguments now work correctly
+  ([#3533]).
+- Generic scriptlet rules (scriptlets without a domain restriction) now appear in
+  the filtering log [#2895].
+- Improved visibility of UI controls in OS high-contrast mode
+  (`forced-colors: active`): switches, action buttons, editor, dropdowns,
+  and modal-like cards on Options/Popup pages ([#3530]).
+- Firefox freezes when playing Douyin videos, triggered by custom filter rule all.txt [#3525].
+- Sites loading-slowly in Firefox 118 when AdGuard extension is enabled [#2524].
+- Scroll bar missing in the filtering log [#3558].
+- Allowlist editor now accepts bare compound public suffixes (e.g. `gov.br`,
+  `co.uk`, `com.au`) while still rejecting single-label TLDs [#3587].
+- The request for additional permissions is not asked when importing extension
+  settings [#2754].
+- monkeytype.com fails to load — requests stuck "Pending" with AdGuard MV2 enabled [#3565].
+- Cosmetic rules with a regex in the `$domain` modifier containing multiple escaped
+  separators (e.g. `[$domain=/example\d*\.(live\|com\|icu\|org)$/]##body`) not
+  being applied.
+- Popup statistics "Year" tab showed only the last 3 months and erased older
+  monthly history after a month rollover.
+
+[#3537]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3537
+[#1486]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1486
+[#1686]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1686
+[#2701]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2701
+[#2754]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2754
+[#2895]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2895
+[#3533]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3533
+[#3530]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3530
+[#2524]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2524
+[#3525]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3525
+[#3558]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3558
+[#3565]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3565
+[#3587]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3587
+[tsurlfilter#111]: https://github.com/AdguardTeam/tsurlfilter/issues/111
+[tsurlfilter#167]: https://github.com/AdguardTeam/tsurlfilter/issues/167
+[tsurlfilter#188]: https://github.com/AdguardTeam/tsurlfilter/issues/188
+[tsurlfilter#189]: https://github.com/AdguardTeam/tsurlfilter/issues/189
+
 ## [5.4 patch 2] - 2026-05-14
 
 ### Fixed
@@ -1058,9 +1140,12 @@ The extension is now fully compatible with MV3.
 
 [@adguard/agtree]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/agtree/CHANGELOG.md
 [@adguard/assistant]: https://github.com/AdguardTeam/AdguardAssistant/blob/master/CHANGELOG.md
+[@adguard/dnr-converter]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/dnr-converter/CHANGELOG.md
 [@adguard/dnr-rulesets]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/dnr-rulesets/CHANGELOG.md
+[@adguard/extended-css]: https://github.com/AdguardTeam/ExtendedCss/blob/master/CHANGELOG.md
 [@adguard/filters-downloader]: https://github.com/AdguardTeam/FiltersDownloader/blob/master/CHANGELOG.md
 [@adguard/logger]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/logger/CHANGELOG.md
+[@adguard/rules-editor]: https://github.com/AdguardTeam/rules-editor/blob/master/CHANGELOG.md
 [@adguard/scriptlets]: https://github.com/AdguardTeam/Scriptlets/blob/master/CHANGELOG.md
 [@adguard/tswebextension]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tswebextension/CHANGELOG.md
 [@adguard/tsurlfilter]: https://github.com/AdguardTeam/tsurlfilter/blob/master/packages/tsurlfilter/CHANGELOG.md

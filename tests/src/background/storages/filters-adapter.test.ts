@@ -29,14 +29,16 @@ import {
     vi,
 } from 'vitest';
 
-import { getRuleSetId, getRuleSetPath } from '@adguard/tsurlfilter/es/declarative-converter-utils';
+import { getRulesetId, getRulesetPath } from '@adguard/dnr-converter';
 import { FiltersStorage as TsWebExtensionFiltersStorage } from '@adguard/tswebextension/filters-storage';
-import { FilterList } from '@adguard/tsurlfilter';
+import { FilterList } from '@adguard/tswebextension';
 
 import { mockLocalStorage } from '../../../helpers';
 import { FiltersStoragesAdapter } from '../../../../Extension/src/background/storages/filters-adapter';
+import { logger } from '../../../../Extension/src/common/logger';
 import {
     FiltersStorage as BrowserExtensionFiltersStorage,
+    RawFiltersStorage,
     hybridStorage,
 } from '../../../../Extension/src/background/storages';
 
@@ -93,6 +95,16 @@ describe.skipIf(__IS_MV3__)('FiltersStoragesAdapter (MV2)', () => {
         // Nothing happens if we try to remove a non-existent filter
         await FiltersStoragesAdapter.remove(1);
     });
+
+    it('setRaw', async () => {
+        const filterId = 1;
+        const rawFilterText = 'example.com##.ad\nexample.org##.banner';
+
+        await FiltersStoragesAdapter.setRaw(filterId, rawFilterText);
+
+        const result = await RawFiltersStorage.get(filterId);
+        expect(result).toBe(rawFilterText);
+    });
 });
 
 describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
@@ -103,6 +115,7 @@ describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
     let browserExtensionFiltersStorageSetSpy: MockInstance;
     let browserExtensionFiltersStorageRemoveSpy: MockInstance;
     let tsWebExtensionFiltersStorageHasSpy: MockInstance;
+    let rawFiltersStorageSetSpy: MockInstance;
 
     beforeEach(() => {
         localStorage = mockLocalStorage();
@@ -112,14 +125,16 @@ describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
 
         tsWebExtensionFiltersStorageHasSpy = vi.spyOn(TsWebExtensionFiltersStorage, 'has');
 
+        rawFiltersStorageSetSpy = vi.spyOn(RawFiltersStorage, 'set');
+
         // Mock static filters
         getManifestSpy = vi.spyOn(browser.runtime, 'getManifest').mockReturnValue({
             ...browser.runtime.getManifest(),
             declarative_net_request: {
                 rule_resources: staticFilterIds.map((id) => ({
-                    id: getRuleSetId(id),
+                    id: getRulesetId(id),
                     enabled: true,
-                    path: getRuleSetPath(id),
+                    path: getRulesetPath(id),
                 })),
             },
         });
@@ -133,6 +148,8 @@ describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
         browserExtensionFiltersStorageRemoveSpy.mockRestore();
 
         tsWebExtensionFiltersStorageHasSpy.mockRestore();
+
+        rawFiltersStorageSetSpy.mockRestore();
 
         getManifestSpy.mockRestore();
     });
@@ -171,6 +188,44 @@ describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
         expect(browserExtensionFiltersStorageSetSpy).not.toHaveBeenCalled();
     });
 
+    it('set should log static-write skip at debug level, not warn', async () => {
+        const debugSpy = vi.spyOn(logger, 'debug').mockImplementation(() => {});
+        const warnSpy = vi.spyOn(logger, 'warn').mockImplementation(() => {});
+
+        await FiltersStoragesAdapter.set(2, filter);
+
+        expect(warnSpy).not.toHaveBeenCalled();
+        expect(debugSpy).toHaveBeenCalled();
+
+        debugSpy.mockRestore();
+        warnSpy.mockRestore();
+    });
+
+    it('setRaw should not save raw filter for static filters', async () => {
+        await FiltersStoragesAdapter.setRaw(2, rawFilter);
+
+        expect(rawFiltersStorageSetSpy).not.toHaveBeenCalled();
+    });
+
+    it('setRaw should save raw filter for non-static filters', async () => {
+        await FiltersStoragesAdapter.setRaw(1, rawFilter);
+
+        expect(rawFiltersStorageSetSpy).toHaveBeenCalledWith(1, rawFilter);
+    });
+
+    it('setRaw should log static-write skip at debug level, not warn', async () => {
+        const debugSpy = vi.spyOn(logger, 'debug').mockImplementation(() => {});
+        const warnSpy = vi.spyOn(logger, 'warn').mockImplementation(() => {});
+
+        await FiltersStoragesAdapter.setRaw(2, rawFilter);
+
+        expect(warnSpy).not.toHaveBeenCalled();
+        expect(debugSpy).toHaveBeenCalled();
+
+        debugSpy.mockRestore();
+        warnSpy.mockRestore();
+    });
+
     it('has', async () => {
         await FiltersStoragesAdapter.set(1, filter);
         await expect(FiltersStoragesAdapter.has(1)).resolves.toBeTruthy();
@@ -198,5 +253,18 @@ describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
         await FiltersStoragesAdapter.remove(2);
 
         expect(browserExtensionFiltersStorageRemoveSpy).not.toHaveBeenCalled();
+    });
+
+    it('remove should log static-write skip at debug level, not warn', async () => {
+        const debugSpy = vi.spyOn(logger, 'debug').mockImplementation(() => {});
+        const warnSpy = vi.spyOn(logger, 'warn').mockImplementation(() => {});
+
+        await FiltersStoragesAdapter.remove(2);
+
+        expect(warnSpy).not.toHaveBeenCalled();
+        expect(debugSpy).toHaveBeenCalled();
+
+        debugSpy.mockRestore();
+        warnSpy.mockRestore();
     });
 });

@@ -30,6 +30,7 @@ import {
     createExceptionCookieRules,
     createExceptionCssRule,
     createExceptionScriptRule,
+    createExceptionUrlTransformRules,
     splitToPatterns,
     createRuleFromParams,
     getRuleText,
@@ -249,6 +250,40 @@ describe('ruleCreators', () => {
             const result = getRuleText(selectedEvent, rulePattern, ruleOptions);
             const expected = '@@||example.com^$csp=style-src *,domain=example.com';
             expect(result).toBe(expected);
+        });
+    });
+
+    describe('createExceptionUrlTransformRules', () => {
+        it('creates exception rules with modifier value', () => {
+            const event = {
+                frameDomain: 'example.org',
+                requestRule: {
+                    filterId: 1,
+                    ruleIndex: 0,
+                    appliedRuleText: '||example.org^$urltransform=/old/new/',
+                    modifierValue: '/old/new/',
+                },
+            };
+
+            const result = createExceptionUrlTransformRules(event);
+            expect(result).toHaveLength(2);
+            expect(result[0]).toBe('@@||example.org^$urltransform=/old/new/');
+            expect(result[1]).toBe('@@||example.org^$urltransform');
+        });
+
+        it('creates exception rule without modifier value', () => {
+            const event = {
+                frameDomain: 'example.org',
+                requestRule: {
+                    filterId: 1,
+                    ruleIndex: 0,
+                    appliedRuleText: '||example.org^$urltransform',
+                },
+            };
+
+            const result = createExceptionUrlTransformRules(event);
+            expect(result).toHaveLength(1);
+            expect(result[0]).toBe('@@||example.org^$urltransform');
         });
     });
 });

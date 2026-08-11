@@ -33,6 +33,7 @@ import { logger } from '../../../common/logger';
 import { translator } from '../../../common/translators/translator';
 import { type SettingOption, type Settings } from '../../../background/schema';
 import { type NotificationParams, NotificationType } from '../../common/types';
+import { isDuplicateNotification } from '../../common/utils/notifications';
 import { type TelemetryEventName, type TelemetryActionToScreenMap } from '../../../common/telemetry';
 
 /**
@@ -111,18 +112,6 @@ export class FullscreenUserRulesStore {
     }
 
     /**
-     * Setting ID for user filter enabled toggle.
-     */
-    @computed
-    get userFilterEnabledSettingId(): SettingOption.UserFilterEnabled | null {
-        if (!this.settings) {
-            logger.debug('[ext.FullscreenUserRulesStore.userFilterEnabledSettingId]: settings is not initialized yet');
-            return null;
-        }
-        return this.settings.names.UserFilterEnabled;
-    }
-
-    /**
      * Sets the loader visibility state.
      *
      * @param value Loader visibility state.
@@ -142,10 +131,7 @@ export class FullscreenUserRulesStore {
     @action
     addNotification(params: NotificationParams): string | null {
         const isNotificationAlreadyPresent = this.notifications
-            .some((notification) => {
-                return notification.type === params.type
-                    && notification.text === params.text;
-            });
+            .some((notification) => isDuplicateNotification(notification, params));
 
         if (isNotificationAlreadyPresent) {
             return null;

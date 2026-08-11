@@ -34,6 +34,7 @@ import {
     createExceptionCssRule,
     createExceptionRemoveParamRules,
     createExceptionRemoveHeaderRules,
+    createExceptionUrlTransformRules,
     createExceptionCspRules,
     createExceptionScriptRule,
     createBlockingCookieRule,
@@ -271,6 +272,10 @@ class WizardStore {
 
             if (selectedEvent.removeHeader) {
                 patterns = createExceptionRemoveHeaderRules(selectedEvent);
+            }
+
+            if (selectedEvent.urlTransform) {
+                patterns = createExceptionUrlTransformRules(selectedEvent);
             }
 
             if (selectedEvent.requestType === ContentType.Csp) {

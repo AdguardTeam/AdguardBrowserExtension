@@ -196,7 +196,10 @@
         "message": "Блокира реклами и тракери само на веб-страниците од дозволениот список"
     },
     "options_allowlist_alert_invert": {
-        "message": "Списокот на дозволи е превртен. Рекламите се блокирани само на веб-локациите додадени на него. <a>Оневозможи<\/a>"
+        "message": "Листата на дозволени е инвертирана. Рекламите се блокираат само на веб-страниците додадени во неа."
+    },
+    "options_allowlist_alert_invert_stop": {
+        "message": "<a>Престани да инвертираш<\/a>"
     },
     "options_allowlist_leave_subtitle": {
         "message": "Вашите промени во спискот со дозволи ќе бидат изгубени"
@@ -260,6 +263,9 @@
     },
     "options_antibanner_updated": {
         "message": "Ажурирано: %date%"
+    },
+    "options_filters_last_checked": {
+        "message": "Последна проверка: %date%"
     },
     "options_antibanner_custom_group": {
         "message": "Прилагодено"
@@ -588,6 +594,9 @@
     "filtering_clear_log_events": {
         "message": "Исчисти дневник"
     },
+    "filtering_log_actions_menu": {
+        "message": "Филтрирање на лог акции"
+    },
     "filtering_type_all": {
         "message": "Сите"
     },
@@ -849,11 +858,75 @@
     "options_userfilter_import": {
         "message": "Увези"
     },
+    "options_user_rules_delete_all": {
+        "message": "Избриши сѐ"
+    },
+    "options_user_rules_delete_all_confirm_title": {
+        "message": "Избриши сѐ?"
+    },
+    "options_user_rules_delete_all_confirm_subtitle": {
+        "message": "Сите кориснички правила ќе бидат трајно избришани"
+    },
+    "options_user_rules_delete_all_success": {
+        "message": "Сите кориснички правила избришани"
+    },
+    "options_user_rules_import_success": {
+        "message": "Корисничките правила успешно се увезени"
+    },
+    "options_user_rules_import_error": {
+        "message": "Не успеа увозот на корисничките правила. Обидете се повторно"
+    },
+    "options_user_rules_menu": {
+        "message": "Дејства за правила на корисници"
+    },
+    "options_allowlist_menu": {
+        "message": "Дејства на списокот на дозволени"
+    },
     "options_userfilter_description_key": {
         "message": "Можете да додадете свои правила овде. Оваа опција се препорачува за напредни корисници запознаени со HTML\/CSS. Прочитајте го упатството <a>за правилата за филтри за да научите како да пишувате сопствени правила<\/a> филтер."
     },
     "options_userfilter_subtitle_key": {
         "message": "Овозможува да додадете свои правила за филтрирање"
+    },
+    "options_user_rules_description_key": {
+        "message": "Вашите правила за блокирање и одблокирање реклами или цели веб-страници"
+    },
+    "options_user_rules_empty_placeholder": {
+        "message": "Сè уште нема правила"
+    },
+    "options_user_rules_search_placeholder": {
+        "message": "Пребарување"
+    },
+    "options_user_rules_clear_search": {
+        "message": "Исчисти пребарување"
+    },
+    "options_user_rules_create_rule": {
+        "message": "Создај правило"
+    },
+    "options_user_rules_edit_rule": {
+        "message": "Уреди правило"
+    },
+    "options_user_rules_delete_rule": {
+        "message": "Избриши правило"
+    },
+    "options_user_rules_deleted_notification": {
+        "message": "Корисничко правило е избришано:"
+    },
+    "options_user_rules_undo": {
+        "message": "Врати"
+    },
+    "options_user_rules_no_match": {
+        "message": "Ништо не е пронајдено"
+    },
+    "options_user_rules_switch_to_editor": {
+        "message": "Префрли на уредувачки приказ"
+    },
+    "options_user_rules_switch_to_list": {
+        "message": "Префрли на приказ со листа"
+    },
+    "options_user_rules_highlight_loading": {
+        "message": "Истакнување правила…",
+        "description": "Shown in the user rules list while syntax highlighting initializes."
     },
     "options_userfilter_line_break": {
         "message": "Прекин на линија"
@@ -885,8 +958,8 @@
     "options_do_you_like_question": {
         "message": "Дали ви се допаѓа AdGuard?"
     },
-    "options_footer_like_us_cta": {
-        "message": "Оцени го!"
+    "options_rate_us_cta": {
+        "message": "Оцени го"
     },
     "options_miscellaneous_settings": {
         "message": "Дополнителни поставки"
@@ -963,6 +1036,36 @@
     },
     "options_rule_limits_warning_actions_close_warning_multiple_filters": {
         "message": "Опција 3. Ако сте задоволни со моментално овозможените стандардни филтри, <a>затворете го ова предупредување.<\/a>"
+    },
+    "options_rule_limits_warning_variant_b_title_limit_reached": {
+        "message": "Достигнат е лимитот — некои филтри беа оневозможени"
+    },
+    "options_rule_limits_warning_variant_b_subtitle": {
+        "message": "Еве што можете да направите"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_title": {
+        "message": "Отстранете други блокатори на реклами"
+    },
+    "options_rule_limits_warning_variant_b_remove_blockers_description": {
+        "message": "Екстензиите за прелистувач го делат истото ограничување на правила. Отстранувањето на други блокатори на реклами може да ослободи повеќе правила за AdGuard екстензијата за прелистувач"
+    },
+    "options_rule_limits_warning_variant_b_manage_extensions": {
+        "message": "Управувај со екстензии"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_title": {
+        "message": "Преглед на достапни филтри"
+    },
+    "options_rule_limits_warning_variant_b_review_filters_description": {
+        "message": "Овозможете ги филтрите што ви се потребни. Филтрите специфични за јазик и приватност може да користат многу правила"
+    },
+    "options_rule_limits_warning_variant_b_go_to_filters": {
+        "message": "Одете во филтри"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_title": {
+        "message": "Инсталирајте ја апликацијата за десктоп"
+    },
+    "options_rule_limits_warning_variant_b_desktop_app_description": {
+        "message": "Отстранете ги ограничувањата на правилата и добијте проширена заштита што работи во сите прелистувачи"
     },
     "options_all_limits_exceeded_warning": {
         "message": "Го достигнавте лимитот на активни вградени филтри. Вашиот прелистувач ја измени листата на активни вградени филтри. Бројот на овозможени филтри се промени од %expected% на %current%."
@@ -1228,6 +1331,9 @@
     },
     "options_about_version": {
         "message": "Верзија"
+    },
+    "options_about_update_available": {
+        "message": "Верзијата %version% е достапна. Ќе се преземе и инсталира автоматски."
     },
     "options_about_libs": {
         "message": "Користени библиотеки"

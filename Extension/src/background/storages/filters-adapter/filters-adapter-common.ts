@@ -18,10 +18,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { type ConversionData, FilterList } from '@adguard/tsurlfilter';
+import { type ConversionData, FilterList } from '@adguard/tswebextension';
 
 import { logger } from '../../../common/logger';
 import { FiltersStorage as BrowserExtensionFiltersStorage } from '../filters';
+import { RawFiltersStorage } from '../raw-filters';
 
 /**
  * The `FiltersStoragesAdapter` is a high-level class responsible for ensuring that
@@ -39,6 +40,21 @@ export class FiltersStoragesAdapterCommon {
             await BrowserExtensionFiltersStorage.set(filterId, filter);
         } catch (error: unknown) {
             logger.error(`[ext.FiltersStoragesAdapterCommon.set]: failed to set filter list for filter id ${filterId}, got error:`, error);
+            throw error;
+        }
+    }
+
+    /**
+     * Sets specified raw filter list with the specified ID in the storage.
+     *
+     * @param filterId Filter id.
+     * @param filter Raw filter rules.
+     */
+    public static async setRaw(filterId: number, filter: string): Promise<void> {
+        try {
+            await RawFiltersStorage.set(filterId, filter);
+        } catch (error: unknown) {
+            logger.error(`[ext.FiltersStoragesAdapterCommon.setRaw]: failed to set raw filter list for filter id ${filterId}, got error:`, error);
             throw error;
         }
     }
@@ -76,24 +92,54 @@ export class FiltersStoragesAdapterCommon {
             conversionData = FilterList.createEmptyConversionData();
         }
 
-        return new FilterList(filterContent, conversionData);
+        return new FilterList(filterContent, filterId, conversionData);
     }
 
     /**
      * Removes the filter list with the specified ID from the storage.
+     * Removes both the preprocessed filter list and the raw filter list.
      *
      * @param filterId Filter id.
      */
     public static async remove(filterId: number): Promise<void> {
         await BrowserExtensionFiltersStorage.remove(filterId);
+        await RawFiltersStorage.remove(filterId);
     }
 
     /**
-     * Gets the raw filter list content for the specified filter ID.
+     * Gets the original filter list content (before applying preprocessor directives)
+     * for the specified filter ID.
      *
      * @param filterId Filter id.
      *
-     * @returns Raw filter list content or `undefined` if the filter list does not exist.
+     * @returns Original filter list content or `undefined` if the filter list does not exist.
+     */
+    public static async getOriginal(filterId: number): Promise<string | undefined> {
+        return RawFiltersStorage.get(filterId);
+    }
+
+    /**
+     * Checks whether the given filter ID corresponds to a static filter.
+     *
+     * In MV2, this always returns `false` because there are no static filters.
+     * MV3 overrides this method to check the extension manifest.
+     *
+     * @param _filterId Filter id.
+     *
+     * @returns Always `false` in the base implementation.
+     */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    protected static isStaticFilterId(_filterId: number): boolean {
+        return false;
+    }
+
+    /**
+     * Gets the preprocessed filter list content (after applying preprocessor directives)
+     * for the specified filter ID.
+     *
+     * @param filterId Filter id.
+     *
+     * @returns Preprocessed filter list content or `undefined` if the filter list does not exist.
      */
     public static async getFilterContent(filterId: number): Promise<string | undefined> {
         return BrowserExtensionFiltersStorage.getFilterContent(filterId);
