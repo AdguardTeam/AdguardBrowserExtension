@@ -1,1 +1,1 @@
-(function(){try{__ag_7d8a978ba755ed70.r("json-prune",{name:"json-prune",args:["entries.[-].command.reelWatchEndpoint.adClientParams.isAd"],engine:"extension",version:"2.4.2",verbose:!1},["entries.[-].command.reelWatchEndpoint.adClientParams.isAd"],"9bdb8f42e731b952")}catch(e){}})();
+(function(){try{__ag_7d8a978ba755ed70.r("json-prune",{name:"json-prune",args:["entries.[-].command.reelWatchEndpoint.adClientParams.isAd"],engine:"extension",version:"2.4.2",verbose:false},["entries.[-].command.reelWatchEndpoint.adClientParams.isAd"],"9bdb8f42e731b952")}catch(e){}})();

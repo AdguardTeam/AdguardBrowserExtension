@@ -1,1 +1,1 @@
-(function(){try{__ag_7d8a978ba755ed70.r("set-constant",{name:"set-constant",args:["navigator.getBattery","noopPromiseResolve"],engine:"extension",version:"2.4.2",verbose:!1},["navigator.getBattery","noopPromiseResolve"],"ef320896e12af670")}catch(e){}})();
+(function(){try{__ag_7d8a978ba755ed70.r("set-constant",{name:"set-constant",args:["navigator.getBattery","noopPromiseResolve"],engine:"extension",version:"2.4.2",verbose:false},["navigator.getBattery","noopPromiseResolve"],"ef320896e12af670")}catch(e){}})();

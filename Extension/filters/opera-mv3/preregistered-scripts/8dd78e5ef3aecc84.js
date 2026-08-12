@@ -1,1 +1,1 @@
-(function(){try{__ag_7d8a978ba755ed70.r("set-constant",{name:"set-constant",args:["ytInitialPlayerResponse.adPlacements","undefined"],engine:"extension",version:"2.4.2",verbose:!1},["ytInitialPlayerResponse.adPlacements","undefined"],"8dd78e5ef3aecc84")}catch(e){}})();
+(function(){try{__ag_7d8a978ba755ed70.r("set-constant",{name:"set-constant",args:["ytInitialPlayerResponse.adPlacements","undefined"],engine:"extension",version:"2.4.2",verbose:false},["ytInitialPlayerResponse.adPlacements","undefined"],"8dd78e5ef3aecc84")}catch(e){}})();

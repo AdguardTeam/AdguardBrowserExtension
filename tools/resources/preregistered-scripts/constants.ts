@@ -28,8 +28,11 @@ export const DOMAINS_LIST_FILENAME = 'domains.js';
 /**
  * Minifies JavaScript code with Terser.
  *
- * `bare_returns` is deliberately not enabled: generated files must stay
- * syntactically strict so a stray top-level `return` can't change semantics.
+ * The coverage hash attests the raw rule source, while the page executes the
+ * minified output, so the transform must stay purely lexical: `compress` and
+ * `mangle` are disabled to keep executed semantics identical to the hashed
+ * source by construction. `bare_returns` stays disabled for the same reason —
+ * a stray top-level `return` must not change semantics.
  *
  * @param code JavaScript source to minify.
  *
@@ -39,10 +42,8 @@ export const DOMAINS_LIST_FILENAME = 'domains.js';
  */
 export const minifyJs = async (code: string): Promise<string> => {
     const result = await terserMinify(code, {
-        compress: {
-            sequences: false,
-            negate_iife: false,
-        },
+        compress: false,
+        mangle: false,
     });
 
     if (!result.code) {

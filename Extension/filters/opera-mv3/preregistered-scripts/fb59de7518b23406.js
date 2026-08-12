@@ -1,1 +1,1 @@
-(function(){try{__ag_7d8a978ba755ed70.r("set-constant",{name:"set-constant",args:["navigator.privateAttribution","undefined"],engine:"extension",version:"2.4.2",verbose:!1},["navigator.privateAttribution","undefined"],"fb59de7518b23406")}catch(n){}})();
+(function(){try{__ag_7d8a978ba755ed70.r("set-constant",{name:"set-constant",args:["navigator.privateAttribution","undefined"],engine:"extension",version:"2.4.2",verbose:false},["navigator.privateAttribution","undefined"],"fb59de7518b23406")}catch(e){}})();
