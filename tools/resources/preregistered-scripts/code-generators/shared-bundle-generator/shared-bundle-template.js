@@ -53,7 +53,7 @@ export const BUNDLE_TEMPLATE = () => {
                         dedupSet.add(ruleKey);
                         let fn = window.__PROP__.f[scriptletName];
                         if (fn) {
-                            source.domainName = document.location.hostname;
+                            source.domainName = document.location.hostname.replace(/^www\./, '');
                             fn.apply(null, [source, args]);
                         }
                     } catch (e) {

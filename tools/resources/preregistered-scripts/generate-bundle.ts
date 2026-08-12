@@ -25,6 +25,7 @@ import {
     COORDINATION_KEY,
     getRuleFilename,
     MANIFEST_FILENAME,
+    MANIFEST_SCHEMA_VERSION,
     PREREGISTERED_SCRIPTS_DIR,
     type PreregisteredScriptsManifest,
 } from '@adguard/tswebextension/mv3/preregistered-scripts/hasher';
@@ -192,6 +193,7 @@ const writeManifest = async (
     );
 
     const manifest: BuildTimeManifest = {
+        schemaVersion: MANIFEST_SCHEMA_VERSION,
         hashes: [...hashes].sort(),
         scriptletFiles: sortedScriptletFiles,
         stubHashes: [...stubHashes].sort(),

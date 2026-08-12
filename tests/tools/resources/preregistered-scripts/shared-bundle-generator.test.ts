@@ -139,6 +139,36 @@ describe('compileSharedScriptletsBundle', () => {
         expect(sandbox.hits).toEqual(['example.com']);
     });
 
+    it('strips exactly one leading "www." label on tricky hostnames, like the dynamic path', async () => {
+        // Pins the contract of `getDomain` on the dynamic path: exactly one
+        // leading label, case preserved.
+        const result = await compileSharedScriptletsBundle(TEST_KEY);
+
+        const cases: [string, string][] = [
+            ['www.youtube.com', 'youtube.com'],
+            ['youtube.com', 'youtube.com'],
+            ['www.www.youtube.com', 'www.youtube.com'],
+            ['www2.youtube.com', 'www2.youtube.com'],
+            ['WWW.youtube.com', 'WWW.youtube.com'],
+        ];
+
+        for (const [hostname, expected] of cases) {
+            const sandbox = createPageSandbox();
+            sandbox.document = { location: { hostname } };
+            vm.runInContext(result, sandbox);
+
+            vm.runInContext(`
+                hits = [];
+                ${TEST_KEY}.f['noop'] = function (source) {
+                    hits.push(source.domainName);
+                };
+                ${TEST_KEY}.r('noop', {}, [], 'rule-1');
+            `, sandbox);
+
+            expect(sandbox.hits).toEqual([expected]);
+        }
+    });
+
     it('produces valid JavaScript syntax', async () => {
         const result = await compileSharedScriptletsBundle(TEST_KEY);
         // If syntax were invalid, vm.Script would throw.

@@ -270,4 +270,37 @@ describe('writePerHashFiles', () => {
 
         expect(content).not.toContain('location.pathname');
     });
+
+    it('matches a $path-guarded rule case-insensitively for non-ASCII paths', async () => {
+        outputDir = await fs.mkdtemp(path.join(os.tmpdir(), 'per-hash-files-'));
+
+        const hash = 'pathguardunicode1';
+        let executed = false;
+        const entry: CollectedRuleEntry = {
+            hash,
+            jsBody: 'globalThis.__executed = true;',
+            pathPattern: '/фильм',
+        };
+
+        await writePerHashFiles(new Map([[hash, entry]]), outputDir, TEST_KEY);
+        const content = await fs.readFile(path.join(outputDir, ruleFileName(hash)), 'utf-8');
+
+        const globalObj: Record<string, unknown> = {
+            location: { pathname: '/ФИЛЬМ', search: '', hash: '' },
+            globalThis: {
+                get __executed() {
+                    return executed;
+                },
+                set __executed(value: boolean) {
+                    executed = value;
+                },
+            },
+        };
+        globalObj[TEST_KEY] = { b: new Set(), x: () => false };
+        // eslint-disable-next-line @typescript-eslint/no-implied-eval -- sandbox-testing codegen output
+        const runInSandbox = new Function(...Object.keys(globalObj), content);
+        runInSandbox(...Object.values(globalObj));
+
+        expect(executed).toBe(true);
+    });
 });

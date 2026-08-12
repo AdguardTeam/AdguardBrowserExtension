@@ -22,9 +22,9 @@ registered via MV3's `chrome.scripting.registerContentScripts` at
    `scriptlets-bundle.js`: assigns `window.<key> = { r, b, f }` where `r`
    runs a scriptlet from the `f` registry deduped by rule hash via `b`.
    Emitted even for an empty name set — JS rule files still need `<key>.b`.
-   `r` normalizes `source.domainName` with the same `stripWwwLabel`
-   function the dynamic path uses via `getDomain` — its source is embedded
-   from `@adguard/tswebextension`, so the two paths cannot drift apart.
+   `r` normalizes `source.domainName` by stripping one `www.` label,
+   mirroring the dynamic path's `getDomain`; the behavior is pinned by the
+   generator test.
 4. **Per-function files** (`code-generators/scriptlet-function-generator/`)
    — one `s-{hash}.js` per unique scriptlet implementation (aliases share a
    file), registering it under every alias in `<key>.f`. A host loads only
