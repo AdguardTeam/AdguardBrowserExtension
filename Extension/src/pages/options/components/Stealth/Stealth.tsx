@@ -341,12 +341,12 @@ const Stealth = observer(() => {
             >
 
                 <SettingsSetCheckbox
-                    title={translator.getMessage('options_disable_webrtc_title')}
-                    description={translator.getMessage('options_disable_webrtc_desc')}
+                    title={translator.getMessage('options_prevent_webrtc_leaks_title')}
+                    description={translator.getMessage('options_prevent_webrtc_leaks_desc')}
                     disabled={!settings.values[BlockWebRTC]}
                     sectionDisabled={isStealthModeDisabled}
                     id={BlockWebRTC}
-                    label={translator.getMessage('options_disable_webrtc_title')}
+                    label={translator.getMessage('options_prevent_webrtc_leaks_title')}
                     value={settings.values[BlockWebRTC]}
                     handler={privacySettingChangeHandlerWithLoader}
                 />
