@@ -2830,27 +2830,59 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "22514194ad8441cc56e68716b1f75f69" due to: ' + e);
         }
     },
-    '(()=>{const t=/markerId|offsetHeight\\s*?===\\s*?0/,o={construct:(o,e,r)=>{const s=e[0];return"function"==typeof s&&t.test(s.toString())?Promise.resolve(!1):Reflect.construct(o,e,r)}};window.Promise=new Proxy(window.Promise,o)})();': () => {
+    '(()=>{const e=()=>({}),r=[{requiredProperties:["reason","verdict","url"],modify:e},{requiredProperties:["baitCount","blocked"],modify:e},{requiredProperties:["blockedCount","results"],modify:e},{requiredProperties:["baits","conclusive"],modify:e},{requiredProperties:["blocked","hosts"],modify:e}],t=e=>{try{const t=r.find(({requiredProperties:r})=>((e,r)=>null!==e&&("object"==typeof e||"function"==typeof e)&&r.length>0&&r.every(r=>Object.hasOwn(e,r)))(e,r));return t?t.modify(e):e}catch(r){return e}},o=e=>e.map(t),i={apply:(e,r,t)=>{let i=!1;try{const e=t[0],r=Array.isArray(e)?e.length:0;i=r>5&&r<10}catch(e){}const n=Reflect.apply(e,r,t);if(!i)return n;try{return n.then(o)}catch(e){return n}}};window.Promise.all=new Proxy(window.Promise.all,i)})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["0df5106eff7722e595e1d6f8f84084ca"] === e) return;
+            if (Window.prototype.toString["4a5c9dda7df3364296d39dfc3dda9ebc"] === e) return;
             (() => {
-                const e = /markerId|offsetHeight\s*?===\s*?0/, t = {
-                    construct: (t, o, r) => {
-                        const n = o[0];
-                        return "function" == typeof n && e.test(n.toString()) ? Promise.resolve(!1) : Reflect.construct(t, o, r);
+                const e = () => ({}), r = [ {
+                    requiredProperties: [ "reason", "verdict", "url" ],
+                    modify: e
+                }, {
+                    requiredProperties: [ "baitCount", "blocked" ],
+                    modify: e
+                }, {
+                    requiredProperties: [ "blockedCount", "results" ],
+                    modify: e
+                }, {
+                    requiredProperties: [ "baits", "conclusive" ],
+                    modify: e
+                }, {
+                    requiredProperties: [ "blocked", "hosts" ],
+                    modify: e
+                } ], t = e => {
+                    try {
+                        const t = r.find((({requiredProperties: r}) => ((e, r) => null !== e && ("object" == typeof e || "function" == typeof e) && r.length > 0 && r.every((r => Object.hasOwn(e, r))))(e, r)));
+                        return t ? t.modify(e) : e;
+                    } catch (r) {
+                        return e;
+                    }
+                }, o = e => e.map(t), d = {
+                    apply: (e, r, t) => {
+                        let d = !1;
+                        try {
+                            const e = t[0], r = Array.isArray(e) ? e.length : 0;
+                            d = r > 5 && r < 10;
+                        } catch (e) {}
+                        const i = Reflect.apply(e, r, t);
+                        if (!d) return i;
+                        try {
+                            return i.then(o);
+                        } catch (e) {
+                            return i;
+                        }
                     }
                 };
-                window.Promise = new Proxy(window.Promise, t);
+                window.Promise.all = new Proxy(window.Promise.all, d);
             })();
-            Object.defineProperty(Window.prototype.toString, "0df5106eff7722e595e1d6f8f84084ca", {
+            Object.defineProperty(Window.prototype.toString, "4a5c9dda7df3364296d39dfc3dda9ebc", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "0df5106eff7722e595e1d6f8f84084ca" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "4a5c9dda7df3364296d39dfc3dda9ebc" due to: ' + e);
         }
     },
     '(()=>{const e={apply:(e,t,n)=>{const o=Reflect.apply(e,t,n);try{o instanceof HTMLIFrameElement&&""===o.src&&o.contentWindow&&(o.contentWindow.fetch=window.fetch,o.contentWindow.getComputedStyle=window.getComputedStyle)}catch(e){}return o}};Node.prototype.appendChild=new Proxy(Node.prototype.appendChild,e)})();': () => {
@@ -3220,6 +3252,32 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "dd013aac8504d0cebb16580d054020f6" due to: ' + e);
         }
     },
+    '(()=>{const t={apply:(t,e,r)=>{try{const t=r[0];t?.length>0&&"string"==typeof t&&t?.includes?.(\'"ad_block":true\')&&(r[0]=t.replace(\'"ad_block":true\',\'"ad_block":false\'))}catch(t){}return Reflect.apply(t,e,r)}};window.Array.prototype.push=new Proxy(window.Array.prototype.push,t)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["102420381f43e19d6ffb9b4bcb7ba3e0"] === e) return;
+            (() => {
+                const e = {
+                    apply: (e, r, t) => {
+                        try {
+                            const e = t[0];
+                            e?.length > 0 && "string" == typeof e && e?.includes?.('"ad_block":true') && (t[0] = e.replace('"ad_block":true', '"ad_block":false'));
+                        } catch (e) {}
+                        return Reflect.apply(e, r, t);
+                    }
+                };
+                window.Array.prototype.push = new Proxy(window.Array.prototype.push, e);
+            })();
+            Object.defineProperty(Window.prototype.toString, "102420381f43e19d6ffb9b4bcb7ba3e0", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "102420381f43e19d6ffb9b4bcb7ba3e0" due to: ' + e);
+        }
+    },
     '(()=>{window.adsbygoogle=window.adsbygoogle||[],window.adsbygoogle.loaded=!0,window.adsbygoogle.push=o=>{if("function"==typeof o?.params?.google_ad_loaded_callback)try{o.params.google_ad_loaded_callback()}catch(o){}};})();': () => {
         try {
             const o = "done";
@@ -3472,76 +3530,118 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "c7605ee2684a2146beda3b04ccfa8bec" due to: ' + e);
         }
     },
-    '(()=>{window.vhit=!0;const e=/free-download-form|\'\\),_0x|\\)\\]\\(function\\(_0x|,Array\\[_0x/,o={apply:(e,o,t)=>{const n=t[0];"boolean"==typeof n&&!0===n&&(t[0]=!1),setTimeout((()=>Reflect.apply(e,o,t)),2e3)}},t={apply:(t,n,r)=>{const i=r[0];return"function"==typeof i&&e.test(i.toString())&&(r[0]=new Proxy(r[0],o)),Reflect.apply(t,n,r)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t),window.addEventListener("load",(()=>{const e=document.querySelector("form#go-link button#link-button");if(e){const o=e.cloneNode(!0);e.parentNode.replaceChild(o,e),o.removeAttribute("disabled")}}))})();': () => {
+    '(()=>{window.vhit=!0;const t=/free-download-form|\'\\),_0x|\\)\\]\\(function\\(_0x|,Array\\[_0x|function\\(_0x.*\\){const _0x.*\\[_0x|adblock|function Boolean\\(\\) \\{\\s*\\[native code\\]|=>\\{const _0x|undefined\\?new\\.target:/,e={apply:async(t,e,o)=>{const n=o[0];return"boolean"==typeof n&&!0===n&&(o[0]=!1),await new Promise((t=>setTimeout(t,2e3))),Reflect.apply(t,e,o)}},o={apply:(o,n,i)=>{const r=i[0];return"function"==typeof r&&t.test(r.toString())&&(i[0]=new Proxy(i[0],e)),Reflect.apply(o,n,i)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,o);const n=async t=>{t.preventDefault();const e=t.currentTarget;"function"==typeof window.vhit?.report&&await window.vhit.report(),e.form.requestSubmit(e)};window.addEventListener("load",(()=>{const t=document.querySelector("form#submit-form button#submit-button");if(t){const e=t.cloneNode(!0);t.parentNode.replaceChild(e,t),e.removeAttribute("disabled"),e.textContent="Continue",e.addEventListener("click",n)}}))})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["6e71bb40559132d4cd9248856c0bade8"] === e) return;
+            if (Window.prototype.toString.d80ed98e4e668434db52627c3c2f6439 === e) return;
             (() => {
                 window.vhit = !0;
-                const e = /free-download-form|'\),_0x|\)\]\(function\(_0x|,Array\[_0x/, o = {
-                    apply: (e, o, t) => {
-                        const n = t[0];
-                        "boolean" == typeof n && !0 === n && (t[0] = !1), setTimeout((() => Reflect.apply(e, o, t)), 2e3);
+                const e = /free-download-form|'\),_0x|\)\]\(function\(_0x|,Array\[_0x|function\(_0x.*\){const _0x.*\[_0x|adblock|function Boolean\(\) \{\s*\[native code\]|=>\{const _0x|undefined\?new\.target:/, t = {
+                    apply: async (e, t, o) => {
+                        const n = o[0];
+                        return "boolean" == typeof n && !0 === n && (o[0] = !1), await new Promise((e => setTimeout(e, 2e3))), 
+                        Reflect.apply(e, t, o);
                     }
-                }, t = {
-                    apply: (t, n, r) => {
-                        const d = r[0];
-                        return "function" == typeof d && e.test(d.toString()) && (r[0] = new Proxy(r[0], o)), 
-                        Reflect.apply(t, n, r);
+                }, o = {
+                    apply: (o, n, r) => {
+                        const i = r[0];
+                        return "function" == typeof i && e.test(i.toString()) && (r[0] = new Proxy(r[0], t)), 
+                        Reflect.apply(o, n, r);
                     }
                 };
-                window.Promise.prototype.then = new Proxy(window.Promise.prototype.then, t), window.addEventListener("load", (() => {
-                    const e = document.querySelector("form#go-link button#link-button");
+                window.Promise.prototype.then = new Proxy(window.Promise.prototype.then, o);
+                const n = async e => {
+                    e.preventDefault();
+                    const t = e.currentTarget;
+                    "function" == typeof window.vhit?.report && await window.vhit.report(), t.form.requestSubmit(t);
+                };
+                window.addEventListener("load", (() => {
+                    const e = document.querySelector("form#submit-form button#submit-button");
                     if (e) {
-                        const o = e.cloneNode(!0);
-                        e.parentNode.replaceChild(o, e), o.removeAttribute("disabled");
+                        const t = e.cloneNode(!0);
+                        e.parentNode.replaceChild(t, e), t.removeAttribute("disabled"), t.textContent = "Continue", 
+                        t.addEventListener("click", n);
                     }
                 }));
             })();
-            Object.defineProperty(Window.prototype.toString, "6e71bb40559132d4cd9248856c0bade8", {
+            Object.defineProperty(Window.prototype.toString, "d80ed98e4e668434db52627c3c2f6439", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "6e71bb40559132d4cd9248856c0bade8" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "d80ed98e4e668434db52627c3c2f6439" due to: ' + e);
         }
     },
-    '(()=>{window.vhit=!0;const t=/function\\(_0x.*\\){const _0x.*\\[_0x|adblock/,e={apply:(t,e,o)=>{const n=o[0];"boolean"==typeof n&&!0===n&&(o[0]=!1),setTimeout((()=>Reflect.apply(t,e,o)),2e3)}},o={apply:(o,n,i)=>{const r=i[0];return"function"==typeof r&&t.test(r.toString())&&(i[0]=new Proxy(i[0],e)),Reflect.apply(o,n,i)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,o),window.addEventListener("load",(()=>{const t=document.querySelector("form#submit-form button#submit-button");if(t){const e=t.cloneNode(!0);t.parentNode.replaceChild(e,t),e.removeAttribute("disabled"),e.textContent="Continue"}}))})();': () => {
+    '(()=>{const t={apply:(t,o,e)=>{try{const t=e[0];t&&"object"==typeof t&&Object.prototype.hasOwnProperty.call(t,"failed_hosts")&&Object.prototype.hasOwnProperty.call(t,"blocked")&&(t.failed_hosts="",t.blocked=!1)}catch(t){}return Reflect.apply(t,o,e)}};window.JSON.stringify=new Proxy(window.JSON.stringify,t)})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["29ce9b38941c9f39dc92cf872a0d3085"] === e) return;
+            if (Window.prototype.toString["1503dc258e7809ec4d938941a16df979"] === e) return;
+            (() => {
+                const e = {
+                    apply: (e, t, o) => {
+                        try {
+                            const e = o[0];
+                            e && "object" == typeof e && Object.prototype.hasOwnProperty.call(e, "failed_hosts") && Object.prototype.hasOwnProperty.call(e, "blocked") && (e.failed_hosts = "", 
+                            e.blocked = !1);
+                        } catch (e) {}
+                        return Reflect.apply(e, t, o);
+                    }
+                };
+                window.JSON.stringify = new Proxy(window.JSON.stringify, e);
+            })();
+            Object.defineProperty(Window.prototype.toString, "1503dc258e7809ec4d938941a16df979", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "1503dc258e7809ec4d938941a16df979" due to: ' + e);
+        }
+    },
+    '(()=>{window.vhit=!0;const t=/function\\(_0x.*\\){const _0x.*\\[_0x|adblock|function Boolean\\(\\) \\{\\s*\\[native code\\]/,e={apply:(t,e,o)=>{const n=o[0];"boolean"==typeof n&&!0===n&&(o[0]=!1),setTimeout((()=>Reflect.apply(t,e,o)),2e3)}},o={apply:(o,n,i)=>{const r=i[0];return"function"==typeof r&&t.test(r.toString())&&(i[0]=new Proxy(i[0],e)),Reflect.apply(o,n,i)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,o);const n=async t=>{t.preventDefault();const e=t.currentTarget;"function"==typeof window.vhit?.report&&await window.vhit.report(),e.form.requestSubmit(e)};window.addEventListener("load",(()=>{const t=document.querySelector("form#submit-form button#submit-button");if(t){const e=t.cloneNode(!0);t.parentNode.replaceChild(e,t),e.removeAttribute("disabled"),e.textContent="Continue",e.addEventListener("click",n)}}))})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["398430dd88adec0f5cf1932617ebf2cf"] === e) return;
             (() => {
                 window.vhit = !0;
-                const e = /function\(_0x.*\){const _0x.*\[_0x|adblock/, t = {
+                const e = /function\(_0x.*\){const _0x.*\[_0x|adblock|function Boolean\(\) \{\s*\[native code\]/, t = {
                     apply: (e, t, o) => {
                         const n = o[0];
                         "boolean" == typeof n && !0 === n && (o[0] = !1), setTimeout((() => Reflect.apply(e, t, o)), 2e3);
                     }
                 }, o = {
                     apply: (o, n, r) => {
-                        const c = r[0];
-                        return "function" == typeof c && e.test(c.toString()) && (r[0] = new Proxy(r[0], t)), 
+                        const i = r[0];
+                        return "function" == typeof i && e.test(i.toString()) && (r[0] = new Proxy(r[0], t)), 
                         Reflect.apply(o, n, r);
                     }
                 };
-                window.Promise.prototype.then = new Proxy(window.Promise.prototype.then, o), window.addEventListener("load", (() => {
+                window.Promise.prototype.then = new Proxy(window.Promise.prototype.then, o);
+                const n = async e => {
+                    e.preventDefault();
+                    const t = e.currentTarget;
+                    "function" == typeof window.vhit?.report && await window.vhit.report(), t.form.requestSubmit(t);
+                };
+                window.addEventListener("load", (() => {
                     const e = document.querySelector("form#submit-form button#submit-button");
                     if (e) {
                         const t = e.cloneNode(!0);
-                        e.parentNode.replaceChild(t, e), t.removeAttribute("disabled"), t.textContent = "Continue";
+                        e.parentNode.replaceChild(t, e), t.removeAttribute("disabled"), t.textContent = "Continue", 
+                        t.addEventListener("click", n);
                     }
                 }));
             })();
-            Object.defineProperty(Window.prototype.toString, "29ce9b38941c9f39dc92cf872a0d3085", {
+            Object.defineProperty(Window.prototype.toString, "398430dd88adec0f5cf1932617ebf2cf", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "29ce9b38941c9f39dc92cf872a0d3085" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "398430dd88adec0f5cf1932617ebf2cf" due to: ' + e);
         }
     },
     '(()=>{const e=()=>{document.querySelectorAll(".chakra-portal").forEach((e=>{e.querySelector(\'.chakra-modal__overlay[style*="opacity"]\')&&e.setAttribute("style","display: none !important;")}))},t=()=>{},a=function(t,a){const r={name:t,listener:a};requestAnimationFrame((()=>{try{"rewardedSlotGranted"===r.name&&setTimeout(e,2e3),r.listener()}catch(e){}}))};window.googletag={cmd:[],pubads:()=>({addEventListener:a,removeEventListener:t,refresh:t,getTargeting:()=>[],setTargeting:t,disableInitialLoad:t,enableSingleRequest:t,collapseEmptyDivs:t,getSlots:t}),defineSlot:()=>({addService(){}}),defineOutOfPageSlot:t,enableServices:t,display:t,enums:{OutOfPageFormat:{REWARDED:1}}},googletag.cmd.push=e=>{try{e()}catch(e){}return 1}})();': () => {
@@ -3740,39 +3840,45 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "272813737cd339fd9b635273bcbc7485" due to: ' + e);
         }
     },
-    '(()=>{const e=/free-download-form|\'\\),_0x|\\)\\]\\(function\\(_0x|=>\\{return/,o={apply:(e,o,t)=>{const n=t[0];"boolean"==typeof n&&!0===n&&(t[0]=!1),setTimeout((()=>Reflect.apply(e,o,t)),2e3)}},t={apply:(t,n,r)=>{const i=r[0];return"function"==typeof i&&e.test(i.toString())&&(r[0]=new Proxy(r[0],o)),Reflect.apply(t,n,r)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t),window.addEventListener("load",(()=>{const e=document.querySelector("form#go-link button#link-button");if(e){const o=e.cloneNode(!0);e.parentNode.replaceChild(o,e),o.removeAttribute("disabled")}}))})();': () => {
+    '(()=>{const t=/free-download-form|\'\\),_0x|\\)\\]\\(function\\(_0x|=>\\{return/,e={apply:(t,e,o)=>{const n=o[0];"boolean"==typeof n&&!0===n&&(o[0]=!1),setTimeout((()=>Reflect.apply(t,e,o)),2e3)}},o={apply:(o,n,r)=>{const i=r[0];return"function"==typeof i&&t.test(i.toString())&&(r[0]=new Proxy(r[0],e)),Reflect.apply(o,n,r)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,o);const n=async t=>{t.preventDefault();const e=t.currentTarget;"function"==typeof window.vhit?.report&&await window.vhit.report(),e.form.requestSubmit(e)};window.addEventListener("load",(()=>{const t=document.querySelector("form#go-link button#link-button");if(t){const e=t.cloneNode(!0);t.parentNode.replaceChild(e,t),e.removeAttribute("disabled"),e.addEventListener("click",n)}}))})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["665ddbcb079a55156982aa9f04043a1b"] === e) return;
+            if (Window.prototype.toString["352a8e829f13921ee700e5e67451dada"] === e) return;
             (() => {
-                const e = /free-download-form|'\),_0x|\)\]\(function\(_0x|=>\{return/, o = {
-                    apply: (e, o, t) => {
-                        const n = t[0];
-                        "boolean" == typeof n && !0 === n && (t[0] = !1), setTimeout((() => Reflect.apply(e, o, t)), 2e3);
+                const e = /free-download-form|'\),_0x|\)\]\(function\(_0x|=>\{return/, t = {
+                    apply: (e, t, o) => {
+                        const n = o[0];
+                        "boolean" == typeof n && !0 === n && (o[0] = !1), setTimeout((() => Reflect.apply(e, t, o)), 2e3);
                     }
-                }, t = {
-                    apply: (t, n, r) => {
-                        const a = r[0];
-                        return "function" == typeof a && e.test(a.toString()) && (r[0] = new Proxy(r[0], o)), 
-                        Reflect.apply(t, n, r);
+                }, o = {
+                    apply: (o, n, r) => {
+                        const i = r[0];
+                        return "function" == typeof i && e.test(i.toString()) && (r[0] = new Proxy(r[0], t)), 
+                        Reflect.apply(o, n, r);
                     }
                 };
-                window.Promise.prototype.then = new Proxy(window.Promise.prototype.then, t), window.addEventListener("load", (() => {
+                window.Promise.prototype.then = new Proxy(window.Promise.prototype.then, o);
+                const n = async e => {
+                    e.preventDefault();
+                    const t = e.currentTarget;
+                    "function" == typeof window.vhit?.report && await window.vhit.report(), t.form.requestSubmit(t);
+                };
+                window.addEventListener("load", (() => {
                     const e = document.querySelector("form#go-link button#link-button");
                     if (e) {
-                        const o = e.cloneNode(!0);
-                        e.parentNode.replaceChild(o, e), o.removeAttribute("disabled");
+                        const t = e.cloneNode(!0);
+                        e.parentNode.replaceChild(t, e), t.removeAttribute("disabled"), t.addEventListener("click", n);
                     }
                 }));
             })();
-            Object.defineProperty(Window.prototype.toString, "665ddbcb079a55156982aa9f04043a1b", {
+            Object.defineProperty(Window.prototype.toString, "352a8e829f13921ee700e5e67451dada", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "665ddbcb079a55156982aa9f04043a1b" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "352a8e829f13921ee700e5e67451dada" due to: ' + e);
         }
     },
     '(()=>{const e=window.Promise,o={construct:(o,t,n)=>t[0]&&t[0]?.toString()?.includes("[!1,!1,!1,!1]")&&t[0]?.toString()?.includes(".responseText")?e.resolve(!1):Reflect.construct(o,t,n)},t=new Proxy(window.Promise,o);Object.defineProperty(window,"Promise",{set:e=>{},get:()=>t})})();': () => {
@@ -6641,36 +6747,36 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "b207994a134acba69e58503a5393b31a" due to: ' + e);
         }
     },
-    "(() => { var ReplaceMap = {adBreaks: [], adState: null, currentAdBreak: 'undefined'}; Object.defineProperty = new Proxy(Object.defineProperty, { apply: (target, thisArg, ArgsList) => { var Original = Reflect.apply(target, thisArg, ArgsList); if (ArgsList[1] == 'getAdBreaks' || ArgsList[1] == 'getAdsDisplayStringParams') { return Original[ArgsList[1]] = function() {}; } else if (ArgsList[1] == 'adBreaks' || ArgsList[1] == 'currentAdBreak' || typeof Original['adBreaks'] !== 'undefined') { for (var [key, value] of Object.entries(Original)) { if (typeof ReplaceMap[key] !== 'undefined' && ReplaceMap[key] !== 'undefined') { Original[key] = ReplaceMap[key]; } else if (typeof ReplaceMap[key] !== 'undefined' && ReplaceMap[key] === 'undefined') { Original[key] = undefined; } } return Original; } else { return Original; }}})})();": () => {
+    '(()=>{const replaceMap={adBreaks:[],adState:null,currentAdBreak:"undefined"};Object.defineProperty=new Proxy(Object.defineProperty,{apply:(target,thisArg,ArgsList)=>{const original=Reflect.apply(target,thisArg,ArgsList);if("getAdBreaks"===ArgsList[1]||"getAdsDisplayStringParams"===ArgsList[1]||"_refreshAds"===ArgsList[1])return original[ArgsList[1]]=function(){};if("adBreaks"===ArgsList[1]||"currentAdBreak"===ArgsList[1]||void 0!==original.adBreaks){for(var[key,value]of Object.entries(original))void 0!==replaceMap[key]&&"undefined"!==replaceMap[key]?original[key]=replaceMap[key]:void 0!==replaceMap[key]&&"undefined"===replaceMap[key]&&(original[key]=void 0);return original}return original}})})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["9072dab3b9fec602e942bbd140d1f7ea"] === e) return;
+            if (Window.prototype.toString.be0abc13a3b8457c43baedc2afb27c15 === e) return;
             (() => {
-                var e = {
+                const e = {
                     adBreaks: [],
                     adState: null,
                     currentAdBreak: "undefined"
                 };
                 Object.defineProperty = new Proxy(Object.defineProperty, {
-                    apply: (r, t, d) => {
-                        var n = Reflect.apply(r, t, d);
-                        if ("getAdBreaks" == d[1] || "getAdsDisplayStringParams" == d[1]) return n[d[1]] = function() {};
-                        if ("adBreaks" == d[1] || "currentAdBreak" == d[1] || void 0 !== n.adBreaks) {
-                            for (var [a, o] of Object.entries(n)) void 0 !== e[a] && "undefined" !== e[a] ? n[a] = e[a] : void 0 !== e[a] && "undefined" === e[a] && (n[a] = void 0);
+                    apply: (r, t, a) => {
+                        const n = Reflect.apply(r, t, a);
+                        if ("getAdBreaks" === a[1] || "getAdsDisplayStringParams" === a[1] || "_refreshAds" === a[1]) return n[a[1]] = function() {};
+                        if ("adBreaks" === a[1] || "currentAdBreak" === a[1] || void 0 !== n.adBreaks) {
+                            for (var [d, o] of Object.entries(n)) void 0 !== e[d] && "undefined" !== e[d] ? n[d] = e[d] : void 0 !== e[d] && "undefined" === e[d] && (n[d] = void 0);
                             return n;
                         }
                         return n;
                     }
                 });
             })();
-            Object.defineProperty(Window.prototype.toString, "9072dab3b9fec602e942bbd140d1f7ea", {
+            Object.defineProperty(Window.prototype.toString, "be0abc13a3b8457c43baedc2afb27c15", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "9072dab3b9fec602e942bbd140d1f7ea" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "be0abc13a3b8457c43baedc2afb27c15" due to: ' + e);
         }
     },
     '(()=>{const a=window.fetch,b={apply:async(b,c,d)=>{const e=d[0]instanceof Request?d[0].url:d[0];if("string"!=typeof e||0===e.length)return Reflect.apply(b,c,d);if(e.includes("uplynk.com/")&&e.includes(".m3u8")){const b=await a(...d);let c=await b.text();return c=c.replaceAll(/#UPLYNK-SEGMENT: \\S*\\,ad\\s[\\s\\S]+?((#UPLYNK-SEGMENT: \\S+\\,segment)|(#EXT-X-ENDLIST))/g,"$1"),new Response(c)}return Reflect.apply(b,c,d)}};try{window.fetch=new Proxy(window.fetch,b)}catch(a){}})();': () => {
@@ -7470,122 +7576,220 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "f108a248579190d52136e6e135a4d6c9" due to: ' + e);
         }
     },
-    '(()=>{const e=e=>{try{e.String=window.String,e.Function.prototype.call=window.Function.prototype.call,e.JSON.parse=window.JSON.parse,e.XMLHttpRequest.prototype=window.XMLHttpRequest.prototype}catch(e){}},t=e=>e instanceof HTMLIFrameElement&&(""===e.src||"about:blank"===e.src)&&e.contentWindow,n={apply:(n,o,p)=>{const r=Reflect.apply(n,o,p);try{t(r)?e(r.contentWindow):"append"!==n?.name&&"prepend"!==n?.name||!t(p[0])||e(p[0].contentWindow)}catch(e){}return r}};window.Node.prototype.appendChild=new Proxy(window.Node.prototype.appendChild,n),window.Node.prototype.insertBefore=new Proxy(window.Node.prototype.insertBefore,n),window.Element.prototype.append=new Proxy(window.Element.prototype.append,n),window.Element.prototype.prepend=new Proxy(window.Element.prototype.prepend,n),window.Element.prototype.insertAdjacentElement=new Proxy(window.Element.prototype.insertAdjacentElement,n)})();': () => {
+    '(()=>{const e="SPONSORED",t="SponsoredData",r="AdsSideFeedUnit",n="MarketplaceFeedAdStory",o=[e,t,r],p=[t,n],a=window.String.prototype.split,i=window.String.prototype.trim,s=new WeakMap,d=new WeakSet,y=(e,t,r=Proxy)=>{const n=new r(e,t);return s.set(n,s.get(e)??e),n},l=(e,t)=>e?.length>300&&t.some(t=>e?.includes?.(t)),c=e=>l(e,o),w=e=>Boolean(e?.startsWith?.("{")&&e?.endsWith?.("}")),g=e=>w(e)&&c(e),u=e=>{try{e.JSON.parse=y(e.JSON.parse,x,e.Proxy),e.String.prototype.split=y(e.String.prototype.split,j,e.Proxy),e.String=y(e.String,q,e.Proxy),e.String.prototype.constructor=e.String,e.Function.prototype.call=y(e.Function.prototype.call,L,e.Proxy),e.Function.prototype.toString=y(e.Function.prototype.toString,D,e.Proxy)}catch(e){}},f=e=>Boolean(e instanceof HTMLIFrameElement&&(""===e.src||"about:blank"===e.src)&&e.contentWindow),_=new Set(["append","prepend","before","after","insertNode"]),{apply:S}={apply(e,t,r){const n=Reflect.apply(e,t,r);try{f(n)?u(n.contentWindow):_.has(e.name)&&r.forEach(e=>{f(e)&&u(e.contentWindow)})}catch(e){}return n}},h={apply:S};window.Node.prototype.appendChild=y(window.Node.prototype.appendChild,h),window.Node.prototype.insertBefore=y(window.Node.prototype.insertBefore,h),window.Element.prototype.append=y(window.Element.prototype.append,h),window.Element.prototype.prepend=y(window.Element.prototype.prepend,h),window.Element.prototype.before=y(window.Element.prototype.before,h),window.Element.prototype.after=y(window.Element.prototype.after,h),window.Element.prototype.insertAdjacentElement=y(window.Element.prototype.insertAdjacentElement,h),window.Range.prototype.insertNode=y(window.Range.prototype.insertNode,h);const b=e=>Boolean(e)&&Object.values(e).some(e=>e?.__typename===t),m=(e,t)=>{if(!e||"object"!=typeof e||Array.isArray(e))return!1;const r=Object.keys(e);return r.length===t.length&&t.every(e=>r.includes(e))},A=e=>m(e,["node"])&&m(e.node,["s"])&&m(e.node.s,["__typename"])&&e.node.s.__typename===t,N=(e,t=10)=>{const n=e[3]?.[1]?.__bbox?.result?.data?.viewer;if(!n)return!1;let o=!1;const p=(e,t,n)=>{if(e&&"object"==typeof e&&!(n<0)){if(Array.isArray(e.nodes)){const t=e.nodes.filter(e=>!(e=>e?.__typename===r||Boolean(e?.item_collection?.nodes?.[0]?.sponsored_data?.ad_id))(e));e.nodes.length-t.length>0&&(e.nodes=t,o=!0)}Object.entries(e).forEach(([e,r])=>{p(r,`${t}.${e}`,n-1)})}};return p(n,"item[3][1].__bbox.result.data.viewer",t),o},O=(t,r)=>{try{if((e=>!(!e||"object"!=typeof e||Array.isArray(e)||"string"!=typeof e.p||4096!==e.p.length)&&m(e,["data","edges","require","p"])&&A(e.data)&&Array.isArray(e.edges)&&1===e.edges.length&&A(e.edges[0])&&Array.isArray(e.require)&&1===e.require.length&&A(e.require[0]))(t))return t;const n=((t,r)=>{let n=!1;try{if(c(r)){if(Array.isArray(t.require?.[0]?.[3]?.[0]?.__bbox?.require)&&t.require[0][3][0].__bbox.require.forEach(t=>{t[3]?.[1]?.__bbox?.result?.data?.category===e&&(delete t[3][1].__bbox.result.data.node,n=!0),b(t[3]?.[1]?.__bbox?.result?.data?.node)&&(delete t[3][1].__bbox.result.data.node,n=!0),n=N(t)||n}),Array.isArray(t.data?.viewer?.news_feed?.edges)){const r=t.data.viewer.news_feed.edges.length;t.data.viewer.news_feed.edges=t.data.viewer.news_feed.edges.filter(t=>!b(t.node)&&t.category!==e),n=n||t.data.viewer.news_feed.edges.length!==r}b(t.data?.node)&&(delete t.data.node,n=!0),t.data?.category===e&&(delete t.data.node,n=!0)}}catch(e){}return n})(t,"string"==typeof r?r:JSON.stringify(t));n&&t&&"object"==typeof t&&d.add(t)}catch(e){}return t},{apply:E}={apply(e,t,r){const n=Reflect.apply(e,t,r);return O(n,r[0])}},x={apply:E};window.JSON.parse=y(window.JSON.parse,x);const J=new WeakSet,R=e=>{if(!e||J.has(e)||"function"!=typeof e.parse)return;const{apply:t}={apply(e,t,r){const n=Reflect.apply(e,t,r);return O(n,r[0])}};e.parse=y(e.parse,{apply:t}),J.add(e)},{apply:v}={apply(e,t,r){let n;try{if(w(t),g(t)){const e=JSON.parse(t);d.has(e)&&(n=JSON.stringify(e))}}catch(e){}return Reflect.apply(e,n??t,r)}},j={apply:v};window.String.prototype.split=y(window.String.prototype.split,j),window.String.prototype.substring=y(window.String.prototype.substring,j);const{apply:F}={apply(e,t,r){const n=Reflect.apply(e,t,r);try{if(g(n)){const e=JSON.parse(n);if(d.has(e)){return JSON.stringify(e)}}}catch(e){}return n}},q={apply:F};window.String=y(window.String,q),window.String.prototype.constructor=window.String;const k=new Map,W=e=>{const t=k.get(e);if(void 0!==t)return t;let r=e;try{const t=Reflect.apply(i,e,[]);if(w(t)&&c(e)){const t=JSON.parse(e);d.has(t)&&(r=JSON.stringify(t))}}catch(e){}return((e,t)=>{if(k.size>=2){const e=k.keys().next().value;k.delete(e)}return k.set(e,t),t})(e,r)},{apply:P}={apply(e,t,r){let n=t;try{"string"==typeof t&&t.length>300&&(n=W(t))}catch(e){}return Reflect.apply(e,n,r)}},B={apply:P};window.String.prototype.charAt=y(window.String.prototype.charAt,B);const M=e=>{const t=e?.data?.viewer?.marketplace_feed_stories;if(!Array.isArray(t?.edges))return!1;const r=t.edges.filter(e=>!(e=>{const t=e?.__typename;return"string"==typeof t&&t.includes(n)})(e?.node));return r.length!==t.edges.length&&(t.edges=r,!0)},{apply:z}={apply(e,t,r){const n=r[2]?.[0];if(l(n,p))try{const e=(e=>{let t=!1;const r=Reflect.apply(a,e,[/\\r?\\n|\\r/]).map(e=>{if(""===e.trim())return e;let r;try{r=JSON.parse(e)}catch{return e}const n=d.has(r),o=M(r);return n||o?(t=!0,JSON.stringify(r)):e});return t?r.join("\\r\\n"):e})(n);if(e!==n){const t=r[2].slice();t[0]=e,r[2]=t}}catch(e){}return Reflect.apply(e,t,r)}},L={apply:z};window.Function.prototype.call=y(window.Function.prototype.call,L);const{apply:C}={apply:(e,t,r)=>Reflect.apply(e,s.get(t)??t,r)},D={apply:C};window.Function.prototype.toString=y(window.Function.prototype.toString,D),(()=>{const e=["json5"];"function"!=typeof window.requireLazy?(Array.isArray(window.__rl_stub)||(window.__rl_stub=[]),window.__rl_stub.push([e,R])):window.requireLazy(e,R)})()})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["8668a2569248c2028f1927218e4f29b5"] === e) return;
+            if (Window.prototype.toString["58db9a1c8afa1aead566713b40cf219f"] === e) return;
             (() => {
-                const e = e => {
+                const e = "SPONSORED", t = "SponsoredData", r = "AdsSideFeedUnit", n = "MarketplaceFeedAdStory", o = [ e, t, r ], p = [ t, n ], a = window.String.prototype.split, i = window.String.prototype.trim, s = new WeakMap, d = new WeakSet, y = (e, t, r = Proxy) => {
+                    const n = new r(e, t);
+                    return s.set(n, s.get(e) ?? e), n;
+                }, l = (e, t) => e?.length > 300 && t.some((t => e?.includes?.(t))), c = e => l(e, o), w = e => Boolean(e?.startsWith?.("{") && e?.endsWith?.("}")), f = e => w(e) && c(e), u = e => {
                     try {
-                        e.String = window.String, e.Function.prototype.call = window.Function.prototype.call, 
-                        e.JSON.parse = window.JSON.parse, e.XMLHttpRequest.prototype = window.XMLHttpRequest.prototype;
+                        e.JSON.parse = y(e.JSON.parse, x, e.Proxy), e.String.prototype.split = y(e.String.prototype.split, R, e.Proxy), 
+                        e.String = y(e.String, F, e.Proxy), e.String.prototype.constructor = e.String, e.Function.prototype.call = y(e.Function.prototype.call, z, e.Proxy), 
+                        e.Function.prototype.toString = y(e.Function.prototype.toString, C, e.Proxy);
                     } catch (e) {}
-                }, t = e => e instanceof HTMLIFrameElement && ("" === e.src || "about:blank" === e.src) && e.contentWindow, o = {
-                    apply: (o, n, r) => {
-                        const p = Reflect.apply(o, n, r);
+                }, g = e => Boolean(e instanceof HTMLIFrameElement && ("" === e.src || "about:blank" === e.src) && e.contentWindow), S = new Set([ "append", "prepend", "before", "after", "insertNode" ]), {apply: _} = {
+                    apply(e, t, r) {
+                        const n = Reflect.apply(e, t, r);
                         try {
-                            t(p) ? e(p.contentWindow) : "append" !== o?.name && "prepend" !== o?.name || !t(r[0]) || e(r[0].contentWindow);
+                            g(n) ? u(n.contentWindow) : S.has(e.name) && r.forEach((e => {
+                                g(e) && u(e.contentWindow);
+                            }));
                         } catch (e) {}
-                        return p;
+                        return n;
                     }
+                }, b = {
+                    apply: _
                 };
-                window.Node.prototype.appendChild = new Proxy(window.Node.prototype.appendChild, o), 
-                window.Node.prototype.insertBefore = new Proxy(window.Node.prototype.insertBefore, o), 
-                window.Element.prototype.append = new Proxy(window.Element.prototype.append, o), 
-                window.Element.prototype.prepend = new Proxy(window.Element.prototype.prepend, o), 
-                window.Element.prototype.insertAdjacentElement = new Proxy(window.Element.prototype.insertAdjacentElement, o);
-            })();
-            Object.defineProperty(Window.prototype.toString, "8668a2569248c2028f1927218e4f29b5", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "8668a2569248c2028f1927218e4f29b5" due to: ' + e);
-        }
-    },
-    '(()=>{const e="SPONSORED",t="SponsoredData",r="AdsSideFeedUnit",n=e=>e?.__typename===r||Boolean(e?.item_collection?.nodes?.[0]?.sponsored_data?.ad_id),a=e=>Boolean(e)&&Object.values(e).some((e=>e?.__typename===t)),o={apply:(o,d,i)=>{let s;try{s=Reflect.apply(o,d,i);const l=JSON.stringify(s);return l?.includes?.(e)||l?.includes?.(t)||l?.includes?.(r)?(Array.isArray(s.require?.[0]?.[3]?.[0]?.__bbox?.require)&&s.require[0][3][0].__bbox.require.forEach((t=>{t[3]?.[1]?.__bbox?.result?.data?.category===e&&delete t[3][1].__bbox.result.data.node,a(t[3]?.[1]?.__bbox?.result?.data?.node)&&delete t[3][1].__bbox.result.data.node,((e,t=10)=>{const r=e[3]?.[1]?.__bbox?.result?.data?.viewer;if(!r)return;const a=new WeakSet,o=(e,t,r)=>{if(!(!e||"object"!=typeof e||r<0||a.has(e))){if(a.add(e),Array.isArray(e.nodes)&&e.nodes.filter(n).length>0)return void(e.nodes=e.nodes.filter((e=>!n(e))));Object.entries(e).forEach((([e,n])=>{o(n,`${t}.${e}`,r-1)}))}};o(r,"item[3][1].__bbox.result.data.viewer",t)})(t,10)})),Array.isArray(s.data?.viewer?.news_feed?.edges)&&(s.data.viewer.news_feed.edges=s.data.viewer.news_feed.edges.filter((t=>!a(t.node)&&t.category!==e))),a(s.data?.node)&&delete s.data.node,s.data?.category===e&&delete s.data.node,s):s}catch(e){return s??Reflect.apply(o,d,i)}}};window.JSON.parse=new Proxy(window.JSON.parse,o);const d={apply:(n,a,o)=>{try{const d=Reflect.apply(n,a,o);if(d?.startsWith?.("{")&&d?.endsWith?.("}")&&(d?.includes?.(e)||d?.includes?.(t)||d?.includes?.(r))){const e=JSON.parse(d);return JSON.stringify(e)}return d}catch(e){return Reflect.apply(n,a,o)}}};window.String=new Proxy(window.String,d);const i={apply:(e,r,n)=>{try{if(n[2]?.[0]&&n[2][0]?.includes?.(t)){const e=n[2][0],t=e.split(/\\r?\\n|\\r/).map((e=>{if(""===e.trim())return e;try{return JSON.stringify(JSON.parse(e))}catch{return e}})).join("\\r\\n");n[2][0]=t}return Reflect.apply(e,r,n)}catch(t){return Reflect.apply(e,r,n)}}};window.Function.prototype.call=new Proxy(window.Function.prototype.call,i)})();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["58c57b090d8f85ab58272a6d30ae7293"] === e) return;
-            (() => {
-                const e = "SPONSORED", t = "SponsoredData", r = "AdsSideFeedUnit", n = e => e?.__typename === r || Boolean(e?.item_collection?.nodes?.[0]?.sponsored_data?.ad_id), a = e => Boolean(e) && Object.values(e).some((e => e?.__typename === t)), o = {
-                    apply: (o, d, i) => {
-                        let s;
-                        try {
-                            s = Reflect.apply(o, d, i);
-                            const c = JSON.stringify(s);
-                            return c?.includes?.(e) || c?.includes?.(t) || c?.includes?.(r) ? (Array.isArray(s.require?.[0]?.[3]?.[0]?.__bbox?.require) && s.require[0][3][0].__bbox.require.forEach((t => {
-                                t[3]?.[1]?.__bbox?.result?.data?.category === e && delete t[3][1].__bbox.result.data.node, 
-                                a(t[3]?.[1]?.__bbox?.result?.data?.node) && delete t[3][1].__bbox.result.data.node, 
-                                ((e, t = 10) => {
-                                    const r = e[3]?.[1]?.__bbox?.result?.data?.viewer;
-                                    if (!r) return;
-                                    const a = new WeakSet, o = (e, t, r) => {
-                                        if (!(!e || "object" != typeof e || r < 0 || a.has(e))) {
-                                            if (a.add(e), Array.isArray(e.nodes) && e.nodes.filter(n).length > 0) return void (e.nodes = e.nodes.filter((e => !n(e))));
-                                            Object.entries(e).forEach((([e, n]) => {
-                                                o(n, `${t}.${e}`, r - 1);
-                                            }));
-                                        }
-                                    };
-                                    o(r, "item[3][1].__bbox.result.data.viewer", t);
-                                })(t, 10);
-                            })), Array.isArray(s.data?.viewer?.news_feed?.edges) && (s.data.viewer.news_feed.edges = s.data.viewer.news_feed.edges.filter((t => !a(t.node) && t.category !== e))), 
-                            a(s.data?.node) && delete s.data.node, s.data?.category === e && delete s.data.node, 
-                            s) : s;
-                        } catch (e) {
-                            return s ?? Reflect.apply(o, d, i);
-                        }
-                    }
-                };
-                window.JSON.parse = new Proxy(window.JSON.parse, o);
-                const d = {
-                    apply: (n, a, o) => {
-                        try {
-                            const d = Reflect.apply(n, a, o);
-                            if (d?.startsWith?.("{") && d?.endsWith?.("}") && (d?.includes?.(e) || d?.includes?.(t) || d?.includes?.(r))) {
-                                const e = JSON.parse(d);
-                                return JSON.stringify(e);
+                window.Node.prototype.appendChild = y(window.Node.prototype.appendChild, b), window.Node.prototype.insertBefore = y(window.Node.prototype.insertBefore, b), 
+                window.Element.prototype.append = y(window.Element.prototype.append, b), window.Element.prototype.prepend = y(window.Element.prototype.prepend, b), 
+                window.Element.prototype.before = y(window.Element.prototype.before, b), window.Element.prototype.after = y(window.Element.prototype.after, b), 
+                window.Element.prototype.insertAdjacentElement = y(window.Element.prototype.insertAdjacentElement, b), 
+                window.Range.prototype.insertNode = y(window.Range.prototype.insertNode, b);
+                const h = e => Boolean(e) && Object.values(e).some((e => e?.__typename === t)), m = (e, t) => {
+                    if (!e || "object" != typeof e || Array.isArray(e)) return !1;
+                    const r = Object.keys(e);
+                    return r.length === t.length && t.every((e => r.includes(e)));
+                }, A = e => m(e, [ "node" ]) && m(e.node, [ "s" ]) && m(e.node.s, [ "__typename" ]) && e.node.s.__typename === t, N = (e, t = 10) => {
+                    const n = e[3]?.[1]?.__bbox?.result?.data?.viewer;
+                    if (!n) return !1;
+                    let o = !1;
+                    const p = (e, t, n) => {
+                        if (e && "object" == typeof e && !(n < 0)) {
+                            if (Array.isArray(e.nodes)) {
+                                const t = e.nodes.filter((e => !(e => e?.__typename === r || Boolean(e?.item_collection?.nodes?.[0]?.sponsored_data?.ad_id))(e)));
+                                e.nodes.length - t.length > 0 && (e.nodes = t, o = !0);
                             }
-                            return d;
-                        } catch (e) {
-                            return Reflect.apply(n, a, o);
+                            Object.entries(e).forEach((([e, r]) => {
+                                p(r, `${t}.${e}`, n - 1);
+                            }));
                         }
+                    };
+                    return p(n, "item[3][1].__bbox.result.data.viewer", t), o;
+                }, O = (t, r) => {
+                    try {
+                        if ((e => !(!e || "object" != typeof e || Array.isArray(e) || "string" != typeof e.p || 4096 !== e.p.length) && m(e, [ "data", "edges", "require", "p" ]) && A(e.data) && Array.isArray(e.edges) && 1 === e.edges.length && A(e.edges[0]) && Array.isArray(e.require) && 1 === e.require.length && A(e.require[0]))(t)) return t;
+                        const n = ((t, r) => {
+                            let n = !1;
+                            try {
+                                if (c(r)) {
+                                    if (Array.isArray(t.require?.[0]?.[3]?.[0]?.__bbox?.require) && t.require[0][3][0].__bbox.require.forEach((t => {
+                                        t[3]?.[1]?.__bbox?.result?.data?.category === e && (delete t[3][1].__bbox.result.data.node, 
+                                        n = !0), h(t[3]?.[1]?.__bbox?.result?.data?.node) && (delete t[3][1].__bbox.result.data.node, 
+                                        n = !0), n = N(t) || n;
+                                    })), Array.isArray(t.data?.viewer?.news_feed?.edges)) {
+                                        const r = t.data.viewer.news_feed.edges.length;
+                                        t.data.viewer.news_feed.edges = t.data.viewer.news_feed.edges.filter((t => !h(t.node) && t.category !== e)), 
+                                        n = n || t.data.viewer.news_feed.edges.length !== r;
+                                    }
+                                    h(t.data?.node) && (delete t.data.node, n = !0), t.data?.category === e && (delete t.data.node, 
+                                    n = !0);
+                                }
+                            } catch (e) {}
+                            return n;
+                        })(t, "string" == typeof r ? r : JSON.stringify(t));
+                        n && t && "object" == typeof t && d.add(t);
+                    } catch (e) {}
+                    return t;
+                }, {apply: E} = {
+                    apply(e, t, r) {
+                        const n = Reflect.apply(e, t, r);
+                        return O(n, r[0]);
                     }
+                }, x = {
+                    apply: E
                 };
-                window.String = new Proxy(window.String, d);
-                const i = {
-                    apply: (e, r, n) => {
+                window.JSON.parse = y(window.JSON.parse, x);
+                const j = new WeakSet, v = e => {
+                    if (!e || j.has(e) || "function" != typeof e.parse) return;
+                    const {apply: t} = {
+                        apply(e, t, r) {
+                            const n = Reflect.apply(e, t, r);
+                            return O(n, r[0]);
+                        }
+                    };
+                    e.parse = y(e.parse, {
+                        apply: t
+                    }), j.add(e);
+                }, {apply: J} = {
+                    apply(e, t, r) {
+                        let n;
                         try {
-                            if (n[2]?.[0] && n[2][0]?.includes?.(t)) {
-                                const e = n[2][0].split(/\r?\n|\r/).map((e => {
+                            if (w(t), f(t)) {
+                                const e = JSON.parse(t);
+                                d.has(e) && (n = JSON.stringify(e));
+                            }
+                        } catch (e) {}
+                        return Reflect.apply(e, n ?? t, r);
+                    }
+                }, R = {
+                    apply: J
+                };
+                window.String.prototype.split = y(window.String.prototype.split, R), window.String.prototype.substring = y(window.String.prototype.substring, R);
+                const {apply: q} = {
+                    apply(e, t, r) {
+                        const n = Reflect.apply(e, t, r);
+                        try {
+                            if (f(n)) {
+                                const e = JSON.parse(n);
+                                if (d.has(e)) return JSON.stringify(e);
+                            }
+                        } catch (e) {}
+                        return n;
+                    }
+                }, F = {
+                    apply: q
+                };
+                window.String = y(window.String, F), window.String.prototype.constructor = window.String;
+                const W = new Map, {apply: k} = {
+                    apply(e, t, r) {
+                        let n = t;
+                        try {
+                            "string" == typeof t && t.length > 300 && (n = (e => {
+                                const t = W.get(e);
+                                if (void 0 !== t) return t;
+                                let r = e;
+                                try {
+                                    const t = Reflect.apply(i, e, []);
+                                    if (w(t) && c(e)) {
+                                        const t = JSON.parse(e);
+                                        d.has(t) && (r = JSON.stringify(t));
+                                    }
+                                } catch (e) {}
+                                return ((e, t) => {
+                                    if (W.size >= 2) {
+                                        const e = W.keys().next().value;
+                                        W.delete(e);
+                                    }
+                                    return W.set(e, t), t;
+                                })(e, r);
+                            })(t));
+                        } catch (e) {}
+                        return Reflect.apply(e, n, r);
+                    }
+                }, P = {
+                    apply: k
+                };
+                window.String.prototype.charAt = y(window.String.prototype.charAt, P);
+                const B = e => {
+                    const t = e?.data?.viewer?.marketplace_feed_stories;
+                    if (!Array.isArray(t?.edges)) return !1;
+                    const r = t.edges.filter((e => !(e => {
+                        const t = e?.__typename;
+                        return "string" == typeof t && t.includes(n);
+                    })(e?.node)));
+                    return r.length !== t.edges.length && (t.edges = r, !0);
+                }, {apply: M} = {
+                    apply(e, t, r) {
+                        const n = r[2]?.[0];
+                        if (l(n, p)) try {
+                            const e = (e => {
+                                let t = !1;
+                                const r = Reflect.apply(a, e, [ /\r?\n|\r/ ]).map((e => {
                                     if ("" === e.trim()) return e;
+                                    let r;
                                     try {
-                                        return JSON.stringify(JSON.parse(e));
+                                        r = JSON.parse(e);
                                     } catch {
                                         return e;
                                     }
-                                })).join("\r\n");
-                                n[2][0] = e;
+                                    const n = d.has(r), o = B(r);
+                                    return n || o ? (t = !0, JSON.stringify(r)) : e;
+                                }));
+                                return t ? r.join("\r\n") : e;
+                            })(n);
+                            if (e !== n) {
+                                const t = r[2].slice();
+                                t[0] = e, r[2] = t;
                             }
-                            return Reflect.apply(e, r, n);
-                        } catch (t) {
-                            return Reflect.apply(e, r, n);
-                        }
+                        } catch (e) {}
+                        return Reflect.apply(e, t, r);
                     }
+                }, z = {
+                    apply: M
                 };
-                window.Function.prototype.call = new Proxy(window.Function.prototype.call, i);
+                window.Function.prototype.call = y(window.Function.prototype.call, z);
+                const {apply: L} = {
+                    apply: (e, t, r) => Reflect.apply(e, s.get(t) ?? t, r)
+                }, C = {
+                    apply: L
+                };
+                window.Function.prototype.toString = y(window.Function.prototype.toString, C), (() => {
+                    const e = [ "json5" ];
+                    "function" != typeof window.requireLazy ? (Array.isArray(window.__rl_stub) || (window.__rl_stub = []), 
+                    window.__rl_stub.push([ e, v ])) : window.requireLazy(e, v);
+                })();
             })();
-            Object.defineProperty(Window.prototype.toString, "58c57b090d8f85ab58272a6d30ae7293", {
+            Object.defineProperty(Window.prototype.toString, "58db9a1c8afa1aead566713b40cf219f", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "58c57b090d8f85ab58272a6d30ae7293" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "58db9a1c8afa1aead566713b40cf219f" due to: ' + e);
         }
     },
     '!function(){var e=new MutationObserver(function(){var m=document.querySelectorAll("div[id^=\'mount_\']");{var e;e=0<m.length?document.querySelectorAll(\'div[role="feed"] > div[data-pagelet^="FeedUnit"] > div[class]:not([style*="height"])\'):document.querySelectorAll(\'[id^="substream"] > div:not(.hidden_elem) div[id^="hyperfeed_story_id"]\')}e.forEach(function(e){function n(e,n){for(0<m.length?"0"==(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span > span > span[data-content]\')).length&&(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span[aria-label]\')):h=e.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [class] [class]"),socheck=0;socheck<h.length;socheck++)h[socheck].innerText.contains(n)&&(p=["1"],d=["1"],u=["1"],i=r=l=1,socheck=h.length)}function t(e,n,t,c,a){for(0<m.length?"0"==(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span > span > span[data-content]\')).length&&(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] div[role="button"][tabindex]\')):h=e.querySelectorAll(".userContentWrapper h5 + div[data-testid] > span a > [class] [class]"),"0"==h.length&&(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span[aria-label]\')),socheck=0;socheck<h.length;socheck++){spancheck=0,1<h.length?(spancheck=h[socheck].querySelectorAll("span")[0],0==spancheck&&(spancheck=h[socheck].querySelectorAll("b")[0])):(spancheck=h[0].querySelectorAll("span")[socheck],0==spancheck&&(spancheck=h[0].querySelectorAll("b")[socheck]));var o=h[0];if(0!=spancheck&&spancheck){if(2==spancheck.children.length&&0<m.length)for(spancheck=spancheck.querySelectorAll("span:not([style])"),spcheck=0;spcheck<spancheck.length;spcheck++)spancheck[spcheck].innerText.contains(n)?s=1:!spancheck[spcheck].innerText.contains(t)||0!=spancheck[spcheck].offsetTop||spancheck[spcheck].innerText.contains(n)||spancheck[spcheck].innerText.contains(c)||spancheck[spcheck].innerText.contains(a)?!spancheck[spcheck].innerText.contains(c)||0!=spancheck[spcheck].offsetTop||spancheck[spcheck].innerText.contains(t)||spancheck[spcheck].innerText.contains(n)||spancheck[spcheck].innerText.contains(a)?!spancheck[spcheck].innerText.contains(a)||0!=spancheck[spcheck].offsetTop||spancheck[spcheck].innerText.contains(t)||spancheck[spcheck].innerText.contains(c)||spancheck[spcheck].innerText.contains(n)||(u=["1"],i=1):(d=["1"],r=1):(p=["1"],l=1);0==m.length&&((!(spancheck.innerText.contains(n)&&0==spancheck.offsetTop||h[0].innerText.contains(n)&&0==h[0].offsetTop)||spancheck.innerText.contains(t)&&!h[0].innerText.contains(t)||spancheck.innerText.contains(c)&&!h[0].innerText.contains(c)||spancheck.innerText.contains(a)&&!h[0].innerText.contains(a))&&(!o.innerText.contains(n)||0!=o.offsetTop||o.innerText.contains(t)||o.innerText.contains(c)||o.innerText.contains(a))?!spancheck.innerText.contains(t)||0!=spancheck.offsetTop||spancheck.innerText.contains(n)||spancheck.innerText.contains(c)||spancheck.innerText.contains(a)?!spancheck.innerText.contains(c)||0!=spancheck.offsetTop||spancheck.innerText.contains(t)||spancheck.innerText.contains(n)||spancheck.innerText.contains(a)?!spancheck.innerText.contains(a)||0!=spancheck.offsetTop||spancheck.innerText.contains(t)||spancheck.innerText.contains(c)||spancheck.innerText.contains(n)||(u=["1"],i=1):(d=["1"],r=1):(p=["1"],l=1):s=1)}}}function c(e,n,t,c,a){u=0<m.length?(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span span[data-content=\'+n+"]"),p=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span span[data-content=\'+t+"]"),d=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span span[data-content=\'+c+"]"),e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span span[data-content=\'+a+"]")):(h=e.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content="+n+"]"),p=e.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content="+t+"]"),d=e.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content="+c+"]"),e.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content="+a+"]"))}var s=0,l=0,r=0,i=0,h=0,p=0,d=0,u=0,a=e.querySelectorAll("div[style=\'width: 100%\'] > a[href*=\'oculus.com/quest\'] > div"),o=document.querySelector("[lang]"),k=document.querySelectorAll("link[rel=\'preload\'][href*=\'/l/\']");o=o?document.querySelector("[lang]").lang:"en";var y,g=e.querySelectorAll(\'a[ajaxify*="ad_id"] > span\'),f=e.querySelectorAll(\'a[href*="ads/about"]\'),S=e.querySelectorAll(\'a[href*="https://www.facebook.com/business/help"]\');if("display: none !important;"!=e.getAttribute("style")&&!e.classList.contains("hidden_elem")&&(0<g.length||0<f.length||0<S.length?(T+=1,0<m.length?(""==(y=e.querySelectorAll("a[href]")[0].innerText)&&(y=e.querySelectorAll("a[href]")[1].innerText),""==y&&(y=e.querySelectorAll("a[href]")[0].querySelectorAll("a[aria-label]")[0].getAttribute("aria-label"))):y=e.querySelectorAll("a[href]")[2].innerText,console.log("--------"),console.log("Ad hidden from: "+y),console.log("Total ads hidden: "+T),console.log("F length: "+g.length),console.log("H length: "+f.length),console.log("I length (Paid partnership): "+S.length),console.log("--------"),e.style="display:none!important;"):0<a.length?(T+=1,y="Facebook",console.log("--------"),console.log("Ad hidden from: "+y),console.log("Total ads hidden: "+T),console.log("Non-declared ad"),console.log("--------"),e.style="display:none!important;"):"af"==o?n(e,"Geborg"):"de"==o||"nl"==o?c(e,"G","e","s","n"):"am"==o?n(e,"የተከፈለበት ማስታወቂያ"):"ar"==o?n(e,"مُموَّل"):"as"==o?n(e,"পৃষ্ঠপোষকতা কৰা"):"az"==o?n(e,"Sponsor dəstəkli"):"co"==o?n(e,"Spunsurizatu"):"bs"==o||"sl"==o||"cs"==o?c(e,"S","p","z","n"):"da"==o||"en"==o||"et"==o||"fy"==o||"it"==o||"ku"==o||"nb"==o||"nn"==o||"pl"==o||"sq"==o||"sv"==o||"zz"==o?0<m.length?k[0].href.contains("en_UD")?n(e,"pəɹosuodS"):k[0].href.contains("ja_KS")?n(e,"広告"):k[0].href.contains("tz_MA")?n(e,"ⵉⴷⵍ"):k[0].href.contains("sy_SY")?n(e,"ܒܘܕܩܐ ܡܡܘܘܢܐ"):k[0].href.contains("cb_IQ")?n(e,"پاڵپشتیکراو"):k[0].href.contains("ar_AR")?n(e,"مُموَّل"):k[0].href.contains("sz_PL")?n(e,"Szpōnzorowane"):k[0].href.contains("eo_EO")?n(e,"Reklamo"):k[0].href.contains("es_LA")?c(e,"P","u","c","d"):(c(e,"S","p","s","n"),"0"==h.length&&t(e,"S","p","s","n"),"0"==h.length&&n(e,"Sponsored")):document.querySelector("body").className.includes("Locale_en_UD")?n(e,"pəɹosuodS"):document.querySelector("body").className.includes("ja_KS")?n(e,"広告"):document.querySelector("body").className.includes("tz_MA")?n(e,"ⵉⴷⵍ"):document.querySelector("body").className.includes("sy_SY")?n(e,"ܒܘܕܩܐ ܡܡܘܘܢܐ"):document.querySelector("body").className.includes("cb_IQ")?n(e,"پاڵپشتیکراو"):document.querySelector("body").className.includes("ar_AR")?n(e,"مُموَّل"):document.querySelector("body").className.includes("sz_PL")?n(e,"Szpōnzorowane"):document.querySelector("body").className.includes("eo_EO")?n(e,"Reklamo"):document.querySelector("body").className.includes("es_LA")?c(e,"P","u","c","d"):(c(e,"S","p","s","n"),"0"==h.length&&t(e,"S","p","s","n")):"be"==o?n(e,"Рэклама"):"bg"==o?n(e,"Спонсорирано"):"mk"==o?n(e,"Спонзорирано"):"br"==o?n(e,"Paeroniet"):"ca"==o?n(e,"Patrocinat"):"gl"==o||"pt"==o?(n(e,"Patrocinado"),"0"==l&&c(e,"P","a","c","o")):"bn"==o?n(e,"সৌজন্যে"):"cb"==o?n(e,"پاڵپشتیکراو"):"cx"==o?c(e,"G","i","s","n"):"cy"==o?n(e,"Noddwyd"):"el"==o?n(e,"Χορηγούμενη"):"eo"==o?n(e,"Reklamo"):"es"==o?c(e,"P","u","c","d"):"eu"==o?n(e,"Babestua"):"fa"==o?n(e,"دارای پشتیبانی مالی"):"ff"==o?n(e,"Yoɓanaama"):"fi"==o?n(e,"Sponsoroitu"):"fo"==o?n(e,"Stuðlað"):"fr"==o?0<m.length?k[0].href.contains("fr_FR")?c(e,"S","p","s","n"):c(e,"C","o","m","n"):document.querySelector("body").className.includes("Locale_fr_FR")?c(e,"S","p","s","n"):c(e,"C","o","m","n"):"ga"==o?n(e,"Urraithe"):"gn"==o?n(e,"Oñepatrosinapyre"):"gu"==o?n(e,"પ્રાયોજિત"):"ha"==o?n(e,"Daukar Nauyi"):"he"==o?n(e,"ממומן"):"hr"==o?n(e,"Plaćeni oglas"):"ht"==o?n(e,"Peye"):"ne"==o||"mr"==o||"hi"==o?n(e,"प्रायोजित"):"hu"==o?c(e,"H","i","r","d"):"hy"==o?n(e,"Գովազդային"):"id"==o?c(e,"B","e","p","n"):"is"==o?n(e,"Kostað"):"ja"==o?n(e,"広告"):"ms"==o?n(e,"Ditaja"):"jv"==o?n(e,"Disponsori"):"ka"==o?n(e,"რეკლამა"):"kk"==o?n(e,"Демеушілік көрсеткен"):"km"==o?n(e,"បានឧបត្ថម្ភ"):"kn"==o?n(e,"ಪ್ರಾಯೋಜಿತ"):"ko"==o?n(e,"Sponsored"):"ky"==o?n(e,"Демөөрчүлөнгөн"):"lo"==o?n(e,"ຜູ້ສະໜັບສະໜູນ"):"lt"==o?n(e,"Remiama"):"lv"==o?n(e,"Apmaksāta reklāma"):"mg"==o?n(e,"Misy Mpiantoka"):"ml"==o?n(e,"സ്പോൺസർ ചെയ്തത്"):"mn"==o?n(e,"Ивээн тэтгэсэн"):"mt"==o?n(e,"Sponsorjat"):"my"==o?(n(e,"ပံ့ပိုးထားသည်"),"0"==l&&n(e,"အခပေးကြော်ငြာ")):"or"==o?n(e,"ପ୍ରଯୋଜିତ"):"pa"==o?n(e,"ਸਰਪ੍ਰਸਤੀ ਪ੍ਰਾਪਤ"):"ps"==o?n(e,"تمويل شوي"):"ro"==o?n(e,"Sponsorizat"):"ru"==o||"uk"==o?n(e,"Реклама"):"rw"==o?n(e,"Icyamamaza ndasukirwaho"):"sc"==o?n(e,"Patronadu de"):"si"==o?n(e,"අනුග්රාහක"):"sk"==o?n(e,"Sponzorované"):"sn"==o?n(e,"Zvabhadharirwa"):"so"==o?n(e,"La maalgeliyey"):"sr"==o?n(e,"Спонзорисано"):"sw"==o?n(e,"Imedhaminiwa"):"sy"==o?n(e,"ܒܘܕܩܐ ܡܡܘܘܢܐ"):"sz"==o?n(e,"Szpōnzorowane"):"ta"==o?n(e,"விளம்பரம்"):"te"==o?n(e,"ప్రాయోజితం చేయబడింది"):"tg"==o?n(e,"Бо сарпарастӣ"):"th"==o?n(e,"ได้รับการสนับสนุน"):"tl"==o?n(e,"May Sponsor"):"tr"==o?n(e,"Sponsorlu"):"tt"==o?n(e,"Хәйрияче"):"tz"==o?n(e,"ⵉⴷⵍ"):"ur"==o?n(e,"سپانسرڈ"):"uz"==o?n(e,"Reklama"):"vi"==o?n(e,"Được tài trợ"):"zh-Hans"==o?n(e,"赞助内容"):"zh-Hant"==o&&n(e,"贊助"),0<h.length&&0<p.length&&0<d.length&&0<u.length)){for(cont=0;cont<h.length;cont++)0<h[cont].offsetHeight&&(cont=h.length,s=1);for(cont1=0;cont1<p.length;cont1++)0<p[cont1].offsetHeight&&(cont1=p.length,l=1);for(cont2=0;cont2<d.length;cont2++)0<d[cont2].offsetHeight&&(cont2=d.length,r=1);for(cont3=0;cont3<u.length;cont3++)0<u[cont3].offsetHeight&&(cont3=u.length,i=1);1==s&&1==l&&1==r&&1==i&&(0<m.length&&""!=(y=e.querySelectorAll("a[href]")[1].innerText)||(y=e.querySelectorAll("a[href]")[2].innerText),T+=1,console.log("--------"),console.log("Ad hidden from: "+y),console.log("Total ads hidden: "+T),console.log("--------"),e.style="display:none!important;")}})}),T=0;e.observe(document,{childList:!0,subtree:!0})}();': () => {
@@ -7938,40 +8142,6 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "9201edecacad19e52ef0fb416ec8c902" due to: ' + e);
-        }
-    },
-    '(()=>{const e={apply:(e,t,r)=>{try{if(r[2]?.[0]&&r[2][0]?.includes?.("MarketplaceFeedAdStory")){const e=r[2][0],t=e.split(/\\r?\\n|\\r/).map((e=>JSON.parse(e)));t.forEach((e=>{e.data?.viewer?.marketplace_feed_stories?.edges&&(e.data.viewer.marketplace_feed_stories.edges=e.data.viewer.marketplace_feed_stories.edges.filter((e=>!e.node?.__typename?.includes("MarketplaceFeedAdStory"))))}));const a=t.map((e=>JSON.stringify(e))).join("\\r\\n");r[2][0]=a}return Reflect.apply(e,t,r)}catch(a){return console.trace(a),Reflect.apply(e,t,r)}}};window.Function.prototype.call=new Proxy(window.Function.prototype.call,e)})();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["62b1f9c5122ff0789e03ede3f535bab1"] === e) return;
-            (() => {
-                const e = {
-                    apply: (e, t, r) => {
-                        try {
-                            if (r[2]?.[0] && r[2][0]?.includes?.("MarketplaceFeedAdStory")) {
-                                const e = r[2][0].split(/\r?\n|\r/).map((e => JSON.parse(e)));
-                                e.forEach((e => {
-                                    e.data?.viewer?.marketplace_feed_stories?.edges && (e.data.viewer.marketplace_feed_stories.edges = e.data.viewer.marketplace_feed_stories.edges.filter((e => !e.node?.__typename?.includes("MarketplaceFeedAdStory"))));
-                                }));
-                                const t = e.map((e => JSON.stringify(e))).join("\r\n");
-                                r[2][0] = t;
-                            }
-                            return Reflect.apply(e, t, r);
-                        } catch (o) {
-                            return console.trace(o), Reflect.apply(e, t, r);
-                        }
-                    }
-                };
-                window.Function.prototype.call = new Proxy(window.Function.prototype.call, e);
-            })();
-            Object.defineProperty(Window.prototype.toString, "62b1f9c5122ff0789e03ede3f535bab1", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "62b1f9c5122ff0789e03ede3f535bab1" due to: ' + e);
         }
     },
     '!function(){if(window.location.href.includes("/marketplace/")){new MutationObserver(function(){document.querySelectorAll(\'div[data-testid="marketplace_home_feed"] div[class][data-testid^="MarketplaceUpsell-"] > div > div\').forEach(function(e){var t=e.outerHTML;t&&void 0!==t&&!0===t.includes("/ads/about/")&&(e.style="display:none!important;")})}).observe(document,{childList:!0,subtree:!0})}}();': () => {
@@ -8349,12 +8519,12 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "ed57bbfd824aa9ad074678e5893c0dfa" due to: ' + e);
         }
     },
-    '(()=>{const e=/html-load\\.com|loader\\.min\\.js|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\.|:\\/\\/loader\\.|core\\.js|\\/sdk\\.js|\\/app\\.js/,t={filter:Array.prototype.filter,includes:String.prototype.includes,regexTest:RegExp.prototype.test},o=()=>(new Error).stack,l=o=>t.regexTest.call(e,o),r={construct:(e,r,n)=>{const c=o();return l(c)&&r[0]&&t.includes.call(r[0],"adshield")&&(r[0]=["(function(){})();"]),Reflect.construct(e,r,n)}};window.Blob=new Proxy(window.Blob,r);const n={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&(t.includes.call(n[0],"new Error")||t.includes.call(n[0],".apply(this"))&&(n[0]=()=>{}),Reflect.apply(e,r,n)}};window.setTimeout=new Proxy(window.setTimeout,n);const c={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&r?.includes?.("setTimeout")&&(r=t.filter.call(r,(e=>!t.includes.call(e,"setTimeout")))),Reflect.apply(e,r,n)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,c)})();': () => {
+    '(()=>{const e=/html-load\\.com|loader\\.min\\.js|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\.|:\\/\\/loader\\.|core\\.js|\\/sdk\\.js|\\/app\\.js|\\/main\\.js|\\/vendor\\.js/,t={filter:Array.prototype.filter,includes:String.prototype.includes,regexTest:RegExp.prototype.test},o=()=>(new Error).stack,l=o=>t.regexTest.call(e,o),r={construct:(e,r,n)=>{const c=o();return l(c)&&r[0]&&t.includes.call(r[0],"adshield")&&(r[0]=["(function(){})();"]),Reflect.construct(e,r,n)}};window.Blob=new Proxy(window.Blob,r);const n={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&(t.includes.call(n[0],"new Error")||t.includes.call(n[0],".apply(this"))&&(n[0]=()=>{}),Reflect.apply(e,r,n)}};window.setTimeout=new Proxy(window.setTimeout,n);const c={apply:(e,r,n)=>{const c=o();return l(c)&&n[0]&&r?.includes?.("setTimeout")&&(r=t.filter.call(r,(e=>!t.includes.call(e,"setTimeout")))),Reflect.apply(e,r,n)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,c)})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.ec2125b5b35a08eac4be0ea31e39defd === e) return;
+            if (Window.prototype.toString["5e475bb3e642901662a46a7cbd201f8f"] === e) return;
             (() => {
-                const e = /html-load\.com|loader\.min\.js|andwonderful\.com\/safe\.min\.js|shieldload\.|:\/\/loader\.|core\.js|\/sdk\.js|\/app\.js/, t = {
+                const e = /html-load\.com|loader\.min\.js|andwonderful\.com\/safe\.min\.js|shieldload\.|:\/\/loader\.|core\.js|\/sdk\.js|\/app\.js|\/main\.js|\/vendor\.js/, t = {
                     filter: Array.prototype.filter,
                     includes: String.prototype.includes,
                     regexTest: RegExp.prototype.test
@@ -8383,14 +8553,14 @@ export const localScriptRules = {
                 };
                 window.Array.prototype.filter = new Proxy(window.Array.prototype.filter, c);
             })();
-            Object.defineProperty(Window.prototype.toString, "ec2125b5b35a08eac4be0ea31e39defd", {
+            Object.defineProperty(Window.prototype.toString, "5e475bb3e642901662a46a7cbd201f8f", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "ec2125b5b35a08eac4be0ea31e39defd" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "5e475bb3e642901662a46a7cbd201f8f" due to: ' + e);
         }
     },
     '(()=>{const A={apply:(A,B,Q)=>{try{const A=Q[0];A&&A._uri&&A._uri.startsWith("spotify:ad:")&&A._url&&(A._url="data:video/mp4;base64,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")}catch(A){}return Reflect.apply(A,B,Q)}},B={apply:(B,Q,X)=>{try{const B=X[0]?.toString?.();B?.includes("this._getCacheKey")&&(X[0]=new Proxy(X[0],A))}catch(A){}return Reflect.apply(B,Q,X)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,B)})();': () => {
@@ -9078,6 +9248,59 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "f9fdd7bf50948a3a4434700b9afa2851" due to: ' + e);
+        }
+    },
+    "(()=>{const e={apply:(e,t,d)=>{try{const e=d[1];e?.ads&&e?.renderedAdsHtml&&(e.hidden=!0,delete e.ads,delete e.renderedAdsHtml)}catch(e){}return Reflect.apply(e,t,d)}};window.Map.prototype.set=new Proxy(window.Map.prototype.set,e)})();": () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["81f8e6b7eabcd45979e9ed7b3c823084"] === e) return;
+            (() => {
+                const e = {
+                    apply: (e, t, r) => {
+                        try {
+                            const e = r[1];
+                            e?.ads && e?.renderedAdsHtml && (e.hidden = !0, delete e.ads, delete e.renderedAdsHtml);
+                        } catch (e) {}
+                        return Reflect.apply(e, t, r);
+                    }
+                };
+                window.Map.prototype.set = new Proxy(window.Map.prototype.set, e);
+            })();
+            Object.defineProperty(Window.prototype.toString, "81f8e6b7eabcd45979e9ed7b3c823084", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "81f8e6b7eabcd45979e9ed7b3c823084" due to: ' + e);
+        }
+    },
+    '(()=>{const e={apply:(e,r,s)=>{const t=Reflect.apply(e,r,s);try{return s[0]&&"string"==typeof s[0]&&s[0].includes("renderedAdsHtml")&&t.messages&&(t.hideAllAds=!0),t}catch(e){}return Reflect.apply(e,r,s)}};window.JSON.parse=new Proxy(window.JSON.parse,e)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.b94da5bc1984f74de174da9c7d753ed7 === e) return;
+            (() => {
+                const e = {
+                    apply: (e, r, d) => {
+                        const t = Reflect.apply(e, r, d);
+                        try {
+                            return d[0] && "string" == typeof d[0] && d[0].includes("renderedAdsHtml") && t.messages && (t.hideAllAds = !0), 
+                            t;
+                        } catch (e) {}
+                        return Reflect.apply(e, r, d);
+                    }
+                };
+                window.JSON.parse = new Proxy(window.JSON.parse, e);
+            })();
+            Object.defineProperty(Window.prototype.toString, "b94da5bc1984f74de174da9c7d753ed7", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "b94da5bc1984f74de174da9c7d753ed7" due to: ' + e);
         }
     },
     'function GoogleIma3Dai(){const t=t=>"object"==typeof t&&null!==t,e=e=>{if(!t(e))return{};const s={},i=Object.keys(e);for(let t=0;t<i.length;t+=1){const o=i[t];s[o]=String(e[o])}return s},s=t=>"string"==typeof t&&t.length>0?t:null,i=t=>{t.listeners=new Map},o=t=>{if("string"==typeof t)return[t];if(!Array.isArray(t))return[];const e=[];for(let s=0;s<t.length;s+=1){const i=t[s];"string"==typeof i&&e.push(i)}return e},n=(s,i)=>{s.adTagParameters={},s.apiKey=null,s.authToken=null,s.format="hls",s.networkCode=null,s.omidAccessModeRules=null,s.streamActivityMonitorId=null,s.ui={custom:null},t(i)&&Object.assign(s,i),s.adTagParameters=e(s.adTagParameters),s.ui=(e=>{if(!t(e))return{custom:null};const s=Object.assign({custom:null},e);return s.custom=t(s.custom)?s.custom:null,s})(s.ui),"string"==typeof s.format&&0!==s.format.length||(s.format="hls")},r=(t,e)=>{n(t,e),t.customAssetKey="string"==typeof t.customAssetKey?t.customAssetKey:""},a=function(){i(this)};a.prototype.addEventListener=function(t,e){if("function"!=typeof e)return;const s=o(t);for(let t=0;t<s.length;t+=1){const i=s[t];this.listeners.has(i)||this.listeners.set(i,new Set);const o=this.listeners.get(i);o&&o.add(e)}},a.prototype.removeEventListener=function(t,e){if("function"!=typeof e)return;const s=o(t);for(let t=0;t<s.length;t+=1){const i=this.listeners.get(s[t]);i&&i.delete(e)}},a.prototype.dispatchEvent=function(t){const e=this.listeners.get(t.type);if(e)for(const s of Array.from(e))try{s(t)}catch(t){logMessage(source,t)}};const c=function(t){n(this,t)};c.StreamFormat={DASH:"dash",HLS:"hls"};const u=function(t){n(this,t),this.assetKey="string"==typeof this.assetKey?this.assetKey:""};Object.setPrototypeOf(u.prototype,c.prototype);const h=function(t){r(this,t)};Object.setPrototypeOf(h.prototype,c.prototype);const l=function(e){r(this,e),this.liveStreamEventId="string"==typeof this.liveStreamEventId?this.liveStreamEventId:"",this.oAuthToken="string"==typeof this.oAuthToken?this.oAuthToken:null,this.projectNumber="string"==typeof this.projectNumber?this.projectNumber:null,this.region="string"==typeof this.region?this.region:null,this.videoStitcherSessionOptions=t(this.videoStitcherSessionOptions)?this.videoStitcherSessionOptions:null};Object.setPrototypeOf(l.prototype,h.prototype);const p=function(e){n(this,e),this.adTagUrl="string"==typeof this.adTagUrl?this.adTagUrl:"",this.contentSourceUrl="string"==typeof this.contentSourceUrl?this.contentSourceUrl:"",this.oAuthToken="string"==typeof this.oAuthToken?this.oAuthToken:null,this.projectNumber="string"==typeof this.projectNumber?this.projectNumber:null,this.region="string"==typeof this.region?this.region:null,this.videoStitcherSessionOptions=t(this.videoStitcherSessionOptions)?this.videoStitcherSessionOptions:null,this.vodConfigId="string"==typeof this.vodConfigId?this.vodConfigId:""};Object.setPrototypeOf(p.prototype,c.prototype);const d=function(t){n(this,t),this.contentSourceId="string"==typeof this.contentSourceId?this.contentSourceId:"",this.videoId="string"==typeof this.videoId?this.videoId:""};Object.setPrototypeOf(d.prototype,c.prototype);const f=function(e){this.adPeriodData=null,this.adProgressData=null,this.cuepoints=[],this.errorMessage=null,this.manifestFormat="HLS",this.streamId=null,this.subtitles=[],this.url="",t(e)&&Object.assign(this,e)},m=function(t,e,s){this.type=t,this.streamData=e||new f,this.ad=s||null};m.Type={AD_BREAK_ENDED:"adBreakEnded",AD_BREAK_STARTED:"adBreakStarted",AD_PERIOD_ENDED:"adPeriodEnded",AD_PERIOD_STARTED:"adPeriodStarted",AD_PROGRESS:"adProgress",CLICK:"click",COMPLETE:"complete",CUEPOINTS_CHANGED:"cuepointsChanged",ERROR:"error",FIRST_QUARTILE:"firstquartile",HIDE_AD_UI:"hideAdUi",LOADED:"loaded",MIDPOINT:"midpoint",PAUSED:"paused",RESUMED:"resumed",SHOW_AD_UI:"showAdUi",SKIPPABLE_STATE_CHANGED:"skippableStateChanged",SKIPPED:"skip",STARTED:"started",STREAM_INITIALIZED:"streamInitialized",THIRD_QUARTILE:"thirdquartile",VIDEO_CLICKED:"videoClicked"},m.prototype.getAd=function(){return this.ad},m.prototype.getStreamData=function(){return this.streamData};const g=function(){this.locale="en"};g.prototype.getLocale=function(){return this.locale},g.prototype.setLocale=function(t){"string"==typeof t&&t.length>0&&(this.locale=t)};const y={EXTERNAL:"external",NOT_SUPPORTED:"notSupported"},S=function(e){this.altText="",this.height=0,this.url="",this.width=0,t(e)&&Object.assign(this,e),this.altText=s(this.altText)||"",this.height="number"==typeof this.height?this.height:0,this.url=s(this.url)||"",this.width="number"==typeof this.width?this.width:0},T=function(e){if(this.clickable=!1,this.required=!1,t(e)&&Object.assign(this,e),this.clickable=Boolean(this.clickable),this.required=Boolean(this.required),Array.isArray(this.imageVariants)){const t=[];for(let e=0;e<this.imageVariants.length;e+=1)t.push(new S(this.imageVariants[e]));this.imageVariants=t}};T.UiImage=S;const E=function(e){this.aboutThisAdSupport=!1,this.clickThroughNavigation=y.NOT_SUPPORTED,this.skippableSupport=!1,t(e)&&Object.assign(this,e),this.aboutThisAdSupport=Boolean(this.aboutThisAdSupport),this.clickThroughNavigation=this.clickThroughNavigation===y.EXTERNAL?y.EXTERNAL:y.NOT_SUPPORTED,this.skippableSupport=Boolean(this.skippableSupport)};E.ClickThroughNavigation=y;const I=new WeakMap,A=function(e){I.set(this,t(e)?e:{})};A.prototype.onClick=function(t,e){const s=I.get(this);s&&"function"==typeof s.onClick&&s.onClick(t,e)},A.prototype.setVisibleElements=function(t){const e=I.get(this);e&&"function"==typeof e.setVisibleElements&&e.setVisibleElements(t)},A.prototype.getConfig=function(){const t=I.get(this);if(!t||"function"!=typeof t.getConfig)return new Map;const e=t.getConfig();return e instanceof Map?e:new Map},A.UiData=T,A.UiKey={ABOUT_THIS_AD_FALLBACK_IMAGE:"aboutThisAdFallbackImage",ABOUT_THIS_AD_ICON:"aboutThisAdIcon",AD_TITLE:"adTitle",ATTRIBUTION:"attribution",AUTHOR_ICON:"authorIcon",AUTHOR_TITLE:"authorTitle",CALL_TO_ACTION:"callToAction",PRE_SKIP:"preSkip",SKIP_BUTTON:"skipButton",VIDEO_OVERLAY:"videoOverlay"},A.UiOptions=E;const v=new WeakMap,O=function(){v.set(this,{})};O.prototype.getFeatureFlags=function(){return(t=>{const e=v.get(t);if(e)return e;const s={};return v.set(t,s),s})(this)},O.prototype.setFeatureFlags=function(t){v.set(this,Object.assign({},t))};const D=t=>{const e=t;return"string"==typeof e.assetKey&&e.assetKey.length>0},b=t=>{const e=t;return"string"==typeof e.networkCode&&e.networkCode.length>0&&"string"==typeof e.customAssetKey&&e.customAssetKey.length>0},k=t=>{const e=t;return"string"==typeof e.contentSourceId&&e.contentSourceId.length>0&&"string"==typeof e.videoId&&e.videoId.length>0},R=t=>{const e=t,s=t,i=t,o=t;return"string"==typeof i.vodConfigId&&i.vodConfigId.length>0?`mock-video-stitcher-vod-${i.vodConfigId}`:"string"==typeof i.contentSourceUrl&&i.contentSourceUrl.length>0?"mock-video-stitcher-vod":"string"==typeof s.liveStreamEventId&&s.liveStreamEventId.length>0?`mock-video-stitcher-live-${s.liveStreamEventId}`:"string"==typeof e.assetKey&&e.assetKey.length>0?`mock-live-${e.assetKey}`:"string"==typeof o.videoId&&o.videoId.length>0?`mock-vod-${o.videoId}`:"mock-stream"},_=t=>"string"==typeof t.format&&"dash"===t.format.toLowerCase()?"DASH":"HLS",w=(e,s,i,o)=>{const n=new f({cuepoints:s.slice(),errorMessage:i,manifestFormat:_(e),streamId:R(e),url:""});return t(o)&&Object.assign(n,o),n},U=(t,e)=>{const s=Object.keys(e.adTagParameters);for(let i=0;i<s.length;i+=1){const o=s[i];t.searchParams.set(o,e.adTagParameters[o])}e.apiKey&&t.searchParams.set("api-key",e.apiKey),e.authToken&&t.searchParams.set("auth-token",e.authToken),e.streamActivityMonitorId&&t.searchParams.set("dai-sam-id",e.streamActivityMonitorId)},P=(t,e)=>{const s=new URL(`${e}/ssai/event/${t.assetKey}/streams`);return U(s,t),s.toString()},C=(t,e)=>{const s=new URL(`${e}/ssai/pods/api/v1/network/${t.networkCode}/custom_asset/${t.customAssetKey}/stream`),i="dash"===t.format.toLowerCase()?"dash":"hls";return U(s,t),s.searchParams.set("manifest-type",i),s.toString()},L=(t,e)=>{const s="dash"===t.format.toLowerCase()?"dash":"hls",i=new URL(`${e}/ondemand/${s}/content/${t.contentSourceId}/vid/${t.videoId}/streams`);return U(i,t),i.toString()},M="https://dai.google.com",K="https://pubads.g.doubleclick.net",N=(t,e,i)=>{const o=s(i.pod_manifest_url)||s(i.podManifestUrl)||"",n=s(i.stream_id)||s(i.streamId),r=s(i.stream_manifest)||s(i.streamUrl)||o||"",a=(t=>s(t.errorMessage)||s(t.error_message))(i),c=r.length>0||null!==n&&n.length>0,u=a||(c?null:"Stream initialization response missing stream URL"),h=s(i.manifest_format)||s(i.manifestFormat)||_(t),l=n||R(t),p=Array.isArray(i.subtitles)?i.subtitles:[];return w(t,e,u,{manifestFormat:h,podManifestUrl:o,pod_manifest_url:o,streamId:l,subtitles:p,url:r})},j=t=>{(t=>{t.adUiElement&&(t.adUiElement.style.display="none")})(t),(t=>{t.videoElement&&!t.videoElement.controls&&(t.videoElement.controls=!0)})(t)},q=function(t,e,s){i(this),this.videoElement=t||null,this.adUiElement=e||null,this.uiSettings=s||new g,this.clickElement=e||null,this.streamData=new f,this.streamMonitor={},this.streamRequest=null,this.cuepoints=[],this.lastMetadata=null,this.lastTimedMetadata=null};Object.setPrototypeOf(q.prototype,a.prototype),q.prototype.contentTimeForStreamTime=function(t){return"number"==typeof t?t:0},q.prototype.destroy=function(){this.reset()},q.prototype.focus=function(){const t=this.clickElement;if(t&&"function"==typeof t.focus)try{t.focus()}catch(t){logMessage(source,t)}},q.prototype.getAdSkippableState=function(){return!0},q.prototype.getStreamData=function(){return this.streamData},q.prototype.loadStreamMetadata=function(){j(this),this.dispatchEvent(new m(m.Type.LOADED,this.streamData))},q.prototype.onTimedMetadata=function(t){this.lastTimedMetadata=t},q.prototype.previousCuePointForStreamTime=function(t){let e=null;for(let s=0;s<this.cuepoints.length;s+=1){const i=this.cuepoints[s];"number"==typeof i.start&&(i.start<=t&&(e=i))}return e},q.prototype.processMetadata=function(t,e,s){this.lastMetadata={data:e,timestamp:s,type:t}},q.prototype.replaceAdTagParameters=function(t){this.streamRequest||(this.streamRequest=new c),this.streamRequest.adTagParameters=e(t)},q.prototype.requestStream=function(e){const s=(e=>{if(e instanceof c)return e;if(t(e)){if("string"==typeof e.liveStreamEventId)return new l(e);if("string"==typeof e.contentSourceUrl||"string"==typeof e.vodConfigId||"string"==typeof e.adTagUrl)return new p(e);if("string"==typeof e.customAssetKey)return new h(e);if("string"==typeof e.assetKey)return new u(e);if("string"==typeof e.contentSourceId||"string"==typeof e.videoId)return new d(e)}return new c})(e);this.streamRequest=s;const i=(t,e)=>{var s;this.streamData=e,(t=>t===m.Type.LOADED||t===m.Type.STREAM_INITIALIZED)(t)&&j(this),s=()=>{this.dispatchEvent(new m(m.Type.STREAM_INITIALIZED,e)),this.dispatchEvent(new m(t,e))},"function"!=typeof requestAnimationFrame?setTimeout(s,0):requestAnimationFrame(s)};if(!(t=>D(t)||b(t)||(t=>{const e=t;return"string"==typeof e.liveStreamEventId&&e.liveStreamEventId.length>0})(t)||(t=>{const e=t,s="string"==typeof e.contentSourceUrl&&e.contentSourceUrl.length>0,i="string"==typeof e.vodConfigId&&e.vodConfigId.length>0;return s||i})(t)||k(t))(s))return void i(m.Type.ERROR,w(s,this.cuepoints,"Missing stream request identifiers"));const o=(t=>b(t)?[C(t,M),C(t,K)]:D(t)?[P(t,M),P(t,K)]:k(t)?[L(t,M),L(t,K)]:[])(s);if(o.length>0){const e=s,n=async s=>{try{const n=await fetch(o[s],{method:"POST",credentials:"include"}),r=await(async e=>{const s=e;if(s&&!1===s.ok)throw new Error(`Stream initialization failed with status ${String(s.status||0)}`);if(s&&"function"==typeof s.json){const e=await s.json();return t(e)?e:{}}return t(e)?e:{}})(n);if(this.streamRequest!==e)return;const a=N(e,this.cuepoints,r),c=a.errorMessage?m.Type.ERROR:m.Type.LOADED;i(c,a)}catch(r){if(this.streamRequest!==e)return;if(s+1<o.length)return void await n(s+1);i(m.Type.ERROR,w(e,this.cuepoints,(e=>t(e)&&"string"==typeof e.message&&e.message.length>0?e.message:"Stream initialization failed")(r)))}};n(0)}else i(m.Type.LOADED,w(s,this.cuepoints,null))},q.prototype.reset=function(){this.cuepoints=[],this.lastMetadata=null,this.lastTimedMetadata=null,this.streamData=new f,this.streamRequest=null},q.prototype.setClickElement=function(t){this.adUiElement||(this.clickElement=t)},q.prototype.streamTimeForContentTime=function(t){return"number"==typeof t?t:0};const B={customUi:{UiOptions:function(e){this.aboutThisAdSupport=!1,this.skippableSupport=!1,t(e)&&Object.assign(this,e),this.aboutThisAdSupport=Boolean(this.aboutThisAdSupport),this.skippableSupport=Boolean(this.skippableSupport)}},DaiSdkSettings:new O,LiveStreamRequest:u,PodStreamRequest:h,StreamData:f,StreamEvent:m,StreamManager:q,StreamRequest:c,ui:A,UiSettings:g,VideoStitcherLiveStreamRequest:l,VideoStitcherVodStreamRequest:p,VODStreamRequest:d},F=window,H=t(F.google)?F.google:{};t(F.google)||(F.google=H);const V=t(H.ima)?H.ima:{};H.ima=V;const $=t(V.dai)?V.dai:{};V.dai=$;const G=t($.api)?$.api:{};$.api=G,Object.assign(G,B)}GoogleIma3Dai();': () => {
@@ -11503,6 +11726,56 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "119696f6d27a9b6c225cdaa7954a52fd" due to: ' + e);
+        }
+    },
+    '(()=>{const e=Promise.resolve({code:200}),t=()=>{},s=()=>({promise:e}),n=["init","add","remove","track","logEvent","identify","groupIdentify","setGroup","revenue","flush"],r=["getDeviceId","setDeviceId","getSessionId","setSessionId","getUserId","setUserId","setOptOut","setTransport","reset","extendSession"],o=()=>{const e={};return n.forEach(t=>{e[t]=s}),r.forEach(s=>{e[s]=t}),e},i=function(){},c=function(){return this};["add","append","clearAll","prepend","set","setOnce","unset","preInsert","postInsert","remove","setProductId","setQuantity","setPrice","setRevenue","setRevenueType","setEventProperties"].forEach(e=>{i.prototype[e]=c}),i.prototype.getUserProperties=()=>({}),i.prototype.getEventProperties=()=>({});const d=(t,s=[])=>{s.forEach(t=>{t.resolve?.(e)})},p=window.amplitude||{};Object.assign(p,o(),{createInstance:e=>{const t=o();return e&&p._iq&&(p._iq[e]=t),t},runQueuedFunctions:d,Identify:i,Revenue:i}),window.amplitude=p,p.invoked&&(d(0,p._q),p._q=[],Object.keys(p._iq||{}).forEach(e=>{const t=Object.assign(p._iq[e],o());d(0,t._q),t._q=[]}))})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["3ab24128eccb37db781483fefedba398"] === e) return;
+            (() => {
+                const e = Promise.resolve({
+                    code: 200
+                }), t = () => {}, r = () => ({
+                    promise: e
+                }), n = [ "init", "add", "remove", "track", "logEvent", "identify", "groupIdentify", "setGroup", "revenue", "flush" ], o = [ "getDeviceId", "setDeviceId", "getSessionId", "setSessionId", "getUserId", "setUserId", "setOptOut", "setTransport", "reset", "extendSession" ], s = () => {
+                    const e = {};
+                    return n.forEach((t => {
+                        e[t] = r;
+                    })), o.forEach((r => {
+                        e[r] = t;
+                    })), e;
+                }, i = function() {}, c = function() {
+                    return this;
+                };
+                [ "add", "append", "clearAll", "prepend", "set", "setOnce", "unset", "preInsert", "postInsert", "remove", "setProductId", "setQuantity", "setPrice", "setRevenue", "setRevenueType", "setEventProperties" ].forEach((e => {
+                    i.prototype[e] = c;
+                })), i.prototype.getUserProperties = () => ({}), i.prototype.getEventProperties = () => ({});
+                const d = (t, r = []) => {
+                    r.forEach((t => {
+                        t.resolve?.(e);
+                    }));
+                }, u = window.amplitude || {};
+                Object.assign(u, s(), {
+                    createInstance: e => {
+                        const t = s();
+                        return e && u._iq && (u._iq[e] = t), t;
+                    },
+                    runQueuedFunctions: d,
+                    Identify: i,
+                    Revenue: i
+                }), window.amplitude = u, u.invoked && (d(0, u._q), u._q = [], Object.keys(u._iq || {}).forEach((e => {
+                    const t = Object.assign(u._iq[e], s());
+                    d(0, t._q), t._q = [];
+                })));
+            })();
+            Object.defineProperty(Window.prototype.toString, "3ab24128eccb37db781483fefedba398", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "3ab24128eccb37db781483fefedba398" due to: ' + e);
         }
     },
     '(()=>{const t={detect:()=>({bot:!1})},e={apply:(e,o,n)=>{try{const r=n[0];return"function"==typeof r&&r.toString().includes("Botd.load")?Promise.resolve(t):Reflect.apply(e,o,n)}catch(t){return Reflect.apply(e,o,n)}}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,e)})();': () => {

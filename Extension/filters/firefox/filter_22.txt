@@ -1,9 +1,9 @@
-! Checksum: rVghfcAFqmyH+ngAU7maXQ
-! Diff-Path: ../patches/22/22-s-1785242755-3600.patch
+! Checksum: AsLkA2JRz22NTi5/GH3UFw
+! Diff-Path: ../patches/22/22-s-1786961799-3600.patch
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.14.49
-! TimeUpdated: 2026-07-28T12:43:23+00:00
+! Version: 2.0.14.66
+! TimeUpdated: 2026-08-17T10:14:01+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -89,6 +89,10 @@ nizimoenews.livedoor.blog,butumori.com,netizen-voice.blog.jp,ityouchannel.livedo
 !
 ! NOTE: Blogroll specific rules
 !
+kankokunews.net##[src^="https://blogroll.livedoor.net/"]
+aurorascreen.org##.discord-popup
+lovelive-petitsoku.com###content-top.wwa > .content-top.wwa
+lovelive-petitsoku.com##.widget-below-comment-form
 24tv.ua##.whatsapp-subscribe-widget
 odessa.ua##div.maincont > div[style^="margin: "]:has(> a[href="https://t.me/slovo_odessa"])
 girlsvip-matome.com###kanren_box2
@@ -454,10 +458,6 @@ moeimg.net###side-2 li.widget-container:has(#side-img-rss_frame)
 ||gazounabi.com/atcl_bottom_
 erologz.com##ul[class^="fl"]:not([class^="flex"])
 switchsoku.com##.l-main > div.dividerBottom:first-child:has(> aside.widget-main)
-nijimoemoe.com##.container-inner > aside.section-box > div.plugin-free_area
-nijimoemoe.com#?##more > .t_h:has(+ br + .oss1)
-nijimoemoe.com##.oss1
-nijimoemoe.com##.rsstuibi
 gamedaradara.doorblog.jp##div[id$="_rss"]
 gamedaradara.doorblog.jp#?#.article-body-inner b:has(+ div[id$="_rss"])
 burusoku-vip.com##.article-body-more > span[style="font-size: 18px;"]
@@ -739,8 +739,6 @@ otoko-honne.com,kijolifehack.com##.osusume_box
 ||kimagure-kijyo.com/js/kimagure_
 kijobibouroku.com,shuraba.net,uwasakijo.net,ikuji-news.com,kichimama.com,kijobibouroku.com,kimagure-kijyo.com##.ifram
 livejupiter2.blog.jp,jishin-yogen.com,shuraba.net,uwasakijo.net,ikuji-news.com,kichimama.com,kijobibouroku.com,kimagure-kijyo.com##.pickup
-nijimoemoe.com##.sine1 ~ div[class^="sine"]
-nijimoemoe.com#$#.raibudoasine { height: auto !important; }
 /kotei.js$domain=ikuji-news.com|kichimama-life.com|kichimama.net|kijonikki.net|kijyonohimitsu.com|kijyotown.net|kimagure-kijyo.com|romeodensetsu.com|shuraba-dendo.com|shuraba.net|shurabanote.com|sukashuraba.net|uwasakijo.net|densetsunokijo.net|kijyokaigi.com
 majikichi.com##div[class^="headline_"]
 majikichi.com#?##article-body > h3:has(+ div[class^="headline_"])
@@ -1409,6 +1407,8 @@ blog.livedoor.jp##div[id^="shitarss_title_"]
 !
 !   SECTION: Widgets - Marketing (third-party services)
 !
+/CxRobotSdkJs.js
+||prod.oddsmind.ai/js/oddsmind-chat.min.js$third-party
 ||widster.ru^$third-party
 ||widget.yourgood.app^
 ||quizgo-widget.ru^$third-party
@@ -2043,6 +2043,15 @@ daddyhd.com##.sidebar__inner
 ||static.zdassets.com/web_widget/messenger/$domain=op.gg|p2pb2b.com|revouninstaller.com
 litres.ru###call_support
 !
+chatlab.com##.rcw-widget-container
+||turkiyegazetesi.com.tr/s/js/ai-chat.js
+asviva.de##.o-livechat-root
+dns-shop.ru###chat-button
+pacjent.gov.pl###sprintbot-chat
+careers.dhl.com##.phenom-chatbot-wrapper
+superpower.com###lorikeet-widget-shadow-host
+ab-in-den-urlaub.de###__next > button[class*="css-"]:has(> span > img[alt="Chat-Logo"])
+namesilo.com##.ai-chat-widget-container
 spolshy.com.ua##.phone-modal
 xbox.com##.copilot-container
 pickaboo.com##a[aria-label="Chat on WhatsApp"]
@@ -2467,6 +2476,7 @@ faz.net#?#.ctn-PlaceholderContent:has(> .ctn-GDPR)
 !
 !   NOTE: Vacancy/job widgets
 !
+||webapi.dir.bg/worktalent
 ||nofluffjobs.com^$third-party
 ||cp-jobmacha-servicemacha-widgets.*.aliyuncs.com/chinapress-jobads-prod.js
 ||ziprecruiter.com/jobs-widget/$third-party
@@ -2541,6 +2551,9 @@ subbota.ua##aside.sidebar > div[id^="custom_html-"]
 !   NOTE: Donation widgets
 !   Really annoying only
 !
+bingebox.to#%#//scriptlet('set-session-storage-item', 'bingebox-donation-banner-dismissed', '1')
+dir.bg###doantion-banner-block
+archive.org##.js-donate-banner
 pureinfotech.com##.kofi-box
 fourfourtwo.com##[id^="play-our-free-match-predictor-and-win-"]
 fourfourtwo.com##[id^="play-our-free-match-predictor-and-win-"] + div[style^="min-height:"][id*="-"]:has(> .kwizly-quiz)

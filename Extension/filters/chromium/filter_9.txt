@@ -1,9 +1,9 @@
-! Checksum: O4vkZnrNNr6LFMCgamEq4w
-! Diff-Path: ../patches/9/9-s-1785312241-3600.patch
+! Checksum: 6XF6VVnkCKWq/VmfUEW+iQ
+! Diff-Path: ../patches/9/9-s-1786954851-3600.patch
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.35.12
-! TimeUpdated: 2026-07-29T08:01:18+00:00
+! Version: 2.0.35.31
+! TimeUpdated: 2026-08-17T08:17:53+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -24,6 +24,7 @@
 ! https://forum.adguard.com/index.php?threads/ivoox-com-podcasts-issues.29530/
 ! ||addevweb.com^$third-party
 !
+||bivogrvfyoj.in^
 ||chorumebbbbgoza.xyz^
 ||superflixapi.pro/player/pop-signal?
 ||comprargratis.com.br^
@@ -201,6 +202,19 @@
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/238502
+otakufilmes.org#$#body { overflow: auto !important; }
+otakufilmes.org#$##adblock-overlay { display: none !important; }
+otakufilmes.org#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'adblock')
+! https://www.reddit.com/r/uBlockOrigin/comments/1vj17s5/adblock_detection_on_httpsdarkmahouio/
+darkmahou.io#%#//scriptlet("prevent-addEventListener", "DOMContentLoaded", "adblock")
+darkmahou.io#@#.ad-slot
+! https://github.com/AdguardTeam/AdguardFilters/issues/237709
+||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$redirect=noopjs,domain=htforum.net
+htforum.net#%#//scriptlet('remove-attr', 'onerror', 'script[src*="googlesyndication.com"]', 'asap')
+htforum.net##body > .p-pageWrapper ~ .swal2-container
+! https://github.com/AdguardTeam/AdguardFilters/issues/236737
+miukt.com.br#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', '.offsetHeight === 0')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/236135
 xataka.com#%#//scriptlet('prevent-setTimeout', 'offsetHeight===0')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/235399
@@ -886,9 +900,6 @@ smartdoing.tech#$#.ads.ad.adsbox.ad-placement.carbon-ads { display: block !impor
 ! https://github.com/AdguardTeam/AdguardFilters/issues/116744
 oceans14.com.br#%#//scriptlet('abort-current-inline-script', 'EventTarget.prototype.addEventListener', 'adblock')
 oceans14.com.br#$#body div[id].ads.adsbox.doubleclick { display: block !important; }
-! https://github.com/AdguardTeam/AdguardFilters/issues/116085
-manchetehoje.xyz#%#//scriptlet("prevent-setTimeout", "0=== _0x")
-manchetehoje.xyz#$#.ads.ad.adsbox.ad-placement.carbon-ads { display: block !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/116064
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=kepahoo.com
 ||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$script,xmlhttprequest,important,redirect=googlesyndication-adsbygoogle,domain=kepahoo.com
@@ -1145,11 +1156,7 @@ file4go.net#%#//scriptlet("set-constant", "Lata", "1")
 ! https://github.com/AdguardTeam/AdguardFilters/issues/39171
 hobba.tv#@##ad-block
 hobba.tv#@##ad-box
-! https://github.com/AdguardTeam/AdguardFilters/issues/35166
 ! https://github.com/AdguardTeam/AdguardFilters/issues/34848
-! https://github.com/AdguardTeam/AdguardFilters/issues/34582
-!+ NOT_PLATFORM(windows, mac, android, cli)
-@@||torrentmegafilme.com^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/34477
 radiotormentamx.com#$##ad { position: absolute!important; left: -3000px!important; }
 radiotormentamx.com#$##adsdiv { position: absolute!important; left: -3000px!important; }
@@ -1958,9 +1965,9 @@ gamevicio.com#$#.hasBgApb { margin-top: 0 !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/81534
 infobae.com#$#.content_section > .top { margin-top: 100px !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/76850
-resenhasglobais.com,smartdoing.tech,manchetehoje.xyz,blotz.me,belezaedieta.net#$##framed > #player { display: block !important; }
-resenhasglobais.com,smartdoing.tech,manchetehoje.xyz,blotz.me,belezaedieta.net,tecnologiaonline.site,fazendorendaextra.xyz,grandnoticias.com#$##framed { display: block !important; }
-resenhasglobais.com,smartdoing.tech,manchetehoje.xyz,blotz.me,belezaedieta.net,tecnologiaonline.site,fazendorendaextra.xyz,grandnoticias.com#$#.content > #el-02 { display: none !important; }
+resenhasglobais.com,smartdoing.tech,blotz.me,belezaedieta.net#$##framed > #player { display: block !important; }
+resenhasglobais.com,smartdoing.tech,blotz.me,belezaedieta.net,tecnologiaonline.site,fazendorendaextra.xyz,grandnoticias.com#$##framed { display: block !important; }
+resenhasglobais.com,smartdoing.tech,blotz.me,belezaedieta.net,tecnologiaonline.site,fazendorendaextra.xyz,grandnoticias.com#$#.content > #el-02 { display: none !important; }
 ! https://github.com/AdguardTeam/AdguardFilters/issues/67978
 tudogostoso.com.br#$#body { padding-top: 0 !important; }
 tudogostoso.com.br#$#body > header { top: 0 !important; }
@@ -2146,7 +2153,25 @@ proandroid.com,lusometeo.com,kltutors.com,eloutput.com,mundobytes.com,techondica
 !
 ! NOTE: Specific rules
 !
-underhentai.net##.row > article.post-card:has(div.badge)
+viatrolebus.com.br##div[data-elementor-post-type="page"] > div[data-element_type="container"]:has(> div.e-con-inner div.elementor-widget-container > div.ad-wrap)
+viatrolebus.com.br##div[data-elementor-post-type="page"] > div[data-element_type="container"]:has(> div.e-con-inner > a[href="https://trilhos.motiva.com.br/"])
+otakufilmes.org##.banners-inferiores
+jornaldenegocios.pt##.detalheAds
+anime-jl.top#%#//scriptlet('abort-on-stack-trace', 'open', 'openEnlace')
+sensacine.com.mx,sensacine.com,adorocinema.com##.main-banner
+sensacine.com.mx,sensacine.com,adorocinema.com##.sticky-ad-holder
+suckinghat.com##.lds-hourglass
+sololatino.net#%#//scriptlet('prevent-addEventListener', 'click', 'localStorage')
+sololatino.net#%#//scriptlet('prevent-window-open')
+||nexustoons.com/api/settings/pop-ads
+||nexustoons.com/api/settings/ads
+||nexustoons.com/api/ads
+lance.com.br##.paywall-content > p:has(a[href^="https://hiper.bet.br/ptb/authentication/signup?"])
+lance.com.br###btn-open-chat
+hotchamas.com##.video-card-ad
+hotchamas.com##.watch-sidebar-ads
+animestotais.com.br##.terabox-promo
+animestotais.com.br##.theiaStickySidebar > div.widget_custom_html:has(div.terabox-promo)
 reclameaqui.com.br##div[data-ra-complaint-ad]
 ltube.us###ad-pro-left-widget
 vix.com##button[data-testid="player-up-sell-entry-button"]
@@ -3390,8 +3415,6 @@ lance.com.br##main .flex-col.justify-start > .w-full.mx-auto:has(img[alt="Lance!
 ig.com.br###ad_inimage
 ig.com.br##.ig-taboola
 promobit.com.br##.grid > div[class^="col-start"]:has(div.bg-neutral-high-100)
-lance.com.br##.screenWidth + .shadow-sticky
-lance.com.br##div[class]:has(> div[id^="rasgado_"])
 promobit.com.br#?#aside > div.items-center:has(> div[id*="300x250"])
 promobit.com.br###__next > div.block:has(> div.block > a[href^="https://s.click.aliexpress.com/"])
 ojogo.pt,dinheirovivo.pt,tsf.pt,dn.pt,jn.pt##.pub-wrapper
@@ -4272,7 +4295,7 @@ larazon.es###outbrain-id
 gmconline.com.br##.banner-item
 gmconline.com.br##.section-banner-topo
 xchica.com##td[width="360"] > center
-tecnoscann.com,mhscans.com,mangacrab.com,animerikosuper.blogspot.com,emperorscan.com,miauscan.com###fixedban
+tecnoscann.com,mhscans.com,mangacrab.com,animerikosuper.blogspot.com,emperorscan.com###fixedban
 observatoriodatv.com.br,uol.com.br##.obx-ad
 observatoriodatv.uol.com.br##.BannerUOLPlay__Container
 ||ubembed.com^$domain=muylinux.com

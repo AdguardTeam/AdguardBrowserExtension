@@ -1,9 +1,9 @@
-! Checksum: v7ikjJzwvv7/JRoH7xcBCw
-! Diff-Path: ../patches/8_optimized/8_optimized-s-1784545673-3600.patch
+! Checksum: gBpJJ9LsVnTXFvtkO0QWpQ
+! Diff-Path: ../patches/8_optimized/8_optimized-s-1785927396-3600.patch
 ! Title: AdGuard Dutch filter (Optimized)
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.9.37
-! TimeUpdated: 2026-07-20T11:04:44+00:00
+! Version: 2.0.9.39
+! TimeUpdated: 2026-08-05T10:53:33+00:00
 ! Expires: 10 days (update frequency)
 -reclameplaatjes/
 /adbron.
@@ -1316,6 +1316,7 @@ bright.nl##[class^="Ad_ad_"]
 at5.nl##[class^="Advertisement_"]
 sporza.be##[class^="_adBanner_"]
 androidplanet.nl##[data-name="featured-header"]
+mediamarkt.nl##[data-test="mms-search-main"] aside[aria-label="Gesponsorde inhoud"]
 9292.nl##[data-testid^="gpt-ad"]
 indeleiderstrui.nl##[data-ub-carousel]
 delhaize.be##[id*="sponsored_products"]
@@ -1622,6 +1623,7 @@ gpblog.com#$#aside[class^="Ad_"] { position: absolute !important; left: -3000px 
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
 handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
+weeronline.nl#$#.adWrapper { height: 0px !important; }
 weeronline.nl##.fullScreenAdWrapper
 iphoned.nl##div[data-name="dynamic-content"]:has(> div[data-id^="gpt-ad-"])
 iculture.nl##div[id^="gpt-ad-"]
