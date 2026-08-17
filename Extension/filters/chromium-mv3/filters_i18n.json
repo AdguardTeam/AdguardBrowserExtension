@@ -17594,7 +17594,7 @@
 				"description": "Ta filter blokira sledilne piksle v odjemalcih e-pošte."
 			},
 			"sr": {
-				"name": "AdGuard filter za zaštitu od praćenja u e-poštiAdGuard filter za zaštitu od praćenja u e-pošti",
+				"name": "AdGuard filter za zaštitu od praćenja e-pošte",
 				"description": "Ovaj filter blokira piksele za praćenje u email klijentima."
 			},
 			"sv": {
@@ -20654,180 +20654,180 @@
 		},
 		"227": {
 			"ar": {
-				"name": "List-KR Classic filter list",
-				"description": "قائمة المرشحات List-KR Сlassic ل AdGuard تحظر الإعلانات وتعطل سكريبتات منع حظر الإعلانات على المواقع والتطبيقات الناطقة بالكورية."
+				"name": "filterslist-KO Classic filter list",
+				"description": "تحظر قائمة الفلاتر filterslist-KO Classic المخصّصة لـ AdGuard الإعلانات وتعطّل البرامج النصية المضادة لحظر الإعلانات على مواقع الويب والتطبيقات باللغة الكورية."
 			},
 			"be": {
-				"name": "List-KR Classic filter list",
-				"description": "Спіс фільтраў List-KR Classic для AdGuard блакіруе рэкламу і адключае скрыпты-анты-блакіроўшчыкі на карэйскамоўных вэб-сайтах і ў дадатках."
+				"name": "filterslist-KO Classic filter list",
+				"description": "Спіс фільтраў filterslist-KO Classic для AdGuard блакіруе рэкламу і адключае скрыпты супраць блакіроўкі рэкламы на карэйскамоўных вэб-сайтах і ў праграмах."
 			},
 			"bg": {
-				"name": "List-KR Classic filter list",
-				"description": "Списъкът с филтри List-KR Classic за AdGuard блокира реклами и деактивира анти-адблокиращи скриптове в корейскоезични уебсайтове и приложения."
+				"name": "filterslist-KO Classic filter list",
+				"description": "Класическият списък с филтри filterslist-KO за AdGuard блокира реклами и деактивира скриптове против блокирането на реклами в уебсайтове и приложения на корейски език."
 			},
 			"ca": {
-				"name": "List-KR Classic filter list",
-				"description": "La llista de filtres List-KR Classic per a AdGuard bloqueja anuncis i desactiva scripts anti-adblock en llocs web i aplicacions en llengua coreana."
+				"name": "filterslist-KO Classic filter list",
+				"description": "La llista de filtres filterslist-KO Classic per a AdGuard bloqueja els anuncis i desactiva els scripts antibloqueig d'anuncis en llocs web i aplicacions en coreà."
 			},
 			"cs": {
-				"name": "List-KR Classic filter list",
-				"description": "The List-KR Сlassic filter list pro AdGuard blokuje reklamy a deaktivuje skripty proti blokování reklam na webových stránkách a v aplikacích v korejském jazyce."
+				"name": "filterslist-KO Classic filter list",
+				"description": "Seznam filtrů filterslist-KO Classic pro AdGuard blokuje reklamy a vypíná skripty proti blokování reklam na korejských webech a v aplikacích."
 			},
 			"da": {
-				"name": "List-KR Classic filter list",
-				"description": "List-KR Сlassic-filterlisten til AdGuard blokerer annoncer og deaktiverer anti-adblock-scripts på koreansksprogede websteder og apps."
+				"name": "filterslist-KO Classic filter list",
+				"description": "Filterlisten filterslist-KO Classic til AdGuard blokerer annoncer og deaktiverer anti-annonceblokeringsscripts på koreansksprogede websteder og i apps."
 			},
 			"de": {
-				"name": "List-KR Classic filter list",
+				"name": "filterslist-KO Classic filter list",
 				"description": "Diese Filterliste für AdGuard blockiert Werbung und deaktiviert Anti-Adblock-Skripte auf koreanischen Websites sowie in Apps."
 			},
 			"el": {
-				"name": "List-KR Classic filter list",
-				"description": "Η λίστα φίλτρων List-KR Сlassic για το AdGuard μπλοκάρει τις διαφημίσεις και απενεργοποιεί τις δέσμες ενεργειών anti-adblock σε ιστότοπους και εφαρμογές στην κορεατική γλώσσα."
+				"name": "filterslist-KO Classic filter list",
+				"description": "Η κλασική λίστα φίλτρων filterslist-KO για το AdGuard αποκλείει διαφημίσεις και απενεργοποιεί δέσμες ενεργειών κατά του αποκλεισμού διαφημίσεων σε κορεατόφωνους ιστοτόπους και εφαρμογές."
 			},
 			"en": {
-				"name": "List-KR Classic filter list",
-				"description": "The List-KR Сlassic filter list for AdGuard blocks ads and disables anti-adblock scripts on Korean-language websites and apps."
+				"name": "filterslist-KO Classic filter list",
+				"description": "The filterslist-KO Classic filter list for AdGuard blocks ads and disables anti-adblock scripts on Korean-language websites and apps."
 			},
 			"es": {
-				"name": "List-KR Classic filter list",
-				"description": "La lista de filtros List-KR Classic para AdGuard bloquea los anuncios y desactiva los scripts anti-bloqueo de anuncios en sitios web y aplicaciones en idioma coreano."
+				"name": "filterslist-KO Classic filter list",
+				"description": "La lista de filtros filterslist-KO Classic para AdGuard bloquea los anuncios y desactiva los scripts anti-bloqueo de anuncios en sitios web y aplicaciones en idioma coreano."
 			},
 			"es_ES": {
-				"name": "List-KR Classic filter list",
-				"description": "La lista de filtros List-KR Classic para AdGuard bloquea los anuncios y desactiva los scripts anti-bloqueo de anuncios en sitios web y aplicaciones en idioma coreano."
+				"name": "filterslist-KO Classic filter list",
+				"description": "La lista de filtros filterslist-KO Classic para AdGuard bloquea los anuncios y desactiva los scripts anti-bloqueo de anuncios en sitios web y aplicaciones en idioma coreano."
 			},
 			"fa": {
-				"name": "List-KR Classic filter list",
-				"description": "فهرست‌های پالایش کلاسیک List-KR برای AdGuard تبلیغات را مسدود می‌کند و اسکریپت‌های ضدِ مسدودکنندهٔ تبلیغات را در تارنماها و برنامک‌های کره‌ای‌زبان غیرفعال می‌کند."
+				"name": "filterslist-KO Classic filter list",
+				"description": "فهرست فیلتر کلاسیک filterslist-KO برای AdGuard تبلیغات را مسدود و اسکریپت‌های ضد مسدودکننده تبلیغات را در وب‌سایت‌ها و برنامه‌های کره‌ای‌زبان غیرفعال می‌کند."
 			},
 			"fi": {
-				"name": "List-KR Classic filter list",
-				"description": "List-KR Сlassic -suodatinlista AdGuardille estää mainokset ja poistaa käytöstä anti-adblock-skriptit koreankielisillä verkkosivustoilla ja sovelluksissa."
+				"name": "filterslist-KO Classic filter list",
+				"description": "AdGuardin filterslist-KO Classic -suodatinlista estää mainokset ja poistaa mainosten eston vastaiset komentosarjat käytöstä koreankielisillä verkkosivustoilla ja sovelluksissa."
 			},
 			"fr": {
-				"name": "List-KR Classic filter list",
-				"description": "La liste de filtres List-KR Classic pour AdGuard bloque les publicités et désactive les scripts anti-blocage de publicités sur les sites web et les applications en coréen."
+				"name": "filterslist-KO Classic filter list",
+				"description": "La liste de filtres « filterslist-KO Classic » pour AdGuard bloque les publicités et désactive les scripts anti-AdBlock sur les sites Web et les applications en coréen."
 			},
 			"he": {
-				"name": "List-KR Classic filter list",
-				"description": "רשימת מסננים List-KR Сlassic עבור AdGuard חוסמת פרסומות ומשביתה סקריפטים של מניעת חוסם פרסומות באתרים ובאפליקציות בשפה הקוריאנית."
+				"name": "filterslist-KO Classic filter list",
+				"description": "רשימת המסננים filterslist-KO Classic עבור AdGuard חוסמת פרסומות ומשביתה סקריפטים נגד חוסמי פרסומות באתרים וביישומים בשפה הקוריאנית."
 			},
 			"hi": {
-				"name": "List-KR Classic filter list",
-				"description": "AdGuard के लिए List-KR Сlassic फ़िल्टर सूची कोरियाई भाषा की वेबसाइटों और ऐप्स पर विज्ञापनों को ब्लॉक करती है और एंटी-एडब्लॉक स्क्रिप्ट को निष्क्रिय कर देती है।"
+				"name": "filterslist-KO Classic filter list",
+				"description": "AdGuard के लिए filterslist-KO Classic फ़िल्टर सूची कोरियाई-भाषा वाली वेबसाइटों और ऐप्स पर विज्ञापनों को ब्लॉक करती है और एंटी-एडब्लॉक स्क्रिप्ट को अक्षम करती है।"
 			},
 			"hr": {
-				"name": "List-KR Classic filter list",
-				"description": "Filter List-KR Classic za AdGuard blokira oglase i onemogućuje skripte protiv blokiranja oglasa na web-stranicama i aplikacijama na korejskom jeziku."
+				"name": "filterslist-KO Classic filter list",
+				"description": "Popis filtara filterslist-KO Classic za AdGuard blokira oglase i onemogućuje skripte protiv blokiranja oglasa na web-mjestima i u aplikacijama na korejskom jeziku."
 			},
 			"hu": {
-				"name": "List-KR Classic filter list",
-				"description": "A List-KR Сlassic szűrőlista az AdGuard számára blokkolja a hirdetéseket és letiltja az anti-adblock szkripteket a koreai nyelvű weboldalakon és alkalmazásokban."
+				"name": "filterslist-KO Classic filter list",
+				"description": "Az AdGuardhoz készült filterslist-KO Classic szűrőlista blokkolja a hirdetéseket, és letiltja a reklámblokkolás elleni szkripteket a koreai nyelvű webhelyeken és alkalmazásokban."
 			},
 			"hy": {
-				"name": "List-KR Classic filter list",
-				"description": "The List-KR Сlassic filter list-ը արգելափակում է գովազդները և անջատում գովազդի արգելափակման դեմ սկրիպտները կորեերեն լեզվով կայքերում և հավելվածներում:"
+				"name": "filterslist-KO Classic filter list",
+				"description": "AdGuard-ի համար նախատեսված filterslist-KO Classic զտիչների ցանկն արգելափակում է գովազդները և անջատում հակագովազդային արգելափակման սկրիպտները կորեալեզու կայքերում ու հավելվածներում։"
 			},
 			"id": {
-				"name": "List-KR Classic filter list",
-				"description": "Daftar filter List-KR Сlassic untuk AdGuard memblokir iklan dan menonaktifkan skrip anti-adblock di situs web dan aplikasi berbahasa Korea."
+				"name": "filterslist-KO Classic filter list",
+				"description": "Daftar filter filterslist-KO Classic untuk AdGuard memblokir iklan dan menonaktifkan skrip anti-pemblokir iklan di situs web dan aplikasi berbahasa Korea."
 			},
 			"it": {
-				"name": "List-KR Classic filter list",
-				"description": "La lista di filtri List-KR Сlassic per AdGuard blocca gli annunci e disabilita gli script anti-adblock su siti e app in lingua coreana."
+				"name": "filterslist-KO Classic filter list",
+				"description": "La lista di filtri filterslist-KO Classic per AdGuard blocca gli annunci e disabilita gli script anti-adblock su siti e app in lingua coreana."
 			},
 			"ja": {
-				"name": "List-KR Classic filter list",
-				"description": "AdGuard用のList-KR Classic filter list は、韓国語ウェブサイトやアプリ上の広告をブロックし、広告ブロック対策スクリプトを無効にします。"
+				"name": "filterslist-KO Classic filter list",
+				"description": "AdGuard用のfilterslist-KO Classic filter list は、韓国語ウェブサイトやアプリ上の広告をブロックし、広告ブロック対策スクリプトを無効にします。"
 			},
 			"ko": {
-				"name": "List-KR Classic filter list",
-				"description": "AdGuard용 List-KR Сlassic 필터 목록은 한국어 웹사이트와 앱에서 광고를 차단하고 광고 차단 방지 스크립트를 비활성화합니다."
+				"name": "filterslist-KO Classic filter list",
+				"description": "AdGuard용 filterslist-KO Classic 필터 목록은 한국어 웹사이트와 앱에서 광고를 차단하고 광고 차단 방지 스크립트를 비활성화합니다."
 			},
 			"lt": {
-				"name": "List-KR Classic filter list",
-				"description": "List-KR Classic filtrų sąrašas, skirtas AdGuard, blokuoja ads ir išjungia anti-adblock scripts korėjiečių kalbos websites ir apps."
+				"name": "filterslist-KO Classic filter list",
+				"description": "AdGuard filtrų sąrašas filterslist-KO Classic blokuoja reklamas ir išjungia antireklamų blokavimo scenarijus korėjiečių kalbos svetainėse ir programėlėse."
 			},
 			"mk": {
-				"name": "List-KR Classic filter list",
-				"description": "Листата со филтри за AdGuard блокира реклами и ги оневозможува скриптите против блокирање реклами на веб-страници и апликации на корејски јазик."
+				"name": "filterslist-KO Classic filter list",
+				"description": "Класичната листа на филтри filterslist-KO за AdGuard блокира реклами и ги оневозможува скриптите против блокирање реклами на веб-локации и апликации на корејски јазик."
 			},
 			"ms": {
-				"name": "List-KR Classic filter list",
-				"description": "Senarai penapis List-KR Classic untuk AdGuard menyekat iklan dan melumpuhkan skrip anti-penapisan pada laman web dan aplikasi berbahasa Korea."
+				"name": "filterslist-KO Classic filter list",
+				"description": "Senarai penapis filterslist-KO Classic untuk AdGuard menyekat iklan dan menyahdayakan skrip anti-sekat iklan pada laman web dan aplikasi berbahasa Korea."
 			},
 			"nl": {
-				"name": "List-KR Classic filter list",
-				"description": "De List-KR Сlassic-filterlijst voor AdGuard blokkeert advertenties en schakelt anti-advertentieblokkeringsscripts uit op Koreaanse websites en apps."
+				"name": "filterslist-KO Klassieke filterlijst",
+				"description": "De klassieke filterlijst filterslist-KO voor AdGuard blokkeert advertenties en schakelt anti-adblockscripts uit op Koreaans-talige websites en in apps."
 			},
 			"no": {
-				"name": "List-KR Classic filter list",
-				"description": "List-KR Сlassic-filterlisten for AdGuard blokkerer annonser og deaktiverer anti-adblock-skript på koreanskspre5klige nettsteder og apper."
+				"name": "filterslist-KO Classic filter list",
+				"description": "Filterlisten filterslist-KO Classic for AdGuard blokkerer annonser og deaktiverer anti-annonseblokkeringsskript på koreanskspråklige nettsteder og i apper."
 			},
 			"pl": {
-				"name": "List-KR Classic filter list",
-				"description": "Lista filtrów List-KR Classic dla AdGuard blokuje reklamy i wyłącza skrypty anty-adblock na koreańskojęzycznych stronach internetowych i aplikacjach."
+				"name": "filterslist-KO Classic filter list",
+				"description": "Klasyczna lista filtrów filterslist-KO dla AdGuard blokuje reklamy i wyłącza skrypty anty-adblockowe w koreańskojęzycznych witrynach i aplikacjach."
 			},
 			"pt": {
-				"name": "List-KR Classic filter list",
-				"description": "A lista de filtro List-KR Сlassic para o AdGuard bloqueia anúncios e desativa scripts anti-adblock em sítios Web e aplicações em língua coreana."
+				"name": "filterslist-KO Classic filter list",
+				"description": "A lista de filtros filterslist-KO Classic para o AdGuard bloqueia anúncios e desativa scripts anti-adblock em sítios Web e aplicações em língua coreana."
 			},
 			"pt_BR": {
-				"name": "List-KR Classic filter list",
-				"description": "A lista de filtros List-KR Classic para AdGuard bloqueia anúncios e desativa scripts anti-bloqueio de anúncios em sites e aplicativos em coreano."
+				"name": "filterslist-KO Classic filter list",
+				"description": "A lista de filtros filterslist-KO Classic para AdGuard bloqueia anúncios e desativa scripts anti-bloqueio de anúncios em sites e aplicativos em coreano."
 			},
 			"pt_PT": {
-				"name": "List-KR Classic filter list",
-				"description": "A lista de filtro List-KR Сlassic para o AdGuard bloqueia anúncios e desativa scripts anti-adblock em sítios Web e aplicações em língua coreana."
+				"name": "filterslist-KO Classic filter list",
+				"description": "A lista de filtros filterslist-KO Classic para o AdGuard bloqueia anúncios e desativa scripts anti-adblock em sítios Web e aplicações em língua coreana."
 			},
 			"ro": {
-				"name": "List-KR Classic filter list",
-				"description": "Lista de filtre List-KR Сlassic pentru AdGuard blochează reclamele și dezactivează scripturile anti-adblock pe site-uri web și aplicații în limba coreeană."
+				"name": "filterslist-KO Classic filter list",
+				"description": "Lista de filtre filterslist-KO Classic pentru AdGuard blochează reclamele și dezactivează scripturile anti-blocare a reclamelor de pe site-urile web și din aplicațiile în limba coreeană."
 			},
 			"ru": {
-				"name": "List-KR Classic filter list",
+				"name": "filterslist-KO Classic filter list",
 				"description": "Блокирует рекламу и отключает скрипты против блокировщиков рекламы на корейских сайтах и в приложениях."
 			},
 			"sk": {
-				"name": "List-KR Classic filter list",
-				"description": "Zoznam filtrov List-KR Сlassic pre AdGuard blokuje reklamy a deaktivuje anti-adblock skripty na kórejských webových stránkach a aplikáciách."
+				"name": "filterslist-KO Classic filter list",
+				"description": "Klasický zoznam filtrov filterslist-KO pre AdGuard blokuje reklamy a deaktivuje skripty proti blokovaniu reklám na webových stránkach a v aplikáciách v kórejčine."
 			},
 			"sl": {
-				"name": "List-KR Classic filter list",
-				"description": "Seznam filtrov List-KR Classic za AdGuard blokira oglase in onemogoči skripte proti blokiranju oglasov na spletnih mestih in aplikacijah v korejskem jeziku."
+				"name": "filterslist-KO Classic filter list",
+				"description": "Seznam filtrov filterslist-KO Classic za AdGuard blokira oglase in onemogoča skripte za preprečevanje blokiranja oglasov na korejskih spletnih mestih in v aplikacijah."
 			},
 			"sr": {
-				"name": "List-KR Classic filter list",
-				"description": "List-KR Classic lista filtera za AdGuard blokira oglase i onemogućava anti-adblock skripte na veb-sajtovima i app-ovima na korejskom jeziku."
+				"name": "filterslist-KO Classic filter list",
+				"description": "Klasična lista filtera filterslist-KO za AdGuard blokira oglase i onemogućava skripte protiv blokiranja oglasa na veb-sajtovima i u aplikacijama na korejskom jeziku."
 			},
 			"sv": {
-				"name": "List-KR Classic filter list",
-				"description": "List-KR Сlassic-filterlistan för AdGuard blockerar annonser och inaktiverar anti-adblock-skript på koreanskspråkiga webbplatser och appar."
+				"name": "filterslist-KO Classic filter list",
+				"description": "Filterlistan filterslist-KO Classic för AdGuard blockerar annonser och inaktiverar skript mot annonsblockering på koreanskspråkiga webbplatser och i appar."
 			},
 			"th": {
-				"name": "List-KR Classic filter list",
-				"description": "รายการฟิลเตอร์ List-KR Classic สำหรับ AdGuard จะบล็อกโฆษนาและปิดใช้งานสคริปต์ป้องกันการบล็อกโฆษนาในเว็บไซต์และแอปภาษาเกาหลี"
+				"name": "filterslist-KO Classic filter list",
+				"description": "รายการตัวกรอง filterslist-KO Classic สำหรับ AdGuard จะบล็อกโฆษณาและปิดใช้งานสคริปต์ต่อต้านการบล็อกโฆษณาบนเว็บไซต์และแอปภาษาเกาหลี"
 			},
 			"tr": {
-				"name": "List-KR Classic filter list",
-				"description": "AdGuard için List-KR Klasik filtre listesi, Korece siteler ve uygulamalarda reklamları engeller ve reklam engelleyici tespit komut dosyalarını devre dışı bırakır."
+				"name": "filterslist-KO Classic filter list",
+				"description": "AdGuard için filterslist-KO Classic filtre listesi, Korece web siteleri ve uygulamalardaki reklamları engeller ve reklam engelleyici karşıtı komut dosyalarını devre dışı bırakır."
 			},
 			"uk": {
-				"name": "List-KR Classic filter list",
-				"description": "Список фільтрів List-KR Сlassic для AdGuard блокує рекламу та вимикає скрипти проти блокування реклами на корейськомовних сайтах і в застосунках."
+				"name": "filterslist-KO Classic filter list",
+				"description": "Класичний список фільтрів filterslist-KO для AdGuard блокує рекламу та вимикає скрипти протидії блокуванню реклами на корейськомовних вебсайтах і в застосунках."
 			},
 			"vi": {
-				"name": "List-KR Classic filter list",
-				"description": "Danh sách bộ lọc List-KR Сlassic cho AdGuard chặn quảng cáo và vô hiệu hóa các script chống chặn quảng cáo trên các trang web và app bằng tiếng Hàn."
+				"name": "filterslist-KO Classic filter list",
+				"description": "Danh sách bộ lọc filterslist-KO Classic dành cho AdGuard chặn quảng cáo và vô hiệu hóa các tập lệnh chống chặn quảng cáo trên các trang web và ứng dụng bằng tiếng Hàn."
 			},
 			"zh": {
-				"name": "List-KR Classic filter list",
-				"description": "List-KR Classic 过滤规则用于 AdGuard，可拦截韩语网站及应用中的广告，并禁用反广告拦截脚本。"
+				"name": "filterslist-KO Classic filter list",
+				"description": "filterslist-KO Classic 过滤规则用于 AdGuard，可拦截韩语网站及应用中的广告，并禁用反广告拦截脚本。"
 			},
 			"zh_TW": {
-				"name": "List-KR Classic filter list",
-				"description": "List-KR Classic 過濾規則用於 AdGuard，可封鎖韓語網站及應用程式中的廣告，並停用反廣告封鎖腳本。"
+				"name": "filterslist-KO Classic filter list",
+				"description": "filterslist-KO Classic 過濾規則用於 AdGuard，可封鎖韓語網站及應用程式中的廣告，並停用反廣告封鎖腳本。"
 			}
 		},
 		"233": {

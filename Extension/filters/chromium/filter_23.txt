@@ -1,9 +1,9 @@
-! Checksum: rY6HetcvM1xcvL15svOE3Q
-! Diff-Path: ../patches/23/23-s-1785150635-3600.patch
+! Checksum: RtzkyC53PG5T+xDFmklBOw
+! Diff-Path: ../patches/23/23-s-1786958485-3600.patch
 ! Title: AdGuard Ukrainian filter
 ! Description: Filter that enables ad blocking on websites in Ukrainian language.
-! Version: 2.0.9.10
-! TimeUpdated: 2026-07-27T11:07:50+00:00
+! Version: 2.0.9.17
+! TimeUpdated: 2026-08-17T09:18:53+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1460,6 +1460,10 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||adlook.tv^$third-party
+||chernomaza.link^
+||getter.cfd^
+||svetoborka.link^
 ||kudlavasta.link^
 ||czxbcy.com^
 ||alpharockone.com^
@@ -4042,7 +4046,7 @@ ufacitynews.ru,sevastopol.su,zn.ua,pravo.ru,lubertsyriamo.ru,kommersant.ru,dvnov
 ! ##div[id^="unit_"]
 ngnovoros.ru,grozny.tv,newizv.ru,ura.news,ferra.ru,malls.ru,montecarlo.ru,hightech.fm,ngs24.ru,76.ru,msk1.ru,grozny-inform.ru,pnp.ru,ladys.media,pogovorim.by,umteh.com,newsarmenia.am,sib.fm,autoparus.by,ctv.by,hightech.plus,punkt-a.info,1yar.tv,baltnews.*,sm.news,politring.com,interfax.by,eadaily.com,golospravdy.eu,tayga.info,neg.by,kriminal.net.ua,rusvesna.su,365news.biz,mir24.tv,newsru.com,finam.info,mixnews.lv,russian.rt.com,steaklovers.menu,teleprogramma.pro,ua-football.com,vesti.uz,warhead.su,zakon.kz##div[id^="unit_"]
 ! ##div[id^="adfox_"]
-love.ngs.ru,mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,tolknews.ru,gorodche.ru,smartpress.by,raenza.ru,eadaily.com,zakon.kz,svpressa.ru,udf.name,udf.by,baby.ru,pikabu.ru,thequestion.ru##div[id^="adfox_"]
+avtocod.ru,love.ngs.ru,mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,tolknews.ru,gorodche.ru,smartpress.by,raenza.ru,eadaily.com,zakon.kz,svpressa.ru,udf.name,udf.by,baby.ru,pikabu.ru,thequestion.ru##div[id^="adfox_"]
 !
 ! For URL shorteners or simple sites with frequently changed ad servers.
 ! Incorrectly blocked domains can be excluded using regex(synchronize this regexp in all filters)
@@ -4058,6 +4062,7 @@ love.ngs.ru,mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,delo-vcusa.ru,
 !
 ! NOTE: Specific rules
 !
+liga.net##.remp-banner
 epravda.com.ua##div[style="height:290px; clear: both; margin-top: 10px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center;"]
 streamsports99.cx,streamsports99.tv,streamsports99.su,streamsports99.ru,streamsports99.*##.musiqly-ad
 legalbet.by,legalbet.*##.top-three-block > div
@@ -4563,7 +4568,7 @@ zaxid.net##.partner-insert-container
 24tv.ua,football24.ua##app-video-adv-block
 rozetka.com.ua##rz-section-slider[rzadvertisingview]
 rozetka.com.ua##rz-catalog-goods[rzadvertisingview] > div.item:has(> rz-product-tile > .content.flex-col > a[href*="primacyToken="][rel$="sponsored"] > img)
-rozetka.com.ua##rz-product-tile:has(> .content.flex-col > a[href*="primacyToken="][rel$="sponsored"] > img)
+rozetka.com.ua##rz-catalog-tile:has(> rz-product-tile > .content.flex-col > a[href*="primacyToken="][rel$="sponsored"] > img)
 rozetka.com.ua##.catalog-grid > .catalog-grid__cell:has(div.relative > .goods-tile__inner > div.goods-tile__content > span.promo-label ~ a[href*="?primacyToken="][rel$="sponsored"])
 svoboda.org##.special-sidebar
 minfin.com.ua###main-product-offer

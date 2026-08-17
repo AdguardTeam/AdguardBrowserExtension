@@ -1,9 +1,9 @@
-! Checksum: 5MIjhPb0Tl57M8gx7jVtcA
-! Diff-Path: ../patches/17/17-s-1785236372-3600.patch
+! Checksum: HoK75FMjmC0wNxiWciVxsw
+! Diff-Path: ../patches/17/17-s-1786685897-3600.patch
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.13.76
-! TimeUpdated: 2026-07-28T10:56:38+00:00
+! Version: 2.0.13.87
+! TimeUpdated: 2026-08-14T05:35:40+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -533,6 +533,28 @@ $removeparam=tduid
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/238291
+||bandsintown.com^$removeparam=actor_id
+||bandsintown.com^$removeparam=affil_code
+||bandsintown.com^$removeparam=app_id
+||bandsintown.com^$removeparam=came_from
+||bandsintown.com^$removeparam=signature
+||bandsintown.com^$removeparam=spn
+||bandsintown.com^$removeparam=start_date_time
+! peepshow.com
+||peepshow.com^$removeparam=linkId
+||peepshow.com^$removeparam=sourceId
+||peepshow.com^$removeparam=tenantId
+||peepshow.com^$removeparam=affS1
+||peepshow.com^$removeparam=affS4
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-17886709
+||raycast.com^$removeparam=via
+! https://github.com/AdguardTeam/AdguardFilters/pull/237405
+||erkekadam.org^$removeparam=kaynak
+! https://github.com/AdguardTeam/AdguardFilters/issues/237045
+||supply.amazon.com^$removeparam=ref_
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-17821852
+||rephrasy.ai^$removeparam=ref
 ! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-17733299
 ||fairstone.ca^$removeparam=adplacementid
 ||loan.fairstone.ca^$removeparam=jumpsource
@@ -1799,6 +1821,9 @@ $removeparam=from,domain=doujinnomori.com|shinshi-manga.net|echiman.com|dojin-na
 ||smartrecruiters.com^$removeparam=km_partner
 ! https://github.com/AdguardTeam/AdguardFilters/issues/171802
 ||gog.com^$removeparam=pp
+! https://github.com/AdguardTeam/AdguardFilters/pull/237969
+! Removes tracking parameter from the links included in their e-mail newsletters
+||gog.com^$removeparam=smclient
 ! https://github.com/AdguardTeam/AdguardFilters/issues/171289
 ||chitai-gorod.ru^$removeparam=partnerId
 ! https://mall.kinarino.jp/sale?sort=popular&available=on&cid=group_knrn_presses-show&kcat=2&kkw=107_1046_8394_11659&klay=presses-show&karea=feature-banner
@@ -3597,6 +3622,13 @@ $removeparam=s,domain=twitter.com|x.com
 ||v.youku.com^$removeparam=spm
 ! The Register
 ||theregister.com^$removeparam=td
+! Xiaohongshu
+! https://github.com/uBlockOrigin/uAssets/pull/34015
+||xiaohongshu.com^$removeparam=app_platform
+||xiaohongshu.com^$removeparam=app_version
+||xiaohongshu.com^$removeparam=share_channel
+||xiaohongshu.com^$removeparam=share_id
+||xiaohongshu.com^$removeparam=xhsshare
 !
 ! Deezer
 ! https://github.com/AdguardTeam/AdguardFilters/pull/119475
@@ -3628,8 +3660,15 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/235814
+@@$removeparam=utm_medium,domain=hobbygames.ru
+@@$removeparam=utm_campaign,domain=hobbygames.ru
+@@$removeparam=utm_source,domain=hobbygames.ru
+! https://github.com/AdguardTeam/AdguardFilters/issues/237862
+@@/authentication/login?analytics_trace_id=$removeparam=analytics_trace_id
+! https://github.com/AdguardTeam/AdguardFilters/issues/237174
 ! https://github.com/AdguardTeam/AdguardFilters/issues/236387
-@@||shopify.com/authentication/$removeparam=analytics_trace_id,domain=momogo.de
+@@||shopify.com/authentication/$removeparam=analytics_trace_id
 ! https://github.com/AdguardTeam/AdguardFilters/issues/230641
 @@/e/er?$removeparam=elqTrackId,domain=s1740541080.t.eloqua.com|app.econnect.utexas.edu|clk.texaslonghorns.com
 @@/e/er?$removeparam=elq,domain=s1740541080.t.eloqua.com|app.econnect.utexas.edu|clk.texaslonghorns.com
