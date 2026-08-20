@@ -42,7 +42,15 @@ import {
 } from '../../../../common/telemetry';
 import { type Settings, SettingOption } from '../../../../background/schema/settings';
 import { NotifierType } from '../../../../common/constants';
-import { mergeImportedRules } from '../../../../common/utils/user-rules';
+import {
+    appendRuleSuffix,
+    computeRemoveRanges,
+    hasUserRules,
+    isUserFilterUpdatedEventData,
+    mergeImportedRules,
+    UserFilterUpdateOperation,
+    type UserFilterUpdatedEventData,
+} from '../../../../common/utils/user-rules';
 import { getFirstNonDisabledElement } from '../../utils/dom';
 import { handleFileUpload } from '../../../helpers';
 import { logger } from '../../../../common/logger';
@@ -204,43 +212,57 @@ export const UserRulesEditor = observer(({
 
             // initial export button state
             const { userRules } = await messenger.getUserRulesEditorData();
-            if (userRules.trim().length > 0) {
-                store.setUserRulesExportAvailableState(true);
-            } else {
-                store.setUserRulesExportAvailableState(false);
-            }
+            store.setUserRulesExportAvailableState(hasUserRules(userRules));
         })();
     }, [store]);
 
     /**
      * One of the reasons for request filter to update
-     * may be adding user rules from other places like assistant and others
+     * may be adding user rules from other places like assistant and others.
      *
-     * @returns {Promise<void>}
+     * Granular add/remove events are applied to the buffer as a patch, so
+     * unsaved edits are preserved; anything else falls back to a refetch.
+     *
+     * @param eventData Operation details sent with the event, if any.
      */
-    const handleUserFilterUpdated = useCallback(async () => {
+    const handleUserFilterUpdated = useCallback(async (eventData?: UserFilterUpdatedEventData) => {
+        const editor = editorRef.current;
+
+        if (editor && isUserFilterUpdatedEventData(eventData)) {
+            if (eventData.operation === UserFilterUpdateOperation.Add) {
+                const value = editor.getValue();
+                editor.applyChanges([{
+                    from: value.length,
+                    to: value.length,
+                    insert: appendRuleSuffix(value, eventData.ruleText),
+                }]);
+            } else {
+                editor.applyChanges(computeRemoveRanges(editor.getValue(), eventData.ruleText));
+            }
+        }
+
         const { userRules } = await messenger.getUserRulesEditorData();
 
         if (!store.userRulesEditorContentChanged) {
-            if (editorRef.current) {
-                editorRef.current.setValue(userRules);
+            if (editor && !isUserFilterUpdatedEventData(eventData)) {
+                editor.setValue(userRules);
 
                 const cursorPosition = store.getCursorPosition();
                 if (cursorPosition) {
-                    editorRef.current.setCursor(cursorPosition);
+                    editor.setCursor(cursorPosition);
                     store.setCursorPosition(null);
                 }
             }
             store.setUserRulesEditorContentChangedState(false);
             await messenger.setEditorStorageContent('');
+        } else if (editor) {
+            // The patch moved the persisted content — recompute the flag.
+            const { content } = await messenger.getUserRules();
+            store.setUserRulesEditorContentChangedState(content !== editor.getValue());
         }
 
         // disable or enable export button
-        if (userRules.trim().length > 0) {
-            store.setUserRulesExportAvailableState(true);
-        } else {
-            store.setUserRulesExportAvailableState(false);
-        }
+        store.setUserRulesExportAvailableState(hasUserRules(userRules));
     }, [store]);
 
     // Append listeners
@@ -257,11 +279,14 @@ export const UserRulesEditor = observer(({
             removeListenerCallback = await messenger.createEventListener(
                 events,
                 async (message) => {
-                    const { type } = message;
+                    const { type, data } = message;
 
                     switch (type) {
                         case NotifierType.UserFilterUpdated: {
-                            await handleUserFilterUpdated();
+                            const [rawEventData] = data ?? [];
+                            await handleUserFilterUpdated(
+                                isUserFilterUpdatedEventData(rawEventData) ? rawEventData : undefined,
+                            );
                             break;
                         }
                         default: {

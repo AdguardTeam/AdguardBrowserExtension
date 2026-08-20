@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased 5.6
 
+### Fixed
+
+- User rules editor now reflects rules added or removed from other parts of
+  the extension (filtering log, assistant) without a page refresh and without
+  losing unsaved edits [#1410].
+
+[#1410]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1410
+
 ## [5.5] - 2026-08-17
 
 ### Added

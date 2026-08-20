@@ -32,7 +32,27 @@ import { notifier } from '../../notifier';
 import { settingsStorage, editorStorage } from '../../storages';
 import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
 import { getZodErrorMessage } from '../../../common/error';
+import {
+    appendRule,
+    removeRule,
+    UserFilterUpdateOperation,
+    type UserFilterUpdatedEventData,
+} from '../../../common/utils/user-rules';
 import { LineScanner } from '../../utils';
+
+/**
+ * Whether the value can be handled as a single granular rule: non-blank and
+ * free of line breaks. Multiline values would break the line-based granular
+ * event offsets, so they are rejected here instead of corrupting the event
+ * stream.
+ *
+ * @param rule Rule text.
+ *
+ * @returns True for a single-line non-blank rule.
+ */
+const isSingleLineRule = (rule: string): boolean => {
+    return rule.trim().length > 0 && !NEWLINE_CHAR_REGEX.test(rule);
+};
 
 /**
  * API for managing user rules list.
@@ -140,30 +160,39 @@ export class UserRulesApi {
      * @param rule Rule text.
      */
     public static async addUserRule(rule: string): Promise<void> {
-        let userRulesFilter = await UserRulesApi.getOriginalUserRules();
-
-        if (!userRulesFilter.endsWith(NEWLINE_CHAR_UNIX)) {
-            userRulesFilter += NEWLINE_CHAR_UNIX;
+        if (!isSingleLineRule(rule)) {
+            return;
         }
 
-        userRulesFilter += rule;
+        const userRulesFilter = await UserRulesApi.getOriginalUserRules();
 
-        await UserRulesApi.setUserRules(userRulesFilter);
+        await UserRulesApi.setUserRules(appendRule(userRulesFilter, rule), {
+            operation: UserFilterUpdateOperation.Add,
+            ruleText: rule,
+        });
     }
 
     /**
-     * Removes rule from user list.
+     * Removes rule from user list. No-op (no write, no event) when the rule
+     * is not present.
      *
      * @param rule Rule text.
      */
     public static async removeUserRule(rule: string): Promise<void> {
-        const userRulesTest = await UserRulesApi.getOriginalUserRules();
+        if (!isSingleLineRule(rule)) {
+            return;
+        }
 
-        const userRulesToSave = userRulesTest.split(NEWLINE_CHAR_REGEX)
-            .filter((r) => r !== rule)
-            .join(NEWLINE_CHAR_UNIX);
+        const userRulesText = await UserRulesApi.getOriginalUserRules();
 
-        await UserRulesApi.setUserRules(userRulesToSave);
+        if (!userRulesText.split(NEWLINE_CHAR_REGEX).includes(rule)) {
+            return;
+        }
+
+        await UserRulesApi.setUserRules(removeRule(userRulesText, rule), {
+            operation: UserFilterUpdateOperation.Remove,
+            ruleText: rule,
+        });
     }
 
     /**
@@ -197,10 +226,10 @@ export class UserRulesApi {
      * @param url Page url.
      */
     public static async removeRulesByUrl(url: string): Promise<void> {
-        const userRulesTest = await UserRulesApi.getOriginalUserRules();
+        const userRulesText = await UserRulesApi.getOriginalUserRules();
 
         await UserRulesApi.setUserRules(
-            userRulesTest
+            userRulesText
                 .split(NEWLINE_CHAR_REGEX)
                 .filter((rule) => {
                     try {
@@ -219,11 +248,17 @@ export class UserRulesApi {
      * Sets user rule list to storage.
      *
      * @param rulesText Rule text.
+     * @param eventData Operation details forwarded with the
+     * {@link NotifierType.UserFilterUpdated} notification. Absent payload
+     * means a full replacement — listeners refetch the rules list.
      */
-    public static async setUserRules(rulesText: string): Promise<void> {
+    public static async setUserRules(
+        rulesText: string,
+        eventData?: UserFilterUpdatedEventData,
+    ): Promise<void> {
         await FiltersStoragesAdapter.set(AntiBannerFiltersId.UserFilterId, rulesText);
 
-        notifier.notifyListeners(NotifierType.UserFilterUpdated);
+        notifier.notifyListeners(NotifierType.UserFilterUpdated, eventData);
     }
 
     /**

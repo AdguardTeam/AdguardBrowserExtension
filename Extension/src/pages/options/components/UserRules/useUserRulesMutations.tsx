@@ -33,6 +33,7 @@ import { debounce } from 'lodash-es';
 import { translator } from '../../../../common/translators/translator';
 import { messenger } from '../../../services/messenger';
 import { logger } from '../../../../common/logger';
+import { hasUserRules } from '../../../../common/utils/user-rules';
 import { type NotificationParams, NotificationType } from '../../../common/types';
 import { TelemetryEventName, TelemetryScreenName } from '../../../../common/telemetry';
 import { type TelemetryStore } from '../../../common/telemetry';
@@ -229,7 +230,7 @@ export const useUserRulesMutations = ({
                 const { userRules: refetched } = await messenger.getUserRulesEditorData();
                 if (mutationSeq === mutationSeqRef.current) {
                     setUserRules(refetched);
-                    setUserRulesExportAvailableState(refetched.trim().length > 0);
+                    setUserRulesExportAvailableState(hasUserRules(refetched));
                 }
             }).catch((error: unknown) => {
                 logger.error(
@@ -241,7 +242,7 @@ export const useUserRulesMutations = ({
                 messenger.getUserRulesEditorData().then(({ userRules: refetched }) => {
                     if (mutationSeq === mutationSeqRef.current) {
                         setUserRules(refetched);
-                        setUserRulesExportAvailableState(refetched.trim().length > 0);
+                        setUserRulesExportAvailableState(hasUserRules(refetched));
                     }
                 }).catch((refetchError: unknown) => {
                     logger.error(
@@ -347,7 +348,7 @@ export const useUserRulesMutations = ({
 
         // Optimistic update.
         setUserRules(restoredRules);
-        setUserRulesExportAvailableState(restoredRules.trim().length > 0);
+        setUserRulesExportAvailableState(hasUserRules(restoredRules));
 
         // On save failure, revert to the pre-undo state (currentRules).
         const restored = await persistRules(restoredRules, currentRules);
@@ -387,7 +388,7 @@ export const useUserRulesMutations = ({
             const mutationSeq = mutationSeqRef.current + 1;
             mutationSeqRef.current = mutationSeq;
             setUserRules(next);
-            setUserRulesExportAvailableState(next.trim().length > 0);
+            setUserRulesExportAvailableState(hasUserRules(next));
             saveToggleDebounced(next, prev, mutationSeq);
 
             // Any checkbox interaction (enable or disable) counts as a

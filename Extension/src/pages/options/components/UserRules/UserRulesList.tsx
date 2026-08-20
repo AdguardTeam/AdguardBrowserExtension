@@ -39,6 +39,7 @@ import { messenger } from '../../../services/messenger';
 import { logger } from '../../../../common/logger';
 import { type NotificationParams } from '../../../common/types';
 import { NotifierType } from '../../../../common/constants';
+import { hasUserRules } from '../../../../common/utils/user-rules';
 import { TelemetryEventName, TelemetryScreenName } from '../../../../common/telemetry';
 import { NoSearchMatch } from '../common/NoSearchMatch';
 import { userRulesEditorStore } from '../../../common/components/UserRulesEditor/UserRulesEditorStore';
@@ -151,7 +152,7 @@ export const UserRulesList: FC<{
             try {
                 const { userRules: rules } = await messenger.getUserRulesEditorData();
                 setUserRules(rules);
-                setUserRulesExportAvailableState(rules.trim().length > 0);
+                setUserRulesExportAvailableState(hasUserRules(rules));
                 setIsUserRulesLoaded(true);
             } catch (error) {
                 logger.error('[ext.UserRulesList]: Failed to fetch user rules data:', error);
@@ -199,7 +200,7 @@ export const UserRulesList: FC<{
                 const { userRules: rules } = await messenger.getUserRulesEditorData();
                 if (!cancelled && seq === mutationSeqRef.current) {
                     setUserRules(rules);
-                    setUserRulesExportAvailableState(rules.trim().length > 0);
+                    setUserRulesExportAvailableState(hasUserRules(rules));
                     setIsUserRulesLoaded(true);
                 }
             } catch (error) {

@@ -18,7 +18,11 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { type Compartment, EditorState } from '@codemirror/state';
+import {
+    type Compartment,
+    EditorState,
+    Transaction,
+} from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { isolateHistory } from '@codemirror/commands';
 
@@ -54,6 +58,27 @@ export interface EditorCursor {
 }
 
 /**
+ * A single granular document change. All ranges of one `applyChanges` call
+ * refer to the same current document and are applied in a single transaction.
+ */
+export interface EditorChange {
+    /**
+     * Start offset of the replaced range.
+     */
+    readonly from: number;
+
+    /**
+     * End offset of the replaced range.
+     */
+    readonly to: number;
+
+    /**
+     * Text to insert in place of the range. Omit for a pure deletion.
+     */
+    readonly insert?: string;
+}
+
+/**
  * Imperative facade exposed via `editorRef.current`, replacing the former Ace
  * editor object.
  */
@@ -71,6 +96,14 @@ export interface EditorHandle {
      * @param value The new content to set.
      */
     setValue(value: string): void;
+
+    /**
+     * Applies granular external updates (e.g. rules from the filtering log)
+     * without touching the undo history. Ranges refer to the current document.
+     *
+     * @param changes Ranges to replace, in document order.
+     */
+    applyChanges(changes: readonly EditorChange[]): void;
 
     /**
      * Returns the current cursor position.
@@ -143,6 +176,22 @@ export const createEditorHandle = (
             changes: { from: 0, to: view.state.doc.length, insert: value },
             selection: { anchor: value.length },
             annotations: isolateHistory.of('full'),
+        });
+    },
+
+    /**
+     * Applies granular changes in a single transaction, mapping the selection
+     * through them. Excluded from the undo history: they are external updates.
+     *
+     * @param changes Ranges to replace, in document order.
+     */
+    applyChanges(changes: readonly EditorChange[]) {
+        if (changes.length === 0) {
+            return;
+        }
+        view.dispatch({
+            changes: [...changes],
+            annotations: Transaction.addToHistory.of(false),
         });
     },
 
@@ -256,22 +305,6 @@ export interface DeferredEditorHandle {
  *
  * @returns The deferred handle together with `attach`/`detach` controls.
  */
-type WriteMethodName = (
-    | 'setValue'
-    | 'setCursor'
-    | 'setWrap'
-    | 'setReadOnly'
-    | 'focus'
-);
-
-type WriteArg<M extends WriteMethodName> =
-    Parameters<EditorHandle[M]>[0];
-
-type WriteOp<M extends WriteMethodName> = {
-    method: M;
-    value: WriteArg<M>;
-};
-
 export const createDeferredEditorHandle = (): DeferredEditorHandle => {
     let real: EditorHandle | null = null;
 
@@ -280,15 +313,18 @@ export const createDeferredEditorHandle = (): DeferredEditorHandle => {
     // captured in pending state that would never be flushed.
     let detached = false;
 
-    // Buffered state captured before the underlying view exists, replayed in
-    // call order on attach. Only the setters (`setValue`, `setCursor`,
-    // `setWrap`, `setReadOnly`, `focus`) are buffered; the readers
-    // (`getValue`, `getCursor`) return a sync default instead.
-    const pending: WriteOp<WriteMethodName>[] = [];
+    // Buffered operations captured before the underlying view exists, replayed
+    // in call order on attach. Each entry is a closure that already carries
+    // its method and arguments with their exact types, so replaying needs no
+    // narrowing, switches or casts. A single FIFO queue is used so interleaved
+    // `setValue`/`applyChanges` calls replay in the exact order they were made
+    // — offsets carried by `applyChanges` are only valid against the document
+    // state produced by the preceding operations.
+    const pending: ((handle: EditorHandle) => void)[] = [];
 
     // Last buffered value per reader, used before the view exists. Readers are
-    // not in the queued `WriteOp` shape (they return, they don't replay), so
-    // they are tracked separately by key.
+    // not queued as operations (they return, they don't replay), so they are
+    // tracked separately by key.
     const pendingReads: {
         value: string;
         cursor: EditorCursor;
@@ -297,19 +333,18 @@ export const createDeferredEditorHandle = (): DeferredEditorHandle => {
         cursor: { line: 1, ch: 0 },
     };
 
-    const dispatch = <M extends WriteMethodName>(
-        method: M,
-        ...args: Parameters<EditorHandle[M]>
-    ): void => {
+    /**
+     * Runs the operation against the live view, or buffers it for replay on
+     * attach. The closure is fully typed at the call site, so no type
+     * information is lost in the queue.
+     *
+     * @param op Operation to run or buffer.
+     */
+    const runOrQueue = (op: (handle: EditorHandle) => void): void => {
         if (real) {
-            (real[method] as (...a: Parameters<EditorHandle[M]>) => void)(...args);
+            op(real);
         } else if (!detached) {
-            // Only the first positional arg matters for every setter on
-            // EditorHandle; focus carries no arg.
-            pending.push({
-                method,
-                value: args[0] as WriteArg<M>,
-            });
+            pending.push(op);
         }
     };
 
@@ -321,7 +356,7 @@ export const createDeferredEditorHandle = (): DeferredEditorHandle => {
             if (!real) {
                 pendingReads.value = value;
             }
-            dispatch('setValue', value);
+            runOrQueue((h) => h.setValue(value));
         },
         getCursor() {
             return real ? real.getCursor() : pendingReads.cursor;
@@ -330,16 +365,31 @@ export const createDeferredEditorHandle = (): DeferredEditorHandle => {
             if (!real) {
                 pendingReads.cursor = cursor;
             }
-            dispatch('setCursor', cursor);
+            runOrQueue((h) => h.setCursor(cursor));
         },
         setWrap(enabled: boolean) {
-            dispatch('setWrap', enabled);
+            runOrQueue((h) => h.setWrap(enabled));
         },
         setReadOnly(enabled: boolean) {
-            dispatch('setReadOnly', enabled);
+            runOrQueue((h) => h.setReadOnly(enabled));
         },
         focus() {
-            dispatch('focus');
+            runOrQueue((h) => h.focus());
+        },
+        applyChanges(changes: readonly EditorChange[]) {
+            if (changes.length === 0) {
+                return;
+            }
+            if (!real && !detached) {
+                // Ranges refer to the document state before the change, so
+                // apply them from last to first on the buffered value.
+                for (const { from, to, insert = '' } of [...changes].reverse()) {
+                    pendingReads.value = pendingReads.value.slice(0, from)
+                        + insert
+                        + pendingReads.value.slice(to);
+                }
+            }
+            runOrQueue((h) => h.applyChanges(changes));
         },
     };
 
@@ -348,14 +398,12 @@ export const createDeferredEditorHandle = (): DeferredEditorHandle => {
         attach(view: EditorView, compartments: EditorCompartments) {
             real = createEditorHandle(view, compartments);
 
-            // Replay buffered writes in call order. Because entries are
+            // Replay buffered operations in call order. Because entries are
             // appended in the order they were made, `setValue` runs before
             // a subsequent `setCursor` — preserving the cursor position the
             // comment above relied on (setValue moves the cursor to the end).
-            for (const { method, value } of pending) {
-                // Same narrowing as in `dispatch`: each setter takes exactly
-                // one argument that `WriteOp` holds in `value`.
-                (real[method] as (v: typeof value) => void)(value);
+            for (const op of pending) {
+                op(real);
             }
 
             pending.length = 0;

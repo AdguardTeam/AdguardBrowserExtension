@@ -21,6 +21,11 @@
 import { EditorState, Compartment } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import {
+    history,
+    undo,
+    undoDepth,
+} from '@codemirror/commands';
+import {
     describe,
     it,
     expect,
@@ -97,6 +102,55 @@ describe('createEditorHandle', () => {
         expect(view.state.readOnly).toBe(true);
         handle.setReadOnly(false);
         expect(view.state.readOnly).toBe(false);
+    });
+
+    it('excludes applyChanges edits from the undo history', () => {
+        const historyView = new EditorView({
+            parent,
+            state: EditorState.create({
+                doc: 'a',
+                extensions: [wrap.of([]), readOnly.of([]), history()],
+            }),
+        });
+        const handle = createEditorHandle(historyView, { wrap, readOnly });
+
+        // External update is not recorded in the history.
+        handle.applyChanges([{ from: 1, to: 1, insert: '\nb' }]);
+        expect(historyView.state.doc.toString()).toBe('a\nb');
+        expect(undoDepth(historyView.state)).toBe(0);
+
+        // A regular (user) edit is recorded.
+        historyView.dispatch({ changes: { from: 3, insert: '\nc' } });
+        expect(undoDepth(historyView.state)).toBe(1);
+
+        // Another external update after the user edit stays invisible to undo.
+        handle.applyChanges([{ from: 5, to: 5, insert: '\nd' }]);
+        expect(historyView.state.doc.toString()).toBe('a\nb\nc\nd');
+
+        // Undoing reverts only the user edit, external updates are kept.
+        undo(historyView);
+        expect(historyView.state.doc.toString()).toBe('a\nb\nd');
+
+        historyView.destroy();
+    });
+
+    it('applies multiple ranges atomically against the original document', () => {
+        const handle = createEditorHandle(view, { wrap, readOnly });
+        handle.setValue('a\nb\nc');
+
+        // Ranges refer to the pre-change document: remove 'a\n' and '\nc'.
+        handle.applyChanges([
+            { from: 0, to: 2 },
+            { from: 3, to: 5 },
+        ]);
+
+        expect(view.state.doc.toString()).toBe('b');
+    });
+
+    it('ignores an empty changes array without touching the document', () => {
+        const handle = createEditorHandle(view, { wrap, readOnly });
+        handle.applyChanges([]);
+        expect(view.state.doc.toString()).toBe('line1\nline2');
     });
 });
 
@@ -188,6 +242,35 @@ describe('createDeferredEditorHandle', () => {
         // destroyed view.
         expect(() => deferred.handle.setValue('ignored')).not.toThrow();
         expect(view.state.doc.toString()).toBe('persisted');
+        view.destroy();
+    });
+
+    it('replays interleaved setValue/applyChanges in call order', () => {
+        const deferred = createDeferredEditorHandle();
+        deferred.handle.setValue('a\nb');
+        // Append against the buffered value; valid only if replayed after
+        // the setValue above, not after a later one.
+        deferred.handle.applyChanges([{ from: 3, to: 3, insert: '\nc' }]);
+        deferred.handle.setValue('x\ny');
+
+        const view = createView();
+        deferred.attach(view, { wrap, readOnly });
+
+        expect(deferred.handle.getValue()).toBe('x\ny');
+        view.destroy();
+    });
+
+    it('keeps the pre-attach getValue in sync with buffered applyChanges', () => {
+        const deferred = createDeferredEditorHandle();
+        deferred.handle.setValue('a\nb');
+        deferred.handle.applyChanges([{ from: 3, to: 3, insert: '\nc' }]);
+
+        expect(deferred.handle.getValue()).toBe('a\nb\nc');
+
+        const view = createView();
+        deferred.attach(view, { wrap, readOnly });
+
+        expect(deferred.handle.getValue()).toBe('a\nb\nc');
         view.destroy();
     });
 });
