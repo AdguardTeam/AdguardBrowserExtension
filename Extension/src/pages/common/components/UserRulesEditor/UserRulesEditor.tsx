@@ -49,7 +49,6 @@ import {
     isUserFilterUpdatedEventData,
     mergeImportedRules,
     UserFilterUpdateOperation,
-    type UserFilterUpdatedEventData,
 } from '../../../../common/utils/user-rules';
 import { getFirstNonDisabledElement } from '../../utils/dom';
 import { handleFileUpload } from '../../../helpers';
@@ -223,12 +222,13 @@ export const UserRulesEditor = observer(({
      * Granular add/remove events are applied to the buffer as a patch, so
      * unsaved edits are preserved; anything else falls back to a refetch.
      *
-     * @param eventData Operation details sent with the event, if any.
+     * @param rawEventData Raw payload sent with the event, if any.
      */
-    const handleUserFilterUpdated = useCallback(async (eventData?: UserFilterUpdatedEventData) => {
+    const handleUserFilterUpdated = useCallback(async (rawEventData?: unknown) => {
         const editor = editorRef.current;
+        const eventData = isUserFilterUpdatedEventData(rawEventData) ? rawEventData : undefined;
 
-        if (editor && isUserFilterUpdatedEventData(eventData)) {
+        if (editor && eventData) {
             if (eventData.operation === UserFilterUpdateOperation.Add) {
                 const value = editor.getValue();
                 editor.applyChanges([{
@@ -244,7 +244,7 @@ export const UserRulesEditor = observer(({
         const { userRules } = await messenger.getUserRulesEditorData();
 
         if (!store.userRulesEditorContentChanged) {
-            if (editor && !isUserFilterUpdatedEventData(eventData)) {
+            if (editor && !eventData) {
                 editor.setValue(userRules);
 
                 const cursorPosition = store.getCursorPosition();
@@ -284,9 +284,7 @@ export const UserRulesEditor = observer(({
                     switch (type) {
                         case NotifierType.UserFilterUpdated: {
                             const [rawEventData] = data ?? [];
-                            await handleUserFilterUpdated(
-                                isUserFilterUpdatedEventData(rawEventData) ? rawEventData : undefined,
-                            );
+                            await handleUserFilterUpdated(rawEventData);
                             break;
                         }
                         default: {
