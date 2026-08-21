@@ -1,9 +1,9 @@
-! Checksum: qzCem2j2SomKbWjOerXFOw
-! Diff-Path: ../patches/11_optimized/11_optimized-s-1786961788-3600.patch
+! Checksum: ysEEZH7O1/CZ9CWsXo/oFw
+! Diff-Path: ../patches/11_optimized/11_optimized-s-1787297050-3600.patch
 ! Title: AdGuard Mobile Ads filter (Optimized)
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.71.39
-! TimeUpdated: 2026-08-17T10:13:44+00:00
+! Version: 2.0.71.47
+! TimeUpdated: 2026-08-21T07:21:07+00:00
 ! Expires: 10 days (update frequency)
 ||yodo1.com^
 ||banner.bet365partners.com^
@@ -1677,6 +1677,11 @@ healthyplace.com,qlife.jp,wiki.yjsnpi.nu,opinion.cw.com.tw,aidoly.net,celeby-med
 chip.de,gamesworld.de,fnn.jp##.Ad
 medipalette.lotte.co.jp,genxy-net.com,m.price.com.hk,otakuma.net,nikkan-gendai.com,m.hellporno.com,topics.smt.docomo.ne.jp,rank-king.jp,kun.uz,m.lenta.ru,m.aydin24haber.com,m.xcum.com,m.alphaporno.com,m.yourlust.com,m.3movs.com,m.sexu.com##body .banner
 sp.manga.nicovideo.jp##div[style^="--ads-width:"]
+aspor.com.tr#$#html[data-smartbanner] body { padding-top: 0 !important; }
+aspor.com.tr#$#html[data-smartbanner] header { top: 0 !important; }
+carsales.com.au##div[style="min-height:500px"]
+vercomicporno.com,hentaicomics.biz##div[style^="text-align:center;"]:has(> script[src][referrerpolicy="no-referrer-when-downgrade"])
+apkaward.com##.mmsssbox
 m.crank-in.net###photo_cta
 m.drtuber.desi,m.drtuber.com,m.drtuber.*##.rated_box ~ .container
 m.drtuber.desi,m.drtuber.com,m.drtuber.*##.vpn-under-player
@@ -1843,7 +1848,6 @@ plus-msg.auone.jp##.news__genre-item--ads
 plus-msg.auone.jp##.ad__under-article-content
 pornocarioca.com##.pc-info-box__clickad
 pornocarioca.com##.top-banner--mobile
-eda.yandex.ru#$?#main > div[style^="margin-bottom:"]:has(> div > ul.scroll-snap-slider button[aria-label="Акция"] > div > img[src*="get-market-adv"]) { remove: true; }
 ebaumsworld.com##.mobile-ad-space
 xxxtik.com##.navigation-container > a[href][rel="nofollow"][target="_blank"]
 news.mynavi.jp##.gn-scroll-catch-ad
@@ -7643,6 +7647,8 @@ google.*##.commercial-unit-mobile-top .jackpot-main-content-container > div[data
 google.*###gws-product_ads__plalightbox
 google.*##.gws-product_ads__close-button
 yandex.*#?#.infinity-zen__content div.feed-item:has(div[data-statlog="directfeed.title"])
+eda.yandex.ru#$?#main > div[style^="margin-bottom:"]:has(> div[class] div[class] > img[src*="get-market-adv"]) { remove: true; }
+eda.yandex.ru##div[class]:has(> div[class] > div[class] > ul.scroll-snap-slider > li.scroll-snap-slide > div[style] > button[aria-label] > img[src^="https://avatars.mds.yandex.net/get-market-adv/"])
 ya.ru,yandex.*##div[id^="search-"] > div:has(> div.Root_inited > div[class*="Organic"] > div[class$="-Header"] > h2 + div > span)
 ya.ru,yandex.*##.DirectInline-Wrapper
 yandex.*##body > div.serp_js_inited.main .serp-list > .serp-item:has(span.organic__advLabel)

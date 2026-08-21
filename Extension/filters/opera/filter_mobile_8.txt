@@ -1,9 +1,9 @@
-! Checksum: H3/8XQrhI+jQXnIkQ8nEMA
-! Diff-Path: ../patches/8_optimized/8_optimized-s-1785927406-3600.patch
+! Checksum: yXCKXmlnNB1n0Z6IfDHodA
+! Diff-Path: ../patches/8_optimized/8_optimized-s-1787048004-3600.patch
 ! Title: AdGuard Dutch filter (Optimized)
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.9.39
-! TimeUpdated: 2026-08-05T10:53:33+00:00
+! Version: 2.0.9.41
+! TimeUpdated: 2026-08-18T10:10:33+00:00
 ! Expires: 10 days (update frequency)
 -reclameplaatjes/
 /adbron.
@@ -1550,8 +1550,8 @@ vakantieplaats.nl#@#.topAds
 @@||tweakers.net/i^$image
 @@||content.hwigroup.net/images^$domain=hardware.info
 hardware.info,tweakers.net#@#.AdBar
+||waldnet.nl/assets/js/abd.js
 webcams-vlissingen.nl#%#//scriptlet('abort-current-inline-script', 'document.createElement', 'adsbygoogle.js')
-radio10.nl#%#//scriptlet('prevent-setTimeout', 'throw i(r+"err",[o,a,e],d,c),e}finally{i(', '50')
 forum.fok.nl#%#//scriptlet('prevent-setTimeout', 'ckad')
 forum.fok.nl#@##advertentie
 autotrader.nl#%#//scriptlet('abort-on-property-read', 'Object.prototype.autoRecov')
@@ -1575,12 +1575,8 @@ tweakers.net#$#.widebnr { display: block !important; min-height: 2px !important;
 tweakers.net#%#//scriptlet('prevent-fetch', '/a[ab]\.tweakers\.nl/')
 !+ NOT_PLATFORM(windows, mac, android, cli, ext_chromium)
 @@||aa.tweakers.nl/json$domain=tweakers.net
-@@||assets.prod.webx.talpa.digital/ad/view/$domain=kijk.nl
-kijk.nl#@##topbanner_ad
-@@/prebid/ad.gif?user=*&adId=$domain=kijk.nl
-@@||ads-talpa.adhese.com/json/$domain=kijk.nl
 nieuwsvandedag.nl,radio10.nl,kijk.nl,hartvannederland.nl,538.nl,vandaaginside.nl#$#body .pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links { display: initial !important; }
-nieuwsvandedag.nl,radio10.nl,kijk.nl,hartvannederland.nl,538.nl,vandaaginside.nl#%#(()=>{const t={apply:(t,e,n)=>{try{if((new Error).stack.includes("Popup"))return Reflect.apply(t,e,n);const o=e;"function"==typeof o&&(o.toString().includes("adBlockerDetected")||o.toString().includes("pub_300x250m")||o.toString().includes(".offsetHeight||0==="))&&(e=()=>new Promise((t=>t(!1))))}catch(t){}return Reflect.apply(t,e,n)}};window.Function.prototype.apply=new Proxy(window.Function.prototype.apply,t)})();
+nieuwsvandedag.nl,radio10.nl,kijk.nl,hartvannederland.nl,538.nl,vandaaginside.nl#%#(()=>{const t={apply:(t,e,n)=>{try{if((new Error).stack.includes("Popup"))return Reflect.apply(t,e,n);"function"==typeof e&&e.toString().includes(".offsetHeight||0===")&&(e=()=>new Promise((t=>t(!1))))}catch(t){}return Reflect.apply(t,e,n)}};window.Function.prototype.apply=new Proxy(window.Function.prototype.apply,t)})();
 ||securepubads.g.doubleclick.net/tag/js/gpt.js$script,redirect=googletagservices-gpt,domain=goplay.be|play.tv
 ||pagead2.googlesyndication.com/omsdk/releases/live/omweb-v1.js$script,domain=goplay.be|play.tv,redirect=noopjs
 @@||pubads.g.doubleclick.net/ondemand/*/content/*/vid/*/streams$domain=goplay.be|play.tv
