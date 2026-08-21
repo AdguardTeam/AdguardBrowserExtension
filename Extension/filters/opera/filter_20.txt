@@ -1,9 +1,9 @@
-! Checksum: 5KYmw0fgvZjUAQo63dPvbw
-! Diff-Path: ../patches/20/20-s-1786961802-3600.patch
+! Checksum: H53x97UZGiPWTT0zm3jnaw
+! Diff-Path: ../patches/20/20-s-1787314537-3600.patch
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.31.38
-! TimeUpdated: 2026-08-17T10:14:00+00:00
+! Version: 2.0.31.54
+! TimeUpdated: 2026-08-21T12:12:37+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -60,6 +60,18 @@ rxgo.com,alfastrah.ru,turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepe
 !
 !
 !
+vkusnoitochka.ru#%#//scriptlet('set-cookie', 'smart_banner_closed_17307', 'true')
+aspor.com.tr##.tmd-articleDownloadApps
+poro.gg##div.container > div.overflow-hidden:has(> div[class] > div.bg-color-ow-banner)
+gidadedektifi.com##div[class^="XAppDownload_type_footer"]
+minfin.com.ua##.aside-mobile-app
+minfin.com.ua##.footer__apps
+carsales.com.au##div[data-updatable-partial-id="smart-banner"]
+zstream.mov#%#//scriptlet('set-local-storage-item', 'zstream::apps-notice-dismissed', '1')
+finance.eastmoney.com##div[id^="ad_context"]:has(> a[href^="javascript:"], > div[class^="ad"] > img)
+manhuaren.com##.info-top-banner-card
+manhuaren.com###tc-cover-wrap
+manhuaren.com##div.guide >img[src][onclick^="$('.guide')"]
 7fon.org###cbox > div#tmbox:has(> div > iframe[src^="https://7fon.org/goapp.php"])
 7fon.org###rgform
 turkiyegazetesi.com.tr#$#.abone-banner { display: none !important; }
@@ -77,6 +89,7 @@ temp-mail.africa#$#.modal-backdrop { display: none !important; }
 temp-mail.africa#$#body.modal-open { overflow: auto !important; padding-right: 0 !important; }
 openinbox.io##div.min-h-screen > div.bg-gradient-to-r:has(> button[aria-label="Dismiss"])
 ||assets.retty.me/v-*/images/macaron/web-to-app-fv-mobile.png
+x.com##body > button.fixed:has(> img[src^="https://abs.twimg.com/x-web/x-web/assets/scan-to-get-app-qr-"])
 retty.me##.web-to-app-fv
 sarah30.com##.sp-map-banner-bottom
 sarah30.com##.sp-app-install-banner-wrapper
@@ -142,7 +155,7 @@ wlwt.com##div.two-cols > div[class^="css-"]:has(> a[href="/apps"])
 wlwt.com,wisn.com,wjcl.com##div[aria-label=" App Promo"] > div[class^="css-"] > div[class^="css-"]:has(a[href="/apps"])
 meduza.io##.GeneralMaterial-module-article > p:has(> a[href^="https://onelink.to/appication"])
 trf1.net##.kan-banner
-xprimehub.bond,rogmovies.cv,new1.vegamovies.futbol,xprimehub.*,rogmovies.*,vegamovies.*##a[class="btn-pill"]
+xprimehub.bond,rogmovies.cv,new2.vegamovies.futbol,xprimehub.*,rogmovies.*,vegamovies.*##a[class="btn-pill"]
 pluang.com##div[class^="BottomDownloadWidget_toast-chip"]
 eurosport.tvn24.pl##div[data-testid="app-download-banner"]
 anidb.app##div[x-init*="anilab_promo"]
@@ -345,10 +358,10 @@ lazada.sg###J_Banner
 grok.com##.group\/sidebar-wrapper .fixed.top-0:has(> button > div> svg > path#mark)
 eda.yandex.ru#?#div[style^="z-index:"]:has(> div > div:contains(Открыть в приложении))
 eda.yandex.ru#%#//scriptlet('trusted-set-session-storage-item', 'SMART_BANNER_COMMUNICATION_SHOW_TIME', '{"modal":9773925851419}')
-moviebox.ac,moviebox.ph,movieboxapp.in,themoviebox.org,moviebox.pk,movieboxapp.in,123movienow.cc##.justify-center.flex.inset-0.fixed
-moviebox.ac,moviebox.ph,movieboxapp.in,themoviebox.org,moviebox.pk,movieboxapp.in,123movienow.cc##.pc-download-cot
-moviebox.ac,moviebox.ph,movieboxapp.in,themoviebox.org,moviebox.pk,movieboxapp.in,123movienow.cc##.pc-download-banner
-moviebox.ac,moviebox.ph,movieboxapp.in,themoviebox.org,moviebox.pk,movieboxapp.in,123movienow.cc##.flx-ce-ce.pc-get-img
+moviebox.ac,themoviebox.org,movieboxapp.in,123movienow.cc##.justify-center.flex.inset-0.fixed
+movieboxhd.net,movie-box.tv,moviebox.ac,themoviebox.org,movieboxapp.in,123movienow.cc##.pc-download-cot
+moviebox.ac,themoviebox.org,movieboxapp.in,123movienow.cc##.pc-download-banner
+moviebox.ac,themoviebox.org,movieboxapp.in,123movienow.cc##.flx-ce-ce.pc-get-img
 world.kbs.co.kr##.comp_right_application
 smt.docomo.ne.jp###Hed_iosAppBanner
 realty.yandex.ru##footer > div[class^="container-"]:has(> div[class^="container-"] > div[class^="mainContainer-"] > a[href^="/app-download/"])
@@ -4011,7 +4024,8 @@ dostavka.yandex.ru##.RumObservableRoot div[class]:has(> a[href^="https://8jxm.ad
 yandex.*##.yamb-chat-not-selected__download-app-section > a.yamb-desktop-app-link ~ *
 !
 ! Yandex.Games
-[$path=/games]yandex.*##.prowo-container
+! Breaks the games
+! [$path=/games]yandex.*##.prowo-container
 !
 ! Yandex.Market
 market.yandex.*##div[data-apiary-widget-name="@marketfront/DistributionLoader"]
@@ -4044,6 +4058,7 @@ bookmate.ru##.app-banner
 !
 !
 !
+reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#$##configured-xpromo-mweb3x_mid_funnel_blocking_v1_30s { display: none !important; }
 reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion##.configured-xpromo
 reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#%#//scriptlet('prevent-addEventListener', 'touchmove', '.preventDefault()')
 reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#%#//scriptlet('prevent-addEventListener', 'wheel', 'preventDefault()')
