@@ -47,11 +47,11 @@ Check Bundle Size:
               --output type=local,dest=output \
               .
   final-tasks:
-    - script:
+    - script: &cleanup-script
         interpreter: SHELL
         scripts:
           - "./bamboo-specs/scripts/cleanup.sh"
-  requirements:
+  requirements: &requirements
     - extension: 'true'
 
 Check translations:
@@ -83,12 +83,8 @@ Check translations:
               --output type=local,dest=output \
               .
   final-tasks:
-    - script: &cleanup-script
-        interpreter: SHELL
-        scripts:
-          - "./bamboo-specs/scripts/cleanup.sh"
-  requirements: &requirements
-    - extension: 'true'
+    - script: *cleanup-script
+  requirements: *requirements
 
 Build:
   key: BUILD
