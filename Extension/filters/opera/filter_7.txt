@@ -1,9 +1,9 @@
-! Checksum: UKYJSzutXOPMhVnGm6MBWg
-! Diff-Path: ../patches/7/7-s-1786951684-3600.patch
+! Checksum: NZLgHAlCtS8JozKO3huWPA
+! Diff-Path: ../patches/7/7-s-1787310850-3600.patch
 ! Title: AdGuard Japanese filter
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.75.68
-! TimeUpdated: 2026-08-17T07:24:48+00:00
+! Version: 2.0.75.77
+! TimeUpdated: 2026-08-21T11:10:16+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1925,12 +1925,16 @@ gundamlog.com###more > iframe[src^="https://richlink.blogsys.jp"]
 !
 ! NOTE: Specific rules
 !
+news.yahoo.co.jp#%#//scriptlet('href-sanitizer', 'a[href^="https://www.j-cast.com/"]', '[href]', 'removeParam')
+||reader.hqread.cc/advert/
+reader.hqread.cc##.reader-ad-slot
+pdftoshokan.com##.post[style="margin-bottom: 1rem; opacity: 1; transition: opacity 0.5s ease-in;"]
+hanasone.mainichi.jp##.p-article-trend-lists
 ai-ssr.com##.grid > div:has(> a[href^="https://al.fanza.co.jp"][target="_blank"])
 ai-ssr.com##section:has(> div > h2 + a[href="/fanza"])
 tbs.co.jp###TND_pc_article_billboard
+oricon.co.jp##.newsVodAffiliateLinks
 ||chobit.cc/embed/$domain=kako.futakuro.com
-||img.dlsite.jp/modpub/images2/work/doujin/RJ0*_img_main.jpg$domain=kako.futakuro.com
-kako.futakuro.com##body > a[href][rel="noopener sponsored"]
 kako.futakuro.com##body > iframe[src^="https://chobit.cc/embed/"]
 rodo.co.jp##div[class^="AdsArea"]
 ||dempa-digital.com/wp-content/themes/theme_dpn2022/template-parts/adsense/
@@ -2788,7 +2792,7 @@ itf.minkabu.jp##.mb-8[x-on\:click="showAdModal = true"]
 itf.minkabu.jp##div[data-footer-ad-target="adOverlay"]
 yomou.syosetu.com##.c-card:has(> div.c-ad)
 pokecabook.com##div[id^="pokec-"]
-ba-goods-search.com,hayamimi-gunpla.com,figure-times.com#%#//scriptlet('href-sanitizer', 'a[href*="a8ejpredirect"]', '?a8ejpredirect')
+icon.jp,ba-goods-search.com,hayamimi-gunpla.com,figure-times.com#%#//scriptlet('href-sanitizer', 'a[href*="a8ejpredirect"]', '?a8ejpredirect')
 figure-times.com##.post-widgets-bottom.widget_metaslider_widget
 juken-mikata.net##.related_pc
 yukifx.web.fc2.com###div_leftadd_cont
@@ -5006,7 +5010,7 @@ fob.jp###sidebar > div.widget_custom_html:has(+ div#fix_sidebar)
 city.kamisu.ibaraki.jp###topsadbg
 saku-city.mamafre.jp###bottomBanner
 ||city.saku.nagano.jp/banner/
-jmanga.farm##div[style^="max-width:700px"]
+jmanga.land##div[style^="max-width:700px"]
 gihyo.jp##.m-listitem--ad
 musicman.co.jp##.bannerBox
 ||tool2.nan-net.com/doujin/depression1.jpg
@@ -7439,7 +7443,7 @@ crefan.jp##.wrapper > div.container > div[align="center"]:not([class]):not([id])
 keisan.casio.jp###adv_bottom
 keisan.casio.jp##a[id^="honkaku"]
 ||ura-akiba.jp^$subdocument
-eromon.net,idol-blog.com,moez-m.com,ura-akiba.jp#%#//scriptlet('href-sanitizer', 'a[href^="https://al.fanza.co.jp/?lurl="]', '?lurl')
+kimootoko.net,eromon.net,idol-blog.com,moez-m.com,ura-akiba.jp#%#//scriptlet('href-sanitizer', 'a[href^="https://al.fanza.co.jp/?lurl="]', '?lurl')
 ura-akiba.jp##.sidebar > div.rankcontainer[id^="hot_"]
 ||apollomaniacs.com/0kk_rak_h_n_large.htm
 apollomaniacs.com##.kk_gen_h
@@ -8732,8 +8736,7 @@ nicheee.com##.plugin-blog_members + div.plugin-memo
 u15-specialty.com,xn--8uqt3cty5bwwbwwh.xyz,dragonball-neta.com##.boxzilla-center-container
 u15-specialty.com,xn--8uqt3cty5bwwbwwh.xyz,dragonball-neta.com##.boxzilla-overlay
 gadgetdamage.blog.fc2.com##.rtbox_tri_rec
-kimootoko.net##.koukokukiji-hako
-kimootoko.net##.koukokutop-sumaho
+kimootoko.net##div[class^="koukoku"]
 kimootoko.net##.shortcode_widget_2
 ||kimootoko.net/wp-content/uploads/*pr.jpg$image,~third-party
 icon.jp##.post-box-ad
@@ -12210,6 +12213,8 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/238404
+getnavi.jp#@#.hide_ad
 ! https://blog.nicovideo.jp/niconews/549
 blog.nicovideo.jp#@#[name^="google_ads_iframe"]
 @@||gstatic.com/admanager/outstream/rewarded_web_video_ja.js$domain=blog.nicovideo.jp
