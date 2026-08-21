@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased 5.6
 
+### Fixed
+
+- Exception rules created from the filtering log are not applied inside iframes [#1449].
+
+[#1449]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1449
+
 ## [5.5] - 2026-08-17
 
 ### Added
