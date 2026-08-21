@@ -24,16 +24,11 @@ tasks:
               exit 1;
           fi
 
-          # On Tuesdays the first build collects fixes made on Monday after the
-          # weekend, so we do a full manual review instead of skipping it.
-          skipReview="true"
-          if [ "$(date +%u)" -eq 2 ]; then
-            echo "Updating local resources (manual review)"
-            skipReview="false"
-          else
-            echo "Skipping local resources (expedited review)"
-            skipReview="true"
-          fi
+          # TEMPORARY one-time override: disable the skip-review (CWS comparison)
+          # Forces the manual-review path (skipReview=false) unconditionally.
+          # TODO: revert before the next auto-build and restore the Tuesday check.
+          skipReview="false"
+          echo "Skip review disabled (manual review) - one-time override"
 
           # Clone tsurlfilter to sibling directory (uses SSH from CI environment)
           ./bamboo-specs/scripts/clone-tsurlfilter.sh
