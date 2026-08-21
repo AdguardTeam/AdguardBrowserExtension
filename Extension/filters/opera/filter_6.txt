@@ -1,9 +1,9 @@
-! Checksum: 1HwI8otG1VzeSwjdcDpXuQ
-! Diff-Path: ../patches/6/6-s-1786613562-3600.patch
+! Checksum: E4KtQvF7lKZE7of6TnNiLg
+! Diff-Path: ../patches/6/6-s-1787314539-3600.patch
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.52.97
-! TimeUpdated: 2026-08-13T09:29:33+00:00
+! Version: 2.0.53.5
+! TimeUpdated: 2026-08-21T12:12:10+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -476,12 +476,14 @@ schnittmuster-datenbank.de#%#//scriptlet("abort-on-property-read", "adsBlocked")
 ! NOTE: Regular rules
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/238435
+wowtv.de#%#//scriptlet('set-constant', 'window.CONFIGURATION.features.enableAdBlockerDetection', 'false')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/238226
 stadt-bremerhaven.de###cb-adblock-overlay
 ! https://github.com/AdguardTeam/AdguardFilters/issues/238166
-||ligainsider.de/public/desktop/js/li-probe-base.js
+||ligainsider.de/public/*/js/li-probe-base.js
 ||ligainsider.de/li-probe.js
-||ligainsider.de/public/desktop/js/li-wall.js
+||ligainsider.de/public/*/js/li-wall.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/236444
 adhs-zentrum.de#%#//scriptlet('prevent-navigation', 'werbeblocker')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/234818
@@ -1652,6 +1654,15 @@ it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpoo
 !
 ! NOTE: Specific rules
 !
+wowtv.de#%#//scriptlet('set-constant', 'window.CONFIGURATION.adInsertion.enabled', 'false')
+||meetingpoint-jl.de/uploads/*/ads/
+meetingpoint-jl.de##.p-adcol:not(:has(> div.weather-widget))
+meetingpoint-jl.de##.p-adcol > div.weather-widget ~ [class^="ad-"]
+handyhase.de##div[id^="trimexa-ads"]
+handyhase.de##.hh-article-teaser ~ div.dynamic-widget-area
+bz-berlin.de##section[data-block-id="Sonderthemen"]
+bz-berlin.de##section[data-block-id="B.Z. Aboshop"]
+rtl.de##div[class^="AdSlot"]
 stadt-bremerhaven.de##a[rel="sponsored nofollow"]
 chip.de##.BestCheck
 11freunde.de##[data-advertisement]
@@ -2324,7 +2335,6 @@ chip.de,focus.de##.Ad-Slot
 t-online.de#?#div[data-tb-region-item]:has(> article:only-child > .grid > span:contains(ANZEIGE))
 chip.de##aside:has(> .Ad:only-child)
 nordbayern.de###traffective-ad-Billboard
-mydealz.de##.listLayout-main > div:not([id], [class])
 [$path=/forum]heise.de###bottom-up ~ .a-layout:has(> div[data-append-outbrain])
 [$path=/forum]heise.de###bottom-up ~ .a-layout:has(> .a-layout__container:only-child > .a-layout__item:only-child > .ad-label)
 mopo.de#?#div[data-tb-region-item]:has(> .main-preview__content > .main-preview__tags > .main-preview__tags-item > a:contains(Anzeige))
@@ -7550,7 +7560,7 @@ wetter.com#@#div[id^="div-gpt-"]
 ||3druck.com/wp-content/uploads/*/craftbot.jpg
 ||3druck.com/wp-content/uploads/*/da-vinci-color.jpg
 ||3druck.com/wp-content/uploads/*/doku-dez-2020.jpg
-||3fach.ch/storage/app/uploads/public/*/thumb_18790_1380_0_0_0_auto.jpg
+||3fach.ch/storage/app/uploads/public/*/thumb_18790_1380_0_0_0_auto.j
 ||6chat.org/b1a8/
 ||6navi.ch/banners/
 ||6profis.de/banner/
@@ -8554,6 +8564,7 @@ wetter.com#@#div[id^="div-gpt-"]
 ||ssv-jahn.de/fileadmin/user_upload/sponsoren/
 ||ssvnaturns.it/images/Fussball/Sponsoren/
 ||stadt-bremerhaven.de/wp-content/uploads/*/amazonAktion.jpg
+||stadt-bremerhaven.de/wp-content/uploads/*_320x250.
 ||stadt-bremerhaven.de^*/psw.jpg
 ||stadtanzeiger-coesfeld.de^*/heimbach.png
 ||stadtradio-goettingen.de/apool/srg/content/ads
@@ -10368,6 +10379,7 @@ golem.de##.gbox_affiliate
 gastgewerbe-magazin.de##.ggm-ad
 golem.de##.go-ad-slot
 golem.de##.go-alink-list
+golem.de##.go-teaser--item-variant-sponsored
 golem.de##.go-teaser--variant-affiliate
 golem.de##.go-teaser--variant-sponsored
 jungfrauzeitung.ch##.gokb
@@ -11329,6 +11341,7 @@ ak-kurier.de,nr-kurier.de,ww-kurier.de##a[target="_new"][href^="inc/inc_link.php
 sporteurope.tv##app-top-banner
 windowspro.de##article.node-teaser:not(.node-promoted)
 android-hilfe.de##article[class="message message--post"]
+android-hilfe.de##article[data-author="Anzeige"]
 otto.de##article[data-origin="sponsored"]
 otto.de##article[data-producttile-tracking*="wk.san_ProductType\":\"sponsored\""]
 mobile.de##article[data-testid="srp-top-ad"]
@@ -11773,6 +11786,7 @@ autobild.de###sky_btf_rlWr
 autobild.de,rollingstone.de###sky_rlWr
 autobild.de###superbanner_rlWr
 focus.de###tfm_admanagerTeaser
+chip.de##.Ad-Slot
 ran.de##.ad-component
 rollingstone.de##.ad-mrec
 ran.de##.ad-slot-container
@@ -11781,6 +11795,7 @@ hamburg-magazin.de,kiel-magazin.de,luebeck-magazin.de##.ad__superbanner--wrapper
 ratehase.de##.adcolor
 focus.de##.adsBlock
 finanzen.net##.adsbygoogle
+chip.de##.ae-skyscraper
 hamburg-magazin.de,kiel-magazin.de,luebeck-magazin.de##.article__ad__wrapper
 t-online.de##.css-1gm9xpz
 t-online.de##.css-1lb3bt5
@@ -11805,6 +11820,8 @@ businessinsider.de,bz-berlin.de,fitbook.de,giga.de,jetzt.de,myhomebook.de,noizz.
 bz-berlin.de,metal-hammer.de,musikexpress.de,rollingstone.de,stylebook.de##.trc_related_container div[data-item-syndicated="true"]:not(.inNetworkItem)
 wort.lu##[class*="use-theme-class_sponsored_"]
 t-online.de##[data-commercial-format]
+chip.de##[data-island="AdSlot"]
+chip.de##[data-island="OopAdSlots"]
 willhaben.at##[data-testid="top-ads-large"]
 autobild.de,bz-berlin.de,computerbild.de,finanzen.net,gamestar.de,n-tv.de,ran.de##a[data-nvp*="'trafficUrl':'https://paid.outbrain.com/network/redir?"]
 autobild.de,bz-berlin.de,chip.de,computerbild.de,finanzen.net,gamestar.de,n-tv.de,ran.de##a[data-oburl^="https://paid.outbrain.com/network/redir?"]
@@ -12040,6 +12057,7 @@ berliner-zeitung.de#?#.m-article-teaser:has(div:contains(Anzeige))
 berlinstadtservice.de#?#.row.block03:has(p:contains(ANZEIGE))
 carpediem.life#?#.post-overview:has(div:contains(Anzeige))
 celleheute.de#?#div.YzqVVZ:has(span.wixui-rich-text__text:contains(Anzeigen))
+chip.de#?#.download-item:contains(Anzeige)
 computerbase.de#?#div.text-asset.text-width:has(p.text-width:contains(Anzeige))
 computerbild.de#?#article.gridArea__teaserM:has(div.teaserBlock__label:contains(Anzeige))
 beobachter.ch#?##content-aside-item-0:contains(Partnerinhalte)

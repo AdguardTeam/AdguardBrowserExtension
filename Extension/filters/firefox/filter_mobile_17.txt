@@ -1,9 +1,9 @@
-! Checksum: p/rPI1XPe0ImturHNvvRTw
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1786685900-3600.patch
+! Checksum: VOBHpqpJPwXkTt0a8zqLQg
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1787310844-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.13.87
-! TimeUpdated: 2026-08-14T05:35:40+00:00
+! Version: 2.0.13.91
+! TimeUpdated: 2026-08-21T11:10:43+00:00
 ! Expires: 10 days (update frequency)
 $removeparam=/^weekend-reading-link-\d{6}$/
 $removeparam=x-clickref
@@ -338,6 +338,12 @@ $removeparam=erid
 $removeparam=oly_enc_id
 $removeparam=_ga
 $removeparam=tduid
+||j-cast.com^$removeparam=in
+||hanasone.mainichi.jp^$removeparam=inb
+||adesampa.com.br^$removeparam=cp_smn_source
+||adesampa.com.br^$removeparam=cp_smn_content
+||adesampa.com.br^$removeparam=cp_smn_term
+||adesampa.com.br^$removeparam=suid
 ||bandsintown.com^$removeparam=actor_id
 ||bandsintown.com^$removeparam=affil_code
 ||bandsintown.com^$removeparam=app_id
@@ -1904,6 +1910,7 @@ $removeparam=ref,domain=jin115.com|bipblog.com|animember.net|sbbit.jp|blog.lived
 ||humblebundle.com^$removeparam=hmb_source
 ||humblebundle.com^$removeparam=mcID
 ||humblebundle.com^$removeparam=linkID
+||netkeiba.com^$removeparam=ref
 ||netkeiba.com^$removeparam=rf
 ||services.addons.mozilla.org^$removeparam=telemetry-client-id
 ||versioncheck.addons.mozilla.org^$xmlhttprequest,removeparam=appID
