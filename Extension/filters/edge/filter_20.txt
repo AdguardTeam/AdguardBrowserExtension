@@ -1,9 +1,9 @@
-! Checksum: SWJ1wHGnuP60yCUK06kBZQ
-! Diff-Path: ../patches/20/20-s-1786961795-3600.patch
+! Checksum: NVraNfQvc4MblGX9IfTpVA
+! Diff-Path: ../patches/20/20-s-1787314530-3600.patch
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.31.38
-! TimeUpdated: 2026-08-17T10:14:00+00:00
+! Version: 2.0.31.54
+! TimeUpdated: 2026-08-21T12:12:37+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -60,6 +60,18 @@ rxgo.com,alfastrah.ru,turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepe
 !
 !
 !
+vkusnoitochka.ru#%#//scriptlet('set-cookie', 'smart_banner_closed_17307', 'true')
+aspor.com.tr##.tmd-articleDownloadApps
+poro.gg##div.container > div.overflow-hidden:has(> div[class] > div.bg-color-ow-banner)
+gidadedektifi.com##div[class^="XAppDownload_type_footer"]
+minfin.com.ua##.aside-mobile-app
+minfin.com.ua##.footer__apps
+carsales.com.au##div[data-updatable-partial-id="smart-banner"]
+zstream.mov#%#//scriptlet('set-local-storage-item', 'zstream::apps-notice-dismissed', '1')
+finance.eastmoney.com##div[id^="ad_context"]:has(> a[href^="javascript:"], > div[class^="ad"] > img)
+manhuaren.com##.info-top-banner-card
+manhuaren.com###tc-cover-wrap
+manhuaren.com##div.guide >img[src][onclick^="$('.guide')"]
 7fon.org###cbox > div#tmbox:has(> div > iframe[src^="https://7fon.org/goapp.php"])
 7fon.org###rgform
 turkiyegazetesi.com.tr#$#.abone-banner { display: none !important; }
@@ -77,6 +89,7 @@ temp-mail.africa#$#.modal-backdrop { display: none !important; }
 temp-mail.africa#$#body.modal-open { overflow: auto !important; padding-right: 0 !important; }
 openinbox.io##div.min-h-screen > div.bg-gradient-to-r:has(> button[aria-label="Dismiss"])
 ||assets.retty.me/v-*/images/macaron/web-to-app-fv-mobile.png
+x.com##body > button.fixed:has(> img[src^="https://abs.twimg.com/x-web/x-web/assets/scan-to-get-app-qr-"])
 retty.me##.web-to-app-fv
 sarah30.com##.sp-map-banner-bottom
 sarah30.com##.sp-app-install-banner-wrapper
@@ -142,7 +155,7 @@ wlwt.com##div.two-cols > div[class^="css-"]:has(> a[href="/apps"])
 wlwt.com,wisn.com,wjcl.com##div[aria-label=" App Promo"] > div[class^="css-"] > div[class^="css-"]:has(a[href="/apps"])
 meduza.io##.GeneralMaterial-module-article > p:has(> a[href^="https://onelink.to/appication"])
 trf1.net##.kan-banner
-xprimehub.bond,rogmovies.cv,new1.vegamovies.futbol,xprimehub.*,rogmovies.*,vegamovies.*##a[class="btn-pill"]
+xprimehub.bond,rogmovies.cv,new2.vegamovies.futbol,xprimehub.*,rogmovies.*,vegamovies.*##a[class="btn-pill"]
 pluang.com##div[class^="BottomDownloadWidget_toast-chip"]
 eurosport.tvn24.pl##div[data-testid="app-download-banner"]
 anidb.app##div[x-init*="anilab_promo"]
@@ -345,10 +358,10 @@ lazada.sg###J_Banner
 grok.com##.group\/sidebar-wrapper .fixed.top-0:has(> button > div> svg > path#mark)
 eda.yandex.ru#?#div[style^="z-index:"]:has(> div > div:contains(Открыть в приложении))
 eda.yandex.ru#%#//scriptlet('trusted-set-session-storage-item', 'SMART_BANNER_COMMUNICATION_SHOW_TIME', '{"modal":9773925851419}')
-moviebox.ac,moviebox.ph,movieboxapp.in,themoviebox.org,moviebox.pk,movieboxapp.in,123movienow.cc##.justify-center.flex.inset-0.fixed
-moviebox.ac,moviebox.ph,movieboxapp.in,themoviebox.org,moviebox.pk,movieboxapp.in,123movienow.cc##.pc-download-cot
-moviebox.ac,moviebox.ph,movieboxapp.in,themoviebox.org,moviebox.pk,movieboxapp.in,123movienow.cc##.pc-download-banner
-moviebox.ac,moviebox.ph,movieboxapp.in,themoviebox.org,moviebox.pk,movieboxapp.in,123movienow.cc##.flx-ce-ce.pc-get-img
+moviebox.ac,themoviebox.org,movieboxapp.in,123movienow.cc##.justify-center.flex.inset-0.fixed
+movieboxhd.net,movie-box.tv,moviebox.ac,themoviebox.org,movieboxapp.in,123movienow.cc##.pc-download-cot
+moviebox.ac,themoviebox.org,movieboxapp.in,123movienow.cc##.pc-download-banner
+moviebox.ac,themoviebox.org,movieboxapp.in,123movienow.cc##.flx-ce-ce.pc-get-img
 world.kbs.co.kr##.comp_right_application
 smt.docomo.ne.jp###Hed_iosAppBanner
 realty.yandex.ru##footer > div[class^="container-"]:has(> div[class^="container-"] > div[class^="mainContainer-"] > a[href^="/app-download/"])
@@ -4011,7 +4024,8 @@ dostavka.yandex.ru##.RumObservableRoot div[class]:has(> a[href^="https://8jxm.ad
 yandex.*##.yamb-chat-not-selected__download-app-section > a.yamb-desktop-app-link ~ *
 !
 ! Yandex.Games
-[$path=/games]yandex.*##.prowo-container
+! Breaks the games
+! [$path=/games]yandex.*##.prowo-container
 !
 ! Yandex.Market
 market.yandex.*##div[data-apiary-widget-name="@marketfront/DistributionLoader"]
@@ -4044,6 +4058,7 @@ bookmate.ru##.app-banner
 !
 !
 !
+reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#$##configured-xpromo-mweb3x_mid_funnel_blocking_v1_30s { display: none !important; }
 reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion##.configured-xpromo
 reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#%#//scriptlet('prevent-addEventListener', 'touchmove', '.preventDefault()')
 reddit.com,reddittorjg6rue252oqsxryoxengawnmo46qy4kyii5wtqnwfj4ooad.onion#%#//scriptlet('prevent-addEventListener', 'wheel', 'preventDefault()')
@@ -4347,6 +4362,12 @@ m.tokopedia.com#$#div[data-testid="divOverlay"] { display: none!important; }
 ! Limit it to mobile versions only
 ! causes some issues: https://github.com/AdguardTeam/AdguardForMac/issues/550
 !
+mail.yandex.*#%#//scriptlet('trusted-click-element', 'div[class^="PopupAggressivePromoApps-"] > button')
+mail.yandex.*##.app-full-height > div[class^="FloatingButton-"] > a[href^="https://redirect.appmetrica.yandex.com/serve/"]
+fawesome.tv##.app-install-wrapper
+yenisafak.com#%#//scriptlet('trusted-click-element', '.mantine-Modal-inner button.mantine-focus-auto[class*="_closeButton_"]', '', '', '', '15')
+m.albamon.com#%#//scriptlet('set-cookie', '2022AppDownClose', '1')
+centralwesterndaily.com.au##div[class="block md:hidden bg-gray-600"]
 premierzal.ru#%#//scriptlet('set-cookie', 'banner', 'true')
 travel.yandex.ru##body > div[data-state="show"]:has(> div[style^="background-color:"] img[src^="https://avatars.mds.yandex.net/get-vertis-marketing/"])
 m.bunjang.co.kr##footer > a[href="https://go.bgzt.link/app"]
@@ -4407,8 +4428,6 @@ canva.com#%#//scriptlet('trusted-set-local-storage-item', 'mobile_link_choice_la
 economx.hu##div[x-ref="hoverPromotion"]
 economx.hu##.economx-top-promotion
 gemini.google.com##chat-app-banners
-x.com##.one-col\:hidden > div.gap-2 > a[href^="https://m.x.com/"][href*="?launch_app_store=true"]
-x.com##div[class^="one-col:pb-"] > div.fixed.inset-0:has(> button[aria-label] + div[role="dialog"] > a[download])
 dodopizza.ru##div[class^="sc-"]:has(> a[href^="https://dodopizza.onelink.me/"])
 timesofindia.indiatimes.com##a[href^="https://timesofindia.sng.link/"]
 isinolsun.com###__next > div.d-lg-none
@@ -4673,7 +4692,6 @@ web.nhk##body > div[class^="_"] > div[class*=" "][role="region"][aria-labelledby
 townwork.net#%#//scriptlet('set-cookie', 'isAppBannerTopClosed', 'true')
 delishkitchen.tv##.app-launch-wrapper
 delishkitchen.tv##.floating-item-link
-x.com#%#//scriptlet('trusted-click-element', 'div[aria-labelledby="modal-header"] .css-175oi2r ~ .css-175oi2r > button[role="button"][class^="css-175oi2r"][style*="border-color: rgb"]', '', '1500')
 web.nhk#%#//scriptlet('trusted-set-cookie', '__bx_newsAppBanner', 'closed')
 web.nhk#%#//scriptlet('trusted-set-cookie', '__bx_plusAppBanner', 'closed')
 openweathermap.org###banner_android
@@ -5511,7 +5529,8 @@ newzit.com#$#div[class*="hasSmartBanner_"] { padding-top: 0 !important; }
 linkedin.com##div[data-tracking-id="get_app_omni_bottom"]
 deliveroo.hk##[class^="AppBanner-"]
 ! x.com
-! mobile app banner with a close button
+x.com##.one-col\:hidden > .flex > a[href^="https://m.x.com/"][href*="?launch_app_store=true"]
+! Mobile app banner with a close button (JS rule with MutationObserver, trusted-click-element rule for iOS)
 x.com#%#document.addEventListener('DOMContentLoaded',function(){const o=new MutationObserver(function(){const e=document.querySelector('div[data-interaction="app-store-obstruction"] > button[data-slot="xds-button"]');e&&e.click()});o.observe(document,{childList:!0,subtree:!0});setTimeout(function(){o.disconnect()},30000)})
 ! xhamster.com
 xhamster46.desi,tr.usbxh.life,xhamster44.desi,aawweb.beauty,colourxh.site,xhamster43.desi,fullxh.com,interxh.site,xhspot.com,xhwide5.com,xhchannel.com,xhtotal.com,xhtree.com,xhwide2.com,xhlease.world,xhamsterporno.mx,valuexh.life,xhdate.world,xhbranch5.com,galleryxh.site,xhbig.com,xhaccess.com,xhofficial.com,seexh.com,xhamster42.desi,xhvid.com,xhamster20.desi,xhamster19.desi,xhwebsite2.com,xhamster18.desi,xhadult3.com,xhadult2.com,xhmoon5.com,xhwide1.com,xhamster3.com,xhplanet2.com,megaxh.com,xhamster16.*,xhamster.com,xhamster2.com,xhamster7.com,xhamster8.com,xhamster9.com,xhamster10.com,xhamster12.com,xhamster13.*,xhamster14.com,xhamster15.com,xhamster17.*,xhamster18.*,xhamster19.com,xhamster1.desi,xhamster2.desi,xhamster3.*,xhamster4.desi,xhamster22.com,xhamster27.com,openxh.com,xhamster5.desi,xhopen.com,openxh1.com,xhamster40.com,xhamster.one,xhamster.desi,stripchat.com###onetap_google_intermediate_iframe

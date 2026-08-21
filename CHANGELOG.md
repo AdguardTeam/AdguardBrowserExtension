@@ -88,6 +88,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [tsurlfilter#188]: https://github.com/AdguardTeam/tsurlfilter/issues/188
 [tsurlfilter#189]: https://github.com/AdguardTeam/tsurlfilter/issues/189
 
+## [5.5 patch 1] - 2026-08-21
+
+### Changed
+
+- Updated [@adguard/tswebextension] to v5.0.1.
+
+### Fixed
+
+- Short-lived duplicated elements on pages when CSS hits counting is enabled.
+
+[5.5 patch 1]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.5.0.6...v5.5.1.0
+
 ## [5.4 patch 2] - 2026-05-14
 
 ### Fixed

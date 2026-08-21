@@ -1,9 +1,9 @@
-! Checksum: c8ZQKmuTlv683Lhl6uoWJA
-! Diff-Path: ../patches/1/1-s-1786958489-3600.patch
+! Checksum: j9RqaF7UPVHw1B+WXgloHQ
+! Diff-Path: ../patches/1/1-s-1787303985-3600.patch
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.1.8.9
-! TimeUpdated: 2026-08-17T09:17:49+00:00
+! Version: 2.1.8.21
+! TimeUpdated: 2026-08-21T09:15:33+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -3860,7 +3860,9 @@ redheadsound.studio#%#//scriptlet('google-ima3')
 mintmanga.com#%#//scriptlet('prevent-element-src-loading', 'script', 'adsbygoogle')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/234715
 ||sochi.camera/adblock-detector.js
+! https://github.com/AdguardTeam/AdguardFilters/issues/238710
 ! https://github.com/AdguardTeam/AdguardFilters/issues/233664
+@@||yandex.ru/ads/system/context.js$domain=rr4farmtrof.com
 rr4farmtrof.com#%#//scriptlet('remove-node-text', 'script', 'adwall')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/233134
 evilmod.ru#@##reklama
@@ -6759,6 +6761,8 @@ avtocod.ru,love.ngs.ru,mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,del
 !
 liga.net##.remp-banner
 epravda.com.ua##div[style="height:290px; clear: both; margin-top: 10px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center;"]
+streamsports99.cx,streamsports99.tv,streamsports99.su,streamsports99.ru,streamsports99.*###main-content > div.container > div.grid div.border.bg-gradient-card:has(> div.flex > a[href^="https://billing.rocketstreams4k.com/"])
+streamsports99.cx,streamsports99.tv,streamsports99.su,streamsports99.ru,streamsports99.*##a[data-no-ad]
 streamsports99.cx,streamsports99.tv,streamsports99.su,streamsports99.ru,streamsports99.*##.musiqly-ad
 legalbet.by,legalbet.*##.top-three-block > div
 legalbet.by,legalbet.*##.bookmakers-in-footer
@@ -7127,6 +7131,15 @@ sport-express.ru,gorod24.online,vedomosti.ru,kommersant.ru,rg.ru,glavbukh.ru,che
 !
 ! NOTE: Specific rules
 !
+payberry.games##a[href^="https://share.flocktory.com/"]
+securitylab.ru###uber_banner
+securitylab.ru##.index-news-list > div.d-none:not([id]):has(> .news-card-banner)
+pg12.ru##div[class^="promo-"]
+pg12.ru##div[class*="Promo"]
+pg12.ru###promo-after-comments
+pg12.ru##.promoInnerArticleAfterTags
+pg12.ru##div[class^="project-col3-layout_row__"] > div[class^="project-col3-layout_contentRightStretch__"]:has(> div[class*="news-card_newsPreviewRight__"]:empty)
+tankist.net##.top-interesting
 web.epalovo.com###lb-side + div[class]
 ||lenta.ru/fenwick|
 yuga.ru##.branding_wide
@@ -14343,7 +14356,7 @@ eparazit.ru##.sidebar a[target="_blank"] > canvas[width="300"]
 wd-x.ru##.sidebar a[target="_blank"] > img
 sadikionline.ru##.sidebar noindex > a > img
 sadikionline.ru##.sidebar noindex > iframe
-roscontrol.com,study.ru,kanobu.ru,mmorpg.su##.sidebar-banner
+securitylab.ru,roscontrol.com,study.ru,kanobu.ru,mmorpg.su##.sidebar-banner
 glavpost.com##.sidebar-banner-block
 ural56.ru##.sidebar-banner__item
 3dnews.ru##.sidebar-chunk > div.isspecial.sidebar-chunk
@@ -17960,6 +17973,7 @@ mail.ru#%#//scriptlet('json-prune', 'result.status')
 auto.mail.ru##.daynews__inner > tbody > tr > td.daynews__spring
 auto.mail.ru##.sharelist + div.box_block
 !
+cloud.mail.ru#$#div[class^="Public__folderContent"] { padding-right: 0 !important; }
 cloud.mail.ru##a[href*="disable_ads_public"]
 cloud.mail.ru##div[class^="ErrorPage__advDesktop--"]
 cloud.mail.ru###sidebar-banner
@@ -18727,6 +18741,8 @@ lib.seu.edu.cn#@#.one-search
 ! Good: example.org#@#.ad
 ! Bad:  @@||example.org^$stealth (should be in AdGuard Base - allowlist_stealth.txt)
 !
+! indochaska-nuernberg.de - pictures not showing for "Speisekarte"
+@@||d1e1kd3gffmhjg.cloudfront.net/bannerbottom/$domain=indochaska-nuernberg.de
 ! https://github.com/AdguardTeam/AdGuardExtra/issues/661
 ! aglint-disable-next-line
 ! https://github.com/AdguardTeam/AdguardFilters/issues/230051
@@ -19837,6 +19853,11 @@ ex-press.live#$#div[data-content-hero-id="app-layout"] { background-image: none 
 !
 ! NOTE: Specific
 !
+ulysmedia.kz##.adv-top-sec
+kapital.kz###ad-container
+kazpravda.kz##.container:has(> .top-banner)
+kazpravda.kz##.kp-sb
+||kazpravda.kz/media/banners/
 massaget.kz##div[class^="banners-"]
 massaget.kz#$#header { height: auto !important; }
 inbusiness.kz##div[class^="ad"]

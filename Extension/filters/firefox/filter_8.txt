@@ -1,9 +1,9 @@
-! Checksum: pngDXM+voNq5CYLpaEd8zQ
-! Diff-Path: ../patches/8/8-s-1785927401-3600.patch
+! Checksum: RqvqnthKGXwmXmerBWmG0Q
+! Diff-Path: ../patches/8/8-s-1787047999-3600.patch
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.9.39
-! TimeUpdated: 2026-08-05T10:53:33+00:00
+! Version: 2.0.9.41
+! TimeUpdated: 2026-08-18T10:10:33+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1589,10 +1589,10 @@ vakantieplaats.nl#@#.topAds
 @@||content.hwigroup.net/images^$domain=hardware.info
 hardware.info,tweakers.net#@#.AdBar
 !
+! https://github.com/uBlockOrigin/uAssets/issues/34154
+||waldnet.nl/assets/js/abd.js
 ! https://github.com/AdguardTeam/AdguardFilters/issues/216106
 webcams-vlissingen.nl#%#//scriptlet('abort-current-inline-script', 'document.createElement', 'adsbygoogle.js')
-! https://github.com/AdguardTeam/AdguardFilters/issues/209339
-radio10.nl#%#//scriptlet('prevent-setTimeout', 'throw i(r+"err",[o,a,e],d,c),e}finally{i(', '50')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/203606
 forum.fok.nl#%#//scriptlet('prevent-setTimeout', 'ckad')
 forum.fok.nl#@##advertentie
@@ -1634,12 +1634,8 @@ tweakers.net#%#//scriptlet('prevent-fetch', '/a[ab]\.tweakers\.nl/')
 !+ NOT_PLATFORM(windows, mac, android, cli, ext_chromium)
 @@||aa.tweakers.nl/json$domain=tweakers.net
 ! https://github.com/AdguardTeam/AdguardFilters/issues/99141
-@@||assets.prod.webx.talpa.digital/ad/view/$domain=kijk.nl
-kijk.nl#@##topbanner_ad
-@@/prebid/ad.gif?user=*&adId=$domain=kijk.nl
-@@||ads-talpa.adhese.com/json/$domain=kijk.nl
 nieuwsvandedag.nl,radio10.nl,kijk.nl,hartvannederland.nl,538.nl,vandaaginside.nl#$#body .pub_300x250.pub_300x250m.pub_728x90.text-ad.textAd.text_ad.text_ads.text-ads.text-ad-links { display: initial !important; }
-nieuwsvandedag.nl,radio10.nl,kijk.nl,hartvannederland.nl,538.nl,vandaaginside.nl#%#(()=>{const t={apply:(t,e,n)=>{try{if((new Error).stack.includes("Popup"))return Reflect.apply(t,e,n);const o=e;"function"==typeof o&&(o.toString().includes("adBlockerDetected")||o.toString().includes("pub_300x250m")||o.toString().includes(".offsetHeight||0==="))&&(e=()=>new Promise((t=>t(!1))))}catch(t){}return Reflect.apply(t,e,n)}};window.Function.prototype.apply=new Proxy(window.Function.prototype.apply,t)})();
+nieuwsvandedag.nl,radio10.nl,kijk.nl,hartvannederland.nl,538.nl,vandaaginside.nl#%#(()=>{const t={apply:(t,e,n)=>{try{if((new Error).stack.includes("Popup"))return Reflect.apply(t,e,n);"function"==typeof e&&e.toString().includes(".offsetHeight||0===")&&(e=()=>new Promise((t=>t(!1))))}catch(t){}return Reflect.apply(t,e,n)}};window.Function.prototype.apply=new Proxy(window.Function.prototype.apply,t)})();
 ! https://github.com/AdguardTeam/AdguardFilters/issues/215774
 ! https://github.com/AdguardTeam/AdguardFilters/issues/167987
 ||securepubads.g.doubleclick.net/tag/js/gpt.js$script,redirect=googletagservices-gpt,domain=goplay.be|play.tv
