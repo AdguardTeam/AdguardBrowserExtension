@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased 5.5.2
 
+### Changed
+
+- Updated [@adguard/dnr-converter] to v1.1.1.
+- Updated [@adguard/tswebextension] to v5.0.2.
+
 ### Fixed
 
 - User rules saved with Windows line endings appeared empty in the editor after
