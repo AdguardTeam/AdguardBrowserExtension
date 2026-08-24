@@ -11,8 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - User rules saved with Windows line endings appeared empty in the editor after
   updating to 5.5 [#3598].
+- `$removeparam` rules without a value (e.g. `||example.org^$removeparam`)
+  blocked the whole site in MV3 instead of removing all query parameters [#3602].
 
 [#3598]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3598
+[#3602]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3602
 
 ## [5.5.1.0] - 2026-08-21
 
