@@ -139,9 +139,15 @@ export const createEditorHandle = (
      * @param value The new content to set.
      */
     setValue(value: string) {
+        const changes = view.state.changes({
+            from: 0,
+            to: view.state.doc.length,
+            insert: value,
+        });
+
         view.dispatch({
-            changes: { from: 0, to: view.state.doc.length, insert: value },
-            selection: { anchor: value.length },
+            changes,
+            selection: { anchor: changes.newLength },
             annotations: isolateHistory.of('full'),
         });
     },

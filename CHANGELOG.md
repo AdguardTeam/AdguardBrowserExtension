@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased 5.5.2
+
+### Fixed
+
+- User rules saved with Windows line endings appeared empty in the editor after
+  updating to 5.5 [#3598].
+
+[#3598]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3598
+
+## [5.5.1.0] - 2026-08-21
+
+### Changed
+
+- Updated [@adguard/tswebextension] to v5.0.1.
+
+### Fixed
+
+- Short-lived duplicated elements on pages when CSS hits counting is enabled.
+
+[5.5.1.0]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.5.0.5...v5.5.1.0
+
 ## [5.5] - 2026-08-17
 
 ### Added
@@ -69,7 +90,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Popup statistics "Year" tab showed only the last 3 months and erased older
   monthly history after a month rollover.
 
-[5.5]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.4.3.0...v5.5.0.6
+[5.5]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.4.3.1...v5.5.0.5
 [#3537]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3537
 [#1486]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1486
 [#1686]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1686
@@ -88,18 +109,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [tsurlfilter#188]: https://github.com/AdguardTeam/tsurlfilter/issues/188
 [tsurlfilter#189]: https://github.com/AdguardTeam/tsurlfilter/issues/189
 
-## [5.5 patch 1] - 2026-08-21
-
-### Changed
-
-- Updated [@adguard/tswebextension] to v5.0.1.
-
-### Fixed
-
-- Short-lived duplicated elements on pages when CSS hits counting is enabled.
-
-[5.5 patch 1]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.5.0.6...v5.5.1.0
-
 ## [5.4 patch 2] - 2026-05-14
 
 ### Fixed
@@ -109,7 +118,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `CSS.supports('selector(A, B)')` fails for top-level commas; the validator now
   splits such selectors and validates each part individually.
 
-[5.4 patch 2]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.4.2.0...v5.4.3.0
+[5.4 patch 2]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.4.2.0...v5.4.3.1
 
 ## [5.4 patch 1] - 2026-05-08
 

@@ -70,6 +70,14 @@ describe('createEditorHandle', () => {
         expect(handle.getCursor()).toEqual({ line: 1, ch: 'new content'.length });
     });
 
+    it('loads CRLF content and places the cursor at the normalized document end', () => {
+        const handle = createEditorHandle(view, { wrap, readOnly });
+
+        expect(() => handle.setValue('first line\r\nsecond line')).not.toThrow();
+        expect(handle.getValue()).toBe('first line\nsecond line');
+        expect(handle.getCursor()).toEqual({ line: 2, ch: 'second line'.length });
+    });
+
     it('round-trips the cursor (1-based line, 0-based ch)', () => {
         const handle = createEditorHandle(view, { wrap, readOnly });
         handle.setCursor({ line: 2, ch: 3 });
@@ -139,6 +147,18 @@ describe('createDeferredEditorHandle', () => {
         deferred.attach(view, { wrap, readOnly });
 
         expect(deferred.handle.getValue()).toBe('content set before ready');
+        view.destroy();
+    });
+
+    it('replays buffered CRLF content once attached', () => {
+        const deferred = createDeferredEditorHandle();
+        deferred.handle.setValue('first line\r\nsecond line');
+
+        const view = createView();
+
+        expect(() => deferred.attach(view, { wrap, readOnly })).not.toThrow();
+        expect(deferred.handle.getValue()).toBe('first line\nsecond line');
+        expect(deferred.handle.getCursor()).toEqual({ line: 2, ch: 'second line'.length });
         view.destroy();
     });
 

@@ -33,6 +33,13 @@ import {
     it,
     vi,
 } from 'vitest';
+import {
+    EditorState,
+    type Extension,
+    type TransactionSpec,
+} from '@codemirror/state';
+
+import { initEditor as initRulesEditor } from '@adguard/rules-editor';
 
 import { Editor } from '../../../../../../Extension/src/pages/common/components/Editor/Editor';
 
@@ -74,24 +81,26 @@ describe('Editor component', () => {
         localStorage.clear();
     });
 
-    const createFakeView = () => ({
-        state: {
-            doc: {
-                toString: () => 'fake content',
-                length: 12,
-                lineAt: () => ({ number: 1, from: 0, length: 12 }),
-                lines: 1,
-                // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                line: (_n: number) => ({ from: 0, length: 12 }),
+    const createFakeView = () => {
+        const config = vi.mocked(initRulesEditor).mock.lastCall?.[2] as { extensions?: Extension[] };
+        let state = EditorState.create({
+            doc: 'fake content',
+            extensions: config.extensions,
+        });
+
+        return {
+            get state() {
+                return state;
             },
-            selection: { main: { head: 0 } },
-            readOnly: false,
-        },
-        dispatch: mockDispatch,
-        destroy: mockDestroy,
-        focus: mockFocus,
-        lineWrapping: false,
-    });
+            dispatch: (...specs: TransactionSpec[]) => {
+                mockDispatch(...specs);
+                state = state.update(...specs).state;
+            },
+            destroy: mockDestroy,
+            focus: mockFocus,
+            lineWrapping: false,
+        };
+    };
 
     const renderEditor = (props = {}) => render(React.createElement(Editor as any, {
         name: 'test-editor',
@@ -204,11 +213,7 @@ describe('Editor component', () => {
             resolveInit(createFakeView());
         });
 
-        // Buffered write is replayed onto the view via a dispatch.
-        const replayed = mockDispatch.mock.calls.some(
-            ([tr]) => tr?.changes?.insert === 'content set before ready',
-        );
-        expect(replayed).toBe(true);
+        expect(editorRef.current.getValue()).toBe('content set before ready');
 
         rendered!.unmount();
     });
