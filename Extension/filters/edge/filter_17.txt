@@ -1,9 +1,9 @@
-! Checksum: 7TP4a88YFVeDRjbaYeIL3w
-! Diff-Path: ../patches/17/17-s-1787310840-3600.patch
+! Checksum: lpSNUlip1+TN+o2yZQIhdA
+! Diff-Path: ../patches/17/17-s-1787649565-3600.patch
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.13.91
-! TimeUpdated: 2026-08-21T11:10:43+00:00
+! Version: 2.0.13.94
+! TimeUpdated: 2026-08-25T09:16:32+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -228,6 +228,9 @@ $removeparam=pk_vid
 $removeparam=mindbox-click-id
 ! https://github.com/AdguardTeam/AdguardFilters/issues/141140
 ! fake dating sites
+! TODO: Remove platform hint when this issue is fixed - https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3602
+! Related to https://github.com/AdguardTeam/AdguardFilters/issues/239204
+!+ NOT_PLATFORM(ext_chromium_mv3)
 click_id=*_branch_referrer=$removeparam
 ! https://resplend.jp/eyepudding/af2/pc/?utm_source=fing&utm_medium=ade&_buyer=5754&famad_xuid=5754,361,5368,xuidx78fca5569fx371
 $removeparam=famad_xuid
@@ -532,7 +535,13 @@ $removeparam=tduid
 ! Good: ||example.org^$removeparam=cx
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
-!
+! https://github.com/AdguardTeam/AdguardFilters/issues/239261
+||lmaga.jp^$removeparam=cv
+! https://github.com/AdguardTeam/AdguardFilters/issues/239264
+||mantan-web.jp^$removeparam=ext_m
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-18121085
+||datafa.st^$removeparam=ref
+||datafa.st^$removeparam=via
 ! https://github.com/AdguardTeam/AdguardFilters/issues/238848
 ||j-cast.com^$removeparam=in
 ! https://github.com/AdguardTeam/AdguardFilters/issues/238679
