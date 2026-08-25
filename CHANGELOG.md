@@ -9,8 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Updated [@adguard/dnr-converter] to v1.1.1.
-- Updated [@adguard/tswebextension] to v5.0.2.
+- Updated [@adguard/agtree] to v4.2.1.
+- Updated [@adguard/dnr-converter] to v1.1.2.
+- Updated [@adguard/scriptlets] to v2.5.1.
+- Updated [@adguard/tsurlfilter] to v6.0.3.
+- Updated [@adguard/tswebextension] to v5.0.3.
 
 ### Fixed
 
