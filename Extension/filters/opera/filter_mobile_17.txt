@@ -1,9 +1,9 @@
-! Checksum: NdAwYyA2+6NVorYq5b5UJg
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1787310848-3600.patch
+! Checksum: D8jBsO9IEGrcqE8uZt3wfg
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1787649576-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.13.91
-! TimeUpdated: 2026-08-21T11:10:43+00:00
+! Version: 2.0.13.94
+! TimeUpdated: 2026-08-25T09:16:32+00:00
 ! Expires: 10 days (update frequency)
 $removeparam=/^weekend-reading-link-\d{6}$/
 $removeparam=x-clickref
@@ -134,6 +134,7 @@ $removeparam=ymid
 $removeparam=gci
 $removeparam=pk_vid
 $removeparam=mindbox-click-id
+!+ NOT_PLATFORM(ext_chromium_mv3)
 click_id=*_branch_referrer=$removeparam
 $removeparam=famad_xuid
 $removeparam=twclid
@@ -338,6 +339,10 @@ $removeparam=erid
 $removeparam=oly_enc_id
 $removeparam=_ga
 $removeparam=tduid
+||lmaga.jp^$removeparam=cv
+||mantan-web.jp^$removeparam=ext_m
+||datafa.st^$removeparam=ref
+||datafa.st^$removeparam=via
 ||j-cast.com^$removeparam=in
 ||hanasone.mainichi.jp^$removeparam=inb
 ||adesampa.com.br^$removeparam=cp_smn_source
