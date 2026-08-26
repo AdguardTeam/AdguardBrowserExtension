@@ -32,6 +32,7 @@ import { notifier } from '../../notifier';
 import { settingsStorage, editorStorage } from '../../storages';
 import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
 import { getZodErrorMessage } from '../../../common/error';
+import { normalizeUserRulesLineEndings } from '../../../common/utils/user-rules';
 import { LineScanner } from '../../utils';
 
 /**
@@ -42,10 +43,13 @@ export class UserRulesApi {
      * Parses data from user rules list.
      * If it's undefined or if it's an initialization after installation - sets
      * empty user rules list.
+     * Existing user rules line endings are normalized to Unix-style line feeds.
      *
      * @param isInstall Is this is an installation initialization or not.
      */
     public static async init(isInstall: boolean): Promise<void> {
+        let userRules: FilterList | undefined;
+
         try {
             // Check if user filter is present in the storage to avoid errors.
             if (!(await FiltersStoragesAdapter.has(AntiBannerFiltersId.UserFilterId))) {
@@ -55,7 +59,7 @@ export class UserRulesApi {
                 );
             } else {
                 // In this case zod will validate the data.
-                await FiltersStoragesAdapter.get(AntiBannerFiltersId.UserFilterId);
+                userRules = await FiltersStoragesAdapter.get(AntiBannerFiltersId.UserFilterId);
             }
         } catch (e) {
             if (!isInstall) {
@@ -65,6 +69,26 @@ export class UserRulesApi {
                 AntiBannerFiltersId.UserFilterId,
                 FilterList.createEmpty(),
             );
+        }
+
+        if (!userRules) {
+            return;
+        }
+
+        const originalUserRules = userRules.getOriginalContent();
+        const normalizedUserRules = normalizeUserRulesLineEndings(originalUserRules);
+
+        if (normalizedUserRules === originalUserRules) {
+            return;
+        }
+
+        try {
+            await FiltersStoragesAdapter.set(
+                AntiBannerFiltersId.UserFilterId,
+                normalizedUserRules,
+            );
+        } catch (e) {
+            logger.warn('[ext.UserRulesApi.init]: cannot normalize user rules line endings, keeping persisted rules unchanged. Origin error:', getZodErrorMessage(e));
         }
     }
 
@@ -221,7 +245,10 @@ export class UserRulesApi {
      * @param rulesText Rule text.
      */
     public static async setUserRules(rulesText: string): Promise<void> {
-        await FiltersStoragesAdapter.set(AntiBannerFiltersId.UserFilterId, rulesText);
+        await FiltersStoragesAdapter.set(
+            AntiBannerFiltersId.UserFilterId,
+            normalizeUserRulesLineEndings(rulesText),
+        );
 
         notifier.notifyListeners(NotifierType.UserFilterUpdated);
     }

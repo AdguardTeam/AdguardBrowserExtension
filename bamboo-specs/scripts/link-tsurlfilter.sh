@@ -19,6 +19,7 @@ ls -la
 # Parse command line arguments
 LINK_AGTREE=false
 LINK_TSURLFILTER=false
+LINK_DNR_CONVERTER=false
 
 while [ $# -gt 0 ]; do
     case $1 in
@@ -30,9 +31,13 @@ while [ $# -gt 0 ]; do
             LINK_TSURLFILTER=true
             shift
             ;;
+        --with-dnr-converter)
+            LINK_DNR_CONVERTER=true
+            shift
+            ;;
         *)
             echo "Unknown option: $1"
-            echo "Available options: --with-agtree, --with-tsurlfilter"
+            echo "Available options: --with-agtree, --with-tsurlfilter, --with-dnr-converter"
             exit 1
             ;;
     esac
@@ -63,6 +68,13 @@ link_packages() {
     if [ "$LINK_TSURLFILTER" = true ]; then
         echo "Linking tsurlfilter package to main project..."
         pnpm link ${TSURLFILTER_DIR}/packages/tsurlfilter
+    fi
+
+    # DNR Converter is a direct dependency of the extension (and of tswebextension),
+    # link it as well so that a single copy of the package is bundled
+    if [ "$LINK_DNR_CONVERTER" = true ]; then
+        echo "Linking dnr-converter package to main project..."
+        pnpm link ${TSURLFILTER_DIR}/packages/dnr-converter
     fi
 
     # CSS Tokenizer is a dependency of AGTree and TSUrlFilter

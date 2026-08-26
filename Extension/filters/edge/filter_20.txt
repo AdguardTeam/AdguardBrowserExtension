@@ -1,9 +1,9 @@
-! Checksum: NVraNfQvc4MblGX9IfTpVA
-! Diff-Path: ../patches/20/20-s-1787314530-3600.patch
+! Checksum: 5/sHGn7yGcv0G4DzZDNdUg
+! Diff-Path: ../patches/20/20-s-1787628368-3600.patch
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.31.54
-! TimeUpdated: 2026-08-21T12:12:37+00:00
+! Version: 2.0.31.57
+! TimeUpdated: 2026-08-25T03:23:10+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -60,6 +60,9 @@ rxgo.com,alfastrah.ru,turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepe
 !
 !
 !
+wirleben.de##.custom-vue-modal--app
+banki.ru###download-app-banner
+banki.ru##div[class^="layout-footer_AdsMobileApp"]
 vkusnoitochka.ru#%#//scriptlet('set-cookie', 'smart_banner_closed_17307', 'true')
 aspor.com.tr##.tmd-articleDownloadApps
 poro.gg##div.container > div.overflow-hidden:has(> div[class] > div.bg-color-ow-banner)
@@ -4362,6 +4365,7 @@ m.tokopedia.com#$#div[data-testid="divOverlay"] { display: none!important; }
 ! Limit it to mobile versions only
 ! causes some issues: https://github.com/AdguardTeam/AdguardForMac/issues/550
 !
+quicksigorta.com##header > div.MuiBox-root:has(> div.MuiBox-root > a[href="http://qlink.li/mobil"])
 mail.yandex.*#%#//scriptlet('trusted-click-element', 'div[class^="PopupAggressivePromoApps-"] > button')
 mail.yandex.*##.app-full-height > div[class^="FloatingButton-"] > a[href^="https://redirect.appmetrica.yandex.com/serve/"]
 fawesome.tv##.app-install-wrapper

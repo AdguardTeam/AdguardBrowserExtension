@@ -36,6 +36,17 @@ export type MergeImportedRulesResult = {
 };
 
 /**
+ * Normalizes user rules line endings to Unix-style line feeds.
+ *
+ * @param rulesText User rules text.
+ *
+ * @returns User rules text with normalized line endings.
+ */
+export function normalizeUserRulesLineEndings(rulesText: string): string {
+    return rulesText.split(NEWLINE_CHAR_REGEX).join(NEWLINE_CHAR_UNIX);
+}
+
+/**
  * Parses raw imported rule text and merges only the genuinely-new, non-blank
  * rules into the existing rules string.
  *
