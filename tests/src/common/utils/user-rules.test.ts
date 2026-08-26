@@ -24,7 +24,14 @@ import {
     expect,
 } from 'vitest';
 
-import { mergeImportedRules } from '../../../../Extension/src/common/utils/user-rules';
+import { mergeImportedRules, normalizeUserRulesLineEndings } from '../../../../Extension/src/common/utils/user-rules';
+
+describe('normalizeUserRulesLineEndings', () => {
+    it('normalizes mixed line endings to Unix-style line feeds', () => {
+        expect(normalizeUserRulesLineEndings('||a.com^\r\n||b.com^\r||c.com^\n'))
+            .toBe('||a.com^\n||b.com^\n||c.com^\n');
+    });
+});
 
 describe('mergeImportedRules', () => {
     it('appends only genuinely-new rules and preserves existing order', () => {

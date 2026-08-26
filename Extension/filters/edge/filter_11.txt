@@ -1,9 +1,9 @@
-! Checksum: SIgHMBRUbm9hOeah4CqPbA
-! Diff-Path: ../patches/11/11-s-1787297054-3600.patch
+! Checksum: FD4jGcRFbDcazIh3DVxRvg
+! Diff-Path: ../patches/11/11-s-1787578030-3600.patch
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.71.47
-! TimeUpdated: 2026-08-21T07:21:07+00:00
+! Version: 2.0.71.50
+! TimeUpdated: 2026-08-24T13:23:52+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -174,6 +174,7 @@
 ||startup.mobile.webvisor.com^
 ||startup-mobile.ap.yandex-net.ru^
 !
+||appgw.inmobi.com^
 ||adhub.porcino-kinoko.workers.dev^
 ||uibjh29vqc.com^
 ||ads.heytapmobi.com^
@@ -2495,6 +2496,8 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+kursiv.media##.section-header.widgets-title-mobile
+msn.com#%#//scriptlet('inject-css-in-shadow-dom', 'csm-feed-layout[data-template-id^="mobileviews"] { --card-base-gap: 0 !important; }')
 aspor.com.tr#$#html[data-smartbanner] body { padding-top: 0 !important; }
 aspor.com.tr#$#html[data-smartbanner] header { top: 0 !important; }
 carsales.com.au##div[style="min-height:500px"]
