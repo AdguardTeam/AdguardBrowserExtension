@@ -197,13 +197,14 @@ COPY --from=unit-tests /out/ /
 # ============================================================================
 # Stage: integration-tests
 # Runs integration tests for a given BUILD_TYPE (dev, beta, release)
-# Expects artifacts/chrome-mv3-<BUILD_TYPE>.zip in build context
+# Expects artifacts/chrome-mv3-<BUILD_TYPE>.zip via the `chrome-artifacts`
+# named build context (--build-context chrome-artifacts=artifacts)
 # ============================================================================
 FROM linked-deps-playwright AS integration-tests
 
 ARG BUILD_TYPE
 
-COPY artifacts/ /extension/artifacts/
+COPY --from=chrome-artifacts . /extension/artifacts/
 
 ARG TEST_RUN_ID
 
@@ -537,26 +538,27 @@ WORKDIR /check
 
 COPY tools/ci/check-extension-status.sh ./
 
-ARG CHROME_CLIENT_ID
-ARG CHROME_PUBLISHER_ID
 # CWS item IDs come from the same repo vars the publish jobs use
 # (CHROME_WEBSTORE_MV3(_BETA)_ITEM_ID), so the availability guard and the
 # publish jobs cannot drift apart after a listing migration.
+# CHROME_CLIENT_ID / CHROME_PUBLISHER_ID arrive as BuildKit secrets (no ARG).
 ARG CWS_BETA_ITEM_ID
 ARG CWS_RELEASE_ITEM_ID
 ARG TEST_RUN_ID
 
-RUN --mount=type=secret,id=CHROME_CLIENT_SECRET,required=true \
+RUN --mount=type=secret,id=CHROME_CLIENT_ID,required=true \
+    --mount=type=secret,id=CHROME_PUBLISHER_ID,required=true \
+    --mount=type=secret,id=CHROME_CLIENT_SECRET,required=true \
     --mount=type=secret,id=CHROME_REFRESH_TOKEN,required=true \
     echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
     mkdir -p /out/artifacts && \
     echo "false" > /tmp/beta_available && \
     echo "false" > /tmp/release_available && \
     check_channel() { \
-      CHROME_CLIENT_ID="${CHROME_CLIENT_ID}" \
+      CHROME_CLIENT_ID="$(cat /run/secrets/CHROME_CLIENT_ID)" \
       CHROME_CLIENT_SECRET="$(cat /run/secrets/CHROME_CLIENT_SECRET)" \
       CHROME_REFRESH_TOKEN="$(cat /run/secrets/CHROME_REFRESH_TOKEN)" \
-      CHROME_PUBLISHER_ID="${CHROME_PUBLISHER_ID}" \
+      CHROME_PUBLISHER_ID="$(cat /run/secrets/CHROME_PUBLISHER_ID)" \
       CHROME_API_VERSION=v2 \
       CWS_BETA_ITEM_ID="${CWS_BETA_ITEM_ID}" \
       CWS_RELEASE_ITEM_ID="${CWS_RELEASE_ITEM_ID}" \
@@ -599,7 +601,6 @@ COPY --from=check-cws /out/ /
 FROM linked-deps AS auto-build
 
 ARG TEST_RUN_ID
-ARG SKIP_REVIEW
 ARG BETA_CHANNEL_AVAILABLE
 ARG RELEASE_CHANNEL_AVAILABLE
 
@@ -611,6 +612,14 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # We use a marker file instead of git diff to avoid copying the whole
     # .git directory into the Docker image.
     touch /tmp/.pre-update-marker && \
+    # Full resources update (and no CWS skip-review check) on Tuesdays,
+    # mirroring the Bamboo job; all other days reuse local resources and
+    # verify CWS skip-review eligibility.
+    if [ "$(date -u +%u)" = "2" ]; then \
+        SKIP_REVIEW=false; \
+    else \
+        SKIP_REVIEW=true; \
+    fi && \
     # Update rulesets.
     TOKENGUARD_API_KEY="$(cat /run/secrets/TOKENGUARD_API_KEY)" && \
     : "${TOKENGUARD_API_KEY:?TOKENGUARD_API_KEY secret not provided}" && \

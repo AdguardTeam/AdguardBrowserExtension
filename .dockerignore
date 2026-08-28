@@ -9,6 +9,9 @@ output/
 tmp/
 vendor/
 node_modules/
+# Integration-test zips arrive via the `chrome-artifacts` named build context;
+# excluding them keeps the default context hash stable across runs.
+artifacts/
 Dockerfile*
 *.md
 !README.md

@@ -1,0 +1,438 @@
+name: Auto build
+
+# Every 12 hours (00:30 and 12:30 UTC): updates @adguard/dnr-rulesets and
+# local resources on the stable branch, rebuilds Chrome MV3 beta + release,
+# and auto-publishes them to the Chrome Web Store when the store reports the
+# channel as available. Replaces Bamboo plans auto-build + auto-publish.
+#
+# Note: the schedule trigger runs the workflow file from the DEFAULT branch
+# (master); all jobs explicitly check out the stable branch.
+
+on:
+  schedule:
+    - cron: '30 */12 * * *'
+  workflow_dispatch:
+
+# A manual workflow_dispatch during a scheduled run must not execute
+# concurrently with it: both would push commits/tags to the stable branch.
+concurrency:
+  group: auto-build-${{ github.repository }}
+  cancel-in-progress: true
+
+env:
+  STABLE_BRANCH: stable/v5.5
+  # Release bot identity, centralised as repo vars (see publish-release.yml).
+  RELEASE_BOT_NAME: ${{ vars.RELEASE_BOT_NAME || 'adguard-octobuddy[bot]' }}
+  RELEASE_BOT_EMAIL: ${{ vars.RELEASE_BOT_EMAIL || '285975488+adguard-octobuddy[bot]@users.noreply.github.com' }}
+
+jobs:
+  check-cws:
+    name: Check CWS availability
+    runs-on: team-extensions
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write   # Vault JWT/OIDC
+    outputs:
+      beta-available: ${{ steps.props.outputs.beta-available }}
+      release-available: ${{ steps.props.outputs.release-available }}
+    steps:
+      - name: Checkout stable branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ env.STABLE_BRANCH }}
+
+      - name: Fetch Chrome Web Store credentials from Vault
+        id: vault
+        uses: hashicorp/vault-action@v4
+        with:
+          url: ${{ vars.VAULT_URL }}
+          method: jwt
+          path: jwt
+          role: chrome-webstore-deployer
+          secrets: |
+            secret/data/ci-secrets/chrome-webstore-deployer client-id | CHROME_CLIENT_ID ;
+            secret/data/ci-secrets/chrome-webstore-deployer client-secret | CHROME_CLIENT_SECRET ;
+            secret/data/ci-secrets/chrome-webstore-deployer refresh-token | CHROME_REFRESH_TOKEN ;
+            secret/data/ci-secrets/chrome-webstore-deployer publisher-id | CHROME_PUBLISHER_ID ;
+
+      - name: Check store status via Docker
+        env:
+          CHROME_CLIENT_ID: ${{ steps.vault.outputs.CHROME_CLIENT_ID }}
+          CHROME_CLIENT_SECRET: ${{ steps.vault.outputs.CHROME_CLIENT_SECRET }}
+          CHROME_REFRESH_TOKEN: ${{ steps.vault.outputs.CHROME_REFRESH_TOKEN }}
+          CHROME_PUBLISHER_ID: ${{ steps.vault.outputs.CHROME_PUBLISHER_ID }}
+        run: |
+          DOCKER_BUILDKIT=1 docker build --progress plain \
+            --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --build-arg CWS_BETA_ITEM_ID="${{ vars.CHROME_WEBSTORE_MV3_BETA_ITEM_ID || 'apjcbfpjihpedihablmalmbbhjpklbdf' }}" \
+            --build-arg CWS_RELEASE_ITEM_ID="${{ vars.CHROME_WEBSTORE_MV3_ITEM_ID || 'bgnkhhnnamicmpeenaelnjfhikgbkllg' }}" \
+            --secret id=CHROME_CLIENT_ID,env=CHROME_CLIENT_ID \
+            --secret id=CHROME_PUBLISHER_ID,env=CHROME_PUBLISHER_ID \
+            --secret id=CHROME_CLIENT_SECRET,env=CHROME_CLIENT_SECRET \
+            --secret id=CHROME_REFRESH_TOKEN,env=CHROME_REFRESH_TOKEN \
+            --target check-cws-output \
+            --output type=local,dest=output/check-cws .
+
+      - name: Read availability properties
+        id: props
+        run: |
+          set -euo pipefail
+          props=output/check-cws/artifacts/cws-availability.properties
+          beta="$(grep '^betaChannelAvailable=' "${props}" | cut -d= -f2)"
+          release="$(grep '^releaseChannelAvailable=' "${props}" | cut -d= -f2)"
+          [ -n "${beta}" ] || { echo "::error::betaChannelAvailable missing in ${props}"; exit 1; }
+          [ -n "${release}" ] || { echo "::error::releaseChannelAvailable missing in ${props}"; exit 1; }
+          echo "beta-available=${beta}" >> "$GITHUB_OUTPUT"
+          echo "release-available=${release}" >> "$GITHUB_OUTPUT"
+
+  lint:
+    name: Lint and locales check
+    runs-on: team-extensions
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout stable branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ env.STABLE_BRANCH }}
+
+      - name: Create empty tsurlfilter build context
+        run: mkdir -p tmp/tsurlfilter
+
+      - name: Run lint via Docker
+        run: |
+          DOCKER_BUILDKIT=1 docker build --progress plain \
+            --build-context tsurlfilter=tmp/tsurlfilter \
+            --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --target lint-output \
+            --output type=local,dest=output/lint .
+
+      - name: Validate locales via Docker
+        run: |
+          DOCKER_BUILDKIT=1 docker build --progress plain \
+            --build-context tsurlfilter=tmp/tsurlfilter \
+            --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --target locales-check-output \
+            --output type=local,dest=output/locales .
+
+  unit-tests:
+    name: Unit tests
+    runs-on: team-extensions
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout stable branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ env.STABLE_BRANCH }}
+
+      - name: Create empty tsurlfilter build context
+        run: mkdir -p tmp/tsurlfilter
+
+      - name: Run unit tests via Docker
+        run: |
+          DOCKER_BUILDKIT=1 docker build --progress plain \
+            --build-context tsurlfilter=tmp/tsurlfilter \
+            --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --target unit-tests-output \
+            --output type=local,dest=output/unit-tests .
+
+      - name: Upload unit tests report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: auto-build-unit-tests-report
+          path: output/unit-tests/tests-reports/
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Check unit tests exit code
+        shell: bash
+        run: bash tools/ci/check-exit-code.sh output/unit-tests/exit-code.txt "Unit tests"
+
+  update-filters-and-build:
+    name: Update filters and build
+    needs: [check-cws, lint, unit-tests]
+    runs-on: team-extensions
+    timeout-minutes: 15
+    permissions:
+      contents: write   # push commit + autobuild tag to the stable branch
+      id-token: write   # Vault JWT/OIDC
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - name: Checkout stable branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ env.STABLE_BRANCH }}
+
+      - name: Create empty tsurlfilter build context
+        run: mkdir -p tmp/tsurlfilter
+
+      - name: Fetch TokenGuard API key from Vault
+        id: vault-tokenguard
+        uses: hashicorp/vault-action@v4
+        with:
+          url: ${{ vars.VAULT_URL }}
+          method: jwt
+          path: jwt
+          role: extensions-private-browser-extension
+          secrets: |
+            secret/data/ci-secrets/extensions-private-browser-extension tokenguard_api_key | TOKENGUARD_API_KEY ;
+
+      - name: Generate find excludes
+        run: ./tools/ci/generate-find-excludes.sh gitignore-excludes.txt
+
+      # The skip-review flag (full resources update on Tuesdays, skip-review
+      # eligibility check otherwise) is computed inside the Dockerfile stage.
+      - name: Update filters, increment version and build via Docker
+        env:
+          TOKENGUARD_API_KEY: ${{ steps.vault-tokenguard.outputs.TOKENGUARD_API_KEY }}
+          BETA_CHANNEL_AVAILABLE: ${{ needs.check-cws.outputs.beta-available }}
+          RELEASE_CHANNEL_AVAILABLE: ${{ needs.check-cws.outputs.release-available }}
+        run: |
+          DOCKER_BUILDKIT=1 docker build --progress plain \
+            --build-context tsurlfilter=tmp/tsurlfilter \
+            --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --build-arg BETA_CHANNEL_AVAILABLE="${BETA_CHANNEL_AVAILABLE}" \
+            --build-arg RELEASE_CHANNEL_AVAILABLE="${RELEASE_CHANNEL_AVAILABLE}" \
+            --secret id=TOKENGUARD_API_KEY,env=TOKENGUARD_API_KEY \
+            --target auto-build-output \
+            --output type=local,dest=output/auto-build .
+
+      - name: Commit updated resources to the stable branch
+        run: |
+          set -euo pipefail
+          cp -R output/auto-build/modified/. .
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "No resource changes to commit"
+            exit 0
+          fi
+          git config user.name "${{ env.RELEASE_BOT_NAME }}"
+          git config user.email "${{ env.RELEASE_BOT_EMAIL }}"
+          # actions/checkout leaves a detached HEAD; create/checkout the local
+          # branch so `git push origin <branch>` resolves a refspec.
+          git checkout -B "${STABLE_BRANCH}"
+          git add -A
+          git commit -m "[skip ci] Rulesets update & increment patch version"
+          # Rebase on the latest remote state to minimize the window in which a
+          # concurrent push (e.g. "Update stable branch") could race this one.
+          git pull --rebase origin "${STABLE_BRANCH}"
+          git push origin "${STABLE_BRANCH}"
+
+      - name: Tag the auto-build
+        id: version
+        run: |
+          set -euo pipefail
+          version="$(grep '^version=' output/auto-build/artifacts/build.txt | cut -d= -f2)"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          git tag -f "autobuild-v${version}"
+          git push -f origin "autobuild-v${version}"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v7
+        with:
+          name: auto-build-artifacts
+          path: output/auto-build/artifacts/
+          if-no-files-found: error
+          retention-days: 7
+
+      # The CWS workflows expect the extension archive to be named chrome.zip.
+      - name: Stage CWS artifacts
+        run: |
+          set -euo pipefail
+          mkdir -p staged/cws-auto-beta staged/cws-auto-release
+          cp output/auto-build/artifacts/chrome-mv3-beta.zip staged/cws-auto-beta/chrome.zip
+          cp output/auto-build/artifacts/chrome-mv3-release.zip staged/cws-auto-release/chrome.zip
+
+      - name: Upload CWS beta artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: cws-auto-beta
+          path: staged/cws-auto-beta/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload CWS release artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: cws-auto-release
+          path: staged/cws-auto-release/
+          if-no-files-found: error
+          retention-days: 7
+
+  integration-tests:
+    name: Integration tests
+    needs: update-filters-and-build
+    runs-on: team-extensions
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout stable branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ env.STABLE_BRANCH }}
+
+      - name: Create empty tsurlfilter build context
+        run: mkdir -p tmp/tsurlfilter
+
+      # The Docker stage reads artifacts/chrome-mv3-<BUILD_TYPE>.zip from the
+      # `chrome-artifacts` named build context, so the ever-changing zips never
+      # re-hash the default build context (which would invalidate the
+      # playwright layer every run).
+      - name: Download build artifacts
+        uses: actions/download-artifact@v8
+        with:
+          name: auto-build-artifacts
+          path: artifacts
+
+      - name: Run integration tests (release)
+        run: |
+          DOCKER_BUILDKIT=1 docker build --progress plain \
+            --build-context tsurlfilter=tmp/tsurlfilter \
+            --build-context chrome-artifacts=artifacts \
+            --build-arg BUILD_TYPE=release \
+            --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --no-cache-filter=integration-tests \
+            --target integration-tests-output \
+            --output type=local,dest=output/integration-release .
+
+      - name: Run integration tests (beta)
+        run: |
+          DOCKER_BUILDKIT=1 docker build --progress plain \
+            --build-context tsurlfilter=tmp/tsurlfilter \
+            --build-context chrome-artifacts=artifacts \
+            --build-arg BUILD_TYPE=beta \
+            --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --no-cache-filter=integration-tests \
+            --target integration-tests-output \
+            --output type=local,dest=output/integration-beta .
+
+      - name: Check integration tests exit codes
+        shell: bash
+        run: |
+          for type in release beta; do
+            bash tools/ci/check-exit-code.sh "output/integration-${type}/exit-code.txt" "Integration tests (${type})"
+          done
+
+      - name: Upload integration tests report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: auto-build-integration-tests-report
+          path: |
+            output/integration-release/tests-reports/
+            output/integration-beta/tests-reports/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  publish-cws-beta:
+    name: Auto-publish MV3 beta to CWS (expedited)
+    needs: [check-cws, update-filters-and-build, integration-tests]
+    if: needs.check-cws.outputs.beta-available == 'true'
+    uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-chrome-web-store.yml@master
+    with:
+      team: extensions
+      environment: chrome-webstore-beta-auto
+      artifact-name: cws-auto-beta
+      item-id: ${{ vars.CHROME_WEBSTORE_MV3_BETA_ITEM_ID || 'apjcbfpjihpedihablmalmbbhjpklbdf' }}
+      api-version: v2
+      expedited: true
+      slack-channel: ''
+      product: AdGuard Browser Extension MV3 Beta
+      version-title: ${{ needs.update-filters-and-build.outputs.version }}
+    permissions:
+      contents: read
+      id-token: write
+
+  # NOTE: the non-expedited fallback only helps if the expedited run failed at
+  # the upload/update stage. If the expedited run failed AFTER a successful
+  # `go-webext update` (i.e. the store already holds this version), re-running
+  # here may be rejected by the store as a duplicate-version upload; in that
+  # case a manual publish from the CWS dashboard is required.
+  publish-cws-beta-fallback:
+    name: Auto-publish MV3 beta to CWS (non-expedited fallback)
+    needs: [check-cws, update-filters-and-build, publish-cws-beta]
+    if: >-
+      always() &&
+      needs.check-cws.outputs.beta-available == 'true' &&
+      (needs.publish-cws-beta.result == 'failure' || needs.publish-cws-beta.result == 'cancelled')
+    uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-chrome-web-store.yml@master
+    with:
+      team: extensions
+      environment: chrome-webstore-beta-auto
+      artifact-name: cws-auto-beta
+      item-id: ${{ vars.CHROME_WEBSTORE_MV3_BETA_ITEM_ID || 'apjcbfpjihpedihablmalmbbhjpklbdf' }}
+      api-version: v2
+      expedited: false
+      slack-channel: ''
+      product: AdGuard Browser Extension MV3 Beta
+      version-title: ${{ needs.update-filters-and-build.outputs.version }}
+    permissions:
+      contents: read
+      id-token: write
+
+  publish-cws-release:
+    name: Auto-publish MV3 release to CWS (expedited)
+    needs: [check-cws, update-filters-and-build, integration-tests]
+    if: needs.check-cws.outputs.release-available == 'true'
+    uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-chrome-web-store.yml@master
+    with:
+      team: extensions
+      environment: chrome-webstore-release-auto
+      artifact-name: cws-auto-release
+      item-id: ${{ vars.CHROME_WEBSTORE_MV3_ITEM_ID || 'bgnkhhnnamicmpeenaelnjfhikgbkllg' }}
+      api-version: v2
+      expedited: true
+      slack-channel: ''
+      product: AdGuard Browser Extension MV3
+      version-title: ${{ needs.update-filters-and-build.outputs.version }}
+    permissions:
+      contents: read
+      id-token: write
+
+  publish-cws-release-fallback:
+    name: Auto-publish MV3 release to CWS (non-expedited fallback)
+    needs: [check-cws, update-filters-and-build, publish-cws-release]
+    if: >-
+      always() &&
+      needs.check-cws.outputs.release-available == 'true' &&
+      (needs.publish-cws-release.result == 'failure' || needs.publish-cws-release.result == 'cancelled')
+    uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-chrome-web-store.yml@master
+    with:
+      team: extensions
+      environment: chrome-webstore-release-auto
+      artifact-name: cws-auto-release
+      item-id: ${{ vars.CHROME_WEBSTORE_MV3_ITEM_ID || 'bgnkhhnnamicmpeenaelnjfhikgbkllg' }}
+      api-version: v2
+      expedited: false
+      slack-channel: ''
+      product: AdGuard Browser Extension MV3
+      version-title: ${{ needs.update-filters-and-build.outputs.version }}
+    permissions:
+      contents: read
+      id-token: write
+
+  notify-failure:
+    name: Notify (failure)
+    needs: [check-cws, lint, unit-tests, update-filters-and-build, integration-tests, publish-cws-beta, publish-cws-beta-fallback, publish-cws-release, publish-cws-release-fallback]
+    # Compact form so adding/removing a job only requires editing `needs`.
+    # Cancellation is reported too (a cancelled auto-build is never silent).
+    if: >-
+      always() &&
+      (contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled'))
+    runs-on: team-extensions
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Send Slack notification
+        uses: AdGuardSoftwareLimited/actions/actions/slack@master
+        with:
+          channel: '#adguard-extension-vcs'
+          message: ':cross-mark: *browser-extension* auto-build failed (check-cws: ${{ needs.check-cws.result }}, lint: ${{ needs.lint.result }}, unit: ${{ needs.unit-tests.result }}, build: ${{ needs.update-filters-and-build.result }}, integration: ${{ needs.integration-tests.result }}, cws-beta: ${{ needs.publish-cws-beta.result }}, cws-beta-fallback: ${{ needs.publish-cws-beta-fallback.result }}, cws-release: ${{ needs.publish-cws-release.result }}, cws-release-fallback: ${{ needs.publish-cws-release-fallback.result }}) — <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>'
+          color: danger
