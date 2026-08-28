@@ -32,13 +32,13 @@ const MV3_DIR_NAME_SUFFIX = '-mv3';
 /**
  * Validator function to check for potentially dangerous rules.
  *
- * @param openAiKey OpenAI API key.
+ * @param tokenGuardApiKey TokenGuard API key.
  * @param isMV3 When true, only filter directories whose names end with `-mv3` are scanned.
  *
  * @throws Error if dangerous rules are found.
  */
-export const findDangerousRules = async (openAiKey: string, isMV3 = false): Promise<void> => {
-    const safetyChecker = new SafetyChecker(openAiKey);
+export const findDangerousRules = async (tokenGuardApiKey: string, isMV3 = false): Promise<void> => {
+    const safetyChecker = new SafetyChecker(tokenGuardApiKey);
 
     let potentialDangerousRules;
     if (isMV3) {
@@ -53,7 +53,7 @@ export const findDangerousRules = async (openAiKey: string, isMV3 = false): Prom
         potentialDangerousRules = await scanner(FILTERS_PATH);
     }
 
-    // Extracting script text from each rule for analysis with the OpenAI API
+    // Extracting script text from each rule for analysis with the TokenGuard API
     const scriptTexts = potentialDangerousRules
         .map((rule) => rule.text.split('#%#')[1])
         .filter((rule): rule is string => !!rule);

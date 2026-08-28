@@ -604,7 +604,7 @@ ARG BETA_CHANNEL_AVAILABLE
 ARG RELEASE_CHANNEL_AVAILABLE
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
-    --mount=type=secret,id=OPENAI_API_KEY \
+    --mount=type=secret,id=TOKENGUARD_API_KEY \
     echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
     pnpm config set store-dir /pnpm-store && \
     # Mark time before modifications to detect changed files later.
@@ -612,10 +612,12 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # .git directory into the Docker image.
     touch /tmp/.pre-update-marker && \
     # Update rulesets.
+    TOKENGUARD_API_KEY="$(cat /run/secrets/TOKENGUARD_API_KEY)" && \
+    : "${TOKENGUARD_API_KEY:?TOKENGUARD_API_KEY secret not provided}" && \
     if [ "${SKIP_REVIEW}" = "true" ]; then \
-      OPENAI_API_KEY="$(cat /run/secrets/OPENAI_API_KEY)" pnpm resources:mv3 --skip-local-resources; \
+      TOKENGUARD_API_KEY="${TOKENGUARD_API_KEY}" pnpm resources:mv3 --skip-local-resources; \
     else \
-      OPENAI_API_KEY="$(cat /run/secrets/OPENAI_API_KEY)" pnpm resources:mv3; \
+      TOKENGUARD_API_KEY="${TOKENGUARD_API_KEY}" pnpm resources:mv3; \
     fi && \
     # Increment patch version.
     pnpm increment && \

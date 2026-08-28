@@ -460,7 +460,7 @@ The `pnpm resources` command performs the following steps:
 
 1. **Downloads filters**: Fetches filter metadata and filter rules from the AdGuard filters repository
 2. **Updates local script rules**: Extract script rules inside separate file only for firefox.
-3. **Finds dangerous rules** (optional): If `OPENAI_API_KEY` environment variable is provided, uses OpenAI API to analyze and identify potentially dangerous rules in the filters
+3. **Finds dangerous rules** (optional): If `TOKENGUARD_API_KEY` environment variable is provided, uses the TokenGuard API to analyze and identify potentially dangerous rules in the filters
 
 For MV3 version (`pnpm resources:mv3`), the process includes additional steps:
 
@@ -468,7 +468,7 @@ For MV3 version (`pnpm resources:mv3`), the process includes additional steps:
 2. **Updates local test script rules**: Fetches all script rules from test cases and updates local resources
 3. **Downloads and prepares MV3 filters**: Downloads filters and converts them to declarative format
 4. **Updates local resources for MV3**: Processes and updates local script resources for Chromium MV3
-5. **Finds dangerous rules** (optional): If `OPENAI_API_KEY` environment variable is provided, uses OpenAI API to analyze and identify potentially dangerous rules in the filters
+5. **Finds dangerous rules** (optional): If `TOKENGUARD_API_KEY` environment variable is provided, uses the TokenGuard API to analyze and identify potentially dangerous rules in the filters
 6. **Extracts unsafe rules**: Runs a separate command to identify and extract unsafe rules to ruleset metadata
 
 See [dangerous rules documentation](tools/resources/dangerous-rules/README.md) for more details about the dangerous rules detection process.
@@ -1214,7 +1214,9 @@ Optional environment variables are configured via a `.env` file (copy from `.env
 | Variable | Description |
 | -------- | ----------- |
 | `ARTIFACTORY_DOMAIN` | Artifactory domain for downloading blocking pages |
-| `OPENAI_API_KEY` | OpenAI API key for detecting dangerous script rules during `pnpm resources` |
+| `TOKENGUARD_API_KEY` | TokenGuard API key for detecting dangerous script rules during `pnpm resources` |
+| `TOKENGUARD_BASE_URL` | Optional TokenGuard endpoint override (default `https://tokenguard.int.agrd.dev/api/v1/`) |
+| `TOKENGUARD_MODEL` | Optional TokenGuard model override (default `deepseek-v4-flash`) |
 | `ANALYZE` | Set to `true` to generate bundle analysis reports during builds |
 
 ## Troubleshooting
