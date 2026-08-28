@@ -59,11 +59,13 @@ vi.mock('../../../../Extension/src/common/logger', () => ({
     logger: {
         debug: vi.fn(),
         error: vi.fn(),
+        warn: vi.fn(),
     },
 }));
 
 vi.mock('../../../../Extension/src/background/services/telemetry/abtest/ABTestManager', () => ({
     ABTestManager: {
+        removeRetiredVariants: vi.fn().mockResolvedValue(undefined),
         getVariantsForProps: vi.fn().mockResolvedValue({}),
         getTestsPayload: vi.fn().mockResolvedValue({}),
         processResponse: vi.fn().mockResolvedValue(undefined),
@@ -210,6 +212,23 @@ describe('Telemetry', () => {
     });
 
     describe('session_start', () => {
+        test('continues initialization when retired experiment cleanup fails', async () => {
+            // @ts-ignore - accessing private field for testing
+            Telemetry.isSessionStartSent = false;
+            // @ts-ignore - accessing private field for testing
+            Telemetry.isSessionStartInProgress = false;
+            vi.clearAllMocks();
+            vi.mocked(ABTestManager.removeRetiredVariants).mockRejectedValueOnce(new Error('Storage error'));
+
+            await expect(Telemetry.init()).resolves.toBeUndefined();
+
+            expect(TelemetryApi.sendSessionStart).toHaveBeenCalledTimes(1);
+            expect(messageHandler.addListener).toHaveBeenCalledWith(
+                MessageType.SendTelemetryPageViewEvent,
+                expect.any(Function),
+            );
+        });
+
         test('sends session_start during init when telemetry is enabled', async () => {
             // beforeEach calls init() with telemetry enabled
             expect(TelemetryApi.sendSessionStart).toHaveBeenCalledTimes(1);
