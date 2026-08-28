@@ -120,6 +120,12 @@ export const UserRulesEditor = observer(({
     const inputRef = useRef<HTMLInputElement | null>(null);
     const actionsRef = useRef<HTMLDivElement | null>(null);
 
+    /**
+     * Generation counter for asynchronous content updates (initial load and
+     * event-driven updates).
+     */
+    const contentGenerationRef = useRef(0);
+
     const getEditor = (): EditorHandle => {
         if (!editorRef.current) {
             throw new Error('User rules editor is not initialized.');
@@ -128,7 +134,7 @@ export const UserRulesEditor = observer(({
         return editorRef.current;
     };
 
-    const switchId = store.userFilterEnabledSettingId;
+    const switchId = store.userFilterEnabledSettingId ?? '';
     const switchTitleId = `${switchId}-title`;
 
     let shouldResetSize = false;
@@ -174,6 +180,9 @@ export const UserRulesEditor = observer(({
     // Get initial storage content and set to the editor
     useEffect(() => {
         (async () => {
+            contentGenerationRef.current += 1;
+            const generation = contentGenerationRef.current;
+
             let editorContent = await messenger.getEditorStorageContent();
             // clear editor content from storage after reading it
             await messenger.setEditorStorageContent('');
@@ -183,6 +192,12 @@ export const UserRulesEditor = observer(({
                 const { content } = await messenger.getUserRules();
                 editorContent = content;
                 resetInfoThatContentChanged = true;
+            }
+
+            // Stale backend reads are discarded, but the unsaved storage handoff is always applied.
+            if (resetInfoThatContentChanged && generation !== contentGenerationRef.current) {
+                logger.debug('[ext.UserRulesEditor]: discarding stale initial content load');
+                return;
             }
 
             if (editorRef.current) {
@@ -198,17 +213,15 @@ export const UserRulesEditor = observer(({
                 }
             }
 
-            if (resetInfoThatContentChanged) {
-                store.setUserRulesEditorContentChangedState(false);
-            }
+            store.setUserRulesEditorContentChangedState(!resetInfoThatContentChanged);
 
             // initial export button state
             const { userRules } = await messenger.getUserRulesEditorData();
-            if (userRules.trim().length > 0) {
-                store.setUserRulesExportAvailableState(true);
-            } else {
-                store.setUserRulesExportAvailableState(false);
+            if (generation !== contentGenerationRef.current) {
+                logger.debug('[ext.UserRulesEditor]: discarding stale initial export state');
+                return;
             }
+            store.setUserRulesExportAvailableState(userRules.trim().length > 0);
         })();
     }, [store]);
 
@@ -219,28 +232,38 @@ export const UserRulesEditor = observer(({
      * @returns {Promise<void>}
      */
     const handleUserFilterUpdated = useCallback(async () => {
+        contentGenerationRef.current += 1;
+        const generation = contentGenerationRef.current;
+
         const { userRules } = await messenger.getUserRulesEditorData();
 
-        if (!store.userRulesEditorContentChanged) {
-            if (editorRef.current) {
-                editorRef.current.setValue(userRules);
-
-                const cursorPosition = store.getCursorPosition();
-                if (cursorPosition) {
-                    editorRef.current.setCursor(cursorPosition);
-                    store.setCursorPosition(null);
-                }
-            }
-            store.setUserRulesEditorContentChangedState(false);
-            await messenger.setEditorStorageContent('');
+        // A newer content update has started while this read was in flight —
+        // this snapshot is stale and must be discarded entirely, content and
+        // export state alike.
+        if (generation !== contentGenerationRef.current) {
+            logger.debug('[ext.UserRulesEditor]: discarding stale content update');
+            return;
         }
 
         // disable or enable export button
-        if (userRules.trim().length > 0) {
-            store.setUserRulesExportAvailableState(true);
-        } else {
-            store.setUserRulesExportAvailableState(false);
+        store.setUserRulesExportAvailableState(userRules.trim().length > 0);
+
+        // Unsaved user edits are left untouched.
+        if (store.userRulesEditorContentChanged) {
+            return;
         }
+
+        if (editorRef.current) {
+            editorRef.current.setValue(userRules);
+
+            const cursorPosition = store.getCursorPosition();
+            if (cursorPosition) {
+                editorRef.current.setCursor(cursorPosition);
+                store.setCursorPosition(null);
+            }
+        }
+        store.setUserRulesEditorContentChangedState(false);
+        await messenger.setEditorStorageContent('');
     }, [store]);
 
     // Append listeners
@@ -404,9 +427,15 @@ export const UserRulesEditor = observer(({
         await saveUserRules(value);
     };
 
-    const editorChangeHandler = async (value: string): Promise<void> => {
+    const editorChangeHandler = async (): Promise<void> => {
         const { content } = await messenger.getUserRules();
-        store.setUserRulesEditorContentChangedState(content !== value);
+
+        const current = editorRef.current?.getValue();
+        if (current === undefined) {
+            return;
+        }
+
+        store.setUserRulesEditorContentChangedState(content !== current);
     };
 
     const focusFirstEnabledAction = () => {

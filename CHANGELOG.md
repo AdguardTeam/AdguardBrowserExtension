@@ -10,7 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Exception rules created from the filtering log are not applied inside iframes [#1449].
+- Rules added from the filtering log sometimes did not appear in the already open User rules editor until refresh [#1410].
 
+[#1410]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1410
 [#1449]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1449
 
 ## [5.5] - 2026-08-17
