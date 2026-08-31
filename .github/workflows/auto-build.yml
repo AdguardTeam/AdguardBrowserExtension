@@ -14,16 +14,13 @@ on:
   workflow_dispatch:
 
 # A manual workflow_dispatch during a scheduled run must not execute
-# concurrently with it: both would push commits/tags to the stable branch.
+# concurrently with it: both would push commits to the stable branch.
 concurrency:
   group: auto-build-${{ github.repository }}
   cancel-in-progress: true
 
 env:
   STABLE_BRANCH: stable/v5.5
-  # Release bot identity, centralised as repo vars (see publish-release.yml).
-  RELEASE_BOT_NAME: ${{ vars.RELEASE_BOT_NAME || 'adguard-octobuddy[bot]' }}
-  RELEASE_BOT_EMAIL: ${{ vars.RELEASE_BOT_EMAIL || '285975488+adguard-octobuddy[bot]@users.noreply.github.com' }}
 
 jobs:
   check-cws:
@@ -159,8 +156,8 @@ jobs:
     runs-on: team-extensions
     timeout-minutes: 15
     permissions:
-      contents: write   # push commit + autobuild tag to the stable branch
-      id-token: write   # Vault JWT/OIDC
+      contents: read    # checkout + fetch of the stable branch only (commit push is via protected-push/Octopass)
+      id-token: write   # Vault JWT/OIDC + Octopass OIDC for protected-push
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
@@ -203,34 +200,57 @@ jobs:
             --target auto-build-output \
             --output type=local,dest=output/auto-build .
 
-      - name: Commit updated resources to the stable branch
+      # Copy the modified resources/version files from the auto-build stage
+      # into the worktree and compute the exact file list to hand to
+      # protected-push. The commit + push is done by the company-shared action
+      # (Octopass token + --force-with-lease) instead of a hand-rolled
+      # `git config user.name/email` + `git push` with the workflow GITHUB_TOKEN.
+      # First sync to the latest remote head of the stable branch so the push
+      # is a fast-forward and never clobbers a concurrent commit (e.g. an
+      # "Update stable branch" merge) that landed while this job was building;
+      # build outputs live under output/ and are unaffected by the reset.
+      # Note: protected-push authors the commit as github-actions[bot], the
+      # shared action's fixed identity, instead of the release-bot persona.
+      - name: Prepare auto-build commit
+        id: commit
         run: |
           set -euo pipefail
+          git fetch origin "${STABLE_BRANCH}"
+          git reset --hard "origin/${STABLE_BRANCH}"
           cp -R output/auto-build/modified/. .
           if [ -z "$(git status --porcelain)" ]; then
             echo "No resource changes to commit"
+            echo "has-changes=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          git config user.name "${{ env.RELEASE_BOT_NAME }}"
-          git config user.email "${{ env.RELEASE_BOT_EMAIL }}"
-          # actions/checkout leaves a detached HEAD; create/checkout the local
-          # branch so `git push origin <branch>` resolves a refspec.
-          git checkout -B "${STABLE_BRANCH}"
-          git add -A
-          git commit -m "[skip ci] Rulesets update & increment patch version"
-          # Rebase on the latest remote state to minimize the window in which a
-          # concurrent push (e.g. "Update stable branch") could race this one.
-          git pull --rebase origin "${STABLE_BRANCH}"
-          git push origin "${STABLE_BRANCH}"
+          # protected-push stages and commits exactly this (tracked + untracked)
+          # file set; names here are safe to space-separate.
+          files="$( { git diff --name-only; git ls-files --others --exclude-standard; } | sort -u | tr '\n' ' ' )"
+          [ -n "${files}" ]
+          # The built version goes into the commit message (it used to live in
+          # the autobuild-v* tag name, which is no longer created).
+          version="$(grep '^version=' output/auto-build/artifacts/build.txt | cut -d= -f2)"
+          echo "has-changes=true" >> "$GITHUB_OUTPUT"
+          echo "files=${files}" >> "$GITHUB_OUTPUT"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
 
-      - name: Tag the auto-build
+      - name: Commit and push to the stable branch
+        if: steps.commit.outputs.has-changes == 'true'
+        uses: AdGuardSoftwareLimited/actions/actions/protected-push@master
+        with:
+          branch: ${{ env.STABLE_BRANCH }}
+          commit-message: '[skip ci] Rulesets update & increment patch version (autobuild-v${{ steps.commit.outputs.version }})'
+          files: ${{ steps.commit.outputs.files }}
+
+      # Resolve the built version for the CWS publish jobs (version-title).
+      # The autobuild-v* tags are intentionally NOT created in the new GitHub
+      # CI anymore; nothing consumes them.
+      - name: Resolve build version
         id: version
         run: |
           set -euo pipefail
           version="$(grep '^version=' output/auto-build/artifacts/build.txt | cut -d= -f2)"
           echo "version=${version}" >> "$GITHUB_OUTPUT"
-          git tag -f "autobuild-v${version}"
-          git push -f origin "autobuild-v${version}"
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v7
