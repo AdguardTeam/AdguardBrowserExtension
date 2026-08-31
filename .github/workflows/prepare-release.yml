@@ -1,0 +1,111 @@
+name: Prepare release
+
+# Opens a release-bump PR that sets package.json to the requested version and
+# finalizes CHANGELOG.md. After the PR is merged, publish-release.yml takes
+# over. Tags ending with "-beta" (e.g. v5.6.0.1-beta) deploy only to the beta
+# channel; tags without it (e.g. v5.6.0.1) deploy only to the release channel.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: >-
+          Release tag WITH "v" prefix, 4-component version.
+          "-beta" suffix = beta channel only (e.g. v5.6.0.1-beta).
+          No suffix = release channel only (e.g. v5.6.0.1).
+        required: true
+        type: string
+
+# `contents: write` — push the release-bump branch
+# `id-token: write` — Octopass OIDC for PR creation and protected-push
+permissions:
+  contents: write
+  id-token: write
+
+env:
+  PNPM_VERSION: 10.33.4
+  NODE_VERSION: 22.17.0
+
+# The force-with-lease push of the release-bump branch (via protected-push)
+# must not interleave with a concurrent run for the same tag.
+concurrency:
+  group: prepare-release-${{ inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  create-release-pr:
+    name: Create release PR
+    runs-on: team-extensions
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          # prepare-release.ts's getCurrentChannel() probes local tags
+          # (refs/tags/vX.Y.Z.W-beta). fetch-tags: true fetches tag refs on top
+          # of the shallow clone instead of a full history clone.
+          fetch-tags: true
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v5
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      # Sets package.json version (M.m.p+inc.build.<dnrPatch>) and patches
+      # CHANGELOG.md (moves Unreleased content under the new heading).
+      # The tag is passed via env to avoid interpolating workflow inputs into
+      # the shell command.
+      - name: Bump version and changelog
+        env:
+          TAG: ${{ inputs.tag }}
+        run: pnpm tsx tools/release/prepare-release.ts "${TAG}"
+
+      # Create the local branch carrying the (still uncommitted) bump changes.
+      - name: Create release-bump branch
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          BRANCH="release-bump/${TAG}"
+          git checkout -b "${BRANCH}"
+
+      # protected-push requires the remote branch to exist before it can push
+      # with --force-with-lease; create it on the first run only. Re-runs of
+      # the same tag are safe: protected-push resets the branch against the
+      # live remote head.
+      - name: Ensure remote release-bump branch exists
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          BRANCH="release-bump/${TAG}"
+          if ! git ls-remote --exit-code --heads origin "refs/heads/${BRANCH}" >/dev/null 2>&1; then
+            git push origin "HEAD:${BRANCH}"
+          fi
+
+      # Commits package.json + CHANGELOG.md and pushes the branch with the
+      # company-shared protected-push action (Octopass token + force-with-lease
+      # safety) instead of a hand-rolled delete-then-push.
+      - name: Push release-bump branch
+        uses: AdGuardSoftwareLimited/actions/actions/protected-push@master
+        with:
+          branch: release-bump/${{ inputs.tag }}
+          commit-message: Release ${{ inputs.tag }}
+          files: package.json CHANGELOG.md
+
+      - name: Create pull request
+        uses: AdGuardSoftwareLimited/actions/actions/create-pr@master
+        with:
+          title: 'Release ${{ inputs.tag }}'
+          body: "Release ${{ inputs.tag }}\n\nMerging this PR triggers the publish-release workflow."
+          head: 'release-bump/${{ inputs.tag }}'
+          base: master
