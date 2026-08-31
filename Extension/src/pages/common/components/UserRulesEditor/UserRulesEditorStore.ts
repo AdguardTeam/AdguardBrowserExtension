@@ -29,21 +29,32 @@ import {
 } from 'mobx';
 
 import { messenger } from '../../../services/messenger';
+import type { SettingOption, Settings } from '../../../../background/schema/settings';
+import type { GetOptionsDataResponse } from '../../../../background/services/settings';
 import {
     createSavingService,
     SavingFSMEvent,
     SavingFSMState,
 } from '../Editor/savingFSM';
+import { type EditorCursor } from '../Editor/editor-handle';
 
-class UserRulesEditorStore {
+/**
+ * Settings data received with the options page data.
+ */
+type SettingsData = GetOptionsDataResponse['settings'];
+
+/**
+ * Store of the user rules editor component.
+ */
+export class UserRulesEditorStore {
     @observable
-    settings = null;
+    settings: SettingsData | null = null;
 
     @observable
     userRulesEditorContentChanged = false;
 
     @observable
-    userRulesEditorWrap = null;
+    userRulesEditorWrap: boolean | null = null;
 
     @observable
     userRulesExportAvailable = false;
@@ -52,10 +63,10 @@ class UserRulesEditorStore {
     userRulesEditorPrefsDropped = false;
 
     @observable
-    specificLimitWarningData = null;
+    specificLimitWarningData: unknown = null;
 
     @observable
-    cursorPosition = null;
+    cursorPosition: EditorCursor | null = null;
 
     savingService = createSavingService({
         id: 'userRules',
@@ -88,8 +99,11 @@ class UserRulesEditorStore {
         });
     }
 
+    /**
+     * Requests settings data and stores it.
+     */
     @action
-    async requestSettingsData() {
+    async requestSettingsData(): Promise<void> {
         const data = await messenger.getOptionsData();
 
         runInAction(() => {
@@ -98,27 +112,33 @@ class UserRulesEditorStore {
     }
 
     @action
-    setUserRulesEditorContentChangedState = (state) => {
+    setUserRulesEditorContentChangedState = (state: boolean): void => {
         this.userRulesEditorContentChanged = state;
     };
 
     @action
-    setUserRulesExportAvailableState = (state) => {
+    setUserRulesExportAvailableState = (state: boolean): void => {
         this.userRulesExportAvailable = state;
     };
 
     @action
-    setUserRulesEditorPrefsDropped = (state) => {
+    setUserRulesEditorPrefsDropped = (state: boolean): void => {
         this.userRulesEditorPrefsDropped = state;
     };
 
     @action
-    setCursorPosition = (position) => {
+    setCursorPosition = (position: EditorCursor | null): void => {
         this.cursorPosition = position;
     };
 
+    /**
+     * Updates a setting and sends the change to the background.
+     *
+     * @param settingId Setting identifier
+     * @param value New setting value
+     */
     @action
-    async updateSetting(settingId, value) {
+    async updateSetting<T extends SettingOption>(settingId: T, value: Settings[T]): Promise<void> {
         if (this.settings) {
             this.settings.values[settingId] = value;
         }
@@ -126,8 +146,11 @@ class UserRulesEditorStore {
         await messenger.changeUserSetting(settingId, value);
     }
 
+    /**
+     * Toggles the wrap mode and persists it in the settings.
+     */
     @action
-    async toggleUserRulesEditorWrapMode() {
+    async toggleUserRulesEditorWrapMode(): Promise<void> {
         this.userRulesEditorWrap = !this.userRulesEditorWrap;
         if (this.settings) {
             await this.updateSetting(
@@ -138,12 +161,12 @@ class UserRulesEditorStore {
     }
 
     @action
-    setUserRulesEditorWrapMode(value) {
+    setUserRulesEditorWrapMode(value: boolean): void {
         this.userRulesEditorWrap = value;
     }
 
     @computed
-    get userRulesEditorWrapState() {
+    get userRulesEditorWrapState(): boolean | null {
         if (this.settings) {
             this.setUserRulesEditorWrapMode(
                 this.settings.values[this.settings.names.UserRulesEditorWrap],
@@ -154,7 +177,7 @@ class UserRulesEditorStore {
     }
 
     @computed
-    get userFilterEnabledSettingId() {
+    get userFilterEnabledSettingId(): SettingOption.UserFilterEnabled | null {
         if (!this.settings) {
             return null;
         }
@@ -162,18 +185,27 @@ class UserRulesEditorStore {
     }
 
     @computed
-    get userFilterEnabled() {
-        if (this.settings) {
-            return this.settings.values[this.userFilterEnabledSettingId];
+    get userFilterEnabled(): boolean {
+        const settingId = this.userFilterEnabledSettingId;
+        if (this.settings && settingId !== null) {
+            return this.settings.values[settingId];
         }
         return false;
     }
 
-    getCursorPosition() {
+    /**
+     * Returns the cursor position requested by the list view.
+     */
+    getCursorPosition(): EditorCursor | null {
         return this.cursorPosition;
     }
 
-    saveUserRules(value) {
+    /**
+     * Saves user rules via the saving state machine.
+     *
+     * @param value User rules content
+     */
+    saveUserRules(value: string): Promise<void> {
         return new Promise((resolve, reject) => {
             try {
                 this.savingService.send({

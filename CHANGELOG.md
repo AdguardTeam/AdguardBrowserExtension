@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased 5.6
 
+### Fixed
+
+- Rules added from the filtering log sometimes did not appear in the already open User rules editor until refresh [#1410].
+
+[#1410]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1410
+
 ## [5.5] - 2026-08-17
 
 ### Added
