@@ -79,13 +79,20 @@ export class Telemetry {
      * Initializes telemetry service.
      *
      * Generates or retrieves synthetic ID, collects user agent and props,
-     * and sets up message listeners for telemetry events.
+     * removes retired A/B test variants before starting the session, and sets
+     * up message listeners for telemetry events.
      */
     public static async init(): Promise<void> {
         await TelemetryDataCollector.init();
         // double instantiation need for ease of testing
         this.pageTracker = new TelemetryPageTracker();
         this.pageTracker.init();
+
+        try {
+            await ABTestManager.removeRetiredVariants();
+        } catch (e) {
+            logger.warn('[ext.Telemetry.init]: Failed to remove retired variants', e);
+        }
 
         await Telemetry.runSessionStart();
 

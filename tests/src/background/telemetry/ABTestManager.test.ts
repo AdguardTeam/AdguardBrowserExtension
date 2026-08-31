@@ -36,6 +36,7 @@ vi.mock('../../../../Extension/src/background/storages', () => ({
     browserStorage: {
         get: vi.fn(),
         set: vi.fn(),
+        remove: vi.fn(),
     },
 }));
 
@@ -43,21 +44,39 @@ vi.mock('../../../../Extension/src/common/logger', () => ({
     logger: {
         error: vi.fn(),
         debug: vi.fn(),
+        warn: vi.fn(),
     },
+}));
+
+const { experimentRegistryMock } = vi.hoisted<{ experimentRegistryMock: Record<string, string> }>(() => ({
+    experimentRegistryMock: {},
 }));
 
 vi.mock('../../../../Extension/src/background/services/telemetry/abtest/constants', () => ({
     VARIANTS_STORAGE_KEY: 'ab_test_manager.variants',
-    EXPERIMENT_REGISTRY: {},
+    EXPERIMENT_REGISTRY: experimentRegistryMock,
 }));
+
+const setRegistry = (registry: Record<string, string> = {}): void => {
+    Object.keys(experimentRegistryMock).forEach((slot) => {
+        delete experimentRegistryMock[slot];
+    });
+    Object.assign(experimentRegistryMock, registry);
+};
 
 const makeResponse = (overrides: SessionStartResponse['versions'] = {}): SessionStartResponse => ({
     versions: overrides,
 });
 
+const STORAGE_KEY = 'ab_test_manager.variants';
+const ACTIVE_EXPERIMENT_ID = 'AG-52740-rule-limits';
+const ACTIVE_VARIANT = 'AG-52740-rule-limits-b';
+const RETIRED_VARIANT = 'AG-51010-limitations-browser-b';
+
 describe('ABTestManager', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        setRegistry();
         ABTestManager.resetCache();
     });
 
@@ -182,10 +201,14 @@ describe('ABTestManager', () => {
     });
 
     describe('storage operations', () => {
-        it('should handle storage errors gracefully', async () => {
-            vi.mocked(browserStorage.get).mockRejectedValue(new Error('Storage error'));
+        it('should retry loading after a storage error', async () => {
+            vi.mocked(browserStorage.get)
+                .mockRejectedValueOnce(new Error('Storage error'))
+                .mockResolvedValueOnce({ experiment_1: ACTIVE_VARIANT });
 
             await expect(ABTestManager.getVariantsForProps()).rejects.toThrow('Storage error');
+            expect(await ABTestManager.getVariantsForProps()).toEqual({ experiment_1: ACTIVE_VARIANT });
+            expect(browserStorage.get).toHaveBeenCalledTimes(2);
         });
 
         it('should validate storage data with zod schema', async () => {
@@ -196,6 +219,103 @@ describe('ABTestManager', () => {
 
             expect(await ABTestManager.getVariantsForProps()).toEqual({});
             expect(logger.error).toHaveBeenCalled();
+        });
+    });
+
+    describe('retired experiments cleanup', () => {
+        it('should remove storage when all cached variants are retired', async () => {
+            vi.mocked(browserStorage.get).mockResolvedValue({
+                experiment_1: RETIRED_VARIANT,
+            });
+
+            await ABTestManager.removeRetiredVariants();
+
+            expect(browserStorage.remove).toHaveBeenCalledWith(STORAGE_KEY);
+            expect(browserStorage.set).not.toHaveBeenCalled();
+            expect(await ABTestManager.getVariantsForProps()).toEqual({});
+        });
+
+        it('should remove a retired variant when its slot is reused', async () => {
+            setRegistry({ experiment_1: ACTIVE_EXPERIMENT_ID });
+            vi.mocked(browserStorage.get).mockResolvedValue({
+                experiment_1: RETIRED_VARIANT,
+            });
+
+            await ABTestManager.removeRetiredVariants();
+
+            expect(browserStorage.remove).toHaveBeenCalledWith(STORAGE_KEY);
+            expect(await ABTestManager.getTestsPayload()).toEqual({
+                experiment_1: ACTIVE_EXPERIMENT_ID,
+            });
+        });
+
+        it('should keep a variant whose name equals the active experiment ID', async () => {
+            setRegistry({ experiment_1: ACTIVE_EXPERIMENT_ID });
+            vi.mocked(browserStorage.get).mockResolvedValue({
+                experiment_1: ACTIVE_EXPERIMENT_ID,
+            });
+
+            await ABTestManager.removeRetiredVariants();
+
+            expect(browserStorage.set).not.toHaveBeenCalled();
+            expect(browserStorage.remove).not.toHaveBeenCalled();
+            expect(await ABTestManager.getVariantsForProps()).toEqual({
+                experiment_1: ACTIVE_EXPERIMENT_ID,
+            });
+        });
+
+        it('should keep a variant with a suffix that does not start with a hyphen', async () => {
+            const activeVariant = `${ACTIVE_EXPERIMENT_ID}_a`;
+            setRegistry({ experiment_1: ACTIVE_EXPERIMENT_ID });
+            vi.mocked(browserStorage.get).mockResolvedValue({
+                experiment_1: activeVariant,
+            });
+
+            await ABTestManager.removeRetiredVariants();
+
+            expect(browserStorage.set).not.toHaveBeenCalled();
+            expect(browserStorage.remove).not.toHaveBeenCalled();
+            expect(await ABTestManager.getVariantsForProps()).toEqual({
+                experiment_1: activeVariant,
+            });
+        });
+
+        it('should keep active variants and leave storage unchanged', async () => {
+            setRegistry({ experiment_1: ACTIVE_EXPERIMENT_ID });
+            vi.mocked(browserStorage.get).mockResolvedValue({
+                experiment_1: ACTIVE_VARIANT,
+            });
+
+            await ABTestManager.removeRetiredVariants();
+
+            expect(browserStorage.set).not.toHaveBeenCalled();
+            expect(browserStorage.remove).not.toHaveBeenCalled();
+            expect(await ABTestManager.getVariantsForProps()).toEqual({
+                experiment_1: ACTIVE_VARIANT,
+            });
+        });
+
+        it('should persist active variants when only some slots are retired', async () => {
+            const secondExperimentId = 'AG-52622-general-settings-promo';
+            const secondVariant = `${secondExperimentId}-b`;
+            setRegistry({
+                experiment_1: ACTIVE_EXPERIMENT_ID,
+                experiment_2: secondExperimentId,
+            });
+            vi.mocked(browserStorage.get).mockResolvedValue({
+                experiment_1: RETIRED_VARIANT,
+                experiment_2: secondVariant,
+            });
+
+            await ABTestManager.removeRetiredVariants();
+
+            expect(browserStorage.remove).not.toHaveBeenCalled();
+            expect(browserStorage.set).toHaveBeenCalledWith(STORAGE_KEY, {
+                experiment_2: secondVariant,
+            });
+            expect(await ABTestManager.getVariantsForProps()).toEqual({
+                experiment_2: secondVariant,
+            });
         });
     });
 });
