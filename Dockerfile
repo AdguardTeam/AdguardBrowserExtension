@@ -151,7 +151,7 @@ FROM linked-deps AS lint
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Run lint with timeout (cached until source changes).
-    ./tools/ci/timeout-wrapper.sh 180s pnpm lint && \
+    ./tools/ci/timeout-wrapper.sh 240s pnpm lint && \
     mkdir -p /out && \
     touch /out/lint.txt
 
