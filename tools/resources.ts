@@ -40,12 +40,12 @@ const resources = async () => {
     await updateLocalScriptRulesForFirefox();
     console.log('Local script rules updated');
 
-    if (process.env.OPENAI_API_KEY) {
+    if (process.env.TOKENGUARD_API_KEY) {
         console.log('Finding dangerous rules...');
-        await findDangerousRules(process.env.OPENAI_API_KEY);
+        await findDangerousRules(process.env.TOKENGUARD_API_KEY);
         console.log('Dangerous rules check completed');
     } else {
-        console.log('OpenAI API key is not provided, skipping dangerous rules check');
+        console.log('TokenGuard API key is not provided, skipping dangerous rules check');
     }
 };
 

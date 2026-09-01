@@ -1,0 +1,51 @@
+name: E2E tests
+
+# Self-contained end-to-end tests (Chrome MV2, Chrome MV3, Firefox MV2).
+# Slow — runs as a separate workflow. Fork PRs are excluded (see ci.yml).
+
+on:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e-tests:
+    name: E2E tests
+    if: github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: team-extensions
+    # 60m: the job force-rebuilds all three dev extensions (chrome, chrome-mv3,
+    # firefox-standalone) before the suite runs, and the shared runner stalls
+    # when several PRs run at once — a tighter cap flakily cancelled jobs.
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Create empty tsurlfilter build context
+        run: mkdir -p tmp/tsurlfilter
+
+      - name: Run E2E tests via Docker
+        run: |
+          DOCKER_BUILDKIT=1 docker build --progress plain \
+            --build-context tsurlfilter=tmp/tsurlfilter \
+            --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --no-cache-filter=e2e-tests-standalone \
+            --target e2e-tests-standalone-output \
+            --output type=local,dest=output/e2e-tests .
+
+      - name: Upload E2E tests report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-tests-report
+          path: output/e2e-tests/tests-reports/
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Check E2E tests exit code
+        shell: bash
+        run: bash tools/ci/check-exit-code.sh output/e2e-tests/exit-code.txt "E2E tests"

@@ -1,12 +1,25 @@
+#!/bin/bash
+
 # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
 # Please do not move it to some common file, like `setup-tests.sh`, because sourcing A script from B script
 # cannot change the options of B script.
 #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
+#  -u: Treat unset variables as an error.
 #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
-set -ex
+#  -o pipefail: Fail the pipeline if any command in it fails.
+set -euxo pipefail
 
 # Fix mixed logs
 exec 2>&1
+
+# NOTE: this file intentionally differs from master, which also offers a
+# --with-dnr-converter flag (pnpm-linking @adguard/dnr-converter) so the
+# extension and a linked tsurlfilter/tswebextension dedupe to a single copy.
+# That flag is deliberately absent on the stable branch: dnr-converter is a
+# plain npm dependency here (package.json) and stable CI never links a real
+# tsurlfilter checkout (it uses an empty build context), so linking would only
+# reintroduce a second physical copy. Re-add it if stable ever starts linking
+# tsurlfilter source.
 
 # This script is responsible for linking pre-built tsurlfilter packages.
 # It assumes tsurlfilter has already been built by build-tsurlfilter.sh
@@ -19,7 +32,6 @@ ls -la
 # Parse command line arguments
 LINK_AGTREE=false
 LINK_TSURLFILTER=false
-LINK_DNR_CONVERTER=false
 
 while [ $# -gt 0 ]; do
     case $1 in
@@ -31,13 +43,9 @@ while [ $# -gt 0 ]; do
             LINK_TSURLFILTER=true
             shift
             ;;
-        --with-dnr-converter)
-            LINK_DNR_CONVERTER=true
-            shift
-            ;;
         *)
             echo "Unknown option: $1"
-            echo "Available options: --with-agtree, --with-tsurlfilter, --with-dnr-converter"
+            echo "Available options: --with-agtree, --with-tsurlfilter"
             exit 1
             ;;
     esac
@@ -68,13 +76,6 @@ link_packages() {
     if [ "$LINK_TSURLFILTER" = true ]; then
         echo "Linking tsurlfilter package to main project..."
         pnpm link ${TSURLFILTER_DIR}/packages/tsurlfilter
-    fi
-
-    # DNR Converter is a direct dependency of the extension (and of tswebextension),
-    # link it as well so that a single copy of the package is bundled
-    if [ "$LINK_DNR_CONVERTER" = true ]; then
-        echo "Linking dnr-converter package to main project..."
-        pnpm link ${TSURLFILTER_DIR}/packages/dnr-converter
     fi
 
     # CSS Tokenizer is a dependency of AGTree and TSUrlFilter

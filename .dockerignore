@@ -9,7 +9,14 @@ output/
 tmp/
 vendor/
 node_modules/
+# Integration-test zips arrive via the `chrome-artifacts` named build context;
+# excluding them keeps the default context hash stable across runs.
+artifacts/
 Dockerfile*
 *.md
 !README.md
 *.log
+private/
+# Never bake live credentials (e.g. TOKENGUARD_API_KEY from .env) into images.
+.env
+.env.*

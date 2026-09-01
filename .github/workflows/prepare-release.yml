@@ -1,0 +1,147 @@
+name: Prepare release
+
+# Opens a release-bump PR that sets package.json to the requested version and
+# finalizes CHANGELOG.md. After the PR is merged, publish-release.yml takes
+# over. Tags ending with "-beta" (e.g. v5.6.0.1-beta) deploy only to the beta
+# channel; tags without it (e.g. v5.6.0.1) deploy only to the release channel.
+#
+# Run the workflow with `Ref` set to the branch you are releasing FROM (master
+# for the mainline, e.g. stable/v5.5 for a stable release) and set the `base`
+# input to the same branch so the release-bump PR targets it. After merging,
+# publish-release.yml tags and deploys using that merged PR's commit.
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: >-
+          Release tag WITH "v" prefix, 4-component version.
+          "-beta" suffix = beta channel only (e.g. v5.6.0.1-beta).
+          No suffix = release channel only (e.g. v5.6.0.1).
+        required: true
+        type: string
+      base:
+        description: >-
+          Base branch for the release-bump PR (default: master). For a stable
+          release, set the workflow Ref and this input to the same stable
+          branch (e.g. stable/v5.5).
+        required: false
+        default: master
+        type: string
+
+# `contents: write` — push the release-bump branch
+# `id-token: write` — Octopass OIDC for PR creation and protected-push
+permissions:
+  contents: write
+  id-token: write
+
+env:
+  PNPM_VERSION: 10.33.4
+  NODE_VERSION: 22.17.0
+
+# The force-with-lease push of the release-bump branch (via protected-push)
+# must not interleave with a concurrent run for the same tag.
+concurrency:
+  group: prepare-release-${{ inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  create-release-pr:
+    name: Create release PR
+    runs-on: team-extensions
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          # prepare-release.ts's getCurrentChannel() probes local tags
+          # (refs/tags/vX.Y.Z.W-beta). fetch-tags: true fetches tag refs on top
+          # of the shallow clone instead of a full history clone.
+          fetch-tags: true
+
+      # Guards against dispatching Ref=stable/v5.5 while leaving `base` at its
+      # master default — the release-bump PR (carrying stable's versions) would
+      # otherwise silently target master.
+      - name: Verify base input matches workflow ref
+        env:
+          BASE: ${{ inputs.base || 'master' }}
+          REF: ${{ github.ref_name }}
+        run: |
+          set -uo pipefail
+          if [ "${BASE}" != "${REF}" ]; then
+            echo "::error::base input (${BASE}) does not match the workflow ref (${REF}); the release-bump PR would target the wrong branch. Set both to the branch you are releasing FROM." >&2
+            exit 1
+          fi
+          echo "✅ base input (${BASE}) matches workflow ref"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v5
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      # Sets package.json version (M.m.p+inc.build.<dnrPatch>) and patches
+      # CHANGELOG.md (moves Unreleased content under the new heading).
+      # The tag is passed via env to avoid interpolating workflow inputs into
+      # the shell command.
+      - name: Bump version and changelog
+        env:
+          TAG: ${{ inputs.tag }}
+        run: pnpm tsx tools/release/prepare-release.ts "${TAG}"
+
+      # Create the local branch carrying the (still uncommitted) bump changes.
+      - name: Create release-bump branch
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          BRANCH="release-bump/${TAG}"
+          git checkout -b "${BRANCH}"
+
+      # protected-push (see below) requires the remote branch to exist before
+      # it can push with --force-with-lease, so the first run creates it — and
+      # it carries the bump commit itself, so the seeded ref is never a stale
+      # pre-bump HEAD. Re-runs of the same tag skip the seed and let
+      # protected-push reset the branch against the live remote head.
+      - name: Create remote release-bump branch (first run)
+        env:
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          BRANCH="release-bump/${TAG}"
+          if git ls-remote --exit-code --heads origin "refs/heads/${BRANCH}" >/dev/null 2>&1; then
+            echo "Branch ${BRANCH} already exists; skipping seed"
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add package.json CHANGELOG.md
+          git commit -m "Release ${TAG}"
+          git push origin "HEAD:${BRANCH}"
+
+      # Commits package.json + CHANGELOG.md and pushes the branch with the
+      # company-shared protected-push action (Octopass token + force-with-lease
+      # safety) instead of a hand-rolled delete-then-push. On first runs the
+      # seed above already committed and pushed, so this becomes a no-op.
+      - name: Push release-bump branch
+        uses: AdGuardSoftwareLimited/actions/actions/protected-push@master
+        with:
+          branch: release-bump/${{ inputs.tag }}
+          commit-message: Release ${{ inputs.tag }}
+          files: package.json CHANGELOG.md
+
+      - name: Create pull request
+        uses: AdGuardSoftwareLimited/actions/actions/create-pr@master
+        with:
+          title: 'Release ${{ inputs.tag }}'
+          body: "Release ${{ inputs.tag }}\n\nMerging this PR triggers the publish-release workflow."
+          head: 'release-bump/${{ inputs.tag }}'
+          base: ${{ inputs.base || 'master' }}

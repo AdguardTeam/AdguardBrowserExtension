@@ -1,0 +1,705 @@
+name: Publish release
+
+# Tags the release commit, builds all channel artifacts, deploys to
+# static.adtidy.org, submits to browser stores, and creates the GitHub
+# Release on the public repo (AdguardTeam/AdguardBrowserExtension).
+#
+# Triggered automatically by merging a release-bump/* PR opened by
+# prepare-release.yml (into master or a stable/** branch), or manually via
+# workflow_dispatch. Beta tags (v5.6.0.1-beta) deploy only to beta channels;
+# plain tags (v5.6.0.1) only to release channels.
+#
+# Replaces Bamboo plans: build-beta, build-release,
+# build-firefox-standalone-beta, build-firefox-amo-beta, deploy-beta,
+# deploy-release, deploy-firefox-standalone-beta, deploy-firefox-amo-beta.
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [master, 'stable/**']
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Ref to publish manually (defaults to the merged PR commit)
+        required: false
+        type: string
+
+# Serialize all publishes for this repo: two release-bump PRs merged close
+# together (or a merged PR racing a manual dispatch) would otherwise run in
+# parallel and race on the same environments and store listings.
+# An in-flight release is never cancelled.
+concurrency:
+  group: publish-release-${{ github.repository }}
+  cancel-in-progress: false
+
+env:
+  PNPM_VERSION: 10.33.4
+  NODE_VERSION: 22.17.0
+
+jobs:
+  resolve-version:
+    # Publish only on manual dispatch or a merged release-bump/* PR from the
+    # release bot (matched by immutable user id, so renames can't break it).
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.pull_request.merged == true &&
+       startsWith(github.event.pull_request.head.ref, 'release-bump/') &&
+       github.event.pull_request.user.id == fromJSON(vars.RELEASE_BOT_USER_ID || '285975488'))
+    name: Resolve version and tag
+    runs-on: team-extensions
+    timeout-minutes: 15
+    permissions:
+      contents: write   # push the git tag
+    outputs:
+      tag: ${{ steps.resolve.outputs.tag }}
+      channel: ${{ steps.resolve.outputs.channel }}
+      notes: ${{ steps.resolve.outputs.notes }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.event.pull_request.merge_commit_sha || github.ref_name }}
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v5
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --ignore-scripts
+
+      # Reads the first full-version heading (## [M.m.p.inc(-beta)]) from
+      # CHANGELOG.md, verifies it matches package.json, and writes tag/channel
+      # plus a notes= block into $GITHUB_OUTPUT.
+      - name: Resolve version from changelog
+        id: resolve
+        run: |
+          set -euo pipefail
+          pnpm tsx tools/release/resolve-version.ts
+
+      # Force-retag keeps re-runs of a failed publish working; store uploads
+      # are idempotent (stores reject duplicate versions — documented in the
+      # shared store workflows). The guard below only refuses to move a tag
+      # that already points to a DIFFERENT commit, so a careless re-run can
+      # never silently relocate a published tag.
+      - name: Create git tag
+        env:
+          TAG: ${{ steps.resolve.outputs.tag }}
+        run: |
+          set -euo pipefail
+          CURRENT="$(git rev-parse HEAD)"
+          if git ls-remote --exit-code origin "refs/tags/${TAG}" >/dev/null 2>&1; then
+            EXISTING="$(git ls-remote origin "refs/tags/${TAG}" | awk '{print $1}')"
+            if [ "${EXISTING}" != "${CURRENT}" ]; then
+              echo "::error::Tag ${TAG} already points to ${EXISTING}; refusing to force-move it to a different commit (${CURRENT})" >&2
+              exit 1
+            fi
+            echo "Tag ${TAG} already pushed (points to this commit); skipping tag push"
+            exit 0
+          fi
+          git tag "${TAG}"
+          git push origin "${TAG}"
+
+  # Restores the Bamboo "Size and locales check": bundle-size and translation
+  # validation gate every release before any build/upload happens. An oversize
+  # or invalid bundle would otherwise surface only as a store rejection.
+  preflight:
+    name: Bundle size and locales check
+    needs: resolve-version
+    runs-on: team-extensions
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.event.pull_request.merge_commit_sha || github.ref_name }}
+
+      - name: Create empty tsurlfilter build context
+        run: mkdir -p tmp/tsurlfilter
+
+      # Fails the Docker build on size regressions (MV3 30MB / Firefox 4MB
+      # stores limits) or invalid translations.
+      - name: Check bundle size via Docker
+        run: |
+          DOCKER_BUILDKIT=1 docker build --progress plain \
+            --build-context tsurlfilter=tmp/tsurlfilter \
+            --build-arg BUILD_TYPE=beta \
+            --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --target bundle-size-check-output \
+            --output type=local,dest=output/bundle-size .
+
+      - name: Validate locales via Docker
+        run: |
+          DOCKER_BUILDKIT=1 docker build --progress plain \
+            --build-context tsurlfilter=tmp/tsurlfilter \
+            --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --target locales-check-output \
+            --output type=local,dest=output/locales .
+
+  build:
+    name: Build extension artifacts
+    needs: [resolve-version, preflight]
+    runs-on: team-extensions
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write   # Vault JWT/OIDC for the CRX signing certificate (beta)
+    outputs:
+      channel: ${{ needs.resolve-version.outputs.channel }}
+      approval-notes: ${{ steps.notes.outputs.approval-notes }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.event.pull_request.merge_commit_sha || github.ref_name }}
+
+      # Only beta builds the CRX, and only beta needs the production
+      # certificate. Release builds never touch the signing material.
+      - name: Fetch CRX signing certificate from Vault
+        id: vault-ext
+        if: needs.resolve-version.outputs.channel == 'beta'
+        uses: hashicorp/vault-action@v4
+        with:
+          url: ${{ vars.VAULT_URL }}
+          method: jwt
+          path: jwt
+          role: extensions-private-browser-extension
+          secrets: |
+            secret/data/ci-secrets/extensions-private-browser-extension UNTRUSTED_certificate | CERTIFICATE_PEM ;
+
+      # The certificate is passed to Docker as a BuildKit secret (--secret
+      # id=CHROME_CERT) and is never written to the workspace or a build
+      # context, so it cannot persist on the shared self-hosted runner.
+      - name: Build beta artifacts via Docker
+        if: needs.resolve-version.outputs.channel == 'beta'
+        env:
+          CERTIFICATE_PEM: ${{ steps.vault-ext.outputs.CERTIFICATE_PEM }}
+        run: |
+          set -euo pipefail
+          DOCKER_BUILDKIT=1 docker build --progress plain \
+            --secret id=CHROME_CERT,env=CERTIFICATE_PEM \
+            --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --target beta-build-output \
+            --output type=local,dest=output/build .
+          DOCKER_BUILDKIT=1 docker build --progress plain \
+            --secret id=CHROME_CERT,env=CERTIFICATE_PEM \
+            --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --target beta-chrome-crx-output \
+            --output type=local,dest=output/crx .
+
+      # archive-source.sh (inside the release-build stage) needs
+      # gitignore-excludes.txt in the build context.
+      - name: Generate find excludes
+        if: needs.resolve-version.outputs.channel == 'release'
+        run: ./tools/ci/generate-find-excludes.sh gitignore-excludes.txt
+
+      - name: Build release artifacts via Docker
+        if: needs.resolve-version.outputs.channel == 'release'
+        run: |
+          DOCKER_BUILDKIT=1 docker build --progress plain \
+            --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --target release-build-output \
+            --output type=local,dest=output/build .
+
+      # Lay out one artifact directory per deploy target. Names must match
+      # exactly what each consumer expects:
+      #   deploy-to-static.yml uploads every non-empty file in the artifact;
+      #   deploy-to-chrome-web-store.yml expects chrome.zip;
+      #   deploy-to-firefox-addons.yml expects firefox.zip + source.zip;
+      #   deploy-to-edge-addons.yml expects edge.zip.
+      - name: Stage deploy artifacts (beta)
+        if: needs.resolve-version.outputs.channel == 'beta'
+        run: |
+          set -euo pipefail
+          mkdir -p staged/static-chrome staged/cws-mv3 staged/gh-assets
+          cp output/build/artifacts/chrome.zip output/build/artifacts/chrome-mv3.zip \
+             output/build/artifacts/build.txt staged/static-chrome/
+          cp output/crx/artifacts/chrome.crx output/crx/artifacts/update.xml staged/static-chrome/
+          cp output/build/artifacts/chrome-mv3.zip staged/cws-mv3/chrome.zip
+          cp output/build/artifacts/chrome.zip output/build/artifacts/chrome-mv3.zip \
+             output/build/artifacts/edge.zip output/build/artifacts/build.txt \
+             output/crx/artifacts/chrome.crx staged/gh-assets/
+
+      - name: Stage deploy artifacts (release)
+        if: needs.resolve-version.outputs.channel == 'release'
+        run: |
+          set -euo pipefail
+          mkdir -p staged/static-chrome staged/static-firefox staged/cws-mv3 staged/cws-mv2 \
+                   staged/amo staged/edge staged/gh-assets
+          cp output/build/artifacts/chrome.zip output/build/artifacts/chrome-mv3.zip \
+             output/build/artifacts/build.txt staged/static-chrome/
+          cp output/build/artifacts/firefox.zip output/build/artifacts/build.txt staged/static-firefox/
+          cp output/build/artifacts/chrome-mv3.zip staged/cws-mv3/chrome.zip
+          cp output/build/artifacts/chrome.zip staged/cws-mv2/chrome.zip
+          cp output/build/artifacts/firefox.zip output/build/artifacts/source.zip \
+             output/build/artifacts/approval-notes.txt staged/amo/
+          cp output/build/artifacts/edge.zip staged/edge/
+          cp output/build/artifacts/chrome.zip output/build/artifacts/chrome-mv3.zip \
+             output/build/artifacts/edge.zip output/build/artifacts/opera.zip \
+             output/build/artifacts/opera-mv3.zip output/build/artifacts/firefox.zip \
+             output/build/artifacts/build.txt staged/gh-assets/
+
+      - name: Expose AMO approval notes (release)
+        if: needs.resolve-version.outputs.channel == 'release'
+        id: notes
+        run: |
+          {
+            echo 'approval-notes<<__NOTES_EOF__'
+            cat staged/amo/approval-notes.txt
+            echo '__NOTES_EOF__'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Upload static Chrome artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: static-chrome-${{ needs.resolve-version.outputs.channel }}
+          path: staged/static-chrome/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload static Firefox artifact (release)
+        if: needs.resolve-version.outputs.channel == 'release'
+        uses: actions/upload-artifact@v7
+        with:
+          name: static-firefox-release
+          path: staged/static-firefox/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload Chrome Web Store MV3 artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: cws-mv3-${{ needs.resolve-version.outputs.channel }}
+          path: staged/cws-mv3/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload Chrome Web Store MV2 artifact (release)
+        if: needs.resolve-version.outputs.channel == 'release'
+        uses: actions/upload-artifact@v7
+        with:
+          name: cws-mv2-release
+          path: staged/cws-mv2/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload AMO artifact (release)
+        if: needs.resolve-version.outputs.channel == 'release'
+        uses: actions/upload-artifact@v7
+        with:
+          name: amo-release
+          path: staged/amo/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload Edge artifact (release)
+        if: needs.resolve-version.outputs.channel == 'release'
+        uses: actions/upload-artifact@v7
+        with:
+          name: edge-release
+          path: staged/edge/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload GitHub Release assets
+        uses: actions/upload-artifact@v7
+        with:
+          name: gh-assets-${{ needs.resolve-version.outputs.channel }}
+          path: staged/gh-assets/
+          if-no-files-found: error
+          retention-days: 7
+
+      # Defensive only: the signing certificate reaches Docker as a BuildKit
+      # secret, so nothing should live under private/ on the shared runner.
+      - name: Clean up signing certificate
+        if: always()
+        run: rm -rf private/
+
+  build-firefox-standalone:
+    # Firefox standalone beta is signed by Mozilla via go-webext. Kept in an
+    # isolated job (signing can take up to ~20 minutes) so it never blocks
+    # the Chromium path. The 45m cap covers the signing window plus the
+    # force-rebuilt beta build on the shared runner.
+    name: Build and sign Firefox standalone (beta)
+    needs: [resolve-version, preflight]
+    if: needs.resolve-version.outputs.channel == 'beta'
+    runs-on: team-extensions
+    timeout-minutes: 45
+    permissions:
+      contents: read
+      id-token: write   # Vault JWT/OIDC for AMO signing credentials
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.event.pull_request.merge_commit_sha || github.ref_name }}
+
+      - name: Generate find excludes
+        run: ./tools/ci/generate-find-excludes.sh gitignore-excludes.txt
+
+      - name: Build Firefox standalone via Docker
+        run: |
+          DOCKER_BUILDKIT=1 docker build --progress plain \
+            --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --target firefox-beta-build-output \
+            --output type=local,dest=output/ff-build .
+
+      - name: Fetch Firefox AMO credentials from Vault
+        id: vault-amo
+        uses: hashicorp/vault-action@v4
+        with:
+          url: ${{ vars.VAULT_URL }}
+          method: jwt
+          path: jwt
+          role: firefox-amo-deployer
+          secrets: |
+            secret/data/ci-secrets/firefox-amo-deployer client-id | FIREFOX_CLIENT_ID ;
+            secret/data/ci-secrets/firefox-amo-deployer client-secret | FIREFOX_CLIENT_SECRET ;
+
+      - name: Sign Firefox XPI via Docker
+        env:
+          FIREFOX_CLIENT_ID: ${{ steps.vault-amo.outputs.FIREFOX_CLIENT_ID }}
+          FIREFOX_CLIENT_SECRET: ${{ steps.vault-amo.outputs.FIREFOX_CLIENT_SECRET }}
+        run: |
+          DOCKER_BUILDKIT=1 docker build --progress plain \
+            --build-context firefox-artifacts=output/ff-build/artifacts \
+            --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --secret id=FIREFOX_CLIENT_ID,env=FIREFOX_CLIENT_ID \
+            --secret id=FIREFOX_CLIENT_SECRET,env=FIREFOX_CLIENT_SECRET \
+            --target firefox-beta-sign-output \
+            --output type=local,dest=output/ff-sign .
+
+      - name: Stage Firefox artifacts
+        run: |
+          set -euo pipefail
+          mkdir -p staged/static-firefox staged/gh-assets-firefox
+          cp output/ff-sign/artifacts/firefox.zip output/ff-sign/artifacts/firefox.xpi \
+             output/ff-sign/artifacts/update.json output/ff-sign/artifacts/build.txt \
+             staged/static-firefox/
+          cp output/ff-sign/artifacts/firefox.zip output/ff-sign/artifacts/firefox.xpi \
+             output/ff-sign/artifacts/build.txt staged/gh-assets-firefox/
+
+      - name: Upload static Firefox artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: static-firefox-beta
+          path: staged/static-firefox/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload Firefox release assets
+        uses: actions/upload-artifact@v7
+        with:
+          name: gh-assets-firefox-beta
+          path: staged/gh-assets-firefox/
+          if-no-files-found: error
+          retention-days: 7
+
+  build-firefox-amo-beta:
+    # Unsigned AMO beta upload package (AMO signs it during review).
+    name: Build Firefox AMO beta
+    needs: [resolve-version, preflight]
+    if: needs.resolve-version.outputs.channel == 'beta'
+    runs-on: team-extensions
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    outputs:
+      approval-notes: ${{ steps.notes.outputs.approval-notes }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.event.pull_request.merge_commit_sha || github.ref_name }}
+
+      - name: Generate find excludes
+        run: ./tools/ci/generate-find-excludes.sh gitignore-excludes.txt
+
+      - name: Build Firefox AMO beta via Docker
+        run: |
+          DOCKER_BUILDKIT=1 docker build --progress plain \
+            --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --target firefox-amo-beta-build-output \
+            --output type=local,dest=output/ff-amo .
+
+      # deploy-to-firefox-addons.yml requires the extension to be named
+      # firefox.zip inside the artifact.
+      - name: Stage AMO beta artifact
+        run: |
+          set -euo pipefail
+          mkdir -p staged/amo-beta
+          cp output/ff-amo/artifacts/firefox-amo.zip staged/amo-beta/firefox.zip
+          cp output/ff-amo/artifacts/source.zip output/ff-amo/artifacts/approval-notes.txt \
+             staged/amo-beta/
+
+      - name: Expose AMO approval notes
+        id: notes
+        run: |
+          {
+            echo 'approval-notes<<__NOTES_EOF__'
+            cat staged/amo-beta/approval-notes.txt
+            echo '__NOTES_EOF__'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Upload AMO beta artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: amo-beta
+          path: staged/amo-beta/
+          if-no-files-found: error
+          retention-days: 7
+
+  deploy-static-chrome:
+    name: Deploy Chromium artifacts to static.adtidy.org
+    needs: [resolve-version, build]
+    uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-static.yml@master
+    with:
+      team: extensions
+      deployer-module: adblocker-webext-chrome-${{ needs.build.outputs.channel }}
+      artifact-name: static-chrome-${{ needs.build.outputs.channel }}
+      environment: ${{ needs.build.outputs.channel == 'beta' && 'beta-static' || 'production-static' }}
+    permissions:
+      contents: read
+      id-token: write   # OIDC token for authenticated Deployer upload
+
+  deploy-static-firefox-beta:
+    name: Deploy Firefox beta to static.adtidy.org
+    needs: [resolve-version, build-firefox-standalone]
+    if: needs.resolve-version.outputs.channel == 'beta'
+    uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-static.yml@master
+    with:
+      team: extensions
+      deployer-module: adblocker-webext-firefox-beta
+      artifact-name: static-firefox-beta
+      environment: beta-static
+    permissions:
+      contents: read
+      id-token: write
+
+  deploy-static-firefox-release:
+    name: Deploy Firefox release to static.adtidy.org
+    needs: [resolve-version, build]
+    if: needs.resolve-version.outputs.channel == 'release'
+    uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-static.yml@master
+    with:
+      team: extensions
+      deployer-module: adblocker-webext-firefox-release
+      artifact-name: static-firefox-release
+      environment: production-static
+    permissions:
+      contents: read
+      id-token: write
+
+  publish-cws-mv3-beta:
+    name: Publish MV3 beta to Chrome Web Store
+    needs: [resolve-version, build]
+    if: needs.resolve-version.outputs.channel == 'beta'
+    uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-chrome-web-store.yml@master
+    with:
+      team: extensions
+      environment: chrome-webstore-beta
+      artifact-name: cws-mv3-beta
+      item-id: ${{ vars.CHROME_WEBSTORE_MV3_BETA_ITEM_ID || 'apjcbfpjihpedihablmalmbbhjpklbdf' }}
+      api-version: v2
+      slack-channel: ''
+      product: AdGuard Browser Extension MV3 Beta
+      version-title: ${{ needs.resolve-version.outputs.tag }}
+    permissions:
+      contents: read
+      id-token: write
+
+  publish-cws-mv3-release:
+    name: Publish MV3 release to Chrome Web Store
+    needs: [resolve-version, build]
+    if: needs.resolve-version.outputs.channel == 'release'
+    uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-chrome-web-store.yml@master
+    with:
+      team: extensions
+      environment: chrome-webstore-release
+      artifact-name: cws-mv3-release
+      item-id: ${{ vars.CHROME_WEBSTORE_MV3_ITEM_ID || 'bgnkhhnnamicmpeenaelnjfhikgbkllg' }}
+      api-version: v2
+      slack-channel: ''
+      product: AdGuard Browser Extension MV3
+      version-title: ${{ needs.resolve-version.outputs.tag }}
+    permissions:
+      contents: read
+      id-token: write
+
+  publish-cws-mv2-release:
+    name: Publish MV2 release to Chrome Web Store
+    needs: [resolve-version, build]
+    if: needs.resolve-version.outputs.channel == 'release'
+    uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-chrome-web-store.yml@master
+    with:
+      team: extensions
+      environment: chrome-webstore-release
+      artifact-name: cws-mv2-release
+      item-id: ${{ vars.CHROME_WEBSTORE_MV2_ITEM_ID }}
+      api-version: v2
+      slack-channel: ''
+      product: AdGuard Browser Extension MV2
+      version-title: ${{ needs.resolve-version.outputs.tag }}
+    permissions:
+      contents: read
+      id-token: write
+
+  publish-amo-release:
+    name: Publish release to Firefox AMO
+    needs: [resolve-version, build]
+    if: needs.resolve-version.outputs.channel == 'release'
+    uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-firefox-addons.yml@master
+    with:
+      team: extensions
+      environment: firefox-amo-release
+      artifact-name: amo-release
+      channel-type: listed
+      approval-notes: ${{ needs.build.outputs.approval-notes }}
+      slack-channel: ''
+      product: AdGuard AdBlocker
+      version-title: ${{ needs.resolve-version.outputs.tag }}
+      listing-url: https://addons.mozilla.org/firefox/addon/adguard-adblocker/
+    permissions:
+      contents: read
+      id-token: write
+
+  publish-amo-beta:
+    name: Publish beta to Firefox AMO
+    needs: [resolve-version, build-firefox-amo-beta]
+    if: needs.resolve-version.outputs.channel == 'beta'
+    uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-firefox-addons.yml@master
+    with:
+      team: extensions
+      environment: firefox-amo-beta
+      artifact-name: amo-beta
+      channel-type: listed
+      approval-notes: ${{ needs.build-firefox-amo-beta.outputs.approval-notes }}
+      slack-channel: ''
+      product: AdGuard AdBlocker Beta
+      version-title: ${{ needs.resolve-version.outputs.tag }}
+      listing-url: https://addons.mozilla.org/firefox/addon/adguard-adblocker/
+    permissions:
+      contents: read
+      id-token: write
+
+  publish-edge-release:
+    name: Publish release to Edge Add-ons
+    needs: [resolve-version, build]
+    if: needs.resolve-version.outputs.channel == 'release'
+    uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-edge-addons.yml@master
+    with:
+      team: extensions
+      environment: edge-addons-release
+      artifact-name: edge-release
+      product-id: ${{ vars.EDGE_ADDONS_PRODUCT_ID }}
+      slack-channel: ''
+      product: AdGuard AdBlocker
+      version-title: ${{ needs.resolve-version.outputs.tag }}
+    permissions:
+      contents: read
+      id-token: write
+
+  # Opera has no public store API — opera zips ship only as GitHub Release
+  # assets (same as Bamboo; store submission stays manual).
+
+  create-release:
+    name: Create GitHub Release (public repo)
+    needs: [resolve-version, build]
+    uses: AdGuardSoftwareLimited/actions/.github/workflows/create-gh-release.yml@master
+    with:
+      team: extensions
+      target_repo: AdguardTeam/AdguardBrowserExtension
+      tag_name: ${{ needs.resolve-version.outputs.tag }}
+      body: ${{ needs.resolve-version.outputs.notes }}
+      artifact_name: gh-assets-${{ needs.build.outputs.channel }}
+      prerelease: ${{ needs.build.outputs.channel == 'beta' }}
+    permissions:
+      contents: read
+      id-token: write   # Octopass OIDC for the cross-repo token
+
+  attach-firefox-assets-beta:
+    # Firefox beta assets are signed via AMO in an isolated job; attach them
+    # to the already-created release (same tag) so the two never race.
+    name: Attach Firefox assets to GitHub Release (beta)
+    needs: [resolve-version, build-firefox-standalone, create-release]
+    if: needs.resolve-version.outputs.channel == 'beta'
+    uses: AdGuardSoftwareLimited/actions/.github/workflows/create-gh-release.yml@master
+    with:
+      team: extensions
+      target_repo: AdguardTeam/AdguardBrowserExtension
+      tag_name: ${{ needs.resolve-version.outputs.tag }}
+      body: ${{ needs.resolve-version.outputs.notes }}
+      artifact_name: gh-assets-firefox-beta
+      prerelease: true
+    permissions:
+      contents: read
+      id-token: write
+
+  notify-success:
+    name: Notify (success)
+    needs: [resolve-version, preflight, build, build-firefox-standalone, build-firefox-amo-beta, deploy-static-chrome, deploy-static-firefox-beta, deploy-static-firefox-release, publish-cws-mv3-beta, publish-cws-mv3-release, publish-cws-mv2-release, publish-amo-release, publish-amo-beta, publish-edge-release, create-release, attach-firefox-assets-beta]
+    # Skipped channel-specific jobs count as success; any failure or
+    # cancellation switches to the failure notification.
+    if: >-
+      always() &&
+      needs.resolve-version.result == 'success' &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled')
+    runs-on: team-extensions
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Send Slack notification
+        uses: AdGuardSoftwareLimited/actions/actions/slack@master
+        with:
+          channel: '#adguard-extension-vcs'
+          message: ':white_check_mark: *browser-extension* *${{ needs.resolve-version.outputs.tag }}* (${{ needs.resolve-version.outputs.channel }}) deployed to static.adtidy.org + stores + GitHub Release — <${{ needs.create-release.outputs.release-url }}|release> | <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>'
+          color: good
+
+  notify-failure:
+    name: Notify (failure)
+    needs: [resolve-version, preflight, build, build-firefox-standalone, build-firefox-amo-beta, deploy-static-chrome, deploy-static-firefox-beta, deploy-static-firefox-release, publish-cws-mv3-beta, publish-cws-mv3-release, publish-cws-mv2-release, publish-amo-release, publish-amo-beta, publish-edge-release, create-release, attach-firefox-assets-beta]
+    # resolve-version must succeed so we have a tag to report; build jobs are
+    # included so a build failure is never hidden behind "deploy: skipped".
+    # Cancellation (manual cancel or a lost runner) is reported too so a
+    # cancelled publish is never silent.
+    if: >-
+      always() &&
+      needs.resolve-version.result == 'success' &&
+      (contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled'))
+    runs-on: team-extensions
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Send Slack notification
+        uses: AdGuardSoftwareLimited/actions/actions/slack@master
+        with:
+          channel: '#adguard-extension-vcs'
+          message: ':cross-mark: *browser-extension* *${{ needs.resolve-version.outputs.tag }}* deploy failed (build: ${{ needs.build.result }}, build-ff: ${{ needs.build-firefox-standalone.result }}, build-ff-amo: ${{ needs.build-firefox-amo-beta.result }}, static-chrome: ${{ needs.deploy-static-chrome.result }}, static-ff-beta: ${{ needs.deploy-static-firefox-beta.result }}, static-ff-release: ${{ needs.deploy-static-firefox-release.result }}, cws-mv3-beta: ${{ needs.publish-cws-mv3-beta.result }}, cws-mv3-release: ${{ needs.publish-cws-mv3-release.result }}, cws-mv2: ${{ needs.publish-cws-mv2-release.result }}, amo-release: ${{ needs.publish-amo-release.result }}, amo-beta: ${{ needs.publish-amo-beta.result }}, edge: ${{ needs.publish-edge-release.result }}, gh-release: ${{ needs.create-release.result }}) — <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>'
+          color: danger
+
+  notify-tag-failure:
+    name: Notify (tag failure)
+    needs: [resolve-version]
+    if: always() && needs.resolve-version.result == 'failure'
+    runs-on: team-extensions
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Send Slack notification
+        uses: AdGuardSoftwareLimited/actions/actions/slack@master
+        with:
+          channel: '#adguard-extension-vcs'
+          message: ':cross-mark: *browser-extension* release failed at the resolve-version/tag step (result: ${{ needs.resolve-version.result }}) — <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>'
+          color: danger

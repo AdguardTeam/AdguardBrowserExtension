@@ -55,28 +55,56 @@ const getRulesText = (rules: RuleSample[]): string => {
 };
 
 /**
- * Dangerous rules used for creating prompts for the OpenAI API.
+ * Default TokenGuard endpoint used when TOKENGUARD_BASE_URL is not set.
+ * The auto-build pipeline passes this explicitly (auto-build.yml /
+ * .env.example) — the default only serves local development.
+ */
+const DEFAULT_TOKENGUARD_BASE_URL = 'https://tokenguard.int.agrd.dev/api/v1/';
+
+/**
+ * Default TokenGuard model used when TOKENGUARD_MODEL is not set.
+ * The auto-build pipeline passes this explicitly (auto-build.yml /
+ * .env.example) — the default only serves local development.
+ */
+const DEFAULT_TOKENGUARD_MODEL = 'deepseek-v4-flash';
+
+/**
+ * Dangerous rules used for creating prompts for the TokenGuard API.
  * The number here is lower than that of safe rules due to a smaller sample size of dangerous rules.
  */
 const DANGEROUS_RULES_COUNT = 5;
 
 /**
- * Safe rules used for creating prompt to openai api.
+ * Safe rules used for creating prompt to the TokenGuard API.
  * Not all rules are used because of tokens' limit.
  */
 const SAFE_RULES_COUNT = 20;
 
 /**
  * Safety checker class
- * Uses OpenAI API to check if a rule is safe or dangerous.
+ * Uses the TokenGuard (OpenAI-compatible) API to check if a rule is safe or dangerous.
  */
 class SafetyChecker {
     /**
-     * OpenAI API client.
+     * TokenGuard (OpenAI-compatible) API client.
      *
      * @private
      */
-    private openai: OpenAI;
+    private tokenguard: OpenAI;
+
+    /**
+     * TokenGuard base URL, resolved from TOKENGUARD_BASE_URL or the default value.
+     *
+     * @private
+     */
+    private readonly baseURL: string;
+
+    /**
+     * TokenGuard model, resolved from TOKENGUARD_MODEL or the default value.
+     *
+     * @private
+     */
+    private readonly model: string;
 
     /**
      * Cache to store the results of the analysis to avoid repeated calls to the API.
@@ -87,16 +115,21 @@ class SafetyChecker {
 
     /**
      * Constructor.
-     * Initializes the OpenAI API client.
+     * Initializes the TokenGuard API client.
      *
-     * @param apiKey OpenAI API key.
+     * @param apiKey TokenGuard API key.
      */
     constructor(apiKey: string) {
-        this.openai = new OpenAI({ apiKey });
+        this.baseURL = process.env.TOKENGUARD_BASE_URL || DEFAULT_TOKENGUARD_BASE_URL;
+        this.model = process.env.TOKENGUARD_MODEL || DEFAULT_TOKENGUARD_MODEL;
+        this.tokenguard = new OpenAI({
+            apiKey,
+            baseURL: this.baseURL,
+        });
     }
 
     /**
-     * Checks if a script text is safe or dangerous via OpenAI API.
+     * Checks if a script text is safe or dangerous via the TokenGuard API.
      *
      * @param scriptText Script text to check.
      *
@@ -104,8 +137,8 @@ class SafetyChecker {
      */
     async checkScriptText(scriptText: string): Promise<AIResponse> {
         const prompt = SafetyChecker.buildPrompt();
-        const chatCompletion = await this.openai.chat.completions.create({
-            model: 'gpt-5.4',
+        const chatCompletion = await this.tokenguard.chat.completions.create({
+            model: this.model,
             messages: [
                 {
                     role: 'system',
@@ -140,7 +173,7 @@ class SafetyChecker {
     }
 
     /**
-     * Checks if a rule is safe or dangerous via OpenAI API.
+     * Checks if a rule is safe or dangerous via the TokenGuard API.
      *
      * @param scriptText Script text to check.
      *
@@ -174,7 +207,7 @@ class SafetyChecker {
     }
 
     /**
-     * Builds the prompt for the OpenAI API.
+     * Builds the prompt for the TokenGuard API.
      *
      * @returns Prompt string.
      *

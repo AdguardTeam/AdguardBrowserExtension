@@ -10,11 +10,13 @@
 # Please do not move it to some common file, like `setup-tests.sh`, because sourcing A script from B script
 # cannot change the options of B script.
 #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
+#  -u: Treat unset variables as an error.
 #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
-set -ex
+#  -o pipefail: Fail the pipeline if any command in it fails.
+set -euxo pipefail
 
 # Validate argument
-TARGET="$1"
+TARGET="${1:-}"
 if [ "$TARGET" != "beta" ] && [ "$TARGET" != "release" ]; then
   echo "Error: Argument must be 'beta' or 'release'"
   exit 1

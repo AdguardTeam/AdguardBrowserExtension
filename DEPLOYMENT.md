@@ -4,9 +4,8 @@ This document describes how AdGuard Browser Extension builds are prepared and
 deployed. It covers **all** build/deploy pipelines (beta, release, and the two
 Firefox beta variants), plus the manual steps for preparing a new release.
 
-- [Pipeline overview](#pipeline-overview)
-- [Beta pipeline](#beta-pipeline)
-- [Release pipeline](#release-pipeline)
+- [Pipelines (GitHub Actions)](#pipelines-github-actions)
+- [Release flow](#release-flow)
 - [Firefox beta pipelines](#firefox-beta-pipelines)
   - [Why two Firefox beta pipelines](#why-two-firefox-beta-pipelines)
   - [Standalone Firefox beta](#standalone-firefox-beta)
@@ -15,175 +14,207 @@ Firefox beta variants), plus the manual steps for preparing a new release.
 - [How to prepare a new release](#how-to-prepare-a-new-release)
 - [Troubleshooting](#troubleshooting)
 
-## Pipeline overview
+## Pipelines (GitHub Actions)
 
-| Type | Build plan | Deploy plan | Destinations |
-| --- | --- | --- | --- |
-| Beta | `ADGEXT-BEBETASPECS` | `deploy beta` | static.adtidy.org, Chrome WebStore MV3, GitHub |
-| Release | `ADGEXT-BERELEASESPECS` | `deploy release` | static.adtidy.org, Chrome WebStore MV2, Chrome WebStore MV3, Addons Mozilla, Edge Add-ons, GitHub |
-| Firefox standalone beta | `ADGEXT-BEFIREFOXSTANDALONEBETASPECS` | `deploy firefox standalone beta` | static.adtidy.org, GitHub |
-| Firefox AMO beta | `ADGEXT-BEFIREFOXAMOBETASPECS` | `deploy firefox amo beta` | Addons Mozilla |
+All builds run in Docker via the repo-root `Dockerfile` on the `team-extensions`
+runner. Release/deploy flows:
 
-All Bamboo plans are defined in `bamboo-specs/` and registered in
-`bamboo-specs/bamboo.yaml`.
+| Flow | Workflow | Path |
+| --- | --- | --- |
+| PR checks + QA builds | `ci.yml` | pull_request / push to master + `stable/**` |
+| E2E tests | `e2e.yml` | pull_request |
+| Release prep | `prepare-release.yml` | manual, tag input `vM.m.p.inc[-beta]` |
+| Publish (beta + release) | `publish-release.yml` | merged `release-bump/*` PR / manual |
+| Filters auto-update + CWS auto-publish | `auto-build.yml` | schedule 00:30/12:30 UTC + manual |
 
-Bamboo spec files:
+Release flow:
 
-- `build-beta.yaml` / `build-release.yaml` — main beta and release builds
-- `build-firefox-standalone-beta.yaml` / `build-firefox-amo-beta.yaml` — Firefox variants
-- `deploy-beta.yaml` / `deploy-release.yaml` — main deployments
-- `deploy-firefox-standalone-beta.yaml` / `deploy-firefox-amo-beta.yaml` — Firefox variant deployments
-- `permissions-*.yaml` — access control for each deploy plan
+1. Run `prepare-release.yml` with the target tag (e.g. `v5.6.0.1-beta`).
+   It bumps `package.json` to `5.6.0+1.build.<dnrPatch>` and adds the
+   `## [5.6.0.1-beta]` CHANGELOG heading.
+2. Merge the `release-bump/*` PR.
+3. `publish-release.yml` tags, builds, and deploys:
+   - beta: static.adtidy.org (chromium CRX/ZIP + Firefox XPI/update.json),
+     Chrome Web Store MV3, Firefox AMO beta, Firefox standalone signing,
+     GitHub Release (public repo, prerelease)
+   - release: static.adtidy.org (chromium + Firefox), Chrome Web Store MV2+MV3,
+     Firefox AMO, Edge Add-ons, GitHub Release (public repo)
+   - Opera zips ship as GitHub Release assets only (store submission is manual).
+4. Slack notifications go to `#adguard-extension-vcs`.
 
-## Beta pipeline
+Releasing from a stable branch (e.g. `stable/v5.5`):
 
-**Build plan**: `ADGEXT-BEBETASPECS` (`browser extension - build beta`).
+- `prepare-release.yml`: set the workflow `Ref` to the stable branch and set
+  the `base` input to the same branch, so the `release-bump/*` PR targets
+  `stable/v5.5` instead of `master`.
+- After merging, `publish-release.yml` runs automatically — its trigger covers
+  merged PRs into `master` and `stable/**` — and deploys using the merged
+  PR's commit. The version check in `prepare-release.ts` compares against the
+  checked-out branch's `package.json`, so a 5.5.x candidate is accepted when
+  the workflow runs on `stable/v5.5`.
 
-Two stages: **Size and locales check** (bundle size check + translations
-validation), then **Build** (produces artifacts for all browsers via Docker).
+Deploy gates are GitHub environments (approval rules): `beta-static`,
+`production-static`, `chrome-webstore-beta`, `chrome-webstore-release`,
+`firefox-amo-beta`, `firefox-amo-release`, `edge-addons-release`. The
+auto-publish environments `chrome-webstore-beta-auto` /
+`chrome-webstore-release-auto` have no gates (full automation).
 
-**Deploy plan**: `browser extension - deploy beta` (source plan:
-`ADGEXT-BEBETASPECS`).
+Workflow files:
 
-- `static.adtidy.org` — Chrome beta extension bundles (`deploy.sh chrome-extension-beta`).
-- `Chrome WebStore MV3` — publishes the MV3 beta to the Chrome Web Store experimental item.
-- `GitHub` — attaches Chrome/Edge/Opera/Firefox bundles to the GitHub beta release.
+- `prepare-release.yml` — opens the `release-bump/*` PR (package.json + CHANGELOG)
+- `publish-release.yml` — tag, build, deploy to static/stores/GitHub, notify
+- `auto-build.yml` — 12h rulesets update + CWS auto-publish
 
-## Release pipeline
+## Required repository configuration
 
-**Build plan**: `ADGEXT-BERELEASESPECS` (`browser extension - build release`).
+The workflows depend on these repository settings. Missing values surface as
+mid-release runtime failures, so configure them before the first run.
 
-Same two-stage structure as beta (size/locales check, then build). All browsers
-built: Chrome MV2, Chrome MV3, Edge, Opera, Opera MV3, Firefox AMO, Firefox
-standalone.
+**Variables** (`Settings → Secrets and variables → Actions → Variables`):
 
-**Deploy plan**: `browser extension - deploy release` (source plan:
-`ADGEXT-BERELEASESPECS`).
+| Variable | Used by |
+| --- | --- |
+| `VAULT_URL` | Vault OIDC in publish / auto-build |
+| `CHROME_WEBSTORE_MV2_ITEM_ID` | CWS MV2 publish |
+| `CHROME_WEBSTORE_MV3_ITEM_ID` | CWS MV3 publish (release) |
+| `CHROME_WEBSTORE_MV3_BETA_ITEM_ID` | CWS MV3 publish (beta) |
+| `EDGE_ADDONS_PRODUCT_ID` | Edge Add-ons publish |
+| `RELEASE_BOT_NAME` / `RELEASE_BOT_EMAIL` / `RELEASE_BOT_USER_ID` | release bot identity (defaults to `adguard-octobuddy[bot]` / `285975488`) |
 
-- `static.adtidy.org` — Chrome and Firefox release bundles. Keep both
-  `chrome.zip` and `chrome-mv3.zip` available here, because different browsers
-  can use static builds from this location, for example Brave.
-- `Chrome WebStore MV2` — publishes MV2 to Chrome Web Store.
-- `Chrome WebStore MV3` — publishes MV3 to Chrome Web Store.
-- `Addons Mozilla` — submits to Mozilla Add-ons (AMO).
-- `Edge Add-ons` — submits to Microsoft Edge Add-ons.
-- `GitHub` — attaches all bundles to the GitHub release.
+**Vault roles** (`secret/data/ci-secrets/<role>`, via OIDC:
+
+- `extensions-private-browser-extension` — `UNTRUSTED_certificate` (CRX signing),
+  `tokenguard_api_key` (dangerous-rules check in auto-build)
+- `firefox-amo-deployer` — `client-id`, `client-secret` (Firefox signing / AMO)
+- `chrome-webstore-deployer` — `client-id`, `client-secret`, `refresh-token`,
+  `publisher-id` (CWS status + auto-publish)
+
+**Environments** with approval rules: `beta-static`, `production-static`,
+`chrome-webstore-beta`, `chrome-webstore-release`, `firefox-amo-beta`,
+`firefox-amo-release`, `edge-addons-release`.
+
+## Release flow
+
+`publish-release.yml` resolves the version from the first full 4-component
+CHANGELOG heading (`## [M.m.p.inc[-beta]] - YYYY-MM-DD`), verifies it matches
+`package.json`, force-tags the commit, and builds channel artifacts through the
+existing Docker stages.
+
+- Beta tags (`v5.6.0.1-beta`) build the signed CRX (cert delivered as the
+  `CHROME_CERT` BuildKit secret from Vault, never written to the workspace or an
+  image layer) plus the Firefox standalone and AMO beta packages; only
+  beta-channel jobs run.
+- Release tags (`v5.6.0.1`) build all browser bundles; only release-channel
+  jobs run.
+- Artifacts are laid out per consumer and consumed by the shared org workflows:
+  `deploy-to-static.yml`, `deploy-to-chrome-web-store.yml`,
+  `deploy-to-firefox-addons.yml`, `deploy-to-edge-addons.yml`,
+  `create-gh-release.yml`.
 
 ## Firefox beta pipelines
 
 Firefox beta ships in two independent variants — **standalone** (signed,
-self-distributed) and **AMO** (listed, Mozilla-reviewed). Each has its own
-build and deploy plan so that one never blocks the other.
+self-distributed) and **AMO** (listed, Mozilla-reviewed). Each runs as an
+isolated job in `publish-release.yml` so that one never blocks the other.
 
 ### Why two Firefox beta pipelines
 
 The standalone build is signed by Mozilla through `go-webext`, which can block
 for a long time (up to a 20-minute CI timeout) while waiting for Mozilla's
-review. Previously the standalone and AMO variants lived in a single build plan
-and a single deploy plan, so a slow or failed standalone signing blocked the AMO
-submission. The pipelines are now fully separated: AMO can be built and
-submitted for review independently of standalone signing, and vice versa.
+review. The standalone and AMO variants are two separate build jobs with
+separate artifact sets, so a slow or failed standalone signing never blocks the
+AMO submission, and vice versa.
 
 ### Standalone Firefox beta
 
-**Build plan**: `ADGEXT-BEFIREFOXSTANDALONEBETASPECS`
-(`browser extension - build firefox standalone beta`).
+Job `build-firefox-standalone` in `publish-release.yml` (beta channel only):
 
-- Single job **Build and Sign Standalone**:
-    1. Builds `firefox.zip` via Docker target `firefox-beta-build-output`.
-    2. Signs with `go-webext`, producing `firefox.xpi` and `update.json` via
-       Docker target `firefox-beta-sign-output`.
-- Shared artifacts: `build.txt`, `firefox.zip`, `firefox.xpi`, `update.json`.
-- Signing may hit the 20-minute timeout while waiting for Mozilla. If so,
-  re-run the **same** build after Mozilla finishes signing to download the
-  signed `.xpi`.
+1. Builds `firefox.zip` via Docker target `firefox-beta-build-output`.
+2. Signs with `go-webext`, producing `firefox.xpi` and `update.json` via
+   Docker target `firefox-beta-sign-output` (AMO credentials from Vault).
+3. Uploads the artifact to static.adtidy.org (`static-firefox-beta`) and as a
+   GitHub Release asset (`gh-assets-firefox-beta`, attached after the release
+   exists so the two never race).
 
-**Deploy plan**: `browser extension - deploy firefox standalone beta`
-(source plan: `ADGEXT-BEFIREFOXSTANDALONEBETASPECS`).
-
-- `static.adtidy.org` → `deploy.sh firefox-extension-beta` (update channel:
-  `firefox.zip`, `firefox.xpi`, `update.json`, `build.txt`).
-- `GitHub` → `deploy.sh browser-extension-github-beta-firefox` (attaches
-  `firefox.zip`, `firefox.xpi` to the GitHub release).
+Signing may hit the 20-minute timeout while waiting for Mozilla. If so, re-run
+the **same** `publish-release.yml` run (force-retag) after Mozilla finishes
+signing to download the signed `.xpi`.
 
 ### AMO Firefox beta
 
-**Build plan**: `ADGEXT-BEFIREFOXAMOBETASPECS`
-(`browser extension - build firefox amo beta`).
-
-- Single job **Build AMO**: builds the unsigned `firefox-amo.zip` via Docker
-  target `firefox-amo-beta-build-output`. AMO-listed add-ons are **not** signed
-  locally — Mozilla signs them during review.
-- Shared artifacts: `build.txt`, `firefox-amo.zip`, `source.zip`,
-  `approval-notes.txt`.
-
-**Deploy plan**: `browser extension - deploy firefox amo beta`
-(source plan: `ADGEXT-BEFIREFOXAMOBETASPECS`).
-
-- `Addons Mozilla` → `deploy.sh browser-extension-amo-beta` (submits
-  `firefox-amo.zip` + `source.zip` + `approval-notes.txt` for AMO review).
+Job `build-firefox-amo-beta` in `publish-release.yml` (beta channel only):
+builds the unsigned `firefox-amo.zip` via Docker target
+`firefox-amo-beta-build-output`. AMO-listed add-ons are **not** signed locally —
+Mozilla signs them during review. The artifact (`firefox.zip` + `source.zip` +
+`approval-notes.txt`) is submitted to AMO via the shared
+`deploy-to-firefox-addons.yml` workflow.
 
 ### How to release a Firefox beta
 
-Both build plans have `triggers: []` and `branches.create: manually`, so they
-are triggered manually in Bamboo.
-
-1. Run the **standalone** build plan and the **AMO** build plan. They are
-   independent and may run at the same time.
-2. When a build plan finishes, run its corresponding deploy plan. The standalone
-   and AMO deploy plans are independent — run either or both, in any order.
-3. If standalone signing times out, let AMO proceed and re-run the standalone
-   build once Mozilla has signed.
+The beta channel of `publish-release.yml` automatically covers both Firefox
+variants. Run `prepare-release.yml` with a `-beta` tag (e.g. `v5.6.0.1-beta`),
+merge the resulting `release-bump/*` PR, and let `publish-release.yml` run. The
+standalone and AMO jobs run independently and never block each other; if
+standalone signing times out, AMO proceeds and the standalone run can be
+re-triggered once Mozilla has signed.
 
 ## How to prepare a new release
 
 These steps apply to both beta and release builds. Where they differ, both
 variants are noted.
 
-1. **Bump library versions in `package.json`.**
+1. **Bump library versions in `package.json` and validate locally.**
 
    Bump the versions of any recently deployed libraries (e.g. `@adguard/tsurlfilter`,
    `@adguard/tswebextension`, `@adguard/scriptlets`):
    - **Beta**: use the `-beta` suffix (e.g. `5.5.0-beta`).
    - **Release**: use the final version (e.g. `5.5.0`).
 
-2. **Set `TSURLFILTER_REF=""`** to disable local linking, since the libraries
-   have already been deployed.
+2. **Run `pnpm dev`** to ensure scriptlets are up to date.
 
-3. **Run `pnpm dev`** to ensure scriptlets are up to date.
-
-4. **Run `pnpm resources && pnpm resources:mv3`** to update filters, public
+3. **Run `pnpm resources && pnpm resources:mv3`** to update filters, public
    suffix list, and DNR rulesets.
 
-5. **Build and check bundle size:**
+4. **Build and check bundle size:**
    - Beta: `pnpm beta --zip`, then `pnpm check-bundle-size beta`
    - Release: `pnpm release --zip`, then `pnpm check-bundle-size release`
 
    If the size diff is acceptable, run `pnpm update-bundle-size beta` (or
    `release`). Otherwise investigate what caused the increase.
 
-6. **Run `pnpm locales validate`** and, if needed, create a task for translators.
+5. **Run `pnpm locales validate`** and, if needed, create a task for translators.
 
-7. **Merge the PR and trigger the build in Bamboo.**
+6. **Run `prepare-release.yml`** with the target 4-component tag
+   (e.g. `v5.6.0.1-beta` for beta, `v5.6.0.1` for release). It validates the
+   format and monotonicity, sets `package.json`, patches `CHANGELOG.md`, and
+   opens the `release-bump/*` PR. For a stable release, additionally set the
+   workflow `Ref` and the `base` input to the stable branch
+   (e.g. `stable/v5.5`).
+
+7. **Merge the `release-bump/*` PR.** `publish-release.yml` takes over: it
+   tags the merge commit, builds, and deploys to the destinations for the given
+   channel.
 
 ## Troubleshooting
 
 - **Standalone signing times out (20 min).** This is expected when Mozilla is
-  slow. It does **not** affect AMO. Re-run the standalone build plan after
+  slow. It does **not** affect AMO. Re-run the `publish-release.yml` run after
   signing completes; it will pick up the signed `.xpi`. The re-run is safe
-  because idempotency lives in `go-webext`, not in Bamboo: on the second run it
-  detects the version is already uploaded to Mozilla, skips re-uploading, polls
-  the signing status, and downloads the signed `.xpi`. The Bamboo plan only
-  re-invokes the same signing step — there is nothing to retry at the pipeline
-  level.
-- **Deploy fails with a missing artifact.** The deploy plan was likely triggered
-  before its source build plan finished, or the build failed. Confirm the
-  source build plan produced all shared artifacts, then re-run the deploy.
-- **AMO and standalone interfere.** They should not — they are separate plans
-  with separate artifacts. If you see cross-contamination, verify each deploy
-  plan's `source-plan` points to the matching build plan and that the build
-  plans were run from the same commit/version.
-- **Permissions error on a deploy plan.** The deployment `name` in the deploy
-  YAML must exactly match the `deployment.name` in its permissions YAML
-  (`permissions-firefox-standalone-beta.yaml` /
-  `permissions-firefox-amo-beta.yaml`).
+  because idempotency lives in `go-webext`, not in the workflow: on the second
+  run it detects the version is already uploaded to Mozilla, skips
+  re-uploading, polls the signing status, and downloads the signed `.xpi`.
+- **Deploy fails with a missing artifact.** The build job likely produced the
+  wrong artifact layout, or the artifact was downloaded before the build job
+  finished. Confirm the build job produced all shared artifacts under
+  `output/.../artifacts/`, then re-run the workflow.
+- **`resolve-version` fails with a version mismatch.** The first full-version
+  CHANGELOG heading does not match `package.json`. Fix the mismatch (or run
+  `prepare-release.yml` again) before any deploy happens — the workflow refuses
+  to publish an inconsistent version.
+- **Store upload rejected as a duplicate version.** The shared store workflows
+  reject duplicate versions on re-run. Re-runs of `publish-release.yml` rely on
+  the force-retag and the documented idempotency of the deployer. If a store
+  still rejects a duplicate, publish manually via the store dashboard.
+- **Permissions error on a deploy job.** The GitHub environments must be
+  pre-created with the exact names used in the workflow, otherwise GitHub
+  silently auto-creates a misspelled environment without approval gates.
