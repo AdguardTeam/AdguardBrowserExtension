@@ -603,6 +603,11 @@ FROM linked-deps AS auto-build
 ARG TEST_RUN_ID
 ARG BETA_CHANNEL_AVAILABLE
 ARG RELEASE_CHANNEL_AVAILABLE
+# Registry used by `pnpm resources:mv3` (tools/resources/update-dnr-rulesets.ts)
+# to resolve the latest @adguard/dnr-rulesets. CI passes the internal Artifact
+# Keeper npm registry here because npm throttles the shared CI egress IPs;
+# empty falls back to the public npm registry.
+ARG DNR_RULESETS_REGISTRY
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     --mount=type=secret,id=TOKENGUARD_API_KEY \

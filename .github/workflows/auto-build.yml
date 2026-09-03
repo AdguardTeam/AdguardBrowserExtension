@@ -183,6 +183,22 @@ jobs:
       - name: Generate find excludes
         run: ./tools/ci/generate-find-excludes.sh gitignore-excludes.txt
 
+      # npm throttles the shared CI egress IPs, so the dnr-rulesets update
+      # resolves from the internal Artifact Keeper npm registry instead (see
+      # tools/resources/update-dnr-rulesets.ts). Fail loudly when the org
+      # variable is not visible to this repo instead of silently falling back
+      # to the throttled npm path.
+      - name: Resolve Artifact Keeper npm registry
+        env:
+          ARTIFACT_KEEPER_URL: ${{ vars.ARTIFACT_KEEPER_URL }}
+        run: |
+          set -euo pipefail
+          if [ -z "${ARTIFACT_KEEPER_URL}" ]; then
+            echo "::error::vars.ARTIFACT_KEEPER_URL is not visible to browser-extension; ask infra to grant the org variable to this repository"
+            exit 1
+          fi
+          echo "DNR_RULESETS_REGISTRY=${ARTIFACT_KEEPER_URL}/npm/npm-internal" >> "$GITHUB_ENV"
+
       # The skip-review flag (full resources update on Tuesdays, skip-review
       # eligibility check otherwise) is computed inside the Dockerfile stage.
       - name: Update filters, increment version and build via Docker
@@ -196,6 +212,7 @@ jobs:
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --build-arg BETA_CHANNEL_AVAILABLE="${BETA_CHANNEL_AVAILABLE}" \
             --build-arg RELEASE_CHANNEL_AVAILABLE="${RELEASE_CHANNEL_AVAILABLE}" \
+            --build-arg DNR_RULESETS_REGISTRY="${DNR_RULESETS_REGISTRY}" \
             --secret id=TOKENGUARD_API_KEY,env=TOKENGUARD_API_KEY \
             --target auto-build-output \
             --output type=local,dest=output/auto-build .
