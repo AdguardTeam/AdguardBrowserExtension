@@ -24,7 +24,7 @@
  * Background: unit tests run twice — once for MV2 and once for MV3.  Tests
  * annotated with `describe.skipIf(__IS_MV3__)` are covered by the MV2 run
  * but skipped (or absent) in the MV3 report, and vice-versa for MV3-only
- * tests.  When Bamboo ingests two XML files it picks the "worst" result per
+ * tests.  When CI ingests two XML files it picks the "worst" result per
  * test name, so those tests surface as skipped even though they are fully
  * covered.
  *

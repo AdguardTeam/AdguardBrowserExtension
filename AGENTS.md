@@ -36,7 +36,7 @@ working on the AdGuard Browser Extension codebase.
         - [Organization](#organization)
         - [Configuration](#configuration)
     - [Other](#other-1)
-        - [CI/CD (Bamboo)](#cicd-bamboo)
+        - [CI/CD (GitHub Actions)](#cicd-github-actions)
         - [Bundle Size Monitoring](#bundle-size-monitoring)
 - [Resources](#resources)
 
@@ -85,10 +85,9 @@ Edge, and Opera. Licensed under GPL-3.0.
 │   ├── browser-test/           # Integration test runner (Playwright)
 │   ├── locales/                # Locale management scripts
 │   ├── resources/              # Filter download and processing scripts
+│   ├── ci/                     # Shared CI shell scripts (Dockerfile + workflows)
+│   ├── release/                # Release version/changelog tooling
 │   └── skip-review/            # CWS skip-review tooling
-├── bamboo-specs/               # CI/CD pipeline definitions (Bamboo)
-│   ├── jobs/                   # Job definitions for auto-builds
-│   └── scripts/                # Shared CI shell scripts
 ├── specs/                      # Feature specifications
 ├── package.json                # Dependencies and scripts
 ├── tsconfig.base.json          # Shared TS compiler options
@@ -362,32 +361,26 @@ Descriptions must be complete sentences.
 
 ### Other
 
-#### CI/CD (Bamboo)
+#### CI/CD (GitHub Actions)
 
-- Build plans: `bamboo-specs/*.yaml`
-- Job definitions: `bamboo-specs/jobs/auto-builds/`
-- Shared scripts: `bamboo-specs/scripts/`
-- All build jobs run inside Docker via `docker build --target <stage>`
+- Workflows: `.github/workflows/` (`ci.yml`, `e2e.yml`, `prepare-release.yml`,
+  `publish-release.yml`, `auto-build.yml`)
+- All build/test jobs run inside Docker via `docker build --target <stage>`
+  on the `team-extensions` self-hosted runner
 - `Dockerfile` defines multi-stage builds (lint, test, build, etc.)
-
-**Key Build Plans:**
-- `auto-build.yaml` — Scheduled auto-build (every 12h) on stable branch for MV3
-- `build-beta.yaml` — Beta builds (chrome, chrome-mv3, edge)
-- `build-release.yaml` — Release builds (all browsers)
-- `build-firefox-standalone-beta.yaml` — Firefox standalone beta build + signing
-- `build-firefox-amo-beta.yaml` — Firefox AMO beta build
-- `tests.yaml` — Lint + unit/integration tests for PRs
-
-**Docker Build Conventions:**
-- Each CI job maps to a Dockerfile stage (e.g., `--target lint-output`)
 - Output stages use `FROM scratch` + `COPY --from=<stage>` pattern
 - Build artifacts are extracted via `--output type=local,dest=<dir>`
-- `.git` is excluded from Docker context (`.dockerignore`)
+- Static/store/GitHub deployments reuse org workflows from
+  `AdGuardSoftwareLimited/actions` (deploy-to-static, deploy-to-chrome-web-store,
+  deploy-to-firefox-addons, deploy-to-edge-addons, create-gh-release)
+- Secrets come from Vault via OIDC (`hashicorp/vault-action@v4`)
 
-**Script Conventions:**
-- Every script must start with `set -ex` and include the standard comment block
+**Script Conventions** (apply to `tools/ci/*.sh`, called by the workflows and
+the Dockerfile):
+
+- Every script starts with `set -ex` and includes the standard comment block
   explaining `-e` and `-x`
-- Use `exec 2>&1` after `set -ex` to fix mixed stdout/stderr logs in Bamboo
+- Use `exec 2>&1` after `set -ex` to fix mixed stdout/stderr logs in CI
 - Scripts should not be sourced for `set` options (they don't propagate)
 
 #### Bundle Size Monitoring

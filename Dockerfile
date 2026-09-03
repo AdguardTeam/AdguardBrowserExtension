@@ -26,11 +26,12 @@ ENV PNPM_STORE=/pnpm-store
 # ============================================================================
 FROM base AS tsurlfilter-build
 
-# Copy source from named build context (cloned on CI, no SSH needed here)
-# If TSURLFILTER_REF was empty, this will be an empty directory
+# Copy source from named build context; on CI this is an empty directory
+# (the tsurlfilter build context is provided empty) so npm versions of the
+# @adguard packages from package.json are used.
 COPY --from=tsurlfilter . /tsurlfilter
 
-# Only build if tsurlfilter has packages (TSURLFILTER_REF was set)
+# Only build tsurlfilter when the context contains a packages/ directory.
 # Otherwise skip - npm versions from package.json will be used
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     [ ! -d "/tsurlfilter/packages" ] && echo "No tsurlfilter source, using npm versions" && exit 0; \
@@ -69,22 +70,6 @@ FROM deps AS source-deps
 COPY . /extension
 
 # ============================================================================
-# Stage: increment
-# Increments the patch version in package.json
-# Output: /out/modified/package.json with bumped version
-# ============================================================================
-FROM source-deps AS increment
-
-RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
-    pnpm config set store-dir /pnpm-store && \
-    pnpm increment && \
-    mkdir -p /out/modified && \
-    cp package.json /out/modified/
-
-FROM scratch AS increment-output
-COPY --from=increment /out/ /
-
-# ============================================================================
 # Stage: linked-deps
 # Combines source-deps and tsurlfilter-build, runs fast linking (~2-3 seconds)
 # All build stages inherit from this stage
@@ -95,7 +80,7 @@ COPY --from=tsurlfilter-build /tsurlfilter /tsurlfilter
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     pnpm config set store-dir /pnpm-store && \
-    ./bamboo-specs/scripts/link-tsurlfilter.sh --with-agtree --with-tsurlfilter
+    ./tools/ci/link-tsurlfilter.sh --with-agtree --with-tsurlfilter
 
 # ============================================================================
 # Stage: linked-deps-playwright
@@ -166,7 +151,7 @@ FROM linked-deps AS lint
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Run lint with timeout (cached until source changes).
-    ./bamboo-specs/scripts/timeout-wrapper.sh 180s pnpm lint && \
+    ./tools/ci/timeout-wrapper.sh 240s pnpm lint && \
     mkdir -p /out && \
     touch /out/lint.txt
 
@@ -192,15 +177,15 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     mkdir -p /out/tests-reports && \
     set +e; \
     # Run unit tests with timeout.
-    ./bamboo-specs/scripts/timeout-wrapper.sh 300s pnpm test:ci; \
+    ./tools/ci/timeout-wrapper.sh 600s pnpm test:ci; \
     EXIT_CODE=$?; \
     # Keep tests-reports for junit parser.
     if [ -d tests-reports ]; then \
       cp -R tests-reports/. /out/tests-reports/; \
     fi; \
-    # Note that we export test-results in junit format (for Bamboo to understand)
+    # Note that we export test-results in junit format (for CI to understand)
     # and suppress the original exit code (so that we could get the test results).
-    # See bamboo-specs to understand how exit-code.txt is used.
+    # See .github/workflows to understand how exit-code.txt is used.
     echo ${EXIT_CODE} > /out/exit-code.txt; \
     exit 0
 
@@ -212,13 +197,14 @@ COPY --from=unit-tests /out/ /
 # ============================================================================
 # Stage: integration-tests
 # Runs integration tests for a given BUILD_TYPE (dev, beta, release)
-# Expects artifacts/chrome-mv3-<BUILD_TYPE>.zip in build context
+# Expects artifacts/chrome-mv3-<BUILD_TYPE>.zip via the `chrome-artifacts`
+# named build context (--build-context chrome-artifacts=artifacts)
 # ============================================================================
 FROM linked-deps-playwright AS integration-tests
 
 ARG BUILD_TYPE
 
-COPY artifacts/ /extension/artifacts/
+COPY --from=chrome-artifacts . /extension/artifacts/
 
 ARG TEST_RUN_ID
 
@@ -312,18 +298,23 @@ COPY --from=e2e-tests-standalone /out/ /
 # ============================================================================
 # Stage: beta-build
 # Creates beta build with zip files for CI artifacts
-# Requires private repo for certificate (passed via named build context)
+# Requires CHROME_CERT BuildKit secret (production CRX signing certificate)
 # ============================================================================
 FROM source-deps AS beta-build
 
-# Copy private repo for certificates
-COPY --from=private . /extension/private
-
+# The production CRX signing certificate is exposed via the CHROME_CERT BuildKit
+# secret (never COPYed from a build context) so the key never lands in a cached
+# image layer. It is materialized at the path tools/constants.ts expects.
 ARG TEST_RUN_ID
 
-RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+RUN --mount=type=secret,id=CHROME_CERT,required=true \
+    --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Bust build cache so build stages always rerun.
     echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
+    # Materialize the signing certificate from the BuildKit secret, consume it
+    # during the build, then remove it so no trace survives in the layer.
+    mkdir -p /extension/private/AdguardBrowserExtension && \
+    cat /run/secrets/CHROME_CERT > /extension/private/AdguardBrowserExtension/certificate.pem && \
     # Create beta build with zip files for CI artifacts.
     pnpm beta --zip && \
     # Create artifacts directory if it doesn't exist.
@@ -332,7 +323,9 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     mv build/beta/build.txt /out/artifacts/ && \
     mv build/beta/chrome.zip /out/artifacts/ && \
     mv build/beta/chrome-mv3.zip /out/artifacts/ && \
-    mv build/beta/edge.zip /out/artifacts/
+    mv build/beta/edge.zip /out/artifacts/ && \
+    # Leave no trace of the private key in this image layer.
+    rm -rf /extension/private
 
 FROM scratch AS beta-build-output
 COPY --from=beta-build /out/ /
@@ -340,25 +333,30 @@ COPY --from=beta-build /out/ /
 # ============================================================================
 # Stage: beta-chrome-crx
 # Creates Chrome CRX for beta build
-# Requires private repo for certificate (passed via named build context)
+# Requires CHROME_CERT BuildKit secret (production CRX signing certificate)
 # ============================================================================
 FROM source-deps AS beta-chrome-crx
 
-# Copy private repo for certificates
-COPY --from=private . /extension/private
-
+# Certificate arrives via the CHROME_CERT BuildKit secret (see beta-build).
 ARG TEST_RUN_ID
 
-RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+RUN --mount=type=secret,id=CHROME_CERT,required=true \
+    --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Bust build cache so build stages always rerun.
     echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
+    # Materialize the signing certificate from the BuildKit secret, consume it
+    # during the build, then remove it so no trace survives in the layer.
+    mkdir -p /extension/private/AdguardBrowserExtension && \
+    cat /run/secrets/CHROME_CERT > /extension/private/AdguardBrowserExtension/certificate.pem && \
     # Create beta CRX build.
     pnpm beta chrome-crx && \
     # Create artifacts directory if it doesn't exist.
     mkdir -p /out/artifacts && \
     # Move CRX and update.xml to artifacts.
     mv build/beta/chrome.crx /out/artifacts/ && \
-    mv build/beta/update.xml /out/artifacts/
+    mv build/beta/update.xml /out/artifacts/ && \
+    # Leave no trace of the private key in this image layer.
+    rm -rf /extension/private
 
 FROM scratch AS beta-chrome-crx-output
 COPY --from=beta-chrome-crx /out/ /
@@ -419,7 +417,7 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Copy update.json for Firefox standalone self-distribution.
     mv build/beta/update.json /out/artifacts/ && \
     # Archive source files for AMO publishing.
-    ./bamboo-specs/scripts/archive-source.sh beta && \
+    ./tools/ci/archive-source.sh beta && \
     mv build/beta/source.zip /out/artifacts/ && \
     mv build/beta/approval-notes.txt /out/artifacts/
 
@@ -443,16 +441,17 @@ COPY --from=firefox-artifacts build.txt /sign/build.txt
 COPY --from=firefox-artifacts approval-notes.txt /sign/approval-notes.txt
 COPY --from=firefox-artifacts update.json /sign/update.json
 
-# AMO credentials passed as build args (non-sensitive) and secrets (sensitive)
-ARG FIREFOX_CLIENT_ID
+# Untrusted values serve only as non-secret input; deliver via BuildKit secret
+# so they do not appear in image metadata/history on the shared runner.
 ARG TEST_RUN_ID
 
 # Bust build cache so signing always reruns.
-RUN --mount=type=secret,id=FIREFOX_CLIENT_SECRET \
+RUN --mount=type=secret,id=FIREFOX_CLIENT_ID,required=true \
+    --mount=type=secret,id=FIREFOX_CLIENT_SECRET,required=true \
     echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
     mkdir -p /out/artifacts && \
     # Sign the Firefox standalone beta extension with go-webext.
-    FIREFOX_CLIENT_ID="${FIREFOX_CLIENT_ID}" \
+    FIREFOX_CLIENT_ID="$(cat /run/secrets/FIREFOX_CLIENT_ID)" \
     FIREFOX_CLIENT_SECRET="$(cat /run/secrets/FIREFOX_CLIENT_SECRET)" \
     # Note that this command will fail after timeout if signing is not completed
     # (this is expected behavior).
@@ -489,7 +488,7 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     mv build/beta/build.txt /out/artifacts/ && \
     mv build/beta/firefox-amo.zip /out/artifacts/ && \
     # Archive source files for AMO publishing.
-    ./bamboo-specs/scripts/archive-source.sh beta && \
+    ./tools/ci/archive-source.sh beta && \
     mv build/beta/source.zip /out/artifacts/ && \
     mv build/beta/approval-notes.txt /out/artifacts/
 
@@ -510,7 +509,7 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Create release build with zip files for CI artifacts.
     pnpm release --zip && \
     # Archive source files for AMO publishing.
-    ./bamboo-specs/scripts/archive-source.sh release && \
+    ./tools/ci/archive-source.sh release && \
     # Create artifacts directory if it doesn't exist.
     mkdir -p /out/artifacts && \
     # Move all artifacts to the artifacts directory.
@@ -537,39 +536,57 @@ FROM adguard/extension-builder:22.22--0.4.1--0 AS check-cws
 
 WORKDIR /check
 
-COPY bamboo-specs/scripts/check-extension-status.sh ./
+COPY tools/ci/check-extension-status.sh ./
 
-ARG CHROME_CLIENT_ID
-ARG CHROME_PUBLISHER_ID
+# CWS item IDs come from the same repo vars the publish jobs use
+# (CHROME_WEBSTORE_MV3(_BETA)_ITEM_ID), so the availability guard and the
+# publish jobs cannot drift apart after a listing migration.
+# CHROME_CLIENT_ID / CHROME_PUBLISHER_ID arrive as BuildKit secrets (no ARG).
+ARG CWS_BETA_ITEM_ID
+ARG CWS_RELEASE_ITEM_ID
 ARG TEST_RUN_ID
 
-RUN --mount=type=secret,id=CHROME_CLIENT_SECRET \
-    --mount=type=secret,id=CHROME_REFRESH_TOKEN \
+RUN --mount=type=secret,id=CHROME_CLIENT_ID,required=true \
+    --mount=type=secret,id=CHROME_PUBLISHER_ID,required=true \
+    --mount=type=secret,id=CHROME_CLIENT_SECRET,required=true \
+    --mount=type=secret,id=CHROME_REFRESH_TOKEN,required=true \
     echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
     mkdir -p /out/artifacts && \
     echo "false" > /tmp/beta_available && \
     echo "false" > /tmp/release_available && \
-    (CHROME_CLIENT_ID="${CHROME_CLIENT_ID}" \
-     CHROME_CLIENT_SECRET="$(cat /run/secrets/CHROME_CLIENT_SECRET)" \
-     CHROME_REFRESH_TOKEN="$(cat /run/secrets/CHROME_REFRESH_TOKEN)" \
-     CHROME_PUBLISHER_ID="${CHROME_PUBLISHER_ID}" \
-     CHROME_API_VERSION=v2 \
-     ./check-extension-status.sh beta && echo "true" > /tmp/beta_available || true) && \
-    (CHROME_CLIENT_ID="${CHROME_CLIENT_ID}" \
-     CHROME_CLIENT_SECRET="$(cat /run/secrets/CHROME_CLIENT_SECRET)" \
-     CHROME_REFRESH_TOKEN="$(cat /run/secrets/CHROME_REFRESH_TOKEN)" \
-     CHROME_PUBLISHER_ID="${CHROME_PUBLISHER_ID}" \
-     CHROME_API_VERSION=v2 \
-     ./check-extension-status.sh release && echo "true" > /tmp/release_available || true) && \
+    check_channel() { \
+      CHROME_CLIENT_ID="$(cat /run/secrets/CHROME_CLIENT_ID)" \
+      CHROME_CLIENT_SECRET="$(cat /run/secrets/CHROME_CLIENT_SECRET)" \
+      CHROME_REFRESH_TOKEN="$(cat /run/secrets/CHROME_REFRESH_TOKEN)" \
+      CHROME_PUBLISHER_ID="$(cat /run/secrets/CHROME_PUBLISHER_ID)" \
+      CHROME_API_VERSION=v2 \
+      CWS_BETA_ITEM_ID="${CWS_BETA_ITEM_ID}" \
+      CWS_RELEASE_ITEM_ID="${CWS_RELEASE_ITEM_ID}" \
+      ./check-extension-status.sh "$1"; \
+      ec=$?; \
+      if [ "${ec}" -ge 2 ]; then \
+        echo "❌ CWS check for the ${1} channel failed with a hard error (exit ${ec})"; \
+        return "${ec}"; \
+      fi; \
+      # Exit 1 means "channel not available" (e.g. under review) - not a failure.
+      [ "${ec}" -eq 0 ] && echo "true" > "/tmp/${1}_available"; \
+      return 0; \
+    }; \
+    check_channel beta && check_channel release && \
     BETA_AVAILABLE=$(cat /tmp/beta_available) && \
     RELEASE_AVAILABLE=$(cat /tmp/release_available) && \
     echo "betaChannelAvailable=${BETA_AVAILABLE}" > /out/artifacts/cws-availability.properties && \
     echo "releaseChannelAvailable=${RELEASE_AVAILABLE}" >> /out/artifacts/cws-availability.properties && \
     cat /out/artifacts/cws-availability.properties && \
     if [ "${BETA_AVAILABLE}" = "false" ] && [ "${RELEASE_AVAILABLE}" = "false" ]; then \
-        echo "❌ Both channels unavailable, stopping build"; exit 1; \
-    fi && \
-    echo "✅ At least one channel is available, proceeding with build"
+        # "Both unavailable" is the normal state right after a store publish
+        # (channels under review). Not a failure: filter updates still commit
+        # below, the publish jobs just skip. Real check errors already failed
+        # the build via the exit >= 2 propagation above.
+        echo "⚠️ Both channels unavailable (likely under review), publish skipped"; \
+    else \
+        echo "✅ At least one channel is available, proceeding with build"; \
+    fi
 
 FROM scratch AS check-cws-output
 COPY --from=check-cws /out/ /
@@ -579,28 +596,42 @@ COPY --from=check-cws /out/ /
 # Updates filter rulesets, increments version, builds beta+release chrome-mv3
 # Outputs: artifacts (zips + build.txt) + modified source files (rulesets,
 # locales, local script rules and package.json) for git commit
-# Used by auto-build.yaml plan
+# Used by auto-build.yml workflow
 # ============================================================================
 FROM linked-deps AS auto-build
 
 ARG TEST_RUN_ID
-ARG SKIP_REVIEW
 ARG BETA_CHANNEL_AVAILABLE
 ARG RELEASE_CHANNEL_AVAILABLE
+# Registry used by `pnpm resources:mv3` (tools/resources/update-dnr-rulesets.ts)
+# to resolve the latest @adguard/dnr-rulesets. CI passes the internal Artifact
+# Keeper npm registry here because npm throttles the shared CI egress IPs;
+# empty falls back to the public npm registry.
+ARG DNR_RULESETS_REGISTRY
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
-    --mount=type=secret,id=OPENAI_API_KEY \
+    --mount=type=secret,id=TOKENGUARD_API_KEY \
     echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
     pnpm config set store-dir /pnpm-store && \
     # Mark time before modifications to detect changed files later.
     # We use a marker file instead of git diff to avoid copying the whole
     # .git directory into the Docker image.
     touch /tmp/.pre-update-marker && \
-    # Update rulesets.
-    if [ "${SKIP_REVIEW}" = "true" ]; then \
-      OPENAI_API_KEY="$(cat /run/secrets/OPENAI_API_KEY)" pnpm resources:mv3 --skip-local-resources; \
+    # Full resources update (and no CWS skip-review check) on Tuesdays,
+    # mirroring the Bamboo job; all other days reuse local resources and
+    # verify CWS skip-review eligibility.
+    if [ "$(date -u +%u)" = "2" ]; then \
+        SKIP_REVIEW=false; \
     else \
-      OPENAI_API_KEY="$(cat /run/secrets/OPENAI_API_KEY)" pnpm resources:mv3; \
+        SKIP_REVIEW=true; \
+    fi && \
+    # Update rulesets.
+    TOKENGUARD_API_KEY="$(cat /run/secrets/TOKENGUARD_API_KEY)" && \
+    : "${TOKENGUARD_API_KEY:?TOKENGUARD_API_KEY secret not provided}" && \
+    if [ "${SKIP_REVIEW}" = "true" ]; then \
+      TOKENGUARD_API_KEY="${TOKENGUARD_API_KEY}" pnpm resources:mv3 --skip-local-resources; \
+    else \
+      TOKENGUARD_API_KEY="${TOKENGUARD_API_KEY}" pnpm resources:mv3; \
     fi && \
     # Increment patch version.
     pnpm increment && \
@@ -628,7 +659,7 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Build exclusion args from gitignore-excludes.txt (generated on host by generate-find-excludes.sh)
     # to skip build artifacts, node_modules, etc.
     mkdir -p /out/modified && \
-    . ./bamboo-specs/scripts/parse-gitignore.sh gitignore-excludes.txt && \
+    . ./tools/ci/parse-gitignore.sh gitignore-excludes.txt && \
     find . -newer /tmp/.pre-update-marker -type f "${GITIGNORE_EXCLUDE_ARGS[@]}" \
       | sed 's|^\./||' | while IFS= read -r f; do \
         mkdir -p "/out/modified/$(dirname "$f")"; \

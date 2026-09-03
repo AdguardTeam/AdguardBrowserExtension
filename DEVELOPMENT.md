@@ -11,7 +11,7 @@
   - [Watch Mode](#watch-mode)
 - [Common Tasks](#common-tasks)
   - [Linking with the developer build of tsurlfilter/tswebextension](#linking-with-the-developer-build-of-tsurlfiltertswebextension)
-  - [Linking tsurlfilter on CI (Bamboo)](#linking-tsurlfilter-on-ci-bamboo)
+  - [Linking tsurlfilter on CI](#linking-tsurlfilter-on-ci)
     - [Configuring tsurlfilter reference](#configuring-tsurlfilter-reference)
     - [How it works](#how-it-works)
     - [Running CI tests locally](#running-ci-tests-locally)
@@ -217,8 +217,8 @@ MV2 compatibility flags, but local runs may still need an older Chromium binary:
 E2E_CHROMIUM_EXECUTABLE_PATH=/path/to/chromium pnpm test:e2e dev --matrix chrome-mv2
 ```
 
-Browser E2E tests are wired to a separate Bamboo plan because they run slower than
-unit and integration tests.
+Browser E2E tests are wired to a separate workflow (`e2e.yml`) because they
+run slower than unit and integration tests.
 
 <a name="dev-linter"></a>
 
@@ -367,33 +367,48 @@ to the local dev build of `tsurlfilter`.
 
 <a name="dev-ci-link"></a>
 
-### Linking tsurlfilter on CI (Bamboo)
+### Linking tsurlfilter on CI
 
 CI builds use Docker multi-stage builds defined in `Dockerfile`. The tsurlfilter linking process is split into two phases:
 
-1. **Clone phase** (`clone-tsurlfilter.sh`) - Clones tsurlfilter repository on CI (~3 seconds)
+1. **Clone phase** - Clones the tsurlfilter repository into the build context (only when a specific reference is required)
 2. **Build phase** (inside Docker) - Builds tsurlfilter packages (~70 seconds, cached by Docker)
 3. **Link phase** (`link-tsurlfilter.sh`) - Links pre-built packages to the browser extension (~2-3 seconds)
 
-#### Configuring tsurlfilter reference
+The GitHub Actions workflows pass an **empty** `tmp/tsurlfilter` build context
+(`--build-context tsurlfilter=tmp/tsurlfilter`), which makes the
+tsurlfilter-build stage a no-op so all dependencies resolve from npm. This is
+the default for CI and PR checks.
 
-To link with a specific tsurlfilter commit, branch, or tag, edit the configuration in `bamboo-specs/scripts/clone-tsurlfilter.sh`:
+#### Configuring a tsurlfilter reference locally
+
+To build against a specific tsurlfilter commit, branch, or tag, clone the
+repository into a sibling directory and pass it as the named build context:
 
 ```bash
-# Set TSURLFILTER_REF to the desired reference
-# TSURLFILTER_REF="fix/AG-45315"     # branch name
-# TSURLFILTER_REF="a1b2c3d4e5f6..."  # commit hash
-# TSURLFILTER_REF="v2.1.0"           # tag name
-# TSURLFILTER_REF=""                 # skip cloning/building/linking
+# Clone tsurlfilter as a sibling of this repository
+git clone --depth 1 https://github.com/AdguardTeam/tsurlfilter ../tsurlfilter
+
+# Check out the desired reference (branch / commit / tag)
+# ... or leave the checkout at master to link the latest tsurlfilter
 ```
+
+An empty build context (the `tmp/tsurlfilter` directory used by CI) skips cloning/building/linking and resolves the `@adguard/*` packages from npm.
 
 #### How it works
 
 The build process uses Docker named build contexts for efficient caching:
 
-1. **Clone on CI** - `clone-tsurlfilter.sh` clones tsurlfilter to a sibling directory (`../tsurlfilter`). This happens outside Docker, so no SSH keys are needed inside the container.
+1. **Clone on CI** - tsurlfilter source lands in the build context, either as
+   the empty `tmp/tsurlfilter` dir (no-op) or a real checkout at
+   `../tsurlfilter`. This happens outside Docker, so no SSH keys are needed
+   inside the container.
 
-2. **`tsurlfilter-build` stage** - Receives the cloned source via `--build-context tsurlfilter=../tsurlfilter`. Docker automatically checksums the content and caches the build (~70 seconds). Cache invalidates only when tsurlfilter source changes.
+2. **`tsurlfilter-build` stage** - Receives the source via
+   `--build-context tsurlfilter=../tsurlfilter`. Docker automatically checksums
+   the content and caches the build (~70 seconds). Cache invalidates only when
+   tsurlfilter source changes. When given an empty context, the stage is a
+   no-op.
 
 3. **`linked-deps` stage** - Combines the browser extension dependencies with pre-built tsurlfilter packages. Runs `link-tsurlfilter.sh` to create pnpm links.
 
@@ -407,17 +422,19 @@ The build process uses Docker named build contexts for efficient caching:
 You can run the same CI tests locally using Docker:
 
 ```shell
-# First, clone tsurlfilter to sibling directory
-./bamboo-specs/scripts/clone-tsurlfilter.sh
+# First, clone tsurlfilter to sibling directory (optional — for a no-op build,
+# create an empty directory instead)
+# git clone --depth 1 https://github.com/AdguardTeam/tsurlfilter ../tsurlfilter
+mkdir -p tmp/tsurlfilter
 
 # Run unit tests
-docker build -f Dockerfile --build-context tsurlfilter=../tsurlfilter --target unit-tests-output --output type=local,dest=output .
+docker build -f Dockerfile --build-context tsurlfilter=tmp/tsurlfilter --target unit-tests-output --output type=local,dest=output .
 
 # Run linter
-docker build -f Dockerfile --build-context tsurlfilter=../tsurlfilter --target lint-output --output type=local,dest=output .
+docker build -f Dockerfile --build-context tsurlfilter=tmp/tsurlfilter --target lint-output --output type=local,dest=output .
 
 # Build dev artifacts
-docker build -f Dockerfile --build-context tsurlfilter=../tsurlfilter --target dev-build-output --output type=local,dest=output .
+docker build -f Dockerfile --build-context tsurlfilter=tmp/tsurlfilter --target dev-build-output --output type=local,dest=output .
 ```
 
 > [!TIP]
@@ -443,15 +460,23 @@ The `pnpm resources` command performs the following steps:
 
 1. **Downloads filters**: Fetches filter metadata and filter rules from the AdGuard filters repository
 2. **Updates local script rules**: Extract script rules inside separate file only for firefox.
-3. **Finds dangerous rules** (optional): If `OPENAI_API_KEY` environment variable is provided, uses OpenAI API to analyze and identify potentially dangerous rules in the filters
+3. **Finds dangerous rules** (optional): If `TOKENGUARD_API_KEY` environment variable is provided, uses the TokenGuard API to analyze and identify potentially dangerous rules in the filters
 
 For MV3 version (`pnpm resources:mv3`), the process includes additional steps:
 
-1. **Updates dnr-rulesets package**: Installs the latest `@adguard/dnr-rulesets` package
+1. **Updates dnr-rulesets package**: Installs the latest `@adguard/dnr-rulesets`
+   package via `tools/resources/update-dnr-rulesets.ts`. CI resolves it from
+   the internal Artifact Keeper npm registry (passed as the
+   `DNR_RULESETS_REGISTRY` env var) to avoid npm rate limiting on shared CI
+   egress IPs; when the variable is not set, the public npm registry is used
+   (set the variable locally only while on the VPN). After resolving from
+   Artifact Keeper, the tarball URLs recorded in `pnpm-lock.yaml` are rewritten
+   back to `registry.npmjs.org`, so installs keep working where Artifact Keeper
+   is unreachable (e.g. the public mirror).
 2. **Updates local test script rules**: Fetches all script rules from test cases and updates local resources
 3. **Downloads and prepares MV3 filters**: Downloads filters and converts them to declarative format
 4. **Updates local resources for MV3**: Processes and updates local script resources for Chromium MV3
-5. **Finds dangerous rules** (optional): If `OPENAI_API_KEY` environment variable is provided, uses OpenAI API to analyze and identify potentially dangerous rules in the filters
+5. **Finds dangerous rules** (optional): If `TOKENGUARD_API_KEY` environment variable is provided, uses the TokenGuard API to analyze and identify potentially dangerous rules in the filters
 6. **Extracts unsafe rules**: Runs a separate command to identify and extract unsafe rules to ruleset metadata
 
 See [dangerous rules documentation](tools/resources/dangerous-rules/README.md) for more details about the dangerous rules detection process.
@@ -836,7 +861,7 @@ This guide explains how to update MV3 rulesets and submit them for Chrome Web St
 
 9. **Deploy:**
 
-    - Run the manual Bamboo build
+    - Run `prepare-release.yml` / `publish-release.yml` (GitHub Actions)
     - Upload the extension to Chrome Web Store
     - Submit for fast-track review
 
@@ -890,7 +915,7 @@ The browser extension project includes a comprehensive bundle size monitoring sy
 - Ensures Chrome MV3 bundle stays under the 30MB limit
 - Checks for duplicate package versions using `pnpm`
 - Stores historical size data in `.bundle-sizes.json`
-- Designed for CI/CD integration (Bamboo)
+- Designed for CI/CD integration (GitHub Actions)
 - **For Firefox targets (AMO and Standalone) only**, every individual `.js` file is checked to ensure it does not exceed the 4MB limit imposed by the Firefox Add-ons Store. If any `.js` file is larger than 4MB, the check fails and the offending files are reported.
 
 #### How it works
@@ -1197,7 +1222,9 @@ Optional environment variables are configured via a `.env` file (copy from `.env
 | Variable | Description |
 | -------- | ----------- |
 | `ARTIFACTORY_DOMAIN` | Artifactory domain for downloading blocking pages |
-| `OPENAI_API_KEY` | OpenAI API key for detecting dangerous script rules during `pnpm resources` |
+| `TOKENGUARD_API_KEY` | TokenGuard API key for detecting dangerous script rules during `pnpm resources` |
+| `TOKENGUARD_BASE_URL` | Optional TokenGuard endpoint override (default `https://tokenguard.int.agrd.dev/api/v1/`) |
+| `TOKENGUARD_MODEL` | Optional TokenGuard model override (default `deepseek-v4-flash`) |
 | `ANALYZE` | Set to `true` to generate bundle analysis reports during builds |
 
 ## Troubleshooting

@@ -59,12 +59,12 @@ const resourcesMv3 = async (skipLocalResources = false) => {
         console.log('Skipping update of local resources for MV3 (--skip-local-resources flag set)');
     }
 
-    if (process.env.OPENAI_API_KEY) {
+    if (process.env.TOKENGUARD_API_KEY) {
         console.log('Finding dangerous rules...');
-        await findDangerousRules(process.env.OPENAI_API_KEY, true);
+        await findDangerousRules(process.env.TOKENGUARD_API_KEY, true);
         console.log('Dangerous rules check completed');
     } else {
-        console.log('OpenAI API key is not provided, skipping dangerous rules check');
+        console.log('TokenGuard API key is not provided, skipping dangerous rules check');
     }
 
     /**
