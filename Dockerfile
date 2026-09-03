@@ -613,6 +613,11 @@ FROM linked-deps AS auto-build
 ARG TEST_RUN_ID
 ARG BETA_CHANNEL_AVAILABLE
 ARG RELEASE_CHANNEL_AVAILABLE
+# Registry used by `pnpm resources:mv3` (tools/resources/update-dnr-rulesets.ts)
+# to resolve the latest @adguard/dnr-rulesets. CI passes the internal Artifact
+# Keeper npm registry here because npm throttles the shared CI egress IPs;
+# empty falls back to the public npm registry.
+ARG DNR_RULESETS_REGISTRY
 # The dangerous-rules check endpoint/model are explicit CI inputs (passed via
 # --build-arg from auto-build.yml, with production defaults documented there
 # and in .env.example) so the production pipeline never silently relies on a

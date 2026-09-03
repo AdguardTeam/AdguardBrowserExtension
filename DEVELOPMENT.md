@@ -464,7 +464,15 @@ The `pnpm resources` command performs the following steps:
 
 For MV3 version (`pnpm resources:mv3`), the process includes additional steps:
 
-1. **Updates dnr-rulesets package**: Installs the latest `@adguard/dnr-rulesets` package
+1. **Updates dnr-rulesets package**: Installs the latest `@adguard/dnr-rulesets`
+   package via `tools/resources/update-dnr-rulesets.ts`. CI resolves it from
+   the internal Artifact Keeper npm registry (passed as the
+   `DNR_RULESETS_REGISTRY` env var) to avoid npm rate limiting on shared CI
+   egress IPs; when the variable is not set, the public npm registry is used
+   (set the variable locally only while on the VPN). After resolving from
+   Artifact Keeper, the tarball URLs recorded in `pnpm-lock.yaml` are rewritten
+   back to `registry.npmjs.org`, so installs keep working where Artifact Keeper
+   is unreachable (e.g. the public mirror).
 2. **Updates local test script rules**: Fetches all script rules from test cases and updates local resources
 3. **Downloads and prepares MV3 filters**: Downloads filters and converts them to declarative format
 4. **Updates local resources for MV3**: Processes and updates local script resources for Chromium MV3
