@@ -201,9 +201,15 @@ jobs:
 
       # The skip-review flag (full resources update on Tuesdays, skip-review
       # eligibility check otherwise) is computed inside the Dockerfile stage.
+      # TOKENGUARD_BASE_URL/TOKENGUARD_MODEL are passed explicitly (production
+      # defaults below, overridable via repository variables) so the
+      # dangerous-rules check never silently falls back to a hardcoded default;
+      # the Dockerfile fails fast if they are missing.
       - name: Update filters, increment version and build via Docker
         env:
           TOKENGUARD_API_KEY: ${{ steps.vault-tokenguard.outputs.TOKENGUARD_API_KEY }}
+          TOKENGUARD_BASE_URL: ${{ vars.TOKENGUARD_BASE_URL || 'https://tokenguard.int.agrd.dev/api/v1/' }}
+          TOKENGUARD_MODEL: ${{ vars.TOKENGUARD_MODEL || 'deepseek-v4-flash' }}
           BETA_CHANNEL_AVAILABLE: ${{ needs.check-cws.outputs.beta-available }}
           RELEASE_CHANNEL_AVAILABLE: ${{ needs.check-cws.outputs.release-available }}
         run: |
@@ -213,6 +219,8 @@ jobs:
             --build-arg BETA_CHANNEL_AVAILABLE="${BETA_CHANNEL_AVAILABLE}" \
             --build-arg RELEASE_CHANNEL_AVAILABLE="${RELEASE_CHANNEL_AVAILABLE}" \
             --build-arg DNR_RULESETS_REGISTRY="${DNR_RULESETS_REGISTRY}" \
+            --build-arg TOKENGUARD_BASE_URL="${TOKENGUARD_BASE_URL}" \
+            --build-arg TOKENGUARD_MODEL="${TOKENGUARD_MODEL}" \
             --secret id=TOKENGUARD_API_KEY,env=TOKENGUARD_API_KEY \
             --target auto-build-output \
             --output type=local,dest=output/auto-build .
