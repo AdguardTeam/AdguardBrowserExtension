@@ -24,51 +24,40 @@ import {
     it,
 } from 'vitest';
 
-import { rewriteDnrRulesetsTarballUrls } from '../../../tools/resources/update-dnr-rulesets';
+import {
+    base64Sha512,
+    normalizeUrlDependency,
+    resolveLatestStableVersion,
+    rewriteDnrRulesetsTarballUrls,
+} from '../../../tools/resources/update-dnr-rulesets';
 
 const NPM_REGISTRY = 'https://registry.npmjs.org';
 const AK_REGISTRY = 'https://ak.internal.example/npm/npm-internal';
 const NPM_TARBALL_BASE = `${NPM_REGISTRY}/@adguard/dnr-rulesets/-/`;
 const AK_TARBALL_BASE = `${AK_REGISTRY}/@adguard/dnr-rulesets/-/`;
+const VERSION = '5.0.20260903144513';
+const AK_TARBALL_URL = `${AK_TARBALL_BASE}dnr-rulesets-${VERSION}.tgz`;
+const INTEGRITY = 'sha512-AAAA';
 
 describe('rewriteDnrRulesetsTarballUrls', () => {
     it('rewrites Artifact Keeper tarball URLs back to the npm registry', () => {
         const lockfile = [
             'packages:',
             '',
-            '  \'@adguard/dnr-rulesets@5.0.20260901001712\':',
-            `    resolution: {integrity: sha512-aaa, tarball: ${AK_TARBALL_BASE}dnr-rulesets-5.0.20260901001712.tgz}`,
+            `  '@adguard/dnr-rulesets@${VERSION}':`,
+            `    resolution: {integrity: sha512-aaa, tarball: ${AK_TARBALL_URL}}`,
             '',
         ].join('\n');
 
         const result = rewriteDnrRulesetsTarballUrls(lockfile, AK_REGISTRY);
 
-        expect(result).toContain(`${NPM_TARBALL_BASE}dnr-rulesets-5.0.20260901001712.tgz`);
+        expect(result).toContain(`${NPM_TARBALL_BASE}dnr-rulesets-${VERSION}.tgz`);
         expect(result).not.toContain('ak.internal.example');
         expect(result).toContain('integrity: sha512-aaa');
     });
 
-    it('rewrites transitive dependencies resolved from Artifact Keeper too', () => {
-        // `pnpm add --registry <AK>` resolves the whole dependency tree from AK,
-        // so transitive deps (here @adguard/agtree and @adguard/dnr-converter)
-        // keep an AK tarball URL that must also point at npm for frozen
-        // installs outside the reach of AK.
-        const lockfile = [
-            '  \'@adguard/agtree@4.2.1\':',
-            `    resolution: {integrity: sha512-bbb, tarball: ${AK_REGISTRY}/@adguard/agtree/-/agtree-4.2.1.tgz}`,
-            '  \'@adguard/dnr-converter@1.1.2\':',
-            `    resolution: {integrity: sha512-ccc, tarball: ${AK_REGISTRY}/@adguard/dnr-converter/-/dnr-converter-1.1.2.tgz}`,
-        ].join('\n');
-
-        const result = rewriteDnrRulesetsTarballUrls(lockfile, AK_REGISTRY);
-
-        expect(result).toContain(`${NPM_REGISTRY}/@adguard/agtree/-/agtree-4.2.1.tgz`);
-        expect(result).toContain(`${NPM_REGISTRY}/@adguard/dnr-converter/-/dnr-converter-1.1.2.tgz`);
-        expect(result).not.toContain('ak.internal.example');
-    });
-
     it('leaves npm registry URLs untouched (idempotent)', () => {
-        const lockfile = `    resolution: {integrity: sha512-ddd, tarball: ${NPM_TARBALL_BASE}dnr-rulesets-5.0.20260901001712.tgz}`;
+        const lockfile = `    resolution: {integrity: sha512-ddd, tarball: ${NPM_TARBALL_BASE}dnr-rulesets-6.0.0.tgz}`;
 
         expect(rewriteDnrRulesetsTarballUrls(lockfile, AK_REGISTRY)).toBe(lockfile);
     });
@@ -94,5 +83,110 @@ describe('rewriteDnrRulesetsTarballUrls', () => {
         const result = rewriteDnrRulesetsTarballUrls(lockfile, AK_REGISTRY);
 
         expect(result.match(/registry\.npmjs\.org/g)).toHaveLength(2);
+    });
+});
+
+describe('resolveLatestStableVersion', () => {
+    it('picks the newest stable 5.0.x timestamp', () => {
+        const versions = [
+            '5.0.20260829100031',
+            '5.0.2-dev.pr18.7e6184ad',
+            '5.0.20260901001712',
+            '4.2.0-beta.2',
+            '5.0.20260903144513',
+            '5.1.0',
+            '6.0.0',
+        ];
+
+        expect(resolveLatestStableVersion(versions)).toBe('5.0.20260903144513');
+    });
+
+    it('returns undefined when no stable 5.0.x version exists', () => {
+        expect(resolveLatestStableVersion(['5.0.2-dev.pr30.42bccc2a', '4.2.0', '5.1.0'])).toBeUndefined();
+    });
+
+    it('returns undefined for an empty list', () => {
+        expect(resolveLatestStableVersion([])).toBeUndefined();
+    });
+});
+
+describe('normalizeUrlDependency', () => {
+    it('converts the tarball URL dependency back to the pinned-version form', () => {
+        const packageJson = `{
+  "name": "browser-extension",
+  "devDependencies": {
+    "@adguard/dnr-rulesets": "${AK_TARBALL_URL}"
+  }
+}`;
+        const lockfile = [
+            'importers:',
+            '',
+            '  .:',
+            '    devDependencies:',
+            '      \'@adguard/dnr-rulesets\':',
+            `        specifier: ${AK_TARBALL_URL}`,
+            `        version: ${AK_TARBALL_URL}(typescript@5.6.3)`,
+            '',
+            'packages:',
+            '',
+            `  '@adguard/dnr-rulesets@${AK_TARBALL_URL}':`,
+            `    resolution: {tarball: ${AK_TARBALL_URL}}`,
+            `    version: ${VERSION}`,
+            '    hasBin: true',
+            '',
+            'snapshots:',
+            '',
+            `  '@adguard/dnr-rulesets@${AK_TARBALL_URL}(typescript@5.6.3)':`,
+            '    dependencies:',
+            '      axios: 1.15.0',
+        ].join('\n');
+
+        const result = normalizeUrlDependency(packageJson, lockfile, AK_TARBALL_URL, VERSION, INTEGRITY);
+
+        // package.json is pinned like a plain npm install.
+        expect(result.packageJson).toContain(`"@adguard/dnr-rulesets": "~${VERSION}"`);
+        expect(result.packageJson).not.toContain('ak.internal.example');
+
+        // Importer.
+        expect(result.lockfile).toContain(`specifier: ~${VERSION}`);
+        expect(result.lockfile).toContain(`version: ${VERSION}(typescript@5.6.3)`);
+
+        // packages key + resolution (+ the redundant version: line dropped).
+        expect(result.lockfile).toContain(`'@adguard/dnr-rulesets@${VERSION}':`);
+        expect(result.lockfile).toContain(`resolution: {integrity: ${INTEGRITY}, tarball: ${AK_TARBALL_URL}}`);
+        expect(result.lockfile).not.toContain(`\n    version: ${VERSION}\n    hasBin: true`);
+        expect(result.lockfile).toContain('    hasBin: true');
+
+        // snapshots key keeps its peer-hash suffix.
+        expect(result.lockfile).toContain(`'@adguard/dnr-rulesets@${VERSION}(typescript@5.6.3)':`);
+        // The resolution tarball still points at AK at this stage: main() flips
+        // it to npm via rewriteDnrRulesetsTarballUrls once the version is
+        // confirmed published on npm.
+        expect(result.lockfile.match(/ak\.internal\.example/g)).toHaveLength(1);
+    });
+
+    it('throws when the tarball URL is not present in the dependency files', () => {
+        const packageJson = '{ "devDependencies": { "@adguard/dnr-rulesets": "~5.0.1" } }';
+        const lockfile = 'empty';
+
+        expect(() => normalizeUrlDependency(
+            packageJson,
+            lockfile,
+            AK_TARBALL_URL,
+            VERSION,
+            INTEGRITY,
+        )).toThrow(AK_TARBALL_URL);
+    });
+});
+
+describe('base64Sha512', () => {
+    it('produces a base64-encoded sha512 with the sha512- prefix', () => {
+        const testSha512 = 'sha512-7iaw3Ur350mqGo7jwQrpkj9hiYB3Lkc/iBml1JQODbJ6wY'
+            + 'X4oOHV+E+IvIh/1nsUNzLDBMxfqa2Ob1f1ACio/w==';
+        const emptySha512 = 'sha512-z4PhNX7vuL3xVChQ1m2AB9Yg5AULVxXcg/SpIdNs6c5H0NE8XY'
+            + 'XysP+DGNKHfuwvY7kxvUdBeoGlODJ6+SfaPg==';
+
+        expect(base64Sha512(Buffer.from('test'))).toBe(testSha512);
+        expect(base64Sha512(Buffer.from(''))).toBe(emptySha512);
     });
 });

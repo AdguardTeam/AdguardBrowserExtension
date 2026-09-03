@@ -184,8 +184,9 @@ jobs:
         run: ./tools/ci/generate-find-excludes.sh gitignore-excludes.txt
 
       # npm throttles the shared CI egress IPs, so the dnr-rulesets update
-      # resolves from the internal Artifact Keeper npm registry instead (see
-      # tools/resources/update-dnr-rulesets.ts). Fail loudly when the org
+      # fetches the package tarball from the internal Artifact Keeper npm
+      # registry instead (see tools/resources/update-dnr-rulesets.ts). Fail
+      # loudly when the org
       # variable is not visible to this repo instead of silently falling back
       # to the throttled npm path.
       - name: Resolve Artifact Keeper npm registry
