@@ -22,7 +22,7 @@ body:
     attributes:
       label: AdGuard Extension version
       description: What version of our extension are you running?
-      placeholder: For example, 5.0.1 beta
+      placeholder: For example, 5.5.1.0 beta
     validations:
       required: true
   - type: input
@@ -30,7 +30,7 @@ body:
     attributes:
       label: Browser version
       description: What browser do you use?
-      placeholder: For example, Chrome 125
+      placeholder: For example, Chrome 150
     validations:
       required: true
   - type: input
@@ -38,7 +38,7 @@ body:
     attributes:
       label: OS version
       description: What operating system do you use?
-      placeholder: For example, macOS 14.5
+      placeholder: For example, macOS 26.6
     validations:
       required: true
   - type: markdown
@@ -71,6 +71,7 @@ body:
       options:
         - AdGuard Tracking Protection filter
         - AdGuard URL Tracking filter
+        - AdGuard Mail Tracking Protection filter
     validations:
       required: false
 
@@ -95,6 +96,7 @@ body:
         - AdGuard Mobile App Banners filter
         - AdGuard Other Annoyances filter
         - AdGuard Widgets filter
+        - Stevo's AI Blocklist
     validations:
       required: false
 
@@ -108,6 +110,7 @@ body:
         - Phishing URL Blocklist
         - Scam Blocklist by DurableNapkin
         - uBlock Origin – Badware risks
+        - Dandelion Sprout's Anti-Malware List
     validations:
       required: false
 
@@ -159,6 +162,7 @@ body:
         - Official Polish filters for AdBlock, uBlock Origin & AdGuard
         - Polish Anti Adblock Filters
         - Persian Blocker
+        - ROList
     validations:
       required: false
   - type: dropdown
@@ -174,7 +178,7 @@ body:
         - Ask websites not to track you
         - Hide Referrer from third parties
         - Remove X-Client-Data header
-        - Disable WebRTC
+        - Prevent IP address leaks through WebRTC
 
   - type: textarea
     id: what-happened
