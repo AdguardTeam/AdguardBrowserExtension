@@ -156,7 +156,7 @@ jobs:
     runs-on: team-extensions
     timeout-minutes: 15
     permissions:
-      contents: read    # checkout + fetch of the stable branch only (commit push is via protected-push/Octopass)
+      contents: read    # checkout of the stable branch only (commit push is via protected-push/Octopass)
       id-token: write   # Vault JWT/OIDC + Octopass OIDC for protected-push
     outputs:
       version: ${{ steps.version.outputs.version }}
@@ -164,6 +164,12 @@ jobs:
       - name: Checkout stable branch
         uses: actions/checkout@v6
         with:
+          # Don't persist the default GITHUB_TOKEN as a git credential. The
+          # push below authenticates with an Octopass-issued token, and a
+          # persisted http.extraheader would collide with the one protected-push
+          # sets, making git send two Authorization headers which GitHub rejects
+          # with HTTP 400 "Duplicate header: Authorization".
+          persist-credentials: false
           ref: ${{ env.STABLE_BRANCH }}
 
       - name: Create empty tsurlfilter build context
@@ -231,18 +237,16 @@ jobs:
       # protected-push. The commit + push is done by the company-shared action
       # (Octopass token + --force-with-lease) instead of a hand-rolled
       # `git config user.name/email` + `git push` with the workflow GITHUB_TOKEN.
-      # First sync to the latest remote head of the stable branch so the push
-      # is a fast-forward and never clobbers a concurrent commit (e.g. an
-      # "Update stable branch" merge) that landed while this job was building;
-      # build outputs live under output/ and are unaffected by the reset.
-      # Note: protected-push authors the commit as github-actions[bot], the
-      # shared action's fixed identity, instead of the release-bot persona.
+      # The push is a plain fast-forward onto the head checked out at the start
+      # of the job: nothing else writes to the stable branch while the ~2-minute
+      # build runs (stable updates are manual release actions), so no mid-flow
+      # re-fetch is needed. Note: protected-push authors the commit as
+      # github-actions[bot], the shared action's fixed identity, instead of the
+      # release-bot persona.
       - name: Prepare auto-build commit
         id: commit
         run: |
           set -euo pipefail
-          git fetch origin "${STABLE_BRANCH}"
-          git reset --hard "origin/${STABLE_BRANCH}"
           cp -R output/auto-build/modified/. .
           if [ -z "$(git status --porcelain)" ]; then
             echo "No resource changes to commit"
