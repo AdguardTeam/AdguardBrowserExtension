@@ -5571,6 +5571,92 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "6c5874d9ea24235e4a8490028ce09e66" due to: ' + e);
         }
     },
+    '(()=>{const e=JSON.parse,t=Response.prototype.json,r=new WeakSet,s=e=>null!==e&&"object"==typeof e,a=e=>{if(!Array.isArray(e))return[];const t=e=>"number"==typeof e||"string"==typeof e&&""!==e.trim()?Number(e):NaN,r=e.filter(s).map(({start:e,end:r})=>({start:t(e),end:t(r)})).filter(({start:e,end:t})=>Number.isFinite(e)&&Number.isFinite(t)&&e>=0&&t>e).sort((e,t)=>e.start-t.start),a=[];for(const e of r){const t=a.at(-1);t&&e.start<=t.end?t.end=Math.max(t.end,e.end):a.push(e)}return a},n=(e,t)=>e.reduce((e,{start:r,end:s})=>e+Math.max(0,Math.min(s,t)-r),0),i=(e,t)=>e.reduce((e,{start:r,end:s})=>s<=t+1e-6?e+s-r:e,0),o=e=>"urn:com:philo:event:ad:regions"===e?.uri||"string"==typeof e?.messageData&&e.messageData.includes(\'"ad_breaks"\'),u=(t,r)=>{if(!Array.isArray(t.periods)||!t.periods.every(s))return!1;const u=[];for(const r of t.periods)if(Array.isArray(r.eventStreams))for(const t of r.eventStreams)if(o(t)&&"string"==typeof t.messageData)try{const r=Reflect.apply(e,JSON,[t.messageData]);u.push(...a(r?.ad_breaks))}catch{}const d=a(u);return!!d.length&&(t.periods=t.periods.filter((e,t)=>!(e=>Array.isArray(e.adaptationSets)&&e.adaptationSets.some(e=>"string"==typeof e?.timeline?.segmentURLTemplate&&e.timeline.segmentURLTemplate.includes("/ad/")))(e)),t.periods.forEach((e,t)=>{if(Number.isFinite(e.startTime)){const t=e.startTime;e.startTime=t-i(d,t)}"index"in e&&(e.index=t),Array.isArray(e.eventStreams)&&(e.eventStreams=e.eventStreams.filter((e,t)=>!o(e)))}),Number.isFinite(t.duration)&&(t.duration-=n(d,t.duration)),!0)},d=(e,t)=>{if(!e||"object"!=typeof e||r.has(e))return e;const o=u(e),d=(e=>{if(!s(e.url_to_thumbs)||Array.isArray(e.url_to_thumbs)||!Array.isArray(e.ad_breaks))return!1;const t=a(e.ad_breaks);if(!t.length)return!1;for(const r of Object.keys(e.url_to_thumbs)){if(r.includes("/ad/")){delete e.url_to_thumbs[r];continue}const s=e.url_to_thumbs[r];if(Array.isArray(s))for(const e of s)if(Number.isFinite(e?.pt)){const r=e.pt;e.pt=r-i(t,r)}}return delete e.ad_breaks,Number.isFinite(e.available_duration_seconds)&&(e.available_duration_seconds-=n(t,e.available_duration_seconds)),!0})(e);return(o||d)&&r.add(e),e},c={apply:(e,t,r)=>{const s=Reflect.apply(e,t,r);try{return d(s)}catch(e){return s}}};JSON.parse=new Proxy(e,c);const p={apply:async(e,t,r)=>{const s=await Reflect.apply(e,t,r);try{return d(s)}catch(e){return s}}};Response.prototype.json=new Proxy(t,p)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.cde9bb8af864ebcfcb79d446284c6e7e === e) return;
+            (() => {
+                const e = JSON.parse, t = Response.prototype.json, r = new WeakSet, a = e => null !== e && "object" == typeof e, s = e => {
+                    if (!Array.isArray(e)) return [];
+                    const t = e => "number" == typeof e || "string" == typeof e && "" !== e.trim() ? Number(e) : NaN, r = e.filter(a).map((({start: e, end: r}) => ({
+                        start: t(e),
+                        end: t(r)
+                    }))).filter((({start: e, end: t}) => Number.isFinite(e) && Number.isFinite(t) && e >= 0 && t > e)).sort(((e, t) => e.start - t.start)), s = [];
+                    for (const e of r) {
+                        const t = s.at(-1);
+                        t && e.start <= t.end ? t.end = Math.max(t.end, e.end) : s.push(e);
+                    }
+                    return s;
+                }, n = (e, t) => e.reduce(((e, {start: r, end: a}) => e + Math.max(0, Math.min(a, t) - r)), 0), o = (e, t) => e.reduce(((e, {start: r, end: a}) => a <= t + 1e-6 ? e + a - r : e), 0), i = e => "urn:com:philo:event:ad:regions" === e?.uri || "string" == typeof e?.messageData && e.messageData.includes('"ad_breaks"'), c = (t, r) => {
+                    if (!Array.isArray(t.periods) || !t.periods.every(a)) return !1;
+                    const c = [];
+                    for (const r of t.periods) if (Array.isArray(r.eventStreams)) for (const t of r.eventStreams) if (i(t) && "string" == typeof t.messageData) try {
+                        const r = Reflect.apply(e, JSON, [ t.messageData ]);
+                        c.push(...s(r?.ad_breaks));
+                    } catch {}
+                    const d = s(c);
+                    return !!d.length && (t.periods = t.periods.filter(((e, t) => !(e => Array.isArray(e.adaptationSets) && e.adaptationSets.some((e => "string" == typeof e?.timeline?.segmentURLTemplate && e.timeline.segmentURLTemplate.includes("/ad/"))))(e))), 
+                    t.periods.forEach(((e, t) => {
+                        if (Number.isFinite(e.startTime)) {
+                            const t = e.startTime;
+                            e.startTime = t - o(d, t);
+                        }
+                        "index" in e && (e.index = t), Array.isArray(e.eventStreams) && (e.eventStreams = e.eventStreams.filter(((e, t) => !i(e))));
+                    })), Number.isFinite(t.duration) && (t.duration -= n(d, t.duration)), !0);
+                }, d = (e, t) => {
+                    if (!e || "object" != typeof e || r.has(e)) return e;
+                    const i = c(e), d = (e => {
+                        if (!a(e.url_to_thumbs) || Array.isArray(e.url_to_thumbs) || !Array.isArray(e.ad_breaks)) return !1;
+                        const t = s(e.ad_breaks);
+                        if (!t.length) return !1;
+                        for (const r of Object.keys(e.url_to_thumbs)) {
+                            if (r.includes("/ad/")) {
+                                delete e.url_to_thumbs[r];
+                                continue;
+                            }
+                            const a = e.url_to_thumbs[r];
+                            if (Array.isArray(a)) for (const e of a) if (Number.isFinite(e?.pt)) {
+                                const r = e.pt;
+                                e.pt = r - o(t, r);
+                            }
+                        }
+                        return delete e.ad_breaks, Number.isFinite(e.available_duration_seconds) && (e.available_duration_seconds -= n(t, e.available_duration_seconds)), 
+                        !0;
+                    })(e);
+                    return (i || d) && r.add(e), e;
+                }, u = {
+                    apply: (e, t, r) => {
+                        const a = Reflect.apply(e, t, r);
+                        try {
+                            return d(a);
+                        } catch (e) {
+                            return a;
+                        }
+                    }
+                };
+                JSON.parse = new Proxy(e, u);
+                const p = {
+                    apply: async (e, t, r) => {
+                        const a = await Reflect.apply(e, t, r);
+                        try {
+                            return d(a);
+                        } catch (e) {
+                            return a;
+                        }
+                    }
+                };
+                Response.prototype.json = new Proxy(t, p);
+            })();
+            Object.defineProperty(Window.prototype.toString, "cde9bb8af864ebcfcb79d446284c6e7e", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "cde9bb8af864ebcfcb79d446284c6e7e" due to: ' + e);
+        }
+    },
     '(()=>{if(window!==window.top)return;const e=[1e3,3e3,5e3,8e3,12e3,16e3,2e4,25e3,3e4,35e3,4e4,45e3],t=e=>new Promise(t=>window.setTimeout(t,e)),n=e=>Array.isArray(e)?e[0]:e,r=e=>{if("string"!=typeof e)return null;const t=e.indexOf("{"),n=e.indexOf("["),r=-1!==t&&-1!==n?Math.min(t,n):Math.max(t,n);if(-1===r)return null;const s=Math.max(e.lastIndexOf("}"),e.lastIndexOf("]"));if(s<r)return null;try{return{prefix:e.slice(0,r),suffix:e.slice(s+1),value:JSON.parse(e.slice(r,s+1))}}catch{return null}},s=e=>e.prefix+JSON.stringify(e.value)+e.suffix,a=(e,t)=>{const n=new URLSearchParams;for(const[e,r]of Object.entries(t))null!=r&&n.set(e,String(r));const r=new URLSearchParams;return r.set("contentType",e||"application/x-vudu-url-note"),r.set("query",n.toString()),r.toString()},o=(e,t)=>e>=200&&e<300&&(!t||"object"!=typeof t||"error"!==n(t._type)),i=e=>e&&"object"==typeof e&&/too soon to stop/i.test(String(n(e.text)||"")),c=window.XMLHttpRequest,l=c.prototype,d=l.open,p=l.send,u=Object.getOwnPropertyDescriptor(l,"responseText");if(!u?.get)return;const f=u.get,y=new WeakSet,h=new WeakMap,S=new WeakMap,g=(e,t,n,s,i)=>new Promise(l=>{const u={_type:s,accountId:i.accountId,advertContentId:i.advertContentId,advertStreamingSessionId:i.advertStreamingSessionId,claimedAppId:n.claimedAppId||"winWeb",contentEncoding:n.contentEncoding||"gzip",format:n.format||"application/json",noCache:n.noCache||"true",sessionKey:n.sessionKey};"advertStreamingSessionStop"===s&&(u.playbackSeconds="0");const h=new c;y.add(h),Reflect.apply(d,h,["POST",e,!0]),h.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=UTF-8"),h.onreadystatechange=()=>{if(h.readyState!==c.DONE)return;let e="";try{e=Reflect.apply(f,h,[])}catch{}const t=r(e)?.value??e;l({success:o(h.status,t),response:t})},h.onerror=()=>l({success:!1,response:null}),Reflect.apply(p,h,[a(t,u)])}),m=e=>{Object.prototype.hasOwnProperty.call(e,"midRollSpotSecond")&&(e.midRollSpotSecond=[])},w=async(e,r,s,a)=>{const o={accountId:n(s.accountId)||r.accountId,advertContentId:n(s.advertContentId),advertStreamingSessionId:n(s.advertStreamingSessionId)};if(!(await g(e.url,e.parsedRequest.contentType,r,"advertStreamingSessionStart",o)).success)return!1;const c=performance.now();for(const n of a){const s=n-(performance.now()-c);s>0&&await t(s);const a=await g(e.url,e.parsedRequest.contentType,r,"advertStreamingSessionStop",o);if(a.success)return!0;if(!i(a.response))return!1}return!1},R=async(t,a)=>{const o=(e=>{const t=r(e);if(!t||"advertContentResponse"!==n(t.value?._type))return null;const s=n(t.value.advertContent);if(!s)return null;const a=n(s.advertStreamingSessions);return{parsed:t,advertContent:s,prerolls:(Array.isArray(a?.advertStreamingSession)?a.advertStreamingSession:[]).filter(e=>"preRoll"===n(e.advertType))}})(a);if(!o)return a;const{parsed:i,advertContent:c,prerolls:l}=o,d=t.parsedRequest.query;if(0===l.length||!d.sessionKey)return m(c),s(i);const p=(t=>{const r=new Set(e);for(const e of t){const t=Number(n(n(e.advert)?.lengthSeconds));Number.isFinite(t)&&t>0&&(r.add(Math.max(1e3,1e3*(t-1))),r.add(1e3*t),r.add(1e3*(t+2)))}return[...r].sort((e,t)=>e-t)})(l);for(const e of l)if(!await w(t,d,e,p))return m(c),s(i);return delete c.advertStreamingSessions,m(c),s(i)};l.open=function(e,t,...n){return y.has(this)||h.set(this,{url:t,parsedRequest:null,holding:!1,released:!1}),Reflect.apply(d,this,[e,t,...n])},l.send=function(e){if(y.has(this))return Reflect.apply(p,this,[e]);const t=h.get(this)??{url:"",holding:!1,released:!1},n=(e=>{if("string"!=typeof e)return null;try{const t=new URLSearchParams(e),n=t.get("query");return n?{contentType:t.get("contentType"),query:Object.fromEntries(new URLSearchParams(n))}:null}catch{return null}})(e);if(t.parsedRequest=n,"advertContentRequest"===n?.query?._type){const e=this.onreadystatechange;"function"==typeof e&&(this.onreadystatechange=n=>{if(this.readyState!==c.DONE)return Reflect.apply(e,this,[n]);if(t.released||t.holding)return;let r;t.holding=!0;try{r=Reflect.apply(f,this,[])}catch{return t.released=!0,Reflect.apply(e,this,[n])}R(t,r).then(r=>{S.set(this,r),t.released=!0,t.holding=!1,Reflect.apply(e,this,[n])}).catch(()=>{S.delete(this),t.released=!0,t.holding=!1,Reflect.apply(e,this,[n])})}),h.set(this,t)}return Reflect.apply(p,this,[e])},Object.defineProperty(l,"responseText",{configurable:u.configurable,enumerable:u.enumerable,get(){return y.has(this)?Reflect.apply(f,this,[]):S.has(this)?S.get(this):Reflect.apply(f,this,[])},set:u.set})})();': () => {
         try {
             const e = "done";

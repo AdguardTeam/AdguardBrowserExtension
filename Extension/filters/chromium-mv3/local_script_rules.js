@@ -5394,6 +5394,92 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "6c5874d9ea24235e4a8490028ce09e66" due to: ' + e);
         }
     },
+    '(()=>{const e=JSON.parse,t=Response.prototype.json,r=new WeakSet,s=e=>null!==e&&"object"==typeof e,a=e=>{if(!Array.isArray(e))return[];const t=e=>"number"==typeof e||"string"==typeof e&&""!==e.trim()?Number(e):NaN,r=e.filter(s).map(({start:e,end:r})=>({start:t(e),end:t(r)})).filter(({start:e,end:t})=>Number.isFinite(e)&&Number.isFinite(t)&&e>=0&&t>e).sort((e,t)=>e.start-t.start),a=[];for(const e of r){const t=a.at(-1);t&&e.start<=t.end?t.end=Math.max(t.end,e.end):a.push(e)}return a},n=(e,t)=>e.reduce((e,{start:r,end:s})=>e+Math.max(0,Math.min(s,t)-r),0),i=(e,t)=>e.reduce((e,{start:r,end:s})=>s<=t+1e-6?e+s-r:e,0),o=e=>"urn:com:philo:event:ad:regions"===e?.uri||"string"==typeof e?.messageData&&e.messageData.includes(\'"ad_breaks"\'),u=(t,r)=>{if(!Array.isArray(t.periods)||!t.periods.every(s))return!1;const u=[];for(const r of t.periods)if(Array.isArray(r.eventStreams))for(const t of r.eventStreams)if(o(t)&&"string"==typeof t.messageData)try{const r=Reflect.apply(e,JSON,[t.messageData]);u.push(...a(r?.ad_breaks))}catch{}const d=a(u);return!!d.length&&(t.periods=t.periods.filter((e,t)=>!(e=>Array.isArray(e.adaptationSets)&&e.adaptationSets.some(e=>"string"==typeof e?.timeline?.segmentURLTemplate&&e.timeline.segmentURLTemplate.includes("/ad/")))(e)),t.periods.forEach((e,t)=>{if(Number.isFinite(e.startTime)){const t=e.startTime;e.startTime=t-i(d,t)}"index"in e&&(e.index=t),Array.isArray(e.eventStreams)&&(e.eventStreams=e.eventStreams.filter((e,t)=>!o(e)))}),Number.isFinite(t.duration)&&(t.duration-=n(d,t.duration)),!0)},d=(e,t)=>{if(!e||"object"!=typeof e||r.has(e))return e;const o=u(e),d=(e=>{if(!s(e.url_to_thumbs)||Array.isArray(e.url_to_thumbs)||!Array.isArray(e.ad_breaks))return!1;const t=a(e.ad_breaks);if(!t.length)return!1;for(const r of Object.keys(e.url_to_thumbs)){if(r.includes("/ad/")){delete e.url_to_thumbs[r];continue}const s=e.url_to_thumbs[r];if(Array.isArray(s))for(const e of s)if(Number.isFinite(e?.pt)){const r=e.pt;e.pt=r-i(t,r)}}return delete e.ad_breaks,Number.isFinite(e.available_duration_seconds)&&(e.available_duration_seconds-=n(t,e.available_duration_seconds)),!0})(e);return(o||d)&&r.add(e),e},c={apply:(e,t,r)=>{const s=Reflect.apply(e,t,r);try{return d(s)}catch(e){return s}}};JSON.parse=new Proxy(e,c);const p={apply:async(e,t,r)=>{const s=await Reflect.apply(e,t,r);try{return d(s)}catch(e){return s}}};Response.prototype.json=new Proxy(t,p)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.cde9bb8af864ebcfcb79d446284c6e7e === e) return;
+            (() => {
+                const e = JSON.parse, t = Response.prototype.json, r = new WeakSet, a = e => null !== e && "object" == typeof e, s = e => {
+                    if (!Array.isArray(e)) return [];
+                    const t = e => "number" == typeof e || "string" == typeof e && "" !== e.trim() ? Number(e) : NaN, r = e.filter(a).map((({start: e, end: r}) => ({
+                        start: t(e),
+                        end: t(r)
+                    }))).filter((({start: e, end: t}) => Number.isFinite(e) && Number.isFinite(t) && e >= 0 && t > e)).sort(((e, t) => e.start - t.start)), s = [];
+                    for (const e of r) {
+                        const t = s.at(-1);
+                        t && e.start <= t.end ? t.end = Math.max(t.end, e.end) : s.push(e);
+                    }
+                    return s;
+                }, n = (e, t) => e.reduce(((e, {start: r, end: a}) => e + Math.max(0, Math.min(a, t) - r)), 0), o = (e, t) => e.reduce(((e, {start: r, end: a}) => a <= t + 1e-6 ? e + a - r : e), 0), i = e => "urn:com:philo:event:ad:regions" === e?.uri || "string" == typeof e?.messageData && e.messageData.includes('"ad_breaks"'), c = (t, r) => {
+                    if (!Array.isArray(t.periods) || !t.periods.every(a)) return !1;
+                    const c = [];
+                    for (const r of t.periods) if (Array.isArray(r.eventStreams)) for (const t of r.eventStreams) if (i(t) && "string" == typeof t.messageData) try {
+                        const r = Reflect.apply(e, JSON, [ t.messageData ]);
+                        c.push(...s(r?.ad_breaks));
+                    } catch {}
+                    const d = s(c);
+                    return !!d.length && (t.periods = t.periods.filter(((e, t) => !(e => Array.isArray(e.adaptationSets) && e.adaptationSets.some((e => "string" == typeof e?.timeline?.segmentURLTemplate && e.timeline.segmentURLTemplate.includes("/ad/"))))(e))), 
+                    t.periods.forEach(((e, t) => {
+                        if (Number.isFinite(e.startTime)) {
+                            const t = e.startTime;
+                            e.startTime = t - o(d, t);
+                        }
+                        "index" in e && (e.index = t), Array.isArray(e.eventStreams) && (e.eventStreams = e.eventStreams.filter(((e, t) => !i(e))));
+                    })), Number.isFinite(t.duration) && (t.duration -= n(d, t.duration)), !0);
+                }, d = (e, t) => {
+                    if (!e || "object" != typeof e || r.has(e)) return e;
+                    const i = c(e), d = (e => {
+                        if (!a(e.url_to_thumbs) || Array.isArray(e.url_to_thumbs) || !Array.isArray(e.ad_breaks)) return !1;
+                        const t = s(e.ad_breaks);
+                        if (!t.length) return !1;
+                        for (const r of Object.keys(e.url_to_thumbs)) {
+                            if (r.includes("/ad/")) {
+                                delete e.url_to_thumbs[r];
+                                continue;
+                            }
+                            const a = e.url_to_thumbs[r];
+                            if (Array.isArray(a)) for (const e of a) if (Number.isFinite(e?.pt)) {
+                                const r = e.pt;
+                                e.pt = r - o(t, r);
+                            }
+                        }
+                        return delete e.ad_breaks, Number.isFinite(e.available_duration_seconds) && (e.available_duration_seconds -= n(t, e.available_duration_seconds)), 
+                        !0;
+                    })(e);
+                    return (i || d) && r.add(e), e;
+                }, u = {
+                    apply: (e, t, r) => {
+                        const a = Reflect.apply(e, t, r);
+                        try {
+                            return d(a);
+                        } catch (e) {
+                            return a;
+                        }
+                    }
+                };
+                JSON.parse = new Proxy(e, u);
+                const p = {
+                    apply: async (e, t, r) => {
+                        const a = await Reflect.apply(e, t, r);
+                        try {
+                            return d(a);
+                        } catch (e) {
+                            return a;
+                        }
+                    }
+                };
+                Response.prototype.json = new Proxy(t, p);
+            })();
+            Object.defineProperty(Window.prototype.toString, "cde9bb8af864ebcfcb79d446284c6e7e", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "cde9bb8af864ebcfcb79d446284c6e7e" due to: ' + e);
+        }
+    },
     '(()=>{const e={cmpConsentVendors:",s2657,",event:"cmpEvent"},n=()=>{setTimeout((()=>{"function"==typeof window.dataLayer?.push&&window.dataLayer.push(e)}),1e3)};"loading"===document.readyState?window.addEventListener("load",n):n()})();': () => {
         try {
             const e = "done";
