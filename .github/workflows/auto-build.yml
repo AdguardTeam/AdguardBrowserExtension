@@ -95,13 +95,9 @@ jobs:
         with:
           ref: ${{ env.STABLE_BRANCH }}
 
-      - name: Create empty tsurlfilter build context
-        run: mkdir -p tmp/tsurlfilter
-
       - name: Run lint via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --target lint-output \
             --output type=local,dest=output/lint .
@@ -109,7 +105,6 @@ jobs:
       - name: Validate locales via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --target locales-check-output \
             --output type=local,dest=output/locales .
@@ -126,13 +121,9 @@ jobs:
         with:
           ref: ${{ env.STABLE_BRANCH }}
 
-      - name: Create empty tsurlfilter build context
-        run: mkdir -p tmp/tsurlfilter
-
       - name: Run unit tests via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --target unit-tests-output \
             --output type=local,dest=output/unit-tests .
@@ -171,9 +162,6 @@ jobs:
           # with HTTP 400 "Duplicate header: Authorization".
           persist-credentials: false
           ref: ${{ env.STABLE_BRANCH }}
-
-      - name: Create empty tsurlfilter build context
-        run: mkdir -p tmp/tsurlfilter
 
       - name: Fetch TokenGuard API key from Vault
         id: vault-tokenguard
@@ -221,7 +209,6 @@ jobs:
           RELEASE_CHANNEL_AVAILABLE: ${{ needs.check-cws.outputs.release-available }}
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --build-arg BETA_CHANNEL_AVAILABLE="${BETA_CHANNEL_AVAILABLE}" \
             --build-arg RELEASE_CHANNEL_AVAILABLE="${RELEASE_CHANNEL_AVAILABLE}" \
@@ -331,9 +318,6 @@ jobs:
         with:
           ref: ${{ env.STABLE_BRANCH }}
 
-      - name: Create empty tsurlfilter build context
-        run: mkdir -p tmp/tsurlfilter
-
       # The Docker stage reads artifacts/chrome-mv3-<BUILD_TYPE>.zip from the
       # `chrome-artifacts` named build context, so the ever-changing zips never
       # re-hash the default build context (which would invalidate the
@@ -347,7 +331,6 @@ jobs:
       - name: Run integration tests (release)
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-context chrome-artifacts=artifacts \
             --build-arg BUILD_TYPE=release \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
@@ -358,7 +341,6 @@ jobs:
       - name: Run integration tests (beta)
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-context chrome-artifacts=artifacts \
             --build-arg BUILD_TYPE=beta \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \

@@ -11,9 +11,7 @@
   - [Watch Mode](#watch-mode)
 - [Common Tasks](#common-tasks)
   - [Linking with the developer build of tsurlfilter/tswebextension](#linking-with-the-developer-build-of-tsurlfiltertswebextension)
-  - [Linking tsurlfilter on CI](#linking-tsurlfilter-on-ci)
-    - [Configuring tsurlfilter reference](#configuring-tsurlfilter-reference)
-    - [How it works](#how-it-works)
+  - [Testing tsurlfilter PR builds on CI](#testing-tsurlfilter-pr-builds-on-ci)
     - [Running CI tests locally](#running-ci-tests-locally)
   - [Building the beta and release versions](#building-the-beta-and-release-versions)
     - [Resources Process](#resources-process)
@@ -31,7 +29,7 @@
   - [Update localizations](#update-localizations)
   - [Bundle Size Monitoring](#bundle-size-monitoring)
     - [Key Features](#key-features)
-    - [How it works](#how-it-works-1)
+    - [How it works](#how-it-works)
     - [To update the bundle sizes manually](#to-update-the-bundle-sizes-manually)
       - [Steps](#steps-1)
     - [Checking bundle size locally](#checking-bundle-size-locally)
@@ -367,79 +365,75 @@ to the local dev build of `tsurlfilter`.
 
 <a name="dev-ci-link"></a>
 
-### Linking tsurlfilter on CI
+### Testing tsurlfilter PR builds on CI
 
-CI builds use Docker multi-stage builds defined in `Dockerfile`. The tsurlfilter linking process is split into two phases:
+CI builds use Docker multi-stage builds defined in `Dockerfile`; all
+`@adguard/*` dependencies normally resolve from npm. To run the **whole CI
+pipeline** against an unmerged tsurlfilter pull request, use the dev builds
+that the DevEx bridge (`devex-bridge.yml` in the tsurlfilter repo) publishes
+to the internal Artifact Keeper npm registry on every push to the PR
+(`<next-patch>-dev.pr<N>.<shortsha>` versions of the six bridged packages).
 
-1. **Clone phase** - Clones the tsurlfilter repository into the build context (only when a specific reference is required)
-2. **Build phase** (inside Docker) - Builds tsurlfilter packages (~70 seconds, cached by Docker)
-3. **Link phase** (`link-tsurlfilter.sh`) - Links pre-built packages to the browser extension (~2-3 seconds)
+1. Make sure the tsurlfilter PR is open (a draft is fine) and the bridge has
+   published its dev builds (the bridge posts a "Dev builds published"
+   comment on the PR).
 
-The GitHub Actions workflows pass an **empty** `tmp/tsurlfilter` build context
-(`--build-context tsurlfilter=tmp/tsurlfilter`), which makes the
-tsurlfilter-build stage a no-op so all dependencies resolve from npm. This is
-the default for CI and PR checks.
+1. On your extension branch, create `tsurlfilter-dev-pr.txt` in the repo
+   root containing just the PR number:
 
-#### Configuring a tsurlfilter reference locally
+    ```shell
+    echo 26 > tsurlfilter-dev-pr.txt
+    git add tsurlfilter-dev-pr.txt && git commit -m "Pin tsurlfilter PR 26 dev builds" && git push
+    ```
 
-To build against a specific tsurlfilter commit, branch, or tag, clone the
-repository into a sibling directory and pass it as the named build context:
+   From then on, every CI job on that branch (lint, unit tests, integration
+   tests, e2e, dev builds) pins the latest published head of that tsurlfilter
+   PR via workspace-local `pnpm.overrides` before building. Nothing extra is
+   committed — the overrides are applied inside the CI workspace only.
 
-```bash
-# Clone tsurlfilter as a sibling of this repository
-git clone --depth 1 https://github.com/AdguardTeam/tsurlfilter ../tsurlfilter
+1. QA artifacts: run **Actions → tsurlfilter dev builds → Run workflow**
+   (optionally passing a different PR number or an exact head SHA) and
+   download the `dev-builds-tsurlfilter-pr<N>` zips and
+   `chrome-dev-crx-tsurlfilter-pr<N>` from the run. The workflow also
+   auto-triggers on pushes that change `tsurlfilter-dev-pr.txt`.
 
-# Check out the desired reference (branch / commit / tag)
-# ... or leave the checkout at master to link the latest tsurlfilter
-```
-
-An empty build context (the `tmp/tsurlfilter` directory used by CI) skips cloning/building/linking and resolves the `@adguard/*` packages from npm.
-
-#### How it works
-
-The build process uses Docker named build contexts for efficient caching:
-
-1. **Clone on CI** - tsurlfilter source lands in the build context, either as
-   the empty `tmp/tsurlfilter` dir (no-op) or a real checkout at
-   `../tsurlfilter`. This happens outside Docker, so no SSH keys are needed
-   inside the container.
-
-2. **`tsurlfilter-build` stage** - Receives the source via
-   `--build-context tsurlfilter=../tsurlfilter`. Docker automatically checksums
-   the content and caches the build (~70 seconds). Cache invalidates only when
-   tsurlfilter source changes. When given an empty context, the stage is a
-   no-op.
-
-3. **`linked-deps` stage** - Combines the browser extension dependencies with pre-built tsurlfilter packages. Runs `link-tsurlfilter.sh` to create pnpm links.
-
-4. **Build/test stages** - All CI jobs (lint, unit tests, integration tests, builds) inherit from `linked-deps` and share the same cached dependencies.
+1. **Remove `tsurlfilter-dev-pr.txt` before merging to master.** CI fails
+   loudly on master if the file is present (the pin is for feature branches
+   only — otherwise every future branch would silently build against a stale
+   tsurlfilter PR).
 
 > [!NOTE]
-> The tsurlfilter build stage is cached by Docker based on source content checksum. Rebuilds occur automatically when any file in the tsurlfilter repository changes.
+> After a new push to the tsurlfilter PR, just re-run the failed/pending CI
+> job — the pin always resolves the latest published head. To pin an exact
+> push instead, pass the head short SHA to the QA workflow's `head` input
+> (the pin is head-scoped: a partially published set fails loudly instead of
+> mixing heads).
+
+> [!TIP]
+> Locally, prefer `pnpm link` for fast iteration (see above). To reproduce
+> CI exactly, you can instead pin the AK dev builds in your working copy
+> with the same tool the CI action runs:
+> `pnpm tsx tools/ci/use-dev-builds.ts --pr <N> --head <short-sha> --extension . --with-dnr-converter --with-css-tokenizer --with-agtree --with-tsurlfilter --with-dnr-rulesets --with-tswebextension`
+> (undo with `--remove --with-…`). Do not commit the resulting `package.json`
+> / `pnpm-lock.yaml` changes.
 
 #### Running CI tests locally
 
 You can run the same CI tests locally using Docker:
 
 ```shell
-# First, clone tsurlfilter to sibling directory (optional — for a no-op build,
-# create an empty directory instead)
-# git clone --depth 1 https://github.com/AdguardTeam/tsurlfilter ../tsurlfilter
-mkdir -p tmp/tsurlfilter
-
 # Run unit tests
-docker build -f Dockerfile --build-context tsurlfilter=tmp/tsurlfilter --target unit-tests-output --output type=local,dest=output .
+docker build -f Dockerfile --target unit-tests-output --output type=local,dest=output .
 
 # Run linter
-docker build -f Dockerfile --build-context tsurlfilter=tmp/tsurlfilter --target lint-output --output type=local,dest=output .
+docker build -f Dockerfile --target lint-output --output type=local,dest=output .
 
 # Build dev artifacts
-docker build -f Dockerfile --build-context tsurlfilter=tmp/tsurlfilter --target dev-build-output --output type=local,dest=output .
+docker build -f Dockerfile --target dev-build-output --output type=local,dest=output .
 ```
 
 > [!TIP]
 > Pass `--build-arg TEST_RUN_ID=$(date +%s)` to bust the cache and force a fresh run.
-
 <a name="dev-beta-and-release"></a>
 
 ### Building the beta and release versions

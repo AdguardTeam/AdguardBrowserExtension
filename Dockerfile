@@ -17,34 +17,6 @@ WORKDIR /extension
 ENV PNPM_STORE=/pnpm-store
 
 # ============================================================================
-# Stage: tsurlfilter-build
-# Builds tsurlfilter from source (passed via named build context)
-# Cached until tsurlfilter source content changes (Docker checksums it)
-# This stage builds tsurlfilter packages (~70 seconds)
-# Output: /tsurlfilter with pre-built packages
-# If tsurlfilter context is empty (no packages dir), skips build entirely
-# ============================================================================
-FROM base AS tsurlfilter-build
-
-# Copy source from named build context; on CI this is an empty directory
-# (the tsurlfilter build context is provided empty) so npm versions of the
-# @adguard packages from package.json are used.
-COPY --from=tsurlfilter . /tsurlfilter
-
-# Only build tsurlfilter when the context contains a packages/ directory.
-# Otherwise skip - npm versions from package.json will be used
-RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
-    [ ! -d "/tsurlfilter/packages" ] && echo "No tsurlfilter source, using npm versions" && exit 0; \
-    echo "Building tsurlfilter from source..." && \
-    pnpm config set store-dir /pnpm-store && \
-    cd /tsurlfilter/packages/tswebextension && \
-    pnpm install \
-        --frozen-lockfile \
-        --prefer-offline \
-        --ignore-scripts && \
-    npx lerna run build --scope=@adguard/tswebextension --scope=@adguard/dnr-rulesets --include-dependencies
-
-# ============================================================================
 # Stage: deps
 # Cached until package.json/pnpm-lock.yaml changes
 # ============================================================================
@@ -63,30 +35,17 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
 # ============================================================================
 # Stage: source-deps
 # Cached until source code changes
-# Has source + node_modules but NO tsurlfilter
+# Has source + node_modules; all build/test stages inherit from here
 # ============================================================================
 FROM deps AS source-deps
 
 COPY . /extension
 
 # ============================================================================
-# Stage: linked-deps
-# Combines source-deps and tsurlfilter-build, runs fast linking (~2-3 seconds)
-# All build stages inherit from this stage
-# ============================================================================
-FROM source-deps AS linked-deps
-
-COPY --from=tsurlfilter-build /tsurlfilter /tsurlfilter
-
-RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
-    pnpm config set store-dir /pnpm-store && \
-    ./tools/ci/link-tsurlfilter.sh --with-agtree --with-tsurlfilter
-
-# ============================================================================
 # Stage: linked-deps-playwright
 # Installs Playwright browsers once; all test stages inherit from here.
 # ============================================================================
-FROM linked-deps AS linked-deps-playwright
+FROM source-deps AS linked-deps-playwright
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     pnpm config set store-dir /pnpm-store && \
@@ -96,7 +55,7 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
 # Stage: dev-build
 # Creates dev build with zip files for CI artifacts
 # ============================================================================
-FROM linked-deps AS dev-build
+FROM source-deps AS dev-build
 
 ARG TEST_RUN_ID
 
@@ -126,7 +85,7 @@ COPY --from=dev-build /out/ /
 # Stage: chrome-crx
 # Creates Chrome CRX build
 # ============================================================================
-FROM linked-deps AS chrome-crx
+FROM source-deps AS chrome-crx
 
 ARG TEST_RUN_ID
 
@@ -147,7 +106,7 @@ COPY --from=chrome-crx /out/ /
 # Stage: lint
 # Runs linting
 # ============================================================================
-FROM linked-deps AS lint
+FROM source-deps AS lint
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Run lint with timeout (cached until source changes).
@@ -166,7 +125,7 @@ COPY --from=lint /out/ /
 # IMPORTANT: Cannot be cached - tests must run on every build to catch
 # regressions. TEST_RUN_ID busts cache on every build.
 # ============================================================================
-FROM linked-deps AS unit-tests
+FROM source-deps AS unit-tests
 
 ARG TEST_RUN_ID
 
@@ -598,7 +557,7 @@ COPY --from=check-cws /out/ /
 # locales, local script rules and package.json) for git commit
 # Used by auto-build.yml workflow
 # ============================================================================
-FROM linked-deps AS auto-build
+FROM source-deps AS auto-build
 
 ARG TEST_RUN_ID
 ARG BETA_CHANNEL_AVAILABLE

@@ -1,0 +1,108 @@
+# Builds QA artifacts (dev zips for all browsers + a Chrome CRX) against the
+# tsurlfilter PR dev builds published to the internal Artifact Keeper npm
+# registry by the DevEx bridge (ext-tsurlfilter: devex-bridge.yml).
+#
+# tsurlfilter PR number source, in priority order:
+#   1. the `tsurlfilter_pr` workflow_dispatch input,
+#   2. tsurlfilter-dev-pr.txt in the repo root — the push trigger reacts to
+#      changes of this file, which is how you point CI at a tsurlfilter PR
+#      from a feature branch: put the number in the file, commit, push.
+#      (tsurlfilter-dev-pr.txt must never land on master — ci.yml fails
+#      loudly if it does. See .github/actions/pin-tsurlfilter-dev.)
+#
+# Triggering:
+#   - Actions → tsurlfilter dev builds → Run workflow (workflow_dispatch), or
+#   - push a commit that changes tsurlfilter-dev-pr.txt.
+#
+# A push that DELETES tsurlfilter-dev-pr.txt (the documented cleanup before
+# merge) is a no-op: the pin step is skipped and the build steps require a
+# resolved PR, so the run stays green instead of failing on the missing file.
+#
+# Requirements (all already in place for this repo):
+#   - team-extensions runner (in-cluster, reaches ak.int.agrd.dev + npm)
+#   - unauthenticated AK npm reads (same as the dnr-rulesets auto-build fetch)
+
+name: tsurlfilter dev builds
+
+on:
+  workflow_dispatch:
+    inputs:
+      tsurlfilter_pr:
+        description: 'tsurlfilter PR number whose -dev.prN.* AK builds to use (default: tsurlfilter-dev-pr.txt)'
+        required: false
+        default: ''
+      head:
+        description: 'Optional head short SHA to pin (default: latest published for the PR)'
+        required: false
+        default: ''
+  push:
+    paths:
+      - 'tsurlfilter-dev-pr.txt'
+
+concurrency:
+  group: tsurlfilter-dev-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  dev-build:
+    name: Dev build with tsurlfilter PR dev build
+    runs-on: team-extensions
+    timeout-minutes: 45
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      # `hashFiles` is only available in step contexts, so the no-op gate lives
+      # here; the build steps below additionally require the resolved PR.
+      # `required` is only set for MANUAL runs: a push that adds or changes
+      # `tsurlfilter-dev-pr.txt` with an empty/placeholder file must be a
+      # no-op, while a manual run without a PR fails loudly instead of
+      # silently doing nothing.
+      - name: Pin tsurlfilter dev builds
+        id: pin
+        if: ${{ github.event_name != 'push' || hashFiles('tsurlfilter-dev-pr.txt') != '' }}
+        uses: ./.github/actions/pin-tsurlfilter-dev
+        with:
+          pr: ${{ inputs.tsurlfilter_pr || '' }}
+          head: ${{ inputs.head || '' }}
+          required: ${{ github.event_name == 'workflow_dispatch' }}
+
+      - name: Build dev extensions via Docker
+        if: steps.pin.outputs.pr != ''
+        shell: bash
+        run: |
+          DOCKER_BUILDKIT=1 docker build --progress plain \
+            --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --target dev-build-output \
+            --output type=local,dest=output/dev-build .
+
+      # All *-dev.zip files land here (chrome, chrome-mv3, edge, firefox-amo,
+      # firefox-standalone, opera, opera-mv3) — the QA-downloadable builds.
+      - name: Upload dev builds
+        if: steps.pin.outputs.pr != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: dev-builds-tsurlfilter-pr${{ steps.pin.outputs.pr }}
+          path: output/dev-build/artifacts/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Build dev CRX via Docker
+        if: steps.pin.outputs.pr != ''
+        shell: bash
+        run: |
+          DOCKER_BUILDKIT=1 docker build --progress plain \
+            --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --target chrome-crx-output \
+            --output type=local,dest=output/chrome-crx .
+
+      - name: Upload dev CRX
+        if: steps.pin.outputs.pr != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: chrome-dev-crx-tsurlfilter-pr${{ steps.pin.outputs.pr }}
+          path: output/chrome-crx/artifacts/chrome-dev.crx
+          if-no-files-found: error
+          retention-days: 7

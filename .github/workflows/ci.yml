@@ -31,17 +31,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      # The Dockerfile requires a `tsurlfilter` named build context; an empty
-      # directory makes the tsurlfilter-build stage a no-op so dependencies
-      # resolve from npm.
-      - name: Create empty tsurlfilter build context
-        run: mkdir -p tmp/tsurlfilter
+      # When tsurlfilter-dev-pr.txt on this branch names a tsurlfilter PR,
+      # pin its Artifact Keeper dev builds so the whole pipeline (lint,
+      # tests, builds) runs against them. No-op otherwise.
+      - name: Pin tsurlfilter dev builds (if configured)
+        uses: ./.github/actions/pin-tsurlfilter-dev
 
       # The lint stage fails the docker build directly on lint errors.
       - name: Run lint via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --target lint-output \
             --output type=local,dest=output/lint .
@@ -51,7 +50,6 @@ jobs:
       - name: Validate locales via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --target locales-check-output \
             --output type=local,dest=output/locales .
@@ -104,6 +102,14 @@ jobs:
           "${DL}/actionlint" -version
           "${DL}/actionlint" .github/workflows/*.yml
 
+      # actionlint cannot parse action.yml files (it treats them as workflows
+      # and errors), so the pin action keeps its logic in a plain Node script
+      # (pin.mjs) which we syntax-check here.
+      - name: Syntax check composite action scripts
+        run: |
+          set -euo pipefail
+          node --check .github/actions/pin-tsurlfilter-dev/pin.mjs
+
   unit-tests:
     name: Unit tests
     runs-on: team-extensions
@@ -114,15 +120,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Create empty tsurlfilter build context
-        run: mkdir -p tmp/tsurlfilter
+      - name: Pin tsurlfilter dev builds (if configured)
+        uses: ./.github/actions/pin-tsurlfilter-dev
 
       # The Docker stage always exits 0 and reports the result via
       # exit-code.txt so the JUnit report is available even on failure.
       - name: Run unit tests via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --target unit-tests-output \
             --output type=local,dest=output/unit-tests .
@@ -150,13 +155,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Create empty tsurlfilter build context
-        run: mkdir -p tmp/tsurlfilter
+      - name: Pin tsurlfilter dev builds (if configured)
+        uses: ./.github/actions/pin-tsurlfilter-dev
 
       - name: Build dev extensions via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --target dev-build-output \
             --output type=local,dest=output/dev-build .
@@ -181,13 +185,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Create empty tsurlfilter build context
-        run: mkdir -p tmp/tsurlfilter
+      - name: Pin tsurlfilter dev builds (if configured)
+        uses: ./.github/actions/pin-tsurlfilter-dev
 
       - name: Build dev CRX via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --target chrome-crx-output \
             --output type=local,dest=output/chrome-crx .
@@ -210,15 +213,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Create empty tsurlfilter build context
-        run: mkdir -p tmp/tsurlfilter
+      - name: Pin tsurlfilter dev builds (if configured)
+        uses: ./.github/actions/pin-tsurlfilter-dev
 
       # Reuses the bundle-size-check Docker stage (same as the old Bamboo
       # "Size and locales check"): builds beta and fails on size regressions.
       - name: Run bundle size check via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg BUILD_TYPE=beta \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --target bundle-size-check-output \
@@ -234,13 +236,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Create empty tsurlfilter build context
-        run: mkdir -p tmp/tsurlfilter
+      - name: Pin tsurlfilter dev builds (if configured)
+        uses: ./.github/actions/pin-tsurlfilter-dev
 
       - name: Run integration tests via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --no-cache-filter=integration-tests-standalone \
             --target integration-tests-standalone-output \
