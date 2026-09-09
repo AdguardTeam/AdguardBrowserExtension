@@ -43,7 +43,6 @@ import { BrowserUtils } from '../../../utils/browser-utils';
 import {
     AntiBannerFiltersId,
     AntibannerGroupsId,
-    CHROME_EXTENSIONS_SETTINGS_URL,
     FILTERING_LOG_WINDOW_STATE_KEY,
 } from '../../../../common/constants';
 import { WindowsApi, TabsApi } from '../../../../common/api/extension';
@@ -521,12 +520,12 @@ export abstract class PagesApiCommon {
     };
 
     /**
-     * Opens Chrome's extensions settings page.
+     * Opens browser's extensions settings page.
      */
-    public static async openChromeExtensionsSettingsPage(): Promise<void> {
+    public static async openExtensionsSettingsPage(): Promise<void> {
         // if a tab with the same url is already opened, create new tab even
-        // because `chrome://extensions` cannot be queried with browser.tabs.query (via TabsApi.findOne)
-        await browser.tabs.create({ url: CHROME_EXTENSIONS_SETTINGS_URL });
+        // because the extensions settings page cannot be queried with browser.tabs.query (via TabsApi.findOne)
+        await browser.tabs.create({ url: BrowserUtils.getExtensionsSettingsUrl() });
     }
 
     /**
@@ -534,7 +533,7 @@ export abstract class PagesApiCommon {
      */
     public static async openExtensionDetailsPage(): Promise<void> {
         // if a tab with the same url is already opened, create new tab even
-        // because `chrome://extensions` cannot be queried with browser.tabs.query (via TabsApi.findOne)
+        // because the extensions settings page cannot be queried with browser.tabs.query (via TabsApi.findOne)
         // IMPORTANT: extension details url helper is used in options page as well,
         // so it should not be a PagesApi method, otherwise options page bundle size increase
         await browser.tabs.create({ url: BrowserUtils.getExtensionDetailsUrl() });

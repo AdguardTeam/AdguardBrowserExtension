@@ -151,7 +151,9 @@ FROM linked-deps AS lint
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Run lint with timeout (cached until source changes).
-    ./tools/ci/timeout-wrapper.sh 240s pnpm lint && \
+    # ESLint + MV2/MV3 type checks take ~5 min on the shared runner under load;
+    # 240s was too tight and caused flaky timeouts.
+    ./tools/ci/timeout-wrapper.sh 600s pnpm lint && \
     mkdir -p /out && \
     touch /out/lint.txt
 

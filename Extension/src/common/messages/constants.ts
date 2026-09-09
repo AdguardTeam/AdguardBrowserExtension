@@ -98,7 +98,7 @@ export enum MessageType {
     OpenAssistant = 'openAssistant',
     OpenAbuseTab = 'openAbuseTab',
     OpenSiteReportTab = 'openSiteReportTab',
-    OpenChromeExtensionsSettingsPage = 'openChromeExtensionsSettingsPage',
+    OpenExtensionsSettingsPage = 'openExtensionsSettingsPage',
     OpenExtensionDetailsPage = 'openExtensionDetailsPage',
     ResetUserRulesForPage = 'resetUserRulesForPage',
     RemoveAllowlistDomain = 'removeAllowlistDomain',
@@ -288,8 +288,8 @@ export type ResetBlockedAdsCountMessage = {
     type: MessageType.ResetBlockedAdsCount;
 };
 
-export type OpenChromeExtensionsSettingsPageMessage = {
-    type: MessageType.OpenChromeExtensionsSettingsPage;
+export type OpenExtensionsSettingsPageMessage = {
+    type: MessageType.OpenExtensionsSettingsPage;
 };
 
 export type OpenExtensionDetailsPageMessage = {
@@ -820,8 +820,8 @@ export type MessageMap = {
         message: OpenExtensionStoreMessage;
         response: void;
     };
-    [MessageType.OpenChromeExtensionsSettingsPage]: {
-        message: OpenChromeExtensionsSettingsPageMessage;
+    [MessageType.OpenExtensionsSettingsPage]: {
+        message: OpenExtensionsSettingsPageMessage;
         response: void;
     };
     [MessageType.OpenExtensionDetailsPage]: {

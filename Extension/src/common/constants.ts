@@ -264,6 +264,11 @@ export const EXTENSION_INITIALIZED_EVENT = 'initialized';
 export const CHROME_EXTENSIONS_SETTINGS_URL = 'chrome://extensions';
 
 /**
+ * Edge's extensions settings page url.
+ */
+export const EDGE_EXTENSIONS_SETTINGS_URL = 'edge://extensions';
+
+/**
  * Opera's extensions settings page url.
  */
 export const OPERA_EXTENSIONS_SETTINGS_URL = 'opera://extensions';

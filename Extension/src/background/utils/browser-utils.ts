@@ -18,7 +18,12 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { Prefs } from '../prefs';
-import { CHROME_EXTENSIONS_SETTINGS_URL } from '../../common/constants';
+import {
+    CHROME_EXTENSIONS_SETTINGS_URL,
+    EDGE_EXTENSIONS_SETTINGS_URL,
+    OPERA_EXTENSIONS_SETTINGS_URL,
+} from '../../common/constants';
+import { UserAgent } from '../../common/user-agent';
 import { logger } from '../../common/logger';
 
 import { Version } from './version';
@@ -45,8 +50,29 @@ export class BrowserUtils {
     }
 
     /**
-     * Returns extension details url,
-     * e.g. `chrome://extensions/?id=<extensionId>`.
+     * Returns extensions settings page url for the current browser:
+     * `chrome://extensions` for Chrome, `edge://extensions` for Edge
+     * and `opera://extensions` for Opera.
+     *
+     * @returns Extensions settings page url.
+     */
+    public static getExtensionsSettingsUrl(): string {
+        if (UserAgent.isOpera) {
+            return OPERA_EXTENSIONS_SETTINGS_URL;
+        }
+
+        if (UserAgent.isEdge) {
+            return EDGE_EXTENSIONS_SETTINGS_URL;
+        }
+
+        return CHROME_EXTENSIONS_SETTINGS_URL;
+    }
+
+    /**
+     * Returns extension details url for the current browser,
+     * e.g. `chrome://extensions/?id=<extensionId>`,
+     * `edge://extensions/?id=<extensionId>` or
+     * `opera://extensions/?id=<extensionId>`.
      *
      * Needed for User Scripts API toggle.
      *
@@ -55,7 +81,7 @@ export class BrowserUtils {
      * @returns Extension details url.
      */
     public static getExtensionDetailsUrl(): string {
-        const url = new URL(CHROME_EXTENSIONS_SETTINGS_URL);
+        const url = new URL(BrowserUtils.getExtensionsSettingsUrl());
         url.searchParams.set('id', Prefs.id);
         return url.toString();
     }

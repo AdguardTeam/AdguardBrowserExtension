@@ -58,7 +58,7 @@ export const WarningVariantB = ({ onClickCloseWarning }: WarningVariantBProps) =
             TelemetryScreenName.RulesLimitsError,
         );
         try {
-            await messenger.openChromeExtensionsPage();
+            await messenger.openExtensionsSettingsPage();
         } catch (e) {
             logger.warn('[ext.WarningVariantB-mv3]: Failed to open extensions page:', e);
         }

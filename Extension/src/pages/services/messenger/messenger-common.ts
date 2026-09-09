@@ -361,13 +361,13 @@ export abstract class MessengerCommon {
     };
 
     /**
-     * Sends a message to the background page to open the Chrome extensions settings page.
+     * Sends a message to the background page to open the extensions settings page.
      *
      * @returns Promise that resolves after the message is sent.
      */
-    openChromeExtensionsPage = async ()
-    : Promise<ExtractMessageResponse<MessageType.OpenChromeExtensionsSettingsPage>> => {
-        return this.sendMessage(MessageType.OpenChromeExtensionsSettingsPage);
+    openExtensionsSettingsPage = async ()
+    : Promise<ExtractMessageResponse<MessageType.OpenExtensionsSettingsPage>> => {
+        return this.sendMessage(MessageType.OpenExtensionsSettingsPage);
     };
 
     /**

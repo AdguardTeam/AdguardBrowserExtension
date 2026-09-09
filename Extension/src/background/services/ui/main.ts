@@ -158,8 +158,8 @@ export class UiService {
         messageHandler.addListener(MessageType.OpenThankYouPage, pagesApi.openThankYouPage);
         messageHandler.addListener(MessageType.OpenExtensionStore, pagesApi.openExtensionStorePage);
         messageHandler.addListener(
-            MessageType.OpenChromeExtensionsSettingsPage,
-            PagesApi.openChromeExtensionsSettingsPage,
+            MessageType.OpenExtensionsSettingsPage,
+            PagesApi.openExtensionsSettingsPage,
         );
         messageHandler.addListener(MessageType.OpenExtensionDetailsPage, PagesApi.openExtensionDetailsPage);
         messageHandler.addListener(MessageType.OpenFullscreenUserRules, PagesApi.openFullscreenUserRulesPage);

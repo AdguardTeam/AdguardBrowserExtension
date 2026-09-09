@@ -171,8 +171,8 @@ describe.skipIf(!__IS_MV3__)('WarningVariantB', () => {
             expect(onClickCloseWarning).toHaveBeenCalledTimes(1);
         });
 
-        it('should call openChromeExtensionsPage when Manage extensions is clicked', async () => {
-            const openChromeExtensionsPage = vi.fn().mockResolvedValue(undefined);
+        it('should call openExtensionsSettingsPage when Manage extensions is clicked', async () => {
+            const openExtensionsSettingsPage = vi.fn().mockResolvedValue(undefined);
             const { context } = createMockRootStore({
                 areFilterLimitsExceeded: false,
                 shouldShowLimitLoweredWarning: true,
@@ -181,7 +181,7 @@ describe.skipIf(!__IS_MV3__)('WarningVariantB', () => {
             vi.doMock(
                 '../../../../../../../Extension/src/pages/services/messenger',
                 () => ({
-                    messenger: { openChromeExtensionsPage },
+                    messenger: { openExtensionsSettingsPage },
                 }),
             );
 
@@ -205,7 +205,7 @@ describe.skipIf(!__IS_MV3__)('WarningVariantB', () => {
             );
             expect(manageBtn).toBeTruthy();
             fireEvent.click(manageBtn!);
-            expect(openChromeExtensionsPage).toHaveBeenCalledTimes(1);
+            expect(openExtensionsSettingsPage).toHaveBeenCalledTimes(1);
         });
 
         it('should send telemetry event when Go to filters is clicked', async () => {

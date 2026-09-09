@@ -22,10 +22,7 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import { BrowserUtils } from '../../../../background/utils/browser-utils';
-import {
-    CHROME_EXTENSIONS_SETTINGS_URL,
-    USER_SCRIPTS_API_MIN_CHROME_VERSION_REQUIRED,
-} from '../../../../common/constants';
+import { USER_SCRIPTS_API_MIN_CHROME_VERSION_REQUIRED } from '../../../../common/constants';
 import { reactTranslator } from '../../../../common/translators/reactTranslator';
 import { shouldShowUserScriptsApiWarning } from '../../../../common/user-scripts-api';
 import { useVisibilityCheck } from '../../../common/hooks/useVisibilityCheck';
@@ -50,9 +47,9 @@ export const UserScriptsApiWarningForUserRules = observer(() => {
         return null;
     }
 
-    const openChromeExtensionsSettings = async (e: React.MouseEvent) => {
+    const openExtensionsSettings = async (e: React.MouseEvent) => {
         e.preventDefault();
-        await messenger.openChromeExtensionsPage();
+        await messenger.openExtensionsSettingsPage();
     };
 
     const openExtensionDetails = async (e: React.MouseEvent) => {
@@ -106,8 +103,8 @@ export const UserScriptsApiWarningForUserRules = observer(() => {
             b: (text: string) => <b>{text}</b>,
             'settings-link': (text: string) => getSettingsLink(
                 text,
-                CHROME_EXTENSIONS_SETTINGS_URL,
-                openChromeExtensionsSettings,
+                BrowserUtils.getExtensionsSettingsUrl(),
+                openExtensionsSettings,
             ),
         });
     };
