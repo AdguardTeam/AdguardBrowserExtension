@@ -165,15 +165,57 @@ jobs:
             --target dev-build-output \
             --output type=local,dest=output/dev-build .
 
-      # All *-dev.zip files land here (chrome, chrome-mv3, edge, firefox-amo,
-      # firefox-standalone, opera, opera-mv3) — the QA-downloadable builds.
-      - name: Upload dev builds
+      # Each *-dev.zip (chrome, chrome-mv3, edge, firefox-amo,
+      # firefox-standalone, opera, opera-mv3) is uploaded as its own artifact
+      # so QA can download only the browser they need.
+      - name: Upload Chrome dev build
         uses: actions/upload-artifact@v7
         with:
-          name: dev-builds
-          path: output/dev-build/artifacts/
+          name: chrome-dev
+          path: output/dev-build/artifacts/chrome-dev.zip
           if-no-files-found: error
-          retention-days: 7
+
+      - name: Upload Chrome MV3 dev build
+        uses: actions/upload-artifact@v7
+        with:
+          name: chrome-mv3-dev
+          path: output/dev-build/artifacts/chrome-mv3-dev.zip
+          if-no-files-found: error
+
+      - name: Upload Edge dev build
+        uses: actions/upload-artifact@v7
+        with:
+          name: edge-dev
+          path: output/dev-build/artifacts/edge-dev.zip
+          if-no-files-found: error
+
+      - name: Upload Firefox AMO dev build
+        uses: actions/upload-artifact@v7
+        with:
+          name: firefox-amo-dev
+          path: output/dev-build/artifacts/firefox-amo-dev.zip
+          if-no-files-found: error
+
+      - name: Upload Firefox standalone dev build
+        uses: actions/upload-artifact@v7
+        with:
+          name: firefox-standalone-dev
+          path: output/dev-build/artifacts/firefox-standalone-dev.zip
+          if-no-files-found: error
+
+      - name: Upload Opera dev build
+        uses: actions/upload-artifact@v7
+        with:
+          name: opera-dev
+          path: output/dev-build/artifacts/opera-dev.zip
+          if-no-files-found: error
+
+      - name: Upload Opera MV3 dev build
+        uses: actions/upload-artifact@v7
+        with:
+          name: opera-mv3-dev
+          path: output/dev-build/artifacts/opera-mv3-dev.zip
+          if-no-files-found: error
 
   chrome-crx:
     name: Chrome CRX (dev)
