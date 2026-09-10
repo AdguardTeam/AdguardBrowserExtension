@@ -404,10 +404,14 @@ to the internal Artifact Keeper npm registry on every push to the PR
 
 > [!NOTE]
 > After a new push to the tsurlfilter PR, just re-run the failed/pending CI
-> job — the pin always resolves the latest published head. To pin an exact
-> push instead, pass the head short SHA to the QA workflow's `head` input
-> (the pin is head-scoped: a partially published set fails loudly instead of
-> mixing heads).
+> job — the pin resolves the latest published head (the bridge's `devex`
+> dist-tag names the newest publish, so a re-run after the bridge finishes
+> picks the new head up). One exception: if the newest publish belongs to a
+> different tsurlfilter PR and this PR has several published heads, AK
+> records no publish order, so the pin fails as ambiguous instead of
+> guessing — run the **tsurlfilter dev builds** QA workflow and pass the
+> exact head short SHA to its `head` input (the pin is head-scoped: a
+> partially published set fails loudly instead of mixing heads).
 
 > [!TIP]
 > Locally, prefer `pnpm link` for fast iteration (see above). To reproduce
