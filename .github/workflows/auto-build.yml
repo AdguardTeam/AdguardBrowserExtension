@@ -95,13 +95,9 @@ jobs:
         with:
           ref: ${{ env.STABLE_BRANCH }}
 
-      - name: Create empty tsurlfilter build context
-        run: mkdir -p tmp/tsurlfilter
-
       - name: Run lint via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --target lint-output \
             --output type=local,dest=output/lint .
@@ -109,7 +105,6 @@ jobs:
       - name: Validate locales via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --target locales-check-output \
             --output type=local,dest=output/locales .
@@ -126,13 +121,9 @@ jobs:
         with:
           ref: ${{ env.STABLE_BRANCH }}
 
-      - name: Create empty tsurlfilter build context
-        run: mkdir -p tmp/tsurlfilter
-
       - name: Run unit tests via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --target unit-tests-output \
             --output type=local,dest=output/unit-tests .
@@ -156,7 +147,7 @@ jobs:
     runs-on: team-extensions
     timeout-minutes: 15
     permissions:
-      contents: read    # checkout + fetch of the stable branch only (commit push is via protected-push/Octopass)
+      contents: read    # checkout of the stable branch only (commit push is via protected-push/Octopass)
       id-token: write   # Vault JWT/OIDC + Octopass OIDC for protected-push
     outputs:
       version: ${{ steps.version.outputs.version }}
@@ -164,10 +155,13 @@ jobs:
       - name: Checkout stable branch
         uses: actions/checkout@v6
         with:
+          # Don't persist the default GITHUB_TOKEN as a git credential. The
+          # push below authenticates with an Octopass-issued token, and a
+          # persisted http.extraheader would collide with the one protected-push
+          # sets, making git send two Authorization headers which GitHub rejects
+          # with HTTP 400 "Duplicate header: Authorization".
+          persist-credentials: false
           ref: ${{ env.STABLE_BRANCH }}
-
-      - name: Create empty tsurlfilter build context
-        run: mkdir -p tmp/tsurlfilter
 
       - name: Fetch TokenGuard API key from Vault
         id: vault-tokenguard
@@ -184,8 +178,9 @@ jobs:
         run: ./tools/ci/generate-find-excludes.sh gitignore-excludes.txt
 
       # npm throttles the shared CI egress IPs, so the dnr-rulesets update
-      # resolves from the internal Artifact Keeper npm registry instead (see
-      # tools/resources/update-dnr-rulesets.ts). Fail loudly when the org
+      # fetches the package tarball from the internal Artifact Keeper npm
+      # registry instead (see tools/resources/update-dnr-rulesets.ts). Fail
+      # loudly when the org
       # variable is not visible to this repo instead of silently falling back
       # to the throttled npm path.
       - name: Resolve Artifact Keeper npm registry
@@ -201,18 +196,25 @@ jobs:
 
       # The skip-review flag (full resources update on Tuesdays, skip-review
       # eligibility check otherwise) is computed inside the Dockerfile stage.
+      # TOKENGUARD_BASE_URL/TOKENGUARD_MODEL are passed explicitly (production
+      # defaults below, overridable via repository variables) so the
+      # dangerous-rules check never silently falls back to a hardcoded default;
+      # the Dockerfile fails fast if they are missing.
       - name: Update filters, increment version and build via Docker
         env:
           TOKENGUARD_API_KEY: ${{ steps.vault-tokenguard.outputs.TOKENGUARD_API_KEY }}
+          TOKENGUARD_BASE_URL: ${{ vars.TOKENGUARD_BASE_URL || 'https://tokenguard.int.agrd.dev/api/v1/' }}
+          TOKENGUARD_MODEL: ${{ vars.TOKENGUARD_MODEL || 'deepseek-v4-flash' }}
           BETA_CHANNEL_AVAILABLE: ${{ needs.check-cws.outputs.beta-available }}
           RELEASE_CHANNEL_AVAILABLE: ${{ needs.check-cws.outputs.release-available }}
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --build-arg BETA_CHANNEL_AVAILABLE="${BETA_CHANNEL_AVAILABLE}" \
             --build-arg RELEASE_CHANNEL_AVAILABLE="${RELEASE_CHANNEL_AVAILABLE}" \
             --build-arg DNR_RULESETS_REGISTRY="${DNR_RULESETS_REGISTRY}" \
+            --build-arg TOKENGUARD_BASE_URL="${TOKENGUARD_BASE_URL}" \
+            --build-arg TOKENGUARD_MODEL="${TOKENGUARD_MODEL}" \
             --secret id=TOKENGUARD_API_KEY,env=TOKENGUARD_API_KEY \
             --target auto-build-output \
             --output type=local,dest=output/auto-build .
@@ -255,6 +257,10 @@ jobs:
         if: steps.commit.outputs.has-changes == 'true'
         uses: AdGuardSoftwareLimited/actions/actions/protected-push@master
         with:
+          # Required: protected-push forwards this to Octopass as the target
+          # repository for the minted token. Without it, Octopass gets an empty
+          # repository and rejects the request ("invalid token scope request").
+          repository: ${{ github.repository }}
           branch: ${{ env.STABLE_BRANCH }}
           commit-message: '[skip ci] Rulesets update & increment patch version (autobuild-v${{ steps.commit.outputs.version }})'
           files: ${{ steps.commit.outputs.files }}
@@ -314,9 +320,6 @@ jobs:
         with:
           ref: ${{ env.STABLE_BRANCH }}
 
-      - name: Create empty tsurlfilter build context
-        run: mkdir -p tmp/tsurlfilter
-
       # The Docker stage reads artifacts/chrome-mv3-<BUILD_TYPE>.zip from the
       # `chrome-artifacts` named build context, so the ever-changing zips never
       # re-hash the default build context (which would invalidate the
@@ -330,7 +333,6 @@ jobs:
       - name: Run integration tests (release)
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-context chrome-artifacts=artifacts \
             --build-arg BUILD_TYPE=release \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
@@ -341,7 +343,6 @@ jobs:
       - name: Run integration tests (beta)
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-context chrome-artifacts=artifacts \
             --build-arg BUILD_TYPE=beta \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \

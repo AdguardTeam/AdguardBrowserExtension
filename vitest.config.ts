@@ -57,6 +57,15 @@ const createProjectForManifestVersion = (
     },
     test: {
         name: `mv${manifestVersion}`,
+        // Cap the number of parallel fork workers. Each worker boots a full
+        // jsdom environment with the whole extension graph loaded, so running
+        // one worker per CPU core on a many-core runner exhausts memory and
+        // intermittently gets a few workers OOM-killed mid-run. Vitest then
+        // reports "Worker exited unexpectedly", drops the test files that were
+        // in flight on those workers and fails the CI even though every test
+        // passed. A small worker pool keeps peak memory within bounds at a
+        // modest cost in wall-clock time.
+        maxWorkers: 4,
         exclude: ['**/node_modules/**', '**/vendor/**'],
         server: {
             deps: {

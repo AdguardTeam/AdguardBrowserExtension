@@ -364,7 +364,11 @@ Descriptions must be complete sentences.
 #### CI/CD (GitHub Actions)
 
 - Workflows: `.github/workflows/` (`ci.yml`, `e2e.yml`, `prepare-release.yml`,
-  `publish-release.yml`, `auto-build.yml`)
+  `publish-release.yml`, `auto-build.yml`, `tsurlfilter-dev-builds.yml`)
+- `tsurlfilter-dev-builds.yml` and the composite action
+  `.github/actions/pin-tsurlfilter-dev` run CI against tsurlfilter PR dev
+  builds from Artifact Keeper (see DEVELOPMENT.md, "Testing tsurlfilter PR
+  builds on CI")
 - All build/test jobs run inside Docker via `docker build --target <stage>`
   on the `team-extensions` self-hosted runner
 - `Dockerfile` defines multi-stage builds (lint, test, build, etc.)
