@@ -20,30 +20,37 @@
  */
 
 import { execFileSync } from 'node:child_process';
+import { createHash } from 'node:crypto';
 import { readFileSync, writeFileSync } from 'node:fs';
 
 const PACKAGE_NAME = '@adguard/dnr-rulesets';
+const PACKAGE_TARBALL_NAME = PACKAGE_NAME.replace(/^@[^/]+\//, '');
 const NPM_REGISTRY = 'https://registry.npmjs.org';
+const PACKAGE_JSON_PATH = 'package.json';
 const LOCKFILE_PATH = 'pnpm-lock.yaml';
+
+/**
+ * Matches the stable `5.0.<UTC timestamp>` releases that the `~5.0` range
+ * resolves to (dev/prerelease builds such as `5.0.2-dev.pr30.…` are excluded).
+ */
+const STABLE_5_VERSION_RE = /^5\.0\.(\d+)$/;
 
 /**
  * Rewrites tarball URLs recorded in pnpm-lock.yaml back to the public npm
  * registry.
  *
- * pnpm stores the full tarball URL for packages resolved from a non-default
- * registry (e.g. the internal Artifact Keeper). Tarballs published to AK and
- * npm are byte-identical (same build artifact), so the integrity hash stays
- * valid, and installs keep working where AK is unreachable (public mirror).
+ * AK (`npm-internal`) publishes @adguard packages as byte-identical tarballs
+ * (same build artifact as npm), so the integrity hash stays valid and installs
+ * keep working where AK is unreachable (public mirror / external contributors).
  *
- * Matching uses the registry base, not the package name: `pnpm add
- * --registry <AK>` resolves the whole dependency tree from AK, so transitive
- * deps (e.g. @adguard/agtree, @adguard/dnr-converter) keep an AK tarball URL
- * that would break `--frozen-lockfile` installs on the public mirror / for
- * external contributors if only dnr-rulesets were rewritten.
+ * Only the @adguard/dnr-rulesets entry ever carries an AK tarball URL in the
+ * committed lockfile — the rest of the tree resolves from the default npm
+ * registry. Matching uses the registry base, not the package name, so the
+ * rewrite stays correct regardless of which entry ends up pointing at AK.
  *
  * @param lockfileContent Raw pnpm-lock.yaml content.
- * @param registryBase Base URL of the registry the packages were resolved
- * from, without a trailing slash.
+ * @param registryBase Base URL of the registry the tarball was resolved from,
+ * without a trailing slash.
  *
  * @returns Lockfile content with every tarball URL recorded under registryBase
  * pointing at the npm registry.
@@ -59,25 +66,186 @@ export const rewriteDnrRulesetsTarballUrls = (lockfileContent: string, registryB
     );
 };
 
-const pnpmBin = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
+/**
+ * Picks the highest stable `5.0.<timestamp>` version out of a registry's
+ * published-version list (e.g. AK metadata `versions` keys). This is what
+ * pnpm's `@adguard/dnr-rulesets@~5.0` would resolve to.
+ *
+ * @param versions Published version strings.
+ *
+ * @returns The highest matching version, or `undefined` when none matches.
+ */
+export const resolveLatestStableVersion = (versions: string[]): string | undefined => {
+    let latest: string | undefined;
+    let latestTimestamp = -1;
+    for (const version of versions) {
+        const match = STABLE_5_VERSION_RE.exec(version);
+        if (!match) {
+            continue;
+        }
+        const timestamp = Number(match[1]);
+        if (timestamp > latestTimestamp) {
+            latestTimestamp = timestamp;
+            latest = version;
+        }
+    }
+    return latest;
+};
 
 /**
- * Updates @adguard/dnr-rulesets to the latest ~5.0 from the registry in the
- * DNR_RULESETS_REGISTRY env var (public npm when unset), then rewrites lockfile
- * tarball URLs recorded against that registry back to npm — but only once the
- * freshly resolved version is confirmed on npm.
+ * Computes the `sha512-<base64>` integrity of a buffer — the format recorded in
+ * pnpm's lockfile `resolution` entries.
+ */
+export const base64Sha512 = (buffer: Buffer): string => {
+    return `sha512-${createHash('sha512').update(buffer).digest('base64')}`;
+};
+
+interface NormalizeUrlDependencyResult {
+    packageJson: string;
+    lockfile: string;
+}
+
+/**
+ * Converts the "bare tarball URL" dependency entry produced by
+ * `pnpm add -D <url>` back into the pinned-version form the repo is committed
+ * in (`~5.0.<version>` in package.json, a normal versioned `resolution` in
+ * pnpm-lock.yaml).
+ *
+ * `pnpm add -D <tarball URL>` is used to pull the fresh dnr-rulesets tarball
+ * from AK while the rest of the tree still resolves from npm. pnpm records such
+ * a dependency by its URL (importer `specifier`/`version`, `packages` and
+ * `snapshots` keys), which would not survive a public, AK-less
+ * `--frozen-lockfile` install. This normalizes it into the standard shape.
+ *
+ * @param packageJsonContent Raw package.json content.
+ * @param lockfileContent Raw pnpm-lock.yaml content.
+ * @param tarballUrl The AK tarball URL the package was installed from.
+ * @param version The resolved version, e.g. `5.0.20260903144513`.
+ * @param integrity The sha512 integrity of the tarball.
+ *
+ * @returns The normalized package.json / lockfile content.
+ *
+ * @throws {Error} When the tarball URL is absent from package.json or
+ * pnpm-lock.yaml (dependency files changed out from under the install).
+ */
+export const normalizeUrlDependency = (
+    packageJsonContent: string,
+    lockfileContent: string,
+    tarballUrl: string,
+    version: string,
+    integrity: string,
+): NormalizeUrlDependencyResult => {
+    if (!packageJsonContent.includes(tarballUrl) || !lockfileContent.includes(tarballUrl)) {
+        throw new Error(`tarball URL ${tarballUrl} not found in the dependency files — cannot normalize the entry`);
+    }
+
+    // version already carries the `5.0.` prefix (e.g. 5.0.20260903144513), so
+    // the pinned spec is simply `~<version>`.
+    const specifier = `~${version}`;
+    const replaceAll = (input: string, search: string, replacement: string): string => {
+        return input.split(search).join(replacement);
+    };
+
+    let lockfile = lockfileContent;
+    // `packages` and `snapshots` keys: '@adguard/dnr-rulesets@<url>' ->
+    // '@adguard/dnr-rulesets@<version>' (a peer-hash suffix such as
+    // `(typescript@5.6.3)` on the snapshots key is preserved).
+    lockfile = replaceAll(lockfile, `${PACKAGE_NAME}@${tarballUrl}`, `${PACKAGE_NAME}@${version}`);
+    // Importer devDependencies specifier.
+    lockfile = replaceAll(lockfile, `specifier: ${tarballUrl}`, `specifier: ${specifier}`);
+    // Importer version (peer-hash suffix preserved).
+    lockfile = replaceAll(lockfile, `version: ${tarballUrl}`, `version: ${version}`);
+    // resolution: record the integrity of the tarball we actually fetched.
+    lockfile = replaceAll(
+        lockfile,
+        `resolution: {tarball: ${tarballUrl}}`,
+        `resolution: {integrity: ${integrity}, tarball: ${tarballUrl}}`,
+    );
+    // Drop the now-redundant `version:` line inside the `packages` entry —
+    // version-keyed entries carry the version in the key instead. The 4-space
+    // indent scopes the match to `packages` entries: the importer `version:`
+    // line is 8-space indented (and carries a peer-hash suffix).
+    lockfile = replaceAll(lockfile, `\n    version: ${version}`, '');
+
+    const packageJson = replaceAll(packageJsonContent, `"${tarballUrl}"`, `"${specifier}"`);
+
+    return { packageJson, lockfile };
+};
+
+const pnpmBin = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
+
+interface PackageMetadata {
+    versions?: Record<string, { dist?: { tarball?: string } }>;
+}
+
+const fetchJson = async (url: string): Promise<PackageMetadata> => {
+    const response = await fetch(url, { signal: AbortSignal.timeout(30_000) });
+    if (!response.ok) {
+        throw new Error(`GET ${url} failed: HTTP ${response.status}`);
+    }
+    return response.json() as Promise<PackageMetadata>;
+};
+
+const sha512Integrity = async (tarballUrl: string): Promise<string> => {
+    const response = await fetch(tarballUrl, { signal: AbortSignal.timeout(60_000) });
+    if (!response.ok) {
+        throw new Error(`failed to download ${tarballUrl}: HTTP ${response.status}`);
+    }
+    return base64Sha512(Buffer.from(await response.arrayBuffer()));
+};
+
+/**
+ * Updates @adguard/dnr-rulesets to the latest ~5.0.
+ *
+ * When DNR_RULESETS_REGISTRY points at the internal Artifact Keeper, the
+ * package tarball is fetched from there (npm throttles the shared CI egress
+ * IPs) while the rest of the dependency tree still resolves from npm — the AK
+ * npm registry only mirrors the @adguard scope, so pnpm cannot resolve the
+ * whole tree from it. The committed files then use the pinned
+ * `~5.0.<version>` form with tarball URLs pointing back at npm once the fresh
+ * version is confirmed there.
+ *
+ * @throws {Error} When no stable 5.0.x version of the package is found in the
+ * registry, when its metadata/tarball cannot be fetched, or when pnpm fails.
  */
 const main = async (): Promise<void> => {
     const registry = (process.env.DNR_RULESETS_REGISTRY ?? '').replace(/\/+$/, '') || NPM_REGISTRY;
     console.log(`Updating ${PACKAGE_NAME} from ${registry}`);
 
     execFileSync(pnpmBin, ['remove', PACKAGE_NAME], { stdio: 'inherit' });
-    execFileSync(pnpmBin, ['add', '-D', `${PACKAGE_NAME}@~5.0`, '--registry', registry], { stdio: 'inherit' });
 
-    // Nothing to rewrite when we resolved from the public registry.
+    // Public registry: plain add, nothing else to do.
     if (registry === NPM_REGISTRY) {
+        execFileSync(pnpmBin, ['add', '-D', `${PACKAGE_NAME}@~5.0`], { stdio: 'inherit' });
         return;
     }
+
+    // Resolve the latest ~5.0 from the internal registry metadata.
+    const metadata = await fetchJson(`${registry}/${PACKAGE_NAME}`);
+    const version = resolveLatestStableVersion(Object.keys(metadata.versions ?? {}));
+    if (!version) {
+        throw new Error(`found no stable 5.0.x version of ${PACKAGE_NAME} in ${registry}`);
+    }
+    const tarballUrl = metadata.versions?.[version]?.dist?.tarball
+        ?? `${registry}/${PACKAGE_NAME}/-/${PACKAGE_TARBALL_NAME}-${version}.tgz`;
+    console.log(`Resolved ${PACKAGE_NAME}@${version} (${tarballUrl})`);
+
+    // Fetch the fresh tarball from AK. pnpm records a bare tarball URL as a
+    // URL dependency: the tarball itself is pulled from AK (unthrottled) while
+    // its transitive deps still come from npm.
+    execFileSync(pnpmBin, ['add', '-D', tarballUrl], { stdio: 'inherit' });
+
+    // Normalize the URL dependency to the pinned-version form the repo commits.
+    const integrity = await sha512Integrity(tarballUrl);
+    const { packageJson, lockfile } = normalizeUrlDependency(
+        readFileSync(PACKAGE_JSON_PATH, 'utf8'),
+        readFileSync(LOCKFILE_PATH, 'utf8'),
+        tarballUrl,
+        version,
+        integrity,
+    );
+    writeFileSync(PACKAGE_JSON_PATH, packageJson);
+    writeFileSync(LOCKFILE_PATH, lockfile);
 
     // npm and AK publish the same byte-identical tarball, but the npm publish
     // may lag (throttled round). Confirm the freshly resolved version is on
@@ -85,7 +253,6 @@ const main = async (): Promise<void> => {
     // and non-fatal: a transport-level failure (DNS / connection reset —
     // exactly how npm behaves when fully throttled) must not hard-fail the
     // auto-build after the AK resolution already succeeded.
-    const { version } = JSON.parse(readFileSync(`node_modules/${PACKAGE_NAME}/package.json`, 'utf8'));
     let isOnNpm = false;
     try {
         const response = await fetch(`${NPM_REGISTRY}/${PACKAGE_NAME}/${version}`, {
@@ -93,10 +260,17 @@ const main = async (): Promise<void> => {
         });
         isOnNpm = response.ok;
     } catch {
-        console.warn(`::warning::could not confirm ${PACKAGE_NAME}@${version} on npm (HTTP check failed); keeping registry tarball URLs in ${LOCKFILE_PATH}`);
+        console.warn(`::warning::could not confirm ${PACKAGE_NAME}@${version} on npm (HTTP check failed); keeping the registry tarball URL in ${LOCKFILE_PATH}`);
     }
 
-    if (!isOnNpm) {
+    if (isOnNpm) {
+        const before = readFileSync(LOCKFILE_PATH, 'utf8');
+        const after = rewriteDnrRulesetsTarballUrls(before, registry);
+        if (after !== before) {
+            writeFileSync(LOCKFILE_PATH, after);
+            console.log(`Rewrote the registry tarball URL in ${LOCKFILE_PATH} back to ${NPM_REGISTRY}`);
+        }
+    } else {
         // dnr-rulesets versions are one-shot `5.0.<UTC timestamp>`; a throttled
         // round can produce a version that never lands on npm and is never
         // re-published. Rewriting its tarball URL to npm now would bake a 404
@@ -104,15 +278,7 @@ const main = async (): Promise<void> => {
         // `--frozen-lockfile` install (the run that would heal it runs after
         // those installs). Keep the source-registry URL so frozen installs keep
         // resolving; a later round rewrites it once npm catches up.
-        console.warn(`::warning::${PACKAGE_NAME}@${version} is not on npm yet; keeping registry tarball URLs in ${LOCKFILE_PATH} so frozen installs keep resolving`);
-        return;
-    }
-
-    const before = readFileSync(LOCKFILE_PATH, 'utf8');
-    const after = rewriteDnrRulesetsTarballUrls(before, registry);
-    if (after !== before) {
-        writeFileSync(LOCKFILE_PATH, after);
-        console.log(`Rewrote registry tarball URLs in ${LOCKFILE_PATH} back to ${NPM_REGISTRY}`);
+        console.warn(`::warning::${PACKAGE_NAME}@${version} is not on npm yet; keeping the registry tarball URL in ${LOCKFILE_PATH} so frozen installs keep resolving`);
     }
 };
 

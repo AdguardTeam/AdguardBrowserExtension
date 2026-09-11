@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - "Manage extensions" flow opened `chrome://extensions` in Edge and Opera instead of the browser-specific extensions settings page.
 
 [#1410]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1410
+
 ## Unreleased 5.5.2
 
 ### Changed
