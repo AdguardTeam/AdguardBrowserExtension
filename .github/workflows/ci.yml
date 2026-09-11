@@ -38,17 +38,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      # The Dockerfile requires a `tsurlfilter` named build context; an empty
-      # directory makes the tsurlfilter-build stage a no-op so dependencies
-      # resolve from npm.
-      - name: Create empty tsurlfilter build context
-        run: mkdir -p tmp/tsurlfilter
-
       # The lint stage fails the docker build directly on lint errors.
       - name: Run lint via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --target lint-output \
             --output type=local,dest=output/lint .
@@ -58,7 +51,6 @@ jobs:
       - name: Validate locales via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --target locales-check-output \
             --output type=local,dest=output/locales .
@@ -122,15 +114,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Create empty tsurlfilter build context
-        run: mkdir -p tmp/tsurlfilter
-
       # The Docker stage always exits 0 and reports the result via
       # exit-code.txt so the JUnit report is available even on failure.
       - name: Run unit tests via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --target unit-tests-output \
             --output type=local,dest=output/unit-tests .
@@ -159,13 +147,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Create empty tsurlfilter build context
-        run: mkdir -p tmp/tsurlfilter
-
       - name: Build dev extensions via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --target dev-build-output \
             --output type=local,dest=output/dev-build .
@@ -191,13 +175,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Create empty tsurlfilter build context
-        run: mkdir -p tmp/tsurlfilter
-
       - name: Build dev CRX via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --target chrome-crx-output \
             --output type=local,dest=output/chrome-crx .
@@ -221,15 +201,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Create empty tsurlfilter build context
-        run: mkdir -p tmp/tsurlfilter
-
       # Reuses the bundle-size-check Docker stage (same as the old Bamboo
       # "Size and locales check"): builds beta and fails on size regressions.
       - name: Run bundle size check via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg BUILD_TYPE=beta \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --target bundle-size-check-output \
@@ -246,13 +222,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Create empty tsurlfilter build context
-        run: mkdir -p tmp/tsurlfilter
-
       - name: Run integration tests via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --no-cache-filter=integration-tests-standalone \
             --target integration-tests-standalone-output \

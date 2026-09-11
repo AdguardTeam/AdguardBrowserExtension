@@ -382,7 +382,7 @@ the Dockerfile):
   includes the standard comment block explaining `-e`, `-u`, `-x` and
   `-o pipefail`
 - Scripts that emit `::error::`/workflow-diagnostic output (e.g.
-  `check-exit-code.sh`, `link-tsurlfilter.sh`) merge stderr into stdout with
+  `check-exit-code.sh`) merge stderr into stdout with
   `exec 2>&1` so nothing is lost when the workflow captures the output
 - Scripts are standalone: they must not be sourced for `set` options (sourcing
   cannot change the caller's options)

@@ -122,15 +122,11 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.event.pull_request.merge_commit_sha || github.ref_name }}
 
-      - name: Create empty tsurlfilter build context
-        run: mkdir -p tmp/tsurlfilter
-
       # Fails the Docker build on size regressions (MV3 30MB / Firefox 4MB
       # stores limits) or invalid translations.
       - name: Check bundle size via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg BUILD_TYPE=beta \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --target bundle-size-check-output \
@@ -139,7 +135,6 @@ jobs:
       - name: Validate locales via Docker
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-context tsurlfilter=tmp/tsurlfilter \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --target locales-check-output \
             --output type=local,dest=output/locales .
