@@ -62,9 +62,9 @@ describe('rewriteDnrRulesetsTarballUrls', () => {
         // keep an AK tarball URL that must also point at npm for frozen
         // installs outside the reach of AK.
         const lockfile = [
-            `  '@adguard/agtree@4.2.1':`,
+            '  \'@adguard/agtree@4.2.1\':',
             `    resolution: {integrity: sha512-bbb, tarball: ${AK_REGISTRY}/@adguard/agtree/-/agtree-4.2.1.tgz}`,
-            `  '@adguard/dnr-converter@1.1.2':`,
+            '  \'@adguard/dnr-converter@1.1.2\':',
             `    resolution: {integrity: sha512-ccc, tarball: ${AK_REGISTRY}/@adguard/dnr-converter/-/dnr-converter-1.1.2.tgz}`,
         ].join('\n');
 
