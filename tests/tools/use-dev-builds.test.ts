@@ -40,7 +40,7 @@ import {
     stripDevPins,
 } from '../../tools/ci/use-dev-builds';
 
-const DEV_TARBALL = 'https://ak.int.agrd.dev/npm/npm-internal/@adguard/tsurlfilter/-/tsurlfilter-6.1.0-dev.pr26.2f5d9548.tgz';
+const DEV_TARBALL = 'https://ak.int.agrd.dev/npm/npm-internal-dev/@adguard/tsurlfilter/-/tsurlfilter-6.1.0-dev.pr26.2f5d9548.tgz';
 
 /**
  * Create a throwaway checkout dir with the given package.json contents and

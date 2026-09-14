@@ -70,7 +70,7 @@ import path from 'node:path';
 import process from 'node:process';
 import { pathToFileURL } from 'node:url';
 
-const DEFAULT_REGISTRY = 'https://ak.int.agrd.dev/npm/npm-internal';
+const DEFAULT_REGISTRY = 'https://ak.int.agrd.dev/npm/npm-internal-dev';
 const DEV_MARK = '-dev.pr';
 
 /**
