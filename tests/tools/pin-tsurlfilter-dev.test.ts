@@ -195,7 +195,7 @@ describe('resolveHead (hermetic, stub npm)', () => {
         expect(result.status).toBe(1);
         expect(result.stderr).toContain(
             'npm view @adguard/tsurlfilter dist-tags failed'
-            + ' (registry https://ak.int.agrd.dev/npm/npm-internal unreachable or auth error)',
+            + ' (registry https://ak.int.agrd.dev/npm/npm-internal-dev unreachable or auth error)',
         );
     });
 

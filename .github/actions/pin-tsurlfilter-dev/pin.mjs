@@ -46,7 +46,7 @@ import { pathToFileURL } from 'node:url';
  * `node --check`s this file instead.
  */
 
-const AK_REGISTRY = 'https://ak.int.agrd.dev/npm/npm-internal';
+const AK_REGISTRY = 'https://ak.int.agrd.dev/npm/npm-internal-dev';
 const PIN_FILE = 'tsurlfilter-dev-pr.txt';
 // The bridge publishes the six packages as one indivisible set, so probing a
 // single package is enough to enumerate the PR's published heads.
