@@ -24,15 +24,18 @@ import {
     cleanup,
     render,
     screen,
+    waitFor,
     within,
 } from '@testing-library/react';
 import {
     afterEach,
+    beforeEach,
     describe,
     expect,
     it,
     vi,
 } from 'vitest';
+import { observable, runInAction } from 'mobx';
 
 import { Allowlist } from '../../../../../../Extension/src/pages/options/components/Allowlist/Allowlist';
 import { rootStore } from '../../../../../../Extension/src/pages/options/stores/RootStore';
@@ -75,8 +78,36 @@ vi.mock('../../../../../../Extension/src/pages/options/components/Allowlist/Allo
     AllowlistSavingButton: () => null,
 }));
 
+// Shared mutable state between the hoisted Editor mock and the test body.
+const editorState = vi.hoisted(() => ({
+    value: '',
+    setValueCalls: [] as string[],
+}));
+
 vi.mock('../../../../../../Extension/src/pages/common/components/Editor', () => ({
-    Editor: () => <div data-testid="allowlist-editor" />,
+    // The editor exposes an imperative handle we drive in place of CodeMirror.
+    Editor: ({ editorRef }: { editorRef: { current: unknown } }) => {
+        React.useEffect(() => {
+            editorRef.current = {
+                getValue: () => editorState.value,
+                setValue: (value: string) => {
+                    editorState.value = value;
+                    editorState.setValueCalls.push(value);
+                },
+                getCursor: () => ({ line: 1, ch: 0 }),
+                setCursor: () => {},
+                setWrap: () => {},
+                setReadOnly: () => {},
+                focus: () => {},
+            };
+
+            return () => {
+                editorRef.current = null;
+            };
+        }, [editorRef]);
+
+        return <div data-testid="allowlist-editor" />;
+    },
     EditorLeaveModal: () => null,
 }));
 
@@ -129,7 +160,9 @@ vi.mock('../../../../../../Extension/src/pages/common/components/Editor/savingFS
 }));
 
 const rootValue = {
-    settingsStore: {
+    // Observable, so that the `observer` wrapper re-renders the component when
+    // the allowlist changes outside of it (e.g. a domain added from the popup).
+    settingsStore: observable.object({
         getAllowlist: vi.fn().mockResolvedValue(undefined),
         setAllowlistEditorContentChangedState: vi.fn(),
         allowlist: 'example.org',
@@ -146,7 +179,7 @@ const rootValue = {
                 'default-allowlist-mode': true,
             },
         },
-    },
+    }, {}, { deep: false }),
     uiStore: { setShowLoader: vi.fn(), addNotification: vi.fn() },
     telemetryStore: { sendCustomEvent: vi.fn() },
 };
@@ -185,5 +218,82 @@ describe('Allowlist layout', () => {
         expect(within(switchSection).getByTestId('icon-#user-rules')).toBeTruthy();
         expect(within(switchSection).getByTestId('allowlist-switcher')).toBeTruthy();
         expect(within(switchSection).queryByTestId('allowlist-menu')).toBeNull();
+    });
+});
+
+describe('Allowlist content sync', () => {
+    beforeEach(() => {
+        editorState.value = '';
+        editorState.setValueCalls.length = 0;
+        rootValue.settingsStore.allowlist = 'example.org';
+        rootValue.settingsStore.allowlistEditorContentChanged = false;
+    });
+
+    afterEach(() => {
+        cleanup();
+        vi.clearAllMocks();
+    });
+
+    it('does not replace the document when the editor already shows the store content', async () => {
+        editorState.value = 'example.org';
+
+        renderAllowlist();
+
+        await waitFor(() => {
+            expect(rootValue.settingsStore.getAllowlist).toHaveBeenCalled();
+        });
+
+        // Replacing the document with an identical value moves the caret to the
+        // end of the editor and resets the undo history, so it must be skipped.
+        expect(editorState.setValueCalls).toHaveLength(0);
+        expect(editorState.value).toBe('example.org');
+    });
+
+    it('does not replace the document when the store content only differs in normalization', async () => {
+        // Blank lines and the `www.` prefix are normalized by the background on
+        // saving, so the fetched content differs from what the user has typed.
+        editorState.value = 'www.example.org\n\n';
+
+        renderAllowlist();
+
+        await waitFor(() => {
+            expect(rootValue.settingsStore.getAllowlist).toHaveBeenCalled();
+        });
+
+        expect(editorState.setValueCalls).toHaveLength(0);
+        expect(editorState.value).toBe('www.example.org\n\n');
+    });
+
+    it('replaces the document when the store content really differs', async () => {
+        editorState.value = 'example.org';
+        rootValue.settingsStore.allowlist = 'example.com';
+
+        renderAllowlist();
+
+        await waitFor(() => {
+            expect(editorState.setValueCalls).toContain('example.com');
+        });
+
+        expect(editorState.value).toBe('example.com');
+    });
+
+    it('replaces the document when the allowlist is updated from another place', async () => {
+        editorState.value = 'example.org';
+
+        renderAllowlist();
+
+        await waitFor(() => {
+            expect(rootValue.settingsStore.getAllowlist).toHaveBeenCalled();
+        });
+        expect(editorState.setValueCalls).toHaveLength(0);
+
+        // A domain is added from the popup, for example.
+        runInAction(() => {
+            rootValue.settingsStore.allowlist = 'example.org\nexample.com';
+        });
+
+        await waitFor(() => {
+            expect(editorState.setValueCalls).toContain('example.org\nexample.com');
+        });
     });
 });

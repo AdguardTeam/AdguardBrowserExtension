@@ -253,12 +253,20 @@ export const UserRulesEditor = observer(({
             return;
         }
 
-        if (editorRef.current) {
-            editorRef.current.setValue(userRules);
+        const editor = editorRef.current;
+        if (editor) {
+            // Saving the rules triggers this notification as well, and in that
+            // case the content is already up to date. Replacing the document
+            // with an identical value would move the caret to the end of the
+            // editor and reset the undo history, so only replace it when the
+            // content really differs.
+            if (editor.getValue() !== userRules) {
+                editor.setValue(userRules);
+            }
 
             const cursorPosition = store.getCursorPosition();
             if (cursorPosition) {
-                editorRef.current.setCursor(cursorPosition);
+                editor.setCursor(cursorPosition);
                 store.setCursorPosition(null);
             }
         }
@@ -347,7 +355,15 @@ export const UserRulesEditor = observer(({
         if (isSaving) {
             return;
         }
-        store.setCursorPosition(editorRef.current?.getCursor() ?? null);
+
+        const editor = editorRef.current;
+        // Saving locks the editor (see the `readOnly` prop below), which blurs
+        // it, and the `UserFilterUpdated` notification may replace the document
+        // while the saving is in progress. The caret is remembered here to be
+        // restored afterwards, so that it does not jump to the end of the
+        // editor.
+        const cursorPosition = editor?.getCursor() ?? null;
+        store.setCursorPosition(cursorPosition);
 
         setShowLoader(true);
         try {
@@ -358,6 +374,10 @@ export const UserRulesEditor = observer(({
         }
 
         store.setUserRulesEditorContentChangedState(false);
+
+        if (cursorPosition) {
+            editor?.setCursor(cursorPosition);
+        }
         store.setCursorPosition(null);
     };
 

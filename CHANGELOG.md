@@ -16,8 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Redo via `Ctrl+Shift+Z` (`Cmd+Shift+Z` on macOS) did not work in the rule editor.
 - Rules added from the filtering log sometimes did not appear in the already open User rules editor until refresh [#1410].
 - "Manage extensions" flow opened `chrome://extensions` in Edge and Opera instead of the browser-specific extensions settings page.
+- Caret jumps to the end of the editor when saving [#3067].
 
 [#1410]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1410
+[#3067]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3067
 
 ## Unreleased 5.5.2
 

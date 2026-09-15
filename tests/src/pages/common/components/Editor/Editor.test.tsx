@@ -81,7 +81,7 @@ describe('Editor component', () => {
         localStorage.clear();
     });
 
-    const createFakeView = () => {
+    const createFakeView = ({ hasFocus = false } = {}) => {
         const config = vi.mocked(initRulesEditor).mock.lastCall?.[2] as { extensions?: Extension[] };
         let state = EditorState.create({
             doc: 'fake content',
@@ -98,6 +98,7 @@ describe('Editor component', () => {
             },
             destroy: mockDestroy,
             focus: mockFocus,
+            hasFocus,
             lineWrapping: false,
         };
     };
@@ -334,6 +335,116 @@ describe('Editor component', () => {
         expect(mockDispatch).toHaveBeenCalledTimes(1);
         expect(mockDispatch.mock.calls[0]?.[0]).toHaveProperty('effects');
 
+        rendered!.unmount();
+    });
+
+    it('restores focus when the editor is unlocked after being read-only', async () => {
+        const initEditor = vi.mocked((await import('@adguard/rules-editor')).initEditor);
+        initEditor.mockClear();
+
+        let rendered: ReturnType<typeof render> | undefined;
+        await act(async () => {
+            rendered = renderEditor({ highlightRules: false, readOnly: false });
+        });
+        // The editor is focused, e.g. the user has pressed Ctrl+S in it.
+        await act(async () => {
+            resolveInit(createFakeView({ hasFocus: true }));
+        });
+        mockFocus.mockClear();
+
+        const editorProps = {
+            name: 'test-editor',
+            editorRef,
+            onChange: vi.fn(),
+            highlightRules: false,
+        };
+
+        // Locking the editor makes its content DOM non-editable, which blurs it.
+        await act(async () => {
+            rendered!.rerender(React.createElement(Editor as any, { ...editorProps, readOnly: true }));
+        });
+        expect(mockFocus).not.toHaveBeenCalled();
+
+        // Once unlocked, the focus — and so the caret — must be restored.
+        await act(async () => {
+            rendered!.rerender(React.createElement(Editor as any, { ...editorProps, readOnly: false }));
+        });
+        expect(mockFocus).toHaveBeenCalledTimes(1);
+
+        rendered!.unmount();
+    });
+
+    it('does not focus the editor on unlocking if it was not focused before locking', async () => {
+        const initEditor = vi.mocked((await import('@adguard/rules-editor')).initEditor);
+        initEditor.mockClear();
+
+        let rendered: ReturnType<typeof render> | undefined;
+        await act(async () => {
+            rendered = renderEditor({ highlightRules: false, readOnly: false });
+        });
+        await act(async () => {
+            resolveInit(createFakeView({ hasFocus: false }));
+        });
+        mockFocus.mockClear();
+
+        const editorProps = {
+            name: 'test-editor',
+            editorRef,
+            onChange: vi.fn(),
+            highlightRules: false,
+        };
+
+        await act(async () => {
+            rendered!.rerender(React.createElement(Editor as any, { ...editorProps, readOnly: true }));
+        });
+        await act(async () => {
+            rendered!.rerender(React.createElement(Editor as any, { ...editorProps, readOnly: false }));
+        });
+
+        expect(mockFocus).not.toHaveBeenCalled();
+
+        rendered!.unmount();
+    });
+
+    it('does not steal focus back on unlocking if another element owns it', async () => {
+        const initEditor = vi.mocked((await import('@adguard/rules-editor')).initEditor);
+        initEditor.mockClear();
+
+        let rendered: ReturnType<typeof render> | undefined;
+        await act(async () => {
+            rendered = renderEditor({ highlightRules: false, readOnly: false });
+        });
+        await act(async () => {
+            resolveInit(createFakeView({ hasFocus: true }));
+        });
+
+        const editorProps = {
+            name: 'test-editor',
+            editorRef,
+            onChange: vi.fn(),
+            highlightRules: false,
+        };
+
+        await act(async () => {
+            rendered!.rerender(React.createElement(Editor as any, { ...editorProps, readOnly: true }));
+        });
+
+        // The user has focused another control while the editor was locked.
+        const button = document.createElement('button');
+        // jsdom treats only elements with a tabindex as focusable.
+        button.setAttribute('tabindex', '0');
+        document.body.appendChild(button);
+        button.focus();
+        expect(document.activeElement).toBe(button);
+        mockFocus.mockClear();
+
+        await act(async () => {
+            rendered!.rerender(React.createElement(Editor as any, { ...editorProps, readOnly: false }));
+        });
+
+        expect(mockFocus).not.toHaveBeenCalled();
+
+        button.remove();
         rendered!.unmount();
     });
 

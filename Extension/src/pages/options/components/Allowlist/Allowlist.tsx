@@ -45,7 +45,7 @@ import { translator } from '../../../../common/translators/translator';
 import { OptionsPageSections } from '../../../../common/nav';
 import { exportData, ExportTypes } from '../../../common/utils/export';
 import { getFirstNonDisabledElement } from '../../../common/utils/dom';
-import { validateAllowlistEntries } from '../../../../common/utils/allowlist-domains';
+import { normalizeAllowlistDomains, validateAllowlistEntries } from '../../../../common/utils/allowlist-domains';
 import { DynamicRulesLimitsWarning, ClipboardPermissionWarning } from '../Warnings';
 import { SavingFSMState } from '../../../common/components/Editor/savingFSM';
 import { type EditorHandle } from '../../../common/components/Editor/editor-handle';
@@ -90,19 +90,45 @@ const Allowlist = observer(() => {
         exportData(ExportTypes.Allowlist);
     };
 
+    /**
+     * Checks whether the editor already shows the given allowlist content.
+     *
+     * The background normalizes the allowlist on saving — it drops blank lines,
+     * extracts domains from URL-like entries and strips the `www.` prefix — so
+     * the content fetched after a save may differ from what the user has typed.
+     * Replacing the document in that case would move the caret to the end of the
+     * editor and reset the undo history without any reason.
+     *
+     * @param allowlist Allowlist content to compare the editor content with.
+     *
+     * @returns `true` when the editor shows the same domains as the given content.
+     */
+    const isEditorUpToDate = useCallback((allowlist: string): boolean => {
+        const editor = editorRef.current;
+        if (!editor) {
+            return false;
+        }
+
+        const editorDomains = normalizeAllowlistDomains(editor.getValue()).domains;
+        const allowlistDomains = normalizeAllowlistDomains(allowlist).domains;
+
+        return editorDomains.length === allowlistDomains.length
+            && editorDomains.every((domain, index) => domain === allowlistDomains[index]);
+    }, []);
+
     useEffect(() => {
         (async () => {
             await settingsStore.getAllowlist();
             setAllowlistRerender(false);
 
-            if (editorRef.current) {
+            if (editorRef.current && !isEditorUpToDate(settingsStore.allowlist)) {
                 // Get initial store content and set to the editor
                 editorRef.current.setValue(settingsStore.allowlist);
             }
 
             settingsStore.setAllowlistEditorContentChangedState(false);
         })();
-    }, [settingsStore, shouldAllowlistRerender]);
+    }, [settingsStore, shouldAllowlistRerender, isEditorUpToDate]);
 
     /**
      * One of the reasons for allowlist to update may be
@@ -113,11 +139,11 @@ const Allowlist = observer(() => {
             return;
         }
 
-        if (editorRef.current) {
+        if (editorRef.current && !isEditorUpToDate(settingsStore.allowlist)) {
             editorRef.current.setValue(settingsStore.allowlist);
         }
         settingsStore.setAllowlistEditorContentChangedState(false);
-    }, [settingsStore.allowlist, settingsStore]);
+    }, [settingsStore.allowlist, settingsStore, isEditorUpToDate]);
 
     const isSaving = settingsStore.savingAllowlistState === SavingFSMState.Saving;
     const hasUnsavedChanges = !isSaving && settingsStore.allowlistEditorContentChanged;

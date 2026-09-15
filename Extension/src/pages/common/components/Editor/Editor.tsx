@@ -56,6 +56,23 @@ const getOculusClass = () => {
 };
 
 /**
+ * Checks whether an element other than the editor itself currently owns the
+ * focus.
+ *
+ * @param container Container to check the focused element against.
+ *
+ * @returns `true` when the focus is owned by an element outside of the container.
+ */
+const isFocusOutside = (container: HTMLElement | null): boolean => {
+    const { activeElement, body, documentElement } = document;
+    if (!activeElement || activeElement === body || activeElement === documentElement) {
+        return false;
+    }
+
+    return !container?.contains(activeElement);
+};
+
+/**
  * Persisted editor container size. Defaults are CSS strings; sizes saved by
  * the ResizeObserver are numbers (interpreted as pixels by React).
  */
@@ -167,6 +184,12 @@ const Editor = ({
     const nodeRef = useRef<HTMLTextAreaElement>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const viewRef = useRef<EditorView | null>(null);
+
+    // Whether the editor had focus before it was locked via the `readOnly`
+    // prop. Switching the content DOM to non-editable blurs it, so the flag is
+    // used to give the focus (and with it the caret) back once the editor
+    // becomes editable again — e.g. when the saving is finished.
+    const wasFocusedBeforeReadOnlyRef = useRef(false);
 
     const isUserResizingRef = useRef(false);
 
@@ -332,7 +355,28 @@ const Editor = ({
 
     // Keep readOnly prop in sync after mount
     useEffect(() => {
-        editorRef.current?.setReadOnly(readOnly);
+        const handle = editorRef.current;
+        if (!handle) {
+            return;
+        }
+
+        if (readOnly) {
+            // Read the focus state before the editor is locked: the browser
+            // blurs an element which stops being editable.
+            wasFocusedBeforeReadOnlyRef.current = viewRef.current?.hasFocus ?? false;
+        }
+
+        handle.setReadOnly(readOnly);
+
+        // Unlocking the editor must restore the focus it had before, otherwise
+        // the caret is lost until the user clicks the editor again. The focus
+        // is not stolen back if it has been moved to another element meanwhile.
+        if (!readOnly && wasFocusedBeforeReadOnlyRef.current) {
+            wasFocusedBeforeReadOnlyRef.current = false;
+            if (!isFocusOutside(containerRef.current)) {
+                handle.focus();
+            }
+        }
     }, [readOnly, editorRef]);
 
     // Keep wrapEnabled prop in sync after mount

@@ -379,6 +379,38 @@ describe('UserRulesEditor content sync', () => {
         expect(store.userRulesEditorContentChanged).toBe(true);
     });
 
+    it('does not replace the document when an external update carries identical content', async () => {
+        // The backend already holds exactly what the editor shows — this is the
+        // state right after the rules have been saved.
+        h.getUserRules.mockResolvedValue({ content: '||saved.com^' });
+
+        mountEditor();
+
+        await waitFor(() => {
+            expect(h.editorState.value).toBe('||saved.com^');
+        });
+
+        // Flush the initial export-state read and reset the resolver queue.
+        await act(async () => {
+            resolvePendingUserRules(0, '||saved.com^');
+        });
+        h.pendingResolvers.length = 0;
+        h.setValueCalls.length = 0;
+
+        fireUserFilterUpdated();
+        await waitFor(() => {
+            expect(h.pendingResolvers).toHaveLength(1);
+        });
+        await act(async () => {
+            resolvePendingUserRules(0, '||saved.com^');
+        });
+
+        // Replacing the document with an identical value moves the caret to the
+        // end of the editor and resets the undo history, so it must be skipped.
+        expect(h.setValueCalls).toHaveLength(0);
+        expect(h.editorState.value).toBe('||saved.com^');
+    });
+
     it('leaves the dirty flag untouched when the change handler resolves after unmount', async () => {
         h.getUserRules.mockResolvedValue({ content: '||initial.com^' });
 
