@@ -57,6 +57,7 @@ import {
 import { logger } from '../../../../common/logger';
 import { OptionsPageSections } from '../../../../common/nav';
 import { FilterUpdateService } from '../../../services/filter-update';
+import { ExtensionStore, ExtensionStoreResolver } from '../../../services/extension-store/extension-store-resolver';
 import { CustomFilterUtils } from '../../../../common/custom-filter-utils';
 import { browserStorage } from '../../../storages/shared-instances';
 import { browserAction } from '../browser-action';
@@ -99,11 +100,6 @@ export abstract class PagesApiCommon {
      * @see {@link https://github.com/AdguardTeam/ReportsWebApp#pre-filling-the-app-with-query-parameters}
      */
     private static readonly PRODUCT_TYPE = 'ext';
-
-    /**
-     * Chrome Web Store listing URL prefix returned in extension metadata.
-     */
-    private static readonly CHROME_WEB_STORE_HOMEPAGE_URL_PREFIX = 'https://chromewebstore.google.com/';
 
     /**
      * Settings page url.
@@ -165,11 +161,6 @@ export abstract class PagesApiCommon {
      */
     protected abstract get chromeExtensionStoreForwardAction():
         ForwardAction.ChromeMv3Store | ForwardAction.ChromeMv2Store | ForwardAction.ChromeMv3BetaStore;
-
-    /**
-     * Lazily calculated extension store URL.
-     */
-    private extensionStoreUrlPromise?: Promise<string>;
 
     /**
      * Opens the settings tab and focuses on it if there is no open setting tab.
@@ -691,55 +682,23 @@ export abstract class PagesApiCommon {
     }
 
     /**
-     * Checks whether the extension was installed from Chrome Web Store.
-     *
-     * @returns True if extension metadata points to Chrome Web Store; otherwise, false.
-     */
-    private static async isInstalledFromChromeWebStore(): Promise<boolean> {
-        try {
-            const { homepageUrl } = await browser.management.getSelf();
-            return homepageUrl?.startsWith(PagesApiCommon.CHROME_WEB_STORE_HOMEPAGE_URL_PREFIX) ?? false;
-        } catch (error) {
-            const message = getErrorMessage(error);
-            logger.warn(
-                `[ext.PagesApiCommon.isInstalledFromChromeWebStore]: Failed to get extension info: ${message}`,
-            );
-            return false;
-        }
-    }
-
-    /**
-     * Returns the cached extension store URL, calculating it on first use.
+     * Calculates the store URL from the store the extension was installed from,
+     * defaulting to Chrome Web Store for other cases.
      *
      * @returns Extension store url.
      */
-    private getExtensionStoreUrl(): Promise<string> {
-        this.extensionStoreUrlPromise ??= this.calculateExtensionStoreUrl();
-        return this.extensionStoreUrlPromise;
-    }
+    private async getExtensionStoreUrl(): Promise<string> {
+        const store = await ExtensionStoreResolver.resolve();
 
-    /**
-     * Calculates store URL by browser and installation source,
-     * defaulting to Chrome Web Store for other Chromium browsers.
-     *
-     * @returns Extension store url.
-     */
-    private async calculateExtensionStoreUrl(): Promise<string> {
-        let action: ForwardAction = this.chromeExtensionStoreForwardAction;
-
-        if (UserAgent.isFirefox) {
-            action = ForwardAction.FirefoxStore;
-        } else if (UserAgent.isOpera || UserAgent.isEdge) {
-            const isInstalledFromChromeWebStore = await PagesApiCommon.isInstalledFromChromeWebStore();
-            if (!isInstalledFromChromeWebStore) {
-                action = UserAgent.isOpera
-                    ? ForwardAction.OperaStore
-                    : ForwardAction.EdgeStore;
-            }
-        }
+        const storeActions = {
+            [ExtensionStore.Firefox]: ForwardAction.FirefoxStore,
+            [ExtensionStore.Edge]: ForwardAction.EdgeStore,
+            [ExtensionStore.Opera]: ForwardAction.OperaStore,
+            [ExtensionStore.Chrome]: this.chromeExtensionStoreForwardAction,
+        } satisfies Record<ExtensionStore, ForwardAction>;
 
         return Forward.get({
-            action,
+            action: storeActions[store],
             from: ForwardFrom.Options,
         });
     }
