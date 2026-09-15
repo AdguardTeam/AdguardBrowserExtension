@@ -3584,6 +3584,51 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "1503dc258e7809ec4d938941a16df979" due to: ' + e);
         }
     },
+    '(()=>{const o=!1,t=Reflect.apply,e=Object.hasOwn,r=Array.isArray,n=Promise.prototype.then,l=Boolean,i=JSON.stringify,s=new Proxy(l,{apply:(o,e,r)=>(!0===r[0]&&(r[0]=!1),t(o,e,r))});window.Promise.prototype.then=new Proxy(n,{apply:(o,e,r)=>(r[0]===l&&(r[0]=s),t(o,e,r))}),window.JSON.stringify=new Proxy(i,{apply:(n,l,i)=>{try{const o=i[0];null!==o&&"object"==typeof o&&!r(o)&&e(o,"blocked")&&e(o,"failed_hosts")&&(i[0]={...o,blocked:!1,path:"clean",dom_hits:0,dom_control_blocked:!1,target_hits:0,target_timeouts:0,control_hits:0,control_timeouts:0,network_control_blocked:!1,forged_hits:0,forgery_voided:!1,tamper:"",failed_hosts:""})}catch(t){o}return t(n,l,i)}})})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.f4484bab84a05eb6a0713bacb2881845 === e) return;
+            (() => {
+                const e = Reflect.apply, o = Object.hasOwn, t = Array.isArray, r = Promise.prototype.then, n = Boolean, a = JSON.stringify, i = new Proxy(n, {
+                    apply: (o, t, r) => (!0 === r[0] && (r[0] = !1), e(o, t, r))
+                });
+                window.Promise.prototype.then = new Proxy(r, {
+                    apply: (o, t, r) => (r[0] === n && (r[0] = i), e(o, t, r))
+                }), window.JSON.stringify = new Proxy(a, {
+                    apply: (r, n, a) => {
+                        try {
+                            const e = a[0];
+                            null !== e && "object" == typeof e && !t(e) && o(e, "blocked") && o(e, "failed_hosts") && (a[0] = {
+                                ...e,
+                                blocked: !1,
+                                path: "clean",
+                                dom_hits: 0,
+                                dom_control_blocked: !1,
+                                target_hits: 0,
+                                target_timeouts: 0,
+                                control_hits: 0,
+                                control_timeouts: 0,
+                                network_control_blocked: !1,
+                                forged_hits: 0,
+                                forgery_voided: !1,
+                                tamper: "",
+                                failed_hosts: ""
+                            });
+                        } catch (e) {}
+                        return e(r, n, a);
+                    }
+                });
+            })();
+            Object.defineProperty(Window.prototype.toString, "f4484bab84a05eb6a0713bacb2881845", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "f4484bab84a05eb6a0713bacb2881845" due to: ' + e);
+        }
+    },
     '(()=>{const e=()=>{document.querySelectorAll(".chakra-portal").forEach((e=>{e.querySelector(\'.chakra-modal__overlay[style*="opacity"]\')&&e.setAttribute("style","display: none !important;")}))},t=()=>{},a=function(t,a){const r={name:t,listener:a};requestAnimationFrame((()=>{try{"rewardedSlotGranted"===r.name&&setTimeout(e,2e3),r.listener()}catch(e){}}))};window.googletag={cmd:[],pubads:()=>({addEventListener:a,removeEventListener:t,refresh:t,getTargeting:()=>[],setTargeting:t,disableInitialLoad:t,enableSingleRequest:t,collapseEmptyDivs:t,getSlots:t}),defineSlot:()=>({addService(){}}),defineOutOfPageSlot:t,enableServices:t,display:t,enums:{OutOfPageFormat:{REWARDED:1}}},googletag.cmd.push=e=>{try{e()}catch(e){}return 1}})();': () => {
         try {
             const e = "done";
