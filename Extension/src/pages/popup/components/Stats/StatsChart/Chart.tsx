@@ -207,7 +207,15 @@ const getCategoriesLines = (
             break;
         case TimeRange.Year:
             for (let i = 0; i <= MONTHS_PER_YEAR; i += 1) {
-                categories.push(monthsAsString((month + i) % MONTHS_PER_YEAR));
+                const monthIndex = (month + i) % MONTHS_PER_YEAR;
+                // Account for the candidates discarded by the history-length slice.
+                const isFirstMonth = i === MONTHS_PER_YEAR - statsData.length + 1;
+                const isLastMonth = i === MONTHS_PER_YEAR;
+                const label = isFirstMonth || isLastMonth
+                    ? monthsAsString(monthIndex)
+                    : (monthIndex + 1).toString();
+
+                categories.push(label);
                 categories = categories.slice(-statsData.length);
                 lines.push({
                     value: i,
