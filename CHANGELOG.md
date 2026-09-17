@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Month labels on the yearly statistics chart now use names only for the first and last months, with numbers for intermediate months in all languages.
 - Redo via `Ctrl+Shift+Z` (`Cmd+Shift+Z` on macOS) did not work in the rule editor.
 - Extension update checks could use the browser's store instead of the store the extension was installed from.
 - Rules added from the filtering log sometimes did not appear in the already open User rules editor until refresh [#1410].
