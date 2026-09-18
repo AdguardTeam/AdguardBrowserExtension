@@ -2,7 +2,8 @@ name: CI
 
 # Lints, unit-tests, and builds the extension on pull requests and pushes to
 # master. Uploads installable dev builds as artifacts so QA can download them
-# from any PR.
+# from any PR. Locale validation runs in publish-release.yml and auto-build.yml
+# so feature PRs can add English strings before translations are ready.
 
 on:
   pull_request:
@@ -20,9 +21,7 @@ jobs:
   lint:
     name: Lint
     runs-on: team-extensions
-    # 30m: this job does two Docker builds (lint + locales) plus actionlint, and
-    # the builds stall on the shared runner when several PRs run CI at once —
-    # a 10m/15m cap cancelled the job (=> whole CI run "cancelled" => gate red).
+    # Allow time for lint and workflow validation on the shared runner.
     timeout-minutes: 30
     # Least privilege — this job never writes to repo contents.
     permissions:
@@ -44,15 +43,6 @@ jobs:
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
             --target lint-output \
             --output type=local,dest=output/lint .
-
-      # Validates translation files (locales-check stage fails on invalid
-      # translations). Mirrors the old Bamboo "Size and locales check".
-      - name: Validate locales via Docker
-        run: |
-          DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
-            --target locales-check-output \
-            --output type=local,dest=output/locales .
 
       # Validates the workflow files themselves — unknown runner labels, invalid
       # `if:` expressions and shellcheck warnings inside `run:` blocks would
