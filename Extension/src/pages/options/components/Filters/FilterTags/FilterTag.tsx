@@ -30,10 +30,9 @@ import { Popover } from '../../../../common/components/ui/Popover';
 type FilterTagParams = {
     filterId: number;
     tag: TagMetadata;
-    disabled?: boolean;
 };
 
-export const FilterTag = observer(({ filterId, tag, disabled }: FilterTagParams) => {
+export const FilterTag = observer(({ filterId, tag }: FilterTagParams) => {
     const { settingsStore } = useContext(rootStore);
 
     const tagString = `#${tag.keyword}`;
@@ -42,10 +41,8 @@ export const FilterTag = observer(({ filterId, tag, disabled }: FilterTagParams)
     const handleClick = (e: React.MouseEvent) => {
         e.preventDefault();
 
-        if (!disabled) {
-            // we remove other content of search input when user clicks to tag
-            settingsStore.setSearchInput(tagString);
-        }
+        // Replace the current search with the selected tag.
+        settingsStore.setSearchInput(tagString);
     };
 
     return (
@@ -57,7 +54,6 @@ export const FilterTag = observer(({ filterId, tag, disabled }: FilterTagParams)
                     className="filter__tag"
                     onClick={handleClick}
                     aria-describedby={descriptionId}
-                    disabled={disabled}
                 >
                     <HighlightSearch string={tagString} />
                     <span

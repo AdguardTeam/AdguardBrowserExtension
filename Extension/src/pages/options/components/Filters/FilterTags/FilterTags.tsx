@@ -28,10 +28,9 @@ import { FilterTag } from './FilterTag';
 type FilterTagsParams = {
     filterId: number;
     tags: TagMetadata[];
-    disabled?: boolean;
 };
 
-export const FilterTags = ({ filterId, tags, disabled }: FilterTagsParams) => {
+export const FilterTags = ({ filterId, tags }: FilterTagsParams) => {
     if (tags.length === 0) {
         return null;
     }
@@ -46,7 +45,6 @@ export const FilterTags = ({ filterId, tags, disabled }: FilterTagsParams) => {
                     key={tag.tagId}
                     filterId={filterId}
                     tag={tag}
-                    disabled={disabled}
                 />
             ))}
         </ul>
