@@ -37,7 +37,7 @@ Release flow:
    - beta: static.adtidy.org (chromium CRX/ZIP + Firefox XPI/update.json),
      Chrome Web Store MV3, Firefox AMO beta, Firefox standalone signing,
      GitHub Release (public repo, prerelease)
-   - release: static.adtidy.org (chromium + Firefox), Chrome Web Store MV2+MV3,
+   - release: static.adtidy.org (chromium + Firefox), Chrome Web Store MV3,
      Firefox AMO, Edge Add-ons, GitHub Release (public repo)
    - Opera zips ship as GitHub Release assets only (store submission is manual).
 4. Slack notifications go to `#adguard-extension-vcs`.
@@ -64,7 +64,6 @@ mid-release runtime failures, so configure them before the first run.
 | Variable | Used by |
 | --- | --- |
 | `VAULT_URL` | Vault OIDC in publish / auto-build |
-| `CHROME_WEBSTORE_MV2_ITEM_ID` | CWS MV2 publish |
 | `CHROME_WEBSTORE_MV3_ITEM_ID` | CWS MV3 publish (release) |
 | `CHROME_WEBSTORE_MV3_BETA_ITEM_ID` | CWS MV3 publish (beta) |
 | `EDGE_ADDONS_PRODUCT_ID` | Edge Add-ons publish |
