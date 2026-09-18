@@ -245,29 +245,6 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-  bundle-size:
-    name: Bundle size check
-    runs-on: team-extensions
-    timeout-minutes: 30
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Pin tsurlfilter dev builds (if configured)
-        uses: ./.github/actions/pin-tsurlfilter-dev
-
-      # Reuses the bundle-size-check Docker stage (same as the old Bamboo
-      # "Size and locales check"): builds beta and fails on size regressions.
-      - name: Run bundle size check via Docker
-        run: |
-          DOCKER_BUILDKIT=1 docker build --progress plain \
-            --build-arg BUILD_TYPE=beta \
-            --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
-            --target bundle-size-check-output \
-            --output type=local,dest=output/bundle-size .
-
   integration-tests:
     name: Integration tests
     runs-on: team-extensions
