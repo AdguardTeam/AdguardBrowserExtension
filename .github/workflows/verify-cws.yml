@@ -1,0 +1,80 @@
+name: Verify CWS publish state
+
+# Reusable workflow called by the `verify-cws-*` jobs of the Auto build
+# workflow after a failed Chrome Web Store publish. CWS occasionally answers
+# HTTP 502 on the publish call after the upload already succeeded, so the job
+# succeeds only when the store holds the submitted or published build. It
+# fails otherwise, and the failure is reported by `notify-failure`.
+#
+# See tools/ci/check-publish-state.sh for the exit-code contract:
+#   0 - benign failure (the store holds the build)
+#   1 - real failure (the store does not hold the build)
+#   2 - the check itself failed (API/credential error)
+
+on:
+  workflow_call:
+    inputs:
+      item-id:
+        description: Chrome Web Store item ID of the channel to verify
+        required: true
+        type: string
+      expected-version:
+        description: Version the failed publish call uploaded
+        required: true
+        type: string
+
+env:
+  # Must match the same-named env in auto-build.yml: a called workflow cannot
+  # read the caller's env context, and the build it verifies was checked out
+  # from this branch.
+  STABLE_BRANCH: stable/v5.5
+
+jobs:
+  verify:
+    runs-on: team-extensions
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      id-token: write   # Vault JWT/OIDC
+    steps:
+      - name: Checkout stable branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ env.STABLE_BRANCH }}
+
+      - name: Fetch Chrome Web Store credentials from Vault
+        id: vault
+        # Pinned to the v4 commit: this step receives CWS credentials as
+        # secrets, so a force-moved tag would be a supply-chain risk.
+        uses: hashicorp/vault-action@892a26828f195e65540a40b4768ae4571f51ebfc # v4
+        with:
+          url: ${{ vars.VAULT_URL }}
+          method: jwt
+          path: jwt
+          role: chrome-webstore-deployer
+          secrets: |
+            secret/data/ci-secrets/chrome-webstore-deployer client-id | CHROME_CLIENT_ID ;
+            secret/data/ci-secrets/chrome-webstore-deployer client-secret | CHROME_CLIENT_SECRET ;
+            secret/data/ci-secrets/chrome-webstore-deployer refresh-token | CHROME_REFRESH_TOKEN ;
+            secret/data/ci-secrets/chrome-webstore-deployer publisher-id | CHROME_PUBLISHER_ID ;
+
+      - name: Verify store state via Docker
+        env:
+          CHROME_CLIENT_ID: ${{ steps.vault.outputs.CHROME_CLIENT_ID }}
+          CHROME_CLIENT_SECRET: ${{ steps.vault.outputs.CHROME_CLIENT_SECRET }}
+          CHROME_REFRESH_TOKEN: ${{ steps.vault.outputs.CHROME_REFRESH_TOKEN }}
+          CHROME_PUBLISHER_ID: ${{ steps.vault.outputs.CHROME_PUBLISHER_ID }}
+          # Inputs travel through `env` so no expression is interpolated
+          # directly into the shell command.
+          CWS_ITEM_ID: ${{ inputs.item-id }}
+          CWS_EXPECTED_VERSION: ${{ inputs.expected-version }}
+        run: |
+          DOCKER_BUILDKIT=1 docker build --progress plain \
+            --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
+            --build-arg CWS_ITEM_ID="${CWS_ITEM_ID}" \
+            --build-arg CWS_EXPECTED_VERSION="${CWS_EXPECTED_VERSION}" \
+            --secret id=CHROME_CLIENT_ID,env=CHROME_CLIENT_ID \
+            --secret id=CHROME_PUBLISHER_ID,env=CHROME_PUBLISHER_ID \
+            --secret id=CHROME_CLIENT_SECRET,env=CHROME_CLIENT_SECRET \
+            --secret id=CHROME_REFRESH_TOKEN,env=CHROME_REFRESH_TOKEN \
+            --target verify-cws .
