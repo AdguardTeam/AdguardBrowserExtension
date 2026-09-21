@@ -99,10 +99,10 @@ Ensure that the following software is installed on your computer:
 4. Build the extension for a specific browser:
 
     ```shell
-    pnpm dev chrome
+    pnpm dev chrome-mv2
     ```
 
-5. Load the unpacked extension into your browser from `./build/dev/chrome`.
+5. Load the unpacked extension into your browser from `./build/dev/chrome-mv2`.
    See [How to install the unpacked extension](#how-to-install-the-unpacked-extension-in-the-browser)
    for step-by-step instructions.
 
@@ -134,7 +134,7 @@ Ensure that the following software is installed on your computer:
 | `pnpm check-bundle-size <env> [browser]` | Check bundle sizes against limits |
 | `pnpm update-bundle-size <env> [browser]` | Update bundle size reference values |
 
-Supported `<browser>` values: `chrome`, `chrome-mv3`, `edge`, `opera`, `opera-mv3`, `firefox-amo`, `firefox-standalone`.
+Supported `<browser>` values: `chrome-mv2`, `chrome-mv3`, `edge-mv2`, `opera-mv2`, `opera-mv3`, `firefox-amo`, `firefox-standalone`.
 
 <a name="dev-tests-and-build"></a>
 
@@ -184,7 +184,7 @@ JavaScript exceptions from UI pages or the extension background context. Build
 required zip artifacts before running them:
 
 ```shell
-pnpm dev chrome --zip
+pnpm dev chrome-mv2 --zip
 pnpm dev chrome-mv3 --zip
 pnpm dev firefox-standalone --zip
 pnpm test:e2e dev
@@ -262,11 +262,12 @@ pnpm dev
 This will create a build directory with unpacked extensions for all browsers:
 
 ```shell
-build/dev/chrome
-build/dev/edge
+build/dev/chrome-mv2
+build/dev/chrome-mv3
+build/dev/edge-mv2
 build/dev/firefox-amo
 build/dev/firefox-standalone
-build/dev/opera
+build/dev/opera-mv2
 build/dev/opera-mv3
 ```
 
@@ -276,12 +277,26 @@ Build for a specific browser:
 pnpm dev <browser>
 ```
 
-Where `<browser>` is one of: `chrome`, `chrome-mv3`, `edge`, `opera`, `opera-mv3`, `firefox-amo`,
+Where `<browser>` is one of: `chrome-mv2`, `chrome-mv3`, `edge-mv2`, `opera-mv2`, `opera-mv3`, `firefox-amo`,
 `firefox-standalone`. For example:
 
 ```shell
-pnpm dev chrome
+pnpm dev chrome-mv2
 ```
+
+The canonical MV2 targets are `chrome-mv2`, `edge-mv2`, and `opera-mv2` for
+`dev`, `beta`, and `release`. The old `chrome`, `edge`, and `opera` commands
+remain aliases, but write only to the new manifest-specific output paths.
+Bundle-size commands also use the canonical target names.
+
+Build a Chrome MV2 CRX with `pnpm dev chrome-mv2-crx` (or `pnpm beta chrome-mv2-crx`
+with the production signing certificate). The old `chrome-crx` command remains
+an alias. The output is `build/<env>/chrome-mv2.crx`.
+
+CI dev downloads use `chrome-mv2-dev.zip`, `edge-mv2-dev.zip`,
+`opera-mv2-dev.zip`, and `chrome-mv2-dev.crx`. MV3 and Firefox package names are
+unchanged. See [deployment artifact naming](DEPLOYMENT.md#artifact-naming-and-compatibility)
+for the stable filenames used by static downloads and store publishing.
 
 ### Watch Mode
 
@@ -394,7 +409,7 @@ to the internal Artifact Keeper npm registry on every push to the PR
 1. QA artifacts: run **Actions → tsurlfilter dev builds → Run workflow**
    (optionally passing a different PR number or an exact head SHA) and
    download the `dev-builds-tsurlfilter-pr<N>` zips and
-   `chrome-dev-crx-tsurlfilter-pr<N>` from the run. The workflow also
+   `chrome-mv2-dev-crx-tsurlfilter-pr<N>` from the run. The workflow also
    auto-triggers on pushes that change `tsurlfilter-dev-pr.txt`.
 
 1. **Remove `tsurlfilter-dev-pr.txt` before merging to master.** CI fails
@@ -566,7 +581,7 @@ pnpm cross-env ANALYZE=true pnpm <build command>
 So, for example, if you want to analyze the beta build for Chrome, run:
 
 ```shell
-pnpm cross-env ANALYZE=true pnpm beta chrome
+pnpm cross-env ANALYZE=true pnpm beta chrome-mv2
 ```
 
 Or if you want to analyze all beta builds, run:

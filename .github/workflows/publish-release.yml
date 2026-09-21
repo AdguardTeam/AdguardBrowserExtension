@@ -191,43 +191,12 @@ jobs:
             --target release-build-output \
             --output type=local,dest=output/build .
 
-      # Lay out one artifact directory per deploy target. Names must match
-      # exactly what each consumer expects:
-      #   deploy-to-static.yml uploads every non-empty file in the artifact;
-      #   deploy-to-chrome-web-store.yml expects chrome.zip;
-      #   deploy-to-firefox-addons.yml expects firefox.zip + source.zip;
-      #   deploy-to-edge-addons.yml expects edge.zip.
-      - name: Stage deploy artifacts (beta)
-        if: needs.resolve-version.outputs.channel == 'beta'
-        run: |
-          set -euo pipefail
-          mkdir -p staged/static-chrome staged/cws-mv3 staged/gh-assets
-          cp output/build/artifacts/chrome.zip output/build/artifacts/chrome-mv3.zip \
-             output/build/artifacts/build.txt staged/static-chrome/
-          cp output/crx/artifacts/chrome.crx output/crx/artifacts/update.xml staged/static-chrome/
-          cp output/build/artifacts/chrome-mv3.zip staged/cws-mv3/chrome.zip
-          cp output/build/artifacts/chrome.zip output/build/artifacts/chrome-mv3.zip \
-             output/build/artifacts/edge.zip output/build/artifacts/build.txt \
-             output/crx/artifacts/chrome.crx staged/gh-assets/
-
-      - name: Stage deploy artifacts (release)
-        if: needs.resolve-version.outputs.channel == 'release'
-        run: |
-          set -euo pipefail
-          mkdir -p staged/static-chrome staged/static-firefox staged/cws-mv3 staged/cws-mv2 \
-                   staged/amo staged/edge staged/gh-assets
-          cp output/build/artifacts/chrome.zip output/build/artifacts/chrome-mv3.zip \
-             output/build/artifacts/build.txt staged/static-chrome/
-          cp output/build/artifacts/firefox.zip output/build/artifacts/build.txt staged/static-firefox/
-          cp output/build/artifacts/chrome-mv3.zip staged/cws-mv3/chrome.zip
-          cp output/build/artifacts/chrome.zip staged/cws-mv2/chrome.zip
-          cp output/build/artifacts/firefox.zip output/build/artifacts/source.zip \
-             output/build/artifacts/approval-notes.txt staged/amo/
-          cp output/build/artifacts/edge.zip staged/edge/
-          cp output/build/artifacts/chrome.zip output/build/artifacts/chrome-mv3.zip \
-             output/build/artifacts/edge.zip output/build/artifacts/opera.zip \
-             output/build/artifacts/opera-mv3.zip output/build/artifacts/firefox.zip \
-             output/build/artifacts/build.txt staged/gh-assets/
+      # Staging preserves static URLs and shared store workflow input filenames,
+      # while GitHub assets retain the manifest-specific package names.
+      - name: Stage deploy artifacts
+        env:
+          BUILD_CHANNEL: ${{ needs.resolve-version.outputs.channel }}
+        run: bash tools/ci/stage-deploy-artifacts.sh "$BUILD_CHANNEL"
 
       - name: Expose AMO approval notes (release)
         if: needs.resolve-version.outputs.channel == 'release'

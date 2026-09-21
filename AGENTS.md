@@ -134,8 +134,14 @@ pnpm release                   # Release build (all browsers)
 pnpm release <browser>         # Release build for one browser
 ```
 
-Supported `<browser>` values: `chrome`, `chrome-mv3`, `edge`, `opera`,
+Supported `<browser>` values: `chrome-mv2`, `chrome-mv3`, `edge-mv2`, `opera-mv2`,
 `opera-mv3`, `firefox-amo`, `firefox-standalone`.
+
+Use `chrome-mv2-crx` for Chrome MV2 CRX builds (dev/beta). Legacy commands
+`chrome`, `edge`, `opera`, and `chrome-crx` remain aliases, but output files and
+directories use canonical names. Preserve static filenames and store workflow
+input names when staging deployment artifacts; see
+[artifact naming and compatibility](DEPLOYMENT.md#artifact-naming-and-compatibility).
 
 ### Test
 

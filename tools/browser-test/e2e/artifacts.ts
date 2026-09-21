@@ -31,7 +31,7 @@ import { type E2EMatrixEntry } from './types';
 
 /**
  * Returns the browser config for an E2E matrix entry from BROWSERS_CONF.
- * E2E matrix only targets browsers present in BROWSERS_CONF (never ChromeCrx).
+ * E2E matrix only targets browsers present in BROWSERS_CONF (never ChromeMv2Crx).
  *
  * @param entry E2E matrix entry.
  *

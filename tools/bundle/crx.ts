@@ -34,7 +34,7 @@ import {
     CHROME_UPDATE_URL,
     CHROME_UPDATE_FILE_NAME,
     CHROME_CODEBASE_URL,
-    CHROME_CODEBASE_FILE_NAME,
+    CHROME_CRX_FILE_NAME,
     BUILD_ENV,
 } from '../constants';
 
@@ -120,7 +120,7 @@ const writeCrx = async (
 ) => {
     await crx.load(browserBuildPath);
     const crxBuffer = await crx.pack();
-    const crxBuildPath = path.join(envBuildPath, CHROME_CODEBASE_FILE_NAME);
+    const crxBuildPath = path.join(envBuildPath, CHROME_CRX_FILE_NAME);
     await fs.writeFile(crxBuildPath, crxBuffer);
 
     if (shouldWriteUpdateXml) {
@@ -139,7 +139,7 @@ export const crx = async (browser: Browser) => {
     const buildEnv = BUILD_ENV;
 
     // Guards
-    if (browser !== Browser.Chrome || buildEnv === BuildTargetEnv.Release) {
+    if (browser !== Browser.ChromeMv2 || buildEnv === BuildTargetEnv.Release) {
         throw new Error('CRX is built only for chrome (MV2) in dev and beta env');
     }
 

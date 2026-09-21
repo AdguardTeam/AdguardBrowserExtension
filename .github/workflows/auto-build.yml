@@ -283,7 +283,8 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-      # The CWS workflows expect the extension archive to be named chrome.zip.
+      # The shared CWS workflow passes -f chrome.zip to go-webext. Preserve its
+      # input filename; Chrome Web Store itself does not require this name.
       - name: Stage CWS artifacts
         run: |
           set -euo pipefail

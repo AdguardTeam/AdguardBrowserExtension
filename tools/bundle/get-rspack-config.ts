@@ -46,7 +46,7 @@ export const getRspackConfig = (browser: Browser, options: BuildOptions = {}) =>
     let rspackConfig;
 
     switch (browser) {
-        case Browser.Chrome: {
+        case Browser.ChromeMv2: {
             rspackConfig = genChromeConfig(browserConf, options);
             break;
         }
@@ -59,7 +59,7 @@ export const getRspackConfig = (browser: Browser, options: BuildOptions = {}) =>
             rspackConfig = genFirefoxConfig(browserConf, options);
             break;
         }
-        case Browser.Opera: {
+        case Browser.OperaMv2: {
             rspackConfig = genOperaConfig(browserConf, options);
             break;
         }
@@ -67,7 +67,7 @@ export const getRspackConfig = (browser: Browser, options: BuildOptions = {}) =>
             rspackConfig = genOperaMv3Config(browserConf, options);
             break;
         }
-        case Browser.Edge: {
+        case Browser.EdgeMv2: {
             rspackConfig = genEdgeConfig(browserConf, options);
             break;
         }

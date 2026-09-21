@@ -314,8 +314,8 @@ const getNameSuffix = (buildEnv: BuildTargetEnv, browser: Browser) => {
             }
             break;
         }
-        case Browser.Chrome:
-        case Browser.Opera: {
+        case Browser.ChromeMv2:
+        case Browser.OperaMv2: {
             if (buildEnv === BuildTargetEnv.Release) {
                 return ' MV2';
             }

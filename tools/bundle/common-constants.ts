@@ -73,12 +73,12 @@ export interface BuildOptions {
     zip?: boolean;
 }
 
-export const BROWSERS_CONF: Record<Exclude<Browser, Browser.ChromeCrx>, BrowserConfig> = {
-    [Browser.Chrome]: {
-        browser: Browser.Chrome,
+export const BROWSERS_CONF: Record<Exclude<Browser, Browser.ChromeMv2Crx>, BrowserConfig> = {
+    [Browser.ChromeMv2]: {
+        browser: Browser.ChromeMv2,
         devtools: true,
-        buildDir: Browser.Chrome,
-        zipName: Browser.Chrome,
+        buildDir: Browser.ChromeMv2,
+        zipName: Browser.ChromeMv2,
     },
     [Browser.ChromeMv3]: {
         browser: Browser.ChromeMv3,
@@ -98,11 +98,11 @@ export const BROWSERS_CONF: Record<Exclude<Browser, Browser.ChromeCrx>, BrowserC
         buildDir: Browser.FirefoxAmo,
         zipName: Browser.FirefoxAmo,
     },
-    [Browser.Opera]: {
-        browser: Browser.Opera,
+    [Browser.OperaMv2]: {
+        browser: Browser.OperaMv2,
         devtools: true,
-        buildDir: Browser.Opera,
-        zipName: Browser.Opera,
+        buildDir: Browser.OperaMv2,
+        zipName: Browser.OperaMv2,
     },
     [Browser.OperaMv3]: {
         browser: Browser.OperaMv3,
@@ -110,10 +110,10 @@ export const BROWSERS_CONF: Record<Exclude<Browser, Browser.ChromeCrx>, BrowserC
         buildDir: Browser.OperaMv3,
         zipName: Browser.OperaMv3,
     },
-    [Browser.Edge]: {
-        browser: Browser.Edge,
+    [Browser.EdgeMv2]: {
+        browser: Browser.EdgeMv2,
         devtools: true,
-        buildDir: Browser.Edge,
-        zipName: Browser.Edge,
+        buildDir: Browser.EdgeMv2,
+        zipName: Browser.EdgeMv2,
     },
 };

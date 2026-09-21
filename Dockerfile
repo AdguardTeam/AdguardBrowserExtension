@@ -70,12 +70,12 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Move all artifacts to the artifacts directory.
     mv build/dev/build.txt /out/artifacts/ && \
     # Add postfix to all zip files for easier identification target env.
-    mv build/dev/chrome.zip /out/artifacts/chrome-dev.zip && \
+    mv build/dev/chrome-mv2.zip /out/artifacts/chrome-mv2-dev.zip && \
     mv build/dev/chrome-mv3.zip /out/artifacts/chrome-mv3-dev.zip && \
-    mv build/dev/edge.zip /out/artifacts/edge-dev.zip && \
+    mv build/dev/edge-mv2.zip /out/artifacts/edge-mv2-dev.zip && \
     mv build/dev/firefox-amo.zip /out/artifacts/firefox-amo-dev.zip && \
     mv build/dev/firefox-standalone.zip /out/artifacts/firefox-standalone-dev.zip && \
-    mv build/dev/opera.zip /out/artifacts/opera-dev.zip && \
+    mv build/dev/opera-mv2.zip /out/artifacts/opera-mv2-dev.zip && \
     mv build/dev/opera-mv3.zip /out/artifacts/opera-mv3-dev.zip
 
 FROM scratch AS dev-build-output
@@ -93,11 +93,11 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Bust build cache so test/lint/build stages always rerun.
     echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
     # Create dev build.
-    pnpm dev chrome-crx && \
+    pnpm dev chrome-mv2-crx && \
     # Create artifacts directory first thing to ensure it exists.
     mkdir -p /out/artifacts && \
     # Add postfix to the built file for easier identification target env.
-    mv build/dev/chrome.crx /out/artifacts/chrome-dev.crx
+    mv build/dev/chrome-mv2.crx /out/artifacts/chrome-mv2-dev.crx
 
 FROM scratch AS chrome-crx-output
 COPY --from=chrome-crx /out/ /
@@ -282,9 +282,9 @@ RUN --mount=type=secret,id=CHROME_CERT,required=true \
     mkdir -p /out/artifacts && \
     # Move all artifacts to the artifacts directory.
     mv build/beta/build.txt /out/artifacts/ && \
-    mv build/beta/chrome.zip /out/artifacts/ && \
+    mv build/beta/chrome-mv2.zip /out/artifacts/ && \
     mv build/beta/chrome-mv3.zip /out/artifacts/ && \
-    mv build/beta/edge.zip /out/artifacts/ && \
+    mv build/beta/edge-mv2.zip /out/artifacts/ && \
     # Leave no trace of the private key in this image layer.
     rm -rf /extension/private
 
@@ -310,11 +310,11 @@ RUN --mount=type=secret,id=CHROME_CERT,required=true \
     mkdir -p /extension/private/AdguardBrowserExtension && \
     cat /run/secrets/CHROME_CERT > /extension/private/AdguardBrowserExtension/certificate.pem && \
     # Create beta CRX build.
-    pnpm beta chrome-crx && \
+    pnpm beta chrome-mv2-crx && \
     # Create artifacts directory if it doesn't exist.
     mkdir -p /out/artifacts && \
     # Move CRX and update.xml to artifacts.
-    mv build/beta/chrome.crx /out/artifacts/ && \
+    mv build/beta/chrome-mv2.crx /out/artifacts/ && \
     mv build/beta/update.xml /out/artifacts/ && \
     # Leave no trace of the private key in this image layer.
     rm -rf /extension/private
@@ -475,10 +475,10 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     mkdir -p /out/artifacts && \
     # Move all artifacts to the artifacts directory.
     mv build/release/build.txt /out/artifacts/ && \
-    mv build/release/chrome.zip /out/artifacts/ && \
+    mv build/release/chrome-mv2.zip /out/artifacts/ && \
     mv build/release/chrome-mv3.zip /out/artifacts/ && \
-    mv build/release/edge.zip /out/artifacts/ && \
-    mv build/release/opera.zip /out/artifacts/ && \
+    mv build/release/edge-mv2.zip /out/artifacts/ && \
+    mv build/release/opera-mv2.zip /out/artifacts/ && \
     mv build/release/opera-mv3.zip /out/artifacts/ && \
     # TODO: (AG-41656) Remove this workaround and use the browser name as for all other builds.
     mv build/release/firefox-amo.zip /out/artifacts/firefox.zip && \

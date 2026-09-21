@@ -61,7 +61,7 @@ async function updateBundleSize(buildEnv: BuildTargetEnv, targetBrowser?: Browse
     });
     const targets = targetBrowser
         ? [targetBrowser]
-        // filter out chrome-crx and firefox-standalone for release
+        // filter out chrome-mv2-crx and firefox-standalone for release
         : filteredTargets;
 
     for (let i = 0; i < targets.length; i += 1) {

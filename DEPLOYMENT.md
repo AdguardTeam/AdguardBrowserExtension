@@ -6,6 +6,7 @@ Firefox beta variants), plus the manual steps for preparing a new release.
 
 - [Pipelines (GitHub Actions)](#pipelines-github-actions)
 - [Release flow](#release-flow)
+- [Artifact naming and compatibility](#artifact-naming-and-compatibility)
 - [Firefox beta pipelines](#firefox-beta-pipelines)
   - [Why two Firefox beta pipelines](#why-two-firefox-beta-pipelines)
   - [Standalone Firefox beta](#standalone-firefox-beta)
@@ -99,6 +100,39 @@ existing Docker stages.
   `deploy-to-static.yml`, `deploy-to-chrome-web-store.yml`,
   `deploy-to-firefox-addons.yml`, `deploy-to-edge-addons.yml`,
   `create-gh-release.yml`.
+
+## Artifact naming and compatibility
+
+Internal build targets, output directories, CI downloads, and new GitHub
+Release assets explicitly distinguish Chromium MV2 and MV3. The set of
+packages published per channel is unchanged; existing releases are not renamed.
+
+| Internal / GitHub package | Static filename | Store workflow filename |
+| --- | --- | --- |
+| `chrome-mv2.zip` | `chrome.zip` | `chrome.zip` (MV2 listing) |
+| `chrome-mv3.zip` | `chrome-mv3.zip` | `chrome.zip` (MV3 listing) |
+| `chrome-mv2.crx` (beta) | `chrome.crx` | Not submitted |
+| `edge-mv2.zip` | Not published | `edge.zip` |
+| `opera-mv2.zip`, `opera-mv3.zip` (release) | Not published | Manual submission |
+| `firefox.zip`, `firefox.xpi` | Unchanged | Existing AMO package layout |
+
+`tools/ci/stage-deploy-artifacts.sh` copies the Docker outputs into separate
+deployment directories without repacking them. Static filenames are permanent
+public download URLs: notably, existing standalone Chrome installations rely
+on `update.xml` pointing to `chrome.crx`. The local CRX filename is deliberately
+independent of that URL. Firefox's `update.json` and `firefox.xpi` URLs also stay
+unchanged.
+
+The shared `deploy-to-chrome-web-store.yml` explicitly invokes `go-webext` with
+`-f chrome.zip`; that filename is a workflow contract, not a Chrome Web Store
+requirement. The Edge workflow similarly expects `edge.zip`, and the AMO
+workflow expects `firefox.zip` and `source.zip`. Preserve these names at the
+deployment boundary when changing internal package names. The automatic MV3
+publishing workflow follows the same Chrome filename contract.
+
+Firefox retains the separate `firefox-amo` and `firefox-standalone` build
+targets, with no manifest suffix. Their existing conversion to published
+Firefox filenames and signing flow remain unchanged.
 
 ## Firefox beta pipelines
 

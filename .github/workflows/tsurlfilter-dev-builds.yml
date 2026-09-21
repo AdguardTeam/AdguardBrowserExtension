@@ -78,8 +78,8 @@ jobs:
             --target dev-build-output \
             --output type=local,dest=output/dev-build .
 
-      # All *-dev.zip files land here (chrome, chrome-mv3, edge, firefox-amo,
-      # firefox-standalone, opera, opera-mv3) — the QA-downloadable builds.
+      # All *-dev.zip files land here (chrome-mv2, chrome-mv3, edge-mv2, firefox-amo,
+      # firefox-standalone, opera-mv2, opera-mv3) — the QA-downloadable builds.
       - name: Upload dev builds
         if: steps.pin.outputs.pr != ''
         uses: actions/upload-artifact@v7
@@ -102,7 +102,7 @@ jobs:
         if: steps.pin.outputs.pr != ''
         uses: actions/upload-artifact@v7
         with:
-          name: chrome-dev-crx-tsurlfilter-pr${{ steps.pin.outputs.pr }}
-          path: output/chrome-crx/artifacts/chrome-dev.crx
+          name: chrome-mv2-dev-crx-tsurlfilter-pr${{ steps.pin.outputs.pr }}
+          path: output/chrome-crx/artifacts/chrome-mv2-dev.crx
           if-no-files-found: error
           retention-days: 7

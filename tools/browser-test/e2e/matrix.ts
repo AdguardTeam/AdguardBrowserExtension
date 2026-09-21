@@ -31,7 +31,7 @@ import {
 export const E2E_MATRIX: [E2EMatrixEntry, E2EMatrixEntry, E2EMatrixEntry] = [
     {
         id: E2EMatrixId.ChromeMv2,
-        buildTarget: Browser.Chrome,
+        buildTarget: Browser.ChromeMv2,
         engine: E2EBrowserEngine.PlaywrightChromium,
         isMv3: false,
     },
