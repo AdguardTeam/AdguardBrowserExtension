@@ -30,17 +30,18 @@ import {
 
 import {
     UsageError,
-    compareNumericCore,
     devPinOverrides,
     findConflicts,
-    headShortSha,
-    isPrVersion,
+    parseNumberedVersion,
+    parseRunNumber,
     parseVersions,
     readArgFromArgs,
+    selectRunSet,
     stripDevPins,
 } from '../../tools/ci/use-dev-builds';
+import type { PackageVersions } from '../../tools/ci/use-dev-builds';
 
-const DEV_TARBALL = 'https://ak.int.agrd.dev/npm/npm-internal-dev/@adguard/tsurlfilter/-/tsurlfilter-6.1.0-dev.pr26.2f5d9548.tgz';
+const DEV_TARBALL = 'https://ak.int.agrd.dev/npm/npm-internal-dev/@adguard/tsurlfilter/-/tsurlfilter-6.1.0-dev.pr26.123.tgz';
 
 /**
  * Create a throwaway checkout dir with the given package.json contents and
@@ -56,60 +57,135 @@ const withFixture = (manifest: object): string => {
     return dir;
 };
 
-describe('headShortSha', () => {
-    it('returns the lowercase 8-char suffix for a full SHA', () => {
-        expect(headShortSha('ABCDEF1234567890')).toBe('abcdef12');
-    });
-
-    it('returns the lowercase 8-char suffix for an 8-char SHA', () => {
-        expect(headShortSha('2f5d9548')).toBe('2f5d9548');
-    });
-
-    it('returns null when no head is requested', () => {
-        expect(headShortSha(null)).toBeNull();
-    });
-
-    it('returns null when the DEV_BUILDS_FORCE_NO_HEAD hook is set', () => {
-        process.env.DEV_BUILDS_FORCE_NO_HEAD = '1';
-        try {
-            expect(headShortSha('2f5d9548')).toBeNull();
-        } finally {
-            delete process.env.DEV_BUILDS_FORCE_NO_HEAD;
-        }
-    });
-
-    it('rejects a SHA shorter than 8 chars (version lookup needs the full suffix)', () => {
-        expect(() => headShortSha('abc')).toThrow(UsageError);
-        expect(() => headShortSha('abcdef0')).toThrow(UsageError);
-    });
-
-    it('rejects a non-hex head', () => {
-        expect(() => headShortSha('zzzzzzzz')).toThrow(UsageError);
-    });
+/**
+ * Build one package's registry version list for {@link selectRunSet}.
+ *
+ * @param pkg Package directory name without the `@adguard/` scope.
+ * @param versions Raw registry versions for that package.
+ *
+ * @returns The `PackageVersions` entry.
+ */
+const dev = (pkg: string, ...versions: string[]): PackageVersions => ({
+    name: `@adguard/${pkg}`,
+    versions,
 });
 
-describe('isPrVersion', () => {
-    it('matches the bare -dev.pr<N> tag and head-scoped builds', () => {
-        expect(isPrVersion('6.1.0-dev.pr26', '26')).toBe(true);
-        expect(isPrVersion('6.1.0-dev.pr26.2f5d9548', '26')).toBe(true);
+/**
+ * Capture the message of a thrown error.
+ *
+ * @param fn Callback expected to throw.
+ *
+ * @returns The thrown error message.
+ *
+ * @throws {Error} When the callback does not throw.
+ */
+const errorOf = (fn: () => unknown): string => {
+    try {
+        fn();
+    } catch (error) {
+        return (error as Error).message;
+    }
+    throw new Error('expected the call to throw');
+};
+
+describe('parseNumberedVersion', () => {
+    it('parses the run number of a run-numbered dev build', () => {
+        expect(parseNumberedVersion('6.1.0-dev.pr26.123', '26')).toEqual({
+            version: '6.1.0-dev.pr26.123',
+            run: 123,
+        });
+    });
+
+    it('rejects unnumbered and head-scoped versions (run-numbered-only cutover)', () => {
+        expect(parseNumberedVersion('6.1.0-dev.pr26', '26')).toBeNull();
+        expect(parseNumberedVersion('6.1.0-dev.pr26.2f5d9548', '26')).toBeNull();
     });
 
     it('never crosses the pr<N> boundary (pr1 vs pr12)', () => {
-        expect(isPrVersion('6.1.0-dev.pr12', '1')).toBe(false);
-        expect(isPrVersion('6.1.0-dev.pr1.abcdef12', '12')).toBe(false);
+        expect(parseNumberedVersion('6.1.0-dev.pr12.123', '1')).toBeNull();
+        expect(parseNumberedVersion('6.1.0-dev.pr1.123', '12')).toBeNull();
     });
 
-    it('rejects non-strings', () => {
-        expect(isPrVersion(42, '26')).toBe(false);
-        expect(isPrVersion(null, '26')).toBe(false);
+    it('rejects non-strings and trailing segments', () => {
+        expect(parseNumberedVersion(42, '26')).toBeNull();
+        expect(parseNumberedVersion('6.1.0-dev.pr26.123.2f5d9548', '26')).toBeNull();
+        expect(parseNumberedVersion('6.1.0-dev.pr26.abc', '26')).toBeNull();
     });
 });
 
-describe('compareNumericCore', () => {
-    it('orders dev versions by their numeric core', () => {
-        expect(compareNumericCore('6.1.0-dev.pr26.2f5d9548', '6.2.0-dev.pr26.2f5d9548')).toBeLessThan(0);
-        expect(compareNumericCore('6.10.0-dev.pr26.2f5d9548', '6.2.0-dev.pr26.2f5d9548')).toBeGreaterThan(0);
-        expect(compareNumericCore('6.1.0-dev.pr26.2f5d9548', '6.1.0-dev.pr26.2f5d9548')).toBe(0);
+describe('selectRunSet', () => {
+    it('selects the highest run across all packages and returns its exact versions', () => {
+        const selected = selectRunSet([
+            dev('tsurlfilter', '6.0.4-dev.pr41.9', '6.1.0-dev.pr41.10'),
+            dev('agtree', '5.2.0-dev.pr41.10', '5.1.0-dev.pr41.9'),
+        ], '41', null);
+        expect(selected).toEqual({
+            run: 10,
+            versions: {
+                '@adguard/tsurlfilter': '6.1.0-dev.pr41.10',
+                '@adguard/agtree': '5.2.0-dev.pr41.10',
+            },
+        });
+    });
+
+    it('compares run numbers numerically (10 beats 9) regardless of list order', () => {
+        const selected = selectRunSet([
+            dev('tsurlfilter', '6.0.4-dev.pr41.10', '6.0.4-dev.pr41.9'),
+            dev('agtree', '5.2.0-dev.pr41.9', '5.2.0-dev.pr41.10'),
+        ], '41', null);
+        expect(selected.run).toBe(10);
+    });
+
+    it('fails on an incomplete highest run instead of falling back to an older complete run', () => {
+        const message = errorOf(() => selectRunSet([
+            dev('tsurlfilter', '6.0.4-dev.pr41.127', '6.0.4-dev.pr41.130'),
+            dev('agtree', '5.2.0-dev.pr41.127'),
+        ], '41', null));
+        expect(message).toContain('PR #41 run 130 is incomplete');
+        expect(message).toContain('missing @adguard/agtree');
+        expect(message).toContain('Not falling back to an older run');
+    });
+
+    it('fails when the highest run exists only for a package other than tsurlfilter', () => {
+        const message = errorOf(() => selectRunSet([
+            dev('tsurlfilter', '6.0.4-dev.pr41.127'),
+            dev('agtree', '5.2.0-dev.pr41.127', '5.2.0-dev.pr41.130'),
+        ], '41', null));
+        expect(message).toContain('run 130');
+        expect(message).toContain('missing @adguard/tsurlfilter');
+    });
+
+    it('pins the explicitly requested run', () => {
+        const selected = selectRunSet([
+            dev('tsurlfilter', '6.0.4-dev.pr41.9', '6.0.4-dev.pr41.10'),
+            dev('agtree', '5.2.0-dev.pr41.9', '5.2.0-dev.pr41.10'),
+        ], '41', 9);
+        expect(selected.run).toBe(9);
+        expect(selected.versions['@adguard/tsurlfilter']).toBe('6.0.4-dev.pr41.9');
+    });
+
+    it('fails when the explicitly requested run is incomplete', () => {
+        const message = errorOf(() => selectRunSet([
+            dev('tsurlfilter', '6.0.4-dev.pr41.127', '6.0.4-dev.pr41.130'),
+            dev('agtree', '6.0.4-dev.pr41.127'),
+        ], '41', 130));
+        expect(message).toContain('run 130');
+        expect(message).toContain('missing @adguard/agtree');
+    });
+
+    it('fails when the explicitly requested run does not exist', () => {
+        const message = errorOf(() => selectRunSet([
+            dev('tsurlfilter', '6.0.4-dev.pr41.127'),
+        ], '41', 999));
+        expect(message).toContain('no published builds for run 999');
+    });
+
+    it('ignores head-scoped and unnumbered legacy versions (run-numbered-only cutover)', () => {
+        const message = errorOf(() => selectRunSet([
+            dev('tsurlfilter', '6.0.4-dev.pr41', '6.0.4-dev.pr41.2f5d9548'),
+            dev('agtree', '5.2.0-dev.pr41.2f5d9548'),
+        ], '41', null));
+        expect(message).toContain('no numbered -dev.pr41.<run> builds found');
     });
 });
 
@@ -131,6 +207,17 @@ describe('parseVersions', () => {
 
     it('fails loudly on unexpected output', () => {
         expect(() => parseVersions('@adguard/tsurlfilter', 'not json')).toThrow(UsageError);
+    });
+});
+
+describe('parseRunNumber', () => {
+    it('parses a workflow run number', () => {
+        expect(parseRunNumber('123')).toBe(123);
+    });
+
+    it('rejects non-numeric values', () => {
+        expect(() => parseRunNumber('abc')).toThrow(UsageError);
+        expect(() => parseRunNumber('12.3')).toThrow(UsageError);
     });
 });
 

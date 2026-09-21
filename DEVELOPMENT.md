@@ -372,7 +372,7 @@ CI builds use Docker multi-stage builds defined in `Dockerfile`; all
 pipeline** against an unmerged tsurlfilter pull request, use the dev builds
 that the DevEx bridge (`devex-bridge.yml` in the tsurlfilter repo) publishes
 to the internal Artifact Keeper npm registry on every push to the PR
-(`<next-patch>-dev.pr<N>.<shortsha>` versions of the six bridged packages).
+(`<next-patch>-dev.pr<N>.<run_number>` versions of the six bridged packages).
 
 1. Make sure the tsurlfilter PR is open (a draft is fine) and the bridge has
    published its dev builds (the bridge posts a "Dev builds published"
@@ -387,12 +387,13 @@ to the internal Artifact Keeper npm registry on every push to the PR
     ```
 
    From then on, every CI job on that branch (lint, unit tests, integration
-   tests, e2e, dev builds) pins the latest published head of that tsurlfilter
-   PR via workspace-local `pnpm.overrides` before building. Nothing extra is
+   tests, e2e, dev builds) pins the highest published bridge run for that
+   tsurlfilter PR (all six packages must be present for the selected run) via
+   workspace-local `pnpm.overrides` before building. Nothing extra is
    committed — the overrides are applied inside the CI workspace only.
 
 1. QA artifacts: run **Actions → tsurlfilter dev builds → Run workflow**
-   (optionally passing a different PR number or an exact head SHA) and
+   (optionally passing a different PR number or an exact run number) and
    download the `dev-builds-tsurlfilter-pr<N>` zips and
    `chrome-dev-crx-tsurlfilter-pr<N>` from the run. The workflow also
    auto-triggers on pushes that change `tsurlfilter-dev-pr.txt`.
@@ -404,20 +405,21 @@ to the internal Artifact Keeper npm registry on every push to the PR
 
 > [!NOTE]
 > After a new push to the tsurlfilter PR, just re-run the failed/pending CI
-> job — the pin resolves the latest published head (the bridge's `devex`
-> dist-tag names the newest publish, so a re-run after the bridge finishes
-> picks the new head up). One exception: if the newest publish belongs to a
-> different tsurlfilter PR and this PR has several published heads, AK
-> records no publish order, so the pin fails as ambiguous instead of
-> guessing — run the **tsurlfilter dev builds** QA workflow and pass the
-> exact head short SHA to its `head` input (the pin is head-scoped: a
-> partially published set fails loudly instead of mixing heads).
+> job — the pin selects the highest published bridge run for that PR across
+> all six packages and requires the complete set (the bridge publishes every
+> package with the same run number). If the highest run is incomplete (a
+> publish leg failed), the pin fails loudly instead of falling back to an
+> older run; AK's `devex` dist-tag and publication order are not used.
+> Head-scoped legacy builds are ignored, so a PR whose builds predate the
+> run-number change needs a new push. Run the **tsurlfilter dev builds** QA
+> workflow and pass the exact workflow run number to its `run` input if you
+> need a specific run.
 
 > [!TIP]
 > Locally, prefer `pnpm link` for fast iteration (see above). To reproduce
 > CI exactly, you can instead pin the AK dev builds in your working copy
 > with the same tool the CI action runs:
-> `pnpm tsx tools/ci/use-dev-builds.ts --pr <N> --head <short-sha> --extension . --with-dnr-converter --with-css-tokenizer --with-agtree --with-tsurlfilter --with-dnr-rulesets --with-tswebextension`
+> `pnpm tsx tools/ci/use-dev-builds.ts --pr <N> --run <run-number> --extension . --with-dnr-converter --with-css-tokenizer --with-agtree --with-tsurlfilter --with-dnr-rulesets --with-tswebextension`
 > (undo with `--remove --with-…`). Do not commit the resulting `package.json`
 > / `pnpm-lock.yaml` changes.
 
