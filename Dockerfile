@@ -498,6 +498,7 @@ FROM adguard/extension-builder:22.22--0.4.1--0 AS check-cws
 WORKDIR /check
 
 COPY tools/ci/check-extension-status.sh ./
+COPY tools/ci/cws-status-lib.sh ./
 
 # CWS item IDs come from the same repo vars the publish jobs use
 # (CHROME_WEBSTORE_MV3(_BETA)_ITEM_ID), so the availability guard and the
@@ -561,10 +562,48 @@ FROM scratch AS check-cws-output
 COPY --from=check-cws /out/ /
 
 # ============================================================================
+# Stage: verify-cws
+# Verifies whether a failed Chrome Web Store publish call actually landed in
+# the store (CWS occasionally answers HTTP 502 after a successful publish).
+# Exits non-zero when the store does not hold the expected version, so the
+# auto-build workflow can tell a benign publish failure from a real one.
+# Uses adguard/extension-builder which has go-webext pre-installed
+# ============================================================================
+FROM adguard/extension-builder:22.22--0.4.1--0 AS verify-cws
+
+WORKDIR /verify
+
+COPY tools/ci/check-publish-state.sh ./
+COPY tools/ci/cws-status-lib.sh ./
+
+# CWS_ITEM_ID is the same value the publish jobs use (repo vars
+# CHROME_WEBSTORE_MV3(_BETA)_ITEM_ID), so the verify and publish steps cannot
+# drift apart; CWS_EXPECTED_VERSION is the version from the auto-build stage.
+# CHROME_CLIENT_ID / CHROME_PUBLISHER_ID arrive as BuildKit secrets (no ARG).
+ARG CWS_ITEM_ID
+ARG CWS_EXPECTED_VERSION
+ARG TEST_RUN_ID
+
+RUN --mount=type=secret,id=CHROME_CLIENT_ID,required=true \
+    --mount=type=secret,id=CHROME_PUBLISHER_ID,required=true \
+    --mount=type=secret,id=CHROME_CLIENT_SECRET,required=true \
+    --mount=type=secret,id=CHROME_REFRESH_TOKEN,required=true \
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
+    : "${CWS_ITEM_ID:?CWS_ITEM_ID build arg not provided}" && \
+    : "${CWS_EXPECTED_VERSION:?CWS_EXPECTED_VERSION build arg not provided}" && \
+    CHROME_CLIENT_ID="$(cat /run/secrets/CHROME_CLIENT_ID)" \
+    CHROME_CLIENT_SECRET="$(cat /run/secrets/CHROME_CLIENT_SECRET)" \
+    CHROME_REFRESH_TOKEN="$(cat /run/secrets/CHROME_REFRESH_TOKEN)" \
+    CHROME_PUBLISHER_ID="$(cat /run/secrets/CHROME_PUBLISHER_ID)" \
+    CHROME_API_VERSION=v2 \
+    ./check-publish-state.sh "${CWS_ITEM_ID}" "${CWS_EXPECTED_VERSION}"
+
+# ============================================================================
 # Stage: auto-build
 # Updates filter rulesets, increments version, builds beta+release chrome-mv3
-# Outputs: artifacts (zips + build.txt) + modified source files (rulesets,
-# locales, local script rules and package.json) for git commit
+# Outputs: artifacts (zips + build.txt + cws-publish.properties) + modified
+# source files (rulesets, locales, local script rules and package.json) for git
+# commit
 # Used by auto-build.yml workflow
 # ============================================================================
 FROM source-deps AS auto-build
@@ -583,6 +622,12 @@ ARG DNR_RULESETS_REGISTRY
 # hardcoded internal default.
 ARG TOKENGUARD_BASE_URL
 ARG TOKENGUARD_MODEL
+# CWS item IDs for the skip-review change check. CI must pass the same
+# repository variables the publish jobs use: the downloader's fallback to the
+# hardcoded IDs is the residual hazard after a CWS listing migration, because
+# the check would then compare against the old listing.
+ARG CWS_BETA_ITEM_ID
+ARG CWS_RELEASE_ITEM_ID
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     --mount=type=secret,id=TOKENGUARD_API_KEY \
@@ -592,12 +637,15 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # We use a marker file instead of git diff to avoid copying the whole
     # .git directory into the Docker image.
     touch /tmp/.pre-update-marker && \
-    # Full resources update (and no CWS skip-review check) on Tuesdays; all
-    # other days reuse local resources and verify CWS skip-review eligibility.
+    # Tuesdays do a full resources update and request the standard CWS review:
+    # the first Tuesday build collects the fixes made on Monday, so the build
+    # may contain changes that are not eligible for skip review (mirrors the
+    # Bamboo job). All other days update only the declarative rulesets and
+    # request expedited (skip) review.
     if [ "$(date -u +%u)" = "2" ]; then \
-        SKIP_REVIEW=false; \
+        EXPEDITED=false; \
     else \
-        SKIP_REVIEW=true; \
+        EXPEDITED=true; \
     fi && \
     # Update rulesets.
     TOKENGUARD_API_KEY="$(cat /run/secrets/TOKENGUARD_API_KEY)" && \
@@ -605,7 +653,7 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Fail fast if the endpoint/model wiring is missing (see the ARGs above).
     : "${TOKENGUARD_BASE_URL:?TOKENGUARD_BASE_URL build-arg must be set}" && \
     : "${TOKENGUARD_MODEL:?TOKENGUARD_MODEL build-arg must be set}" && \
-    if [ "${SKIP_REVIEW}" = "true" ]; then \
+    if [ "${EXPEDITED}" = "true" ]; then \
       TOKENGUARD_API_KEY="${TOKENGUARD_API_KEY}" TOKENGUARD_BASE_URL="${TOKENGUARD_BASE_URL}" TOKENGUARD_MODEL="${TOKENGUARD_MODEL}" pnpm resources:mv3 --skip-local-resources; \
     else \
       TOKENGUARD_API_KEY="${TOKENGUARD_API_KEY}" TOKENGUARD_BASE_URL="${TOKENGUARD_BASE_URL}" TOKENGUARD_MODEL="${TOKENGUARD_MODEL}" pnpm resources:mv3; \
@@ -615,19 +663,33 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Build both channels.
     pnpm beta chrome-mv3 --zip && \
     pnpm release chrome-mv3 --zip && \
-    # Skip-review checks (download latest from CWS + compare).
-    if [ "${SKIP_REVIEW}" = "true" ]; then \
-      if [ "${BETA_CHANNEL_AVAILABLE}" = "true" ]; then \
-        pnpm tsx tools/skip-review/download-latest-extension-mv3 beta && \
-        pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-beta-latest ./build/beta/chrome-mv3; \
-      fi; \
-      if [ "${RELEASE_CHANNEL_AVAILABLE}" = "true" ]; then \
-        pnpm tsx tools/skip-review/download-latest-extension-mv3 release && \
-        pnpm tsx tools/skip-review/check-changes-for-cws ./tmp/extension-release-latest ./build/release/chrome-mv3; \
-      fi; \
-    fi && \
-    # Collect build artifacts.
     mkdir -p /out/artifacts && \
+    # Compare the build with the extension currently published in CWS before
+    # publishing it: an expedited build must contain only safe rule resources,
+    # while a standard-review (Tuesday) build may only change files under
+    # `filters/`, so the standard review never ships unexpected code changes.
+    # EXPEDITED=false (Tuesday) maps to --standard-review here; the expedited
+    # mode passes no flag.
+    check_scope() { \
+      if [ "${EXPEDITED}" = "true" ]; then \
+        pnpm tsx tools/skip-review/check-changes-for-cws "$@"; \
+      else \
+        pnpm tsx tools/skip-review/check-changes-for-cws "$@" --standard-review; \
+      fi; \
+    } && \
+    if [ "${BETA_CHANNEL_AVAILABLE}" = "true" ]; then \
+      CWS_BETA_ITEM_ID="${CWS_BETA_ITEM_ID}" pnpm tsx tools/skip-review/download-latest-extension-mv3 beta && \
+      check_scope ./tmp/extension-beta-latest ./build/beta/chrome-mv3; \
+    fi && \
+    if [ "${RELEASE_CHANNEL_AVAILABLE}" = "true" ]; then \
+      CWS_RELEASE_ITEM_ID="${CWS_RELEASE_ITEM_ID}" pnpm tsx tools/skip-review/download-latest-extension-mv3 release && \
+      check_scope ./tmp/extension-release-latest ./build/release/chrome-mv3; \
+    fi && \
+    # Publish mode for the workflow jobs: expedited/skip review on
+    # non-Tuesdays, standard review on Tuesdays.
+    echo "expedited=${EXPEDITED}" > /out/artifacts/cws-publish.properties && \
+    cat /out/artifacts/cws-publish.properties && \
+    # Collect build artifacts.
     mv build/beta/chrome-mv3.zip /out/artifacts/chrome-mv3-beta.zip && \
     mv build/release/chrome-mv3.zip /out/artifacts/chrome-mv3-release.zip && \
     cp build/release/build.txt /out/artifacts/ && \

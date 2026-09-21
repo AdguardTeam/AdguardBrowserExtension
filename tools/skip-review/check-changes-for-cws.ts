@@ -20,7 +20,7 @@
  */
 import fs from 'node:fs';
 import path from 'node:path';
-import os from 'node:os';
+import { fileURLToPath } from 'node:url';
 import { spawn } from 'node:child_process';
 
 import { Command } from 'commander';
@@ -38,6 +38,78 @@ const MANIFEST_FILE_NAME = 'manifest.json';
  * Name of the _metadata folder in Chrome Web Store, should be ignored.
  */
 const CWS_METADATA_FOLDER_NAME = '_metadata';
+
+/**
+ * Directory (relative to the extension root) whose contents may change in the
+ * standard-review mode.
+ */
+export const FILTERS_DIR = 'filters';
+
+/**
+ * Message of the error thrown when files outside the allowed scope changed.
+ */
+const SCOPE_ERROR_MESSAGE = '❌ Files outside the allowed scope were changed!';
+
+/**
+ * Heading of the DEPLOYMENT.md entry explaining the recovery for the recurring
+ * expedited failure. Pinned by a test, so a doc rename cannot leave the error
+ * pointing at a missing section.
+ */
+export const EXPEDITED_SCOPE_HINT_HEADING = 'Auto-build failed on the expedited scope check after an '
+    + 'unpublished Tuesday build';
+
+/**
+ * Heading of the DEPLOYMENT.md entry explaining the ruleset declaration
+ * failure. Pinned by a test like {@link EXPEDITED_SCOPE_HINT_HEADING}.
+ */
+export const RULESET_DECLARATION_HINT_HEADING = 'Auto-build failed on the ruleset declaration check';
+
+/**
+ * Hint appended to the scope error in the expedited mode. A Tuesday
+ * full-resources build whose publish was skipped (the CWS channel was
+ * unavailable) leaves changes committed to the stable branch that keep failing
+ * every expedited check until the next standard-review submission lands.
+ */
+const EXPEDITED_SCOPE_ERROR_HINT = 'A Tuesday full-resources build that could not be published is not in '
+    + 'the extension published to CWS: its committed changes keep failing expedited checks until the '
+    + `next standard-review submission lands. See DEPLOYMENT.md, "${EXPEDITED_SCOPE_HINT_HEADING}".`;
+
+/**
+ * Modes of the extension change check, matching the Chrome Web Store review
+ * the built extension is submitted for.
+ */
+export enum CheckMode {
+    /**
+     * The build is submitted with skip review: only safe rules from the
+     * manifest `rule_resources` list may change.
+     */
+    Expedited = 'expedited',
+    /**
+     * The build is submitted for the standard review: any file under the
+     * `filters/` directory may change (unsafe rules included), but nothing
+     * outside of it. Rule safety is not enforced.
+     */
+    StandardReview = 'standard-review',
+}
+
+/**
+ * Prefix of an `Only in <dir>: <name>` line of `diff -qr` output.
+ */
+const DIFF_ONLY_IN_PREFIX = 'Only in ';
+
+/**
+ * Prefix and suffix of a `Files <a> and <b> differ` line of `diff -qr` output.
+ */
+const DIFF_FILES_PREFIX = 'Files ';
+const DIFF_FILES_SUFFIX = ' differ';
+
+/**
+ * Hint appended to the ruleset declaration error: the manifest is always
+ * outside the scope an auto-published build may change, whatever the mode.
+ */
+const RULESET_DECLARATION_SCOPE_HINT = 'The manifest is outside the change scope of an auto-published build '
+    + '(safe rules for skip review, files under `filters/` for the standard review), so this build cannot be '
+    + `published automatically. See DEPLOYMENT.md, "${RULESET_DECLARATION_HINT_HEADING}".`;
 
 /**
  * Read and parse JSON file.
@@ -82,27 +154,6 @@ const buildRulesMap = (rules: DeclarativeRule[]): Map<number, DeclarativeRule> =
         }
     }
     return map;
-};
-
-/**
- * Check that all changed files are only from rule_resources.
- *
- * @param changedFiles Set of changed file paths.
- * @param ruleResources Array of rule_resources objects with path property.
- *
- * @returns True if only rule_resources files changed, false otherwise.
- */
-const onlyRuleResourcesChanged = (
-    changedFiles: Set<string>,
-    ruleResources: Array<{ path: string }>,
-): boolean => {
-    const allowed = new Set(ruleResources.map((r) => r.path));
-    for (const file of changedFiles) {
-        if (!allowed.has(file)) {
-            return false;
-        }
-    }
-    return true;
 };
 
 /**
@@ -201,7 +252,7 @@ const checkRulesetDeclaration = (
 
     if (onlyInOld.size > 0 || onlyInNew.size > 0) {
         throw new Error(
-            `❌ Rulesets have been added or removed from manifest declaration!\n  Only in old: ${onlyInOld}\n  Only in new: ${onlyInNew}`,
+            `❌ Rulesets have been added or removed from manifest declaration!\n  Only in old: ${onlyInOld}\n  Only in new: ${onlyInNew}\n${RULESET_DECLARATION_SCOPE_HINT}`,
         );
     }
 
@@ -211,13 +262,14 @@ const checkRulesetDeclaration = (
 };
 
 /**
- * Checks that only rule_resources rulesets changed and all rule changes are safe.
+ * Checks rule changes in the manifest `rule_resources` rulesets and ensures
+ * that they are safe.
  *
  * @param oldDir Directory containing the old rules.
  * @param newDir Directory containing the new rules.
  * @param rulesets Array of rulesets info from rule_resources in manifest.
  *
- * @throws Error if files outside rule_resources were changed or unsafe rules found.
+ * @throws Error if unsafe rule changes are found.
  */
 const checkRuleResources = (
     oldDir: string,
@@ -226,7 +278,6 @@ const checkRuleResources = (
 ) => {
     const rulesetPaths = rulesets.map((r) => r.path);
 
-    const changedRulesets = new Set<string>();
     let changesAreSafe = true;
 
     for (const rulesetPath of rulesetPaths) {
@@ -243,8 +294,6 @@ const checkRuleResources = (
         if (dataOld === dataNew) {
             continue;
         }
-
-        changedRulesets.add(rulesetPath);
 
         let rulesOld: DeclarativeRule[] = [];
         let rulesNew: DeclarativeRule[] = [];
@@ -294,34 +343,139 @@ const checkRuleResources = (
     }
 
     if (!changesAreSafe) {
-        console.log('\n❌ There are changes NOT in safe rules (see above)');
-        process.exit(4);
+        throw new Error('❌ There are changes NOT in safe rules (see above)');
     }
     console.log('✅ All changes in ruleset files are only safe rules');
-
-    if (!onlyRuleResourcesChanged(changedRulesets, rulesets)) {
-        throw new Error('❌ Rulesets outside rule_resources were changed!');
-    }
-    console.log('✅ All changed rulesets specified in rule_resources');
 };
 
 /**
- * Get the set of changed files between two directories using system diff
- * or between two files.
+ * Converts a path reported by `diff` into a path relative to the extension
+ * root it belongs to.
  *
- * @param oldDir Path to the old directory or file.
- * @param newDir Path to the new directory or file.
+ * @param rawPath Path as reported by `diff` (absolute or `./`-prefixed).
+ * @param oldDir Path to the old extension directory.
+ * @param newDir Path to the new extension directory.
  *
- * @returns Set of relative file paths that differ between the two directories
- * or files.
+ * @returns Path relative to `oldDir` or `newDir`, or null when the path lies
+ * outside both.
  */
-const getChangedFiles = (oldDir: string, newDir: string): Promise<Set<string>> => {
+export const toExtensionRelativePath = (
+    rawPath: string,
+    oldDir: string,
+    newDir: string,
+): string | null => {
+    for (const dir of [oldDir, newDir]) {
+        const relative = path.relative(path.resolve(dir), path.resolve(rawPath));
+        if (relative !== '' && !relative.startsWith('..') && !path.isAbsolute(relative)) {
+            // Normalize to POSIX separators so scope checks and manifest
+            // `rule_resources` paths behave the same on Windows.
+            return relative.split(path.sep).join('/');
+        }
+    }
+
+    return null;
+};
+
+/**
+ * Extracts the changed file from a `Files <old> and <new> differ` line of
+ * `diff -qr` output. File names may contain ` and `, so instead of splitting
+ * on the first occurrence, every candidate split is tried and the one whose
+ * halves resolve to the same extension-relative path wins.
+ *
+ * @param line Line of `diff -qr` output.
+ * @param oldDir Path to the old extension directory.
+ * @param newDir Path to the new extension directory.
+ *
+ * @returns Path of the changed file relative to the extension roots, or null
+ * when this is not a mapping `Files ... differ` line.
+ */
+const parseDiffFilesLine = (line: string, oldDir: string, newDir: string): string | null => {
+    const separator = ' and ';
+
+    if (!line.startsWith(DIFF_FILES_PREFIX) || !line.endsWith(DIFF_FILES_SUFFIX)) {
+        return null;
+    }
+
+    const body = line.slice(DIFF_FILES_PREFIX.length, -DIFF_FILES_SUFFIX.length);
+    for (let index = body.indexOf(separator); index !== -1; index = body.indexOf(separator, index + 1)) {
+        const oldPath = body.slice(0, index);
+        const newPath = body.slice(index + separator.length);
+        const oldRelative = toExtensionRelativePath(oldPath, oldDir, newDir);
+        const newRelative = toExtensionRelativePath(newPath, oldDir, newDir);
+        if (oldRelative !== null && oldRelative === newRelative) {
+            return oldRelative;
+        }
+    }
+
+    return null;
+};
+
+/**
+ * Extracts the changed file from an `Only in <dir>: <name>` line of `diff -qr`
+ * output. Both the directory and the file name may contain `: `, so a single
+ * split is ambiguous (`filters: x/evil.js` against `filters/x: evil.js`). The
+ * entry reported by `diff` exists in one of the trees, so the split whose join
+ * exists is the real one; when no split resolves, the line fails closed.
+ *
+ * @param line Line of `diff -qr` output.
+ * @param oldDir Path to the old extension directory.
+ * @param newDir Path to the new extension directory.
+ *
+ * @returns Path of the changed file relative to the extension roots, or null
+ * when this is not a resolvable `Only in ...` line.
+ */
+const parseDiffOnlyInLine = (line: string, oldDir: string, newDir: string): string | null => {
+    const separator = ': ';
+
+    if (!line.startsWith(DIFF_ONLY_IN_PREFIX)) {
+        return null;
+    }
+
+    const body = line.slice(DIFF_ONLY_IN_PREFIX.length);
+    for (let index = body.indexOf(separator); index !== -1; index = body.indexOf(separator, index + 1)) {
+        const candidate = path.join(body.slice(0, index), body.slice(index + separator.length));
+        if (!fs.existsSync(candidate)) {
+            continue;
+        }
+
+        const relativePath = toExtensionRelativePath(candidate, oldDir, newDir);
+        if (relativePath !== null) {
+            return relativePath;
+        }
+    }
+
+    return null;
+};
+
+/**
+ * Checks whether a changed file lies inside the given directory.
+ *
+ * @param relativeFilePath Changed file path relative to the extension root.
+ * @param dir Directory relative to the extension root.
+ *
+ * @returns True when the file is the directory itself or lies inside it.
+ */
+export const isInsideDir = (relativeFilePath: string, dir: string): boolean => {
+    return relativeFilePath === dir || relativeFilePath.startsWith(`${dir}/`);
+};
+
+/**
+ * Get the set of changed files between two directories using system diff,
+ * as paths relative to the extension root they belong to.
+ *
+ * @param oldDir Path to the old extension directory.
+ * @param newDir Path to the new extension directory.
+ *
+ * @returns Set of relative file paths that differ between the two directories.
+ *
+ * @throws Error if a diff entry cannot be mapped to either extension root.
+ */
+export const getChangedFiles = (oldDir: string, newDir: string): Promise<Set<string>> => {
     return new Promise((resolve, reject) => {
         // '-q' for short output (only report if files differ)
         // '-r' for recursive comparison
         const diff = spawn('diff', ['-qr', oldDir, newDir]);
 
-        // Set encoding for stdout and stderr to 'utf-8'
         diff.stdout.setEncoding('utf-8');
         diff.stderr.setEncoding('utf-8');
 
@@ -343,27 +497,39 @@ const getChangedFiles = (oldDir: string, newDir: string): Promise<Set<string>> =
                 return;
             }
 
-            // output format: "Files oldDir/path/file and newDir/path/file differ"
             const changed = new Set<string>();
-            const regex = /^Files\s+.+?\/(.+?)\s+and\s+.+?\/(.+?)\s+differ$/gm;
-            let match: RegExpExecArray | null;
-            for (match = regex.exec(output); match !== null; match = regex.exec(output)) {
-                if (match[1]) {
-                    changed.add(match[1]);
+            const unmappable: string[] = [];
+
+            // `diff -qr` emits one message per changed file:
+            // `Files <old> and <new> differ` or `Only in <dir>: <name>`.
+            // Anything else means the output cannot be attributed to a file
+            // (e.g. a file name containing a newline splits its message across
+            // lines), so it must fail closed.
+            for (const line of output.split('\n')) {
+                if (line === '') {
+                    continue;
                 }
+
+                const relativePath = parseDiffFilesLine(line, oldDir, newDir);
+                if (relativePath !== null) {
+                    changed.add(relativePath);
+                    continue;
+                }
+
+                const onlyInPath = parseDiffOnlyInLine(line, oldDir, newDir);
+                if (onlyInPath !== null) {
+                    changed.add(onlyInPath);
+                    continue;
+                }
+
+                unmappable.push(line);
             }
 
-            // Also handle files only in one directory
-            const onlyRegex = /^Only in (.+?): (.+)$/gm;
-            for (match = onlyRegex.exec(output); match !== null; match = onlyRegex.exec(output)) {
-                if (match[1] && match[2]) {
-                    const baseDir = match[1].endsWith('/') ? match[1].slice(0, -1) : match[1];
-                    let relPath = path.relative(oldDir, path.join(baseDir, match[2]));
-                    if (relPath.startsWith('..')) {
-                        relPath = path.relative(newDir, path.join(baseDir, match[2]));
-                    }
-                    changed.add(relPath);
-                }
+            // Fail closed: an entry that cannot be mapped to either extension
+            // root must not be silently skipped by the scope check.
+            if (unmappable.length > 0) {
+                reject(new Error(`Cannot map diff path(s) to the extension roots: ${unmappable.join(', ')}`));
+                return;
             }
 
             resolve(changed);
@@ -376,41 +542,49 @@ const getChangedFiles = (oldDir: string, newDir: string): Promise<Set<string>> =
 };
 
 /**
- * Ensures that only rule_resources files changed between two directories.
+ * Ensures that only allowed files changed between two extension directories.
+ * The CWS `_metadata` folder and insignificant `manifest.json` changes
+ * (`version`, `update_url`) are always ignored.
  *
  * @param oldDir Path to the old directory.
  * @param newDir Path to the new directory.
- * @param rulesetsPaths Array of allowed ruleset file paths.
+ * @param isAllowedChange Predicate deciding whether a changed file, as a path
+ * relative to the extension root, is allowed to change.
+ * @param scopeErrorHint Optional hint appended to the scope error, explaining
+ * the recovery for a recurring failure.
  *
- * @throws Error if files outside rule_resources were changed.
+ * @throws Error if files outside the allowed scope were changed.
  */
-const ensureOnlyRulesetsChanged = async (
+export const ensureOnlyAllowedChanges = async (
     oldDir: string,
     newDir: string,
-    rulesetsPaths: Array<string>,
+    isAllowedChange: (relativeFilePath: string) => boolean,
+    scopeErrorHint?: string,
 ): Promise<void> => {
-    // To print all files which changed outside rule_resources.
-    let changedOnlyRulesets = true;
+    // To print all files which changed outside the allowed scope.
+    let changedOnlyAllowed = true;
 
-    // Check that only rule_resources files changed (using system diff).
+    // Check that only allowed files changed (using system diff).
     const changedFiles = await getChangedFiles(oldDir, newDir);
-    for (const filePath of changedFiles) {
-        // Ignore rulesets which specified in the package.json, because they are
-        // allowed to change.
-        if (Array.from(rulesetsPaths).some((p) => filePath.endsWith(p))) {
+    for (const relativeFilePath of changedFiles) {
+        if (isAllowedChange(relativeFilePath)) {
             continue;
         }
 
         // Ignore CWS metadata folder, it is added by CWS after publishing.
-        if (filePath.startsWith(CWS_METADATA_FOLDER_NAME)) {
+        if (isInsideDir(relativeFilePath, CWS_METADATA_FOLDER_NAME)) {
             continue;
         }
 
         // Special case for manifest.json, we need to check only `version`
         // and `update_url` fields, because CWS adds `update_url` after
         // publishing the extension, so it will always differ.
-        if (filePath.endsWith(MANIFEST_FILE_NAME)) {
-            const manifestChanged = await checkManifestForSignificantChanges(filePath, oldDir, newDir);
+        if (relativeFilePath === MANIFEST_FILE_NAME) {
+            const manifestChanged = checkManifestForSignificantChanges(
+                relativeFilePath,
+                oldDir,
+                newDir,
+            );
 
             if (!manifestChanged) {
                 continue;
@@ -418,33 +592,32 @@ const ensureOnlyRulesetsChanged = async (
         }
 
         // Every other file should be checked.
-        await printExternalFileDiff(filePath, oldDir, newDir);
-        changedOnlyRulesets = false;
+        await printExternalFileDiff(relativeFilePath, oldDir, newDir);
+        changedOnlyAllowed = false;
     }
 
-    if (!changedOnlyRulesets) {
-        throw new Error('❌ Files outside rule_resources were changed!');
+    if (!changedOnlyAllowed) {
+        throw new Error(scopeErrorHint ? `${SCOPE_ERROR_MESSAGE}\n${scopeErrorHint}` : SCOPE_ERROR_MESSAGE);
     }
 
-    console.log('✅ Only rule_resources files changed');
+    console.log('✅ Only allowed files changed');
 };
 
 /**
  * Checks the manifest.json for significant changes: without `version`, since it
  * is always different, and without `update_url`, since it is added by CWS.
  *
- * @param filePath Relative path to the manifest file.
+ * @param relativeFilePath Relative path to the manifest file.
  * @param oldDir Path to the old directory.
  * @param newDir Path to the new directory.
  *
- * @returns Promise that resolves to true if significant changes were found.
+ * @returns True if significant changes were found.
  */
-const checkManifestForSignificantChanges = async (
-    filePath: string,
+const checkManifestForSignificantChanges = (
+    relativeFilePath: string,
     oldDir: string,
     newDir: string,
-): Promise<boolean> => {
-    const relativeFilePath = path.relative(oldDir, filePath);
+): boolean => {
     const oldFile = path.join(oldDir, relativeFilePath);
     const newFile = path.join(newDir, relativeFilePath);
 
@@ -456,40 +629,33 @@ const checkManifestForSignificantChanges = async (
     // Delete `version` since it is always different.
     delete newManifest.version;
 
-    // Delete `update_url` since it is added by CWS after publishing.
+    // Delete `update_url` from both sides since it is added by CWS after
+    // publishing and the comparison must not depend on which side carries it.
     delete oldManifest.update_url;
+    delete newManifest.update_url;
 
-    const systemTmpDir = await fs.promises.mkdtemp(path.join(os.tmpdir(), 'cws-check-manifest-'));
-
-    const oldManifestTmpPath = path.join(systemTmpDir, 'old_manifest.json');
-    const newManifestTmpPath = path.join(systemTmpDir, 'new_manifest.json');
-
-    await fs.promises.writeFile(oldManifestTmpPath, JSON.stringify(oldManifest));
-    await fs.promises.writeFile(newManifestTmpPath, JSON.stringify(newManifest));
-
-    const changedLines = await getChangedFiles(oldManifestTmpPath, newManifestTmpPath);
-
-    return changedLines.size > 0;
+    // Compare the normalized manifests deeply so key order cannot produce a
+    // false positive.
+    return !fastDeepEqual(oldManifest, newManifest);
 };
 
 /**
- * Print and show diff for a file changed outside rule_resources.
+ * Print and show diff for a file changed outside the allowed scope.
  *
- * @param filePath Relative path to the changed file.
+ * @param relativeFilePath Relative path to the changed file.
  * @param oldDir Path to the old directory.
  * @param newDir Path to the new directory.
  */
 const printExternalFileDiff = async (
-    filePath: string,
+    relativeFilePath: string,
     oldDir: string,
     newDir: string,
 ) => {
-    const relativeFilePath = path.relative(oldDir, filePath);
     const oldFile = path.join(oldDir, relativeFilePath);
     const newFile = path.join(newDir, relativeFilePath);
 
-    console.log(`❌ Detected changes outside rule_resources, diff between "${oldFile}" and "${newFile}":`);
-    if (relativeFilePath.endsWith(MANIFEST_FILE_NAME)) {
+    console.log(`❌ Detected changes outside the allowed scope, diff between "${oldFile}" and "${newFile}":`);
+    if (relativeFilePath === MANIFEST_FILE_NAME) {
         console.log('❌ Please ignore changes in `version` and `update_url` fields, they are expected.');
     }
 
@@ -527,7 +693,7 @@ const printExternalFileDiff = async (
     } else if (fs.existsSync(newFile)) {
         console.log('[File added]');
     } else {
-        console.log(`[File missing in both]: old "${oldFile}", new "${newFile}", filePath "${filePath}"`);
+        console.log(`[File missing in both]: old "${oldFile}", new "${newFile}", filePath "${relativeFilePath}"`);
     }
 };
 
@@ -536,8 +702,14 @@ const printExternalFileDiff = async (
  *
  * @param oldDir Path to the old extension directory.
  * @param newDir Path to the new extension directory.
+ * @param mode Review the built extension is submitted for; controls the
+ * allowed change scope and whether rule safety is enforced.
  */
-const compareManifestsAndRules = async (oldDir: string, newDir: string) => {
+export const compareManifestsAndRules = async (
+    oldDir: string,
+    newDir: string,
+    mode: CheckMode,
+) => {
     // Step 1: Read and parse manifests from both directories.
     const { oldManifest, newManifest } = getManifests(oldDir, newDir);
 
@@ -547,10 +719,31 @@ const compareManifestsAndRules = async (oldDir: string, newDir: string) => {
     // Step 3: Check that no rulesets were added or removed in manifest.
     const ruleResources = checkRulesetDeclaration(oldManifest, newManifest);
 
-    // Step 4: Check that only rule_resources files changed (using system diff).
-    await ensureOnlyRulesetsChanged(oldDir, newDir, ruleResources.map(({ path }) => path));
+    // Step 4: Check that only files allowed for the review mode changed:
+    // skip review accepts safe rule resources only, the standard review
+    // accepts any change inside filters/ so the submission cannot ship
+    // unexpected code changes.
+    const isAllowedChange = (relativeFilePath: string): boolean => {
+        if (mode === CheckMode.StandardReview) {
+            return isInsideDir(relativeFilePath, FILTERS_DIR);
+        }
 
-    // Step 5: Check that all rule changes are safe.
+        return ruleResources.some(({ path: rulesetPath }) => rulesetPath === relativeFilePath);
+    };
+    // Explain the recurring expedited failure caused by an unpublished
+    // Tuesday build instead of the bare scope error.
+    const scopeErrorHint = mode === CheckMode.Expedited ? EXPEDITED_SCOPE_ERROR_HINT : undefined;
+
+    await ensureOnlyAllowedChanges(oldDir, newDir, isAllowedChange, scopeErrorHint);
+
+    // Step 5: Rule safety is enforced only for skip-review submissions: the
+    // standard review accepts unsafe rules, which is exactly why such a build
+    // cannot be submitted with skip review.
+    if (mode === CheckMode.StandardReview) {
+        console.log('ℹ️ Standard review mode: rule safety is not enforced');
+        return;
+    }
+
     checkRuleResources(oldDir, newDir, ruleResources);
 };
 
@@ -558,12 +751,18 @@ const compareManifestsAndRules = async (oldDir: string, newDir: string) => {
 const program = new Command();
 program
     .name('check-changes-for-cws')
-    .description('Validate extension static ruleset changes for Chrome Web Store')
+    .description('Validate extension changes against the published Chrome Web Store build')
     .argument('<oldDir>', 'Old extension directory')
     .argument('<newDir>', 'New extension directory')
-    .action(async (oldDir: string, newDir: string) => {
+    .option(
+        '--standard-review',
+        'allow any change under filters/ (rule safety is not enforced);'
+        + ' used for builds submitted for the standard CWS review',
+    )
+    .action(async (oldDir: string, newDir: string, options: { standardReview?: boolean }) => {
         try {
-            await compareManifestsAndRules(oldDir, newDir);
+            const mode = options.standardReview ? CheckMode.StandardReview : CheckMode.Expedited;
+            await compareManifestsAndRules(oldDir, newDir, mode);
         } catch (e) {
             const err = e as any;
             console.log(`Error: ${err && err.message ? err.message : err}`);
@@ -571,4 +770,34 @@ program
         }
     });
 
-program.parse(process.argv);
+/**
+ * Is this module being executed as the CLI entry point (rather than imported
+ * by a test)?
+ *
+ * @returns Whether `process.argv[1]` resolves to this file.
+ */
+const isMain = (): boolean => {
+    const entry = process.argv[1];
+    if (entry === undefined) {
+        return false;
+    }
+
+    // tsx executes extensionless entry points without rewriting
+    // `process.argv[1]`, so the `.ts` extension may be missing here: the
+    // Dockerfile invokes the tool as
+    // `pnpm tsx tools/skip-review/check-changes-for-cws ...`. Resolve real
+    // paths so a symlinked checkout or entry point compares equal as well.
+    const entryPath = path.resolve(entry);
+    const modulePath = fs.realpathSync(fileURLToPath(import.meta.url));
+    return [entryPath, `${entryPath}.ts`].some((candidate) => {
+        try {
+            return fs.realpathSync(candidate) === modulePath;
+        } catch {
+            return false;
+        }
+    });
+};
+
+if (isMain()) {
+    program.parse(process.argv);
+}

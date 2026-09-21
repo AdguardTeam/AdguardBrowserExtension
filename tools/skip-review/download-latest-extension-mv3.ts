@@ -61,6 +61,17 @@ const getCrxUrl = (
 const TMP_DIR = path.join(process.cwd(), 'tmp');
 
 /**
+ * Environment variables the auto-build workflow uses to pass the CWS item IDs
+ * (the same repository variables the publish jobs use), so the downloaded
+ * extension and the published listing cannot drift apart after a CWS listing
+ * migration.
+ */
+const EXTENSION_ID_ENV_VARS: Record<BuildTargetEnv.Beta | BuildTargetEnv.Release, string> = {
+    [BuildTargetEnv.Beta]: 'CWS_BETA_ITEM_ID',
+    [BuildTargetEnv.Release]: 'CWS_RELEASE_ITEM_ID',
+};
+
+/**
  * Magic string for CRX file header.
  */
 const CRX_HEADER_MAGIC_STRING = 'Cr24';
@@ -222,7 +233,7 @@ const removeMetadataFolder = async (unpackedPath: string) => {
  * @param target The build target environment (Beta or Release).
  */
 const downloadAndUnpackExtension = async (target: BuildTargetEnv.Beta | BuildTargetEnv.Release) => {
-    const extensionId = ExtensionsIds[target];
+    const extensionId = process.env[EXTENSION_ID_ENV_VARS[target]] || ExtensionsIds[target];
     const crxPath = path.join(TMP_DIR, `extension-${target}-latest.crx`);
     const zipPath = path.join(TMP_DIR, `extension-${target}-latest.zip`);
     const unpackedExtensionPath = path.join(TMP_DIR, `extension-${target}-latest`);

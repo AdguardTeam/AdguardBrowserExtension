@@ -28,6 +28,11 @@
 #  -o pipefail: Fail the pipeline if any command in it fails.
 set -euxo pipefail
 
+# Shared helpers for the `go-webext status` invocation and the field parsing
+# (also used by check-publish-state.sh).
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+. "$SCRIPT_DIR/cws-status-lib.sh"
+
 CHANNEL="${1:-release}"
 
 # Determine extension ID based on channel. Callers may override the IDs via
@@ -49,13 +54,10 @@ esac
 
 echo "Checking status for extension: ${EXTENSION_ID}"
 
-# Get status from Chrome Web Store. Capture the call without aborting under
-# `set -e`: a non-zero go-webext exit (expired refresh token, API outage) is the
-# common hard-error path and must map to exit 2 below, not to "unavailable".
-set +e
-STATUS_OUTPUT=$(go-webext status chrome -a "${EXTENSION_ID}" 2>&1)
-GO_WEBEXT_EXIT=$?
-set -e
+# Get status from Chrome Web Store. A non-zero go-webext exit (expired refresh
+# token, API outage) is the common hard-error path and must map to exit 2
+# below, not to "unavailable" (see cws-status-lib.sh).
+cws_fetch_status "${EXTENSION_ID}"
 
 echo "${STATUS_OUTPUT}"
 
@@ -69,7 +71,7 @@ fi
 # State / Rollout) means an unexpected payload — an API error, throttling, or
 # a format change. That must be a hard failure (exit 2), never silently
 # downgraded to "channel unavailable" (exit 1).
-if ! echo "${STATUS_OUTPUT}" | grep -Eq "Published State:|Submitted State:|Rollout:"; then
+if ! cws_has_state_markers "${STATUS_OUTPUT}" 'Published State:|Submitted State:|Rollout:'; then
     echo "❌ go-webext output for the ${CHANNEL} channel contains no recognized state markers (see output above)"
     exit 2
 fi
@@ -81,10 +83,10 @@ fi
 
 # Check if Published State is PUBLISHED
 if ! echo "${STATUS_OUTPUT}" | grep -q "Published State: PUBLISHED"; then
-    # `|| true` keeps errexit + pipefail from aborting at the assignment when
-    # the marker line is absent, so the "No published version found" diagnostic
-    # below stays reachable.
-    PUBLISHED_STATE=$(echo "${STATUS_OUTPUT}" | grep "Published State:" | awk '{print $3}' || true)
+    # A missing marker line must not abort under errexit + pipefail, so the
+    # "No published version found" diagnostic below stays reachable (cws_field
+    # tolerates a missing line).
+    PUBLISHED_STATE="$(cws_field "${STATUS_OUTPUT}" 'Published State:')"
     if [ -z "${PUBLISHED_STATE}" ]; then
         echo "⚠️ No published version found, auto-build NOT allowed"
     else
@@ -97,7 +99,7 @@ fi
 # Check submitted state (should be unset, CANCELLED, or PUBLISHED)
 # Submitted state will be unset if no submission since last successful publish
 if echo "${STATUS_OUTPUT}" | grep -q "Submitted State:"; then
-    SUBMITTED_STATE=$(echo "${STATUS_OUTPUT}" | grep "Submitted State:" | awk '{print $3}')
+    SUBMITTED_STATE="$(cws_field "${STATUS_OUTPUT}" 'Submitted State:')"
     if [ "${SUBMITTED_STATE}" != "CANCELLED" ] && [ "${SUBMITTED_STATE}" != "PUBLISHED" ]; then
         echo "⚠️ Extension is mostly under review with pending submission (${SUBMITTED_STATE}), auto-build NOT allowed"
         echo "Auto-build is only allowed when submitted state is unset, CANCELLED, or PUBLISHED"
@@ -110,10 +112,10 @@ fi
 
 # Check if rollout is at 100%
 if ! echo "${STATUS_OUTPUT}" | grep -q "Rollout: 100%"; then
-    # `|| true` keeps errexit + pipefail from aborting at the assignment when
-    # the marker line is absent, so the "No rollout information found"
-    # diagnostic below stays reachable.
-    ROLLOUT=$(echo "${STATUS_OUTPUT}" | grep "Rollout:" | awk '{print $2}' || true)
+    # A missing marker line must not abort under errexit + pipefail, so the
+    # "No rollout information found" diagnostic below stays reachable
+    # (cws_field tolerates a missing line).
+    ROLLOUT="$(cws_field "${STATUS_OUTPUT}" 'Rollout:')"
     if [ -z "${ROLLOUT}" ]; then
         echo "⚠️ No rollout information found, auto-build NOT allowed"
     else
