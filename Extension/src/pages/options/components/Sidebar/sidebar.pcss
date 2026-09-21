@@ -94,7 +94,13 @@
 
     @media (min-width: 640px) {
         transform: unset;
-        position: relative;
+        position: sticky;
+        top: 0;
+        /* No-op while the height is definite; guards sticky against stretch if the height ever becomes auto */
+        align-self: flex-start;
+        height: 100vh;
+        /* Same as the base rule; documents the short-viewport fallback */
+        overflow-y: auto;
 
         &__menu {
             display: none;

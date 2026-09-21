@@ -55,5 +55,9 @@
 
     @media (min-width: 640px) {
         padding: 0;
+        flex: 1 1 auto;
+        /* Floor: on very short viewports the sidebar scrolls the whole menu instead of collapsing the nav */
+        min-height: 25vh;
+        overflow-y: auto;
     }
 }
