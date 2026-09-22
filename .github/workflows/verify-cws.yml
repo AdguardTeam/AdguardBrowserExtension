@@ -44,9 +44,13 @@ jobs:
 
       - name: Fetch Chrome Web Store credentials from Vault
         id: vault
-        # Pinned to the v4 commit: this step receives CWS credentials as
-        # secrets, so a force-moved tag would be a supply-chain risk.
-        uses: hashicorp/vault-action@892a26828f195e65540a40b4768ae4571f51ebfc # v4
+        # Must stay on the `v4` tag, not a commit SHA: the organization Actions
+        # allowlist matches the exact `uses:` syntax, so the tag is allowed and
+        # a SHA-pinned reference is not, and a disallowed reference makes GitHub
+        # reject the whole run at startup with zero jobs (`startup_failure`).
+        # The tag is not immutable, but it is the only form the allowlist
+        # accepts; the check-cws job of auto-build.yml uses it too.
+        uses: hashicorp/vault-action@v4
         with:
           url: ${{ vars.VAULT_URL }}
           method: jwt
