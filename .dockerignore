@@ -4,6 +4,9 @@
 .DS_Store
 .eslintcache
 *.tsbuildinfo
+# Local ESLint/TypeScript caches; in CI these directories are BuildKit cache
+# mounts in the lint stage, so they must not enter the build context.
+.cache/
 build/
 output/
 tmp/

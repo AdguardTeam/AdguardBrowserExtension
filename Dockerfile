@@ -108,7 +108,14 @@ COPY --from=chrome-crx /out/ /
 # ============================================================================
 FROM source-deps AS lint
 
+# `COPY . /extension` in source-deps invalidates this stage on every commit, so
+# the ESLint and TypeScript incremental caches are kept in BuildKit cache mounts:
+# stable ids persist them on the shared BuildKit between builds (same mechanism
+# as the pnpm store above) even though the layer itself is rebuilt. The cache
+# paths match the ones configured in package.json / tsconfig.mv2|mv3.json.
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    --mount=type=cache,target=/extension/.cache/eslint,id=browser-extension-eslint \
+    --mount=type=cache,target=/extension/.cache/tsc,id=browser-extension-tsc \
     # Run lint with timeout (cached until source changes).
     ./tools/ci/timeout-wrapper.sh 240s pnpm lint && \
     mkdir -p /out && \
