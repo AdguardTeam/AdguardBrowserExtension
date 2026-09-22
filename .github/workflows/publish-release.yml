@@ -60,16 +60,18 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.event.pull_request.merge_commit_sha || github.ref_name }}
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v5
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: pnpm
+
+      # The pnpm setup action is not in the organization Actions allowlist, so
+      # the workflow was rejected at startup with zero jobs (AG-59355). Install
+      # pnpm the same way the Dockerfile does (see AGENTS.md, "CI/CD (GitHub
+      # Actions)"). `actions/setup-node` caching is not used: it resolves
+      # `pnpm store path` before pnpm is installed.
+      - name: Install pnpm
+        run: npm install -g "pnpm@${PNPM_VERSION}"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
