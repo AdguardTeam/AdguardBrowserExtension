@@ -30,6 +30,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3600]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3600
 [AdguardFilters#238305]: https://github.com/AdguardTeam/AdguardFilters/issues/238305
 
+## [Unreleased]
+
+## [5.5.3.0-beta] - 2026-09-23
+
 ## [5.5.1.0] - 2026-08-21
 
 ### Changed
