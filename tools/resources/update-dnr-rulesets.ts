@@ -195,7 +195,7 @@ const sha512Integrity = async (tarballUrl: string): Promise<string> => {
 };
 
 /**
- * Updates @adguard/dnr-rulesets to the latest ~5.0.
+ * Updates stable @adguard/dnr-rulesets to the latest ~5.0, preserving exact prerelease pins.
  *
  * When DNR_RULESETS_REGISTRY points at the internal Artifact Keeper, the
  * package tarball is fetched from there (npm throttles the shared CI egress
@@ -208,7 +208,17 @@ const sha512Integrity = async (tarballUrl: string): Promise<string> => {
  * @throws {Error} When no stable 5.0.x version of the package is found in the
  * registry, when its metadata/tarball cannot be fetched, or when pnpm fails.
  */
-const main = async (): Promise<void> => {
+export const updateDnrRulesets = async (): Promise<void> => {
+    const currentPackage = JSON.parse(readFileSync(PACKAGE_JSON_PATH, 'utf8')) as {
+        devDependencies: Record<string, string>;
+    };
+    const pinnedVersion = currentPackage.devDependencies[PACKAGE_NAME]!;
+    // Prerelease packages are selected explicitly and must not be replaced by the stable channel.
+    if (/^\d+\.\d+\.\d+-/.test(pinnedVersion)) {
+        console.log(`Keeping pinned ${PACKAGE_NAME}@${pinnedVersion}`);
+        return;
+    }
+
     const registry = (process.env.DNR_RULESETS_REGISTRY ?? '').replace(/\/+$/, '') || NPM_REGISTRY;
     console.log(`Updating ${PACKAGE_NAME} from ${registry}`);
 
@@ -283,7 +293,7 @@ const main = async (): Promise<void> => {
 };
 
 if (process.argv[1]?.endsWith('update-dnr-rulesets.ts')) {
-    main().catch((error) => {
+    updateDnrRulesets().catch((error) => {
         console.error(error);
         process.exit(1);
     });

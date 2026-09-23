@@ -73,6 +73,7 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     mv build/dev/chrome.zip /out/artifacts/chrome-dev.zip && \
     mv build/dev/chrome-mv3.zip /out/artifacts/chrome-mv3-dev.zip && \
     mv build/dev/edge.zip /out/artifacts/edge-dev.zip && \
+    mv build/dev/edge-mv3.zip /out/artifacts/edge-mv3-dev.zip && \
     mv build/dev/firefox-amo.zip /out/artifacts/firefox-amo-dev.zip && \
     mv build/dev/firefox-standalone.zip /out/artifacts/firefox-standalone-dev.zip && \
     mv build/dev/opera.zip /out/artifacts/opera-dev.zip && \
@@ -334,6 +335,7 @@ RUN --mount=type=secret,id=CHROME_CERT,required=true \
     mv build/beta/chrome.zip /out/artifacts/ && \
     mv build/beta/chrome-mv3.zip /out/artifacts/ && \
     mv build/beta/edge.zip /out/artifacts/ && \
+    mv build/beta/edge-mv3.zip /out/artifacts/ && \
     # Leave no trace of the private key in this image layer.
     rm -rf /extension/private
 
@@ -527,6 +529,7 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     mv build/release/chrome.zip /out/artifacts/ && \
     mv build/release/chrome-mv3.zip /out/artifacts/ && \
     mv build/release/edge.zip /out/artifacts/ && \
+    mv build/release/edge-mv3.zip /out/artifacts/ && \
     mv build/release/opera.zip /out/artifacts/ && \
     mv build/release/opera-mv3.zip /out/artifacts/ && \
     # TODO: (AG-41656) Remove this workaround and use the browser name as for all other builds.

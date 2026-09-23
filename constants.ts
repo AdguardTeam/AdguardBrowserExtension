@@ -130,5 +130,6 @@ export const MIN_SUPPORTED_VERSION = {
      * @see {@link https://blogs.opera.com/desktop/changelog-for-107} - Change log for Opera 107 (or insert any other version).
      */
     OPERA_MV3: 107,
-    EDGE_CHROMIUM: 80,
+    EDGE_CHROMIUM_MV2: 80,
+    EDGE_CHROMIUM_MV3: 121,
 };

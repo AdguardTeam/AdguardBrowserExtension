@@ -5,6 +5,7 @@
 - [Getting Started](#getting-started)
 - [Development Workflow](#development-workflow)
   - [Available Scripts](#available-scripts)
+  - [Edge MV3 resources](#edge-mv3-resources)
   - [Running Tests](#running-tests)
   - [Linting and Type Checking](#linting-and-type-checking)
   - [Building](#building)
@@ -128,13 +129,39 @@ Ensure that the following software is installed on your computer:
 | `pnpm lint:types` | Run TypeScript type checking (MV2 + MV3) |
 | `pnpm lint:types:mv2` | TypeScript type checking for MV2 |
 | `pnpm lint:types:mv3` | TypeScript type checking for MV3 |
-| `pnpm resources` | Download filters and public suffix list |
-| `pnpm resources:mv3` | Download resources for MV3 (includes DNR rulesets) |
+| `pnpm resources` | Prepare MV2 filters and all MV3 resources from the installed rulesets package |
+| `pnpm resources:mv3` | Update the DNR rulesets package and prepare resources for all MV3 targets |
 | `pnpm locales <command>` | Manage localizations (see [Update localizations](#update-localizations)) |
 | `pnpm check-bundle-size <env> [browser]` | Check bundle sizes against limits |
 | `pnpm update-bundle-size <env> [browser]` | Update bundle size reference values |
 
-Supported `<browser>` values: `chrome`, `chrome-mv3`, `edge`, `opera`, `opera-mv3`, `firefox-amo`, `firefox-standalone`.
+Supported `<browser>` values: `chrome`, `chrome-mv3`, `edge`, `edge-mv3`, `opera`, `opera-mv3`, `firefox-amo`, `firefox-standalone`.
+
+### Edge MV3 resources
+
+The `edge` target builds MV2; `edge-mv3` builds MV3 with its own filter resources.
+Edge MV3 requires a version of `@adguard/dnr-rulesets` that exports
+`BrowserFilters.EdgeMv3` and includes the `edge-mv3` resource set.
+The package release is tracked in [AG-59361](https://jira.int.agrd.dev/browse/AG-59361),
+following the compiler and filter publication work in
+[AG-59359](https://jira.int.agrd.dev/browse/AG-59359) and
+[AG-59360](https://jira.int.agrd.dev/browse/AG-59360).
+
+Stable `5.0.<timestamp>` packages include Edge MV3 resources and are fetched
+from Artifact Keeper; installing them requires access to the work network.
+Run `pnpm resources:mv3` to populate
+`Extension/filters/edge-mv3`, then build with `pnpm dev edge-mv3 --zip`
+(or `beta` / `release`). The build does not substitute Chromium resources when
+the Edge resources are missing. Before releasing, record measured bundle sizes
+with `pnpm update-bundle-size <env> edge-mv3` for each build environment.
+
+For QA, test both a clean installation and an update from Edge MV2 using the
+same extension ID and a higher extension version. Installing an unpacked copy
+with a different ID does not exercise migration. Check settings, user rules,
+allowlist, custom filters and enabled filter/group states after the update and
+after restarting Edge. Check blocking and MV3 rule-limit behavior separately
+from data preservation. CI produces an Edge MV3 ZIP; store publishing still
+uses the existing Edge MV2 package.
 
 <a name="dev-tests-and-build"></a>
 
@@ -263,7 +290,9 @@ This will create a build directory with unpacked extensions for all browsers:
 
 ```shell
 build/dev/chrome
+build/dev/chrome-mv3
 build/dev/edge
+build/dev/edge-mv3
 build/dev/firefox-amo
 build/dev/firefox-standalone
 build/dev/opera
@@ -276,7 +305,7 @@ Build for a specific browser:
 pnpm dev <browser>
 ```
 
-Where `<browser>` is one of: `chrome`, `chrome-mv3`, `edge`, `opera`, `opera-mv3`, `firefox-amo`,
+Where `<browser>` is one of: `chrome`, `chrome-mv3`, `edge`, `edge-mv3`, `opera`, `opera-mv3`, `firefox-amo`,
 `firefox-standalone`. For example:
 
 ```shell
@@ -445,27 +474,35 @@ docker build -f Dockerfile --target dev-build-output --output type=local,dest=ou
 ### Building the beta and release versions
 
 Before building the release version, you should manually download the necessary
-resources that will be included into the build: filters and public suffix list.
+filter resources that will be included in the build.
 
 ```shell
 pnpm resources
 ```
 
 > [!TIP]
-> Run `pnpm resources:mv3` to download resources for MV3 version.
+> `pnpm resources` already prepares Chrome, Opera and Edge MV3 resources from
+> the installed `@adguard/dnr-rulesets` package. Run `pnpm resources:mv3` when you
+> need to update that package to its latest published version or prepare only MV3
+> resources. It repeats MV3 preparation, so both commands are not required for
+> every build. To refresh all targets with a new package, run `pnpm resources:mv3`
+> first, then `pnpm resources`.
 
 #### Resources Process
 
 The `pnpm resources` command performs the following steps:
 
-1. **Downloads filters**: Fetches filter metadata and filter rules from the AdGuard filters repository
-2. **Updates local script rules**: Extract script rules inside separate file only for firefox.
-3. **Finds dangerous rules** (optional): If `TOKENGUARD_API_KEY` environment variable is provided, uses the TokenGuard API to analyze and identify potentially dangerous rules in the filters
+1. **Downloads MV2 filters**: Fetches filter metadata and filter rules for Chromium, Edge, Firefox and Opera.
+2. **Copies MV3 resources**: Loads the Chrome, Opera and Edge resource sets from the installed `@adguard/dnr-rulesets` package; this command does not update the package.
+3. **Updates local script rules**: Refreshes testcase rules, extracts Firefox script rules and prepares bundled local script resources for every MV3 target.
+4. **Extracts unsafe MV3 rules**: Moves unsafe rules into ruleset metadata, leaving room in the session-rule quota.
+5. **Finds dangerous rules** (optional): Uses TokenGuard when `TOKENGUARD_API_KEY` is provided.
 
-For MV3 version (`pnpm resources:mv3`), the process includes additional steps:
+The MV3-only command (`pnpm resources:mv3`) performs these steps:
 
 1. **Updates dnr-rulesets package**: Installs the latest `@adguard/dnr-rulesets`
-   package via `tools/resources/update-dnr-rulesets.ts`. CI passes the internal
+   stable package via `tools/resources/update-dnr-rulesets.ts`. An exactly pinned
+   prerelease is retained so preparing resources cannot downgrade it. CI passes the internal
    Artifact Keeper npm registry (the `DNR_RULESETS_REGISTRY` env var) to avoid
    npm rate limiting on shared CI egress IPs; when the variable is not set, the
    public npm registry is used (set the variable locally only while on the VPN).
@@ -475,11 +512,15 @@ For MV3 version (`pnpm resources:mv3`), the process includes additional steps:
    in `pnpm-lock.yaml` is rewritten back to `registry.npmjs.org` once the fresh
    version is confirmed published there, so installs keep working where Artifact
    Keeper is unreachable (e.g. the public mirror).
-2. **Updates local test script rules**: Fetches all script rules from test cases and updates local resources
-3. **Downloads and prepares MV3 filters**: Downloads filters and converts them to declarative format
-4. **Updates local resources for MV3**: Processes and updates local script resources for Chromium MV3
+2. **Copies MV3 resources**: Loads the prebuilt filters, metadata and declarative rulesets for Chrome, Opera and Edge from the updated package.
+3. **Updates local test script rules**: Fetches script rules from test cases.
+4. **Updates local resources for MV3**: Prepares bundled local script resources for all three MV3 targets.
 5. **Finds dangerous rules** (optional): If `TOKENGUARD_API_KEY` environment variable is provided, uses the TokenGuard API to analyze and identify potentially dangerous rules in the filters
-6. **Extracts unsafe rules**: Runs a separate command to identify and extract unsafe rules to ruleset metadata
+6. **Extracts unsafe rules**: Moves unsafe rules into ruleset metadata using the same session-rule budget as `pnpm resources`.
+
+With `--skip-local-resources`, MV3 preparation copies only declarative rulesets
+and skips translation, testcase and local script updates. This mode is intended
+for the expedited Chrome Web Store filter-update flow, not normal builds.
 
 See [dangerous rules documentation](tools/resources/dangerous-rules/README.md) for more details about the dangerous rules detection process.
 
@@ -605,13 +646,13 @@ Additionally, you can edit filters and rebuild DNR rulesets without rebuilding t
 1. Run the following command in the terminal:
 
     ```shell
-    pnpm dev chrome-mv3 # OR: opera-mv3
+    pnpm dev chrome-mv3 # OR: opera-mv3, edge-mv3
     ```
 
 1. The built extension will be located in the following directory:
 
     ```shell
-    ./build/dev/chrome-mv3 # OR: opera-mv3
+    ./build/dev/chrome-mv3 # OR: opera-mv3, edge-mv3
     ```
 
 #### How to install the unpacked extension in the browser
@@ -638,7 +679,7 @@ You can debug and update DNR rulesets without rebuilding the entire extension. T
 
     ```shell
     pnpm install
-    pnpm dev chrome-mv3 # OR: opera-mv3
+    pnpm dev chrome-mv3 # OR: opera-mv3, edge-mv3
     ```
 
 1. **Start watching for filter changes:**
@@ -648,7 +689,7 @@ You can debug and update DNR rulesets without rebuilding the entire extension. T
     ```
 
     - This command has `-b, --browser <browser>` option to specify the browser target.
-      Available browsers: `chrome-mv3`, `opera-mv3`.
+      Available browsers: `chrome-mv3`, `opera-mv3`, `edge-mv3`.
       Default: `chrome-mv3`.
     - This will extract text filters to `./build/dev/<browser>/filters` and watch for changes.
     - When you edit and save any filter file, DNR rulesets will be rebuilt automatically.
@@ -661,7 +702,7 @@ You can debug and update DNR rulesets without rebuilding the entire extension. T
 
     ```shell
     pnpm install
-    pnpm dev chrome-mv3 # OR: opera-mv3
+    pnpm dev chrome-mv3 # OR: opera-mv3, edge-mv3
     ```
 
 1. **Extract text filters:**
@@ -671,7 +712,7 @@ You can debug and update DNR rulesets without rebuilding the entire extension. T
     ```
 
     - This command has `-b, --browser <browser>` option to specify the browser target.
-      Available browsers: `chrome-mv3`, `opera-mv3`.
+      Available browsers: `chrome-mv3`, `opera-mv3`, `edge-mv3`.
       Default: `chrome-mv3`.
 
 1. **Edit the text filters** in `./build/dev/<browser>/filters` as needed.
@@ -683,7 +724,7 @@ You can debug and update DNR rulesets without rebuilding the entire extension. T
     ```
 
     - This command has `-b, --browser <browser>` option to specify the browser target.
-      Available browsers: `chrome-mv3`, `opera-mv3`.
+      Available browsers: `chrome-mv3`, `opera-mv3`, `edge-mv3`.
       Default: `chrome-mv3`.
 
 1. **Reload the extension in your browser** to apply new rulesets.
@@ -696,7 +737,7 @@ You can debug and update DNR rulesets without rebuilding the entire extension. T
 > ```
 >
 > - This command has `-b, --browser <browser>` option to specify the browser target.
->   Available browsers: `chrome-mv3`, `opera-mv3`.
+>   Available browsers: `chrome-mv3`, `opera-mv3`, `edge-mv3`.
 >   Default: `chrome-mv3`.
 
 If you see an exclamation mark in the filtering log, it means the assumed rule (calculated by the engine) and the applied rule (converted to DNR) are different. Otherwise, only the applied rule (in DNR and text ways) will be shown.
@@ -714,7 +755,7 @@ If you see an exclamation mark in the filtering log, it means the assumed rule (
         # Enable extended logging about rulesets, since it is optional - it can be removed
         --debug \
         # Path to the extension manifest
-        # Where <browser> is the browser target, can be 'chrome-mv3', 'opera-mv3'
+        # Where <browser> is the browser target, can be 'chrome-mv3', 'opera-mv3', 'edge-mv3'
         ./build/dev/<browser>/manifest.json \
         # Path to web-accessible-resources directory (needed for $redirect rules)
         # relative to the root directory of the extension (because they will be
@@ -730,12 +771,12 @@ If you see an exclamation mark in the filtering log, it means the assumed rule (
     pnpm exec dnr-rulesets load \
         # This will load latest text filters with their metadata
         --latest-filters \
-        # Browser target, can be 'chromium-mv3', 'opera-mv3'
+        # Browser target, can be 'chromium-mv3', 'opera-mv3', 'edge-mv3'
         # Note: `chrome-mv3` is automatically converted to `chromium-mv3`
         # when you run `pnpm debug-filters:load chrome-mv3` command.
         --browser <browser> \
         # Destination path for text filters
-        # Where <browser> is the browser target, can be 'chrome-mv3', 'opera-mv3'
+        # Where <browser> is the browser target, can be 'chrome-mv3', 'opera-mv3', 'edge-mv3'
         ./build/dev/<browser>/filters
     ```
 
@@ -748,14 +789,14 @@ If you see an exclamation mark in the filtering log, it means the assumed rule (
         # Enable extended logging about rulesets
         --debug \
         # Path to the directory with text filters
-        # Where <browser> is the browser target, can be 'chrome-mv3', 'opera-mv3'
+        # Where <browser> is the browser target, can be 'chrome-mv3', 'opera-mv3', 'edge-mv3'
         ./build/dev/<browser>/filters \
         # Path to web-accessible-resources directory (needed for $redirect rules)
         # relative to the root directory of the extension (because they will be
         # loaded during runtime).
         /web-accessible-resources/redirects \
         # Destination path for converted DNR rulesets
-        # Where <browser> is the browser target, can be 'chrome-mv3', 'opera-mv3'
+        # Where <browser> is the browser target, can be 'chrome-mv3', 'opera-mv3', 'edge-mv3'
         ./build/dev/<browser>/filters/declarative
     ```
 
@@ -766,10 +807,10 @@ If you see an exclamation mark in the filtering log, it means the assumed rule (
     # Under the hood:
     pnpm exec tsurlfilter extract-filters \
         # Path to the directory with DNR rulesets
-        # Where <browser> is the browser target, can be 'chrome-mv3', 'opera-mv3'
+        # Where <browser> is the browser target, can be 'chrome-mv3', 'opera-mv3', 'edge-mv3'
         ./build/dev/<browser>/filters/declarative \
         # Path to save extracted text filters
-        # Where <browser> is the browser target, can be 'chrome-mv3', 'opera-mv3'
+        # Where <browser> is the browser target, can be 'chrome-mv3', 'opera-mv3', 'edge-mv3'
         ./build/dev/<browser>/filters
     ```
 
@@ -1147,7 +1188,7 @@ Extension pages disallow WebAssembly compilation unless the CSP allows it.
 `tools/helpers.ts` (`getEnvPolicy`) therefore sets `'wasm-unsafe-eval'` for all
 targets:
 
-- MV3 (`chrome-mv3`, `opera-mv3`):
+- MV3 (`chrome-mv3`, `opera-mv3`, `edge-mv3`):
   `script-src 'self' 'wasm-unsafe-eval'; object-src 'self'`
 - MV2 beta/release (Chrome, Edge, Opera, Firefox):
   `script-src 'self' 'wasm-unsafe-eval' '<click-to-load-sha>'; object-src 'self'`

@@ -227,7 +227,8 @@ The extension supports both Manifest V2 (MV2) and Manifest V3 (MV3) platforms. M
 | Firefox Mobile              | ✅ 113  |
 | Opera                       | ✅ 67   |
 | Opera MV3                   | ✅ 107  |
-| Edge Chromium               | ✅ 80   |
+| Edge Chromium MV2           | ✅ 80   |
+| Edge Chromium MV3           | ✅ 121  |
 | Edge Legacy                 | ❌      |
 
 ## <a name="documentation"></a> Documentation

@@ -19,6 +19,7 @@
  */
 
 import { debounce } from 'lodash-es';
+import { localScriptRules } from 'local-script-rules';
 
 // Because this file is already MV3 replacement module, we can import directly
 // from mv3 tswebextension without using aliases.
@@ -50,7 +51,6 @@ import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits
 import { UserRulesService } from '../services/userrules';
 import { NotifierType } from '../../common/constants';
 import { SettingOption } from '../schema/settings/enum';
-import { localScriptRules } from '../../../filters/chromium-mv3/local_script_rules';
 import { CommonFilterUtils } from '../../common/common-filter-utils';
 import { FiltersStoragesAdapter } from '../storages/filters-adapter';
 import { isUserScriptsApiSupported } from '../../common/user-scripts-api/user-scripts-api-mv3';

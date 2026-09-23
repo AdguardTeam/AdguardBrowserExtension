@@ -78,7 +78,7 @@ jobs:
             --target dev-build-output \
             --output type=local,dest=output/dev-build .
 
-      # All *-dev.zip files land here (chrome, chrome-mv3, edge, firefox-amo,
+      # All *-dev.zip files land here (chrome, chrome-mv3, edge, edge-mv3, firefox-amo,
       # firefox-standalone, opera, opera-mv3) — the QA-downloadable builds.
       - name: Upload dev builds
         if: steps.pin.outputs.pr != ''

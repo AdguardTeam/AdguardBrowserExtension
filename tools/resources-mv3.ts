@@ -19,19 +19,15 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { excludeUnsafeRules } from '@adguard/dnr-rulesets';
-
+import { updateAllMv3LocalResources, excludeAllMv3UnsafeRules } from './resources/mv3';
 import { findDangerousRules } from './resources/dangerous-rules';
 import { downloadAndPrepareMv3Filters } from './resources/download-filters';
-import { updateLocalResourcesForMv3 } from './resources/update-local-script-rules';
-import { AssetsFiltersBrowser, DECLARATIVE_FILTERS_DEST } from './constants';
+import { MV3_ASSETS_FILTERS_BROWSERS } from './constants';
 import { updateTestcasesScriptRules } from './resources/update-local-test-script-rules';
 
-// TODO: worth refactoring since this function is separated from ./resources.ts
-
 /**
- * Downloads resources for MV3, checks if there are dangerous rules,
- * and converts filters to rulesets.
+ * Prepares bundled MV3 resources, checks for dangerous rules,
+ * and extracts unsafe rules into ruleset metadata.
  *
  * @param skipLocalResources If true, skips updating local resources for MV3.
  */
@@ -40,20 +36,16 @@ const resourcesMv3 = async (skipLocalResources = false) => {
     // Skip translations and local resources only during fast auto-build with
     // skip review flow to minimize changes and stay eligible for expedited
     // review.
-    await Promise.all([
-        downloadAndPrepareMv3Filters(AssetsFiltersBrowser.ChromiumMv3, skipLocalResources),
-        downloadAndPrepareMv3Filters(AssetsFiltersBrowser.OperaMv3, skipLocalResources),
-    ]);
+    await Promise.all(MV3_ASSETS_FILTERS_BROWSERS.map(
+        (browser) => downloadAndPrepareMv3Filters(browser, skipLocalResources),
+    ));
     console.log('Resources for MV3 downloaded');
 
     if (!skipLocalResources) {
         console.log('Updating local resources for MV3...');
         await updateTestcasesScriptRules();
         console.log('Local script rules from testcases updated');
-        await Promise.all([
-            updateLocalResourcesForMv3(AssetsFiltersBrowser.ChromiumMv3),
-            updateLocalResourcesForMv3(AssetsFiltersBrowser.OperaMv3),
-        ]);
+        await updateAllMv3LocalResources();
         console.log('Local resources for MV3 updated');
     } else {
         console.log('Skipping update of local resources for MV3 (--skip-local-resources flag set)');
@@ -67,23 +59,7 @@ const resourcesMv3 = async (skipLocalResources = false) => {
         console.log('TokenGuard API key is not provided, skipping dangerous rules check');
     }
 
-    /**
-     * Extract unsafe rules from the filters and save them to the metadata
-     * for each rulesets to use "skip review" feature in the Chrome Web Store
-     * with limitation of the number of unsafe rules to 4900, since quota
-     * for session rules is 5000 and we need to leave some space for other
-     * rules, e.g. general $stealth rules from Tracking Protection filter.
-     */
-    await Promise.all([
-        excludeUnsafeRules({
-            dir: DECLARATIVE_FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.ChromiumMv3),
-            limit: 4900,
-        }),
-        excludeUnsafeRules({
-            dir: DECLARATIVE_FILTERS_DEST.replace('%browser', AssetsFiltersBrowser.OperaMv3),
-            limit: 4900,
-        }),
-    ]);
+    await excludeAllMv3UnsafeRules();
 };
 
 (async () => {
