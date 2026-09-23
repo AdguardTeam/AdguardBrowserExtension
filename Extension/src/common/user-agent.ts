@@ -18,6 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { MIN_SUPPORTED_BROWSER_VERSION } from 'browser-versions';
 import UAParser from 'ua-parser-js';
 import browser from 'webextension-polyfill';
 
@@ -287,11 +288,12 @@ export class UserAgent {
 
     static isOculus = UserAgent.isTargetBrowser('Oculus Browser');
 
-    static isSupportedBrowser = (UserAgent.isChrome && Number(UserAgent.version) >= MIN_SUPPORTED_VERSION.CHROMIUM_MV2)
-        || (UserAgent.isEdgeChromium && Number(UserAgent.version) >= MIN_SUPPORTED_VERSION.EDGE_CHROMIUM)
+    static isSupportedBrowser = (UserAgent.isChrome
+        && Number(UserAgent.version) >= MIN_SUPPORTED_BROWSER_VERSION.CHROMIUM)
+        || (UserAgent.isEdgeChromium && Number(UserAgent.version) >= MIN_SUPPORTED_BROWSER_VERSION.EDGE)
         || (UserAgent.isFirefox && Number(UserAgent.version) >= MIN_SUPPORTED_VERSION.FIREFOX)
         || (UserAgent.isFirefoxMobile && Number(UserAgent.version) >= MIN_SUPPORTED_VERSION.FIREFOX_MOBILE)
-        || (UserAgent.isOpera && Number(UserAgent.version) >= MIN_SUPPORTED_VERSION.OPERA);
+        || (UserAgent.isOpera && Number(UserAgent.version) >= MIN_SUPPORTED_BROWSER_VERSION.OPERA);
 
     static browserName = UserAgent.getBrowserName();
 }

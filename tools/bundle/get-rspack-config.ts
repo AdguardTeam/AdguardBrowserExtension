@@ -35,9 +35,7 @@ import { genFirefoxConfig } from './firefox/rspack.firefox';
 import { genEdgeConfig } from './edge/rspack.edge';
 import { genOperaConfig } from './opera/rspack.opera';
 // eslint-disable-next-line no-restricted-imports
-import { genChromeMv3Config } from './chrome-mv3/rspack.chrome.mv3';
-// eslint-disable-next-line no-restricted-imports
-import { genOperaMv3Config } from './opera-mv3/rspack.opera.mv3';
+import { genMv3Config } from './rspack.common.mv3';
 import { getBrowserConf } from './helpers';
 
 export const getRspackConfig = (browser: Browser, options: BuildOptions = {}) => {
@@ -50,8 +48,10 @@ export const getRspackConfig = (browser: Browser, options: BuildOptions = {}) =>
             rspackConfig = genChromeConfig(browserConf, options);
             break;
         }
-        case Browser.ChromeMv3: {
-            rspackConfig = genChromeMv3Config(browserConf, options);
+        case Browser.ChromeMv3:
+        case Browser.OperaMv3:
+        case Browser.EdgeMv3: {
+            rspackConfig = genMv3Config(browserConf, options);
             break;
         }
         case Browser.FirefoxStandalone:
@@ -61,10 +61,6 @@ export const getRspackConfig = (browser: Browser, options: BuildOptions = {}) =>
         }
         case Browser.OperaMv2: {
             rspackConfig = genOperaConfig(browserConf, options);
-            break;
-        }
-        case Browser.OperaMv3: {
-            rspackConfig = genOperaMv3Config(browserConf, options);
             break;
         }
         case Browser.EdgeMv2: {

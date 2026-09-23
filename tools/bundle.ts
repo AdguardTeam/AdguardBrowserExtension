@@ -84,6 +84,11 @@ const bundleEdge = (options: CommanderOptions) => {
     return bundleRunner(rspackConfig, options);
 };
 
+const bundleEdgeMv3 = (options: CommanderOptions) => {
+    const rspackConfig = getRspackConfig(Browser.EdgeMv3, getBuildOptions(options));
+    return bundleRunner(rspackConfig, options);
+};
+
 const bundleOpera = (options: CommanderOptions) => {
     const rspackConfig = getRspackConfig(Browser.OperaMv2, getBuildOptions(options));
     return bundleRunner(rspackConfig, options);
@@ -140,7 +145,7 @@ const runTasksInParallel = async (
  * Build strategy:
  * 1. Run copyExternals first (required before any builds)
  * 2. Run all MV2 browser builds in parallel (Chrome, Firefox, Edge, Opera)
- * 3. Run all MV3 browser builds in parallel (Chrome MV3, Opera MV3)
+ * 3. Run all MV3 browser builds in parallel (Chrome MV3, Opera MV3, Edge MV3)
  * 4. Run buildInfo last
  *
  * @param options Command line options.
@@ -160,7 +165,7 @@ const mainBuild = async (options: CommanderOptions) => {
     // Step 3: Run all browser builds in parallel
     // MV2 builds: Chrome, Firefox AMO, Edge, Opera
     //   (Firefox Standalone is included for dev/beta but not release)
-    // MV3 builds: Chrome MV3, Opera MV3
+    // MV3 builds: Chrome MV3, Opera MV3, Edge MV3
     const mv2Builds = [
         bundleChrome,
         bundleFirefoxAmo,
@@ -172,6 +177,7 @@ const mainBuild = async (options: CommanderOptions) => {
     const mv3Builds = [
         bundleChromeMv3,
         bundleOperaMv3,
+        bundleEdgeMv3,
     ];
 
     // For dev builds, run all builds in parallel for maximum speed
@@ -259,6 +265,18 @@ const edge = async (options: CommanderOptions) => {
     }
 };
 
+const edgeMv3 = async (options: CommanderOptions) => {
+    try {
+        await runSingleTask(bundleEdgeMv3, options);
+        if (!options.watch) {
+            await buildInfo();
+        }
+    } catch (e) {
+        console.error(e);
+        process.exit(1);
+    }
+};
+
 const opera = async (options: CommanderOptions) => {
     try {
         await runSingleTask(bundleOpera, options);
@@ -339,6 +357,13 @@ program
     .description('Builds extension for edge MV2 browser')
     .action(() => {
         edge(program.opts());
+    });
+
+program
+    .command(Browser.EdgeMv3)
+    .description('Builds extension for edge-mv3 browser')
+    .action(() => {
+        edgeMv3(program.opts());
     });
 
 program

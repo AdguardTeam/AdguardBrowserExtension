@@ -18,18 +18,38 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as fs from 'node:fs';
+import { execFileSync } from 'node:child_process';
+
 import {
+    vi,
     describe,
     expect,
     it,
 } from 'vitest';
 
 import {
+    updateDnrRulesets,
     base64Sha512,
     normalizeUrlDependency,
     resolveLatestStableVersion,
     rewriteDnrRulesetsTarballUrls,
 } from '../../../tools/resources/update-dnr-rulesets';
+
+vi.mock('node:fs', async (importOriginal) => {
+    const original = await importOriginal<typeof fs>();
+    const mocked = { ...original, readFileSync: vi.fn(original.readFileSync) };
+    return { ...mocked, default: mocked };
+});
+
+vi.mock('node:child_process', () => {
+    const mocked = {
+        execFileSync: vi.fn(() => {
+            throw new Error('Unexpected dependency install');
+        }),
+    };
+    return { ...mocked, default: mocked };
+});
 
 const NPM_REGISTRY = 'https://registry.npmjs.org';
 const AK_REGISTRY = 'https://ak.internal.example/npm/npm-internal';
@@ -207,5 +227,21 @@ describe('base64Sha512', () => {
 
         expect(base64Sha512(Buffer.from('test'))).toBe(testSha512);
         expect(base64Sha512(Buffer.from(''))).toBe(emptySha512);
+    });
+});
+
+describe('updateDnrRulesets', () => {
+    it('keeps an explicitly pinned prerelease instead of installing the older stable channel', async () => {
+        const read = vi.mocked(fs.readFileSync).mockReturnValueOnce(JSON.stringify({
+            devDependencies: { '@adguard/dnr-rulesets': '5.1.0-beta.1' },
+        }));
+        const exec = vi.mocked(execFileSync);
+        try {
+            await updateDnrRulesets();
+            expect(exec).not.toHaveBeenCalled();
+        } finally {
+            read.mockClear();
+            exec.mockClear();
+        }
     });
 });

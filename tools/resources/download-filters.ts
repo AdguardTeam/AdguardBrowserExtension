@@ -40,7 +40,7 @@ import {
     OPTIMIZED_FILTER_DOWNLOAD_URL_FORMAT,
     AssetsFiltersBrowser,
     type Mv3AssetsFiltersBrowser,
-    MV3_ASSETS_FILTERS_BROWSER_TO_DNR_BROWSER_MAP,
+    MV3_ASSETS_FILTERS_BROWSERS,
 } from '../constants';
 import {
     ADGUARD_FILTERS_IDS,
@@ -48,6 +48,8 @@ import {
     LOCAL_I18N_METADATA_FILE_NAME,
 } from '../../constants';
 import { calculateChecksum } from '../utils/checksum';
+
+import { getDnrRulesetsBrowser } from './mv3';
 
 // Re-export for backward compatibility
 export { calculateChecksum };
@@ -247,6 +249,8 @@ export const downloadAndPrepareMv3Filters = async (
     browser: Mv3AssetsFiltersBrowser,
     onlyDeclarativeRulesets = false,
 ) => {
+    const dnrBrowser = getDnrRulesetsBrowser(browser);
+
     const loader = new AssetsLoader();
 
     // Note: it is just copying the files from the @adguard/dnr-rulesets package
@@ -254,7 +258,7 @@ export const downloadAndPrepareMv3Filters = async (
     return loader.load(
         FILTERS_DEST.replace('%browser', browser),
         {
-            browser: MV3_ASSETS_FILTERS_BROWSER_TO_DNR_BROWSER_MAP[browser],
+            browser: dnrBrowser,
             onlyDeclarativeRulesets,
         },
     );
@@ -332,7 +336,6 @@ export const downloadAllFilters = async (concurrency = DEFAULT_CONCURRENCY): Pro
  */
 export const downloadFilters = async (): Promise<number> => {
     const count = await downloadAllFilters();
-    await downloadAndPrepareMv3Filters(AssetsFiltersBrowser.ChromiumMv3);
-    await downloadAndPrepareMv3Filters(AssetsFiltersBrowser.OperaMv3);
+    await Promise.all(MV3_ASSETS_FILTERS_BROWSERS.map((browser) => downloadAndPrepareMv3Filters(browser)));
     return count;
 };

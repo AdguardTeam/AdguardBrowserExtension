@@ -60,16 +60,18 @@ jobs:
         with:
           ref: ${{ inputs.ref || github.event.pull_request.merge_commit_sha || github.ref_name }}
 
-      - name: Install pnpm
-        uses: pnpm/action-setup@v5
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: pnpm
+
+      # The pnpm setup action is not in the organization Actions allowlist, so
+      # the workflow was rejected at startup with zero jobs (AG-59355). Install
+      # pnpm the same way the Dockerfile does (see AGENTS.md, "CI/CD (GitHub
+      # Actions)"). `actions/setup-node` caching is not used: it resolves
+      # `pnpm store path` before pnpm is installed.
+      - name: Install pnpm
+        run: npm install -g "pnpm@${PNPM_VERSION}"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
@@ -208,11 +210,11 @@ jobs:
             echo '__NOTES_EOF__'
           } >> "$GITHUB_OUTPUT"
 
-      - name: Upload static Chrome artifact
+      - name: Upload static artifact
         uses: actions/upload-artifact@v7
         with:
-          name: static-chrome-${{ needs.resolve-version.outputs.channel }}
-          path: staged/static-chrome/
+          name: static-${{ needs.resolve-version.outputs.channel }}
+          path: staged/static/
           if-no-files-found: error
           retention-days: 7
 
@@ -230,15 +232,6 @@ jobs:
         with:
           name: cws-mv3-${{ needs.resolve-version.outputs.channel }}
           path: staged/cws-mv3/
-          if-no-files-found: error
-          retention-days: 7
-
-      - name: Upload Chrome Web Store MV2 artifact (release)
-        if: needs.resolve-version.outputs.channel == 'release'
-        uses: actions/upload-artifact@v7
-        with:
-          name: cws-mv2-release
-          path: staged/cws-mv2/
           if-no-files-found: error
           retention-days: 7
 
@@ -407,14 +400,14 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-  deploy-static-chrome:
-    name: Deploy Chromium artifacts to static.adtidy.org
+  deploy-static:
+    name: Deploy artifacts to static.adtidy.org
     needs: [resolve-version, build]
     uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-static.yml@master
     with:
       team: extensions
       deployer-module: adblocker-webext-chrome-${{ needs.build.outputs.channel }}
-      artifact-name: static-chrome-${{ needs.build.outputs.channel }}
+      artifact-name: static-${{ needs.build.outputs.channel }}
       environment: ${{ needs.build.outputs.channel == 'beta' && 'beta-static' || 'production-static' }}
     permissions:
       contents: read
@@ -479,24 +472,6 @@ jobs:
       api-version: v2
       slack-channel: ''
       product: AdGuard Browser Extension MV3
-      version-title: ${{ needs.resolve-version.outputs.tag }}
-    permissions:
-      contents: read
-      id-token: write
-
-  publish-cws-mv2-release:
-    name: Publish MV2 release to Chrome Web Store
-    needs: [resolve-version, build]
-    if: needs.resolve-version.outputs.channel == 'release'
-    uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-chrome-web-store.yml@master
-    with:
-      team: extensions
-      environment: chrome-webstore-release
-      artifact-name: cws-mv2-release
-      item-id: ${{ vars.CHROME_WEBSTORE_MV2_ITEM_ID }}
-      api-version: v2
-      slack-channel: ''
-      product: AdGuard Browser Extension MV2
       version-title: ${{ needs.resolve-version.outputs.tag }}
     permissions:
       contents: read
@@ -595,7 +570,7 @@ jobs:
 
   notify-success:
     name: Notify (success)
-    needs: [resolve-version, preflight, build, build-firefox-standalone, build-firefox-amo-beta, deploy-static-chrome, deploy-static-firefox-beta, deploy-static-firefox-release, publish-cws-mv3-beta, publish-cws-mv3-release, publish-cws-mv2-release, publish-amo-release, publish-amo-beta, publish-edge-release, create-release, attach-firefox-assets-beta]
+    needs: [resolve-version, preflight, build, build-firefox-standalone, build-firefox-amo-beta, deploy-static, deploy-static-firefox-beta, deploy-static-firefox-release, publish-cws-mv3-beta, publish-cws-mv3-release, publish-amo-release, publish-amo-beta, publish-edge-release, create-release, attach-firefox-assets-beta]
     # Skipped channel-specific jobs count as success; any failure or
     # cancellation switches to the failure notification.
     if: >-
@@ -617,7 +592,7 @@ jobs:
 
   notify-failure:
     name: Notify (failure)
-    needs: [resolve-version, preflight, build, build-firefox-standalone, build-firefox-amo-beta, deploy-static-chrome, deploy-static-firefox-beta, deploy-static-firefox-release, publish-cws-mv3-beta, publish-cws-mv3-release, publish-cws-mv2-release, publish-amo-release, publish-amo-beta, publish-edge-release, create-release, attach-firefox-assets-beta]
+    needs: [resolve-version, preflight, build, build-firefox-standalone, build-firefox-amo-beta, deploy-static, deploy-static-firefox-beta, deploy-static-firefox-release, publish-cws-mv3-beta, publish-cws-mv3-release, publish-amo-release, publish-amo-beta, publish-edge-release, create-release, attach-firefox-assets-beta]
     # resolve-version must succeed so we have a tag to report; build jobs are
     # included so a build failure is never hidden behind "deploy: skipped".
     # Cancellation (manual cancel or a lost runner) is reported too so a
@@ -635,7 +610,7 @@ jobs:
         uses: AdGuardSoftwareLimited/actions/actions/slack@master
         with:
           channel: '#adguard-extension-vcs'
-          message: ':cross-mark: *browser-extension* *${{ needs.resolve-version.outputs.tag }}* deploy failed (build: ${{ needs.build.result }}, build-ff: ${{ needs.build-firefox-standalone.result }}, build-ff-amo: ${{ needs.build-firefox-amo-beta.result }}, static-chrome: ${{ needs.deploy-static-chrome.result }}, static-ff-beta: ${{ needs.deploy-static-firefox-beta.result }}, static-ff-release: ${{ needs.deploy-static-firefox-release.result }}, cws-mv3-beta: ${{ needs.publish-cws-mv3-beta.result }}, cws-mv3-release: ${{ needs.publish-cws-mv3-release.result }}, cws-mv2: ${{ needs.publish-cws-mv2-release.result }}, amo-release: ${{ needs.publish-amo-release.result }}, amo-beta: ${{ needs.publish-amo-beta.result }}, edge: ${{ needs.publish-edge-release.result }}, gh-release: ${{ needs.create-release.result }}) — <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>'
+          message: ':cross-mark: *browser-extension* *${{ needs.resolve-version.outputs.tag }}* deploy failed (preflight: ${{ needs.preflight.result }}, build: ${{ needs.build.result }}, build-ff: ${{ needs.build-firefox-standalone.result }}, build-ff-amo: ${{ needs.build-firefox-amo-beta.result }}, static: ${{ needs.deploy-static.result }}, static-ff-beta: ${{ needs.deploy-static-firefox-beta.result }}, static-ff-release: ${{ needs.deploy-static-firefox-release.result }}, cws-mv3-beta: ${{ needs.publish-cws-mv3-beta.result }}, cws-mv3-release: ${{ needs.publish-cws-mv3-release.result }}, amo-release: ${{ needs.publish-amo-release.result }}, amo-beta: ${{ needs.publish-amo-beta.result }}, edge: ${{ needs.publish-edge-release.result }}, gh-release: ${{ needs.create-release.result }}, ff-assets: ${{ needs.attach-firefox-assets-beta.result }}) — <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>'
           color: danger
 
   notify-tag-failure:

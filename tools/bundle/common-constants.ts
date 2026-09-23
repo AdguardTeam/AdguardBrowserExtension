@@ -116,4 +116,10 @@ export const BROWSERS_CONF: Record<Exclude<Browser, Browser.ChromeMv2Crx>, Brows
         buildDir: Browser.EdgeMv2,
         zipName: Browser.EdgeMv2,
     },
+    [Browser.EdgeMv3]: {
+        browser: Browser.EdgeMv3,
+        devtools: true,
+        buildDir: Browser.EdgeMv3,
+        zipName: Browser.EdgeMv3,
+    },
 };

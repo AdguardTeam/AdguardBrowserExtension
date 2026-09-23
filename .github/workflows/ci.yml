@@ -155,7 +155,7 @@ jobs:
             --target dev-build-output \
             --output type=local,dest=output/dev-build .
 
-      # Each *-dev.zip (chrome-mv2, chrome-mv3, edge-mv2, firefox-amo,
+      # Each *-dev.zip (chrome-mv2, chrome-mv3, edge-mv2, edge-mv3, firefox-amo,
       # firefox-standalone, opera-mv2, opera-mv3) is uploaded as its own artifact
       # so QA can download only the browser they need.
       - name: Upload Chrome MV2 dev build
@@ -177,6 +177,13 @@ jobs:
         with:
           name: edge-mv2-dev
           path: output/dev-build/artifacts/edge-mv2-dev.zip
+          if-no-files-found: error
+
+      - name: Upload Edge MV3 dev build
+        uses: actions/upload-artifact@v7
+        with:
+          name: edge-mv3-dev
+          path: output/dev-build/artifacts/edge-mv3-dev.zip
           if-no-files-found: error
 
       - name: Upload Firefox AMO dev build

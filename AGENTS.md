@@ -105,7 +105,7 @@ Edge, and Opera. Licensed under GPL-3.0.
 ### Manifest Versions
 
 - **MV2**: Manifest V2 — Chrome, Firefox, Edge, Opera
-- **MV3**: Manifest V3 — Chrome MV3, Opera MV3
+- **MV3**: Manifest V3 — Chrome MV3, Opera MV3, Edge MV3
 
 Files are suffixed with `-mv2` or `-mv3` to indicate version-specific
 implementations. Common code must **not** import directly from these files
@@ -134,8 +134,8 @@ pnpm release                   # Release build (all browsers)
 pnpm release <browser>         # Release build for one browser
 ```
 
-Supported `<browser>` values: `chrome-mv2`, `chrome-mv3`, `edge-mv2`, `opera-mv2`,
-`opera-mv3`, `firefox-amo`, `firefox-standalone`.
+Supported `<browser>` values: `chrome-mv2`, `chrome-mv3`, `edge-mv2`, `edge-mv3`,
+`opera-mv2`, `opera-mv3`, `firefox-amo`, `firefox-standalone`.
 
 Use `chrome-mv2-crx` for Chrome MV2 CRX builds (dev/beta). Legacy commands
 `chrome`, `edge`, `opera`, and `chrome-crx` remain aliases, but output files and

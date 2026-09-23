@@ -32,8 +32,13 @@ import { pathToFileURL } from 'node:url';
  * builds of a tsurlfilter PR, workspace-local via pnpm.overrides, so the whole
  * CI pipeline builds the extension against unmerged tsurlfilter work.
  *
+ * The run-numbered dev versions (`<next-patch>-dev.pr<N>.<run_number>`) are
+ * resolved by the pin tool itself: it selects the highest run number visible
+ * across all six packages and requires the complete set, so this action only
+ * forwards an explicit `run` override and never probes AK.
+ *
  * Inputs come from the environment:
- *   - `PR_INPUT` / `HEAD_INPUT` / `REQUIRED` — the action's `inputs`, mapped
+ *   - `PR_INPUT` / `RUN_INPUT` / `REQUIRED` — the action's `inputs`, mapped
  *     in action.yml;
  *   - `GITHUB_OUTPUT`, `GITHUB_EVENT_NAME`, `GITHUB_REF_NAME` — provided by
  *     GitHub Actions.
@@ -46,17 +51,7 @@ import { pathToFileURL } from 'node:url';
  * `node --check`s this file instead.
  */
 
-const AK_REGISTRY = 'https://ak.int.agrd.dev/npm/npm-internal-dev';
 const PIN_FILE = 'tsurlfilter-dev-pr.txt';
-// The bridge publishes the six packages as one indivisible set, so probing a
-// single package is enough to enumerate the PR's published heads.
-const PROBE_PACKAGE = '@adguard/tsurlfilter';
-// The DevEx bridge moves this dist-tag on every publish, so it always names
-// the newest dev build published on AK.
-const DEVEX_TAG = 'devex';
-// Dev versions are head-scoped with the first 8 hex chars of the head commit
-// (`<next-patch>-dev.pr<N>.<shortsha>` in devex-bridge.yml).
-const SHORT_SHA_LENGTH = 8;
 const BRIDGED_PACKAGES = [
     'dnr-converter',
     'css-tokenizer',
@@ -113,89 +108,6 @@ const readPrFromFile = () => {
 };
 
 /**
- * Fetch one `npm view <pkg> <field> --json` result from the AK registry,
- * turning a failed round-trip or non-JSON output into a curated failure.
- *
- * @param {string} pkg Package spec (e.g. `@adguard/tsurlfilter`).
- *
- * @param {string} field The `npm view` field to request.
- *
- * @returns {*} The parsed JSON document.
- */
-const npmViewJson = (pkg, field) => {
-    let text;
-    try {
-        text = execFileSync(
-            'npm',
-            ['view', pkg, field, '--json', `--registry=${AK_REGISTRY}`],
-            { encoding: 'utf8' },
-        ).trim();
-    } catch {
-        fail(`npm view ${pkg} ${field} failed (registry ${AK_REGISTRY} unreachable or auth error) — check the AK registry/network before re-running.`);
-    }
-    try {
-        return JSON.parse(text || 'null');
-    } catch {
-        fail(`npm view ${pkg} ${field} returned unexpected output: ${text}`);
-    }
-};
-
-/**
- * Resolve the newest PUBLISHED head for the PR on AK.
- *
- * AK packuments carry no `time` map (unlike registry.npmjs.org), so publish
- * order cannot be recovered from version metadata. The DevEx bridge instead
- * moves the `devex` dist-tag on every publish — the tag therefore always names
- * the newest dev build published, and when that build belongs to this PR it is
- * exactly the newest published head for the PR. When the newest publish
- * belongs to another PR, the PR's own heads are enumerated: a single published
- * head is used, and an ambiguous choice (several heads, no publish order)
- * fails loudly with an instruction to pin the exact head instead of silently
- * testing a stale one.
- *
- * @param pr PR number (as a string).
- *
- * @returns The `SHORT_SHA_LENGTH`-char short SHA of the newest published head.
- */
-const resolveHead = (pr) => {
-    const exact = new RegExp(`-dev\\.pr${pr}\\.([0-9a-f]{${SHORT_SHA_LENGTH}})$`);
-    const tags = npmViewJson(PROBE_PACKAGE, 'dist-tags') ?? {};
-
-    // The PR-scoped tag is future-proofing (if the bridge starts tagging each
-    // publish per PR); today the shared `devex` tag is the publish-order
-    // oracle.
-    for (const tag of [`${DEVEX_TAG}-pr${pr}`, DEVEX_TAG]) {
-        if (typeof tags[tag] !== 'string') {
-            continue;
-        }
-        const match = tags[tag].match(exact);
-        if (match) {
-            return match[1];
-        }
-    }
-
-    // `devex` points at another PR's build — enumerate this PR's published
-    // heads from the version list.
-    const versions = npmViewJson(PROBE_PACKAGE, 'versions');
-    const list = Array.isArray(versions) ? versions : [];
-    const heads = [...new Set(list
-        .filter((version) => typeof version === 'string' && exact.test(version))
-        .map((version) => version.slice(-SHORT_SHA_LENGTH)))];
-    if (heads.length === 0) {
-        fail(`No -dev.pr${pr}.* builds found on ${AK_REGISTRY}. Has devex-bridge.yml finished for PR #${pr}? (Push to the tsurlfilter PR or close+reopen it.)`);
-    }
-    if (heads.length > 1) {
-        fail(
-            `Multiple -dev.pr${pr} heads are published (${heads.join(', ')}) and AK records no publish order.`
-            + ` Pin the exact head short SHA from the 'Dev builds published' review via the 'tsurlfilter dev builds' QA workflow`
-            + ` (its head input — the ci.yml / e2e.yml jobs call this action without one)`
-            + ` or push to the tsurlfilter PR and re-run.`,
-        );
-    }
-    return heads[0];
-};
-
-/**
  * Install the pinned pnpm + tsx to a user-local prefix.
  *
  * The team-extensions runner user cannot write to the global npm prefix, so the
@@ -214,8 +126,11 @@ const installTools = () => {
 };
 
 /**
- * Run the consumer-side pin tool (`tools/ci/use-dev-builds.ts`) for one PR
- * head.
+ * Run the consumer-side pin tool (`tools/ci/use-dev-builds.ts`) for one PR.
+ *
+ * The tool owns run selection: it picks the highest run number visible across
+ * all six packages and requires the complete set. This action only forwards an
+ * explicit QA `run` override.
  *
  * The pinned tsx is invoked by absolute path, but the tool it runs spawns
  * `pnpm` from PATH — prepend the local bin dir so the pinned pnpm (the exact
@@ -223,20 +138,22 @@ const installTools = () => {
  *
  * @param pr PR number (as a string).
  *
- * @param head The 8-char head short SHA the coherent set is pinned to.
+ * @param run Optional workflow run number; when empty the tool selects the
+ *   highest published run itself.
  */
-const runPinTool = (pr, head) => {
+const runPinTool = (pr, run) => {
     const env = {
         ...process.env,
         PATH: `${localBinDir()}${path.delimiter}${process.env.PATH}`,
     };
-    execFileSync(path.join(localBinDir(), 'tsx'), [
+    const args = [
         'tools/ci/use-dev-builds.ts',
         '--pr', pr,
-        '--head', head,
+        ...(run ? ['--run', run] : []),
         '--extension', '.',
         ...BRIDGED_PACKAGES.map((pkg) => `--with-${pkg}`),
-    ], { stdio: 'inherit', env });
+    ];
+    execFileSync(path.join(localBinDir(), 'tsx'), args, { stdio: 'inherit', env });
 };
 
 const main = () => {
@@ -262,25 +179,21 @@ const main = () => {
 
     installTools();
 
-    // Head-scoped coherent set: prefer an explicit head, else resolve the
-    // newest published head for the PR on AK. The tool then refuses to mix
-    // heads.
-    const head = process.env.HEAD_INPUT ? process.env.HEAD_INPUT : resolveHead(pr);
-    console.log(`Pinning tsurlfilter PR #${pr} @ ${head} from ${AK_REGISTRY}`);
+    // The pin tool owns run selection: without an explicit QA run it selects
+    // the highest published run across all six packages and requires the
+    // complete set for that run. The action no longer probes AK itself.
+    const run = process.env.RUN_INPUT ?? '';
+    console.log(`Pinning tsurlfilter PR #${pr}${run ? ` (run ${run})` : ' (highest published run)'} from Artifact Keeper`);
 
-    runPinTool(pr, head);
+    runPinTool(pr, run);
 
     fs.appendFileSync(process.env.GITHUB_OUTPUT, `pr=${pr}\n`);
 };
 
 export {
-    DEVEX_TAG,
-    PROBE_PACKAGE,
-    SHORT_SHA_LENGTH,
+    BRIDGED_PACKAGES,
     localBinDir,
-    npmViewJson,
     readPrFromFile,
-    resolveHead,
     runPinTool,
 };
 

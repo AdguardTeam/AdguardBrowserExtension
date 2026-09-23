@@ -4,6 +4,9 @@
 .DS_Store
 .eslintcache
 *.tsbuildinfo
+# Local ESLint/TypeScript caches; in CI these directories are BuildKit cache
+# mounts in the lint stage, so they must not enter the build context.
+.cache/
 build/
 output/
 tmp/
@@ -15,6 +18,8 @@ artifacts/
 Dockerfile*
 *.md
 !README.md
+# Read by tests/tools/ci/publish-release-workflow.test.ts.
+!DEPLOYMENT.md
 *.log
 private/
 # Never bake live credentials (e.g. TOKENGUARD_API_KEY from .env) into images.

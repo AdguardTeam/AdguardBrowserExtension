@@ -23,7 +23,7 @@
         "resources:mv3": "tsx tools/resources/update-dnr-rulesets.ts && tsx tools/resources-mv3.ts",
         "resources:mv3:extract-unsafe-rules": "pnpm exec dnr-rulesets exclude-unsafe-rules ./Extension/filters/chromium-mv3/declarative",
         "resources:blocking-pages": "tsx tools/resources/download-blocking-pages.ts",
-        "lint:code": "eslint --cache --max-warnings=0 --ext .jsx,.js,.cjs,.mjs,.tsx,.ts .",
+        "lint:code": "eslint --cache --cache-location .cache/eslint/.eslintcache --cache-strategy content --max-warnings=0 --ext .jsx,.js,.cjs,.mjs,.tsx,.ts .",
         "lint": "pnpm lint:code && pnpm lint:types",
         "increment": "tsx tools/increment.ts",
         "prepare": "husky install",
@@ -48,7 +48,7 @@
         "pnpm": ">=10.33.4 <11"
     },
     "devDependencies": {
-        "@adguard/dnr-rulesets": "~5.0.20260829100031",
+        "@adguard/dnr-rulesets": "5.0.20260923114342",
         "@adguard/eslint-plugin-logger-context": "1.0.1",
         "@adguard/re2-wasm": "1.2.0",
         "@csstools/postcss-global-data": "4.0.0",

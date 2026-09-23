@@ -31,7 +31,11 @@ import { Redirects } from '@adguard/scriptlets/redirects';
 import packageJson from '../package.json';
 import { BuildTargetEnv, WEB_ACCESSIBLE_RESOURCES_OUTPUT_REDIRECTS } from '../constants';
 
-import { Browser } from './constants';
+import {
+    Browser,
+    MV3_BROWSERS,
+    type Mv3Browser,
+} from './constants';
 import { LOCALES_ABSOLUTE_PATH, LOCALE_DATA_FILENAME } from './locales/locales-constants';
 
 /* eslint-disable @typescript-eslint/naming-convention */
@@ -108,20 +112,18 @@ const getEnvPolicy = (env: BuildTargetEnv, browser: Browser) => {
     //   - vscode-oniguruma's onig.wasm (regex grammar powering the CodeMirror syntax highlighter).
     // Without it, Chromium rejects WebAssembly.instantiateStreaming with a CompileError
     // and User rules / Allowlist editor highlighting fails to load.
-    switch (browser) {
-        case Browser.ChromeMv3:
-        case Browser.OperaMv3:
-            // eslint-disable-next-line max-len
-            return { content_security_policy: { extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'" } };
-        default:
-            return env === BuildTargetEnv.Dev
-                // Dev keeps 'unsafe-eval' for HMR / tooling; 'wasm-unsafe-eval' covers
-                // Oniguruma / RE2 WASM the same way as beta/release.
-                // eslint-disable-next-line max-len
-                ? { content_security_policy: `script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval' '${getClickToLoadSha()}'; object-src 'self'` }
-                // eslint-disable-next-line max-len
-                : { content_security_policy: `script-src 'self' 'wasm-unsafe-eval' '${getClickToLoadSha()}'; object-src 'self'` };
+    if (MV3_BROWSERS.includes(browser as Mv3Browser)) {
+        // eslint-disable-next-line max-len
+        return { content_security_policy: { extension_pages: "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'" } };
     }
+
+    return env === BuildTargetEnv.Dev
+        // Dev keeps 'unsafe-eval' for HMR / tooling; 'wasm-unsafe-eval' covers
+        // Oniguruma / RE2 WASM the same way as beta/release.
+        // eslint-disable-next-line max-len
+        ? { content_security_policy: `script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval' '${getClickToLoadSha()}'; object-src 'self'` }
+        // eslint-disable-next-line max-len
+        : { content_security_policy: `script-src 'self' 'wasm-unsafe-eval' '${getClickToLoadSha()}'; object-src 'self'` };
 };
 
 /**
@@ -286,6 +288,10 @@ const capitalize = (str: string) => {
  * @returns The name suffix string.
  */
 const getNameSuffix = (buildEnv: BuildTargetEnv, browser: Browser) => {
+    if (buildEnv === BuildTargetEnv.Dev && (browser === Browser.EdgeMv2 || browser === Browser.EdgeMv3)) {
+        return browser === Browser.EdgeMv2 ? ' (MV2 Dev)' : ' (MV3 Dev)';
+    }
+
     switch (browser) {
         case Browser.FirefoxStandalone: {
             if (buildEnv === BuildTargetEnv.Beta) {

@@ -33,7 +33,7 @@
  * internal Artifact Keeper npm registry.
  *
  * Usage:
- *   pnpm tsx tools/ci/use-dev-builds.ts --pr <N> --extension <path> [--head <short-sha>] --with-<pkg>...
+ *   pnpm tsx tools/ci/use-dev-builds.ts --pr <N> --extension <path> [--run <run-number>] --with-<pkg>...
  *   pnpm tsx tools/ci/use-dev-builds.ts --remove --extension <path>
  *
  * `--remove` strips every dev pin the tool installed and does NOT need the
@@ -44,14 +44,18 @@
  * pointing at the AK tarball URLs (dependencies stay untouched), then
  * refreshes pnpm-lock.yaml with a single `pnpm install`.
  *
- * Every push to the tsurlfilter PR republishes the packages under a
- * HEAD-scoped version `<next-patch>-dev.pr<N>.<shortsha>` (AK versions are
- * immutable, so the short SHA gives every push a fresh, distinct version).
- * This lets the tool pin a COHERENT SET: it resolves builds carrying the exact
- * short SHA of the requested head, so all overrides come from one committed
- * source head. If the set for that head is incomplete on AK (e.g. a publish
- * leg failed), the tool fails loudly instead of silently mixing builds from
- * different heads.
+ * Every workflow run of the tsurlfilter PR publishes the packages under a
+ * run-scoped version `<next-patch>-dev.pr<N>.<run_number>`, where the run
+ * number is the DevEx bridge workflow's `github.run_number` (the same for all
+ * six packages of one run). The tool selects ONE coherent bridge run: it takes
+ * the HIGHEST run number visible across the requested packages (numerically,
+ * never by version or response order), or pins the exact `--run`, and requires
+ * every requested package to have a build for that run. An incomplete highest
+ * run fails loudly instead of falling back to an older run, so builds from
+ * different runs are never mixed.
+ *
+ * Unnumbered (`-dev.pr<N>`) and head-scoped (`-dev.pr<N>.<sha>`) legacy
+ * versions are ignored: the tool is run-number-only.
  *
  * The packages must be pinned as an indivisible set: if any of them already
  * has a non-dev override (a hand-written pin the developer did not set up for
@@ -289,93 +293,65 @@ const npmView = (spec: string, field: string | null): string => {
 };
 
 /**
- * Semver-ish comparator over the X.Y.Z core that precedes the `-dev.pr`
- * suffix; all candidates share the same suffix, so the core alone orders them
- * (used to pick the newest dev version when a mid-PR release bump left several
- * `-dev.pr<N>.<sha>` versions for the same PR behind).
- *
- * @param a First version string.
- * @param b Second version string.
- *
- * @returns Negative/zero/positive per the numeric core comparison.
+ * A run-numbered dev build published by the DevEx bridge:
+ * `<next-patch>-dev.pr<N>.<run_number>`.
  */
-export const compareNumericCore = (a: string, b: string): number => {
-    const core = (version: string): number[] => version.split('-dev.pr')[0]!.split('.').map((n) => Number(n));
-    const ca = core(a);
-    const cb = core(b);
-    for (let i = 0; i < 3; i += 1) {
-        if (ca[i] !== cb[i]) {
-            return (ca[i] ?? 0) - (cb[i] ?? 0);
-        }
-    }
-    return 0;
-};
+export interface NumberedDevVersion {
+    /** The exact registry version string. */
+    version: string;
+    /** The devex-bridge workflow run number (`github.run_number`). */
+    run: number;
+}
 
 /**
- * The 8-char abbreviated SHA of the source head whose builds we pin.
+ * Parse a version published by the DevEx bridge for the given PR.
  *
- * Only the explicit `--head` override is honored: the tool is not run from a
- * tsurlfilter checkout, so there is no local git context that could name the
- * tsurlfilter source head. Without `--head` the tool falls back to a
- * non-head-scoped resolution. The CI action always passes `--head`.
- * DEV_BUILDS_FORCE_NO_HEAD is a test hook that emulates "no head".
+ * The bridge stamps `<next-patch>-dev.pr<N>.<run_number>`, where the run number
+ * is the bridge workflow's `github.run_number` (the same for all six packages
+ * of one publish). Unnumbered (`-dev.pr<N>`) and head-scoped
+ * (`-dev.pr<N>.<sha>`) legacy versions do NOT parse: the tool is
+ * run-number-only, so an ambiguous legacy set can never be mistaken for a
+ * coherent run.
  *
- * At least 8 hex chars are required: the version lookup matches the exact
- * 8-char suffix, so a shorter prefix would be accepted but then reported as an
- * unpublished build even when the matching commit has been published.
- *
- * @param requested The `--head` value, or null.
- *
- * @returns The 8-char lowercase short SHA, or null.
- */
-export const headShortSha = (requested: string | null): string | null => {
-    if (process.env.DEV_BUILDS_FORCE_NO_HEAD === '1') {
-        return null;
-    }
-    if (requested) {
-        if (!/^[0-9a-f]{8,64}$/i.test(requested)) {
-            fail(`--head must be a git SHA with at least 8 hex chars, got '${requested}'`);
-        }
-        return requested.toLowerCase().slice(0, 8);
-    }
-    return null;
-};
-
-/**
- * Does this version belong to PR N's dev line?
- *
- * Matches the exact `-dev.pr<N>` tag as well as all `-dev.pr<N>.<...>`
- * (e.g. head-scoped) builds, and never crosses into `-dev.pr<N+…>` (a bare
- * substring match on 'pr' alone could not tell `-dev.pr1` from `-dev.pr12`).
- *
- * @param version A version string (non-strings return false).
+ * @param version A version string (non-strings return null).
  * @param prNumber PR number (as a string).
  *
- * @returns Whether the version is a dev build of this PR.
+ * @returns The parsed version identity, or null when the version is not a
+ *   run-numbered dev build of this PR.
  */
-export const isPrVersion = (version: unknown, prNumber: string): boolean => {
-    return typeof version === 'string' && new RegExp(`-dev\\.pr${prNumber}(\\.|$)`).test(version);
+export const parseNumberedVersion = (version: unknown, prNumber: string): NumberedDevVersion | null => {
+    if (typeof version !== 'string') {
+        return null;
+    }
+    // The anchored, dot-delimited `pr<N>.` never crosses into `-dev.pr<N+…>`
+    // (a bare `pr` substring match could not tell `-dev.pr1` from `-dev.pr12`).
+    const match = new RegExp(`-dev\\.pr${prNumber}\\.(\\d+)$`).exec(version);
+    if (!match) {
+        return null;
+    }
+    return {
+        version,
+        run: Number(match[1]),
+    };
 };
 
 /**
- * Pick the newest candidate (by numeric core) and resolve its tarball URL.
+ * Resolve the `dist.tarball` URL of an exact version from the AK registry.
  *
  * @param name Package name (e.g. `@adguard/tsurlfilter`).
- * @param candidates Versions to choose among (same suffix).
+ * @param version Exact version selected by {@link selectRunSet}.
  *
- * @returns The chosen version and its `dist.tarball` URL from the registry.
+ * @returns The tarball URL.
  */
-const pickAndTarball = (name: string, candidates: string[]): { version: string; url: string } => {
-    const pick = candidates.slice().sort(compareNumericCore).pop()
-        ?? fail(`${name}: no candidates to pin`);
-    const url = npmView(`${name}@${pick}`, 'dist.tarball');
+const tarballFor = (name: string, version: string): string => {
+    const url = npmView(`${name}@${version}`, 'dist.tarball');
     if (!url) {
         fail(
-            `${name}@${pick}: registry returned no dist.tarball URL`
-            + ` (run 'npm view ${name}@${pick} dist.tarball --registry=${DEFAULT_REGISTRY}' to debug)`,
+            `${name}@${version}: registry returned no dist.tarball URL`
+            + ` (run 'npm view ${name}@${version} dist.tarball --registry=${DEFAULT_REGISTRY}' to debug)`,
         );
     }
-    return { version: pick, url };
+    return url;
 };
 
 /**
@@ -396,6 +372,115 @@ export const parseVersions = (name: string, raw: string): unknown[] => {
             + ` ${JSON.stringify(raw)} — check the registry URL ${DEFAULT_REGISTRY}`,
         );
     }
+};
+
+/**
+ * Parse the `--run` value: the bridge workflow run number to pin.
+ *
+ * @param raw The `--run` value.
+ *
+ * @returns The run number.
+ *
+ * @throws {UsageError} When the value is not a non-negative integer.
+ */
+export const parseRunNumber = (raw: string): number => {
+    if (!/^\d+$/.test(raw)) {
+        fail(`--run must be a workflow run number, got '${raw}'`);
+    }
+    return Number(raw);
+};
+
+/**
+ * One package's raw registry version list, as returned by
+ * `npm view <pkg> versions --json`.
+ */
+export interface PackageVersions {
+    /** Package name, e.g. `@adguard/tsurlfilter`. */
+    name: string;
+    /** Raw version values from the registry. */
+    versions: unknown[];
+}
+
+/**
+ * The coherent set of dev builds selected for one bridge run.
+ */
+export interface SelectedDevSet {
+    /** The selected bridge workflow run number. */
+    run: number;
+    /** Package name -> exact selected version. */
+    versions: Record<string, string>;
+}
+
+/**
+ * Select the exact version of every requested package from one coherent bridge
+ * run.
+ *
+ * Selection is run-numbered-only: unnumbered and head-scoped legacy versions
+ * never participate. The highest run number visible across ALL requested
+ * packages wins — never the highest per package, and never an older complete
+ * set when the highest run is incomplete. Run numbers are compared
+ * numerically, so `10` beats `9`.
+ *
+ * @param packages Per-package registry version lists.
+ * @param prNumber Requested PR number.
+ * @param run Optional exact run number to pin (the bridge PR review passes
+ *   this); when set, no other run is considered.
+ *
+ * @returns The selected run identity and the exact version of every package.
+ *
+ * @throws {UsageError} When no run-numbered build exists, the requested run is
+ *   absent, or the selected run is missing any requested package.
+ */
+export const selectRunSet = (
+    packages: PackageVersions[],
+    prNumber: string,
+    run: number | null,
+): SelectedDevSet => {
+    const candidates = new Map<string, NumberedDevVersion[]>();
+    for (const { name, versions } of packages) {
+        candidates.set(
+            name,
+            versions
+                .map((version) => parseNumberedVersion(version, prNumber))
+                .filter((candidate): candidate is NumberedDevVersion => candidate !== null),
+        );
+    }
+
+    const all = [...candidates.values()].flat();
+    if (all.length === 0) {
+        fail(
+            `no numbered -dev.pr${prNumber}.<run> builds found on ${DEFAULT_REGISTRY}.`
+            + ' The bridge has not published a run-numbered build for this PR yet'
+            + ' (or it expired after the 7-day AK TTL).'
+            + ' Push to the tsurlfilter PR, then retry with the run from the "Dev builds published" review.',
+        );
+    }
+
+    const targetRun = run ?? Math.max(...all.map((candidate) => candidate.run));
+    const atRun = all.filter((candidate) => candidate.run === targetRun);
+    if (atRun.length === 0) {
+        fail(
+            `PR #${prNumber} has no published builds for run ${targetRun} on ${DEFAULT_REGISTRY}.`
+            + ' Use the run number from the "Dev builds published" review, or omit --run to select the highest run.',
+        );
+    }
+
+    const missing = packages
+        .map((pkg) => pkg.name)
+        .filter((name) => !(candidates.get(name) ?? []).some((candidate) => candidate.run === targetRun));
+    if (missing.length > 0) {
+        fail(
+            `PR #${prNumber} run ${targetRun} is incomplete on ${DEFAULT_REGISTRY}: missing ${missing.join(', ')}.`
+            + ' Not falling back to an older run; wait for the missing package(s) and retry.',
+        );
+    }
+
+    const versions: Record<string, string> = {};
+    for (const { name } of packages) {
+        const selected = candidates.get(name)!.find((candidate) => candidate.run === targetRun)!;
+        versions[name] = selected.version;
+    }
+    return { run: targetRun, versions };
 };
 
 /**
@@ -432,7 +517,7 @@ const main = (): void => {
     // A typo'd flag (e.g. `--remov` instead of `--remove`) must fail loudly
     // rather than silently fall through to a full pin — the opposite of what
     // was asked.
-    const KNOWN_FLAGS = new Set(['--remove', '--pr', '--extension', '--head']);
+    const KNOWN_FLAGS = new Set(['--remove', '--pr', '--extension', '--run']);
     for (const arg of args) {
         if (arg.startsWith('--') && !KNOWN_FLAGS.has(arg) && !isWithFlag(arg)) {
             fail(`unknown argument '${arg}' — supported: ${[...KNOWN_FLAGS].join(', ')} plus --with-<package> flags`);
@@ -456,20 +541,17 @@ const main = (): void => {
     if (removeMode && args.includes('--pr')) {
         fail('--remove does not take --pr');
     }
-    if (removeMode && args.includes('--head')) {
-        fail('--remove does not take --head');
-    }
     const extensionDir = readArgFromArgs(args, '--extension');
     const pr = removeMode ? null : readArgFromArgs(args, '--pr');
     if (pr !== null && !/^\d+$/.test(pr)) {
         fail(`--pr must be a pull request number, got '${pr}'`);
     }
-    let requestedHead: string | null = null;
-    if (!removeMode && args.includes('--head')) {
-        requestedHead = readArgFromArgs(args, '--head');
-        if (requestedHead === '') {
-            fail('--head must not be empty — pass a short SHA or omit the flag');
-        }
+    if (removeMode && args.includes('--run')) {
+        fail('--remove does not take --run');
+    }
+    let requestedRun: number | null = null;
+    if (!removeMode && args.includes('--run')) {
+        requestedRun = parseRunNumber(readArgFromArgs(args, '--run'));
     }
 
     const packageJsonPath = path.join(extensionDir, 'package.json');
@@ -487,57 +569,22 @@ const main = (): void => {
         return;
     }
 
-    // Pin mode: resolve each package's dev version for this PR, preferring a
-    // set of builds stamped from ONE source head so the overrides stay coherent.
+    // Pin mode: select ONE coherent bridge run for the whole set. The highest
+    // run number visible across the requested packages wins (or the exact
+    // --run), and every package must have a build for that run — there is no
+    // fallback to an older run and no per-package "newest".
     const prNumber: string = pr ?? fail('--pr is required in pin mode');
-    const suffix = `${DEV_MARK}${prNumber}`;          // '-dev.pr42'
-    const sha = headShortSha(requestedHead);          // '2f5d9548' or null
-    if (sha) {
-        console.log(`Pinning the coherent set for head ${sha} (PR #${prNumber}).`);
-    }
-
-    const urls: Record<string, string> = {};
-    for (const dir of BRIDGED_PACKAGES) {
+    const packages: PackageVersions[] = BRIDGED_PACKAGES.map((dir) => {
         const name = `@adguard/${dir}`;
         const raw = npmView(name, null);
-        const versions = parseVersions(name, raw);
+        return { name, versions: parseVersions(name, raw) };
+    });
+    const selected = selectRunSet(packages, prNumber, requestedRun);
+    console.log(`Selected PR #${prNumber} run ${selected.run}.`);
 
-        if (sha) {
-            // Head-scoped: only versions stamped from THIS head qualify. A
-            // partially published / cancelled matrix leaves the set incomplete
-            // for the head, so this fails loudly instead of pinning a mixed set.
-            const exact = versions
-                .filter((v): v is string => typeof v === 'string' && v.endsWith(`${suffix}.${sha}`));
-            if (exact.length === 0) {
-                fail(
-                    `${name}: no version ending '${suffix}.${sha}' found on ${DEFAULT_REGISTRY}.`
-                    + ' The bridge has not published this head yet (or a publish leg failed).'
-                    + ' Re-run with --head <short-sha>'
-                    + ` matching the 'Dev builds published' review on PR #${prNumber}.`,
-                );
-            }
-            const { version, url } = pickAndTarball(name, exact);
-            urls[name] = url;
-            if (exact.length > 1) {
-                console.warn(`${name}: multiple ${suffix}.${sha} builds exist; pinning newest (${version})`);
-            }
-        } else {
-            // No head: fall back to the newest -dev.pr<N> version. The set may
-            // span several heads — warn rather than pretend otherwise.
-            const matches = versions.filter((v): v is string => isPrVersion(v, prNumber));
-            if (matches.length === 0) {
-                fail(
-                    `${name}: no version ending '${suffix}' found — has devex-bridge.yml finished for PR #${prNumber},`
-                    + ' or was it cleaned up? Pass --head for the coherent set.',
-                );
-            }
-            console.warn(
-                `${name}: no --head given — pinned the newest ${suffix} version;`
-                + ' the set may span multiple heads.',
-            );
-            const { url } = pickAndTarball(name, matches);
-            urls[name] = url;
-        }
+    const urls: Record<string, string> = {};
+    for (const [name, version] of Object.entries(selected.versions)) {
+        urls[name] = tarballFor(name, version);
     }
 
     // Indivisible-set preflight: the packages must be pinned as a whole. If any
@@ -561,12 +608,12 @@ const main = (): void => {
         manifest.pnpm.overrides[name] = url;
     }
     writeManifest(packageJsonPath, manifest, indentation, crlf);
-    // A single install is enough: every push carries a fresh head-scoped
+    // A single install is enough: every run carries a fresh run-scoped
     // tarball URL, so refreshing the overrides (rather than strip-then-
     // reinstall) is sufficient to record the new integrity in pnpm-lock.yaml.
     pnpmInstall(extensionDir);
 
-    console.log(`\nPinned ${Object.keys(urls).length} dev builds for PR #${prNumber}${sha ? ` (head ${sha})` : ''}:`);
+    console.log(`\nPinned ${Object.keys(urls).length} dev builds for PR #${prNumber} (run ${selected.run}):`);
     for (const [name, url] of Object.entries(urls)) {
         console.log(`  ${name} -> ${url.split('/').pop()}`);
     }

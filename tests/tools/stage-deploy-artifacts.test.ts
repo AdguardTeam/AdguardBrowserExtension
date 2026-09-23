@@ -34,14 +34,14 @@ import {
 const SCRIPT_PATH = path.resolve(__dirname, '../../tools/ci/stage-deploy-artifacts.sh');
 
 const BUILD_FILES = [
-    'chrome-mv2.zip', 'chrome-mv3.zip', 'edge-mv2.zip', 'opera-mv2.zip',
+    'chrome-mv2.zip', 'chrome-mv3.zip', 'edge-mv2.zip', 'edge-mv3.zip', 'opera-mv2.zip',
     'opera-mv3.zip', 'firefox.zip', 'source.zip', 'approval-notes.txt', 'build.txt',
 ];
 
 const COMMON_OUTPUTS = {
-    'static-chrome': ['chrome.zip', 'chrome-mv3.zip', 'build.txt'],
+    static: ['chrome.zip', 'chrome-mv3.zip', 'edge-mv3.zip', 'build.txt'],
     'cws-mv3': ['chrome.zip'],
-    'gh-assets': ['chrome-mv2.zip', 'chrome-mv3.zip', 'edge-mv2.zip', 'build.txt'],
+    'gh-assets': ['chrome-mv2.zip', 'chrome-mv3.zip', 'edge-mv2.zip', 'edge-mv3.zip', 'build.txt'],
 };
 
 let workspace: string;
@@ -69,12 +69,11 @@ describe('Deploy artifact staging', () => {
 
         const expected = channel === 'beta' ? {
             ...COMMON_OUTPUTS,
-            'static-chrome': [...COMMON_OUTPUTS['static-chrome'], 'chrome.crx', 'update.xml'],
+            static: [...COMMON_OUTPUTS.static, 'chrome.crx', 'update.xml'],
             'gh-assets': [...COMMON_OUTPUTS['gh-assets'], 'chrome-mv2.crx'],
         } : {
             ...COMMON_OUTPUTS,
             'static-firefox': ['firefox.zip', 'build.txt'],
-            'cws-mv2': ['chrome.zip'],
             amo: ['firefox.zip', 'source.zip', 'approval-notes.txt'],
             edge: ['edge.zip'],
             'gh-assets': [...COMMON_OUTPUTS['gh-assets'], 'opera-mv2.zip', 'opera-mv3.zip', 'firefox.zip'],
@@ -103,7 +102,9 @@ describe('Deploy artifact staging', () => {
     it.each([
         ['beta', 'build/chrome-mv2.zip'],
         ['beta', 'crx/chrome-mv2.crx'],
+        ['beta', 'build/edge-mv3.zip'],
         ['release', 'build/edge-mv2.zip'],
+        ['release', 'build/edge-mv3.zip'],
         ['release', 'build/opera-mv2.zip'],
     ])('fails when %s is missing %s', (channel, missing) => {
         const [source, file] = missing.split('/') as [string, string];

@@ -38,7 +38,7 @@ Release flow:
    - beta: static.adtidy.org (chromium CRX/ZIP + Firefox XPI/update.json),
      Chrome Web Store MV3, Firefox AMO beta, Firefox standalone signing,
      GitHub Release (public repo, prerelease)
-   - release: static.adtidy.org (chromium + Firefox), Chrome Web Store MV2+MV3,
+   - release: static.adtidy.org (chromium + Firefox), Chrome Web Store MV3,
      Firefox AMO, Edge Add-ons, GitHub Release (public repo)
    - Opera zips ship as GitHub Release assets only (store submission is manual).
 4. Slack notifications go to `#adguard-extension-vcs`.
@@ -65,7 +65,6 @@ mid-release runtime failures, so configure them before the first run.
 | Variable | Used by |
 | --- | --- |
 | `VAULT_URL` | Vault OIDC in publish / auto-build |
-| `CHROME_WEBSTORE_MV2_ITEM_ID` | CWS MV2 publish |
 | `CHROME_WEBSTORE_MV3_ITEM_ID` | CWS MV3 publish (release) |
 | `CHROME_WEBSTORE_MV3_BETA_ITEM_ID` | CWS MV3 publish (beta) |
 | `EDGE_ADDONS_PRODUCT_ID` | Edge Add-ons publish |
@@ -239,3 +238,47 @@ variants are noted.
 - **Permissions error on a deploy job.** The GitHub environments must be
   pre-created with the exact names used in the workflow, otherwise GitHub
   silently auto-creates a misspelled environment without approval gates.
+- **Auto-build workflow change must be back-ported to the stable branch.** The
+  scheduled run takes `auto-build.yml` from `master` but every job checks out
+  `stable/v5.5`, so the Docker stages and scripts the workflow uses
+  (`verify-cws`, `tools/ci/check-publish-state.sh`, `cws-publish.properties`)
+  must exist on `stable/v5.5` before or atomically with the workflow change.
+  Otherwise every run commits the version bump and then fails on the missing
+  properties file.
+- **Auto-build publish job failed, but the extension is in the store.** CWS
+  occasionally answers HTTP 502 on the publish call after the upload already
+  succeeded. The `verify-cws-*` job checks the store state right after such a
+  failure, and its exit code tells the outcomes apart: `0` — the store holds the
+  build, the failure was benign; `1` — the version is not in the store, the
+  failure is real; `2` — the check itself failed (Vault/OIDC or CWS API error),
+  so the store state is unknown and must be checked manually. There is no
+  automatic standard-review fallback for a failed expedited publish. After a
+  real failure, re-running the publish job may be rejected by CWS as a
+  duplicate-version upload; in that case publish manually from the CWS
+  dashboard.
+- **Auto-build failed on the Tuesday scope check.** A standard-review build may
+  only change files inside `filters/` compared to the published extension. A
+  failure means something else changed on the stable branch; investigate and
+  remove it before the next auto-build. Until it is removed the scope check
+  keeps failing the build before any publish job, so the change never reaches
+  the store.
+- **Auto-build failed on the ruleset declaration check.** A ruleset was added
+  to or removed from `declarative_net_request.rule_resources` in the built
+  manifest. The manifest is outside the change scope an auto-published build
+  may touch (safe rules for skip review, files under `filters/` for the
+  standard review), so the build is never published automatically. Ship the
+  change through the regular release process, or revert the ruleset update on
+  `stable/v5.5` before the next auto-build.
+- **Auto-build failed on the expedited scope check after an unpublished Tuesday
+  build.** A Tuesday full-resources build commits `filters/` changes that only
+  the standard review may ship, but when the CWS channel is unavailable the
+  publish job is skipped, so those changes sit on `stable/v5.5` without ever
+  reaching the store. Every later expedited build then fails the scope check
+  because the changes are not in `rule_resources` (the expedited error in
+  `tools/skip-review/check-changes-for-cws.ts` points here). Wait for the next
+  Tuesday run with an available channel: its standard-review submission
+  publishes the changes and later expedited checks pass again. To unblock
+  sooner, revert the `[skip ci] Rulesets update & increment patch version
+  (autobuild-v…)` commit of that Tuesday run on `stable/v5.5` — its generated
+  changes are recreated by the next full Tuesday run — and let the next
+  scheduled run publish.

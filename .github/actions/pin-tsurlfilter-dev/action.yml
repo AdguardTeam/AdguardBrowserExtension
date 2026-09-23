@@ -2,7 +2,7 @@
 # agtree, tsurlfilter, dnr-rulesets, tswebextension) to the dev builds that
 # the DevEx bridge (ext-tsurlfilter: devex-bridge.yml) publishes to the
 # internal Artifact Keeper npm registry for every tsurlfilter PR, with
-# versions like `<next-patch>-dev.pr<N>.<shortsha>`.
+# versions like `<next-patch>-dev.pr<N>.<run_number>`.
 #
 # tsurlfilter PR number source, in priority order:
 #   1. the `pr` input,
@@ -37,8 +37,8 @@ inputs:
     description: 'tsurlfilter PR number (default: tsurlfilter-dev-pr.txt in repo root)'
     required: false
     default: ''
-  head:
-    description: 'Optional head short SHA to pin (default: latest published for the PR)'
+  run:
+    description: 'Optional workflow run number to pin (default: highest published run for the PR)'
     required: false
     default: ''
   required:
@@ -59,6 +59,6 @@ runs:
       shell: bash
       env:
         PR_INPUT: ${{ inputs.pr }}
-        HEAD_INPUT: ${{ inputs.head }}
+        RUN_INPUT: ${{ inputs.run }}
         REQUIRED: ${{ inputs.required }}
       run: node "${GITHUB_ACTION_PATH}/pin.mjs"

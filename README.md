@@ -157,6 +157,33 @@ We have set up an automated update cycle that regularly syncs with fresh release
 
 To deploy new releases as soon as possible, we have implemented all the steps outlined in Chrome's [Skip Review documentation](https://developer.chrome.com/docs/webstore/skip-review). This allows us to publish updates to the Chrome Web Store without waiting for the full review cycle.
 
+### Review modes
+
+Auto-builds are published with one of two review modes:
+
+- **Non-Tuesdays** — only the declarative rulesets are updated, so the build is
+  eligible for the expedited (skip review) publishing and is submitted with
+  `expedited=true`. The store comparison still runs, but it allows only the safe
+  rule resources the expedited mode may change.
+- **Tuesdays** — the first Tuesday build collects the filter fixes made on
+  Monday, so it performs a full resources update (including local script rules)
+  and is submitted for the standard review (`expedited=false`). Before such a
+  build is published, the auto-build compares it with the extension currently in
+  the Chrome Web Store and fails if any file outside the built `filters/`
+  directory changed. This guarantees that a manually reviewed submission never
+  ships unexpected code changes. The check ignores the CWS `_metadata/` folder,
+  the expected `version` bump made by the build, and the `update_url` field CWS
+  adds to the published `manifest.json`.
+
+A failed expedited publish is never escalated to the standard review
+automatically: if the expedited submission fails, the build may contain changes
+that must not be published without the regular release process. Since the Chrome
+Web Store sometimes answers HTTP 502 on the publish call after the upload
+already succeeded, the auto-build verifies the store state after such a failure
+and tells the outcomes apart: the failure was benign when the store holds the
+build, real when it does not, and a check error when the store state cannot be
+determined (e.g. expired credentials or an API outage).
+
 ### Skip review restrictions
 
 However, there is an important restriction when using the "skip review" option: **we cannot update the extension with skip review if it contains changes to filtering script rules**. This is because all script rules are collected during build time into a file called `local_script_rules.js` (for safe use them with the scripting API).
@@ -200,7 +227,8 @@ The extension supports both Manifest V2 (MV2) and Manifest V3 (MV3) platforms. M
 | Firefox Mobile              | ✅ 113  |
 | Opera                       | ✅ 67   |
 | Opera MV3                   | ✅ 107  |
-| Edge Chromium               | ✅ 80   |
+| Edge Chromium MV2           | ✅ 80   |
+| Edge Chromium MV3           | ✅ 121  |
 | Edge Legacy                 | ❌      |
 
 ## <a name="documentation"></a> Documentation

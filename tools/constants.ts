@@ -87,6 +87,7 @@ export enum Browser {
     OperaMv2 = 'opera-mv2',
     OperaMv3 = 'opera-mv3',
     EdgeMv2 = 'edge-mv2',
+    EdgeMv3 = 'edge-mv3',
 }
 
 /**
@@ -95,20 +96,13 @@ export enum Browser {
 export const MV3_BROWSERS = [
     Browser.ChromeMv3,
     Browser.OperaMv3,
+    Browser.EdgeMv3,
 ] as const;
 
 /**
  * Infered type for {@link MV3_BROWSERS}.
  */
 export type Mv3Browser = (typeof MV3_BROWSERS)[number];
-
-/**
- * Map of {@link Mv3Browser} to {@link BrowserFilters}.
- */
-export const MV3_BROWSER_TO_DNR_BROWSER_MAP: Record<Mv3Browser, BrowserFilters> = {
-    [Browser.ChromeMv3]: BrowserFilters.ChromiumMv3,
-    [Browser.OperaMv3]: BrowserFilters.OperaMv3,
-};
 
 export const isValidBrowserTarget = (target: any): target is Browser => {
     return Object.values(Browser).includes(target as Browser);
@@ -121,6 +115,7 @@ export const enum AssetsFiltersBrowser {
     Chromium = 'chromium',
     ChromiumMv3 = 'chromium-mv3',
     Edge = 'edge',
+    EdgeMv3 = 'edge-mv3',
     Firefox = 'firefox',
     Opera = 'opera',
     OperaMv3 = 'opera-mv3',
@@ -132,6 +127,7 @@ export const enum AssetsFiltersBrowser {
 export const MV3_ASSETS_FILTERS_BROWSERS = [
     AssetsFiltersBrowser.ChromiumMv3,
     AssetsFiltersBrowser.OperaMv3,
+    AssetsFiltersBrowser.EdgeMv3,
 ] as const;
 
 /**
@@ -145,6 +141,16 @@ export type Mv3AssetsFiltersBrowser = (typeof MV3_ASSETS_FILTERS_BROWSERS)[numbe
 export const MV3_ASSETS_FILTERS_BROWSER_TO_DNR_BROWSER_MAP: Record<Mv3AssetsFiltersBrowser, BrowserFilters> = {
     [AssetsFiltersBrowser.ChromiumMv3]: BrowserFilters.ChromiumMv3,
     [AssetsFiltersBrowser.OperaMv3]: BrowserFilters.OperaMv3,
+    [AssetsFiltersBrowser.EdgeMv3]: BrowserFilters.EdgeMv3,
+};
+
+/**
+ * Resource directories used by each MV3 build.
+ */
+export const MV3_BROWSER_TO_ASSETS_BROWSER_MAP: Record<Mv3Browser, Mv3AssetsFiltersBrowser> = {
+    [Browser.ChromeMv3]: AssetsFiltersBrowser.ChromiumMv3,
+    [Browser.OperaMv3]: AssetsFiltersBrowser.OperaMv3,
+    [Browser.EdgeMv3]: AssetsFiltersBrowser.EdgeMv3,
 };
 
 export type FirefoxBrowserTarget = Browser.FirefoxAmo | Browser.FirefoxStandalone;
