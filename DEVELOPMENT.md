@@ -160,8 +160,9 @@ same extension ID and a higher extension version. Installing an unpacked copy
 with a different ID does not exercise migration. Check settings, user rules,
 allowlist, custom filters and enabled filter/group states after the update and
 after restarting Edge. Check blocking and MV3 rule-limit behavior separately
-from data preservation. CI produces an Edge MV3 ZIP; store publishing still
-uses the existing Edge MV2 package.
+from data preservation. Release publishing sends the Edge MV3 ZIP to the
+existing Edge Add-ons listing. Beta builds include the ZIP for QA without
+publishing it to Edge Add-ons.
 
 <a name="dev-tests-and-build"></a>
 
