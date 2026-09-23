@@ -155,6 +155,13 @@ Run `pnpm resources:mv3` to populate
 the Edge resources are missing. Before releasing, record measured bundle sizes
 with `pnpm update-bundle-size <env> edge-mv3` for each build environment.
 
+Beta and release workflows publish `edge-mv3.zip` in a dedicated
+`static-edge-<channel>` artifact through the `adblocker-webext-edge-<channel>`
+Deployer module. Apply these modules to the active Deployer before publishing
+from a ref with this workflow. Chrome and Edge static deployments use separate
+jobs and upload artifacts from the common extension build. Edge uploads contain
+only `edge-mv3.zip`, so they do not overwrite the shared `build.txt` file.
+
 For QA, test both a clean installation and an update from Edge MV2 using the
 same extension ID and a higher extension version. Installing an unpacked copy
 with a different ID does not exercise migration. Check settings, user rules,
