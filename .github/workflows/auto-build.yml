@@ -1,6 +1,6 @@
 name: Auto build
 
-# Every 12 hours (00:30 and 12:30 UTC): updates @adguard/dnr-rulesets and
+# Twice a day (12:00 and 17:00 UTC): updates @adguard/dnr-rulesets and
 # local resources on the stable branch, rebuilds Chrome MV3 beta + release,
 # and auto-publishes them to the Chrome Web Store when the store reports the
 # channel as available. Replaces Bamboo plans auto-build + auto-publish.
@@ -10,7 +10,7 @@ name: Auto build
 
 on:
   schedule:
-    - cron: '30 */12 * * *'
+    - cron: '0 12,17 * * *'
   workflow_dispatch:
 
 # A manual workflow_dispatch during a scheduled run must not execute
@@ -187,8 +187,9 @@ jobs:
           fi
           echo "DNR_RULESETS_REGISTRY=${ARTIFACT_KEEPER_URL}/npm/npm-internal" >> "$GITHUB_ENV"
 
-      # The skip-review flag (full resources update on Tuesdays, skip-review
-      # eligibility check otherwise) is computed inside the Dockerfile stage.
+      # The skip-review flag (full resources update on Mondays and Thursdays,
+      # skip-review eligibility check otherwise) is computed inside the
+      # Dockerfile stage.
       # TOKENGUARD_BASE_URL/TOKENGUARD_MODEL are passed explicitly (production
       # defaults below, overridable via repository variables) so the
       # dangerous-rules check never silently falls back to a hardcoded default;
