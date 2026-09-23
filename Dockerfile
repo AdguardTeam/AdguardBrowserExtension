@@ -137,11 +137,16 @@ FROM source-deps AS unit-tests
 ARG TEST_RUN_ID
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
-    # Bust build cache so test stages always rerun.
-    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
-    # Run unit tests (cached until source changes).
-    mkdir -p /out/tests-reports && \
+    # Disable errexit first so failures below are recorded in exit-code.txt
+    # instead of aborting the RUN before /out is created (which would surface
+    # as a misleading "COPY /out: not found" in the output stage).
     set +e; \
+    # Bust build cache so test stages always rerun.
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id; \
+    # Create the reports directory unconditionally so the output stage can
+    # always copy it, even when the tests fail. If it cannot be created, fail
+    # the RUN so the real error is not masked by "COPY /out: not found".
+    mkdir -p /out/tests-reports || { echo "Failed to create /out/tests-reports" >&2; exit 1; }; \
     # Run unit tests with timeout.
     ./tools/ci/timeout-wrapper.sh 600s pnpm test:ci; \
     EXIT_CODE=$?; \
@@ -175,13 +180,26 @@ COPY --from=chrome-artifacts . /extension/artifacts/
 ARG TEST_RUN_ID
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
-    # Bust build cache so test/lint/build stages always rerun.
-    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
-    mkdir -p build/${BUILD_TYPE} && \
-    # Move artifact to build directory, because integration tests expect it there.
-    mv /extension/artifacts/chrome-mv3-${BUILD_TYPE}.zip /extension/build/${BUILD_TYPE}/chrome-mv3.zip && \
-    mkdir -p /out/tests-reports && \
+    # Disable errexit first so failures below are recorded in exit-code.txt
+    # instead of aborting the RUN before /out is created (which would surface
+    # as a misleading "COPY /out: not found" in the output stage).
     set +e; \
+    # Bust build cache so test/lint/build stages always rerun.
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id; \
+    # Create the reports directory unconditionally so the output stage can
+    # always copy it, even when the build artifact cannot be prepared. If it
+    # cannot be created, fail the RUN so the real error is not masked by
+    # "COPY /out: not found".
+    mkdir -p /out/tests-reports || { echo "Failed to create /out/tests-reports" >&2; exit 1; }; \
+    mkdir -p build/${BUILD_TYPE}; \
+    # Move artifact to build directory, because integration tests expect it there.
+    mv /extension/artifacts/chrome-mv3-${BUILD_TYPE}.zip /extension/build/${BUILD_TYPE}/chrome-mv3.zip; \
+    BUILD_EXIT_CODE=$?; \
+    if [ "${BUILD_EXIT_CODE}" -ne 0 ]; then \
+      echo "Preparing build artifacts failed with exit code ${BUILD_EXIT_CODE}; skipping tests." >&2; \
+      echo "${BUILD_EXIT_CODE}" > /out/exit-code.txt; \
+      exit 0; \
+    fi; \
     # Run integration tests.
     pnpm test:integration ${BUILD_TYPE}; \
     EXIT_CODE=$?; \
@@ -209,12 +227,25 @@ FROM linked-deps-playwright AS integration-tests-standalone
 ARG TEST_RUN_ID
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
-    # Bust build cache so test stages always rerun.
-    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
-    # Build only chrome-mv3 dev extension with zip.
-    pnpm dev chrome-mv3 --zip && \
-    mkdir -p /out/tests-reports && \
+    # Disable errexit first so failures below are recorded in exit-code.txt
+    # instead of aborting the RUN before /out is created (which would surface
+    # as a misleading "COPY /out: not found" in the output stage).
     set +e; \
+    # Bust build cache so test stages always rerun.
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id; \
+    # Create the reports directory unconditionally before the build so the
+    # output stage can always copy it, even when the build fails. If it cannot
+    # be created, fail the RUN so the real error is not masked by
+    # "COPY /out: not found".
+    mkdir -p /out/tests-reports || { echo "Failed to create /out/tests-reports" >&2; exit 1; }; \
+    # Build only chrome-mv3 dev extension with zip.
+    pnpm dev chrome-mv3 --zip; \
+    BUILD_EXIT_CODE=$?; \
+    if [ "${BUILD_EXIT_CODE}" -ne 0 ]; then \
+      echo "Build failed with exit code ${BUILD_EXIT_CODE}; skipping tests." >&2; \
+      echo "${BUILD_EXIT_CODE}" > /out/exit-code.txt; \
+      exit 0; \
+    fi; \
     # Run integration tests.
     pnpm test:integration dev; \
     EXIT_CODE=$?; \
@@ -241,14 +272,27 @@ FROM linked-deps-playwright AS e2e-tests-standalone
 ARG TEST_RUN_ID
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    # Disable errexit first so failures below are recorded in exit-code.txt
+    # instead of aborting the RUN before /out is created (which would surface
+    # as a misleading "COPY /out: not found" in the output stage).
+    set +e; \
     # Bust build cache so test stages always rerun.
-    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id; \
+    # Create the reports directory unconditionally before the build so the
+    # output stage can always copy it, even when the build fails. If it cannot
+    # be created, fail the RUN so the real error is not masked by
+    # "COPY /out: not found".
+    mkdir -p /out/tests-reports || { echo "Failed to create /out/tests-reports" >&2; exit 1; }; \
     # Build only E2E target dev extensions with zip artifacts.
     pnpm dev chrome --zip && \
     pnpm dev chrome-mv3 --zip && \
-    pnpm dev firefox-standalone --zip && \
-    mkdir -p /out/tests-reports && \
-    set +e; \
+    pnpm dev firefox-standalone --zip; \
+    BUILD_EXIT_CODE=$?; \
+    if [ "${BUILD_EXIT_CODE}" -ne 0 ]; then \
+      echo "Build failed with exit code ${BUILD_EXIT_CODE}; skipping tests." >&2; \
+      echo "${BUILD_EXIT_CODE}" > /out/exit-code.txt; \
+      exit 0; \
+    fi; \
     # Run E2E tests.
     E2E_HEADLESS=true pnpm test:e2e dev; \
     EXIT_CODE=$?; \
