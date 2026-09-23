@@ -2,7 +2,7 @@ name: Publish release
 
 # Tags the release commit, builds all channel artifacts, deploys to
 # static.adtidy.org, submits to browser stores, and creates the GitHub
-# Release on the public repo (AdguardTeam/AdguardBrowserExtension).
+# Release draft on the public repo (AdguardTeam/AdguardBrowserExtension).
 #
 # Triggered automatically by merging a release-bump/* PR opened by
 # prepare-release.yml, or manually via workflow_dispatch.
@@ -589,7 +589,7 @@ jobs:
   # assets (same as Bamboo; store submission stays manual).
 
   create-release:
-    name: Create GitHub Release (public repo)
+    name: Create GitHub Release draft (public repo)
     needs: [resolve-version, build]
     uses: AdGuardSoftwareLimited/actions/.github/workflows/create-gh-release.yml@master
     with:
@@ -598,6 +598,7 @@ jobs:
       tag_name: ${{ needs.resolve-version.outputs.tag }}
       body: ${{ needs.resolve-version.outputs.notes }}
       artifact_name: gh-assets-${{ needs.build.outputs.channel }}
+      draft: true
       prerelease: ${{ needs.build.outputs.channel == 'beta' }}
     permissions:
       contents: read
@@ -605,7 +606,7 @@ jobs:
 
   attach-firefox-assets-beta:
     # Firefox beta assets are signed via AMO in an isolated job; attach them
-    # to the already-created release (same tag) so the two never race.
+    # to the existing draft (same tag) without publishing it.
     name: Attach Firefox assets to GitHub Release (beta)
     needs: [resolve-version, build-firefox-standalone, create-release]
     if: needs.resolve-version.outputs.channel == 'beta'
@@ -616,6 +617,7 @@ jobs:
       tag_name: ${{ needs.resolve-version.outputs.tag }}
       body: ${{ needs.resolve-version.outputs.notes }}
       artifact_name: gh-assets-firefox-beta
+      draft: true
       prerelease: true
     permissions:
       contents: read
@@ -640,7 +642,7 @@ jobs:
         uses: AdGuardSoftwareLimited/actions/actions/slack@master
         with:
           channel: '#adguard-extension-vcs'
-          message: ':white_check_mark: *browser-extension* *${{ needs.resolve-version.outputs.tag }}* (${{ needs.resolve-version.outputs.channel }}) deployed to static.adtidy.org + stores + GitHub Release — <${{ needs.create-release.outputs.release-url }}|release> | <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>'
+          message: ':white_check_mark: *browser-extension* *${{ needs.resolve-version.outputs.tag }}* (${{ needs.resolve-version.outputs.channel }}) deployed to static.adtidy.org + stores; GitHub Release draft ready for manual publication — <${{ needs.create-release.outputs.release-url }}|draft> | <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>'
           color: good
 
   notify-failure:

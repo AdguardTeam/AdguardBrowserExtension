@@ -36,11 +36,15 @@ Release flow:
 3. `publish-release.yml` tags, builds, and deploys:
    - beta: static.adtidy.org (chromium CRX/ZIP + Firefox XPI/update.json),
      Chrome Web Store MV3, Firefox AMO beta, Firefox standalone signing,
-     GitHub Release (public repo, prerelease)
+     GitHub Release draft (public repo, marked as prerelease)
    - release: static.adtidy.org (chromium + Firefox), Chrome Web Store MV3,
-     Firefox AMO, Edge Add-ons, GitHub Release (public repo)
+     Firefox AMO, Edge Add-ons, GitHub Release draft (public repo)
    - Opera zips ship as GitHub Release assets only (store submission is manual).
 4. Slack notifications go to `#adguard-extension-vcs`.
+5. After the workflow completes, review the notes and assets in the
+   `AdguardTeam/AdguardBrowserExtension` GitHub Release draft and publish it
+   manually. Both channels stay in draft until this step; attaching signed
+   Firefox beta assets also preserves the draft state.
 
 Deploy gates are GitHub environments (approval rules): `beta-static`,
 `production-static`, `chrome-webstore-beta`, `chrome-webstore-release`,
@@ -51,7 +55,7 @@ auto-publish environments `chrome-webstore-beta-auto` /
 Workflow files:
 
 - `prepare-release.yml` — opens the `release-bump/*` PR (package.json + CHANGELOG)
-- `publish-release.yml` — tag, build, deploy to static/stores/GitHub, notify
+- `publish-release.yml` — tag, build, deploy to static/stores, prepare GitHub Release draft, notify
 - `auto-build.yml` — 12h rulesets update + CWS auto-publish
 
 ## Required repository configuration
