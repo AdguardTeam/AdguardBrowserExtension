@@ -41,6 +41,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
+          # Don't persist the default GITHUB_TOKEN as a git credential: the
+          # protected-push step below authenticates with an Octopass-issued
+          # token, and a persisted http.extraheader would collide with the one
+          # protected-push sets, making git send two Authorization headers
+          # which GitHub rejects with HTTP 400 "Duplicate header:
+          # Authorization". The branch bootstrap below passes the workflow
+          # token explicitly instead.
+          persist-credentials: false
           # prepare-release.ts's getCurrentChannel() probes local tags
           # (refs/tags/vX.Y.Z.W-beta). fetch-tags: true fetches tag refs on top
           # of the shallow clone instead of a full history clone.
@@ -87,11 +95,15 @@ jobs:
       - name: Ensure remote release-bump branch exists
         env:
           TAG: ${{ inputs.tag }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           BRANCH="release-bump/${TAG}"
-          if ! git ls-remote --exit-code --heads origin "refs/heads/${BRANCH}" >/dev/null 2>&1; then
-            git push origin "HEAD:${BRANCH}"
+          # checkout no longer persists credentials (see the Checkout step),
+          # so pass the workflow token to these git commands explicitly.
+          AUTH_HEADER="AUTHORIZATION: basic $(printf 'x-access-token:%s' "${GITHUB_TOKEN}" | base64 | tr -d '\n')"
+          if ! git -c "http.https://github.com/.extraheader=${AUTH_HEADER}" ls-remote --exit-code --heads origin "refs/heads/${BRANCH}" >/dev/null 2>&1; then
+            git -c "http.https://github.com/.extraheader=${AUTH_HEADER}" push origin "HEAD:${BRANCH}"
           fi
 
       # Commits package.json + CHANGELOG.md and pushes the branch with the
