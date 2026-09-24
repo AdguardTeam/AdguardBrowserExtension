@@ -682,12 +682,12 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # We use a marker file instead of git diff to avoid copying the whole
     # .git directory into the Docker image.
     touch /tmp/.pre-update-marker && \
-    # Tuesdays do a full resources update and request the standard CWS review:
-    # the first Tuesday build collects the fixes made on Monday, so the build
-    # may contain changes that are not eligible for skip review (mirrors the
-    # Bamboo job). All other days update only the declarative rulesets and
-    # request expedited (skip) review.
-    if [ "$(date -u +%u)" = "2" ]; then \
+    # Mondays and Thursdays do a full resources update and request the standard
+    # CWS review: the Monday and Thursday builds collect the fixes made since
+    # the previous full update, so the build may contain changes that are not
+    # eligible for skip review (mirrors the Bamboo job). All other days update
+    # only the declarative rulesets and request expedited (skip) review.
+    if [ "$(date -u +%u)" = "1" ] || [ "$(date -u +%u)" = "4" ]; then \
         EXPEDITED=false; \
     else \
         EXPEDITED=true; \
@@ -710,10 +710,10 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     mkdir -p /out/artifacts && \
     # Compare the build with the extension currently published in CWS before
     # publishing it: an expedited build must contain only safe rule resources,
-    # while a standard-review (Tuesday) build may only change files under
-    # `filters/`, so the standard review never ships unexpected code changes.
-    # EXPEDITED=false (Tuesday) maps to --standard-review here; the expedited
-    # mode passes no flag.
+    # while a standard-review (full-resources) build may only change files
+    # under `filters/`, so the standard review never ships unexpected code
+    # changes. EXPEDITED=false (full-resources) maps to --standard-review here;
+    # the expedited mode passes no flag.
     check_scope() { \
       if [ "${EXPEDITED}" = "true" ]; then \
         pnpm tsx tools/skip-review/check-changes-for-cws "$@"; \
@@ -729,8 +729,8 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
       CWS_RELEASE_ITEM_ID="${CWS_RELEASE_ITEM_ID}" pnpm tsx tools/skip-review/download-latest-extension-mv3 release && \
       check_scope ./tmp/extension-release-latest ./build/release/chrome-mv3; \
     fi && \
-    # Publish mode for the workflow jobs: expedited/skip review on
-    # non-Tuesdays, standard review on Tuesdays.
+    # Publish mode for the workflow jobs: expedited/skip review on other days,
+    # standard review on Mondays and Thursdays.
     echo "expedited=${EXPEDITED}" > /out/artifacts/cws-publish.properties && \
     cat /out/artifacts/cws-publish.properties && \
     # Collect build artifacts.

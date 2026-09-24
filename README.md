@@ -161,19 +161,19 @@ To deploy new releases as soon as possible, we have implemented all the steps ou
 
 Auto-builds are published with one of two review modes:
 
-- **Non-Tuesdays** — only the declarative rulesets are updated, so the build is
+- **Other days** — only the declarative rulesets are updated, so the build is
   eligible for the expedited (skip review) publishing and is submitted with
   `expedited=true`. The store comparison still runs, but it allows only the safe
   rule resources the expedited mode may change.
-- **Tuesdays** — the first Tuesday build collects the filter fixes made on
-  Monday, so it performs a full resources update (including local script rules)
-  and is submitted for the standard review (`expedited=false`). Before such a
-  build is published, the auto-build compares it with the extension currently in
-  the Chrome Web Store and fails if any file outside the built `filters/`
-  directory changed. This guarantees that a manually reviewed submission never
-  ships unexpected code changes. The check ignores the CWS `_metadata/` folder,
-  the expected `version` bump made by the build, and the `update_url` field CWS
-  adds to the published `manifest.json`.
+- **Mondays and Thursdays** — these builds collect the filter fixes made since
+  the previous full update, so they perform a full resources update (including
+  local script rules) and are submitted for the standard review
+  (`expedited=false`). Before such a build is published, the auto-build
+  compares it with the extension currently in the Chrome Web Store and fails if
+  any file outside the built `filters/` directory changed. This guarantees that
+  a manually reviewed submission never ships unexpected code changes. The check
+  ignores the CWS `_metadata/` folder, the expected `version` bump made by the
+  build, and the `update_url` field CWS adds to the published `manifest.json`.
 
 A failed expedited publish is never escalated to the standard review
 automatically: if the expedited submission fails, the build may contain changes

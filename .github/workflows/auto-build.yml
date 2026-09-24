@@ -1,21 +1,22 @@
 name: Auto build
 
-# Every 12 hours (00:30 and 12:30 UTC): updates @adguard/dnr-rulesets and
+# Twice a day (12:00 and 17:00 UTC): updates @adguard/dnr-rulesets and
 # local resources on the stable branch, rebuilds Chrome MV3 beta + release,
 # and auto-publishes them to the Chrome Web Store when the store reports the
 # channel as available. Replaces Bamboo plans auto-build + auto-publish.
-# Builds are published with skip review, except on Tuesdays, when the full
-# resources update goes through the standard review. A build whose diff against
-# the version currently in the store falls outside the scope allowed for its
-# review mode (safe rule resources for skip review, any file under `filters/`
-# for the standard review) fails before the commit and the publish.
+# Builds are published with skip review, except on Mondays and Thursdays,
+# when the full resources update goes through the standard review. A build
+# whose diff against the version currently in the store falls outside the
+# scope allowed for its review mode (safe rule resources for skip review, any
+# file under `filters/` for the standard review) fails before the commit and
+# the publish.
 #
 # Note: the schedule trigger runs the workflow file from the DEFAULT branch
 # (master); all jobs explicitly check out the stable branch.
 
 on:
   schedule:
-    - cron: '30 */12 * * *'
+    - cron: '0 12,17 * * *'
   workflow_dispatch:
 
 # A manual workflow_dispatch during a scheduled run must not execute
@@ -216,9 +217,9 @@ jobs:
           fi
           echo "DNR_RULESETS_REGISTRY=${ARTIFACT_KEEPER_URL}/npm/npm-internal" >> "$GITHUB_ENV"
 
-      # The review mode (full resources update + standard review on Tuesdays,
-      # skip-review-eligible build otherwise) is computed inside the Dockerfile
-      # stage and comes back in the cws-publish.properties artifact.
+      # The review mode (full resources update + standard review on Mondays and
+      # Thursdays, skip-review-eligible build otherwise) is computed inside the
+      # Dockerfile stage and comes back in the cws-publish.properties artifact.
       # TOKENGUARD_BASE_URL/TOKENGUARD_MODEL are passed explicitly (production
       # defaults below, overridable via repository variables) so the
       # dangerous-rules check never silently falls back to a hardcoded default;
@@ -301,8 +302,8 @@ jobs:
           echo "version=${version}" >> "$GITHUB_OUTPUT"
 
       # The publish mode travels with the build artifacts from the auto-build
-      # stage (Tuesdays request the standard CWS review) so the build and the
-      # publish jobs cannot drift apart.
+      # stage (Mondays and Thursdays request the standard CWS review) so the
+      # build and the publish jobs cannot drift apart.
       - name: Resolve publish mode
         id: publish-mode
         run: |

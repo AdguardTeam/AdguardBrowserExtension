@@ -56,7 +56,7 @@ const SCOPE_ERROR_MESSAGE = '❌ Files outside the allowed scope were changed!';
  * pointing at a missing section.
  */
 export const EXPEDITED_SCOPE_HINT_HEADING = 'Auto-build failed on the expedited scope check after an '
-    + 'unpublished Tuesday build';
+    + 'unpublished full-resources build';
 
 /**
  * Heading of the DEPLOYMENT.md entry explaining the ruleset declaration
@@ -65,12 +65,12 @@ export const EXPEDITED_SCOPE_HINT_HEADING = 'Auto-build failed on the expedited 
 export const RULESET_DECLARATION_HINT_HEADING = 'Auto-build failed on the ruleset declaration check';
 
 /**
- * Hint appended to the scope error in the expedited mode. A Tuesday
- * full-resources build whose publish was skipped (the CWS channel was
- * unavailable) leaves changes committed to the stable branch that keep failing
- * every expedited check until the next standard-review submission lands.
+ * Hint appended to the scope error in the expedited mode. A full-resources
+ * build whose publish was skipped (the CWS channel was unavailable) leaves
+ * changes committed to the stable branch that keep failing every expedited
+ * check until the next standard-review submission lands.
  */
-const EXPEDITED_SCOPE_ERROR_HINT = 'A Tuesday full-resources build that could not be published is not in '
+const EXPEDITED_SCOPE_ERROR_HINT = 'A full-resources build that could not be published is not in '
     + 'the extension published to CWS: its committed changes keep failing expedited checks until the '
     + `next standard-review submission lands. See DEPLOYMENT.md, "${EXPEDITED_SCOPE_HINT_HEADING}".`;
 
@@ -731,7 +731,7 @@ export const compareManifestsAndRules = async (
         return ruleResources.some(({ path: rulesetPath }) => rulesetPath === relativeFilePath);
     };
     // Explain the recurring expedited failure caused by an unpublished
-    // Tuesday build instead of the bare scope error.
+    // full-resources build instead of the bare scope error.
     const scopeErrorHint = mode === CheckMode.Expedited ? EXPEDITED_SCOPE_ERROR_HINT : undefined;
 
     await ensureOnlyAllowedChanges(oldDir, newDir, isAllowedChange, scopeErrorHint);
