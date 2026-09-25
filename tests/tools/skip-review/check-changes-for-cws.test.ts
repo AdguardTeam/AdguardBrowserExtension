@@ -505,6 +505,66 @@ describe('compareManifestsAndRules', () => {
         );
     });
 
+    it('allows the background bundle when the local script rules module changed', async () => {
+        await withFixture(
+            {
+                ...oldFiles,
+                'pages/background.js': 'console.log(1);',
+                'filters/local_script_rules.js': 'export const localScriptRules = { a: () => {} };',
+            },
+            {
+                ...newFiles,
+                'pages/background.js': 'console.log(2);',
+                'filters/local_script_rules.js': 'export const localScriptRules = { b: () => {} };',
+            },
+            async ({ oldDir, newDir }) => {
+                await expect(compareManifestsAndRules(oldDir, newDir, CheckMode.StandardReview))
+                    .resolves.toBeUndefined();
+            },
+        );
+    });
+
+    it('rejects the background bundle when the local script rules module did not change', async () => {
+        const rules = 'export const localScriptRules = { a: () => {} };';
+
+        await withFixture(
+            {
+                ...oldFiles,
+                'pages/background.js': 'console.log(1);',
+                'filters/local_script_rules.js': rules,
+            },
+            {
+                ...newFiles,
+                'pages/background.js': 'console.log(2);',
+                'filters/local_script_rules.js': rules,
+            },
+            async ({ oldDir, newDir }) => {
+                await expect(compareManifestsAndRules(oldDir, newDir, CheckMode.StandardReview))
+                    .rejects.toThrow('❌ Files outside the allowed scope were changed!');
+            },
+        );
+    });
+
+    it('rejects the background bundle in the expedited mode even when the local script rules changed', async () => {
+        await withFixture(
+            {
+                ...oldFiles,
+                'pages/background.js': 'console.log(1);',
+                'filters/local_script_rules.js': 'export const localScriptRules = { a: () => {} };',
+            },
+            {
+                ...oldFiles,
+                'manifest.json': makeManifest('5.5.2.2'),
+                'pages/background.js': 'console.log(2);',
+                'filters/local_script_rules.js': 'export const localScriptRules = { b: () => {} };',
+            },
+            async ({ oldDir, newDir }) => {
+                await expect(compareManifestsAndRules(oldDir, newDir, CheckMode.Expedited))
+                    .rejects.toThrow('❌ Files outside the allowed scope were changed!');
+            },
+        );
+    });
+
     it('rejects unsafe rule changes in the expedited mode', async () => {
         await withFixture(oldFiles, newFiles, async ({ oldDir, newDir }) => {
             await expect(compareManifestsAndRules(oldDir, newDir, CheckMode.Expedited))

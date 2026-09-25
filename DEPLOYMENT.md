@@ -231,7 +231,10 @@ variants are noted.
   extension. A failure means something else changed on the stable branch;
   investigate and remove it before the next auto-build. Until it is removed the
   scope check keeps failing the build before any publish job, so the change
-  never reaches the store.
+  never reaches the store. The generated `filters/local_script_rules.js` is
+  inlined into the MV3 `pages/background.js`, so the check allows that bundle to
+  change when the rules module changed as well; every other out-of-scope file
+  still fails.
 - **Auto-build failed on the ruleset declaration check.** A ruleset was added
   to or removed from `declarative_net_request.rule_resources` in the built
   manifest. The manifest is outside the change scope an auto-published build
