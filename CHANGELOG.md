@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- In MV3, a custom filter whose patch files became unavailable (e.g. after the filter URL was moved or redirected) could stay outdated after a manual update; such filters are now downloaded fully [#3560].
 - Month labels on the yearly statistics chart now use names only for the first and last months, with numbers for intermediate months in all languages.
 - Redo via `Ctrl+Shift+Z` (`Cmd+Shift+Z` on macOS) did not work in the rule editor.
 - Extension update checks could use the browser's store instead of the store the extension was installed from.
@@ -24,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 [#1410]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1410
 [#3067]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3067
+[#3560]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3560
 
 ## Unreleased 5.5.2
 

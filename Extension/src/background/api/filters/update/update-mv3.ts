@@ -21,41 +21,67 @@
 import { CustomFilterUtils } from '../../../../common/custom-filter-utils';
 import { logger } from '../../../../common/logger';
 import { engine } from '../../../engine';
+import { filterVersionStorage } from '../../../storages';
 import { CustomFilterApi } from '../custom';
 import { FiltersApi } from '../main';
 
+import { isFullUpdateDue } from './selectors';
+
 /**
- * API for manual custom filter rules updates.
+ * API for manual custom filter updates and automatic refreshes after extension updates.
  */
 export class FilterUpdateApi {
     /**
      * Updates all enabled custom filters if they and their group are enabled.
+     *
+     * Automatic refreshes use patches until the filter's Expires interval has
+     * elapsed since its last full check, then request a full download from
+     * {@link CustomFilterApi}. Filters without version metadata also require
+     * a full download.
+     *
+     * @param ignorePatches Whether to force full downloads regardless of Expires. Defaults to false.
+     * Should be used for manual updates to make them resilient to broken patch
+     * chains, e.g. when the filter URL was moved or redirected and patch files
+     * are not available anymore.
+     *
+     * @throws {AggregateError} If any custom filter fails to update.
      */
-    public static async updateCustomFilters(): Promise<void> {
+    public static async updateCustomFilters(ignorePatches = false): Promise<void> {
         const customFiltersIds = FiltersApi
             .getInstalledAndEnabledFiltersIds()
             .filter((filterId) => CustomFilterUtils.isCustomFilter(filterId));
 
-        const customFiltersUpdateList = customFiltersIds.map((filterId) => ({
-            filterId,
-            // Try to download via patches first to save traffic. If patches are
-            // not available, library will download the full filter.
-            ignorePatches: false,
-        }));
+        const customFiltersUpdateList = customFiltersIds.map((filterId) => {
+            if (ignorePatches) {
+                return { filterId, ignorePatches: true };
+            }
+
+            return {
+                filterId,
+                ignorePatches: isFullUpdateDue(filterVersionStorage.get(filterId)),
+            };
+        });
 
         const tasks = await Promise.allSettled(
             customFiltersUpdateList.map((updateInfo) => CustomFilterApi.updateFilter(updateInfo)),
         );
+        const errors: Error[] = [];
 
-        for (const updatedCustomFilters of tasks) {
-            if (updatedCustomFilters.status === 'fulfilled') {
-                logger.debug('[ext.FilterUpdateApi.updateCustomFilters]: custom filter updated successfully:', updatedCustomFilters.value);
+        for (const [index, result] of tasks.entries()) {
+            if (result.status === 'fulfilled') {
+                logger.debug('[ext.FilterUpdateApi.updateCustomFilters]: custom filter updated successfully:', result.value);
             } else {
-                logger.error('[ext.FilterUpdateApi.updateCustomFilters]: failed to update custom filters due to an error:', updatedCustomFilters.reason);
+                const { filterId } = customFiltersUpdateList[index]!;
+                logger.error(`[ext.FilterUpdateApi.updateCustomFilters]: failed to update custom filter ${filterId} due to an error:`, result.reason);
+                errors.push(new Error(`Failed to update custom filter ${filterId}`, { cause: result.reason }));
             }
         }
 
         // Update without debounce
         await engine.update();
+
+        if (errors.length > 0) {
+            throw new AggregateError(errors, 'Failed to update custom filters');
+        }
     }
 }

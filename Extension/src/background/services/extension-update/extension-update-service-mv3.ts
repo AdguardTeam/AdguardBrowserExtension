@@ -104,6 +104,23 @@ export class ExtensionUpdateService {
     private static manualUpdateHandler: ManualUpdateHandler;
 
     /**
+     * Whether post-reload refresh and notification metadata are ready for UI consumption.
+     */
+    private static isReloadHandlingComplete = false;
+
+    /**
+     * Post-reload result that could not be sent while the FSM was not Idle.
+     * The machine handles `Init` only in Idle, so an event sent in any other
+     * state is dropped; the result is flushed when the FSM returns to Idle.
+     */
+    private static pendingReloadResult: { isUpdateFailedAfterReload: boolean } | null = null;
+
+    /**
+     * Whether the FSM idle-flush subscription is already set up.
+     */
+    private static isFsmIdleFlushSubscribed = false;
+
+    /**
      * Initializes the service.
      *
      * IMPORTANT.
@@ -116,7 +133,20 @@ export class ExtensionUpdateService {
      * - Chrome will NOT automatically reload the extension when this listener is present.
      */
     public static async init(): Promise<void> {
+        ExtensionUpdateService.isReloadHandlingComplete = false;
         extensionUpdateActor.start();
+
+        if (!ExtensionUpdateService.isFsmIdleFlushSubscribed) {
+            ExtensionUpdateService.isFsmIdleFlushSubscribed = true;
+            // The machine handles `Init` only in Idle, so a post-reload result
+            // produced while the FSM is in another state is queued by
+            // sendReloadResult() and flushed here when the FSM returns to Idle.
+            extensionUpdateActor.subscribe((state) => {
+                if (state.value === ExtensionUpdateFSMState.Idle) {
+                    ExtensionUpdateService.flushPendingReloadResult();
+                }
+            });
+        }
 
         // Initialize manual update handler
         ExtensionUpdateService.manualUpdateHandler = new ManualUpdateHandler({
@@ -166,16 +196,8 @@ export class ExtensionUpdateService {
         // Load persisted state if any saved before SW restart
         const state = await ExtensionUpdateService.stateManager.init();
 
-        // Determine Init event payload from persisted state.
-        // isUpdateAvailable: true if a valid pending update exists in auto-update state.
-        // isReloadedOnUpdate: true if manual update data exists (extension just reloaded after update).
-        // isUpdateFailedAfterReload: true if manual update data exists and its isOk flag is false.
+        // Determine whether an update is pending.
         let isUpdateAvailable = false;
-        const isReloadedOnUpdate = await ManualUpdateHandler.hasUpdateData();
-        const manualUpdateData = await ExtensionUpdateService.peekManualExtensionUpdateData();
-        const isUpdateFailedAfterReload = isReloadedOnUpdate
-            && manualUpdateData !== null
-            && !manualUpdateData.isOk;
 
         if (state && state.nextVersion) {
             // Check if the persisted nextVersion is not newer than the current version.
@@ -197,17 +219,16 @@ export class ExtensionUpdateService {
             }
         }
 
-        // Send Init event exactly once per service worker lifecycle.
-        // The FSM transitions based on the event payload:
-        // - isUpdateAvailable: true → Idle → Available
-        // - isUpdateFailedAfterReload: true → Idle → Failed
-        // - isReloadedOnUpdate: true → Idle → Success
-        // - neither → stays in Idle
+        // Send Init event once per service worker lifecycle with the persisted
+        // update availability. The manual reload result is sent later by
+        // handleExtensionReloadOnUpdate() once the post-reload custom filter
+        // refresh completes. An event with all flags false causes no FSM
+        // transition, so it is safe to send while that refresh is pending.
         extensionUpdateActor.send({
             type: ExtensionUpdateFSMEvent.Init,
             isUpdateAvailable,
-            isReloadedOnUpdate,
-            isUpdateFailedAfterReload,
+            isReloadedOnUpdate: false,
+            isUpdateFailedAfterReload: false,
         });
 
         // If update was already available before SW restart, manually trigger
@@ -302,11 +323,96 @@ export class ExtensionUpdateService {
      * See {@link ManualUpdateHandler.handleReload} description.
      *
      * @param isUpdate Whether the extension version was updated.
+     * @param isCustomFiltersUpdateSuccessful Whether the post-reload custom filter refresh succeeded.
+     * Defaults to true.
      *
      * @returns Promise that resolves when handling completes.
      */
-    public static async handleExtensionReloadOnUpdate(isUpdate: boolean): Promise<void> {
-        return ManualUpdateHandler.handleReload(isUpdate);
+    public static async handleExtensionReloadOnUpdate(
+        isUpdate: boolean,
+        isCustomFiltersUpdateSuccessful = true,
+    ): Promise<void> {
+        let manualUpdateData: ManualUpdateMetadata | null = null;
+
+        try {
+            manualUpdateData = await ManualUpdateHandler.handleReload(
+                isUpdate,
+                isCustomFiltersUpdateSuccessful,
+            );
+        } catch (e) {
+            // Reload handling persists the update result before opening pages,
+            // and page APIs no longer throw out of it, so a rejection here
+            // means a storage failure. Fall back to the persisted metadata, so
+            // the manual update result is still reported for this service
+            // worker lifecycle. If the metadata cannot be read either, no Init
+            // event is sent: the all-false Init from init() already left the
+            // FSM in Idle, and the result stays in storage for the next start.
+            logger.error('[ext.ExtensionUpdateService.handleExtensionReloadOnUpdate]: failed to handle extension reload:', e);
+            try {
+                manualUpdateData = await ExtensionUpdateService.peekManualExtensionUpdateData();
+            } catch (peekError) {
+                logger.error('[ext.ExtensionUpdateService.handleExtensionReloadOnUpdate]: failed to read manual update data after a reload handling error:', peekError);
+            }
+            // When the update cycle failed, the rejected handleReload may have
+            // failed to persist isOk = false, so the peeked value can still
+            // hold the provisional success. Report the failure in memory, as
+            // the broken storage cannot be fixed from here. The version
+            // comparison matches the one in handleReload, so a later start
+            // after a successful update does not force a false failure. A
+            // successful cycle keeps its persisted value: handleReload only
+            // writes on failure, so nothing trustworthy could have been lost.
+            if (
+                manualUpdateData
+                && (!isCustomFiltersUpdateSuccessful || manualUpdateData.initVersion === Prefs.version)
+            ) {
+                manualUpdateData.isOk = false;
+            }
+        } finally {
+            ExtensionUpdateService.isReloadHandlingComplete = true;
+        }
+
+        if (manualUpdateData) {
+            ExtensionUpdateService.sendReloadResult(!manualUpdateData.isOk);
+        }
+    }
+
+    /**
+     * Sends the post-reload result to the FSM, or queues it while the FSM is
+     * not Idle.
+     *
+     * The machine handles `Init` only in Idle, so an event sent in any other
+     * state (a manual check or `onUpdateAvailable` arrived during the refresh)
+     * would be dropped for the whole service worker lifecycle. The queued
+     * result is flushed by the idle-flush subscription from {@link ExtensionUpdateService.init}.
+     *
+     * @param isUpdateFailedAfterReload Whether the reloaded update failed.
+     */
+    private static sendReloadResult(isUpdateFailedAfterReload: boolean): void {
+        if (ExtensionUpdateService.snapshot === ExtensionUpdateFSMState.Idle) {
+            extensionUpdateActor.send({
+                type: ExtensionUpdateFSMEvent.Init,
+                isUpdateAvailable: false,
+                isReloadedOnUpdate: true,
+                isUpdateFailedAfterReload,
+            });
+            return;
+        }
+
+        ExtensionUpdateService.pendingReloadResult = { isUpdateFailedAfterReload };
+        logger.debug('[ext.ExtensionUpdateService.sendReloadResult]: FSM is not Idle, queued the reload result until it returns to Idle');
+    }
+
+    /**
+     * Flushes a queued post-reload result, if any.
+     */
+    private static flushPendingReloadResult(): void {
+        if (!ExtensionUpdateService.pendingReloadResult) {
+            return;
+        }
+
+        const { isUpdateFailedAfterReload } = ExtensionUpdateService.pendingReloadResult;
+        ExtensionUpdateService.pendingReloadResult = null;
+        ExtensionUpdateService.sendReloadResult(isUpdateFailedAfterReload);
     }
 
     /**
@@ -332,9 +438,16 @@ export class ExtensionUpdateService {
     /**
      * See {@link ManualUpdateHandler.getUpdateData} description.
      *
-     * @returns Manual extension update data or null if not found.
+     * @returns Manual extension update data, or null if absent or the post-reload refresh is still pending.
      */
     public static async getManualExtensionUpdateData(): Promise<ManualUpdateMetadata | null> {
+        // Existing extension pages can request data before App.asyncInit finishes.
+        // Keep the manual intent and provisional result until the refresh completes.
+        if (!ExtensionUpdateService.isReloadHandlingComplete) {
+            logger.debug('[ext.ExtensionUpdateService.getManualExtensionUpdateData]: post-reload custom filter refresh is still pending');
+            return null;
+        }
+
         return ManualUpdateHandler.getUpdateData();
     }
 
@@ -342,13 +455,33 @@ export class ExtensionUpdateService {
      * Reads manual extension update data from storage without removing it.
      *
      * See {@link ManualUpdateHandler.peekUpdateData} for details.
-     * This method is intended for FSM initialization during background startup,
-     * where the data must be inspected but preserved for {@link ManualUpdateHandler.handleReload}.
+     *
+     * Note: unlike {@link ExtensionUpdateService.getManualExtensionUpdateData},
+     * this method deliberately bypasses the post-reload gate, so it may return
+     * the provisional `isOk` value while the custom filter refresh is still
+     * pending. Do not use it to report the update result to the user — except
+     * as the fallback of {@link ExtensionUpdateService.handleExtensionReloadOnUpdate}
+     * when reload handling itself failed, where the persisted value is the most
+     * trustworthy result available.
      *
      * @returns Manual extension update data or null if not found or invalid.
      */
     public static async peekManualExtensionUpdateData(): Promise<ManualUpdateMetadata | null> {
         return ManualUpdateHandler.peekUpdateData();
+    }
+
+    /**
+     * Checks whether a manual update was initiated and its post-reload result
+     * has not been handled yet.
+     *
+     * Used to scope the full-download intent of a manual update to its own
+     * update cycle: stale metadata from an earlier cycle must not force full
+     * downloads on a later, unrelated extension update.
+     *
+     * @returns True if the manual update intent belongs to the current update cycle.
+     */
+    public static async hasPendingManualUpdateIntent(): Promise<boolean> {
+        return ManualUpdateHandler.hasPendingUpdateIntent();
     }
 
     /**

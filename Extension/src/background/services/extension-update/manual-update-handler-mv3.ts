@@ -25,6 +25,7 @@ import { FilterUpdateApi, PagesApi } from '../../api';
 import { browserStorage } from '../../storages';
 import { getRunInfo } from '../../utils/run-info';
 import { Version } from '../../utils/version';
+import { Prefs } from '../../prefs';
 import { ContentScriptInjector } from '../../content-script-injector';
 import { FilterUpdateService } from '../filter-update/filter-update-mv3';
 import { type ManualCheckResult } from '../../../common/messages';
@@ -146,6 +147,8 @@ export class ManualUpdateHandler {
      *
      * @returns Result object with `lastCheckTimeMs` — the persisted timestamp in milliseconds,
      * or `null` if saving failed or the check was skipped (update in progress).
+     * When some custom filters failed to update, the timestamp is still returned
+     * while the failure is reported through the update failure callback.
      */
     public async check(): Promise<ManualCheckResult> {
         // Mark this as manual check
@@ -187,12 +190,22 @@ export class ManualUpdateHandler {
         // NOTE: no need to update custom filters before the previous condition,
         // because if extension update is present,
         // custom filters will be updated _after_ the extension reload.
+        let customFiltersUpdateError: unknown;
         try {
-            await FilterUpdateApi.updateCustomFilters();
+            // Download filters fully, without patches, as it is done for
+            // manual updates in MV2. It makes manual updates resilient to
+            // broken patch chains, e.g. when the filter URL was moved or
+            // redirected and patch files are not available anymore.
+            await FilterUpdateApi.updateCustomFilters(true);
         } catch (e) {
+            customFiltersUpdateError = e;
             logger.error('[ext.ManualUpdateHandler.check]: Failed to update custom filters:', e);
         }
 
+        // Persist the check time even if some custom filters failed: the
+        // healthy filters were updated, so the user-visible "last checked"
+        // time should still advance. The failure itself is reported through
+        // the update state machine below.
         let lastCheckTimeMs: number | null = null;
         try {
             lastCheckTimeMs = Date.now();
@@ -201,17 +214,23 @@ export class ManualUpdateHandler {
             logger.error('[ext.ManualUpdateHandler.check]: Failed to save last check time:', e);
             lastCheckTimeMs = null;
         }
+
         // Clear the checking timeout to prevent a stale UpdateFailed event
         // from firing during a subsequent manual check. Without this, a leftover
         // 10-minute timeout from this check could transition a new "Checking"
         // state to "Failed" incorrectly.
         this.clearCheckTimeout();
 
-        // Notify that update is not available
-        this.onUpdateCheckComplete(false);
-
         // Reset manual check flag
         this.stateManager.set(AutoUpdateStateField.isManualCheck, false);
+
+        if (customFiltersUpdateError) {
+            this.onUpdateApplyFailed();
+            return { lastCheckTimeMs };
+        }
+
+        // Notify that update is not available
+        this.onUpdateCheckComplete(false);
 
         return { lastCheckTimeMs };
     }
@@ -321,8 +340,15 @@ export class ManualUpdateHandler {
      * so "failed" notification should be shown.
      *
      * @param isUpdate Whether extension was actually updated.
+     * @param isCustomFiltersUpdateSuccessful Whether the post-reload custom filter refresh succeeded.
+     * Defaults to true.
+     *
+     * @returns Manual update metadata for FSM initialization, or null if none remains.
      */
-    public static async handleReload(isUpdate: boolean): Promise<void> {
+    public static async handleReload(
+        isUpdate: boolean,
+        isCustomFiltersUpdateSuccessful = true,
+    ): Promise<ManualUpdateMetadata | null> {
         const manualExtensionUpdateData = await ManualUpdateHandler.retrieveUpdateData();
 
         if (!manualExtensionUpdateData) {
@@ -330,7 +356,7 @@ export class ManualUpdateHandler {
             // page-opened flag from a previous cycle.
             await browserStorage.remove(MANUAL_EXTENSION_UPDATE_PAGE_OPENED_KEY);
             logger.debug('[ext.ManualUpdateHandler.handleReload]: No manual extension update data after reload found');
-            return;
+            return null;
         }
 
         const { initVersion, pageToOpenAfterReload } = manualExtensionUpdateData;
@@ -343,7 +369,7 @@ export class ManualUpdateHandler {
             logger.warn('[ext.ManualUpdateHandler.handleReload]: No pageToOpenAfterReload found');
             await browserStorage.remove(MANUAL_EXTENSION_UPDATE_KEY);
             await browserStorage.remove(MANUAL_EXTENSION_UPDATE_PAGE_OPENED_KEY);
-            return;
+            return null;
         }
 
         // If the page was already opened on a previous SW lifecycle, do not
@@ -351,54 +377,60 @@ export class ManualUpdateHandler {
         // written for the next update cycle, and cleaned up here when metadata
         // has been consumed (see the absent-metadata branch above).
         const wasPageOpened = await browserStorage.get(MANUAL_EXTENSION_UPDATE_PAGE_OPENED_KEY);
-        if (wasPageOpened) {
-            logger.debug('[ext.ManualUpdateHandler.handleReload]: Page was already opened on a previous start, skipping');
-            return;
-        }
 
         /**
          * If `pageToOpenAfterReload` is present in the storage,
          * it means that the extension update was triggered by a user.
-         * If the update failed (isUpdate === false), `isOk` is set to `false`
-         * so the FSM initialization via the Init event on the next service-worker
-         * start can derive the correct `isUpdateFailedAfterReload` flag.
+         * If the extension update or custom filter refresh failed, `isOk` is set
+         * to `false` so FSM initialization and the UI reflect the complete result.
+         *
+         * Whether the extension actually updated is decided by comparing the
+         * version recorded when the manual update was initiated with the current
+         * one. The `isUpdate` argument is only true on the first service-worker
+         * start after the reload; on later starts the version comparison is
+         * still reliable, so a failed page open does not turn the preserved
+         * success into a failure.
+         *
+         * A failed post-reload refresh is persisted even when the page-opened
+         * flag survived from an earlier update cycle, otherwise the FSM would
+         * initialize from the stale success.
          *
          * The data persists after opening the page so the asynchronously-loading
          * UI can consume it. The UI removes the data via getUpdateData().
          */
-        if (!isUpdate) {
-            const updatedMetadata: ManualUpdateMetadata = {
-                initVersion,
-                pageToOpenAfterReload,
-                isOk: false,
-            };
-
-            await browserStorage.set(MANUAL_EXTENSION_UPDATE_KEY, JSON.stringify(updatedMetadata));
+        const isVersionChanged = initVersion !== Prefs.version;
+        if (!isCustomFiltersUpdateSuccessful || (!isVersionChanged && !wasPageOpened)) {
+            manualExtensionUpdateData.isOk = false;
+            await browserStorage.set(MANUAL_EXTENSION_UPDATE_KEY, JSON.stringify(manualExtensionUpdateData));
         }
 
-        if (pageToOpenAfterReload === ForwardFrom.Options) {
-            logger.info('[ext.ManualUpdateHandler.handleReload]: Opening options page...');
-            await PagesApi.openFiltersOnSettingsPage();
-        } else if (pageToOpenAfterReload === ForwardFrom.Popup) {
-            logger.info('[ext.ManualUpdateHandler.handleReload]: Opening popup...');
-            await PagesApi.openExtensionPopup();
+        if (wasPageOpened) {
+            logger.debug('[ext.ManualUpdateHandler.handleReload]: Page was already opened on a previous start, skipping');
+            return manualExtensionUpdateData;
         }
 
-        // Set flag to prevent re-opening the page on subsequent
-        // service-worker restarts. The main key stays for UI consumption.
-        await browserStorage.set(MANUAL_EXTENSION_UPDATE_PAGE_OPENED_KEY, true);
-        logger.debug('[ext.ManualUpdateHandler.handleReload]: Page opened, flag set — waiting for UI to consume metadata');
-    }
+        // The update result is already persisted above, so a failing page API
+        // must not abort the result reporting. The page-opened flag is left
+        // unset on failure, so the page open is retried on the next
+        // service-worker start.
+        try {
+            if (pageToOpenAfterReload === ForwardFrom.Options) {
+                logger.info('[ext.ManualUpdateHandler.handleReload]: Opening options page...');
+                await PagesApi.openFiltersOnSettingsPage();
+            } else if (pageToOpenAfterReload === ForwardFrom.Popup) {
+                logger.info('[ext.ManualUpdateHandler.handleReload]: Opening popup...');
+                await PagesApi.openExtensionPopup();
+            }
 
-    /**
-     * Checks whether manual update data exists in storage without reading or removing it.
-     * Used during background startup to determine if the extension was reloaded after an update.
-     *
-     * @returns True if manual extension update data exists in storage, false otherwise.
-     */
-    public static async hasUpdateData(): Promise<boolean> {
-        const manualExtensionUpdateStr = await browserStorage.get(MANUAL_EXTENSION_UPDATE_KEY);
-        return typeof manualExtensionUpdateStr === 'string';
+            // Set flag to prevent re-opening the page on subsequent
+            // service-worker restarts. The main key stays for UI consumption.
+            await browserStorage.set(MANUAL_EXTENSION_UPDATE_PAGE_OPENED_KEY, true);
+            logger.debug('[ext.ManualUpdateHandler.handleReload]: Page opened, flag set — waiting for UI to consume metadata');
+        } catch (e) {
+            logger.warn('[ext.ManualUpdateHandler.handleReload]: Failed to open the post-update page, will retry on the next start:', e);
+        }
+
+        return manualExtensionUpdateData;
     }
 
     /**
@@ -408,13 +440,37 @@ export class ManualUpdateHandler {
      * the data, so it can still be retrieved later by {@link ManualUpdateHandler.handleReload}
      * or the UI layer.
      *
-     * Intended for background startup FSM initialization where the data must be
-     * inspected but preserved for subsequent handlers.
+     * Note: this method intentionally bypasses the post-reload gate of
+     * `ExtensionUpdateService.getManualExtensionUpdateData()`, so it may
+     * return the provisional `isOk` value while the custom filter refresh is
+     * still pending. Do not use it to report the update result to the user.
      *
      * @returns Manual extension update data or null if not found or invalid.
      */
     public static async peekUpdateData(): Promise<ManualUpdateMetadata | null> {
         return ManualUpdateHandler.retrieveUpdateData();
+    }
+
+    /**
+     * Checks whether manual update metadata exists and its post-reload handling
+     * has not started yet.
+     *
+     * The page-opened flag marks that the current metadata record was already
+     * handled: the record stays in storage for UI consumption, but it no longer
+     * represents a manual update intent for the next extension update cycle.
+     *
+     * @returns True if a manual update result is still pending handling.
+     */
+    public static async hasPendingUpdateIntent(): Promise<boolean> {
+        const manualExtensionUpdateData = await ManualUpdateHandler.retrieveUpdateData();
+
+        if (!manualExtensionUpdateData) {
+            return false;
+        }
+
+        const wasPageOpened = await browserStorage.get(MANUAL_EXTENSION_UPDATE_PAGE_OPENED_KEY);
+
+        return !wasPageOpened;
     }
 
     /**

@@ -43,19 +43,30 @@ export class App extends AppCommon {
      */
     protected static override async asyncInit(): Promise<boolean> {
         const isUpdate = await super.asyncInit();
+        let isCustomFiltersUpdateSuccessful = true;
 
         // Update custom filters after extension update.
         // This is the single place for custom filter updates on extension reload,
         // covering all update paths: manual, auto, and chrome://extensions.
         if (isUpdate) {
             try {
-                await FilterUpdateApi.updateCustomFilters();
+                // Only a manual update that is still pending handling carries
+                // the full-download intent; stale metadata from an earlier cycle
+                // must not force full downloads of every custom filter.
+                const hasPendingManualUpdate = await ExtensionUpdateService.hasPendingManualUpdateIntent();
+                if (hasPendingManualUpdate) {
+                    // Preserve the user's full-download intent across the extension reload.
+                    await FilterUpdateApi.updateCustomFilters(true);
+                } else {
+                    await FilterUpdateApi.updateCustomFilters();
+                }
             } catch (e) {
+                isCustomFiltersUpdateSuccessful = false;
                 logger.error('[ext.App.asyncInit]: Failed to update custom filters after extension update:', e);
             }
         }
 
-        await ExtensionUpdateService.handleExtensionReloadOnUpdate(isUpdate);
+        await ExtensionUpdateService.handleExtensionReloadOnUpdate(isUpdate, isCustomFiltersUpdateSuccessful);
 
         // This event is used for integration tests (scripts/browser-test/index.ts)
         // and waitUntilExtensionInitialized() is adding a listener to the event

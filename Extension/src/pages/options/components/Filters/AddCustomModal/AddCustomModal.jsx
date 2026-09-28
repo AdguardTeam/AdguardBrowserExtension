@@ -123,15 +123,11 @@ const AddCustomModal = observer(({
 
         try {
             const result = await messenger.checkCustomUrl(customUrlToAdd);
-            if (result === null) {
-                setStepToRender(STEPS.ERROR);
-            } else if (result.errorAlreadyExists) {
+            if (result.errorAlreadyExists) {
                 setError(translator.getMessage('options_antibanner_custom_filter_already_exists'));
                 setStepToRender(STEPS.ERROR);
             } else if (result.errorHtmlContent) {
                 setError(translator.getMessage('options_add_custom_filter_modal_error_html_content'));
-                setStepToRender(STEPS.ERROR);
-            } else if (!result.filter) {
                 setStepToRender(STEPS.ERROR);
             } else {
                 setFilterToAdd(result.filter);

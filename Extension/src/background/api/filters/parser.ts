@@ -18,6 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import { parseLastModifiedHeader, convertToISOString } from '../../utils/date-utils';
+import { NEWLINE_CHAR_UNIX } from '../../../common/constants';
 
 export type FilterParsedData = {
     name: string;
@@ -38,6 +39,24 @@ export class FilterParser {
      * Number of lines to parse metadata from filter's header.
      */
     private static AMOUNT_OF_LINES_TO_PARSE = 50;
+
+    /**
+     * Parses filter metadata from raw filter text.
+     *
+     * Header tags are looked up in no more than
+     * {@link FilterParser.AMOUNT_OF_LINES_TO_PARSE} first lines, so the raw
+     * text is split with the same bound instead of allocating a line array
+     * for the whole filter.
+     *
+     * @param rawFilter Raw filter text.
+     * @param lastModifiedHeader Optional Last-Modified HTTP header value to use as fallback for TimeUpdated.
+     *
+     * @returns Parsed filter data.
+     */
+    static parseFilterDataFromRawHeader(rawFilter: string, lastModifiedHeader?: string): FilterParsedData {
+        const headerLines = rawFilter.split(NEWLINE_CHAR_UNIX, FilterParser.AMOUNT_OF_LINES_TO_PARSE);
+        return FilterParser.parseFilterDataFromHeader(headerLines, lastModifiedHeader);
+    }
 
     /**
      * Parses filter metadata from rules' header.

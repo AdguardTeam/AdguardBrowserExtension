@@ -38,12 +38,17 @@ import {
 import {
     AutoUpdateStateManager,
 } from '../../../../../Extension/src/background/services/extension-update/auto-update-state-manager-mv3';
-import { UpdateCheckStatus } from '../../../../../Extension/src/background/services/extension-update/types';
+import {
+    AutoUpdateStateField,
+    UpdateCheckStatus,
+} from '../../../../../Extension/src/background/services/extension-update/types';
 import {
     MANUAL_EXTENSION_UPDATE_KEY,
     MANUAL_EXTENSION_UPDATE_PAGE_OPENED_KEY,
 } from '../../../../../Extension/src/common/constants';
 import { ForwardFrom } from '../../../../../Extension/src/common/forward';
+import { logger } from '../../../../../Extension/src/common/logger';
+import { Prefs } from '../../../../../Extension/src/background/prefs';
 
 // Mock BackendUpdateChecker to control its return values
 vi.mock(
@@ -156,7 +161,11 @@ describe('ManualUpdateHandler', () => {
     const onUpdateApplyFailed = vi.fn();
 
     beforeEach(async () => {
+        vi.useFakeTimers();
         vi.clearAllMocks();
+        mockBrowserStorageGet.mockReset().mockResolvedValue(undefined);
+        vi.mocked(FilterUpdateApi.updateCustomFilters).mockResolvedValue(undefined);
+        vi.mocked(FilterUpdateService.setLastCheckTimeMs).mockResolvedValue(undefined);
 
         stateManager = new AutoUpdateStateManager();
         await stateManager.init();
@@ -171,10 +180,12 @@ describe('ManualUpdateHandler', () => {
     });
 
     afterEach(() => {
+        vi.clearAllTimers();
+        vi.useRealTimers();
         vi.restoreAllMocks();
     });
 
-    describe('check() - pre-download backend check', () => {
+    describe.skipIf(!__IS_MV3__)('check() - pre-download backend check', () => {
         it('calls requestUpdateCheck when backend reports update available', async () => {
             vi.mocked(BackendUpdateChecker.checkUpdate).mockResolvedValue({
                 status: UpdateCheckStatus.UpdateAvailable,
@@ -230,19 +241,99 @@ describe('ManualUpdateHandler', () => {
             await handler.check();
 
             expect(FilterUpdateApi.updateCustomFilters).toHaveBeenCalledTimes(1);
+            // Manual updates download custom filters fully, without patches.
+            expect(FilterUpdateApi.updateCustomFilters).toHaveBeenCalledWith(true);
             expect(onUpdateCheckComplete).toHaveBeenCalledWith(false);
+            expect(stateManager.get(AutoUpdateStateField.isManualCheck)).toBe(false);
+
+            vi.advanceTimersByTime(10 * 60 * 1000);
+            expect(onUpdateApplyFailed).not.toHaveBeenCalled();
         });
 
-        it('still completes check when updateCustomFilters fails', async () => {
-            vi.spyOn(FilterUpdateApi, 'updateCustomFilters').mockRejectedValue(new Error('network'));
+        it('reports refresh failure, persists the check time and cleans up', async () => {
+            const failure = new Error('network');
+            vi.spyOn(FilterUpdateApi, 'updateCustomFilters').mockRejectedValue(failure);
+            const clearTimeout = vi.spyOn(window, 'clearTimeout');
 
             vi.mocked(BackendUpdateChecker.checkUpdate).mockResolvedValue({
                 status: UpdateCheckStatus.NoContent,
             });
 
+            const before = Date.now();
+            const result = await handler.check();
+
+            // Healthy filters were updated and the engine was refreshed, so the
+            // check time must advance even though the failure is still reported.
+            expect(result.lastCheckTimeMs).not.toBeNull();
+            expect(result.lastCheckTimeMs).toBeGreaterThanOrEqual(before);
+            expect(FilterUpdateService.setLastCheckTimeMs).toHaveBeenCalledWith(result.lastCheckTimeMs);
+            expect(onUpdateApplyFailed).toHaveBeenCalledOnce();
+            expect(onUpdateCheckComplete).not.toHaveBeenCalled();
+            expect(stateManager.get(AutoUpdateStateField.isManualCheck)).toBe(false);
+            expect(clearTimeout).toHaveBeenCalled();
+            expect(logger.error).toHaveBeenCalledWith(
+                '[ext.ManualUpdateHandler.check]: Failed to update custom filters:',
+                failure,
+            );
+
+            vi.advanceTimersByTime(10 * 60 * 1000);
+            expect(onUpdateApplyFailed).toHaveBeenCalledOnce();
+        });
+
+        it('does not let a failed check timeout interrupt a later pending extension update', async () => {
+            vi.mocked(FilterUpdateApi.updateCustomFilters).mockRejectedValueOnce(new Error('network'));
+            vi.mocked(BackendUpdateChecker.checkUpdate).mockResolvedValue({
+                status: UpdateCheckStatus.NoContent,
+            });
+            await handler.check();
+            expect(onUpdateApplyFailed).toHaveBeenCalledOnce();
+
+            vi.advanceTimersByTime(60 * 1000);
+            vi.mocked(BackendUpdateChecker.checkUpdate).mockResolvedValue({
+                status: UpdateCheckStatus.UpdateAvailable,
+                version: '5.3.0.18',
+            });
+            mockRequestUpdateCheck.mockResolvedValue({
+                status: 'update_available',
+                version: '5.3.0.18',
+            });
             await handler.check();
 
-            expect(onUpdateCheckComplete).toHaveBeenCalledWith(false);
+            // The first check's timeout would fire here if it had not been cleared.
+            vi.advanceTimersByTime(9 * 60 * 1000);
+            expect(onUpdateApplyFailed).toHaveBeenCalledOnce();
+            expect(onUpdateCheckComplete).not.toHaveBeenCalled();
+            expect(stateManager.get(AutoUpdateStateField.isManualCheck)).toBe(true);
+
+            await handler.onUpdateAvailable();
+            vi.advanceTimersByTime(10 * 60 * 1000);
+            expect(onUpdateApplyFailed).toHaveBeenCalledOnce();
+        });
+
+        it('defers custom refresh and completion while Chrome has a pending extension update', async () => {
+            vi.mocked(BackendUpdateChecker.checkUpdate).mockResolvedValue({
+                status: UpdateCheckStatus.UpdateAvailable,
+                version: '5.3.0.18',
+            });
+            mockRequestUpdateCheck.mockResolvedValue({
+                status: 'update_available',
+                version: '5.3.0.18',
+            });
+
+            await expect(handler.check()).resolves.toEqual({ lastCheckTimeMs: null });
+
+            expect(FilterUpdateApi.updateCustomFilters).not.toHaveBeenCalled();
+            expect(FilterUpdateService.setLastCheckTimeMs).not.toHaveBeenCalled();
+            expect(onUpdateCheckComplete).not.toHaveBeenCalled();
+            expect(onUpdateApplyFailed).not.toHaveBeenCalled();
+            expect(stateManager.get(AutoUpdateStateField.isManualCheck)).toBe(true);
+
+            await handler.onUpdateAvailable();
+            expect(onUpdateCheckComplete).toHaveBeenCalledExactlyOnceWith(true);
+            expect(FilterUpdateApi.updateCustomFilters).not.toHaveBeenCalled();
+
+            vi.advanceTimersByTime(10 * 60 * 1000);
+            expect(onUpdateApplyFailed).not.toHaveBeenCalled();
         });
     });
 
@@ -456,11 +547,12 @@ describe('ManualUpdateHandler', () => {
             // Second call: page-opened flag is set
             mockBrowserStorageGet.mockResolvedValueOnce(true);
 
-            await ManualUpdateHandler.handleReload(false);
+            const result = await ManualUpdateHandler.handleReload(false);
 
             // Page must NOT be opened again
             expect(PagesApi.openExtensionPopup).not.toHaveBeenCalled();
             expect(PagesApi.openFiltersOnSettingsPage).not.toHaveBeenCalled();
+            expect(result?.isOk).toBe(true);
 
             // Key must NOT be modified
             const setCalls = (browserStorage.set as ReturnType<typeof vi.fn>).mock.calls;
@@ -470,14 +562,14 @@ describe('ManualUpdateHandler', () => {
             expect(wasKeyUpdated).toBe(false);
         });
 
-        it('sets isOk to false when update failed (isUpdate=false) on first open', async () => {
+        it('sets isOk to false when the version did not change (update failed)', async () => {
             const { browserStorage } = await import(
                 '../../../../../Extension/src/background/storages'
             );
 
             mockBrowserStorageGet
                 .mockResolvedValueOnce(JSON.stringify({
-                    initVersion: '5.2.0.0',
+                    initVersion: Prefs.version,
                     pageToOpenAfterReload: ForwardFrom.Options,
                     isOk: true,
                 }))
@@ -490,10 +582,121 @@ describe('ManualUpdateHandler', () => {
             expect(browserStorage.set).toHaveBeenCalledWith(
                 MANUAL_EXTENSION_UPDATE_KEY,
                 JSON.stringify({
-                    initVersion: '5.2.0.0',
+                    initVersion: Prefs.version,
                     pageToOpenAfterReload: ForwardFrom.Options,
                     isOk: false,
                 }),
+            );
+        });
+
+        it('keeps the preserved success on a later start when the page open failed', async () => {
+            const { browserStorage } = await import(
+                '../../../../../Extension/src/background/storages'
+            );
+            const { PagesApi } = await import(
+                '../../../../../Extension/src/background/api/ui/pages/index'
+            );
+            const metadata = {
+                initVersion: '5.2.0.0',
+                pageToOpenAfterReload: ForwardFrom.Options,
+                isOk: true,
+            };
+            mockBrowserStorageGet
+                .mockResolvedValueOnce(JSON.stringify(metadata))
+                // The page-opened flag was never set because the earlier open failed
+                .mockResolvedValueOnce(undefined);
+
+            const result = await ManualUpdateHandler.handleReload(false);
+
+            // The version changed since the manual update was initiated, so the
+            // preserved success must not be overwritten with a failure.
+            expect(result?.isOk).toBe(true);
+            const setCalls = (browserStorage.set as ReturnType<typeof vi.fn>).mock.calls;
+            expect(setCalls.some((call: unknown[]) => call[0] === MANUAL_EXTENSION_UPDATE_KEY)).toBe(false);
+            // The page open is retried on this start.
+            expect(PagesApi.openFiltersOnSettingsPage).toHaveBeenCalled();
+        });
+
+        it('preserves a deferred custom refresh failure in metadata for the UI and FSM', async () => {
+            const { browserStorage } = await import(
+                '../../../../../Extension/src/background/storages'
+            );
+            const { PagesApi } = await import(
+                '../../../../../Extension/src/background/api/ui/pages/index'
+            );
+            const metadata = {
+                initVersion: '5.2.0.0',
+                pageToOpenAfterReload: ForwardFrom.Options,
+                isOk: true,
+            };
+            mockBrowserStorageGet
+                .mockResolvedValueOnce(JSON.stringify(metadata))
+                .mockResolvedValueOnce(undefined);
+
+            const result = await ManualUpdateHandler.handleReload(true, false);
+
+            expect(result).toEqual({ ...metadata, isOk: false });
+            expect(browserStorage.set).toHaveBeenCalledWith(
+                MANUAL_EXTENSION_UPDATE_KEY,
+                JSON.stringify({ ...metadata, isOk: false }),
+            );
+            expect(browserStorage.remove).not.toHaveBeenCalledWith(MANUAL_EXTENSION_UPDATE_KEY);
+            expect(PagesApi.openFiltersOnSettingsPage).toHaveBeenCalledOnce();
+            expect(vi.mocked(browserStorage.set).mock.invocationCallOrder[0])
+                .toBeLessThan(vi.mocked(PagesApi.openFiltersOnSettingsPage).mock.invocationCallOrder[0]!);
+        });
+
+        it('still reports the persisted result when opening the post-update page fails', async () => {
+            const { browserStorage } = await import(
+                '../../../../../Extension/src/background/storages'
+            );
+            const { PagesApi } = await import(
+                '../../../../../Extension/src/background/api/ui/pages/index'
+            );
+            const metadata = {
+                initVersion: '5.2.0.0',
+                pageToOpenAfterReload: ForwardFrom.Options,
+                isOk: true,
+            };
+            mockBrowserStorageGet
+                .mockResolvedValueOnce(JSON.stringify(metadata))
+                .mockResolvedValueOnce(undefined);
+            vi.mocked(PagesApi.openFiltersOnSettingsPage).mockRejectedValueOnce(new Error('page error'));
+
+            const result = await ManualUpdateHandler.handleReload(true, false);
+
+            // The failure persisted before the page open is still reported.
+            expect(result).toEqual({ ...metadata, isOk: false });
+            expect(browserStorage.set).toHaveBeenCalledWith(
+                MANUAL_EXTENSION_UPDATE_KEY,
+                JSON.stringify({ ...metadata, isOk: false }),
+            );
+            // The page-opened flag stays unset, so the page open is retried on
+            // the next service-worker start.
+            expect(browserStorage.set).not.toHaveBeenCalledWith(MANUAL_EXTENSION_UPDATE_PAGE_OPENED_KEY, true);
+        });
+
+        it('persists a failed refresh even when the page-opened flag survived from an earlier cycle', async () => {
+            const { browserStorage } = await import(
+                '../../../../../Extension/src/background/storages'
+            );
+            const metadata = {
+                initVersion: '5.2.0.0',
+                pageToOpenAfterReload: ForwardFrom.Options,
+                isOk: true,
+            };
+            mockBrowserStorageGet
+                .mockResolvedValueOnce(JSON.stringify(metadata))
+                // The page-opened flag survived from an earlier update cycle,
+                // but the current post-reload refresh failed.
+                .mockResolvedValueOnce(true);
+
+            const result = await ManualUpdateHandler.handleReload(true, false);
+
+            expect(result).toEqual({ ...metadata, isOk: false });
+            expect(browserStorage.set).toHaveBeenCalledWith(
+                MANUAL_EXTENSION_UPDATE_KEY,
+                JSON.stringify({ ...metadata, isOk: false }),
             );
         });
 

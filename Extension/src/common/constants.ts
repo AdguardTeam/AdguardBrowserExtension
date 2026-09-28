@@ -222,6 +222,11 @@ export const CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER = 99 as const;
  */
 export const CUSTOM_FILTERS_START_ID = 1000 as const;
 
+/**
+ * Custom filter download timeout and maximum in-flight request reuse time, in milliseconds.
+ */
+export const CUSTOM_FILTER_DOWNLOAD_TIMEOUT_MS = 3 * 1000;
+
 // Unnecessary characters that will be replaced
 export const WASTE_CHARACTERS = /[.*+?^${}()|[\]\\]/g;
 
