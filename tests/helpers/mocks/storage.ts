@@ -19,6 +19,7 @@
  */
 
 import browser from 'sinon-chrome';
+import sinon, { type SinonStub } from 'sinon';
 import { type Storage, type Events } from 'webextension-polyfill';
 
 /**
@@ -106,6 +107,43 @@ class EmulatedLocalStorage implements Storage.StorageArea {
         this.data = {};
         return Promise.resolve();
     }
+
+    /**
+     * Gets the amount of space (in bytes) being used by the storage.
+     *
+     * @param keys Keys to get the total usage for; `null`/`undefined` for all data.
+     */
+    getBytesInUse(keys?: null | string | string[]): Promise<number> {
+        const sizeOf = (value: unknown): number => {
+            return JSON.stringify(value)?.length ?? 0;
+        };
+
+        let keyList: string[];
+        if (keys === undefined || keys === null) {
+            keyList = Object.keys(this.data);
+        } else if (typeof keys === 'string') {
+            keyList = [keys];
+        } else {
+            keyList = keys;
+        }
+
+        return Promise.resolve(
+            keyList.reduce((total, key) => {
+                if (!Object.hasOwn(this.data, key)) {
+                    return total;
+                }
+
+                return total + sizeOf({ [key]: this.data[key] });
+            }, 0),
+        );
+    }
+
+    /**
+     * Gets the keys of all items in storage.
+     */
+    getKeys(): Promise<string[]> {
+        return Promise.resolve(Object.keys(this.data));
+    }
 }
 
 /**
@@ -118,17 +156,37 @@ class EmulatedLocalStorage implements Storage.StorageArea {
 export const mockLocalStorage = (initData?: Record<string, unknown>): Storage.StorageArea => {
     const localStorage = new EmulatedLocalStorage(initData);
 
+    // sinon-chrome's `storage.local` getter builds a new object on every access,
+    // so a property added to one snapshot (e.g. `getKeys`, which sinon-chrome
+    // predates) is not visible to the code under test. Pin the getter to a
+    // single object so the custom stub persists.
+    const storageLocal = browser.storage.local as typeof browser.storage.local & {
+        getKeys: SinonStub;
+    };
+    const localDescriptor = Object.getOwnPropertyDescriptor(browser.storage, 'local');
+    Object.defineProperty(browser.storage, 'local', {
+        configurable: true,
+        enumerable: localDescriptor?.enumerable ?? true,
+        get: () => storageLocal,
+    });
+
+    // sinon-chrome predates storage.local.getKeys — register our own stub.
+    storageLocal.getKeys = sinon.stub().callsFake(() => localStorage.getKeys());
+
     // Override the sinon-chrome storage API with mocked methods
-    browser.storage.local.get.callsFake((keys) => localStorage.get(keys));
-    browser.storage.local.set.callsFake((items) => localStorage.set(items));
-    browser.storage.local.remove.callsFake((keys) => localStorage.remove(keys));
-    browser.storage.local.clear.callsFake(() => localStorage.clear());
+    storageLocal.get.callsFake((keys) => localStorage.get(keys));
+    storageLocal.set.callsFake((items) => localStorage.set(items));
+    storageLocal.remove.callsFake((keys) => localStorage.remove(keys));
+    storageLocal.clear.callsFake(() => localStorage.clear());
+    storageLocal.getBytesInUse.callsFake((keys) => localStorage.getBytesInUse(keys));
 
     // Reset spy history to avoid unwanted side effects in tests
-    browser.storage.local.get.resetHistory();
-    browser.storage.local.set.resetHistory();
-    browser.storage.local.remove.resetHistory();
-    browser.storage.local.clear.resetHistory();
+    storageLocal.get.resetHistory();
+    storageLocal.set.resetHistory();
+    storageLocal.remove.resetHistory();
+    storageLocal.clear.resetHistory();
+    storageLocal.getBytesInUse.resetHistory();
+    storageLocal.getKeys.resetHistory();
 
     return localStorage;
 };
