@@ -110,6 +110,7 @@ export class CommonFilterApiCommon {
             installed: true,
             loaded: true,
             enabled: !!currentFilterState?.enabled,
+            disabledAsUnused: !!currentFilterState?.disabledAsUnused,
         });
 
         const parsedMetadata = FilterParser.parseFilterDataFromHeader(filter);

@@ -121,4 +121,11 @@ export class App extends AppCommon {
     protected static override async manifestSpecificInit(): Promise<void> {
         await ExtensionUpdateService.init();
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected static override async initAutoDisableFiltersService(): Promise<void> {
+        // MV3 does not auto-disable language-specific filters.
+    }
 }

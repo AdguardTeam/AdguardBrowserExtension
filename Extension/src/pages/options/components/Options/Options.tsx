@@ -22,6 +22,7 @@ import React, {
     useContext,
     useEffect,
     useRef,
+    useState,
 } from 'react';
 import {
     createHashRouter,
@@ -71,6 +72,7 @@ export const createRouter = (
 export const Options = observer(() => {
     const { settingsStore, uiStore, telemetryStore } = useContext(rootStore);
     const pageIdRef = useRef<string | null>(null);
+    const [router] = useState(() => createRouter(getOptionRoute()));
 
     useAppearanceTheme(settingsStore.appearanceTheme);
 
@@ -141,7 +143,7 @@ export const Options = observer(() => {
                         v7_relativeSplatPath: false,
                         v7_startTransition: false,
                     }}
-                    router={createRouter(getOptionRoute())}
+                    router={router}
                 />
             </div>
         </>

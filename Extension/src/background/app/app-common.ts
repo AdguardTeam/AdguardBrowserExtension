@@ -276,6 +276,9 @@ export abstract class AppCommon {
 
         appContext.set(AppContextKey.IsInit, true);
 
+        // Initialize auto-disabling after the engine starts because it may update filtering rules.
+        await this.initAutoDisableFiltersService();
+
         // Update icons to hide "loading" icon
         await iconsApi.update();
 
@@ -306,6 +309,15 @@ export abstract class AppCommon {
      * Hook for initializing manifest-specific (MV2 or MV3) services.
      */
     protected static async manifestSpecificInit(): Promise<void> {
+        throw new NotImplementedError();
+    }
+
+    /**
+     * Initializes the service for auto-disabling unused language-specific filters after the engine starts.
+     *
+     * @throws NotImplementedError if not overridden.
+     */
+    protected static async initAutoDisableFiltersService(): Promise<void> {
         throw new NotImplementedError();
     }
 

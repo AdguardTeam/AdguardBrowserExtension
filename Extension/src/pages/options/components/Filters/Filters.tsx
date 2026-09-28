@@ -43,7 +43,11 @@ import { useVisibilityCheck } from '../../../common/hooks/useVisibilityCheck';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
 import { AntibannerGroupsId } from '../../../../common/constants';
 import { StaticFiltersLimitsWarning, DynamicRulesLimitsWarning } from '../Warnings';
-import { OptionsPageSections } from '../../../../common/nav';
+import {
+    OptionsPageSections,
+    FILTERS_GROUP_QUERY_PARAM,
+    getFiltersGroupPath,
+} from '../../../../common/nav';
 import { messenger } from '../../../services/messenger';
 import { getStaticWarningMessage } from '../../../common/utils/rules-limits-messages';
 import type { CategoriesGroupData, CategoriesFilterData } from '../../../../background/api';
@@ -85,7 +89,7 @@ type FilterListRenderParams = {
 };
 
 const QUERY_PARAM_NAMES = {
-    GROUP: 'group',
+    GROUP: FILTERS_GROUP_QUERY_PARAM,
     TITLE: 'title',
     SUBSCRIBE: 'subscribe',
 };
@@ -125,6 +129,10 @@ const Filters = observer(() => {
         filters,
         filtersToRender,
     } = settingsStore;
+
+    useEffect(() => () => {
+        settingsStore.setSelectedGroupId(null);
+    }, [settingsStore]);
 
     useEffect(() => {
         const parsedGroupId = Number.parseInt(query.get(QUERY_PARAM_NAMES.GROUP) || '', 10);
@@ -199,7 +207,7 @@ const Filters = observer(() => {
 
     const groupClickHandler = (groupId: AntibannerGroupsId) => () => {
         settingsStore.setSelectedGroupId(groupId);
-        navigate(`/filters?group=${groupId}`);
+        navigate(`/${getFiltersGroupPath(groupId)}`);
     };
 
     /**

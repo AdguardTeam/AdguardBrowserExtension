@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased 5.6
 
+### Added
+
+- Disable unused language-specific filters in MV2 [#2122].
+
 ### Changed
 
 - Updated [@adguard/rules-editor] to v2.0.2.
@@ -24,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   labels ending in an underscore (e.g. `lorenne_.wehype.app`).
 
 [#1410]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1410
+[#2122]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2122
 [#3067]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3067
 [#3560]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3560
 

@@ -265,6 +265,17 @@ export abstract class FiltersApiCommon {
     }
 
     /**
+     * Enables loaded filters, allowing manifest-specific tracking before the state change.
+     *
+     * @param filterIds Loaded filter IDs.
+     *
+     * @returns Promise resolved when filters are enabled.
+     */
+    public static async enableFilters(filterIds: number[]): Promise<void> {
+        filterStateStorage.enableFilters(filterIds);
+    }
+
+    /**
      * Loads and enables specified filters. Once the filters are enabled,
      * the untouched groups belonging to those filters will be enabled too.
      *
@@ -296,7 +307,7 @@ export abstract class FiltersApiCommon {
         // Concatenate filters loaded just now with already loaded filters
         loadedFilters.push(...alreadyLoadedFilterIds);
 
-        filterStateStorage.enableFilters(loadedFilters);
+        await this.enableFilters(loadedFilters);
         const loadedFiltersToLog = loadedFilters.map((id) => {
             const filterName = FiltersApiCommon.getFilterName(id);
             return `id='${id}', name='${filterName}'`;
@@ -363,7 +374,7 @@ export abstract class FiltersApiCommon {
         // Enable only loaded filters, because click on "use optimized filters"
         // can happen in offline mode and not every filter can be loaded, only
         // built-in filters from local extension's resources.
-        filterStateStorage.enableFilters(loadedFiltersIds);
+        await this.enableFilters(loadedFiltersIds);
     }
 
     /**

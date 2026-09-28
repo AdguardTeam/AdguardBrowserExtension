@@ -55,7 +55,7 @@ import {
     OPTIONS_OUTPUT,
 } from '../../../../../../constants';
 import { logger } from '../../../../common/logger';
-import { OptionsPageSections } from '../../../../common/nav';
+import { OptionsPageSections, getFiltersGroupPath } from '../../../../common/nav';
 import { FilterUpdateService } from '../../../services/filter-update';
 import { ExtensionStore, ExtensionStoreResolver } from '../../../services/extension-store/extension-store-resolver';
 import { CustomFilterUtils } from '../../../../common/custom-filter-utils';
@@ -572,8 +572,8 @@ export abstract class PagesApiCommon {
 
         const { url, title } = message.data;
 
-        // TODO: Use shared constants for query parameters
-        let optionalPart = '#filters?group=0';
+        // TODO: Use shared constants for the remaining query parameters
+        let optionalPart = `#${getFiltersGroupPath(AntibannerGroupsId.CustomFiltersGroupId)}`;
         if (title) {
             optionalPart += `&title=${title}`;
         }

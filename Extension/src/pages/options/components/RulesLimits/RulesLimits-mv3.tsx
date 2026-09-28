@@ -31,7 +31,8 @@ import { reactTranslator } from '../../../../common/translators/reactTranslator'
 import { translator } from '../../../../common/translators/translator';
 import { rootStore } from '../../stores/RootStore';
 import { messenger } from '../../../services/messenger';
-import { OptionsPageSections } from '../../../../common/nav';
+import { OptionsPageSections, getFiltersGroupPath } from '../../../../common/nav';
+import { AntibannerGroupsId } from '../../../../common/constants';
 import { shouldShowUserScriptsApiWarning } from '../../../../common/user-scripts-api';
 import { addMinDelayLoader } from '../../../common/components/helpers';
 
@@ -163,7 +164,7 @@ export const RulesLimits = observer(() => {
             custom_filters: (text: string) => (
                 <Link
                     className="rules-limits__text--gray"
-                    to={`/${OptionsPageSections.filters}?group=0`}
+                    to={`/${getFiltersGroupPath(AntibannerGroupsId.CustomFiltersGroupId)}`}
                 >
                     {text}
                 </Link>

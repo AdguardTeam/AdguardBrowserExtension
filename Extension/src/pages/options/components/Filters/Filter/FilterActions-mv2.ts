@@ -27,7 +27,7 @@ import { type CategoriesFilterData } from '../../../../../background/api/filters
  * Hook that provides MV2-specific filter actions and display settings for the
  * {@link Filter} component.
  *
- * @param filter Filter data used to compute the display timestamp.
+ * @param filter Filter data used to compute the display timestamp and unused status.
  * @param _groupEnabled Whether the parent group is enabled (unused in MV2).
  *
  * @returns Filter actions and display settings.
@@ -47,5 +47,6 @@ export const useFilterActions = (filter: CategoriesFilterData, _groupEnabled: bo
         optimistic: true,
         getDisplayTimestamp,
         checkLimitations: async (): Promise<void> => {},
+        showUnusedStatus: settingsStore.shouldDisplayUnusedStatus(filter),
     };
 };

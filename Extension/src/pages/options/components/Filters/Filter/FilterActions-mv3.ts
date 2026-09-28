@@ -74,5 +74,6 @@ export const useFilterActions = (filter: CategoriesFilterData, groupEnabled: boo
         checkLimitations: async (): Promise<void> => {
             await settingsStore.checkLimitations();
         },
+        showUnusedStatus: false,
     };
 };

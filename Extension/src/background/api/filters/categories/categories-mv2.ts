@@ -18,7 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { groupStateStorage } from '../../../storages';
+import { filterStateStorage, groupStateStorage } from '../../../storages';
 import { logger } from '../../../../common/logger';
 import { FilterUpdateApi } from '../update';
 import { FiltersApi } from '../main';
@@ -52,6 +52,8 @@ export class Categories extends CategoriesCommon {
         await FilterUpdateApi.checkForFiltersUpdates(enabledFiltersIds);
 
         groupStateStorage.enableGroups([groupId]);
+        // Enabling a group clears the 'disabled as unused' statuses of its filters.
+        filterStateStorage.clearUnused(Categories.getFiltersIdsByGroupId(groupId));
         logger.info(`[ext.Categories.enableGroup]: enabled group: id='${groupId}', name='${Categories.getGroupName(groupId)}'`);
     }
 }

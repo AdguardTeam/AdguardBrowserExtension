@@ -26,6 +26,7 @@
  * other that types.
  */
 
+import { type AutoDisabledFilter } from '../auto-disable-notification';
 import { type ForwardFrom } from '../forward';
 import { type SettingOption, type Settings } from '../../background/schema/settings';
 import { type CategoriesFilterData } from '../../background/api/filters/categories';
@@ -87,6 +88,7 @@ export enum MessageType {
     UpdateExtensionMv3 = 'updateExtensionMv3',
     DisableFiltersGroup = 'disableFiltersGroup',
     DisableFilter = 'disableFilter',
+    ClearUnusedFiltersStatus = 'clearUnusedFiltersStatus',
     LoadCustomFilterInfo = 'loadCustomFilterInfo',
     SubscribeToCustomFilter = 'subscribeToCustomFilter',
     RemoveAntiBannerFilter = 'removeAntiBannerFilter',
@@ -119,6 +121,8 @@ export enum MessageType {
     NotifyListeners = 'notifyListeners',
     AddLongLivedConnection = 'addLongLivedConnection',
     GetOptionsData = 'getOptionsData',
+    GetAutoDisableNotifications = 'getAutoDisableNotifications',
+    AcknowledgeAutoDisableNotifications = 'acknowledgeAutoDisableNotifications',
     ChangeUserSettings = 'changeUserSetting',
     CheckRequestFilterReady = 'checkRequestFilterReady',
     OpenThankYouPage = 'openThankYouPage',
@@ -343,6 +347,15 @@ export type OpenThankYouPageMessage = {
     type: MessageType.OpenThankYouPage;
 };
 
+export type GetAutoDisableNotificationsMessage = {
+    type: MessageType.GetAutoDisableNotifications;
+};
+
+export type AcknowledgeAutoDisableNotificationsMessage = {
+    type: MessageType.AcknowledgeAutoDisableNotifications;
+    data: { filterIds: number[] };
+};
+
 export type GetOptionsDataMessage = {
     type: MessageType.GetOptionsData;
 };
@@ -370,6 +383,13 @@ export type DisableFilterMessage = {
     type: MessageType.DisableFilter;
     data: {
         filterId: number;
+    };
+};
+
+export type ClearUnusedFiltersStatusMessage = {
+    type: MessageType.ClearUnusedFiltersStatus;
+    data: {
+        filterIds: number[];
     };
 };
 
@@ -856,6 +876,14 @@ export type MessageMap = {
         message: OpenThankYouPageMessage;
         response: void;
     };
+    [MessageType.GetAutoDisableNotifications]: {
+        message: GetAutoDisableNotificationsMessage;
+        response: AutoDisabledFilter[];
+    };
+    [MessageType.AcknowledgeAutoDisableNotifications]: {
+        message: AcknowledgeAutoDisableNotificationsMessage;
+        response: void;
+    };
     [MessageType.GetOptionsData]: {
         message: GetOptionsDataMessage;
         response: GetOptionsDataResponse;
@@ -874,6 +902,10 @@ export type MessageMap = {
     };
     [MessageType.DisableFilter]: {
         message: DisableFilterMessage;
+        response: void;
+    };
+    [MessageType.ClearUnusedFiltersStatus]: {
+        message: ClearUnusedFiltersStatusMessage;
         response: void;
     };
     [MessageType.RemoveAntiBannerFilter]: {

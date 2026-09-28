@@ -304,6 +304,7 @@ export class CustomFilterApi {
             loaded: true,
             installed: true,
             enabled,
+            disabledAsUnused: false,
         };
         filterStateStorage.set(filterId, filterStateData);
 
@@ -326,6 +327,7 @@ export class CustomFilterApi {
             loaded: true,
             installed: true,
             enabled,
+            disabledAsUnused: false,
         };
 
         return resultCustomFilterData;

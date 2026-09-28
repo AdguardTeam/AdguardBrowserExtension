@@ -42,10 +42,19 @@ const filterStateDataValidator = zod.object({
      * TODO: Check if it can be deleted.
      */
     loaded: zod.boolean(),
+
+    /**
+     * Is filter disabled as unused or not.
+     *
+     * Used by the MV2 feature which auto-disables language-specific filters
+     * that were not used for a long time.
+     */
+    disabledAsUnused: zod.boolean().default(false),
 });
 
 /**
- * Contains boolean flags about the filter status: enabled, installed, loaded.
+ * Contains boolean flags about the filter status: enabled, installed, loaded,
+ * disabled as unused.
  */
 export type FilterStateData = zod.infer<typeof filterStateDataValidator>;
 

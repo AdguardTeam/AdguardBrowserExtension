@@ -26,8 +26,8 @@ import {
     type StealthConfig,
     SettingOption,
 } from '../../schema';
-import { filterStateStorage, settingsStorage } from '../../storages';
-import { CommonFilterApi } from '../filters';
+import { autoDisableFiltersStorage, settingsStorage } from '../../storages';
+import { CommonFilterApi, FiltersApi } from '../filters';
 import { filteringLogApi } from '../filtering-log';
 import { network } from '../network';
 import { getZodErrorMessage } from '../../../common/error';
@@ -40,6 +40,20 @@ import { SettingsApiCommon } from './settings-common';
  * current settings, importing and exporting.
  */
 export class SettingsApi extends SettingsApiCommon {
+    /**
+     * Clears unused-filter history before resetting or importing settings.
+     * A failed history write is retried without blocking the core settings operation.
+     *
+     * @param enableUntouchedGroups Whether to enable groups containing default filters.
+     * @param shouldInitDefaultFilters Whether to enable default filters after resetting.
+     *
+     * @returns Promise resolved when settings are reset.
+     */
+    public static override async reset(enableUntouchedGroups: boolean, shouldInitDefaultFilters = true): Promise<void> {
+        await autoDisableFiltersStorage.reset();
+        await super.reset(enableUntouchedGroups, shouldInitDefaultFilters);
+    }
+
     /**
      * Collects {@link SettingsConfig} for tswebextension from current extension settings.
      *
@@ -128,7 +142,7 @@ export class SettingsApi extends SettingsApiCommon {
 
         await Promise.allSettled(tasks);
 
-        filterStateStorage.enableFilters(filterIdsToEnable);
+        await FiltersApi.enableFilters(filterIdsToEnable);
 
         return failedFilterIds;
     }

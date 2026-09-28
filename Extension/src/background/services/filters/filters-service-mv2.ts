@@ -18,7 +18,12 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { type EnableFiltersGroupMessage, MessageType } from '../../../common/messages';
+import {
+    type EnableFiltersGroupMessage,
+    type ClearUnusedFiltersStatusMessage,
+    MessageType,
+} from '../../../common/messages';
+import { filterStateStorage } from '../../storages';
 import { SettingOption } from '../../schema';
 import { messageHandler } from '../../message-handler';
 import { engine } from '../../engine';
@@ -54,8 +59,21 @@ export class FiltersService extends FiltersServiceCommon {
     public static override init(): void {
         super.init();
         messageHandler.addListener(MessageType.CheckFiltersUpdate, FiltersService.manualCheckFiltersUpdate);
+        messageHandler.addListener(MessageType.ClearUnusedFiltersStatus, FiltersService.onClearUnusedFiltersStatus);
         contextMenuEvents.addListener(ContextMenuAction.UpdateFilters, FiltersService.manualCheckFiltersUpdate);
         settingsEvents.addListener(SettingOption.UseOptimizedFilters, FiltersService.onOptimizedFiltersSwitch);
+    }
+
+    /**
+     * Acknowledges the statuses captured on opening the whole Language-specific
+     * group. The UI keeps them visible for the remainder of that opening.
+     *
+     * @param message Message with filter ids whose status should be cleared.
+     */
+    private static onClearUnusedFiltersStatus(message: ClearUnusedFiltersStatusMessage): void {
+        const { filterIds } = message.data;
+
+        filterStateStorage.clearUnused(filterIds);
     }
 
     /**

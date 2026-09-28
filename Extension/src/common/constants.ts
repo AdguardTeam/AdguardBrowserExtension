@@ -102,6 +102,13 @@ export const TELEMETRY_SYNTHETIC_ID_KEY = 'telemetry-synthetic-id';
 export const SEARCH_PAGE_ACCESS_KEY = 'search-page-access-state';
 
 /**
+ * Storage key for the language filters auto-disable state: active day counter,
+ * last active day per language, active day of each filter's latest enable and
+ * pending notification filter IDs. Used only in MV2.
+ */
+export const AUTO_DISABLE_FILTERS_KEY = 'auto-disable-filters-state';
+
+/**
  * Filter ids used in the code on the background page and filtering log page.
  */
 export enum AntiBannerFiltersId {

@@ -111,6 +111,12 @@ export { annoyancesConsentStorageDataValidator, type AnnoyancesConsentStorageDat
 export { searchPageAccessStorageDataValidator, type SearchPageAccessStorageData } from './search-page-access';
 
 export {
+    autoDisableFiltersStorageDataValidator,
+    defaultAutoDisableFiltersState,
+    type AutoDisableFiltersStorageData,
+} from './auto-disable-filters';
+
+export {
     appearanceValidator,
     settingsValidator,
     type Settings,

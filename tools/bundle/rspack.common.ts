@@ -238,6 +238,7 @@ export const genCommonConfig = (
         'prefs': path.resolve(__dirname, `../../Extension/src/background/prefs/prefs-mv${manifestVersion}.ts`),
         'settings-types': path.resolve(__dirname, `../../Extension/src/background/services/settings/types/types-mv${manifestVersion}.ts`),
         'options': path.resolve(__dirname, `../../Extension/src/pages/options/components/Options/Options-mv${manifestVersion}.tsx`),
+        'auto-disable-notification': path.resolve(__dirname, `../../Extension/src/pages/options/components/AutoDisableNotification/AutoDisableNotification-mv${manifestVersion}.tsx`),
         'settings-store': path.resolve(__dirname, `../../Extension/src/pages/options/stores/SettingsStore/SettingsStore-mv${manifestVersion}.ts`),
         'update-button': path.resolve(__dirname, `../../Extension/src/pages/popup/components/Header/Buttons/UpdateButton/UpdateButton-mv${manifestVersion}.tsx`),
         'update-button-mobile': path.resolve(__dirname, `../../Extension/src/pages/options/components/Sidebar/UpdateButtonMobile/UpdateButtonMobile-mv${manifestVersion}.tsx`),

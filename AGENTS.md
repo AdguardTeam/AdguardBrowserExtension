@@ -27,6 +27,7 @@ working on the AdGuard Browser Extension codebase.
         - [Memory Management](#memory-management)
     - [Code Quality](#code-quality)
         - [Import Rules](#import-rules)
+        - [Dates And Time](#dates-and-time)
         - [Manifest-Version Branching](#manifest-version-branching)
         - [JSDoc Style](#jsdoc-style)
         - [Logging](#logging)
@@ -280,6 +281,18 @@ async updateSetting(id: number, enabled: boolean): Promise<void> {
 - Use TypeScript path aliases defined in `tsconfig.mv2.json` / `tsconfig.mv3.json`
 - Exception: Test files (`*.test.ts`) and MV2/MV3-specific files can import
   directly
+
+#### Dates And Time
+
+- Prefer the existing `date-fns` dependency for date formatting and calendar
+  operations instead of manual string slicing or custom date arithmetic.
+- Make the time zone explicit. For UTC operations, use `UTCDate` from the
+  existing `@date-fns/utc` dependency with `date-fns`; formatting a plain `Date`
+  uses the system time zone.
+- Reuse and extend `Extension/src/background/utils/date-utils.ts` for shared
+  background date helpers instead of defining them inside storages or services.
+  Keep feature-specific state transitions in their owning module.
+- Simple timestamp reads such as `Date.now()` do not need a library wrapper.
 
 #### Manifest-Version Branching
 

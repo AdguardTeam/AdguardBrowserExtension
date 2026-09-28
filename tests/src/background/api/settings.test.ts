@@ -44,14 +44,22 @@ import {
 import { Network } from '../../../../Extension/src/background/api/network';
 import { App } from '../../../../Extension/src/background/app';
 import {
+    defaultAutoDisableFiltersState,
     ExtensionSpecificSettingsOption,
     FiltersOption,
     RootOption,
     SettingOption,
     StealthOption,
 } from '../../../../Extension/src/background/schema';
-import { settingsStorage } from '../../../../Extension/src/background/storages';
-import { ADGUARD_SETTINGS_KEY } from '../../../../Extension/src/common/constants';
+import {
+    AutoDisableFiltersStorage,
+    autoDisableFiltersStorage,
+    filterStateStorage,
+    settingsStorage,
+} from '../../../../Extension/src/background/storages';
+import { ADGUARD_SETTINGS_KEY, AUTO_DISABLE_FILTERS_KEY } from '../../../../Extension/src/common/constants';
+import { browserStorage } from '../../../../Extension/src/background/storages/shared-instances';
+import { logger } from '../../../../Extension/src/common/logger';
 import { defaultSettings } from '../../../../Extension/src/common/settings';
 import {
     getDefaultExportFixture,
@@ -172,6 +180,128 @@ describe('Settings Api', () => {
             await App.init();
         });
 
+        it.skipIf(!__IS_MV3__)('does not reset language tracking in MV3', async () => {
+            const reset = vi.spyOn(autoDisableFiltersStorage, 'reset');
+            await SettingsApi.reset(true);
+            expect(reset).not.toHaveBeenCalled();
+            reset.mockRestore();
+        }, EXTENDED_TIMEOUT_MS);
+
+        /**
+         * Saves auto-disable history which a reset or an import must clear.
+         */
+        const saveAutoDisableHistory = async (): Promise<void> => {
+            autoDisableFiltersStorage.setCache({
+                activeDayCounter: 105,
+                lastCountedDayUtc: '2026-09-16',
+                lastVisitedActiveDayByLanguage: { de: 75 },
+                enabledAtActiveDayByFilter: { 1: 70 },
+                pendingNotificationFilterIds: [1, 9],
+            });
+            await autoDisableFiltersStorage.save();
+        };
+
+        /**
+         * Checks that the auto-disable history starts over.
+         */
+        const expectClearedAutoDisableHistory = async (): Promise<void> => {
+            const state = await autoDisableFiltersStorage.getState();
+            expect(state.activeDayCounter).toBe(0);
+            expect(state.lastVisitedActiveDayByLanguage).toStrictEqual({});
+            expect(state.lastCountedDayUtc).toBeNull();
+            expect(state.pendingNotificationFilterIds).toStrictEqual([]);
+            expect(state.enabledAtActiveDayByFilter).toStrictEqual({});
+        };
+
+        /**
+         * Makes writes of the auto-disable history fail while other writes succeed.
+         *
+         * @returns Spy of the storage write.
+         */
+        const failAutoDisableHistoryWrites = () => {
+            const originalSet = browserStorage.set.bind(browserStorage);
+            return vi.spyOn(browserStorage, 'set').mockImplementation(async (key, value) => {
+                if (key === AUTO_DISABLE_FILTERS_KEY) {
+                    throw new Error('history storage unavailable');
+                }
+                await originalSet(key, value);
+            });
+        };
+
+        it.skipIf(__IS_MV3__)('clears auto-disable history on reset', async () => {
+            await saveAutoDisableHistory();
+
+            await SettingsApi.reset(true);
+
+            await expectClearedAutoDisableHistory();
+        }, EXTENDED_TIMEOUT_MS);
+
+        it.skipIf(__IS_MV3__)('clears auto-disable history on import', async () => {
+            await saveAutoDisableHistory();
+
+            expect(await SettingsApi.import(JSON.stringify(getDefaultExportFixture(false)))).toBe(true);
+
+            await expectClearedAutoDisableHistory();
+        }, EXTENDED_TIMEOUT_MS);
+
+        it.skipIf(__IS_MV3__)('completes reset and retries the cleared history when its write fails', async () => {
+            await saveAutoDisableHistory();
+            await SettingsApi.setSetting(SettingOption.AllowlistEnabled, false);
+            vi.spyOn(logger, 'error').mockImplementation(() => {});
+            const write = failAutoDisableHistoryWrites();
+            vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'], shouldAdvanceTime: true });
+            try {
+                await SettingsApi.reset(true);
+
+                expect(SettingsApi.getSetting(SettingOption.AllowlistEnabled)).toBe(true);
+                await expectClearedAutoDisableHistory();
+                await expect(new AutoDisableFiltersStorage().getState()).resolves.toMatchObject({
+                    activeDayCounter: 105,
+                });
+
+                write.mockRestore();
+                await vi.advanceTimersByTimeAsync(AutoDisableFiltersStorage.RETRY_DELAY_MS);
+                await expect(new AutoDisableFiltersStorage().getState()).resolves.toStrictEqual(
+                    defaultAutoDisableFiltersState,
+                );
+            } finally {
+                write.mockRestore();
+                await autoDisableFiltersStorage.reset();
+                vi.useRealTimers();
+            }
+        }, EXTENDED_TIMEOUT_MS);
+
+        it.skipIf(__IS_MV3__)('completes import and retries the cleared history when its write fails', async () => {
+            await saveAutoDisableHistory();
+            await SettingsApi.setSetting(SettingOption.AllowlistEnabled, false);
+            vi.spyOn(logger, 'error').mockImplementation(() => {});
+            const write = failAutoDisableHistoryWrites();
+            vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'], shouldAdvanceTime: true });
+            try {
+                const config = getDefaultExportFixture(false);
+                config[RootOption.Filters][FiltersOption.EnabledFilters] = [16];
+
+                expect(await SettingsApi.import(JSON.stringify(config))).toBe(true);
+
+                expect(filterStateStorage.get(16)?.enabled).toBe(true);
+                expect(SettingsApi.getSetting(SettingOption.AllowlistEnabled)).toBe(true);
+                await expectClearedAutoDisableHistory();
+                await expect(new AutoDisableFiltersStorage().getState()).resolves.toMatchObject({
+                    activeDayCounter: 105,
+                });
+
+                write.mockRestore();
+                await vi.advanceTimersByTimeAsync(AutoDisableFiltersStorage.RETRY_DELAY_MS);
+                await expect(new AutoDisableFiltersStorage().getState()).resolves.toStrictEqual(
+                    defaultAutoDisableFiltersState,
+                );
+            } finally {
+                write.mockRestore();
+                await autoDisableFiltersStorage.reset();
+                vi.useRealTimers();
+            }
+        }, EXTENDED_TIMEOUT_MS);
+
         it('Import settings', async () => {
             const userConfig = getDefaultExportFixture(__IS_MV3__);
 
@@ -283,6 +413,33 @@ describe('Settings Api', () => {
 
             expect(SettingsApi.getSetting(SettingOption.AllowlistEnabled)).toBe(true);
             expect(await DocumentBlockApi.getTrustedDomains()).toStrictEqual([]);
+        }, EXTENDED_TIMEOUT_MS);
+
+        it('Clears the disabled-as-unused statuses on reset', async () => {
+            const [filterId] = filterStateStorage.getAllFilters();
+            expect(filterId).toBeDefined();
+
+            filterStateStorage.disableFiltersAsUnused([filterId!]);
+            expect(filterStateStorage.get(filterId!)?.disabledAsUnused).toBe(true);
+
+            await SettingsApi.reset(true);
+
+            expect(filterStateStorage.get(filterId!)?.disabledAsUnused).toBe(false);
+        }, EXTENDED_TIMEOUT_MS);
+
+        it('Clears the disabled-as-unused statuses on import', async () => {
+            const [filterId] = filterStateStorage.getAllFilters();
+            expect(filterId).toBeDefined();
+
+            filterStateStorage.disableFiltersAsUnused([filterId!]);
+            expect(filterStateStorage.get(filterId!)?.disabledAsUnused).toBe(true);
+
+            const importResult = await SettingsApi.import(
+                JSON.stringify(getDefaultExportFixture(__IS_MV3__)),
+            );
+
+            expect(importResult).toBeTruthy();
+            expect(filterStateStorage.get(filterId!)?.disabledAsUnused).toBe(false);
         }, EXTENDED_TIMEOUT_MS);
 
         it('should not enable default filters on import', async () => {

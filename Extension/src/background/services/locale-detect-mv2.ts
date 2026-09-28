@@ -24,6 +24,7 @@ import { getDomain, isHttpRequest } from '../tswebextension';
 import { UserAgent } from '../../common/user-agent';
 import { type RegularFilterMetadata, SettingOption } from '../schema';
 import {
+    filterStateStorage,
     groupStateStorage,
     metadataStorage,
     settingsStorage,
@@ -32,7 +33,12 @@ import { engine } from '../engine';
 import { toasts } from '../api/ui';
 import { FiltersApi } from '../api/filters/main';
 import { CommonFilterApi } from '../api/filters/common';
+import { Categories } from '../api/filters/categories';
 import { AntibannerGroupsId } from '../../common/constants';
+import { logger } from '../../common/logger';
+import { getZodErrorMessage } from '../../common/error';
+
+import { AutoDisableFiltersService } from './auto-disable-filters-mv2';
 
 type BrowsingLanguage = {
     language: string;
@@ -40,7 +46,15 @@ type BrowsingLanguage = {
 };
 
 /**
- * This service is used to auto-enable language-specific filters.
+ * Language code returned by the browser when it cannot determine the page language.
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/detectLanguage}
+ */
+export const UNDETERMINED_LANGUAGE = 'und';
+
+/**
+ * This service is used to auto-enable language-specific filters and to record
+ * page visits for auto-disabling unused language-specific filters.
  *
  * @note This service is only used in Manifest V2 extensions.
  */
@@ -226,15 +240,16 @@ class LocaleDetect {
     }
 
     /**
-     * Detects language for the specified tab.
+     * Detects the tab language and records each eligible page for active-day tracking,
+     * including pages whose language could not be determined.
      *
      * @param tab Tab details.
      */
     private async detectTabLanguage(tab: Tabs.Tab): Promise<void> {
-        const isDetectDisabled = settingsStorage.get(SettingOption.DisableDetectFilters);
+        const isLanguageFilterAutodetectEnabled = !settingsStorage.get(SettingOption.DisableDetectFilters);
         const isFilteringDisabled = settingsStorage.get(SettingOption.DisableFiltering);
 
-        if (isDetectDisabled
+        if (!isLanguageFilterAutodetectEnabled
             || isFilteringDisabled
             || !tab.url
             // Check language only for http://... tabs
@@ -243,41 +258,53 @@ class LocaleDetect {
             return;
         }
 
+        const language = await LocaleDetect.getTabLanguage(tab.id, tab.url);
+        // Count activity without a language visit when the language is unknown.
+        const detectedLanguage = language && language !== UNDETERMINED_LANGUAGE ? language : undefined;
+
+        await AutoDisableFiltersService.recordVisit(detectedLanguage);
+
+        if (detectedLanguage) {
+            await this.detectLanguage(detectedLanguage);
+        }
+    }
+
+    /**
+     * Gets the page language from the browser API or the top-level domain.
+     *
+     * @param tabId Tab id.
+     * @param url Page URL.
+     *
+     * @returns Detected language (possibly 'und' for unknown), or undefined if detection is unavailable or fails.
+     */
+    private static async getTabLanguage(tabId: number | undefined, url: string): Promise<string | undefined> {
         // tabs.detectLanguage doesn't work in Opera
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/997
         if (!UserAgent.isOpera) {
-            if (tab.id && browser.tabs && browser.tabs.detectLanguage) {
+            if (tabId && browser.tabs && browser.tabs.detectLanguage) {
                 // https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/detectLanguage
                 try {
-                    const language = await browser.tabs.detectLanguage(tab.id);
-                    this.detectLanguage(language);
+                    return await browser.tabs.detectLanguage(tabId);
                 } catch (e) {
-                    // do nothing
+                    return undefined;
                 }
-                return;
             }
         }
 
         // Detecting language by top-level domain if extension API language detection is unavailable
         // Ignore hostnames which length is less or equal to 8
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1354
-        const host = getDomain(tab.url);
+        const host = getDomain(url);
         if (host && host.length > 8) {
             const parts = host.split('.');
             const tld = parts.at(-1);
 
-            if (!tld) {
-                return;
-            }
-
-            const lang = LocaleDetect.domainToLanguagesMap[tld];
-
-            if (!lang) {
-                return;
-            }
-
-            await this.detectLanguage(lang);
+            return tld && Object.prototype.hasOwnProperty.call(LocaleDetect.domainToLanguagesMap, tld)
+                ? LocaleDetect.domainToLanguagesMap[tld]
+                : undefined;
         }
+
+        return undefined;
     }
 
     /**
@@ -290,14 +317,6 @@ class LocaleDetect {
      * @private
      */
     private async detectLanguage(language: string): Promise<void> {
-        /**
-         * For an unknown language "und" will be returned
-         * https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/detectLanguage.
-         */
-        if (!language || language === 'und') {
-            return;
-        }
-
         this.browsingLanguages.push({
             language,
             time: Date.now(),
@@ -315,11 +334,14 @@ class LocaleDetect {
             // Lock mutex to exclude double loading.
             this.loadingLanguagesMutex[language] = true;
 
-            const filterIds = metadataStorage.getFilterIdsForLanguage(language);
-            await LocaleDetect.onFilterDetectedByLocale(filterIds);
-
-            // Free mutex for language.
-            delete this.loadingLanguagesMutex[language];
+            try {
+                const filterIds = metadataStorage.getFilterIdsForLanguage(language);
+                await LocaleDetect.onFilterDetectedByLocale(filterIds);
+            } catch (e) {
+                logger.error(`[ext.LocaleDetect.detectLanguage]: cannot enable filters for language '${language}':`, getZodErrorMessage(e));
+            } finally {
+                delete this.loadingLanguagesMutex[language];
+            }
         }
     }
 
@@ -340,7 +362,13 @@ class LocaleDetect {
         // TODO: Check, do we really need always enable language group,
         // even if user disabled it manually?
         // Always enable language filters group.
-        groupStateStorage.enableGroups([AntibannerGroupsId.LanguageFiltersGroupId]);
+        const groupId = AntibannerGroupsId.LanguageFiltersGroupId;
+        const wasGroupEnabled = groupStateStorage.get(groupId)?.enabled;
+        groupStateStorage.enableGroups([groupId]);
+        if (!wasGroupEnabled) {
+            // Enabling a group clears the 'disabled as unused' statuses of its filters.
+            filterStateStorage.clearUnused(Categories.getFiltersIdsByGroupId(groupId));
+        }
 
         if (disabledFiltersIds.length === 0) {
             return;

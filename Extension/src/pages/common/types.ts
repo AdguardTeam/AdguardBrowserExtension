@@ -38,6 +38,11 @@ export enum NotificationType {
      * Notification type for error state.
      */
     Error = 'error',
+
+    /**
+     * Notification type for a warning with an information icon.
+     */
+    Warning = 'warning',
 }
 
 /**

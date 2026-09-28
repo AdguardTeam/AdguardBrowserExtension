@@ -36,6 +36,11 @@ export const FILE_WRONG_EXTENSION_CAUSE = 'fileWrongExtension';
 export const TIME_TO_REMOVE_NOTIFICATION_MS = 300;
 
 /**
+ * Deduplication key for the automatic language-filter disable notification.
+ */
+export const AUTO_DISABLE_NOTIFICATION_DEDUPE_KEY = 'auto-disable-filter-notification';
+
+/**
  * Mobile screen breakpoint in px.
  */
 export const MOBILE_BREAKPOINT_PX = 640;

@@ -249,7 +249,7 @@ export class SettingsApiCommon {
              *
              * @see {@link https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3136}
              */
-            await SettingsApiCommon.reset(false, false);
+            await this.reset(false, false);
 
             SettingsApiCommon.importExtensionSpecificSettings(
                 validConfig[RootOption.ExtensionSpecificSettings],
@@ -321,7 +321,7 @@ export class SettingsApiCommon {
                     `[ext.SettingsApiCommon.importGeneralSettings]: Failed to load filter with id ${AntiBannerFiltersId.SearchAndSelfPromoFilterId} due to ${e}`,
                 );
             }
-            filterStateStorage.enableFilters([AntiBannerFiltersId.SearchAndSelfPromoFilterId]);
+            await FiltersApi.enableFilters([AntiBannerFiltersId.SearchAndSelfPromoFilterId]);
         } else {
             filterStateStorage.disableFilters([AntiBannerFiltersId.SearchAndSelfPromoFilterId]);
         }
@@ -429,7 +429,7 @@ export class SettingsApiCommon {
 
         await Promise.allSettled(tasks);
 
-        filterStateStorage.enableFilters(filtersToEnable);
+        await FiltersApi.enableFilters(filtersToEnable);
     }
 
     /**

@@ -105,6 +105,7 @@ const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
         optimistic,
         getDisplayTimestamp,
         checkLimitations,
+        showUnusedStatus,
     } = useFilterActions(filter, groupEnabled);
 
     // Trusted tag can be only on custom filters,
@@ -260,6 +261,11 @@ const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
                                     filterId={filterId}
                                     tags={tags}
                                 />
+                                {showUnusedStatus && (
+                                    <div className="filter__unused-status">
+                                        {translator.getMessage('options_filters_filter_disabled_as_unused')}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

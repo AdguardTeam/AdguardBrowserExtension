@@ -68,10 +68,15 @@ export const Notification = (props: NotificationProps) => {
         text,
         type,
         buttons,
+        closeManually,
         onRemove,
     } = props;
 
     useEffect(() => {
+        if (closeManually) {
+            return undefined;
+        }
+
         const closeTimeout = setTimeout(() => {
             if (shouldCloseOnTimeout) {
                 setNotificationIsClosed(true);
@@ -88,7 +93,7 @@ export const Notification = (props: NotificationProps) => {
             clearTimeout(closeTimeout);
             clearTimeout(removeTimeout);
         };
-    }, [id, onRemove, shouldCloseOnTimeout]);
+    }, [id, onRemove, shouldCloseOnTimeout, closeManually]);
 
     const notificationClassnames = classnames(
         `notification notification--${type}`,
