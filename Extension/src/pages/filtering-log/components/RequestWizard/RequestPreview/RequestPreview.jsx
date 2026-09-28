@@ -127,14 +127,6 @@ export const RequestPreview = observer(() => {
                     <span className="request-info__error request-preview__text">
                         {translator.getMessage('filtering_modal_status_text_error')}
                     </span>
-                    <button
-                        type="button"
-                        className="button button--l button--green-bg request-preview__button"
-                        onClick={onRetry}
-                        title={tryAgainButtonTitle}
-                    >
-                        {tryAgainButtonTitle}
-                    </button>
                 </div>
             );
         }
@@ -181,14 +173,16 @@ export const RequestPreview = observer(() => {
                 {renderContent()}
             </div>
             <div className="request-modal__controls">
-                <button
-                    type="button"
-                    className="button button--l button--transparent request-modal__button"
-                    onClick={handleBackToRequestClick}
-                    title={backToRequestButtonTitle}
-                >
-                    {backToRequestButtonTitle}
-                </button>
+                {previewState.matches(FetchStates.FAILURE) && (
+                    <button
+                        type="button"
+                        className="button button--l button--green-bg request-modal__button"
+                        onClick={onRetry}
+                        title={tryAgainButtonTitle}
+                    >
+                        {tryAgainButtonTitle}
+                    </button>
+                )}
                 {isText && previewState.matches(FetchStates.SUCCESS) && (
                     <button
                         type="button"
@@ -199,6 +193,14 @@ export const RequestPreview = observer(() => {
                         {beautifyButtonTitle}
                     </button>
                 )}
+                <button
+                    type="button"
+                    className="button button--l button--transparent request-modal__button"
+                    onClick={handleBackToRequestClick}
+                    title={backToRequestButtonTitle}
+                >
+                    {backToRequestButtonTitle}
+                </button>
             </div>
         </>
     );
