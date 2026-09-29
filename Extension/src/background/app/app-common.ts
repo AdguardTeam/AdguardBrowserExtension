@@ -339,8 +339,22 @@ export abstract class AppCommon {
         previousAppVersion: string,
     ): Promise<void> {
         if (!settingsStorage.get(SettingOption.DisableShowAppUpdatedNotification)) {
-            toasts.showApplicationUpdatedPopup(currentAppVersion, previousAppVersion);
+            this.showAppUpdatedPopup(currentAppVersion, previousAppVersion);
         }
+    }
+
+    /**
+     * Shows the in-page popup about the extension update.
+     * Can be overridden in derived classes to show a manifest-specific popup.
+     *
+     * @param currentAppVersion Current extension version.
+     * @param previousAppVersion Previous extension version before update.
+     */
+    protected static showAppUpdatedPopup(
+        currentAppVersion: string,
+        previousAppVersion: string,
+    ): void {
+        toasts.showApplicationUpdatedPopup(currentAppVersion, previousAppVersion);
     }
 
     /**

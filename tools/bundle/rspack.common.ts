@@ -645,6 +645,12 @@ export const genCommonConfig = (
                         context: 'Extension',
                         from: 'assets',
                         to: 'assets',
+                        globOptions: {
+                            // Offer image of the Edge MV2 to MV3 migration popup is used only in edge-mv3.
+                            ignore: browserConfig.browser === Browser.EdgeMv3
+                                ? []
+                                : ['**/images/edge-mv3-migration-promo.svg'],
+                        },
                     },
                     {
                         context: 'Extension',
@@ -667,6 +673,10 @@ export const genCommonConfig = (
                 // TODO consider making this variable to be less common used
                 //  (e.g., make it to be __IS_FIREFOX_AMO__ instead of IS_FIREFOX_AMO)
                 IS_FIREFOX_AMO: browserConfig.browser === Browser.FirefoxAmo,
+                // Other MV3 builds can run in Edge too (e.g. chrome-mv3 installed
+                // from the Chrome Web Store), so the Edge Add-ons build is told
+                // apart at build time.
+                IS_EDGE_MV3: browserConfig.browser === Browser.EdgeMv3,
                 // TODO consider making this variable to be less common used
                 //  (e.g., make it to be __IS_RELEASE__ instead of IS_RELEASE)
                 IS_RELEASE: BUILD_ENV === BuildTargetEnv.Release,

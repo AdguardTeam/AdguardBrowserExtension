@@ -3,13 +3,22 @@
  * should be injected into web page to set the popup position on page properly
  */
 
-.adguard-update-iframe {
+.adguard-update-iframe,
+.adguard-edge-mv3-migration-iframe {
     position: fixed;
     top: 10px;
     right: 10px;
     border: none;
     width: 320px;
+    color-scheme: light dark;
+}
+
+.adguard-update-iframe {
     /* 460px container + 50px padding + 16px box-shadow */
     min-height: 526px;
-    color-scheme: light dark;
+}
+
+/* Edge MV2 to MV3 migration popup: 600px popup + 16px box-shadow */
+.adguard-edge-mv3-migration-iframe {
+    min-height: 616px;
 }

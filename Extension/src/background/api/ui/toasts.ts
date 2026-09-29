@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import browser from 'webextension-polyfill';
+import browser, { type Tabs } from 'webextension-polyfill';
 
 import { logger } from '../../../common/logger';
 import { BrowserUtils } from '../../utils/browser-utils';
@@ -25,7 +25,12 @@ import { translator } from '../../../common/translators/translator';
 import { notificationTextRecordValidator } from '../../schema';
 import { TabsApi } from '../../../common/api/extension';
 import { type FilterMetadata } from '../filters';
-import { sendTabMessage, MessageType } from '../../../common/messages';
+import {
+    sendTabMessage,
+    MessageType,
+    EDGE_MV3_MIGRATION_SETTINGS_LINK_ID,
+    type MessageWithoutHandlerName,
+} from '../../../common/messages';
 import {
     Forward,
     ForwardAction,
@@ -42,6 +47,11 @@ enum StylesAssetsPath {
     RulesLimitsPopup = '/assets/css/rules-limits-popup.css',
     RulesLimitsContainer = '/assets/css/rules-limits-container.css',
 }
+
+/**
+ * Background image of the offer block in the Edge MV3 migration popup.
+ */
+const EDGE_MV3_MIGRATION_PROMO_IMAGE_PATH = '/assets/images/edge-mv3-migration-promo.svg';
 
 /**
  * Toasts class handles work with different popups and alert messages.
@@ -70,51 +80,32 @@ class Toasts {
 
     /**
      * Shows alert message about rule limits exceeded.
-     *
-     * @param triesCount Number of tries to show. If this value exceeds {@link Toasts#maxTries}
-     * then the window will not be displayed.
      */
-    public async showRuleLimitsAlert(triesCount = 1): Promise<void> {
-        try {
-            if (triesCount > Toasts.MAX_TRIES) {
-                // Give up
-                logger.warn('[ext.Toasts.showRuleLimitsAlert]: reached max tries on attempts to show rule limits alert popup.');
-                return;
-            }
+    public async showRuleLimitsAlert(): Promise<void> {
+        const alertStyles = this.styles.get(StylesAssetsPath.RulesLimitsPopup);
+        const alertContainerStyles = this.styles.get(StylesAssetsPath.RulesLimitsContainer);
 
-            const alertStyles = this.styles.get(StylesAssetsPath.RulesLimitsPopup);
-            const alertContainerStyles = this.styles.get(StylesAssetsPath.RulesLimitsContainer);
-
-            if (!alertStyles || !alertContainerStyles) {
-                logger.error('[ext.Toasts.showRuleLimitsAlert]: alert assets is not loaded!');
-                return;
-            }
-
-            const tab = await TabsApi.getActive();
-            if (tab?.id) {
-                const mainText = translator.getMessage('snack_on_websites_limits_exceeded_warning');
-                const linkText = translator.getMessage('options_rule_limits');
-
-                await sendTabMessage(tab.id, {
-                    type: MessageType.ShowRuleLimitsAlert,
-                    data: {
-                        // TODO: Remove isAdguardTab because we don't inject content-script
-                        // in our settings page and so that we don't have listener
-                        // for these messages.
-                        isAdguardTab: TabsApi.isAdguardExtensionTab(tab),
-                        mainText,
-                        linkText,
-                        alertStyles,
-                        alertContainerStyles,
-                    },
-                });
-            }
-        } catch (e) {
-            // eslint-disable-next-line no-restricted-globals
-            self.setTimeout(() => {
-                this.showRuleLimitsAlert(triesCount + 1);
-            }, Toasts.TRIES_TIMEOUT_MS);
+        if (!alertStyles || !alertContainerStyles) {
+            logger.error('[ext.Toasts.showRuleLimitsAlert]: alert assets is not loaded!');
+            return;
         }
+
+        const mainText = translator.getMessage('snack_on_websites_limits_exceeded_warning');
+        const linkText = translator.getMessage('options_rule_limits');
+
+        await this.sendToActiveTab('rule limits alert popup', (tab) => ({
+            type: MessageType.ShowRuleLimitsAlert,
+            data: {
+                // TODO: Remove isAdguardTab because we don't inject content-script
+                // in our settings page and so that we don't have listener
+                // for these messages.
+                isAdguardTab: TabsApi.isAdguardExtensionTab(tab),
+                mainText,
+                linkText,
+                alertStyles,
+                alertContainerStyles,
+            },
+        }));
     }
 
     /**
@@ -123,47 +114,29 @@ class Toasts {
      *
      * @param title Title.
      * @param text Text.
-     * @param triesCount Number of tries to show. If this value exceeds {@link Toasts#maxTries}
-     * then the window will not be displayed.
      */
-    public async showAlertMessage(title: string, text: string | string[], triesCount = 1): Promise<void> {
-        try {
-            if (triesCount > Toasts.MAX_TRIES) {
-                // Give up
-                logger.warn('[ext.Toasts.showAlertMessage]: reached max tries on attempts to show alert popup');
-                return;
-            }
+    public async showAlertMessage(title: string, text: string | string[]): Promise<void> {
+        const alertStyles = this.styles.get(StylesAssetsPath.AlertPopup);
+        const alertContainerStyles = this.styles.get(StylesAssetsPath.AlertContainer);
 
-            const tab = await TabsApi.getActive();
-            const alertStyles = this.styles.get(StylesAssetsPath.AlertPopup);
-            const alertContainerStyles = this.styles.get(StylesAssetsPath.AlertContainer);
-
-            if (!alertStyles || !alertContainerStyles) {
-                logger.error('[ext.Toasts.showAlertMessage]: alert assets styles are not loaded!');
-                return;
-            }
-
-            if (tab?.id) {
-                await sendTabMessage(tab.id, {
-                    type: MessageType.ShowAlertPopup,
-                    data: {
-                        // TODO: Remove isAdguardTab because we don't inject content-script
-                        // in our settings page and so that we don't have listener
-                        // for these messages.
-                        isAdguardTab: TabsApi.isAdguardExtensionTab(tab),
-                        title,
-                        text,
-                        alertStyles,
-                        alertContainerStyles,
-                    },
-                });
-            }
-        } catch (e) {
-            // eslint-disable-next-line no-restricted-globals
-            self.setTimeout(() => {
-                this.showAlertMessage(title, text, triesCount + 1);
-            }, Toasts.TRIES_TIMEOUT_MS);
+        if (!alertStyles || !alertContainerStyles) {
+            logger.error('[ext.Toasts.showAlertMessage]: alert assets styles are not loaded!');
+            return;
         }
+
+        await this.sendToActiveTab('alert popup', (tab) => ({
+            type: MessageType.ShowAlertPopup,
+            data: {
+                // TODO: Remove isAdguardTab because we don't inject content-script
+                // in our settings page and so that we don't have listener
+                // for these messages.
+                isAdguardTab: TabsApi.isAdguardExtensionTab(tab),
+                title,
+                text,
+                alertStyles,
+                alertContainerStyles,
+            },
+        }));
     }
 
     /**
@@ -194,12 +167,10 @@ class Toasts {
      *
      * @param currentVersion App current semver string.
      * @param previousVersion App previous semver string.
-     * @param triesCount Count of show popup tries.
      */
     public async showApplicationUpdatedPopup(
         currentVersion: string,
         previousVersion: string,
-        triesCount = 1,
     ): Promise<void> {
         if (!BrowserUtils.isSemver(currentVersion)) {
             logger.warn(`[ext.Toasts.showApplicationUpdatedPopup]: invalid current version provided '${currentVersion}'`);
@@ -263,69 +234,143 @@ class Toasts {
             if (bgImageOnUpdate) {
                 try {
                     // dynamically load svg image if offer should look different for different locales; AG-31141
-                    const response = await fetch(bgImageOnUpdate);
-                    const svgStr = await response.text();
-                    offerBgImage = `data:image/svg+xml;base64,${btoa(svgStr)}`;
+                    offerBgImage = await Toasts.getSvgDataUrl(bgImageOnUpdate);
                 } catch (e) {
                     logger.warn('[ext.Toasts.showApplicationUpdatedPopup]: failed to load promo notification background image:', e);
                 }
             }
         }
 
+        const alertStyles = this.styles.get(StylesAssetsPath.AlertPopup);
+        const iframeStyles = this.styles.get(StylesAssetsPath.UpdateContainer);
+
+        if (!alertStyles || !iframeStyles) {
+            logger.error('[ext.Toasts.showApplicationUpdatedPopup]: update popup assets styles are not loaded!');
+            return;
+        }
+
+        const title = translator.getMessage(
+            'options_popup_version_update_title_text',
+            { current_version: currentVersion },
+        );
+
+        await this.sendToActiveTab('application update popup', (tab) => ({
+            type: MessageType.ShowVersionUpdatedPopup,
+            data: {
+                // TODO: Remove isAdguardTab because we don't inject content-script
+                // in our settings page and so that we don't have listener
+                // for these messages.
+                isAdguardTab: TabsApi.isAdguardExtensionTab(tab),
+                title,
+                description: Toasts.getUpdateDescriptionMessage(currentVersion, previousVersion),
+                changelogHref: Forward.get({
+                    action: IS_RELEASE ? ForwardAction.GithubVersion : ForwardAction.GithubVersionBeta,
+                    from: ForwardFrom.VersionPopup,
+                }),
+                changelogText: translator.getMessage('options_popup_version_update_changelog_text'),
+                showPromoNotification: !!promoNotification,
+                offer,
+                offerDesc,
+                offerButtonText,
+                offerButtonHref,
+                offerBgImage,
+                disableNotificationText: translator.getMessage(
+                    'options_popup_version_update_disable_notification',
+                ),
+                alertStyles,
+                iframeStyles,
+            },
+        }));
+    }
+
+    /**
+     * Shows the popup about the migration of the Edge extension from MV2 to MV3.
+     * It replaces the application updated popup for that update.
+     */
+    public async showEdgeMv3MigrationPopup(): Promise<void> {
+        const alertStyles = this.styles.get(StylesAssetsPath.AlertPopup);
+        const iframeStyles = this.styles.get(StylesAssetsPath.UpdateContainer);
+
+        if (!alertStyles || !iframeStyles) {
+            logger.error('[ext.Toasts.showEdgeMv3MigrationPopup]: update popup assets styles are not loaded!');
+            return;
+        }
+
+        const data = {
+            title: translator.getMessage('edge_mv3_migration_popup_title'),
+            description: translator.getMessage('edge_mv3_migration_popup_description'),
+            userScriptsText: translator.getMessage('edge_mv3_migration_popup_user_scripts', {
+                b: (chunks: string) => `<b>${chunks}</b>`,
+                a: (chunks: string) => `<a href="#" id="${EDGE_MV3_MIGRATION_SETTINGS_LINK_ID}">${chunks}</a>`,
+            }),
+            offerTitle: translator.getMessage('edge_mv3_migration_popup_offer_title'),
+            offerButtonText: translator.getMessage('edge_mv3_migration_popup_offer_button'),
+            offerButtonHref: Forward.get({
+                action: ForwardAction.EdgeMv3MigrationPromo,
+                from: ForwardFrom.VersionPopup,
+            }),
+            // The image is bundled with the edge-mv3 build, so a failure here means a broken build.
+            offerBgImage: await Toasts.getSvgDataUrl(browser.runtime.getURL(EDGE_MV3_MIGRATION_PROMO_IMAGE_PATH)),
+            alertStyles,
+            iframeStyles,
+        };
+
+        await this.sendToActiveTab('Edge MV3 migration popup', (tab) => ({
+            type: MessageType.ShowEdgeMv3MigrationPopup,
+            data: {
+                isAdguardTab: TabsApi.isAdguardExtensionTab(tab),
+                ...data,
+            },
+        }));
+    }
+
+    /**
+     * Sends a message built for the active tab to its content script.
+     * While the tab cannot receive it yet (e.g. the content script is not injected),
+     * retries every {@link Toasts.TRIES_TIMEOUT_MS}, up to {@link Toasts.MAX_TRIES} times.
+     * Nothing is sent if there is no active tab.
+     *
+     * @param popupName Name of the popup for the log.
+     * @param createMessage Builds the message for the active tab.
+     * @param triesCount Number of the current try.
+     */
+    private async sendToActiveTab<T extends MessageType>(
+        popupName: string,
+        createMessage: (tab: Tabs.Tab) => MessageWithoutHandlerName<T>,
+        triesCount = 1,
+    ): Promise<void> {
+        if (triesCount > Toasts.MAX_TRIES) {
+            // Give up
+            logger.warn(`[ext.Toasts.sendToActiveTab]: reached max tries on attempts to show ${popupName}`);
+            return;
+        }
+
         try {
-            if (triesCount > Toasts.MAX_TRIES) {
-                // Give up
-                logger.warn('[ext.Toasts.showApplicationUpdatedPopup]: reached max tries on attempts to show application update popup');
-                return;
-            }
-
             const tab = await TabsApi.getActive();
-            const alertStyles = this.styles.get(StylesAssetsPath.AlertPopup);
-            const iframeStyles = this.styles.get(StylesAssetsPath.UpdateContainer);
-
-            if (!alertStyles || !iframeStyles) {
-                logger.error('[ext.Toasts.showApplicationUpdatedPopup]: update popup assets styles are not loaded!');
-                return;
-            }
 
             if (tab?.id) {
-                await sendTabMessage(tab.id, {
-                    type: MessageType.ShowVersionUpdatedPopup,
-                    data: {
-                        // TODO: Remove isAdguardTab because we don't inject content-script
-                        // in our settings page and so that we don't have listener
-                        // for these messages.
-                        isAdguardTab: TabsApi.isAdguardExtensionTab(tab),
-                        title: translator.getMessage(
-                            'options_popup_version_update_title_text',
-                            { current_version: currentVersion },
-                        ),
-                        description: Toasts.getUpdateDescriptionMessage(currentVersion, previousVersion),
-                        changelogHref: Forward.get({
-                            action: IS_RELEASE ? ForwardAction.GithubVersion : ForwardAction.GithubVersionBeta,
-                            from: ForwardFrom.VersionPopup,
-                        }),
-                        changelogText: translator.getMessage('options_popup_version_update_changelog_text'),
-                        showPromoNotification: !!promoNotification,
-                        offer,
-                        offerDesc,
-                        offerButtonText,
-                        offerButtonHref,
-                        offerBgImage,
-                        disableNotificationText: translator.getMessage(
-                            'options_popup_version_update_disable_notification',
-                        ),
-                        alertStyles,
-                        iframeStyles,
-                    },
-                });
+                await sendTabMessage(tab.id, createMessage(tab));
             }
         } catch (e) {
             // eslint-disable-next-line no-restricted-globals
             self.setTimeout(() => {
-                this.showApplicationUpdatedPopup(currentVersion, previousVersion, triesCount + 1);
+                this.sendToActiveTab(popupName, createMessage, triesCount + 1);
             }, Toasts.TRIES_TIMEOUT_MS);
         }
+    }
+
+    /**
+     * Loads an SVG image and converts it into a data URL, so it can be shown
+     * inside the iframe injected into a web page.
+     *
+     * @param url URL of the SVG image.
+     *
+     * @returns Data URL with the base64-encoded SVG.
+     */
+    private static async getSvgDataUrl(url: string): Promise<string> {
+        const response = await fetch(url);
+        const svgStr = await response.text();
+        return `data:image/svg+xml;base64,${btoa(svgStr)}`;
     }
 
     /**

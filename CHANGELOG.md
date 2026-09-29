@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased 5.5.2
 
+### Added
+
+- Notification about the migration to Manifest V3 in Microsoft Edge.
+
 ### Changed
 
 - Updated [@adguard/agtree] to v4.2.1.
