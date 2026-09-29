@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [5.5.3.1-beta] - 2026-09-29
+## [5.5.3.1] - 2026-09-29
 
 ### Changed
 
@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated [@adguard/dnr-rulesets] to v6.0.0.
 - Updated [@adguard/tswebextension] to v6.0.0.
 
-[5.5.3.1-beta]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.5.3.0-beta...v5.5.3.1-beta
+[5.5.3.1]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.5.3.0...v5.5.3.1
 
 ## [5.5.3.0-beta] - 2026-09-23
 
