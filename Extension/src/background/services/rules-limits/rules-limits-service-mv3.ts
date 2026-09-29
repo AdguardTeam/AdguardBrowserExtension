@@ -80,6 +80,7 @@ interface RulesetCounter {
     filterId: number;
     rulesCount: number;
     regexpRulesCount: number;
+    metadataRulesCount: number;
 }
 
 /**
@@ -163,6 +164,7 @@ export class RulesLimitsService {
                 filterId,
                 rulesCount: ruleset.getSafeRulesCount() + ruleset.getUnsafeRulesCount(),
                 regexpRulesCount: ruleset.getRegexpRulesCount(),
+                metadataRulesCount: ruleset.getMetadataRulesCount(),
             };
 
             return acc;
@@ -211,11 +213,11 @@ export class RulesLimitsService {
     /**
      * Get the number of static rules enabled, including metadata rules.
      *
-     * NOTE: AdGuard includes a metadata rule (id=1) at the start of each
-     * generated static ruleset JSON file. Chrome counts this rule against the
-     * global 330,000 budget, but `Ruleset.getRulesCount()` does not include it.
-     * This method adds +1 per enabled ruleset to match Chrome's actual
-     * consumption count.
+     * NOTE: Each generated static ruleset JSON file starts with metadata
+     * rules that carry the ruleset metadata in chunks. Chrome counts them
+     * against the global static rule budget, but the ruleset's safe and unsafe
+     * counters do not include them, so they are added from
+     * `getMetadataRulesCount()`.
      *
      * @param result Configuration result.
      * @param filters Filters with metadata.
@@ -228,7 +230,7 @@ export class RulesLimitsService {
         const rulesets = RulesLimitsService.getRulesetCounters(filters, rulesetsCounters);
 
         return rulesets.reduce((sum, ruleset) => {
-            return sum + ruleset.rulesCount + 1;
+            return sum + ruleset.rulesCount + ruleset.metadataRulesCount;
         }, 0);
     }
 
@@ -764,11 +766,12 @@ export class RulesLimitsService {
 
         const availableStaticRulesCount = await browser.declarativeNetRequest.getAvailableStaticRuleCount();
         const filterStaticRulesCount = RulesLimitsService.getStaticRulesetCounter(result, filterId);
-        // +1 for the metadata rule Chrome counts at the start of each static
-        // ruleset (`Ruleset.getRulesCount()` excludes it; see
-        // `getStaticRulesEnabledCount`). Without it the check undercounts and can
-        // admit a ruleset Chrome will actually reject when near the global limit.
-        const filterStaticRulesTotalCount = filterStaticRulesCount.rulesCount + 1;
+        // Chrome also counts the metadata rules at the start of each static
+        // ruleset (see `getStaticRulesEnabledCount`). Without them the check
+        // undercounts and can admit a ruleset Chrome will reject near the
+        // global limit.
+        const filterStaticRulesTotalCount = filterStaticRulesCount.rulesCount
+            + filterStaticRulesCount.metadataRulesCount;
         if (filterStaticRulesTotalCount > availableStaticRulesCount) {
             return {
                 ok: false,
@@ -862,10 +865,11 @@ export class RulesLimitsService {
         const { totalStaticRulesCount, totalRegexpRulesCount } = filterIds.reduce(
             (acc, filterId) => {
                 const filterStaticRulesCount = RulesLimitsService.getStaticRulesetCounter(result, filterId);
-                // +1 for the metadata rule Chrome counts per ruleset (see
-                // `getStaticRulesEnabledCount`) so the admission check matches
-                // Chrome's actual static-rule consumption.
-                acc.totalStaticRulesCount += filterStaticRulesCount.rulesCount + 1;
+                // Chrome also counts the metadata rules of each ruleset (see
+                // `getStaticRulesEnabledCount`), so the admission check
+                // matches Chrome's actual static-rule consumption.
+                acc.totalStaticRulesCount += filterStaticRulesCount.rulesCount
+                    + filterStaticRulesCount.metadataRulesCount;
                 acc.totalRegexpRulesCount += filterStaticRulesCount.regexpRulesCount;
                 return acc;
             },

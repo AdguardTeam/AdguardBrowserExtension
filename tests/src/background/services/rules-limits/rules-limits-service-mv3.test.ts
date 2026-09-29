@@ -25,6 +25,11 @@ import {
     vi,
     beforeEach,
 } from 'vitest';
+import browser from 'webextension-polyfill';
+
+import { type ConfigurationResult } from '@adguard/tswebextension/mv3';
+
+import { MessageType } from '../../../../../Extension/src/common/messages/constants';
 
 // Create hoisted mocks for use inside vi.mock() factories.
 const {
@@ -32,11 +37,21 @@ const {
     mockRulesLimitsStorageGetData,
     mockGetEnabledFiltersWithMetadata,
     mockGetEnabledRulesets,
+    mockAddListener,
+    mockGetGroupState,
+    mockGetEnabledFiltersIdsByGroupId,
+    mockGetAvailableStaticRuleCount,
+    mockGetSessionRules,
 } = vi.hoisted(() => ({
     mockSettingsStorageGet: vi.fn(),
     mockRulesLimitsStorageGetData: vi.fn(),
     mockGetEnabledFiltersWithMetadata: vi.fn(),
     mockGetEnabledRulesets: vi.fn(),
+    mockAddListener: vi.fn(),
+    mockGetGroupState: vi.fn(),
+    mockGetEnabledFiltersIdsByGroupId: vi.fn(),
+    mockGetAvailableStaticRuleCount: vi.fn(),
+    mockGetSessionRules: vi.fn(),
 }));
 
 // Mock settingsStorage.
@@ -71,8 +86,8 @@ vi.mock(
             getEnabledFiltersWithMetadata: () => mockGetEnabledFiltersWithMetadata(),
         },
         Categories: {
-            getGroupState: vi.fn(),
-            getEnabledFiltersIdsByGroupId: vi.fn(),
+            getGroupState: (...args: unknown[]) => mockGetGroupState(...args),
+            getEnabledFiltersIdsByGroupId: (...args: unknown[]) => mockGetEnabledFiltersIdsByGroupId(...args),
             getRecommendedFilterIdsByGroupId: vi.fn(),
         },
         iconsApi: {
@@ -86,7 +101,7 @@ vi.mock(
     '../../../../../Extension/src/background/message-handler',
     () => ({
         messageHandler: {
-            addListener: vi.fn(),
+            addListener: (...args: unknown[]) => mockAddListener(...args),
         },
     }),
 );
@@ -95,6 +110,14 @@ vi.mock(
 const globalChrome = global.chrome as Record<string, unknown>;
 const dnr = globalChrome.declarativeNetRequest as Record<string, unknown>;
 dnr.getEnabledRulesets = mockGetEnabledRulesets;
+
+// Static quota constants and counters come from the polyfill `browser`, which
+// vitest.setup.ts maps to sinon-chrome. The constants are read when the service
+// module loads, so set them before the import below.
+const polyfillDnr = browser.declarativeNetRequest as unknown as Record<string, unknown>;
+polyfillDnr.MAX_NUMBER_OF_ENABLED_STATIC_RULESETS = 50;
+polyfillDnr.getAvailableStaticRuleCount = mockGetAvailableStaticRuleCount;
+polyfillDnr.getSessionRules = mockGetSessionRules;
 
 // Import the class under test AFTER all mocks are set up.
 const { RulesLimitsService } = await import(
@@ -285,5 +308,209 @@ describe.skipIf(!__IS_MV3__)('RulesLimitsService.areFilterLimitsExceeded', () =>
         // Cached check passes (arrays equal), falls through to expected check.
         // Expected [1,2,3] ≠ actual [1,2] → true.
         expect(result).toBe(true);
+    });
+});
+
+/**
+ * Rule counts of a static ruleset stub.
+ */
+type StaticRulesetCounts = {
+    filterId: number;
+    safeRulesCount: number;
+    unsafeRulesCount: number;
+    regexpRulesCount: number;
+    metadataRulesCount: number;
+};
+
+const FILTER_2: StaticRulesetCounts = {
+    filterId: 2,
+    safeRulesCount: 90,
+    unsafeRulesCount: 10,
+    regexpRulesCount: 4,
+    metadataRulesCount: 5,
+};
+
+const FILTER_3: StaticRulesetCounts = {
+    filterId: 3,
+    safeRulesCount: 200,
+    unsafeRulesCount: 0,
+    regexpRulesCount: 6,
+    metadataRulesCount: 7,
+};
+
+const FILTER_4: StaticRulesetCounts = {
+    filterId: 4,
+    safeRulesCount: 1000,
+    unsafeRulesCount: 0,
+    regexpRulesCount: 20,
+    metadataRulesCount: 50,
+};
+
+const FILTER_5_REGEXP_HEAVY: StaticRulesetCounts = {
+    filterId: 5,
+    safeRulesCount: 991,
+    unsafeRulesCount: 0,
+    regexpRulesCount: 991,
+    metadataRulesCount: 3,
+};
+
+/**
+ * Creates a configuration result whose static filters report the given counts.
+ *
+ * @param rulesets Counts per static ruleset.
+ *
+ * @returns Configuration result stub.
+ */
+function createConfigurationResult(rulesets: StaticRulesetCounts[]): ConfigurationResult {
+    const staticFilters = rulesets.map((counts) => ({
+        getId: () => rulesetName(counts.filterId),
+        getSafeRulesCount: () => counts.safeRulesCount,
+        getUnsafeRulesCount: () => counts.unsafeRulesCount,
+        getRegexpRulesCount: () => counts.regexpRulesCount,
+        getMetadataRulesCount: () => counts.metadataRulesCount,
+    }));
+
+    return { staticFilters } as unknown as ConfigurationResult;
+}
+
+/**
+ * Initializes a service with the given static rulesets and filtering enabled.
+ *
+ * @param rulesets Counts per static ruleset (enabled or not).
+ */
+async function initService(rulesets: StaticRulesetCounts[]): Promise<void> {
+    const service = new RulesLimitsService();
+    await service.init();
+    service.updateConfigurationResult(createConfigurationResult(rulesets), true);
+}
+
+/**
+ * Returns the listener the service registered for a message type.
+ *
+ * @param type Message type.
+ *
+ * @returns Registered listener.
+ *
+ * @throws Error if no listener was registered for the type.
+ */
+function getListener(type: MessageType): (message?: unknown) => Promise<unknown> {
+    const call = mockAddListener.mock.calls.find(([registeredType]) => registeredType === type);
+    if (!call) {
+        throw new Error(`No listener registered for ${type}`);
+    }
+    return call[1];
+}
+
+describe.skipIf(!__IS_MV3__)('RulesLimitsService static quota with service rules', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+        mockSettingsStorageGet.mockReturnValue(false);
+        mockRulesLimitsStorageGetData.mockReturnValue([]);
+        mockGetEnabledRulesets.mockResolvedValue([]);
+        mockGetSessionRules.mockResolvedValue([]);
+    });
+
+    it('counts ordinary and service rules of enabled rulesets only', async () => {
+        mockGetEnabledFiltersWithMetadata.mockReturnValue([2, 3].map(createCommonFilterMetadata));
+        mockGetAvailableStaticRuleCount.mockResolvedValue(1000);
+        await initService([FILTER_2, FILTER_3, FILTER_4]);
+
+        const counters = await getListener(MessageType.GetRulesLimitsCountersMv3)();
+
+        // (90 + 10 + 5) + (200 + 0 + 7); filter 4 is not enabled.
+        expect(counters).toMatchObject({
+            staticRulesEnabledCount: 312,
+            staticRulesMaximumCount: 1312,
+            staticRulesRegexpsEnabledCount: 10,
+        });
+    });
+
+    it('admits a filter whose ordinary and service rules fit exactly', async () => {
+        mockGetEnabledFiltersWithMetadata.mockReturnValue([2, 3].map(createCommonFilterMetadata));
+        mockGetAvailableStaticRuleCount.mockResolvedValue(1050);
+        await initService([FILTER_2, FILTER_3, FILTER_4]);
+
+        const result = await getListener(MessageType.CanEnableStaticFilterMv3)({
+            type: MessageType.CanEnableStaticFilterMv3,
+            data: { filterId: 4 },
+        });
+
+        expect(result).toEqual({ ok: true });
+    });
+
+    it('rejects a filter that fits only without its service rules', async () => {
+        mockGetEnabledFiltersWithMetadata.mockReturnValue([2, 3].map(createCommonFilterMetadata));
+        mockGetAvailableStaticRuleCount.mockResolvedValue(1049);
+        await initService([FILTER_2, FILTER_3, FILTER_4]);
+
+        const result = await getListener(MessageType.CanEnableStaticFilterMv3)({
+            type: MessageType.CanEnableStaticFilterMv3,
+            data: { filterId: 4 },
+        });
+
+        expect(result).toEqual({
+            ok: false,
+            data: {
+                type: 'static',
+                rulesCount: { current: 1050, maximum: 1049 },
+            },
+        });
+    });
+
+    it('rejects a filter by the regexp limit without counting service rules', async () => {
+        mockGetEnabledFiltersWithMetadata.mockReturnValue([2, 3].map(createCommonFilterMetadata));
+        mockGetAvailableStaticRuleCount.mockResolvedValue(100_000);
+        await initService([FILTER_2, FILTER_3, FILTER_5_REGEXP_HEAVY]);
+
+        const result = await getListener(MessageType.CanEnableStaticFilterMv3)({
+            type: MessageType.CanEnableStaticFilterMv3,
+            data: { filterId: 5 },
+        });
+
+        // 4 + 6 enabled + 991 = 1001 > 1000.
+        expect(result).toEqual({
+            ok: false,
+            data: {
+                type: 'static',
+                rulesRegexpsCount: { current: 991, maximum: 1000 },
+            },
+        });
+    });
+
+    it('admits a group whose ordinary and service rules fit exactly', async () => {
+        mockGetEnabledFiltersWithMetadata.mockReturnValue([2].map(createCommonFilterMetadata));
+        mockGetGroupState.mockReturnValue({ touched: true });
+        mockGetEnabledFiltersIdsByGroupId.mockReturnValue([3, 4]);
+        mockGetAvailableStaticRuleCount.mockResolvedValue(1257);
+        await initService([FILTER_2, FILTER_3, FILTER_4]);
+
+        const result = await getListener(MessageType.CanEnableStaticGroupMv3)({
+            type: MessageType.CanEnableStaticGroupMv3,
+            data: { groupId: 1 },
+        });
+
+        expect(result).toEqual({ ok: true });
+    });
+
+    it('rejects a group that fits only without its service rules', async () => {
+        mockGetEnabledFiltersWithMetadata.mockReturnValue([2].map(createCommonFilterMetadata));
+        mockGetGroupState.mockReturnValue({ touched: true });
+        mockGetEnabledFiltersIdsByGroupId.mockReturnValue([3, 4]);
+        mockGetAvailableStaticRuleCount.mockResolvedValue(1256);
+        await initService([FILTER_2, FILTER_3, FILTER_4]);
+
+        const result = await getListener(MessageType.CanEnableStaticGroupMv3)({
+            type: MessageType.CanEnableStaticGroupMv3,
+            data: { groupId: 1 },
+        });
+
+        // (200 + 7) + (1000 + 50).
+        expect(result).toEqual({
+            ok: false,
+            data: {
+                type: 'static',
+                rulesCount: { current: 1257, maximum: 1256 },
+            },
+        });
     });
 });
