@@ -50,6 +50,7 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: write   # push the git tag
+      actions: write    # dispatch mirror.yml after tagging
     outputs:
       tag: ${{ steps.resolve.outputs.tag }}
       channel: ${{ steps.resolve.outputs.channel }}
@@ -94,6 +95,15 @@ jobs:
         run: |
           git tag -f "${TAG}"
           git push -f origin "${TAG}"
+
+      # A tag pushed with GITHUB_TOKEN does not start workflow runs, so
+      # mirror.yml's `push: tags` trigger never fires for release tags.
+      # Dispatch it explicitly; it mirrors master and all v* tags, including
+      # the tag pushed above.
+      - name: Dispatch mirror workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run mirror.yml --repo "${GITHUB_REPOSITORY}"
 
   # Restores the Bamboo "Size and locales check": bundle-size and translation
   # validation gate every release before any build/upload happens. An oversize

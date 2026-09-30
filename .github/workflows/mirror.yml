@@ -1,0 +1,46 @@
+name: Mirror
+
+# Mirrors master and release tags to the public repo
+# (AdguardTeam/AdguardBrowserExtension) on every push to master and every
+# v* tag push. Release tags are also dispatched from publish-release.yml:
+# it pushes tags with GITHUB_TOKEN, and such pushes do not start workflow
+# runs.
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+# Serialize force-pushes to the public mirror so two close master/tag
+# events cannot rewind public master if an older run finishes last.
+concurrency:
+  group: mirror-${{ github.repository }}
+  cancel-in-progress: false
+
+# `contents: read` — checkout source repo
+# `id-token: write` — Octopass token for push to public repo
+# No `actions: write`: the shared workflow disables workflows in the public
+# mirror with the Octopass token; the grant is only needed for
+# `disable_workflows_source`, which is not set here.
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  mirror:
+    uses: AdGuardSoftwareLimited/actions/.github/workflows/mirror.yml@master
+    with:
+      team: extensions
+      target_repo: git@github.com:AdguardTeam/AdguardBrowserExtension.git
+      # The shared default mirrors ALL refs — including every private feature
+      # branch — to the public repo. Scope it to what we actually publish.
+      # The leading `+` (force) is required: the first run force-replaces the
+      # public master, whose history is unrelated after the migration.
+      refspecs: "+refs/heads/master:refs/heads/master +refs/tags/v*:refs/tags/v*"
+      # Keep the public stale bot enabled: stale.yml runs only in the public
+      # repo and is still in use. The shared default ("all") disables every
+      # workflow in the public mirror, and the action never re-enables them.
+      disable_workflows_target: "all -stale.yml"
