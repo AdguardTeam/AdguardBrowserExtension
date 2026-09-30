@@ -250,6 +250,17 @@ MV2 compatibility flags, but local runs may still need an older Chromium binary:
 E2E_CHROMIUM_EXECUTABLE_PATH=/path/to/chromium pnpm test:e2e dev --matrix chrome-mv2
 ```
 
+Firefox E2E runs use the pinned Firefox build: the CI Docker image preinstalls
+it at `/opt/firefox` and exposes it via `E2E_FIREFOX_BIN`, which takes
+precedence. Locally, selenium-manager resolves the pinned build on Linux when
+`E2E_FIREFOX_BIN` is unset; macOS uses the system Firefox. Set
+`E2E_FIREFOX_BIN=/path/to/firefox` to test against a specific Firefox build.
+
+The image also preinstalls geckodriver at `/opt/geckodriver` and exposes it via
+`E2E_GECKODRIVER_BIN`, so selenium-manager does not download the driver from
+GitHub releases during a run; set `E2E_GECKODRIVER_BIN=/path/to/geckodriver` to
+use a specific driver locally.
+
 Browser E2E tests are wired to a separate workflow (`e2e.yml`) because they
 run slower than unit and integration tests.
 

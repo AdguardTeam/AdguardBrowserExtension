@@ -98,6 +98,22 @@ export type E2EPageHandle = {
     getTextContents(selector: string): Promise<string[]>;
 
     /**
+     * Reloads the page and waits until it reaches the same readiness state as
+     * the initial navigation. Used by failure-recovery helpers to recover from
+     * a stalled page (for example an MV3 service-worker cold start).
+     *
+     * Page error collectors differ across engines: Chromium keeps the errors
+     * collected before the reload, while Firefox starts from an empty list
+     * because its collector is re-injected after navigation. Tests that assert
+     * on `getErrors()` after a reload must account for that.
+     *
+     * @param timeoutMs Maximum time to wait for the reload, in milliseconds.
+     *
+     * @returns Nothing.
+     */
+    reload(timeoutMs: number): Promise<void>;
+
+    /**
      * Closes the page (Chromium) or is a no-op (Firefox, since driver reuses window).
      *
      * @returns Nothing.

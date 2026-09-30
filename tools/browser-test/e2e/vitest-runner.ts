@@ -159,6 +159,8 @@ export const runE2EVitest = async (rawArgs: string[]): Promise<number> => {
         '--reporter',
         'junit',
         `--outputFile=${getE2EReportPath(args.env)}`,
+        '--reporter',
+        './tools/browser-test/e2e/retry-reporter.ts',
         ...args.vitestArgs,
     ];
 

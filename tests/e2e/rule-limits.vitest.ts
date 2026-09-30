@@ -31,6 +31,7 @@ import { type Configuration } from '@adguard/tswebextension/mv3';
 
 import { logInfo, logSection } from '../../tools/browser-test/logger';
 import { unpackE2EArtifact } from '../../tools/browser-test/e2e/artifacts';
+import { type E2EPageHandle } from '../../tools/browser-test/e2e/page-handle';
 import {
     type E2ESession,
     closeE2ESession,
@@ -49,17 +50,47 @@ import {
     getE2ESession,
     getSurface,
 } from './helpers/e2e-helpers';
+import {
+    DIAGNOSTICS_DUMP_TIMEOUT_MS,
+    SELECTOR_RECOVERY_BUDGET_MS,
+    SELECTOR_RELOAD_TIMEOUT_MS,
+    SELECTOR_RETRY_TIMEOUT_MS,
+    SELECTOR_WAIT_TIMEOUT_MS,
+    waitForSelectorWithRecovery,
+    withDiagnosticsOnFailure,
+} from './helpers/page-recovery-helpers';
 import { applyOversizedRulesets } from './helpers/rule-limits-fixture';
 
 const e2eEnv = getE2EEnv();
 const e2eMatrix = getE2EMatrix();
 
 /**
- * Timeout for waiting for a DOM element to appear, in milliseconds.
- * Large rulesets can keep the SW busy on slow CI hosts, so the popup may
- * take a while to become interactive.
+ * Per-test timeout for tests that chain two recovery waits (up to
+ * SELECTOR_RECOVERY_BUDGET_MS each), in milliseconds. This exceeds the global
+ * e2e testTimeout (120_000); without the override Vitest aborts the test before
+ * the second wait's diagnostics are dumped — the very triage data these tests
+ * exist to collect. The worst path produces three dumps (the first wait timing
+ * out, the second wait timing out and its retry timing out), each bounded by
+ * DIAGNOSTICS_DUMP_TIMEOUT_MS. Budgets are sized per test instead of shared so
+ * the test timeouts fit the 30-minute e2e job budget even with `retry: 1`; that
+ * figure covers the tests only, excluding the `beforeAll` hooks and the other
+ * e2e files that share the job (`fileParallelism: false`).
  */
-const SELECTOR_WAIT_TIMEOUT_MS = 60_000;
+const TWO_WAITS_TEST_TIMEOUT_MS = 2 * SELECTOR_RECOVERY_BUDGET_MS
+    + 3 * DIAGNOSTICS_DUMP_TIMEOUT_MS;
+
+/**
+ * Timeout for the click that opens the rules-limits panel, in milliseconds.
+ * Matches the default action timeout Playwright uses in `clickSelector`.
+ */
+const CLICK_TIMEOUT_MS = 30_000;
+
+/**
+ * Per-test timeout for the options test with oversized rulesets, in
+ * milliseconds: two recovery waits, the click and the post-click wait for the
+ * opened rules-limits panel.
+ */
+const OPTIONS_TIMEOUT_MS = TWO_WAITS_TEST_TIMEOUT_MS + CLICK_TIMEOUT_MS + SELECTOR_WAIT_TIMEOUT_MS;
 
 /**
  * Locale-independent selector for the rule limits notification button.
@@ -90,6 +121,30 @@ const BEFORE_ALL_TIMEOUT_MS = 120_000;
 const RULE_LIMITS_CONFIG: Configuration = {
     ...DEFAULT_EXTENSION_CONFIG,
     staticFiltersIds: [2, 10],
+};
+
+/**
+ * Waits for a selector on an extension page with the standard recovery budget:
+ * on an engine timeout the page is reloaded once and the wait is retried, and
+ * every failed attempt dumps page diagnostics.
+ *
+ * @param page E2E page handle.
+ * @param selector CSS selector to wait for.
+ * @param context Human-readable label for logs, for example `chrome-mv3/popup`.
+ *
+ * @returns Nothing.
+ */
+const waitForExtensionSelector = async (
+    page: E2EPageHandle,
+    selector: string,
+    context: string,
+): Promise<void> => {
+    await waitForSelectorWithRecovery(page, selector, {
+        timeoutMs: SELECTOR_WAIT_TIMEOUT_MS,
+        reloadTimeoutMs: SELECTOR_RELOAD_TIMEOUT_MS,
+        retryTimeoutMs: SELECTOR_RETRY_TIMEOUT_MS,
+        context,
+    });
 };
 
 /**
@@ -150,7 +205,7 @@ mv3Entries.forEach((entry) => {
         extensionPath = await unpackE2EArtifact(entry, e2eEnv);
     }, BEFORE_ALL_TIMEOUT_MS);
 
-    describe(`[rule-limits] ${entry.id} — before oversized rulesets`, () => {
+    describe(`[rule-limits] ${entry.id} — before oversized rulesets`, { timeout: TWO_WAITS_TEST_TIMEOUT_MS }, () => {
         let e2eSession: E2ESession | undefined;
 
         beforeAll(async () => {
@@ -175,13 +230,15 @@ mv3Entries.forEach((entry) => {
                 const page = await openE2ESurface(session, entry, surface);
 
                 try {
-                    await page.waitForSelector('button[role="switch"]', SELECTOR_WAIT_TIMEOUT_MS);
-                    await expect(
-                        page.waitForSelector(
-                            RULE_LIMITS_NOTIFICATION_SELECTOR,
-                            ABSENT_SELECTOR_TIMEOUT_MS,
-                        ),
-                    ).rejects.toThrow();
+                    await withDiagnosticsOnFailure(page, `${entry.id}/popup`, async () => {
+                        await waitForExtensionSelector(page, 'button[role="switch"]', `${entry.id}/popup switch`);
+                        await expect(
+                            page.waitForSelector(
+                                RULE_LIMITS_NOTIFICATION_SELECTOR,
+                                ABSENT_SELECTOR_TIMEOUT_MS,
+                            ),
+                        ).rejects.toThrow();
+                    });
                 } finally {
                     await page.close();
                 }
@@ -193,13 +250,15 @@ mv3Entries.forEach((entry) => {
                 const page = await openE2ESurface(session, entry, surface);
 
                 try {
-                    await page.waitForSelector('#root .page', SELECTOR_WAIT_TIMEOUT_MS);
-                    await expect(
-                        page.waitForSelector(
-                            RULE_LIMITS_NOTIFICATION_SELECTOR,
-                            ABSENT_SELECTOR_TIMEOUT_MS,
-                        ),
-                    ).rejects.toThrow();
+                    await withDiagnosticsOnFailure(page, `${entry.id}/options`, async () => {
+                        await waitForExtensionSelector(page, '#root .page', `${entry.id}/options page`);
+                        await expect(
+                            page.waitForSelector(
+                                RULE_LIMITS_NOTIFICATION_SELECTOR,
+                                ABSENT_SELECTOR_TIMEOUT_MS,
+                            ),
+                        ).rejects.toThrow();
+                    });
                 } finally {
                     await page.close();
                 }
@@ -285,46 +344,55 @@ mv3Entries.forEach((entry) => {
             }
         });
 
-        it('shows rule limits exceeded notification in popup', async () => {
+        it('shows rule limits exceeded notification in popup', { timeout: TWO_WAITS_TEST_TIMEOUT_MS }, async () => {
             const session = getE2ESession(e2eSession);
             const surface = getSurface(E2ESurfaceId.Popup);
             const page = await openE2ESurface(session, entry, surface);
 
             try {
-                await page.waitForSelector('button[role="switch"]', SELECTOR_WAIT_TIMEOUT_MS);
-                await page.waitForSelector(
-                    RULE_LIMITS_NOTIFICATION_BUTTON_SELECTOR,
-                    SELECTOR_WAIT_TIMEOUT_MS,
-                );
+                await withDiagnosticsOnFailure(page, `${entry.id}/popup`, async () => {
+                    await waitForExtensionSelector(page, 'button[role="switch"]', `${entry.id}/popup switch`);
+                    await waitForExtensionSelector(
+                        page,
+                        RULE_LIMITS_NOTIFICATION_BUTTON_SELECTOR,
+                        `${entry.id}/popup rule limits notification`,
+                    );
 
-                expect(
-                    await page.querySelectorCount(RULE_LIMITS_NOTIFICATION_BUTTON_SELECTOR),
-                ).toBeGreaterThan(0);
+                    expect(
+                        await page.querySelectorCount(RULE_LIMITS_NOTIFICATION_BUTTON_SELECTOR),
+                    ).toBeGreaterThan(0);
 
-                const bgErrors = await page.getBackgroundErrors();
-                expectNoErrors(bgErrors, `${entry.id}/popup background errors`);
+                    const bgErrors = await page.getBackgroundErrors();
+                    expectNoErrors(bgErrors, `${entry.id}/popup background errors`);
+                });
             } finally {
                 await page.close();
             }
         });
 
-        it('shows rule limits exceeded notification on options page', async () => {
+        it('shows rule limits exceeded notification on options page', { timeout: OPTIONS_TIMEOUT_MS }, async () => {
             const session = getE2ESession(e2eSession);
             const surface = getSurface(E2ESurfaceId.Options);
             const page = await openE2ESurface(session, entry, surface);
 
             try {
-                await page.waitForSelector('#root .page', SELECTOR_WAIT_TIMEOUT_MS);
-                await page.waitForSelector(
-                    RULE_LIMITS_NOTIFICATION_BUTTON_SELECTOR,
-                    SELECTOR_WAIT_TIMEOUT_MS,
-                );
+                await withDiagnosticsOnFailure(page, `${entry.id}/options`, async () => {
+                    await waitForExtensionSelector(page, '#root .page', `${entry.id}/options page`);
+                    await waitForExtensionSelector(
+                        page,
+                        RULE_LIMITS_NOTIFICATION_BUTTON_SELECTOR,
+                        `${entry.id}/options rule limits notification`,
+                    );
 
-                await page.clickSelector(RULE_LIMITS_NOTIFICATION_BUTTON_SELECTOR);
-                await page.waitForSelector('.rules-limits', SELECTOR_WAIT_TIMEOUT_MS);
+                    await page.clickSelector(RULE_LIMITS_NOTIFICATION_BUTTON_SELECTOR);
+                    // The page is already interactive after the wait above, so
+                    // the post-click wait does not need the cold-start recovery
+                    // budget; a reload could not replay the click anyway.
+                    await page.waitForSelector('.rules-limits', SELECTOR_WAIT_TIMEOUT_MS);
 
-                const bgErrors = await page.getBackgroundErrors();
-                expectNoErrors(bgErrors, `${entry.id}/options background errors`);
+                    const bgErrors = await page.getBackgroundErrors();
+                    expectNoErrors(bgErrors, `${entry.id}/options background errors`);
+                });
             } finally {
                 await page.close();
             }

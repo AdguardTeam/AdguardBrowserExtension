@@ -30,6 +30,7 @@ import type { ConsoleLogEntry, JavascriptLogEntry } from 'selenium-webdriver/bid
 import firefox from 'selenium-webdriver/firefox';
 
 import { APP_MESSAGE_HANDLER_NAME, MessageType } from '../../../Extension/src/common/messages/constants';
+import { logInfo } from '../logger';
 
 import {
     E2EErrorCollector,
@@ -49,6 +50,7 @@ import {
     type E2ESurface,
     E2ESurfaceId,
 } from './types';
+import { withTimeout } from './with-timeout';
 
 export const FIREFOX_EXTENSION_HOST = 'adguard-e2e';
 
@@ -65,9 +67,29 @@ const FIREFOX_APP_INIT_TIMEOUT_MS = 30_000;
  * time, so CI silently changes browser version whenever Mozilla ships a
  * release (e.g. Firefox 153 broke all browser-level navigation to
  * `moz-extension://` URLs). Bump this version deliberately after verifying
- * the harness against it. Ignored when `E2E_FIREFOX_BIN` is set.
+ * the harness against it.
+ *
+ * On Linux CI the Dockerfile (`firefox-preinstall` stage, `FIREFOX_VERSION`
+ * build arg) preinstalls this build and exposes it through `E2E_FIREFOX_BIN`,
+ * which takes precedence and skips the selenium-manager download. Keep the two
+ * versions in sync. Ignored when `E2E_FIREFOX_BIN` is set.
  */
-const FIREFOX_PINNED_VERSION = '153.0';
+export const FIREFOX_PINNED_VERSION = '153.0';
+
+/**
+ * Pinned geckodriver version for E2E runs.
+ *
+ * The version the pinned selenium-webdriver resolves — and downloads from
+ * github.com/mozilla/geckodriver releases — when no driver path is configured.
+ * A transient GitHub error there (HTTP 5xx) fails the whole `firefox-mv2`
+ * project before any test runs. On Linux CI the Dockerfile
+ * (`geckodriver-preinstall` stage, `GECKODRIVER_VERSION` build arg)
+ * preinstalls this build and exposes it through `E2E_GECKODRIVER_BIN`, which
+ * takes precedence and skips the download. Keep the two versions in sync; the
+ * pin guard test in tests/tools/browser-test/firefox-pinned-version.test.ts
+ * enforces it.
+ */
+export const GECKODRIVER_PINNED_VERSION = '0.37.1';
 
 /**
  * Internal tab for filtering-log E2E (no manifest content_scripts on about: pages).
@@ -365,6 +387,7 @@ export const launchFirefoxE2ESession = async (
     // Allows testing against a specific Firefox build instead of the pinned
     // version resolved by selenium-manager.
     if (process.env.E2E_FIREFOX_BIN) {
+        logInfo(`[${entry.id}] using Firefox binary from E2E_FIREFOX_BIN: ${process.env.E2E_FIREFOX_BIN}`);
         options.setBinary(process.env.E2E_FIREFOX_BIN);
     } else if (process.platform === 'linux') {
         // Pin the browser version so selenium-manager downloads a known-good
@@ -378,10 +401,19 @@ export const launchFirefoxE2ESession = async (
 
     options.enableBidi();
 
+    // An explicit driver path keeps selenium-manager out of the session setup:
+    // without it, selenium-manager resolves and downloads geckodriver from
+    // github.com/mozilla/geckodriver releases here, and a transient 5xx fails
+    // the whole `firefox-mv2` project before any test runs.
+    const geckodriverPath = process.env.E2E_GECKODRIVER_BIN;
+    if (geckodriverPath) {
+        logInfo(`[${entry.id}] using geckodriver binary from E2E_GECKODRIVER_BIN: ${geckodriverPath}`);
+    }
+
     // Firefox blocks WebDriver navigation to privileged pages such as
     // moz-extension:// URLs unless geckodriver grants the session system
     // access. This geckodriver instance is local to the E2E test process.
-    const service = new firefox.ServiceBuilder()
+    const service = new firefox.ServiceBuilder(geckodriverPath)
         .addArguments('--allow-system-access');
 
     const driver = await new Builder()
@@ -558,6 +590,32 @@ export const openFirefoxE2ESurface = async (
             const elements = await session.driver.findElements({ css: selector });
             return Promise.all(elements.map((el) => el.getText()));
         },
+        async reload(timeoutMs: number): Promise<void> {
+            // A geckodriver command that never settles cannot be bounded by the
+            // internal `driver.wait` timeout, so guard the window switch, the
+            // refresh and the error collector re-injection the same way the open
+            // path does (see navigateToExtensionUrlAndWait). This matters here
+            // most: reload is only reached on an already stalled page, and
+            // without the guard a hung command would block until the Vitest test
+            // timeout and skip the recovery diagnostics.
+            await withTimeout(
+                (async (): Promise<void> => {
+                    await session.driver.switchTo().window(windowHandle);
+                    await session.driver.navigate().refresh();
+                    await waitForFirefoxDocumentReady(
+                        session.driver,
+                        timeoutMs,
+                        `Firefox page reload timed out: ${surface.id}`,
+                    );
+                    // The injected page error collector is lost on navigation,
+                    // so reinstall it to keep collecting errors for later
+                    // assertions.
+                    await injectPageErrorCollector(session.driver);
+                })(),
+                timeoutMs,
+                `Firefox page reload timed out: ${surface.id}`,
+            );
+        },
         async close(): Promise<void> {
             // Firefox uses a single driver window; no separate page to close.
         },
@@ -718,28 +776,3 @@ const createFirefoxLogError = (
     message: entry.text,
     url: `firefox-bidi:${entry.source.realmId}`,
 });
-
-/**
- * Rejects a promise if it does not settle before timeout.
- *
- * @param promise Promise to guard.
- * @param timeoutMs Timeout in milliseconds.
- * @param message Timeout error message.
- *
- * @returns Original promise result.
- */
-const withTimeout = async <T>(promise: Promise<T>, timeoutMs: number, message: string): Promise<T> => {
-    let timeoutId!: ReturnType<typeof setTimeout>;
-
-    const timeoutPromise = new Promise<never>((resolve, reject): void => {
-        timeoutId = setTimeout((): void => {
-            reject(new Error(message));
-        }, timeoutMs);
-    });
-
-    try {
-        return await Promise.race([promise, timeoutPromise]);
-    } finally {
-        clearTimeout(timeoutId);
-    }
-};

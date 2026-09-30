@@ -71,6 +71,15 @@ export class Engine implements TsWebExtensionEngine {
 
     private static readonly UPDATE_TIMEOUT_MS = 1000;
 
+    /**
+     * In-flight browser-test configuration, if any.
+     *
+     * The browser-test hook is exposed before {@link start} and can be invoked
+     * while the app is still initializing, so {@link start} waits for it to
+     * avoid running two tswebextension configurations concurrently.
+     */
+    private pendingTestConfigure: Promise<ConfigurationResult> | undefined;
+
     static readonly messageHandlerName = MESSAGE_HANDLER_NAME;
 
     /**
@@ -115,7 +124,16 @@ export class Engine implements TsWebExtensionEngine {
             adguard: {
                 // eslint-disable-next-line no-restricted-globals
                 ...self.adguard,
-                configure: this.api.configure.bind(this.api),
+                configure: (configuration: Configuration): Promise<ConfigurationResult> => {
+                    const configurePromise = this.api.configure(configuration);
+                    this.pendingTestConfigure = configurePromise;
+
+                    return configurePromise.finally(() => {
+                        if (this.pendingTestConfigure === configurePromise) {
+                            this.pendingTestConfigure = undefined;
+                        }
+                    });
+                },
             },
         });
     }
@@ -129,6 +147,18 @@ export class Engine implements TsWebExtensionEngine {
      * to use MV3 in Firefox.
      */
     async start(): Promise<void> {
+        // The browser-test hook is exposed before start, so a test may already
+        // be configuring tswebextension while the app is still initializing.
+        // Running both configurations at once leaves the app uninitialized, so
+        // wait for the test configuration to settle first.
+        if (this.pendingTestConfigure) {
+            try {
+                await this.pendingTestConfigure;
+            } catch (e) {
+                logger.warn('[ext.Engine.start]: browser-test configuration failed before start:', e);
+            }
+        }
+
         const configuration = await Engine.getConfiguration();
 
         logger.info('[ext.Engine.start]: Start tswebextension...');
