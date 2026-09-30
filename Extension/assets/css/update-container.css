@@ -18,7 +18,11 @@
     min-height: 526px;
 }
 
-/* Edge MV2 to MV3 migration popup: 600px popup + 16px box-shadow */
+/*
+ * Edge MV2 to MV3 migration popup: 370px popup in English + 16px box-shadow,
+ * not taller than the viewport without the 10px offsets.
+ * The content script fits the height to the translated popup.
+ */
 .adguard-edge-mv3-migration-iframe {
-    min-height: 616px;
+    min-height: min(386px, calc(100vh - 20px));
 }

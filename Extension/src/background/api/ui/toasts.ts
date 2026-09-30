@@ -49,11 +49,6 @@ enum StylesAssetsPath {
 }
 
 /**
- * Background image of the offer block in the Edge MV3 migration popup.
- */
-const EDGE_MV3_MIGRATION_PROMO_IMAGE_PATH = '/assets/images/edge-mv3-migration-promo.svg';
-
-/**
  * Toasts class handles work with different popups and alert messages.
  */
 class Toasts {
@@ -286,6 +281,12 @@ class Toasts {
     /**
      * Shows the popup about the migration of the Edge extension from MV2 to MV3.
      * It replaces the application updated popup for that update.
+     *
+     * TODO (AG-59537): Remove the whole migration popup code once Edge users have moved to MV3:
+     * the popup, its strings, the offer image, the forward action and `EdgeMv3Migration`.
+     * The strings 'edge_mv3_migration_popup_offer_title' and 'edge_mv3_migration_popup_offer_button'
+     * are not used yet, they are kept for the promo that will be added to the popup later.
+     * They are quoted here so that `pnpm locales renew` keeps them.
      */
     public async showEdgeMv3MigrationPopup(): Promise<void> {
         const alertStyles = this.styles.get(StylesAssetsPath.AlertPopup);
@@ -303,14 +304,6 @@ class Toasts {
                 b: (chunks: string) => `<b>${chunks}</b>`,
                 a: (chunks: string) => `<a href="#" id="${EDGE_MV3_MIGRATION_SETTINGS_LINK_ID}">${chunks}</a>`,
             }),
-            offerTitle: translator.getMessage('edge_mv3_migration_popup_offer_title'),
-            offerButtonText: translator.getMessage('edge_mv3_migration_popup_offer_button'),
-            offerButtonHref: Forward.get({
-                action: ForwardAction.EdgeMv3MigrationPromo,
-                from: ForwardFrom.VersionPopup,
-            }),
-            // The image is bundled with the edge-mv3 build, so a failure here means a broken build.
-            offerBgImage: await Toasts.getSvgDataUrl(browser.runtime.getURL(EDGE_MV3_MIGRATION_PROMO_IMAGE_PATH)),
             alertStyles,
             iframeStyles,
         };

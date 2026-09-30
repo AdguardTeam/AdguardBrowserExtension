@@ -17,6 +17,8 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import browser from 'webextension-polyfill';
+
 import {
     type ShowAlertPopupMessage,
     type ShowVersionUpdatedPopupMessage,
@@ -106,6 +108,18 @@ export class Popups {
      * Space the popup iframe keeps around the popup for its box-shadow, in pixels.
      */
     private static readonly POPUP_SHADOW_SPACE_PX = 16;
+
+    /**
+     * Space kept between the popup iframe and the viewport edges: the iframe
+     * offsets at the top and at the bottom, see `update-container.css`.
+     */
+    private static readonly IFRAME_VIEWPORT_SPACE_PX = 20;
+
+    /**
+     * Font of the popup design. The popup iframe belongs to the web page,
+     * so the font is loaded from the extension as a web accessible resource.
+     */
+    private static readonly ROBOTO_FLEX_FONT_PATH = '/assets/fonts/Roboto-Flex-Regular.woff2';
 
     /**
      * Shows alert popup.
@@ -249,43 +263,23 @@ export class Popups {
             title,
             description,
             userScriptsText,
-            offerTitle,
-            offerButtonText,
-            offerButtonHref,
-            offerBgImage,
             alertStyles,
             iframeStyles,
         } = data;
 
-        const offerStyle = offerBgImage
-            ? `background-image: url('${offerBgImage}')`
-            : '';
-
+        // `dir="auto"` takes the text direction from the translation, so right-to-left
+        // languages keep the Latin words and the punctuation in their places.
         /* eslint-disable max-len */
         const iframeHtml = `
             <div id="adguard-edge-mv3-migration-popup" class="adguard-update-popup adguard-update-popup--edge-mv3-migration">
                 <div class="adguard-update-popup__close close-iframe"></div>
                 <div class="adguard-update-popup__logo"></div>
-                <div class="adguard-update-popup__title">
+                <div class="adguard-update-popup__title" dir="auto">
                     ${title}
                 </div>
                 <div class="adguard-update-popup__migration-desc">
-                    <p>${description}</p>
-                    <p>${userScriptsText}</p>
-                </div>
-                <div
-                    class="adguard-update-popup__offer adguard-update-popup__offer--show adguard-update-popup__offer--edge-mv3-migration"
-                    style="${offerStyle}"
-                >
-                    <div class="adguard-update-popup__offer-close close-iframe ${Popups.CLOSE_OFFER_CLASS}"></div>
-                    <div class="adguard-update-popup__offer-content">
-                        <div class="adguard-update-popup__offer-title">
-                            ${offerTitle}
-                        </div>
-                        <a href="${offerButtonHref}" class="adguard-update-popup__btn close-iframe ${Popups.CLOSE_OFFER_CLASS}" target="_blank">
-                            ${offerButtonText}
-                        </a>
-                    </div>
+                    <p dir="auto">${description}</p>
+                    <p dir="auto">${userScriptsText}</p>
                 </div>
             </div>
         `;
@@ -295,7 +289,7 @@ export class Popups {
             iframeHtml,
             iframeStyles,
             iframeClassName: 'adguard-edge-mv3-migration-iframe',
-            alertStyles,
+            alertStyles: `${Popups.getRobotoFlexFontFace()}${alertStyles}`,
             isAdguardTab,
             showPromoNotification: false,
             onIframeInjected: (iframe) => {
@@ -303,6 +297,14 @@ export class Popups {
                 if (!isListening) {
                     iframe.addEventListener('load', () => {
                         Popups.handleOpenExtensionDetails(iframe);
+                    });
+                }
+
+                // The popup height depends on the length of the translation.
+                const isFitted = Popups.fitIframeToPopup(iframe);
+                if (!isFitted) {
+                    iframe.addEventListener('load', () => {
+                        Popups.fitIframeToPopup(iframe);
                     });
                 }
             },
@@ -676,7 +678,46 @@ export class Popups {
 
         // fix height of the frame
         popup.style.minHeight = '300px';
-        iframe.style.minHeight = `${popup.offsetHeight + Popups.POPUP_SHADOW_SPACE_PX}px`;
+        Popups.fitIframeToPopup(iframe);
+    }
+
+    /**
+     * Returns the `@font-face` rule for the popup font, pointing to the extension resource.
+     *
+     * @returns CSS with the font face rule.
+     */
+    private static getRobotoFlexFontFace(): string {
+        const url = browser.runtime.getURL(Popups.ROBOTO_FLEX_FONT_PATH);
+
+        return `@font-face {
+            font-family: 'Roboto Flex';
+            src: url('${url}') format('woff2');
+            font-weight: 100 1000;
+            font-stretch: 25% 151%;
+        }\n`;
+    }
+
+    /**
+     * Sets the iframe height to the height of the popup inside it, but not taller
+     * than the viewport: the iframe is fixed, so a popup below the viewport edge
+     * could not be reached, and it scrolls inside the iframe instead.
+     *
+     * @param iframe Popup iframe.
+     *
+     * @returns True if the popup is rendered and the iframe is fitted, false otherwise.
+     */
+    private static fitIframeToPopup(iframe: HTMLIFrameElement): boolean {
+        const iframeDocument = iframe.contentDocument || iframe.contentWindow?.document;
+        const popup = iframeDocument?.querySelector<HTMLElement>('.adguard-update-popup');
+
+        if (!popup) {
+            return false;
+        }
+
+        const height = popup.offsetHeight + Popups.POPUP_SHADOW_SPACE_PX;
+        iframe.style.minHeight = `min(${height}px, calc(100vh - ${Popups.IFRAME_VIEWPORT_SPACE_PX}px))`;
+
+        return true;
     }
 
     /**

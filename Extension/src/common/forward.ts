@@ -82,7 +82,8 @@ export const enum ForwardAction {
     LearnAboutAdGuard = 'learn_about_adguard',
     FilteringLogAssumedRule = 'filtering_log_assumed_rule',
     NewYear25 = 'new_year_25',
-    // "Get 30% off" in the in-page popup about the Edge MV2 to MV3 migration.
+    // TODO (AG-59537): Not used yet, kept for the promo in the Edge MV2 to MV3 migration popup.
+    // Remove it with the rest of the migration popup code once Edge users have moved to MV3.
     EdgeMv3MigrationPromo = 'edge_mv3_migration_promo',
     // TODO: Delete from here and TDS after release v5.2.
     CustomFiltersMv3Disabled = 'custom_mv3_disabled',

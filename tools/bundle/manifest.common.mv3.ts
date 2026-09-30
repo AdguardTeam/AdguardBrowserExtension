@@ -65,6 +65,15 @@ export const createMv3Manifest = (browser: Mv3Browser) => ({
             ],
             'use_dynamic_url': true,
         },
+        {
+            // Font of the in-page popups: they are rendered in iframes on web pages.
+            'resources': ['assets/fonts/Roboto-Flex-Regular.woff2'],
+            'matches': [
+                'http://*/*',
+                'https://*/*',
+            ],
+            'use_dynamic_url': true,
+        },
     ],
     'options_page': OPTIONS_PAGE,
     'devtools_page': `${DEVTOOLS_OUTPUT}.html`,

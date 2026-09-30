@@ -668,10 +668,6 @@ export type ShowEdgeMv3MigrationPopupMessage = {
          * in `<a>` with {@link EDGE_MV3_MIGRATION_SETTINGS_LINK_ID}.
          */
         userScriptsText: string;
-        offerTitle: string;
-        offerButtonText: string;
-        offerButtonHref: string;
-        offerBgImage: string;
         alertStyles: string;
         iframeStyles: string;
     };

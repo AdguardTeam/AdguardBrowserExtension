@@ -646,7 +646,10 @@ export const genCommonConfig = (
                         from: 'assets',
                         to: 'assets',
                         globOptions: {
-                            // Offer image of the Edge MV2 to MV3 migration popup is used only in edge-mv3.
+                            // TODO (AG-59537): The offer image of the Edge MV2 to MV3 migration popup
+                            // is not used yet, it is kept for the promo and goes only to edge-mv3.
+                            // Remove it with the rest of the migration popup code
+                            // once Edge users have moved to MV3.
                             ignore: browserConfig.browser === Browser.EdgeMv3
                                 ? []
                                 : ['**/images/edge-mv3-migration-promo.svg'],

@@ -38,8 +38,6 @@ import {
 
 vi.mock('../../../../Extension/src/common/messages');
 
-const OFFER_BUTTON_HREF = 'https://link.adtidy.org/forward.html?app=browser_extension&action=edge_mv3_migration_promo&from=version_popup';
-
 const message: ShowEdgeMv3MigrationPopupMessage = {
     type: MessageType.ShowEdgeMv3MigrationPopup,
     data: {
@@ -47,10 +45,6 @@ const message: ShowEdgeMv3MigrationPopupMessage = {
         title: 'AdGuard extension migrated to Manifest V3',
         description: 'Your settings, filters, and rules are kept.',
         userScriptsText: `Turn on <b>Allow user scripts</b> in the browser’s <a href="#" id="${EDGE_MV3_MIGRATION_SETTINGS_LINK_ID}">extension settings</a>`,
-        offerTitle: 'Remove limits — get the desktop app',
-        offerButtonText: 'Get 30% off',
-        offerButtonHref: OFFER_BUTTON_HREF,
-        offerBgImage: 'data:image/svg+xml;base64,PHN2Zy8+',
         alertStyles: '',
         iframeStyles: '',
     },
@@ -151,18 +145,48 @@ describe('Popups.showEdgeMv3MigrationPopup', () => {
         document.body.innerHTML = '';
     });
 
-    it('renders the mockup content without the changelog and opt-out links', () => {
+    it('fits the iframe to the popup height after load', () => {
+        Popups.showEdgeMv3MigrationPopup(message);
+        const iframe = document.querySelector<HTMLIFrameElement>('iframe.adguard-edge-mv3-migration-iframe');
+        const doc = iframe?.contentDocument;
+        if (!iframe || !doc) {
+            throw new Error('Migration popup iframe was not injected');
+        }
+        doc.body.innerHTML = iframe.srcdoc;
+        // jsdom does not lay out, so the popup height is set by the test
+        const popup = doc.querySelector('.adguard-update-popup');
+        Object.defineProperty(popup, 'offsetHeight', { value: 700, configurable: true });
+
+        iframe.dispatchEvent(new Event('load'));
+
+        expect(iframe.style.minHeight).toBe('min(716px, calc(100vh - 20px))');
+    });
+
+    it('loads the design font from the extension', () => {
+        const { iframe } = showPopup();
+
+        expect(iframe.srcdoc).toContain('@font-face');
+        expect(iframe.srcdoc).toContain('/assets/fonts/Roboto-Flex-Regular.woff2');
+    });
+
+    it('renders the mockup content without the offer, the changelog and opt-out links', () => {
         const { doc } = showPopup();
 
         expect(doc.querySelector('.adguard-update-popup__title')?.textContent?.trim())
             .toBe('AdGuard extension migrated to Manifest V3');
         expect(doc.querySelector('.adguard-update-popup__migration-desc b')?.textContent).toBe('Allow user scripts');
         expect(doc.getElementById(EDGE_MV3_MIGRATION_SETTINGS_LINK_ID)?.textContent).toBe('extension settings');
-        expect(doc.querySelector('.adguard-update-popup__offer-title')?.textContent?.trim())
-            .toBe('Remove limits — get the desktop app');
-        expect(doc.querySelector('.adguard-update-popup__btn')?.getAttribute('href')).toBe(OFFER_BUTTON_HREF);
+        expect(doc.querySelector('.adguard-update-popup__offer')).toBeNull();
         expect(doc.querySelector('.adguard-update-popup__links')).toBeNull();
         expect(doc.querySelector('.disable-notifications')).toBeNull();
+    });
+
+    it('takes the text direction from the translation', () => {
+        const { doc } = showPopup();
+
+        expect(doc.querySelector('.adguard-update-popup__title')?.getAttribute('dir')).toBe('auto');
+        const paragraphs = [...doc.querySelectorAll('.adguard-update-popup__migration-desc p')];
+        expect(paragraphs.map((p) => p.getAttribute('dir'))).toEqual(['auto', 'auto']);
     });
 
     // jsdom cannot create trusted events, so the user's click is checked manually by QA.
@@ -175,36 +199,6 @@ describe('Popups.showEdgeMv3MigrationPopup', () => {
         expect(event.defaultPrevented).toBe(true);
         expect(sendMessage).not.toHaveBeenCalled();
         expect(iframe.isConnected).toBe(true);
-    });
-
-    it('removes only the offer block when its close button is clicked', () => {
-        const { iframe, doc } = showPopup();
-
-        // jsdom does not lay out, so the popup height after the offer is removed is set by the test
-        const popup = doc.querySelector('.adguard-update-popup');
-        Object.defineProperty(popup, 'offsetHeight', { value: 380, configurable: true });
-
-        click(doc, '.adguard-update-popup__offer-close');
-        vi.advanceTimersByTime(100);
-
-        expect(doc.querySelector('.adguard-update-popup__offer')).toBeNull();
-        expect(doc.querySelector('.adguard-update-popup__title')).not.toBeNull();
-        expect(iframe.isConnected).toBe(true);
-        expect(iframe.style.minHeight).toBe('396px');
-        expect(sendMessage).not.toHaveBeenCalled();
-    });
-
-    it('removes only the offer block when the offer button is clicked', () => {
-        const { iframe, doc } = showPopup();
-        // jsdom does not implement navigation, so the test stops it
-        doc.querySelector('.adguard-update-popup__btn')?.addEventListener('click', (e) => e.preventDefault());
-
-        click(doc, '.adguard-update-popup__btn');
-        vi.advanceTimersByTime(100);
-
-        expect(doc.querySelector('.adguard-update-popup__offer')).toBeNull();
-        expect(iframe.isConnected).toBe(true);
-        expect(sendMessage).not.toHaveBeenCalled();
     });
 
     it('removes the whole popup when the main close button is clicked', () => {
@@ -250,7 +244,7 @@ describe('Popups.showVersionUpdatedPopup with a promo', () => {
         expect(doc.querySelector('.adguard-update-popup__offer')).toBeNull();
         expect(doc.querySelector('.adguard-update-popup__title')).not.toBeNull();
         expect(iframe.isConnected).toBe(true);
-        expect(iframe.style.minHeight).toBe('316px');
+        expect(iframe.style.minHeight).toBe('min(316px, calc(100vh - 20px))');
         expect(sendMessage).toHaveBeenCalledWith({
             type: MessageType.SetNotificationViewed,
             data: { withDelay: false },

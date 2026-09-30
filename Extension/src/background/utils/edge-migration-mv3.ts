@@ -27,6 +27,9 @@ const FIRST_MV3_VERSION = '5.5.3';
 
 /**
  * Detects the update of the Edge Add-ons extension from its MV2 build to its MV3 build.
+ *
+ * TODO (AG-59537): Remove it with the rest of the migration popup code
+ * once Edge users have moved to MV3.
  */
 export class EdgeMv3Migration {
     /**
