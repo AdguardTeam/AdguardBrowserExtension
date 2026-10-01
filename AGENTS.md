@@ -189,6 +189,18 @@ pnpm increment                           # Increment build version
 9. Confirm TypeScript types are correct (no `any` without justification)
 10. If adding or updating asset images, run `svgo` on them to optimize file size
 
+- Before every `pnpm locales upload`, you MUST save local base-locale
+  changes and download the current base locale with
+  `pnpm locales download -l en`.
+- You MUST compare the downloaded `Extension/_locales/en/messages.json`
+  with the saved local version and reconcile them before uploading. Preserve
+  new local keys and current service messages, descriptions, and placeholders;
+  apply only the intended edits and verify that no unrelated data is lost.
+- You MUST review the complete upload diff and validate the base locale with
+  `pnpm locales validate -l en` before uploading. After uploading, download
+  the base locale again and verify that the intended changes were saved and
+  all unrelated data was preserved.
+
 ### Copyright Header
 
 Every source file must have the GPL-3.0 copyright header. The ESLint
