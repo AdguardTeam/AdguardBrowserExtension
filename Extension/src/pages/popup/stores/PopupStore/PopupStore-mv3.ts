@@ -198,10 +198,10 @@ export class PopupStore extends PopupStoreCommon {
             this.extensionUpdateState = ExtensionUpdateFSMState.Idle;
             return;
         }
-        this.deferredIdleTimerId = setTimeout(() => {
+        this.deferredIdleTimerId = setTimeout(action(() => {
             this.extensionUpdateState = ExtensionUpdateFSMState.Idle;
             this.deferredIdleTimerId = undefined;
-        }, remaining);
+        }), remaining);
     }
 
     /**

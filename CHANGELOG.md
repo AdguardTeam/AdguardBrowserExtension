@@ -18,6 +18,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed MobX warnings when changing filters and confirming filter consent in
+  settings or clearing an update notification in the popup.
 - In MV3, a custom filter whose patch files became unavailable (e.g. after the filter URL was moved or redirected) could stay outdated after a manual update; such filters are now downloaded fully [#3560].
 - Month labels on the yearly statistics chart now use names only for the first and last months, with numbers for intermediate months in all languages.
 - Redo via `Ctrl+Shift+Z` (`Cmd+Shift+Z` on macOS) did not work in the rule editor.

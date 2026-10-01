@@ -27,6 +27,8 @@ import {
     vi,
 } from 'vitest';
 
+import { AntiBannerFiltersId, AntibannerGroupsId } from '../../../../../../Extension/src/common/constants';
+
 // Mock heavy dependencies before importing the store module.
 vi.mock('../../../../../../Extension/src/common/logger', () => ({
     logger: {
@@ -56,6 +58,10 @@ vi.mock('../../../../../../Extension/src/pages/services/messenger', () => ({
         saveAllowlist: vi.fn(() => Promise.resolve()),
         getCurrentLimits: vi.fn(),
         openExtensionStore: vi.fn(),
+        enableFilter: vi.fn(),
+        disableFilter: vi.fn(),
+        updateGroupStatus: vi.fn(),
+        setConsentedFilters: vi.fn(),
     },
 }));
 
@@ -185,6 +191,128 @@ describe('SettingsStoreCommon', () => {
             );
 
             expect(store.availableUpdateVersion).toBe('5.4.1');
+        });
+    });
+
+    describe('async filter actions', () => {
+        const createObservedStore = async (filterId: number, enabled: boolean) => {
+            const { autorun, configure } = await import('mobx');
+            const { messenger } = await import('../../../../../../Extension/src/pages/services/messenger');
+            const { store } = await createStore();
+            const groupId = AntibannerGroupsId.OtherFiltersGroupId;
+
+            store.testApplyOptionsData(createOptionsData({
+                filtersMetadata: {
+                    filters: [{
+                        filterId, groupId, enabled, tags: [],
+                    }],
+                    categories: [{
+                        groupId, enabled: false, touched: false, filters: [],
+                    }],
+                },
+            }));
+            vi.mocked(messenger.enableFilter).mockResolvedValue(groupId);
+            vi.mocked(messenger.disableFilter).mockResolvedValue(undefined);
+            vi.mocked(messenger.updateGroupStatus).mockResolvedValue([]);
+            vi.mocked(messenger.setConsentedFilters).mockResolvedValue(undefined);
+
+            configure({ enforceActions: 'observed' });
+            const dispose = autorun(() => {
+                store.filters.map((filter) => filter.enabled);
+                store.categories.map((group) => [group.enabled, group.touched]);
+                return [
+                    store.allowAcceptableAds,
+                    store.blockKnownTrackers,
+                    store.stripTrackingParameters,
+                    store.filterIdSelectedForConsent,
+                ];
+            });
+            const warning = vi.spyOn(console, 'warn').mockImplementation(() => {});
+
+            return {
+                store,
+                messenger,
+                warning,
+                cleanup: () => {
+                    dispose();
+                    warning.mockRestore();
+                    configure({ enforceActions: 'observed' });
+                },
+            };
+        };
+
+        it.each([
+            [AntiBannerFiltersId.SearchAndSelfPromoFilterId, 'allowAcceptableAds', true],
+            [AntiBannerFiltersId.SearchAndSelfPromoFilterId, 'allowAcceptableAds', false],
+            [AntiBannerFiltersId.TrackingFilterId, 'blockKnownTrackers', true],
+            [AntiBannerFiltersId.TrackingFilterId, 'blockKnownTrackers', false],
+            [AntiBannerFiltersId.UrlTrackingFilterId, 'stripTrackingParameters', true],
+            [AntiBannerFiltersId.UrlTrackingFilterId, 'stripTrackingParameters', false],
+        ] as const)('updates filter %s and %s to %s without strict-mode warnings', async (filterId, key, enabled) => {
+            const { store, warning, cleanup } = await createObservedStore(filterId, !enabled);
+            try {
+                expect(await store.updateFilterSettingCore(filterId, enabled)).toBe(true);
+                expect(store[key]).toBe(enabled);
+                expect(store.categories[0]?.enabled).toBe(enabled);
+                expect(store.categories[0]?.touched).toBe(enabled);
+                expect(warning).not.toHaveBeenCalled();
+            } finally {
+                cleanup();
+            }
+        });
+
+        it.each([true, false])('updates a related filter to %s without strict-mode warnings', async (enabled) => {
+            const { store, warning, cleanup } = await createObservedStore(
+                AntiBannerFiltersId.TrackingFilterId,
+                !enabled,
+            );
+            try {
+                await store.setBlockKnownTrackersState(enabled);
+
+                expect(store.filters[0]?.enabled).toBe(enabled);
+                expect(store.blockKnownTrackers).toBe(enabled);
+                expect(warning).not.toHaveBeenCalled();
+            } finally {
+                cleanup();
+            }
+        });
+
+        it('restores a related setting when the background rejects the change', async () => {
+            const {
+                store, messenger, warning, cleanup,
+            } = await createObservedStore(
+                AntiBannerFiltersId.TrackingFilterId,
+                false,
+            );
+            vi.mocked(messenger.enableFilter).mockRejectedValueOnce(new Error('enable failed'));
+            try {
+                await store.setBlockKnownTrackersState(true);
+
+                expect(store.filters[0]?.enabled).toBe(false);
+                expect(store.blockKnownTrackers).toBe(false);
+                expect(warning).not.toHaveBeenCalled();
+            } finally {
+                cleanup();
+            }
+        });
+
+        it('clears the consent selection without strict-mode warnings after saving consent', async () => {
+            const {
+                store, messenger, warning, cleanup,
+            } = await createObservedStore(
+                AntiBannerFiltersId.TrackingFilterId,
+                false,
+            );
+            store.setFilterIdSelectedForConsent(AntiBannerFiltersId.TrackingFilterId);
+            try {
+                await store.handleFilterConsentConfirm();
+
+                expect(messenger.setConsentedFilters).toHaveBeenCalledWith([AntiBannerFiltersId.TrackingFilterId]);
+                expect(store.filterIdSelectedForConsent).toBeNull();
+                expect(warning).not.toHaveBeenCalled();
+            } finally {
+                cleanup();
+            }
         });
     });
 });

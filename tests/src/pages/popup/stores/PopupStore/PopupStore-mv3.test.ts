@@ -26,7 +26,11 @@ import {
     it,
     vi,
 } from 'vitest';
-import { runInAction } from 'mobx';
+import {
+    autorun,
+    configure,
+    runInAction,
+} from 'mobx';
 
 import { PopupStore } from '../../../../../../Extension/src/pages/popup/stores/PopupStore/PopupStore-mv3';
 import {
@@ -373,32 +377,39 @@ describe('PopupStore - extension update computed properties', () => {
     });
 
     describe('handleExtensionUpdateStateChange deferred Idle', () => {
-        it('transitions from Success to Idle after min display duration expires', () => {
+        it.each([
+            ExtensionUpdateFSMState.Success,
+            ExtensionUpdateFSMState.NotAvailable,
+        ])('transitions from %s to Idle without action warnings after the display duration expires', (state) => {
             vi.useFakeTimers();
+            configure({ enforceActions: 'always' });
+            const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
             const testStore = new PopupStore();
-
-            // Simulate FSM event: Success
-            runInAction(() => {
-                testStore.handleExtensionUpdateStateChange(ExtensionUpdateFSMState.Success);
+            const observedStates: ExtensionUpdateFSMState[] = [];
+            const dispose = autorun(() => {
+                observedStates.push(testStore.extensionUpdateState);
             });
-            expect(testStore.extensionUpdateState).toBe(ExtensionUpdateFSMState.Success);
 
-            // Advance time to just before the deadline
-            vi.advanceTimersByTime(MIN_UPDATE_DISPLAY_DURATION_MS - 100);
+            try {
+                testStore.handleExtensionUpdateStateChange(state);
+                expect(testStore.extensionUpdateState).toBe(state);
 
-            // Simulate FSM auto-transition to Idle (blocked by minDisplayUntil)
-            runInAction(() => {
+                vi.advanceTimersByTime(MIN_UPDATE_DISPLAY_DURATION_MS - 100);
                 testStore.handleExtensionUpdateStateChange(ExtensionUpdateFSMState.Idle);
-            });
-            // Still in Success because min display hasn't elapsed — deferred timer is scheduled
-            expect(testStore.extensionUpdateState).toBe(ExtensionUpdateFSMState.Success);
+                expect(testStore.extensionUpdateState).toBe(state);
 
-            // Advance past the deadline — deferred timer fires
-            vi.advanceTimersByTime(200);
-            expect(testStore.extensionUpdateState).toBe(ExtensionUpdateFSMState.Idle);
-
-            vi.useRealTimers();
+                vi.advanceTimersByTime(200);
+                expect(testStore.extensionUpdateState).toBe(ExtensionUpdateFSMState.Idle);
+                expect(observedStates).toEqual([ExtensionUpdateFSMState.Idle, state, ExtensionUpdateFSMState.Idle]);
+                expect(warn).not.toHaveBeenCalled();
+            } finally {
+                dispose();
+                testStore.dispose();
+                warn.mockRestore();
+                configure({ enforceActions: 'observed' });
+                vi.useRealTimers();
+            }
         });
     });
 
