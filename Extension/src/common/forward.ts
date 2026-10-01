@@ -93,6 +93,7 @@ export const enum ForwardAction {
     DesktopAppPromoMac = 'desktop_app_promo_mac',
     DesktopAppPromoLinux = 'desktop_app_promo_linux',
     ShareLink = 'share_link',
+    AdguardProducts = 'other_products',
 }
 
 /**
