@@ -23,17 +23,23 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 import {
-    type DeclarativeRule,
-    ResourceType,
-    RuleActionType,
+    extractRulesetId,
     getRulesetPath,
+    METADATA_RULESET_ID,
+    MetadataRuleset,
 } from '@adguard/dnr-converter';
+
+import { buildRulesetFile } from '../../helpers/dnr-ruleset-file';
 
 /**
  * Number of rules to generate per oversized ruleset.
- * Two rulesets × 200K = 400K total, exceeding Chrome's ~330K static rules budget.
+ * Each ruleset alone exceeds Chrome's ~330K static rules budget, so Chrome
+ * cannot enable either of them. With smaller rulesets the test depends on
+ * Chrome's accounting across restarts: `ruleset_2` is enabled by default in
+ * the manifest, and after a browser restart Chrome does not count an already
+ * enabled ruleset, so a second 200K ruleset still gets enabled.
  */
-const OVERSIZED_RULESET_RULE_COUNT = 200_000;
+const OVERSIZED_RULESET_RULE_COUNT = 340_000;
 
 /**
  * Declarative filter directory name inside the unpacked extension.
@@ -41,170 +47,90 @@ const OVERSIZED_RULESET_RULE_COUNT = 200_000;
 const DECLARATIVE_DIR = 'filters/declarative';
 
 /**
- * Metadata ruleset identifier.
- */
-const METADATA_RULESET_ID = 'ruleset_0';
-
-/**
- * Shape of a single generated DNR rule entry in an oversized ruleset.
- */
-type GeneratedDnrRule = DeclarativeRule & {
-    /** Metadata required by the extension's ruleset JSON format. */
-    metadata: Record<string, unknown>;
-};
-
-/**
- * Metadata for the first rule (id=1) in each oversized ruleset.
- * RulesetsLoaderApi reads filterContent from parsedRuleset[0].metadata;
- * without it, sync throws a destructure error.
- */
-const FIRST_RULE_METADATA: Record<string, unknown> = {
-    filterContent: '',
-    metadata: {},
-    lazyMetadata: {},
-};
-
-/**
- * Generates a single DNR rule entry.
- *
- * @param i Rule index (used for unique id and urlFilter).
- *
- * @returns DNR rule object.
- */
-const createRuleEntry = (i: number): GeneratedDnrRule => ({
-    id: i,
-    action: { type: RuleActionType.Block },
-    condition: {
-        urlFilter: `test-rule-${i}.adguard.com`,
-        resourceTypes: [ResourceType.XmlHttpRequest],
-    },
-    // First rule carries metadata; all others have empty metadata.
-    metadata: i === 1 ? FIRST_RULE_METADATA : {},
-});
-
-/**
- * Generates an oversized ruleset JSON file at the given path.
- *
- * @param filePath Absolute path where the JSON file should be written.
- *
- * @returns MD5 hex digest of the written file contents.
- */
-const generateOversizedRuleset = async (filePath: string): Promise<string> => {
-    const parts: string[] = [];
-
-    parts.push('[\n');
-
-    for (let i = 1; i <= OVERSIZED_RULESET_RULE_COUNT; i += 1) {
-        const entry = JSON.stringify(createRuleEntry(i));
-        const line = (i < OVERSIZED_RULESET_RULE_COUNT)
-            ? `${entry},\n`
-            : `${entry}\n`;
-
-        parts.push(line);
-    }
-
-    parts.push(']\n');
-
-    const data = parts.join('');
-    await fs.writeFile(filePath, data);
-
-    return crypto.createHash('md5').update(data).digest('hex');
-};
-
-/**
- * Replaces a ruleset file in the unpacked extension with an oversized version.
- *
- * @param extensionDir Absolute path to the unpacked extension root.
- * @param rulesetName Ruleset identifier (e.g., "ruleset_2").
- * @param oversizedRulesetPath Absolute path to the oversized ruleset JSON file.
- */
-const replaceRulesetWithOversized = async (
-    extensionDir: string,
-    rulesetName: string,
-    oversizedRulesetPath: string,
-): Promise<void> => {
-    const declarativeDir = path.join(extensionDir, DECLARATIVE_DIR);
-    const destFile = getRulesetPath(rulesetName, declarativeDir);
-
-    await fs.copyFile(oversizedRulesetPath, destFile);
-};
-
-/**
- * Shape of a single entry in ruleset_0.json.
- */
-interface MetadataRulesetEntry {
-    id: number;
-    action: { type: string };
-    condition: { urlFilter: string; resourceTypes: string[] };
-    metadata: {
-        checksums: Record<string, string>;
-    };
-}
-
-/**
- * Updates checksums in ruleset_0.json to match replaced oversized rulesets.
- * Forces RulesetsLoaderApi to reload the oversized rulesets (cache miss on
- * checksum change).
- *
- * @param extensionDir Absolute path to the unpacked extension root.
- * @param checksums Map of ruleset name → new MD5 checksum.
- *
- * @throws Error if ruleset_0.json has an unexpected structure.
- */
-const updateRulesetZeroChecksums = async (
-    extensionDir: string,
-    checksums: Record<string, string>,
-): Promise<void> => {
-    const declarativeDir = path.join(extensionDir, DECLARATIVE_DIR);
-    const rulesetZeroPath = getRulesetPath(METADATA_RULESET_ID, declarativeDir);
-
-    const raw = await fs.readFile(rulesetZeroPath, 'utf-8');
-    const parsed: MetadataRulesetEntry[] = JSON.parse(raw);
-
-    const firstEntry = parsed[0];
-
-    if (!firstEntry) {
-        throw new Error('ruleset_0.json: expected non-empty array');
-    }
-
-    if (!firstEntry.metadata || typeof firstEntry.metadata.checksums !== 'object') {
-        throw new Error('ruleset_0.json: metadata.checksums not found or not an object');
-    }
-
-    for (const [name, md5] of Object.entries(checksums)) {
-        firstEntry.metadata.checksums[name] = md5;
-    }
-
-    await fs.writeFile(rulesetZeroPath, `${JSON.stringify(parsed)}\n`);
-};
-
-/**
  * Names of the rulesets that will receive oversized versions for the rule limits test.
  */
 const OVERSIZED_RULESET_NAMES = ['ruleset_2', 'ruleset_10'];
 
 /**
+ * Creates filter text with {@link OVERSIZED_RULESET_RULE_COUNT} unique
+ * blocking rules; each converts to one declarative rule.
+ *
+ * @returns Filter list text.
+ */
+const createOversizedFilterText = (): string => {
+    const rules: string[] = [];
+
+    for (let i = 1; i <= OVERSIZED_RULESET_RULE_COUNT; i += 1) {
+        rules.push(`||test-rule-${i}.adguard.com^$xmlhttprequest`);
+    }
+
+    return rules.join('\n');
+};
+
+/**
+ * Replaces a ruleset file in the unpacked extension with an oversized
+ * ruleset in the chunked format.
+ *
+ * @param declarativeDir Absolute path to the declarative filters directory.
+ * @param rulesetName Ruleset identifier (e.g., "ruleset_2").
+ * @param filterText Filter text to convert.
+ *
+ * @returns MD5 hex digest of the written file contents.
+ *
+ * @throws Error if the ruleset name has no filter id.
+ */
+const writeOversizedRuleset = async (
+    declarativeDir: string,
+    rulesetName: string,
+    filterText: string,
+): Promise<string> => {
+    const filterId = extractRulesetId(rulesetName);
+    if (filterId === null) {
+        throw new Error(`Cannot extract filter id from ${rulesetName}`);
+    }
+
+    const content = await buildRulesetFile(filterId, filterText);
+    await fs.writeFile(getRulesetPath(rulesetName, declarativeDir), content);
+
+    return crypto.createHash('md5').update(content).digest('hex');
+};
+
+/**
+ * Updates checksums in ruleset_0 to match replaced oversized rulesets.
+ * Forces RulesetsLoaderApi to reload the oversized rulesets (cache miss on
+ * checksum change).
+ *
+ * @param declarativeDir Absolute path to the declarative filters directory.
+ * @param checksums Map of ruleset name → new MD5 checksum.
+ */
+const updateRulesetZeroChecksums = async (
+    declarativeDir: string,
+    checksums: Record<string, string>,
+): Promise<void> => {
+    const rulesetZeroPath = getRulesetPath(METADATA_RULESET_ID, declarativeDir);
+    const metadataRuleset = MetadataRuleset.deserialize(await fs.readFile(rulesetZeroPath, 'utf-8'));
+
+    for (const [name, md5] of Object.entries(checksums)) {
+        metadataRuleset.setChecksum(name, md5);
+    }
+
+    await fs.writeFile(rulesetZeroPath, metadataRuleset.serialize());
+};
+
+/**
  * Generates oversized rulesets, replaces the originals in the unpacked extension,
- * and updates checksums in ruleset_0.json — all in one call.
+ * and updates checksums in ruleset_0 — all in one call.
  *
  * @param extensionPath Absolute path to the unpacked extension root.
  */
 export const applyOversizedRulesets = async (extensionPath: string): Promise<void> => {
-    const tmpDir = path.join(extensionPath, '..', '.oversized-rulesets-tmp');
-    await fs.mkdir(tmpDir, { recursive: true });
+    const declarativeDir = path.join(extensionPath, DECLARATIVE_DIR);
+    const filterText = createOversizedFilterText();
+    const checksums: Record<string, string> = {};
 
-    try {
-        const checksums: Record<string, string> = {};
-
-        for (const name of OVERSIZED_RULESET_NAMES) {
-            const oversizedPath = path.join(tmpDir, `${name}.json`);
-
-            checksums[name] = await generateOversizedRuleset(oversizedPath);
-            await replaceRulesetWithOversized(extensionPath, name, oversizedPath);
-        }
-
-        await updateRulesetZeroChecksums(extensionPath, checksums);
-    } finally {
-        await fs.rm(tmpDir, { recursive: true, force: true });
+    for (const name of OVERSIZED_RULESET_NAMES) {
+        checksums[name] = await writeOversizedRuleset(declarativeDir, name, filterText);
     }
+
+    await updateRulesetZeroChecksums(declarativeDir, checksums);
 };

@@ -21,6 +21,10 @@
 // Variable passed from webpack that will be primitive at runtime.
 declare const IS_FIREFOX_AMO: boolean;
 
+// Variable passed from webpack that will be primitive at runtime:
+// true only in the edge-mv3 build, which is published to the Edge Add-ons listing.
+declare const IS_EDGE_MV3: boolean;
+
 // Variables passed from webpack that will be primitive at runtime.
 declare const IS_RELEASE: boolean;
 declare const IS_BETA: boolean;

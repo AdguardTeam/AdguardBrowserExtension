@@ -46,6 +46,20 @@ const CWS_METADATA_FOLDER_NAME = '_metadata';
 export const FILTERS_DIR = 'filters';
 
 /**
+ * Path (relative to the extension root) of the built MV3 background bundle.
+ * It embeds the generated local script rules module, so a JS rules update
+ * unavoidably changes it.
+ */
+export const BACKGROUND_BUNDLE_FILE = 'pages/background.js';
+
+/**
+ * Path (relative to the extension root) of the generated local script rules
+ * module in the built package. `engine-mv3.ts` imports it statically, so the
+ * bundler inlines its contents into {@link BACKGROUND_BUNDLE_FILE}.
+ */
+export const LOCAL_SCRIPT_RULES_FILE = 'filters/local_script_rules.js';
+
+/**
  * Message of the error thrown when files outside the allowed scope changed.
  */
 const SCOPE_ERROR_MESSAGE = '❌ Files outside the allowed scope were changed!';
@@ -56,7 +70,7 @@ const SCOPE_ERROR_MESSAGE = '❌ Files outside the allowed scope were changed!';
  * pointing at a missing section.
  */
 export const EXPEDITED_SCOPE_HINT_HEADING = 'Auto-build failed on the expedited scope check after an '
-    + 'unpublished Tuesday build';
+    + 'unpublished full-resources build';
 
 /**
  * Heading of the DEPLOYMENT.md entry explaining the ruleset declaration
@@ -65,12 +79,12 @@ export const EXPEDITED_SCOPE_HINT_HEADING = 'Auto-build failed on the expedited 
 export const RULESET_DECLARATION_HINT_HEADING = 'Auto-build failed on the ruleset declaration check';
 
 /**
- * Hint appended to the scope error in the expedited mode. A Tuesday
- * full-resources build whose publish was skipped (the CWS channel was
- * unavailable) leaves changes committed to the stable branch that keep failing
- * every expedited check until the next standard-review submission lands.
+ * Hint appended to the scope error in the expedited mode. A full-resources
+ * build whose publish was skipped (the CWS channel was unavailable) leaves
+ * changes committed to the stable branch that keep failing every expedited
+ * check until the next standard-review submission lands.
  */
-const EXPEDITED_SCOPE_ERROR_HINT = 'A Tuesday full-resources build that could not be published is not in '
+const EXPEDITED_SCOPE_ERROR_HINT = 'A full-resources build that could not be published is not in '
     + 'the extension published to CWS: its committed changes keep failing expedited checks until the '
     + `next standard-review submission lands. See DEPLOYMENT.md, "${EXPEDITED_SCOPE_HINT_HEADING}".`;
 
@@ -86,8 +100,9 @@ export enum CheckMode {
     Expedited = 'expedited',
     /**
      * The build is submitted for the standard review: any file under the
-     * `filters/` directory may change (unsafe rules included), but nothing
-     * outside of it. Rule safety is not enforced.
+     * `filters/` directory may change (unsafe rules included), and the
+     * background bundle may change together with the local script rules
+     * module it embeds. Rule safety is not enforced.
      */
     StandardReview = 'standard-review',
 }
@@ -552,6 +567,9 @@ export const getChangedFiles = (oldDir: string, newDir: string): Promise<Set<str
  * relative to the extension root, is allowed to change.
  * @param scopeErrorHint Optional hint appended to the scope error, explaining
  * the recovery for a recurring failure.
+ * @param changedFiles Optional precomputed set of changed files; computed with
+ * {@link getChangedFiles} when omitted. Callers that need the set to build the
+ * `isAllowedChange` predicate pass it to avoid diffing the trees twice.
  *
  * @throws Error if files outside the allowed scope were changed.
  */
@@ -560,13 +578,14 @@ export const ensureOnlyAllowedChanges = async (
     newDir: string,
     isAllowedChange: (relativeFilePath: string) => boolean,
     scopeErrorHint?: string,
+    changedFiles?: Set<string>,
 ): Promise<void> => {
     // To print all files which changed outside the allowed scope.
     let changedOnlyAllowed = true;
 
     // Check that only allowed files changed (using system diff).
-    const changedFiles = await getChangedFiles(oldDir, newDir);
-    for (const relativeFilePath of changedFiles) {
+    const changed = changedFiles ?? await getChangedFiles(oldDir, newDir);
+    for (const relativeFilePath of changed) {
         if (isAllowedChange(relativeFilePath)) {
             continue;
         }
@@ -723,18 +742,37 @@ export const compareManifestsAndRules = async (
     // skip review accepts safe rule resources only, the standard review
     // accepts any change inside filters/ so the submission cannot ship
     // unexpected code changes.
+    const changedFiles = await getChangedFiles(oldDir, newDir);
     const isAllowedChange = (relativeFilePath: string): boolean => {
         if (mode === CheckMode.StandardReview) {
-            return isInsideDir(relativeFilePath, FILTERS_DIR);
+            if (isInsideDir(relativeFilePath, FILTERS_DIR)) {
+                return true;
+            }
+
+            // The MV3 background bundle embeds the generated local script rules
+            // module, so a JS rules update unavoidably changes it even though
+            // the only changed input is inside `filters/`. Allow the bundle
+            // only together with that module: any other bundle change, and any
+            // bundle change without a rules update, still fails the check.
+            if (
+                relativeFilePath === BACKGROUND_BUNDLE_FILE
+                && changedFiles.has(LOCAL_SCRIPT_RULES_FILE)
+            ) {
+                console.log(`ℹ️ ${BACKGROUND_BUNDLE_FILE} changed together with ${LOCAL_SCRIPT_RULES_FILE}, `
+                    + 'which it embeds, so the change is within the allowed scope');
+                return true;
+            }
+
+            return false;
         }
 
         return ruleResources.some(({ path: rulesetPath }) => rulesetPath === relativeFilePath);
     };
     // Explain the recurring expedited failure caused by an unpublished
-    // Tuesday build instead of the bare scope error.
+    // full-resources build instead of the bare scope error.
     const scopeErrorHint = mode === CheckMode.Expedited ? EXPEDITED_SCOPE_ERROR_HINT : undefined;
 
-    await ensureOnlyAllowedChanges(oldDir, newDir, isAllowedChange, scopeErrorHint);
+    await ensureOnlyAllowedChanges(oldDir, newDir, isAllowedChange, scopeErrorHint, changedFiles);
 
     // Step 5: Rule safety is enforced only for skip-review submissions: the
     // standard review accepts unsafe rules, which is exactly why such a build

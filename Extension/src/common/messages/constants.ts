@@ -149,6 +149,7 @@ export enum MessageType {
     ShowRuleLimitsAlert = 'showRuleLimitsAlert',
     ShowAlertPopup = 'showAlertPopup',
     ShowVersionUpdatedPopup = 'showVersionUpdatedPopup',
+    ShowEdgeMv3MigrationPopup = 'showEdgeMv3MigrationPopup',
     UpdateListeners = 'updateListeners',
     SetConsentedFilters = 'setConsentedFilters',
     GetIsConsentedFilter = 'getIsConsentedFilter',
@@ -670,6 +671,28 @@ export type ShowVersionUpdatedPopupMessage = {
     };
 };
 
+/**
+ * Id of the link to the extension settings in the Edge MV3 migration popup.
+ * The background renders the link into `userScriptsText`, the content script handles its clicks.
+ */
+export const EDGE_MV3_MIGRATION_SETTINGS_LINK_ID = 'adguard-edge-mv3-migration-settings-link';
+
+export type ShowEdgeMv3MigrationPopupMessage = {
+    type: MessageType.ShowEdgeMv3MigrationPopup;
+    data: {
+        isAdguardTab: boolean;
+        title: string;
+        description: string;
+        /**
+         * HTML: the setting name in `<b>` and the link to the extension settings
+         * in `<a>` with {@link EDGE_MV3_MIGRATION_SETTINGS_LINK_ID}.
+         */
+        userScriptsText: string;
+        alertStyles: string;
+        iframeStyles: string;
+    };
+};
+
 export type SendTelemetryPageViewEventMessage = {
     type: MessageType.SendTelemetryPageViewEvent;
     data: {
@@ -1058,6 +1081,10 @@ export type MessageMap = {
     };
     [MessageType.ShowVersionUpdatedPopup]: {
         message: ShowVersionUpdatedPopupMessage;
+        response: boolean;
+    };
+    [MessageType.ShowEdgeMv3MigrationPopup]: {
+        message: ShowEdgeMv3MigrationPopupMessage;
         response: boolean;
     };
     [MessageType.GetIsConsentedFilter]: {

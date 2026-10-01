@@ -4,7 +4,7 @@ SHELL ["/bin/bash", "-lc"]
 
 # Install dependencies
 RUN apt-get update \
-    && apt-get install -y git curl zip \
+    && apt-get install -y git curl zip xz-utils \
     # clean up
     && rm -rf /var/lib/apt/lists/* \
     && npm install -g pnpm@10.33.4
@@ -15,6 +15,62 @@ RUN git config --global --add safe.directory '*'
 WORKDIR /extension
 
 ENV PNPM_STORE=/pnpm-store
+
+# ============================================================================
+# Stage: firefox-preinstall
+# Preinstalls the Mozilla Firefox build used by Selenium E2E tests so that
+# selenium-manager does not download it from mozilla.org on every run.
+# Its layer depends only on the base image, FIREFOX_VERSION and FIREFOX_SHA256,
+# so source changes do not invalidate it. The Firefox tree is copied into
+# `linked-deps-playwright` only, so the build, lint, unit and release stages no
+# longer pull it in; the integration and e2e stages inherit it through
+# `linked-deps-playwright`.
+# Keep FIREFOX_VERSION in sync with FIREFOX_PINNED_VERSION in
+# tools/browser-test/e2e/selenium-firefox.ts.
+# ============================================================================
+FROM base AS firefox-preinstall
+
+ARG FIREFOX_VERSION=153.0
+# SHA256 of linux-x86_64/en-US/firefox-${FIREFOX_VERSION}.tar.xz from
+# https://ftp.mozilla.org/pub/firefox/releases/${FIREFOX_VERSION}/SHA256SUMS.
+ARG FIREFOX_SHA256=bfc57e7b6b4e6204b11e7e03c4b93cff708e9fb37f6b9948be243455311d82ee
+
+RUN curl -fsSL \
+        "https://download.mozilla.org/?product=firefox-${FIREFOX_VERSION}&os=linux64&lang=en-US" \
+        -o /tmp/firefox.tar.xz \
+    && echo "${FIREFOX_SHA256}  /tmp/firefox.tar.xz" | sha256sum -c - \
+    && mkdir -p /opt/firefox \
+    && tar -xJf /tmp/firefox.tar.xz -C /opt/firefox --strip-components=1 \
+    && rm /tmp/firefox.tar.xz \
+    && /opt/firefox/firefox --version
+
+# ============================================================================
+# Stage: geckodriver-preinstall
+# Preinstalls the geckodriver build used by the Selenium Firefox E2E tests.
+# Without it, selenium-manager resolves and downloads the driver from
+# github.com/mozilla/geckodriver releases at session start, and a transient
+# GitHub error (HTTP 5xx) fails the whole `firefox-mv2` project before a single
+# test runs. Its layer depends only on the base image, GECKODRIVER_VERSION and
+# GECKODRIVER_SHA256, so source changes do not invalidate it. Kept separate from
+# `firefox-preinstall` so bumping one pin does not re-download the other.
+# Keep GECKODRIVER_VERSION in sync with GECKODRIVER_PINNED_VERSION in
+# tools/browser-test/e2e/selenium-firefox.ts.
+# ============================================================================
+FROM base AS geckodriver-preinstall
+
+ARG GECKODRIVER_VERSION=0.37.1
+# SHA256 of geckodriver-v${GECKODRIVER_VERSION}-linux64.tar.gz. The release
+# publishes a GPG signature, not a checksum file, so the digest is pinned here.
+ARG GECKODRIVER_SHA256=e815130ea95983e162ae91843b48d3a3ce991735635fce83a647afde21e09f7e
+
+RUN curl -fsSL \
+        "https://github.com/mozilla/geckodriver/releases/download/v${GECKODRIVER_VERSION}/geckodriver-v${GECKODRIVER_VERSION}-linux64.tar.gz" \
+        -o /tmp/geckodriver.tar.gz \
+    && echo "${GECKODRIVER_SHA256}  /tmp/geckodriver.tar.gz" | sha256sum -c - \
+    && mkdir -p /opt/geckodriver \
+    && tar -xzf /tmp/geckodriver.tar.gz -C /opt/geckodriver \
+    && rm /tmp/geckodriver.tar.gz \
+    && /opt/geckodriver/geckodriver --version
 
 # ============================================================================
 # Stage: deps
@@ -46,6 +102,15 @@ COPY . /extension
 # Installs Playwright browsers once; all test stages inherit from here.
 # ============================================================================
 FROM source-deps AS linked-deps-playwright
+
+# The Selenium E2E harness reads E2E_FIREFOX_BIN and E2E_GECKODRIVER_BIN and
+# skips the selenium-manager downloads (see
+# tools/browser-test/e2e/selenium-firefox.ts). The COPY layers are keyed on the
+# preinstall stages, so they stay cacheable across source changes.
+COPY --from=firefox-preinstall /opt/firefox /opt/firefox
+ENV E2E_FIREFOX_BIN=/opt/firefox/firefox
+COPY --from=geckodriver-preinstall /opt/geckodriver /opt/geckodriver
+ENV E2E_GECKODRIVER_BIN=/opt/geckodriver/geckodriver
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     pnpm config set store-dir /pnpm-store && \
@@ -684,12 +749,12 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # We use a marker file instead of git diff to avoid copying the whole
     # .git directory into the Docker image.
     touch /tmp/.pre-update-marker && \
-    # Tuesdays do a full resources update and request the standard CWS review:
-    # the first Tuesday build collects the fixes made on Monday, so the build
-    # may contain changes that are not eligible for skip review (mirrors the
-    # Bamboo job). All other days update only the declarative rulesets and
-    # request expedited (skip) review.
-    if [ "$(date -u +%u)" = "2" ]; then \
+    # Mondays and Thursdays do a full resources update and request the standard
+    # CWS review: the Monday and Thursday builds collect the fixes made since
+    # the previous full update, so the build may contain changes that are not
+    # eligible for skip review (mirrors the Bamboo job). All other days update
+    # only the declarative rulesets and request expedited (skip) review.
+    if [ "$(date -u +%u)" = "1" ] || [ "$(date -u +%u)" = "4" ]; then \
         EXPEDITED=false; \
     else \
         EXPEDITED=true; \
@@ -712,10 +777,10 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     mkdir -p /out/artifacts && \
     # Compare the build with the extension currently published in CWS before
     # publishing it: an expedited build must contain only safe rule resources,
-    # while a standard-review (Tuesday) build may only change files under
-    # `filters/`, so the standard review never ships unexpected code changes.
-    # EXPEDITED=false (Tuesday) maps to --standard-review here; the expedited
-    # mode passes no flag.
+    # while a standard-review (full-resources) build may only change files
+    # under `filters/`, so the standard review never ships unexpected code
+    # changes. EXPEDITED=false (full-resources) maps to --standard-review here;
+    # the expedited mode passes no flag.
     check_scope() { \
       if [ "${EXPEDITED}" = "true" ]; then \
         pnpm tsx tools/skip-review/check-changes-for-cws "$@"; \
@@ -731,8 +796,8 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
       CWS_RELEASE_ITEM_ID="${CWS_RELEASE_ITEM_ID}" pnpm tsx tools/skip-review/download-latest-extension-mv3 release && \
       check_scope ./tmp/extension-release-latest ./build/release/chrome-mv3; \
     fi && \
-    # Publish mode for the workflow jobs: expedited/skip review on
-    # non-Tuesdays, standard review on Tuesdays.
+    # Publish mode for the workflow jobs: expedited/skip review on other days,
+    # standard review on Mondays and Thursdays.
     echo "expedited=${EXPEDITED}" > /out/artifacts/cws-publish.properties && \
     cat /out/artifacts/cws-publish.properties && \
     # Collect build artifacts.

@@ -44,9 +44,29 @@ import {
     getE2ESession,
     getSurface,
 } from './helpers/e2e-helpers';
+import {
+    DIAGNOSTICS_DUMP_TIMEOUT_MS,
+    SELECTOR_RELOAD_TIMEOUT_MS,
+    SELECTOR_RETRY_TIMEOUT_MS,
+    SELECTOR_WAIT_TIMEOUT_MS,
+    waitForSelectorWithRecovery,
+    withDiagnosticsOnFailure,
+} from './helpers/page-recovery-helpers';
 
 const e2eEnv = getE2EEnv();
 const e2eMatrix = getE2EMatrix();
+
+/**
+ * Per-test timeout for the popup reload test, in milliseconds: two selector
+ * waits, the retry and both reloads exceed the global e2e testTimeout
+ * (120_000), so the test would be aborted before its diagnostics are dumped.
+ * `DIAGNOSTICS_DUMP_TIMEOUT_MS` covers each of the two dumps the worst path
+ * can produce: the first wait's timeout and the final wait's failure.
+ */
+const POPUP_RELOAD_TEST_TIMEOUT_MS = 2 * SELECTOR_WAIT_TIMEOUT_MS
+    + SELECTOR_RETRY_TIMEOUT_MS
+    + 2 * SELECTOR_RELOAD_TIMEOUT_MS
+    + 2 * DIAGNOSTICS_DUMP_TIMEOUT_MS;
 
 logSection(`E2E tests (${e2eEnv})`);
 logInfo(`Selected matrix: ${e2eMatrix.map((entry) => entry.id).join(', ')}`);
@@ -84,6 +104,29 @@ e2eMatrix.forEach((entry) => {
 
                     const bgErrors = await page.getBackgroundErrors();
                     expectNoErrors(bgErrors, `${entry.id}/${surface.id} background errors`);
+                } finally {
+                    await page.close();
+                }
+            });
+
+            it('renders page after reload', { timeout: POPUP_RELOAD_TEST_TIMEOUT_MS }, async () => {
+                const surface = getSurface(E2ESurfaceId.Popup);
+                const page = await openE2ESurface(getE2ESession(e2eSession), entry, surface);
+                // The loading screen renders `div.animated-loader`, so the wait
+                // must target UI that exists only after the app is initialized.
+                const initializedContentSelector = 'button[role="switch"]';
+
+                try {
+                    await withDiagnosticsOnFailure(page, `${entry.id}/${surface.id} reload`, async () => {
+                        await waitForSelectorWithRecovery(page, initializedContentSelector, {
+                            timeoutMs: SELECTOR_WAIT_TIMEOUT_MS,
+                            reloadTimeoutMs: SELECTOR_RELOAD_TIMEOUT_MS,
+                            retryTimeoutMs: SELECTOR_RETRY_TIMEOUT_MS,
+                            context: `${entry.id}/${surface.id} reload`,
+                        });
+                        await page.reload(SELECTOR_RELOAD_TIMEOUT_MS);
+                        await page.waitForSelector(initializedContentSelector, SELECTOR_WAIT_TIMEOUT_MS);
+                    });
                 } finally {
                     await page.close();
                 }

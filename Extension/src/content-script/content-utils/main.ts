@@ -42,6 +42,7 @@ export class ContentUtils {
 
         messageHandler.addListener(MessageType.ShowAlertPopup, Popups.showAlertPopup);
         messageHandler.addListener(MessageType.ShowVersionUpdatedPopup, Popups.showVersionUpdatedPopup);
+        messageHandler.addListener(MessageType.ShowEdgeMv3MigrationPopup, Popups.showEdgeMv3MigrationPopup);
         messageHandler.addListener(MessageType.ShowRuleLimitsAlert, Popups.showRuleLimitsAlert);
     }
 }

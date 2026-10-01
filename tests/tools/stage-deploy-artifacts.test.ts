@@ -39,7 +39,8 @@ const BUILD_FILES = [
 ];
 
 const COMMON_OUTPUTS = {
-    static: ['chrome.zip', 'chrome-mv3.zip', 'edge-mv3.zip', 'build.txt'],
+    'static-chrome': ['chrome.zip', 'chrome-mv3.zip', 'build.txt'],
+    'static-edge': ['edge-mv3.zip'],
     'cws-mv3': ['chrome.zip'],
     'gh-assets': ['chrome-mv2.zip', 'chrome-mv3.zip', 'edge-mv2.zip', 'edge-mv3.zip', 'build.txt'],
 };
@@ -69,7 +70,7 @@ describe('Deploy artifact staging', () => {
 
         const expected = channel === 'beta' ? {
             ...COMMON_OUTPUTS,
-            static: [...COMMON_OUTPUTS.static, 'chrome.crx', 'update.xml'],
+            'static-chrome': [...COMMON_OUTPUTS['static-chrome'], 'chrome.crx', 'update.xml'],
             'gh-assets': [...COMMON_OUTPUTS['gh-assets'], 'chrome-mv2.crx'],
         } : {
             ...COMMON_OUTPUTS,
@@ -87,7 +88,7 @@ describe('Deploy artifact staging', () => {
                 if (file === 'chrome.zip') {
                     source = consumer === 'cws-mv3' ? 'chrome-mv3.zip' : 'chrome-mv2.zip';
                 } else if (file === 'edge.zip') {
-                    source = 'edge-mv2.zip';
+                    source = 'edge-mv3.zip';
                 } else if (file === 'chrome.crx') {
                     source = 'chrome-mv2.crx';
                 }

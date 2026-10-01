@@ -28,7 +28,11 @@ import {
 
 import { toasts } from '../../../../../Extension/src/background/api/ui/toasts';
 import { TabsApi } from '../../../../../Extension/src/common/api/extension';
-import { sendTabMessage, MessageType } from '../../../../../Extension/src/common/messages';
+import {
+    sendTabMessage,
+    MessageType,
+    EDGE_MV3_MIGRATION_SETTINGS_LINK_ID,
+} from '../../../../../Extension/src/common/messages';
 import { translator } from '../../../../../Extension/src/common/translators/translator';
 import { promoNotificationApi } from '../../../../../Extension/src/background/api/ui/promo-notification';
 
@@ -163,6 +167,65 @@ describe('Toasts', () => {
                     type: MessageType.ShowVersionUpdatedPopup,
                 }),
             );
+        });
+    });
+
+    describe('showEdgeMv3MigrationPopup', () => {
+        beforeEach(async () => {
+            await toasts.init();
+            vi.mocked(TabsApi.getActive).mockResolvedValue({ id: 1, url: 'https://example.com' } as any);
+            vi.mocked(TabsApi.isAdguardExtensionTab).mockReturnValue(false);
+            vi.mocked(translator.getMessage).mockImplementation((key: string) => key);
+        });
+
+        it('sends the migration popup to the active tab', async () => {
+            await toasts.showEdgeMv3MigrationPopup();
+
+            expect(sendTabMessage).toHaveBeenCalledWith(1, {
+                type: MessageType.ShowEdgeMv3MigrationPopup,
+                data: {
+                    isAdguardTab: false,
+                    title: 'edge_mv3_migration_popup_title',
+                    description: 'edge_mv3_migration_popup_description',
+                    userScriptsText: 'edge_mv3_migration_popup_user_scripts',
+                    alertStyles: 'mock-css-content',
+                    iframeStyles: 'mock-css-content',
+                },
+            });
+        });
+
+        it('renders the setting name in bold and the settings link as an anchor', async () => {
+            await toasts.showEdgeMv3MigrationPopup();
+
+            const call = vi.mocked(translator.getMessage).mock.calls
+                .find(([key]) => key === 'edge_mv3_migration_popup_user_scripts');
+            const params = call?.[1] as Record<string, (chunks: string) => string>;
+
+            expect(params.b?.('Allow user scripts')).toBe('<b>Allow user scripts</b>');
+            expect(params.a?.('extension settings'))
+                .toBe(`<a href="#" id="${EDGE_MV3_MIGRATION_SETTINGS_LINK_ID}">extension settings</a>`);
+        });
+
+        it('does not touch seasonal promo notifications', async () => {
+            await toasts.showEdgeMv3MigrationPopup();
+
+            expect(promoNotificationApi.getCurrentNotification).not.toHaveBeenCalled();
+            expect(promoNotificationApi.setNotificationViewed).not.toHaveBeenCalled();
+        });
+
+        it('retries when the active tab cannot receive the popup yet', async () => {
+            vi.useFakeTimers();
+            vi.mocked(sendTabMessage).mockRejectedValueOnce(new Error('Receiving end does not exist'));
+
+            await toasts.showEdgeMv3MigrationPopup();
+            expect(sendTabMessage).toHaveBeenCalledTimes(1);
+
+            await vi.advanceTimersByTimeAsync(5000);
+            await vi.waitFor(() => {
+                expect(sendTabMessage).toHaveBeenCalledTimes(2);
+            });
+
+            vi.useRealTimers();
         });
     });
 });

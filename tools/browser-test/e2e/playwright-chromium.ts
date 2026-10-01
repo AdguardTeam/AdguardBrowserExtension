@@ -32,7 +32,8 @@ import {
 
 import { type Configuration } from '@adguard/tswebextension/mv3';
 
-import { MessageType } from '../../../Extension/src/common/messages/constants';
+import { APP_MESSAGE_HANDLER_NAME, MessageType } from '../../../Extension/src/common/messages/constants';
+import { logInfo } from '../logger';
 import { setTsWebExtensionConfig } from '../page-injections';
 import { DEFAULT_EXTENSION_CONFIG } from '../test-constants';
 
@@ -79,6 +80,24 @@ const CHROMIUM_CONFIG_HOOK_POLL_INTERVAL_MS = 100;
 const CHROMIUM_ENGINE_STARTED_LOG = '[ext.Engine.start]: tswebextension is started.';
 
 const CHROMIUM_ENGINE_START_TIMEOUT_MS = 30_000;
+
+/**
+ * Maximum time to wait for the extension app to report completed
+ * initialization at session launch, in milliseconds. Under CI load the MV3
+ * engine can take around 30s to initialize, so the budget leaves headroom.
+ */
+const CHROMIUM_APP_INIT_TIMEOUT_MS = 60_000;
+
+/**
+ * Interval between app init probes, in milliseconds.
+ */
+const CHROMIUM_APP_INIT_POLL_INTERVAL_MS = 500;
+
+/**
+ * Timeout for one in-page app init query, in milliseconds. Keeps a query whose
+ * response callback never fires from stalling the probe loop.
+ */
+const CHROMIUM_APP_INIT_QUERY_TIMEOUT_MS = 5_000;
 
 type ChromiumE2ESession = {
     context: BrowserContext;
@@ -168,6 +187,7 @@ export const launchChromiumE2ESession = async (
     let extensionId: string;
 
     if (entry.isMv3) {
+        bindChromiumServiceWorkerLifecycleLogs(context, entry.id);
         backgroundTarget = await getMv3BackgroundTarget(context);
         extensionId = getExtensionIdFromUrl(backgroundTarget.url());
         await configureChromiumTsWebExtension(backgroundTarget, config);
@@ -264,6 +284,9 @@ export const openChromiumE2ESurface = async (
         async getTextContents(selector: string): Promise<string[]> {
             return page.locator(selector).allTextContents();
         },
+        async reload(timeoutMs: number): Promise<void> {
+            await page.reload({ waitUntil: surface.waitUntil, timeout: timeoutMs });
+        },
         async close(): Promise<void> {
             await page.close();
         },
@@ -347,6 +370,45 @@ const bindChromiumPageErrorListeners = (
 
     page.on('pageerror', (error: Error): void => {
         errors.add(createUnknownError(matrixId, surfaceId, `${sourcePrefix}-pageerror`, page.url(), error));
+    });
+};
+
+/**
+ * Logs MV3 service worker lifecycle events: the workers present when the
+ * session launches and every start/close afterwards. The background target is
+ * captured once per session, so a worker that dies and is restarted mid-test
+ * otherwise leaves no trace in the logs — the first question when an extension
+ * page stalls waiting for a background response.
+ *
+ * @param context Browser context.
+ * @param matrixId E2E matrix id.
+ */
+const bindChromiumServiceWorkerLifecycleLogs = (context: BrowserContext, matrixId: string): void => {
+    /**
+     * Logs when the given service worker closes.
+     *
+     * @param worker Service worker to observe.
+     */
+    const bindCloseLog = (worker: Worker): void => {
+        worker.on('close', (): void => {
+            logInfo(`[${matrixId}] MV3 service worker lifecycle: closed ${worker.url()}`);
+        });
+    };
+
+    const existingWorkers = context.serviceWorkers();
+
+    if (existingWorkers.length === 0) {
+        logInfo(`[${matrixId}] MV3 service worker lifecycle: none at session launch`);
+    }
+
+    existingWorkers.forEach((worker) => {
+        logInfo(`[${matrixId}] MV3 service worker lifecycle: present at session launch ${worker.url()}`);
+        bindCloseLog(worker);
+    });
+
+    context.on('serviceworker', (worker) => {
+        logInfo(`[${matrixId}] MV3 service worker lifecycle: started ${worker.url()}`);
+        bindCloseLog(worker);
     });
 };
 
@@ -489,6 +551,31 @@ const hasChromiumTsWebExtensionConfigHook = async (target: Page | Worker): Promi
 };
 
 /**
+ * Sends a `GetIsAppInitialized` message and resolves with the response. Runs in
+ * the browser context, so the message and query timeout arrive as the evaluate
+ * argument.
+ *
+ * @param args Message and query timeout in milliseconds.
+ *
+ * @returns True when the background reported the app initialized.
+ */
+const queryE2EAppInitialized = (args: unknown): Promise<boolean> => {
+    const { message, timeoutMs } = args as {
+        message: unknown;
+        timeoutMs: number;
+    };
+
+    return new Promise((resolve) => {
+        const timer = setTimeout(() => resolve(false), timeoutMs);
+
+        chrome.runtime.sendMessage(message, (response) => {
+            clearTimeout(timer);
+            resolve(response === true);
+        });
+    });
+};
+
+/**
  * Waits until Chromium extension app reports completed initialization.
  *
  * @param context Browser context.
@@ -498,17 +585,55 @@ const hasChromiumTsWebExtensionConfigHook = async (target: Page | Worker): Promi
  */
 const waitForChromiumAppInitialized = async (context: BrowserContext, extensionId: string): Promise<void> => {
     const page = await context.newPage();
+    const startedAt = Date.now();
 
     try {
         await page.goto(
             createExtensionPageUrl(E2EExtensionScheme.ChromeExtension, extensionId, '/pages/popup.html'),
             { waitUntil: 'load' },
         );
-        await page.waitForFunction((messageType) => new Promise((resolve) => {
-            chrome.runtime.sendMessage({ type: messageType }, (response) => {
-                resolve(response === true);
-            });
-        }), MessageType.GetIsAppInitialized, { timeout: 30_000 });
+
+        logInfo(`[${extensionId}] app init probe: waiting for GetIsAppInitialized (timeout ${CHROMIUM_APP_INIT_TIMEOUT_MS}ms)`);
+
+        try {
+            // `waitForFunction` evaluates its predicate through `globalThis.eval`
+            // in the page's main world, and the MV3 extension CSP
+            // (`script-src 'self' 'wasm-unsafe-eval'`) intermittently blocks it
+            // with an EvalError, so the probe polls through `page.evaluate`
+            // instead, which uses the CDP function-call path and works on
+            // extension pages. `GetIsAppInitialized` reports the state at the
+            // moment of the message, so the probe re-sends it until the
+            // background reports initialized. The message needs `handlerName`,
+            // otherwise the background message handler ignores it and Chrome
+            // reports the port as closed.
+            const message = {
+                handlerName: APP_MESSAGE_HANDLER_NAME,
+                type: MessageType.GetIsAppInitialized,
+            };
+
+            while (Date.now() - startedAt < CHROMIUM_APP_INIT_TIMEOUT_MS) {
+                const isInitialized = await page.evaluate(queryE2EAppInitialized, {
+                    message,
+                    timeoutMs: CHROMIUM_APP_INIT_QUERY_TIMEOUT_MS,
+                });
+
+                if (isInitialized) {
+                    logInfo(`[${extensionId}] app init probe: GetIsAppInitialized resolved true after ${Date.now() - startedAt}ms`);
+
+                    return;
+                }
+
+                await new Promise<void>((resolve) => {
+                    setTimeout(resolve, CHROMIUM_APP_INIT_POLL_INTERVAL_MS);
+                });
+            }
+
+            throw new Error(`Timed out waiting for GetIsAppInitialized after ${CHROMIUM_APP_INIT_TIMEOUT_MS}ms`);
+        } catch (error: unknown) {
+            logInfo(`[${extensionId}] app init probe: GetIsAppInitialized did not resolve true within ${CHROMIUM_APP_INIT_TIMEOUT_MS}ms (after ${Date.now() - startedAt}ms)`);
+
+            throw error;
+        }
     } finally {
         await page.close();
     }

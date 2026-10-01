@@ -155,13 +155,21 @@ Run `pnpm resources:mv3` to populate
 the Edge resources are missing. Before releasing, record measured bundle sizes
 with `pnpm update-bundle-size <env> edge-mv3` for each build environment.
 
+Beta and release workflows publish `edge-mv3.zip` in a dedicated
+`static-edge-<channel>` artifact through the `adblocker-webext-edge-<channel>`
+Deployer module. Apply these modules to the active Deployer before publishing
+from a ref with this workflow. Chrome and Edge static deployments use separate
+jobs and upload artifacts from the common extension build. Edge uploads contain
+only `edge-mv3.zip`, so they do not overwrite the shared `build.txt` file.
+
 For QA, test both a clean installation and an update from Edge MV2 using the
 same extension ID and a higher extension version. Installing an unpacked copy
 with a different ID does not exercise migration. Check settings, user rules,
 allowlist, custom filters and enabled filter/group states after the update and
 after restarting Edge. Check blocking and MV3 rule-limit behavior separately
-from data preservation. CI produces an Edge MV3 ZIP; store publishing still
-uses the existing Edge MV2 package.
+from data preservation. Release publishing sends the Edge MV3 ZIP to the
+existing Edge Add-ons listing. Beta builds include the ZIP for QA without
+publishing it to Edge Add-ons.
 
 <a name="dev-tests-and-build"></a>
 
@@ -241,6 +249,17 @@ MV2 compatibility flags, but local runs may still need an older Chromium binary:
 ```shell
 E2E_CHROMIUM_EXECUTABLE_PATH=/path/to/chromium pnpm test:e2e dev --matrix chrome-mv2
 ```
+
+Firefox E2E runs use the pinned Firefox build: the CI Docker image preinstalls
+it at `/opt/firefox` and exposes it via `E2E_FIREFOX_BIN`, which takes
+precedence. Locally, selenium-manager resolves the pinned build on Linux when
+`E2E_FIREFOX_BIN` is unset; macOS uses the system Firefox. Set
+`E2E_FIREFOX_BIN=/path/to/firefox` to test against a specific Firefox build.
+
+The image also preinstalls geckodriver at `/opt/geckodriver` and exposes it via
+`E2E_GECKODRIVER_BIN`, so selenium-manager does not download the driver from
+GitHub releases during a run; set `E2E_GECKODRIVER_BIN=/path/to/geckodriver` to
+use a specific driver locally.
 
 Browser E2E tests are wired to a separate workflow (`e2e.yml`) because they
 run slower than unit and integration tests.

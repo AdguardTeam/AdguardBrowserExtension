@@ -41,6 +41,7 @@ const createProjectForManifestVersion = (
 ): UserWorkspaceConfig => defineProject({
     define: {
         IS_FIREFOX_AMO: false,
+        IS_EDGE_MV3: false,
         // For run tests like it's release.
         IS_RELEASE: true,
         IS_BETA: false,

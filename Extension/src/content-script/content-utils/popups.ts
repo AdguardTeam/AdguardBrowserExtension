@@ -17,12 +17,16 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
+import browser from 'webextension-polyfill';
+
 import {
     type ShowAlertPopupMessage,
     type ShowVersionUpdatedPopupMessage,
     type ShowRuleLimitsAlertMessage,
+    type ShowEdgeMv3MigrationPopupMessage,
     sendMessage,
     MessageType,
+    EDGE_MV3_MIGRATION_SETTINGS_LINK_ID,
 } from '../../common/messages';
 import { SettingOption } from '../../background/schema/settings/enum';
 
@@ -94,6 +98,28 @@ export class Popups {
     // NOTICE: if here is used value equal to 0,
     // then iframe is closed early than link is clicked
     private static removeFrameTimeoutMs = 10;
+
+    /**
+     * Class of elements that close only the offer block of a popup instead of the whole iframe.
+     */
+    private static readonly CLOSE_OFFER_CLASS = 'close-offer';
+
+    /**
+     * Space the popup iframe keeps around the popup for its box-shadow, in pixels.
+     */
+    private static readonly POPUP_SHADOW_SPACE_PX = 16;
+
+    /**
+     * Space kept between the popup iframe and the viewport edges: the iframe
+     * offsets at the top and at the bottom, see `update-container.css`.
+     */
+    private static readonly IFRAME_VIEWPORT_SPACE_PX = 20;
+
+    /**
+     * Font of the popup design. The popup iframe belongs to the web page,
+     * so the font is loaded from the extension as a web accessible resource.
+     */
+    private static readonly ROBOTO_FLEX_FONT_PATH = '/assets/fonts/Roboto-Flex-Regular.woff2';
 
     /**
      * Shows alert popup.
@@ -196,12 +222,12 @@ export class Popups {
                     class="adguard-update-popup__offer${showPromoNotification ? ' adguard-update-popup__offer--show' : ''}"
                     style="${offerStyle}"
                 >
-                    <div class="adguard-update-popup__offer-close close-iframe set-notification-viewed"></div>
+                    <div class="adguard-update-popup__offer-close close-iframe ${Popups.CLOSE_OFFER_CLASS}"></div>
                     <div class="adguard-update-popup__offer-content">
                         <div class="adguard-update-popup__offer-title">
                             ${offer}
                         </div>
-                        <a href="${offerButtonHref}" class="adguard-update-popup__btn close-iframe set-notification-viewed${showPromoNotification ? ' adguard-update-popup__btn--promo' : ''}" target="_blank">
+                        <a href="${offerButtonHref}" class="adguard-update-popup__btn close-iframe ${Popups.CLOSE_OFFER_CLASS}${showPromoNotification ? ' adguard-update-popup__btn--promo' : ''}" target="_blank">
                             ${offerButtonText}
                         </a>
                     </div>
@@ -217,6 +243,71 @@ export class Popups {
             alertStyles,
             isAdguardTab,
             showPromoNotification,
+        });
+
+        return true;
+    }
+
+    /**
+     * Shows the popup about the migration of the Edge extension from MV2 to MV3.
+     * Popup content is added right to the page content.
+     *
+     * @param message {@link ShowEdgeMv3MigrationPopupMessage}
+     * @param message.data {@link ShowEdgeMv3MigrationPopupMessage} payload
+     *
+     * @returns execution flag
+     */
+    public static showEdgeMv3MigrationPopup({ data }: ShowEdgeMv3MigrationPopupMessage): boolean {
+        const {
+            isAdguardTab,
+            title,
+            description,
+            userScriptsText,
+            alertStyles,
+            iframeStyles,
+        } = data;
+
+        // `dir="auto"` takes the text direction from the translation, so right-to-left
+        // languages keep the Latin words and the punctuation in their places.
+        /* eslint-disable max-len */
+        const iframeHtml = `
+            <div id="adguard-edge-mv3-migration-popup" class="adguard-update-popup adguard-update-popup--edge-mv3-migration">
+                <div class="adguard-update-popup__close close-iframe"></div>
+                <div class="adguard-update-popup__logo"></div>
+                <div class="adguard-update-popup__title" dir="auto">
+                    ${title}
+                </div>
+                <div class="adguard-update-popup__migration-desc">
+                    <p dir="auto">${description}</p>
+                    <p dir="auto">${userScriptsText}</p>
+                </div>
+            </div>
+        `;
+        /* eslint-enable max-len */
+
+        Popups.appendPopup(0, {
+            iframeHtml,
+            iframeStyles,
+            iframeClassName: 'adguard-edge-mv3-migration-iframe',
+            alertStyles: `${Popups.getRobotoFlexFontFace()}${alertStyles}`,
+            isAdguardTab,
+            showPromoNotification: false,
+            onIframeInjected: (iframe) => {
+                const isListening = Popups.handleOpenExtensionDetails(iframe);
+                if (!isListening) {
+                    iframe.addEventListener('load', () => {
+                        Popups.handleOpenExtensionDetails(iframe);
+                    });
+                }
+
+                // The popup height depends on the length of the translation.
+                const isFitted = Popups.fitIframeToPopup(iframe);
+                if (!isFitted) {
+                    iframe.addEventListener('load', () => {
+                        Popups.fitIframeToPopup(iframe);
+                    });
+                }
+            },
         });
 
         return true;
@@ -548,20 +639,9 @@ export class Popups {
                     });
                 }
 
-                if (showPromoNotification && element.classList.contains('set-notification-viewed')) {
-                    // close only promo notification, not whole iframe
-                    const promoNotification = iframeDocument.querySelector('.adguard-update-popup__offer');
-                    if (!promoNotification) {
-                        return;
-                    }
-
-                    promoNotification.parentNode?.removeChild(promoNotification);
-                    // eslint-disable-next-line max-len
-                    const versionPopup: HTMLElement | null = iframeDocument.getElementById('adguard-new-version-popup');
-                    if (versionPopup) {
-                        // fix height of the frame
-                        versionPopup.style.minHeight = '300px';
-                    }
+                if (element.classList.contains(Popups.CLOSE_OFFER_CLASS)) {
+                    // close only the offer block, not whole iframe
+                    Popups.removeOffer(iframe, iframeDocument);
 
                     // Prevent closing the whole iframe
                     return;
@@ -571,6 +651,106 @@ export class Popups {
                     iframe.parentNode?.removeChild(iframe);
                 }, Popups.removeFrameTimeoutMs);
             });
+        });
+
+        return true;
+    }
+
+    /**
+     * Removes the offer block from a popup and shrinks the popup and its iframe to the content,
+     * so the iframe does not keep empty space over the page.
+     *
+     * @param iframe Popup iframe.
+     * @param iframeDocument Document of the popup iframe.
+     */
+    private static removeOffer(iframe: HTMLIFrameElement, iframeDocument: Document): void {
+        const offer = iframeDocument.querySelector('.adguard-update-popup__offer');
+        if (!offer) {
+            return;
+        }
+
+        offer.parentNode?.removeChild(offer);
+
+        const popup = iframeDocument.querySelector<HTMLElement>('.adguard-update-popup');
+        if (!popup) {
+            return;
+        }
+
+        // fix height of the frame
+        popup.style.minHeight = '300px';
+        Popups.fitIframeToPopup(iframe);
+    }
+
+    /**
+     * Returns the `@font-face` rule for the popup font, pointing to the extension resource.
+     *
+     * @returns CSS with the font face rule.
+     */
+    private static getRobotoFlexFontFace(): string {
+        const url = browser.runtime.getURL(Popups.ROBOTO_FLEX_FONT_PATH);
+
+        return `@font-face {
+            font-family: 'Roboto Flex';
+            src: url('${url}') format('woff2');
+            font-weight: 100 1000;
+            font-stretch: 25% 151%;
+        }\n`;
+    }
+
+    /**
+     * Sets the iframe height to the height of the popup inside it, but not taller
+     * than the viewport: the iframe is fixed, so a popup below the viewport edge
+     * could not be reached, and it scrolls inside the iframe instead.
+     *
+     * @param iframe Popup iframe.
+     *
+     * @returns True if the popup is rendered and the iframe is fitted, false otherwise.
+     */
+    private static fitIframeToPopup(iframe: HTMLIFrameElement): boolean {
+        const iframeDocument = iframe.contentDocument || iframe.contentWindow?.document;
+        const popup = iframeDocument?.querySelector<HTMLElement>('.adguard-update-popup');
+
+        if (!popup) {
+            return false;
+        }
+
+        const height = popup.offsetHeight + Popups.POPUP_SHADOW_SPACE_PX;
+        iframe.style.minHeight = `min(${height}px, calc(100vh - ${Popups.IFRAME_VIEWPORT_SPACE_PX}px))`;
+
+        return true;
+    }
+
+    /**
+     * Handles the link to the extension details page in the migration popup.
+     * The link opens the page and keeps the popup.
+     *
+     * @param iframe Iframe element.
+     *
+     * @returns True if registered click listener, false otherwise.
+     */
+    private static handleOpenExtensionDetails(iframe: HTMLIFrameElement): boolean {
+        const iframeDocument = iframe.contentDocument || iframe.contentWindow?.document;
+
+        if (!iframeDocument) {
+            return false;
+        }
+
+        const link = iframeDocument.getElementById(EDGE_MV3_MIGRATION_SETTINGS_LINK_ID);
+
+        if (!link) {
+            return false;
+        }
+
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            // The iframe is same-origin with the page, so page scripts can click the link:
+            // open the extensions page only for clicks made by the user.
+            if (!e.isTrusted) {
+                return;
+            }
+
+            sendMessage({ type: MessageType.OpenExtensionDetailsPage });
         });
 
         return true;

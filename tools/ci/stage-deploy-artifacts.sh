@@ -16,13 +16,15 @@ case "${1:-}" in
     *) echo 'Expected channel: beta or release'; exit 1 ;;
 esac
 
-mkdir -p staged/static staged/cws-mv3 staged/gh-assets
+mkdir -p staged/static-chrome staged/static-edge staged/cws-mv3 staged/gh-assets
 
 # Static filenames are stable public download URLs. Keep them unchanged when
 # internal packages are renamed, including chrome.crx referenced by update.xml.
-cp output/build/artifacts/chrome-mv2.zip staged/static/chrome.zip
-cp output/build/artifacts/chrome-mv3.zip output/build/artifacts/edge-mv3.zip \
-   output/build/artifacts/build.txt staged/static/
+cp output/build/artifacts/chrome-mv2.zip staged/static-chrome/chrome.zip
+cp output/build/artifacts/chrome-mv3.zip output/build/artifacts/build.txt staged/static-chrome/
+# Edge static publishing uses its own Deployer module and uploads only the Edge
+# MV3 package, so it never overwrites the shared build.txt.
+cp output/build/artifacts/edge-mv3.zip staged/static-edge/
 
 # The shared deploy-to-chrome-web-store.yml runs go-webext with -f chrome.zip.
 # This filename is the workflow's input contract, not a Chrome Web Store requirement.
@@ -33,8 +35,8 @@ cp output/build/artifacts/chrome-mv2.zip output/build/artifacts/chrome-mv3.zip \
    output/build/artifacts/build.txt staged/gh-assets/
 
 if [ "$CHANNEL" = beta ]; then
-    cp output/crx/artifacts/chrome-mv2.crx staged/static/chrome.crx
-    cp output/crx/artifacts/update.xml staged/static/
+    cp output/crx/artifacts/chrome-mv2.crx staged/static-chrome/chrome.crx
+    cp output/crx/artifacts/update.xml staged/static-chrome/
     cp output/crx/artifacts/chrome-mv2.crx staged/gh-assets/
 else
     mkdir -p staged/static-firefox staged/amo staged/edge
@@ -43,7 +45,9 @@ else
     # Preserve their contracts independently of internal and GitHub asset names.
     cp output/build/artifacts/firefox.zip output/build/artifacts/source.zip \
        output/build/artifacts/approval-notes.txt staged/amo/
-    cp output/build/artifacts/edge-mv2.zip staged/edge/edge.zip
+    # The Edge Add-ons listing receives the Edge MV3 package; the Edge MV2
+    # package ships only as a GitHub Release asset.
+    cp output/build/artifacts/edge-mv3.zip staged/edge/edge.zip
     cp output/build/artifacts/opera-mv2.zip output/build/artifacts/opera-mv3.zip \
        output/build/artifacts/firefox.zip staged/gh-assets/
 fi
