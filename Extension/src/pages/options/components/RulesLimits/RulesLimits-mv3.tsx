@@ -37,7 +37,6 @@ import { shouldShowUserScriptsApiWarning } from '../../../../common/user-scripts
 import { addMinDelayLoader } from '../../../common/components/helpers';
 
 import { Warning } from './Warning';
-import { WarningVariantB } from './Warning/WarningVariantB-mv3';
 
 import './rules-limits.pcss';
 
@@ -57,7 +56,7 @@ export const RulesLimits = observer(() => {
         settingsStore.getRulesLimitsCounters();
     }, [settingsStore]);
 
-    const { rulesLimits, showRuleLimitsVariantB } = settingsStore;
+    const { rulesLimits } = settingsStore;
 
     const {
         dynamicRulesEnabledCount,
@@ -81,36 +80,6 @@ export const RulesLimits = observer(() => {
         }
     }, [areFilterLimitsExceeded, telemetryStore]);
 
-    /**
-     * Returns names of filters by their ids.
-     *
-     * @param filterIds Array of filter ids.
-     *
-     * @returns Array of filter names.
-     */
-    const getFiltersNames = (filterIds: number[]): string[] => {
-        const { filters } = settingsStore;
-
-        return filterIds
-            .map((id: number) => filters.find((f) => f.filterId === id)?.name)
-            .filter((name): name is string => name !== undefined);
-    };
-
-    const handleReactivateFilters = async () => {
-        telemetryStore.sendCustomEvent(
-            TelemetryEventName.ReactivateFiltersClick,
-            TelemetryScreenName.RulesLimitsError,
-        );
-        await messenger.restoreFiltersMv3();
-        await settingsStore.getRulesLimitsCounters();
-        await settingsStore.checkLimitations();
-    };
-
-    const handleReactivateFiltersWrapper = addMinDelayLoader(
-        uiStore.setShowLoader,
-        handleReactivateFilters,
-    );
-
     const handleCloseWarning = async () => {
         telemetryStore.sendCustomEvent(
             TelemetryEventName.CloseWarningClick,
@@ -125,13 +94,6 @@ export const RulesLimits = observer(() => {
         uiStore.setShowLoader,
         handleCloseWarning,
     );
-
-    const handleGetTheApp = () => {
-        telemetryStore.sendCustomEvent(
-            TelemetryEventName.GetTheAppClick,
-            TelemetryScreenName.RulesLimitsError,
-        );
-    };
 
     const getClassNamesForNumbers = (current: number, maximum: number) => {
         const percentage = (current / maximum) * 100;
@@ -205,19 +167,7 @@ export const RulesLimits = observer(() => {
             description={translator.getMessage('options_rule_limits_description')}
         >
             {areFilterLimitsExceeded && (
-                showRuleLimitsVariantB ? (
-                    <WarningVariantB
-                        onClickCloseWarning={handleCloseWarningWrapper}
-                    />
-                ) : (
-                    <Warning
-                        actuallyEnabledFilterNames={getFiltersNames(rulesLimits.actuallyEnabledFilters).join(', ')}
-                        expectedEnabledFilterNames={getFiltersNames(rulesLimits.expectedEnabledFilters).join(', ')}
-                        onClickReactivateFilters={handleReactivateFiltersWrapper}
-                        onClickGetTheApp={handleGetTheApp}
-                        onClickCloseWarning={handleCloseWarningWrapper}
-                    />
-                )
+                <Warning onClickCloseWarning={handleCloseWarningWrapper} />
             )}
             <div className="rules-limits">
                 <div className="rules-limits__section">

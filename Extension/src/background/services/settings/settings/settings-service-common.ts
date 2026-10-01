@@ -49,12 +49,10 @@ import { fullscreenUserRulesEditor } from '../../fullscreen-user-rules-editor';
 import { type ExportMessageResponse } from '../types';
 import { type GetOptionsDataResponseCommon } from '../types/types-common';
 import {
-    ABTestManager,
     Telemetry,
     TelemetryEventName,
     TelemetryScreenName,
 } from '../../telemetry';
-import { AG_52740_RULE_LIMITS_B } from '../../telemetry/abtest/constants';
 import { UpdateCheckService } from '../../update-check/update-check-service';
 
 /**
@@ -105,7 +103,6 @@ export abstract class SettingsServiceCommon {
             },
             filtersMetadata: Categories.getCategories(),
             fullscreenUserRulesEditorIsOpen: fullscreenUserRulesEditor.isOpen(),
-            showRuleLimitsVariantB: await ABTestManager.hasVariant(AG_52740_RULE_LIMITS_B),
         };
     }
 

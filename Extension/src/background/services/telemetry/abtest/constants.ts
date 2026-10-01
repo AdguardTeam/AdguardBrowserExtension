@@ -40,8 +40,4 @@ export type ExperimentRegistry = Readonly<VariantCache>;
  *
  * Example: { experiment_1: 'AG-47804-trial-a_def' }.
  */
-export const EXPERIMENT_REGISTRY: ExperimentRegistry = {
-    experiment_1: 'AG-52740-rule-limits',
-};
-
-export const AG_52740_RULE_LIMITS_B = 'AG-52740-rule-limits-b';
+export const EXPERIMENT_REGISTRY: ExperimentRegistry = {};

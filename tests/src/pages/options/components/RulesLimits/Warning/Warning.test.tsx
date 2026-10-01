@@ -35,29 +35,15 @@ import {
     fireEvent,
 } from '@testing-library/react';
 
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../../../Extension/src/common/telemetry';
+
 /**
- * Creates a mock rootStore context with the given override values.
- *
- * @param overrides Override values for rulesLimits.
+ * Creates a mock rootStore context.
  *
  * @returns An object with the React context and the store.
  */
-const createMockRootStore = (overrides: {
-    areFilterLimitsExceeded?: boolean;
-    shouldShowLimitLoweredWarning?: boolean;
-}) => {
-    const {
-        areFilterLimitsExceeded = false,
-        shouldShowLimitLoweredWarning = false,
-    } = overrides;
-
+const createMockRootStore = () => {
     const store = {
-        settingsStore: {
-            rulesLimits: {
-                areFilterLimitsExceeded,
-                shouldShowLimitLoweredWarning,
-            },
-        },
         telemetryStore: {
             sendCustomEvent: vi.fn(),
         },
@@ -66,7 +52,7 @@ const createMockRootStore = (overrides: {
     return { context: createContext(store), store };
 };
 
-describe.skipIf(!__IS_MV3__)('WarningVariantB', () => {
+describe.skipIf(!__IS_MV3__)('Warning', () => {
     beforeEach(() => {
         vi.resetModules();
     });
@@ -77,93 +63,65 @@ describe.skipIf(!__IS_MV3__)('WarningVariantB', () => {
     });
 
     describe('rendering', () => {
-        it('should render warning when limit is exceeded', async () => {
-            const { context } = createMockRootStore({
-                areFilterLimitsExceeded: true,
-                shouldShowLimitLoweredWarning: false,
-            });
+        it('should render warning title and subtitle', async () => {
+            const { context } = createMockRootStore();
 
             vi.doMock(
                 '../../../../../../../Extension/src/pages/options/stores/RootStore',
                 () => ({ rootStore: context }),
             );
 
-            const { WarningVariantB } = await import(
-                '../../../../../../../Extension/src/pages/options/components/RulesLimits/Warning/WarningVariantB-mv3'
+            const { Warning } = await import(
+                '../../../../../../../Extension/src/pages/options/components/RulesLimits/Warning/Warning'
             );
 
             const { container } = render(
-                React.createElement(WarningVariantB, { onClickCloseWarning: vi.fn() }),
+                React.createElement(Warning, { onClickCloseWarning: vi.fn() }),
                 { wrapper: MemoryRouter },
             );
             expect(container.innerHTML).toContain('options_rule_limits_warning_variant_b_title_limit_reached');
+            expect(container.innerHTML).toContain('options_rule_limits_warning_variant_b_subtitle');
         });
 
-        it('should render desktop app section in both cases', async () => {
-            const { context } = createMockRootStore({
-                areFilterLimitsExceeded: true,
-                shouldShowLimitLoweredWarning: false,
-            });
+        it('should render action sections and desktop app section', async () => {
+            const { context } = createMockRootStore();
 
             vi.doMock(
                 '../../../../../../../Extension/src/pages/options/stores/RootStore',
                 () => ({ rootStore: context }),
             );
 
-            const { WarningVariantB } = await import(
-                '../../../../../../../Extension/src/pages/options/components/RulesLimits/Warning/WarningVariantB-mv3'
+            const { Warning } = await import(
+                '../../../../../../../Extension/src/pages/options/components/RulesLimits/Warning/Warning'
             );
 
             const { container } = render(
-                React.createElement(WarningVariantB, { onClickCloseWarning: vi.fn() }),
-                { wrapper: MemoryRouter },
-            );
-            expect(container.innerHTML).toContain('options_desktop_app_promo_button_mac');
-        });
-
-        it('should render both sections when both limit is exceeded and lowered', async () => {
-            const { context } = createMockRootStore({
-                areFilterLimitsExceeded: true,
-                shouldShowLimitLoweredWarning: true,
-            });
-
-            vi.doMock(
-                '../../../../../../../Extension/src/pages/options/stores/RootStore',
-                () => ({ rootStore: context }),
-            );
-
-            const { WarningVariantB } = await import(
-                '../../../../../../../Extension/src/pages/options/components/RulesLimits/Warning/WarningVariantB-mv3'
-            );
-
-            const { container } = render(
-                React.createElement(WarningVariantB, { onClickCloseWarning: vi.fn() }),
+                React.createElement(Warning, { onClickCloseWarning: vi.fn() }),
                 { wrapper: MemoryRouter },
             );
             expect(container.innerHTML).toContain('options_rule_limits_warning_variant_b_remove_blockers_title');
             expect(container.innerHTML).toContain('options_rule_limits_warning_variant_b_review_filters_title');
+            expect(container.innerHTML).toContain('options_rule_limits_warning_variant_b_desktop_app_title');
+            expect(container.innerHTML).toContain('options_desktop_app_promo_button_');
         });
     });
 
     describe('interactions', () => {
         it('should call onClickCloseWarning when close button is clicked', async () => {
             const onClickCloseWarning = vi.fn();
-            const { context } = createMockRootStore({
-                areFilterLimitsExceeded: true,
-                shouldShowLimitLoweredWarning: false,
-            });
+            const { context } = createMockRootStore();
 
             vi.doMock(
                 '../../../../../../../Extension/src/pages/options/stores/RootStore',
                 () => ({ rootStore: context }),
             );
 
-            const { WarningVariantB } = await import(
-                '../../../../../../../Extension/src/pages/options/components/RulesLimits/Warning/WarningVariantB-mv3'
+            const { Warning } = await import(
+                '../../../../../../../Extension/src/pages/options/components/RulesLimits/Warning/Warning'
             );
 
             render(
-                React.createElement(WarningVariantB, { onClickCloseWarning }),
+                React.createElement(Warning, { onClickCloseWarning }),
                 { wrapper: MemoryRouter },
             );
             const closeButton = document.querySelector('button');
@@ -171,12 +129,9 @@ describe.skipIf(!__IS_MV3__)('WarningVariantB', () => {
             expect(onClickCloseWarning).toHaveBeenCalledTimes(1);
         });
 
-        it('should call openExtensionsSettingsPage when Manage extensions is clicked', async () => {
+        it('should send telemetry event and open extensions page when Manage extensions is clicked', async () => {
             const openExtensionsSettingsPage = vi.fn().mockResolvedValue(undefined);
-            const { context } = createMockRootStore({
-                areFilterLimitsExceeded: false,
-                shouldShowLimitLoweredWarning: true,
-            });
+            const { context, store } = createMockRootStore();
 
             vi.doMock(
                 '../../../../../../../Extension/src/pages/services/messenger',
@@ -190,12 +145,12 @@ describe.skipIf(!__IS_MV3__)('WarningVariantB', () => {
                 () => ({ rootStore: context }),
             );
 
-            const { WarningVariantB } = await import(
-                '../../../../../../../Extension/src/pages/options/components/RulesLimits/Warning/WarningVariantB-mv3'
+            const { Warning } = await import(
+                '../../../../../../../Extension/src/pages/options/components/RulesLimits/Warning/Warning'
             );
 
             render(
-                React.createElement(WarningVariantB, { onClickCloseWarning: vi.fn() }),
+                React.createElement(Warning, { onClickCloseWarning: vi.fn() }),
                 { wrapper: MemoryRouter },
             );
 
@@ -206,25 +161,26 @@ describe.skipIf(!__IS_MV3__)('WarningVariantB', () => {
             expect(manageBtn).toBeTruthy();
             fireEvent.click(manageBtn!);
             expect(openExtensionsSettingsPage).toHaveBeenCalledTimes(1);
+            expect(store.telemetryStore.sendCustomEvent).toHaveBeenCalledWith(
+                TelemetryEventName.ManageExtensionsClick,
+                TelemetryScreenName.RulesLimitsError,
+            );
         });
 
         it('should send telemetry event when Go to filters is clicked', async () => {
-            const { context, store } = createMockRootStore({
-                areFilterLimitsExceeded: true,
-                shouldShowLimitLoweredWarning: false,
-            });
+            const { context, store } = createMockRootStore();
 
             vi.doMock(
                 '../../../../../../../Extension/src/pages/options/stores/RootStore',
                 () => ({ rootStore: context }),
             );
 
-            const { WarningVariantB } = await import(
-                '../../../../../../../Extension/src/pages/options/components/RulesLimits/Warning/WarningVariantB-mv3'
+            const { Warning } = await import(
+                '../../../../../../../Extension/src/pages/options/components/RulesLimits/Warning/Warning'
             );
 
             render(
-                React.createElement(WarningVariantB, { onClickCloseWarning: vi.fn() }),
+                React.createElement(Warning, { onClickCloseWarning: vi.fn() }),
                 { wrapper: MemoryRouter },
             );
 
@@ -234,7 +190,10 @@ describe.skipIf(!__IS_MV3__)('WarningVariantB', () => {
             );
             expect(goToFiltersLink).toBeTruthy();
             fireEvent.click(goToFiltersLink!);
-            expect(store.telemetryStore.sendCustomEvent).toHaveBeenCalledTimes(1);
+            expect(store.telemetryStore.sendCustomEvent).toHaveBeenCalledWith(
+                TelemetryEventName.ReactivateFiltersClick,
+                TelemetryScreenName.RulesLimitsError,
+            );
         });
     });
 });

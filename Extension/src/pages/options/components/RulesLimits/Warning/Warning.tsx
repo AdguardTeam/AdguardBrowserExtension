@@ -18,46 +18,27 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-// TODO figure out how to fix the eslint errors
-/* eslint-disable jsx-a11y/anchor-is-valid,
-   jsx-a11y/click-events-have-key-events,
-   jsx-a11y/no-static-element-interactions
-*/
+import React, { useContext } from 'react';
+import { Link } from 'react-router-dom';
 
-import React from 'react';
+import cn from 'classnames';
 
-import {
-    Forward,
-    ForwardAction,
-    ForwardFrom,
-} from '../../../../../common/forward';
-import { reactTranslator } from '../../../../../common/translators/reactTranslator';
 import { translator } from '../../../../../common/translators/translator';
+import { OptionsPageSections } from '../../../../../common/nav';
+import { Icon } from '../../../../common/components/ui/Icon';
+import { CloseIcon } from '../../../../common/components/ui/CloseIcon';
+import { rootStore } from '../../../stores/RootStore';
+import { messenger } from '../../../../services/messenger';
+import { logger } from '../../../../../common/logger';
+import { getCtaByOs } from '../../common/desktop-app-cta';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../../common/telemetry';
+
+import styles from './warning.module.pcss';
 
 /**
- * Props for the Warning component
+ * Props for the Warning component.
  */
 type WarningProps = {
-    /**
-     * String with names of filters that are enabled.
-     */
-    actuallyEnabledFilterNames: string;
-
-    /**
-     * String with names of filters that were expected to be enabled.
-     */
-    expectedEnabledFilterNames: string;
-
-    /**
-     * Function to reactivate filters.
-     */
-    onClickReactivateFilters: () => void;
-
-    /**
-     * Function to handle get the app link click.
-     */
-    onClickGetTheApp: () => void;
-
     /**
      * Function to close the warning.
      */
@@ -65,124 +46,135 @@ type WarningProps = {
 };
 
 /**
- * Warning component
- * It displays a warning message if some filters could not be enabled.
- *
- * @param $0 WarningProps
- * @param $0.actuallyEnabledFilterNames String with names of filters that are enabled.
- * @param $0.expectedEnabledFilterNames String with names of filters that were expected to be enabled.
- * @param $0.onClickReactivateFilters Function to reactivate filters.
- * @param $0.onClickGetTheApp Function to handle get the app link click.
- * @param $0.onClickCloseWarning Function to close the warning.
+ * Warning component.
+ * Displays a warning message with actionable steps if some filters could not be enabled.
  */
-export const Warning = ({
-    actuallyEnabledFilterNames,
-    expectedEnabledFilterNames,
-    onClickReactivateFilters,
-    onClickGetTheApp,
-    onClickCloseWarning,
-}: WarningProps) => {
-    const getTheAppUrl = Forward.get({
-        action: ForwardAction.GetTheApp,
-        from: ForwardFrom.Options,
-    });
+export const Warning = ({ onClickCloseWarning }: WarningProps) => {
+    const { telemetryStore } = useContext(rootStore);
 
-    const renderCloseWarningLink = (chunks: string) => (
-        <a
-            target="_blank"
-            rel="noreferrer"
-            className="rules-limits__group-option-link"
-            onClick={onClickCloseWarning}
-        >
-            {chunks}
-        </a>
-    );
+    const handleManageExtensions = async () => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.ManageExtensionsClick,
+            TelemetryScreenName.RulesLimitsError,
+        );
+        try {
+            await messenger.openExtensionsSettingsPage();
+        } catch (e) {
+            logger.warn('[ext.Warning]: Failed to open extensions page:', e);
+        }
+    };
+
+    const handleGoToFilters = () => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.ReactivateFiltersClick,
+            TelemetryScreenName.RulesLimitsError,
+        );
+    };
+
+    const handleGetTheApp = () => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.GetTheAppClick,
+            TelemetryScreenName.RulesLimitsError,
+        );
+    };
+
+    const { text: desktopAppButtonLabel, url: desktopAppUrl } = getCtaByOs();
 
     return (
-        <div className="rules-limits rules-limits__warning">
-            <div className="rules-limits__warning-title">
-                {translator.getMessage('options_rule_limits_warning_title')}
-            </div>
-            <div className="rules-limits__section">
-                <div className="rules-limits__section-title">
-                    {translator.getMessage('options_rule_limits_warning_explanation_title')}
+        <div className={styles.warningWrapper}>
+            <div className={styles.warning}>
+                <div className={styles.title}>
+                    {translator.getMessage('options_rule_limits_warning_variant_b_title_limit_reached')}
                 </div>
-                <div className="rules-limits__group rules-limits__text--gray">
-                    {translator.getMessage('options_rule_limits_warning_explanation_description')}
+
+                <div className={styles.subtitle}>
+                    {translator.getMessage('options_rule_limits_warning_variant_b_subtitle')}
                 </div>
-            </div>
-            <div className="rules-limits__section">
-                <div className="rules-limits__section-title">
-                    {translator.getMessage('options_rule_limits_warning_list_enabled_before_title')}
-                </div>
-                <div className="rules-limits__group rules-limits__text--gray">
-                    {expectedEnabledFilterNames}
-                </div>
-            </div>
-            <div className="rules-limits__section">
-                <div className="rules-limits__section-title">
-                    {translator.getMessage('options_rule_limits_warning_list_enabled_now_title')}
-                </div>
-                <div className="rules-limits__group rules-limits__text--gray">
-                    {
-                        actuallyEnabledFilterNames.trim().length === 0
-                            ? translator.getMessage('options_filters_no_enabled')
-                            : actuallyEnabledFilterNames
-                    }
-                </div>
-            </div>
-            <div className="rules-limits__section">
-                <div className="rules-limits__section-title">
-                    {translator.getMessage('options_rule_limits_warning_actions_title')}
-                </div>
-                <div className="rules-limits__group rules-limits__text--gray">
-                    <div className="rules-limits__group-option">
-                        {reactTranslator.getMessage('options_rule_limits_warning_actions_delete_filters', {
-                            // eslint-disable-next-line react/no-unstable-nested-components
-                            a: (chunks: string) => (
-                                <a
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="rules-limits__group-option-link"
-                                    onClick={onClickReactivateFilters}
-                                >
-                                    {chunks}
-                                </a>
-                            ),
-                        })}
+
+                <button
+                    type="button"
+                    className={styles.close}
+                    onClick={onClickCloseWarning}
+                    aria-label={translator.getMessage('close_button_title')}
+                >
+                    <CloseIcon />
+                </button>
+
+                <div className={styles.warningSections}>
+                    <div className={styles.section}>
+                        <Icon
+                            id="#setting-0"
+                            className="icon--24 icon--orange-default"
+                            aria-hidden="true"
+                        />
+                        <div>
+                            <div className={styles.sectionTitle}>
+                                {translator.getMessage('options_rule_limits_warning_variant_b_remove_blockers_title')}
+                            </div>
+                            <div className={styles.sectionDescription}>
+                                {translator.getMessage(
+                                    'options_rule_limits_warning_variant_b_remove_blockers_description',
+                                )}
+                            </div>
+                            <button
+                                type="button"
+                                className={styles.link}
+                                onClick={handleManageExtensions}
+                            >
+                                {translator.getMessage('options_rule_limits_warning_variant_b_manage_extensions')}
+                            </button>
+                        </div>
                     </div>
-                    <div className="rules-limits__group-option">
-                        {reactTranslator.getMessage('options_rule_limits_warning_actions_install_app', {
-                            // eslint-disable-next-line react/no-unstable-nested-components
-                            a: (chunks: string) => (
-                                <a
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    href={getTheAppUrl}
-                                    className="rules-limits__group-option-link rules-limits__text--gray"
-                                    onClick={onClickGetTheApp}
-                                >
-                                    {chunks}
-                                </a>
-                            ),
-                        })}
+
+                    <div className={styles.section}>
+                        <Icon
+                            id="#setting-7"
+                            className="icon--24 icon--orange-default"
+                            aria-hidden="true"
+                        />
+                        <div>
+                            <div className={styles.sectionTitle}>
+                                {translator.getMessage('options_rule_limits_warning_variant_b_review_filters_title')}
+                            </div>
+                            <div className={styles.sectionDescription}>
+                                {translator.getMessage(
+                                    'options_rule_limits_warning_variant_b_review_filters_description',
+                                )}
+                            </div>
+                            <Link
+                                to={`/${OptionsPageSections.filters}`}
+                                className={styles.link}
+                                onClick={handleGoToFilters}
+                            >
+                                {translator.getMessage('options_rule_limits_warning_variant_b_go_to_filters')}
+                            </Link>
+                        </div>
                     </div>
-                    <div className="rules-limits__group-option">
-                        {
-                            actuallyEnabledFilterNames.length > 0
-                                ? reactTranslator.getMessage(
-                                    'options_rule_limits_warning_actions_close_warning_multiple_filters',
-                                    {
-                                        a: renderCloseWarningLink,
-                                    },
-                                )
-                                : reactTranslator.getMessage(
-                                    'options_rule_limits_warning_actions_close_warning_one_filter',
-                                    {
-                                        a: renderCloseWarningLink,
-                                    },
-                                )
-                        }
+                </div>
+
+                <div className={cn(styles.section, styles.getAppSection)}>
+                    <Icon
+                        id="#quality"
+                        className="icon--24 icon--green-default"
+                        aria-hidden="true"
+                    />
+
+                    <div>
+                        <div className={styles.sectionTitle}>
+                            {translator.getMessage('options_rule_limits_warning_variant_b_desktop_app_title')}
+                        </div>
+                        <div className={styles.sectionDescription}>
+                            {translator.getMessage('options_rule_limits_warning_variant_b_desktop_app_description')}
+                        </div>
+                        <a
+                            href={desktopAppUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className={cn('button button--green-bg button--m', styles.getAppButton)}
+                            onClick={handleGetTheApp}
+                        >
+                            {desktopAppButtonLabel}
+                        </a>
                     </div>
                 </div>
             </div>

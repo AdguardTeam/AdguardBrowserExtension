@@ -1005,15 +1005,6 @@ export abstract class MessengerCommon {
     };
 
     /**
-     * Sends a message to the background page to restore filters in MV3.
-     *
-     * @returns Promise that resolves after the message is sent.
-     */
-    restoreFiltersMv3 = async (): Promise<ExtractMessageResponse<MessageType.RestoreFiltersMv3>> => {
-        return this.sendMessage(MessageType.RestoreFiltersMv3);
-    };
-
-    /**
      * Sends a message to the background page to clear the rules limits warning in MV3.
      *
      * @returns Promise that resolves after the message is sent.

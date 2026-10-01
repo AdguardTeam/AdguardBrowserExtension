@@ -69,8 +69,8 @@ const makeResponse = (overrides: SessionStartResponse['versions'] = {}): Session
 });
 
 const STORAGE_KEY = 'ab_test_manager.variants';
-const ACTIVE_EXPERIMENT_ID = 'AG-52740-rule-limits';
-const ACTIVE_VARIANT = 'AG-52740-rule-limits-b';
+const ACTIVE_EXPERIMENT_ID = 'AG-47804-trial-a_def';
+const ACTIVE_VARIANT = 'AG-47804-trial-a_def-b';
 const RETIRED_VARIANT = 'AG-51010-limitations-browser-b';
 
 describe('ABTestManager', () => {

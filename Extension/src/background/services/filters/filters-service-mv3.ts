@@ -18,9 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { RulesLimitsService } from '../rules-limits/rules-limits-service-mv3';
-import { type EnableFiltersGroupMessage, MessageType } from '../../../common/messages';
-import { messageHandler } from '../../message-handler';
+import { type EnableFiltersGroupMessage } from '../../../common/messages';
 import { engine } from '../../engine';
 import { Categories, FiltersApi } from '../../api';
 import { logger } from '../../../common/logger';
@@ -31,27 +29,6 @@ import { FiltersServiceCommon } from './filters-service-common';
  * FiltersService creates handlers for messages that relate to filters.
  */
 export class FiltersService extends FiltersServiceCommon {
-    /**
-     * Adds a listener for background messages about working with filters:
-     * disabling, enabling, adding, removing.
-     * Adds a listener for updating filters from the context menu.
-     * Adds a listener for changing the settings of optimized filters and
-     * disabling hit collection.
-     */
-    public static override init(): void {
-        super.init();
-        messageHandler.addListener(MessageType.RestoreFiltersMv3, FiltersService.onRestoreFilters);
-    }
-
-    /**
-     * Called when user tries to restore filters.
-     */
-    private static async onRestoreFilters(): Promise<void> {
-        const expectedEnabledFilters = RulesLimitsService.getExpectedEnabledFilters();
-        await FiltersApi.loadAndEnableFilters(expectedEnabledFilters);
-        await engine.update();
-    }
-
     /**
      * @inheritdoc
      */
