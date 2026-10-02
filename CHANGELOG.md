@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed cosmetic rules with multiple domains in the `$domain` modifier not
+  applying on permitted domains [#3605].
+- Fixed duplicate cosmetic rule matches for overlapping domain restrictions
+  [#3605].
 - Fixed named `$removeparam` rules failing to remove the first query parameter before MV3 requests [#3615].
 - Fixed MobX warnings when changing filters and confirming filter consent in
   settings or clearing an update notification in the popup.
@@ -35,6 +39,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2122]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2122
 [#3067]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3067
 [#3560]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3560
+[#3605]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3605
 [#3615]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3615
 
 ## [5.5.3.3] - 2026-09-30
