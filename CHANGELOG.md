@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Fixed named `$removeparam` rules failing to remove the first query parameter before MV3 requests [#3615].
 - Fixed MobX warnings when changing filters and confirming filter consent in
   settings or clearing an update notification in the popup.
 - In MV3, a custom filter whose patch files became unavailable (e.g. after the filter URL was moved or redirected) could stay outdated after a manual update; such filters are now downloaded fully [#3560].
@@ -34,6 +35,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#2122]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2122
 [#3067]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3067
 [#3560]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3560
+[#3615]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3615
 
 ## [5.5.3.3] - 2026-09-30
 
