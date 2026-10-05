@@ -34,10 +34,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Caret jumps to the end of the editor when saving [#3067].
 - Domain-scoped cosmetic and JavaScript rules were not applied on hosts with
   labels ending in an underscore (e.g. `lorenne_.wehype.app`).
+- Browsing session from incognito window sometimes leaks to normal window when "delete third-party cookies" option is enabled [#3553].
 
 [#1410]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1410
 [#2122]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2122
 [#3067]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3067
+[#3553]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3553
 [#3560]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3560
 [#3605]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3605
 [#3615]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3615
