@@ -183,7 +183,9 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     --mount=type=cache,target=/extension/.cache/eslint,id=browser-extension-eslint \
     --mount=type=cache,target=/extension/.cache/tsc,id=browser-extension-tsc \
     # Run lint with timeout (cached until source changes).
-    ./tools/ci/timeout-wrapper.sh 240s pnpm lint && \
+    # ESLint + MV2/MV3 type checks take ~5 min on the shared runner under load;
+    # 240s was too tight and caused flaky timeouts.
+    ./tools/ci/timeout-wrapper.sh 600s pnpm lint && \
     mkdir -p /out && \
     touch /out/lint.txt
 
@@ -214,7 +216,7 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # the RUN so the real error is not masked by "COPY /out: not found".
     mkdir -p /out/tests-reports || { echo "Failed to create /out/tests-reports" >&2; exit 1; }; \
     # Run unit tests with timeout.
-    ./tools/ci/timeout-wrapper.sh 600s pnpm test:ci; \
+    ./tools/ci/timeout-wrapper.sh 900s pnpm test:ci; \
     EXIT_CODE=$?; \
     # Keep tests-reports for junit parser.
     if [ -d tests-reports ]; then \
@@ -266,8 +268,8 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
       echo "${BUILD_EXIT_CODE}" > /out/exit-code.txt; \
       exit 0; \
     fi; \
-    # Run integration tests.
-    pnpm test:integration ${BUILD_TYPE}; \
+    # Run integration tests with timeout.
+    ./tools/ci/timeout-wrapper.sh 900s pnpm test:integration ${BUILD_TYPE}; \
     EXIT_CODE=$?; \
     if [ -d tests-reports ]; then \
       cp -R tests-reports/. /out/tests-reports/; \
@@ -312,8 +314,8 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
       echo "${BUILD_EXIT_CODE}" > /out/exit-code.txt; \
       exit 0; \
     fi; \
-    # Run integration tests.
-    pnpm test:integration dev; \
+    # Run integration tests with timeout.
+    ./tools/ci/timeout-wrapper.sh 900s pnpm test:integration dev; \
     EXIT_CODE=$?; \
     if [ -d tests-reports ]; then \
       cp -R tests-reports/. /out/tests-reports/; \
@@ -359,8 +361,8 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
       echo "${BUILD_EXIT_CODE}" > /out/exit-code.txt; \
       exit 0; \
     fi; \
-    # Run E2E tests.
-    E2E_HEADLESS=true pnpm test:e2e dev; \
+    # Run E2E tests with timeout.
+    E2E_HEADLESS=true ./tools/ci/timeout-wrapper.sh 1500s pnpm test:e2e dev; \
     EXIT_CODE=$?; \
     if [ -d tests-reports ]; then \
         cp -R tests-reports/. /out/tests-reports/; \
