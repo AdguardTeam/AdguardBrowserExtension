@@ -1,4 +1,3 @@
-&nbsp;
 <p align="center">
     <picture>
         <source media="(prefers-color-scheme: dark)" srcset="https://cdn.adguard.com/public/Adguard/Common/Logos/ext_logo_dark.svg" width="300px" alt="AdGuard Browser Extension" />
@@ -11,17 +10,13 @@
 </p>
 
 <p align="center">
-    <a href="https://adguard.com/">AdGuard.com</a> |
+    <a href="https://adguard.com/adguard-browser-extension/overview.html">Website</a> |
     <a href="https://reddit.com/r/Adguard">Reddit</a> |
-    <a href="https://twitter.com/AdGuard">Twitter</a> |
+    <a href="https://x.com/AdGuard">X</a> |
     <a href="https://t.me/adguard_en">Telegram</a>
     <br /><br />
-    <a href="https://github.com/AdguardTeam/AdguardBrowserExtension/releases">
-        <img src="https://img.shields.io/github/release/AdguardTeam/AdguardBrowserExtension/all.svg" alt="Latest release" />
-    </a>
-    <a href="https://addons.mozilla.org/en-US/firefox/addon/adguard-adblocker/">
-        <img src="https://img.shields.io/amo/v/adguard-adblocker?labelColor=orange" alt="Mozilla Add-on Version" />
-    </a>
+    <a href="https://github.com/AdguardTeam/AdguardBrowserExtension/releases"><img src="https://img.shields.io/github/release/AdguardTeam/AdguardBrowserExtension/all.svg" alt="Latest release" /></a>
+    <a href="https://addons.mozilla.org/en-US/firefox/addon/adguard-adblocker/"><img src="https://img.shields.io/amo/v/adguard-adblocker?labelColor=orange" alt="Mozilla Add-on Version" /></a>
 </p>
 
 <br />
@@ -33,7 +28,7 @@
     </picture>
 </p>
 
-AdGuard is a fast and lightweight ad blocking browser extension that effectively blocks all types of ads and trackers on all web pages. We focus on advanced privacy protection features to not just block known trackers, but prevent web sites from building your shadow profile. Unlike its standalone counterparts (AG for Windows, Mac), the browser extension is completely free and open source. You can learn more about [the difference](https://adguard.com/compare.html) here.
+AdGuard is a fast and lightweight ad blocking browser extension that effectively blocks all types of ads and trackers on all web pages. We focus on advanced privacy protection features to not just block known trackers, but prevent web sites from building your shadow profile. Unlike its standalone counterparts (AdGuard for Windows, Mac), the browser extension is completely free and open source. You can learn more about the difference [here](https://adguard.com/compare.html).
 
 > AdGuard does not collect any information about you, and does not participate in any acceptable ads program. The only source of income we have is selling premium versions of our software, and we intend to keep it that way.
 
@@ -87,7 +82,7 @@ community. So, what can you do?
 ### <a name="contribution-translating"></a> Translating AdGuard
 
 If you want to help with AdGuard translations, please learn more about
-translating our products here: <https://adguard.com/kb/miscellaneous/contribute/translate/program/>
+translating our products [here](https://adguard.com/kb/miscellaneous/contribute/translate/program/).
 
 ### <a name="contribution-testing"></a> Testing AdGuard
 
@@ -103,7 +98,7 @@ and click the *New issue* button.
 
 > [!NOTE]
 > For the filter-related issues (missed ads, false positives etc.) use
-> the [dedicated repository](https://github.com/AdguardTeam/AdguardFilters).
+> our [reporting tool](https://link.adtidy.org/forward.html?action=report&app=home&from=github).
 
 ### <a name="contribution-other"></a> Other options
 
@@ -117,7 +112,7 @@ After installing the extension from your browser's store:
 1. **Click the AdGuard icon** in the browser toolbar to open the popup. Ad blocking is enabled by default with a recommended set of filter lists.
 2. **Toggle protection** on or off for the current website using the main switch in the popup.
 3. **Open settings** by clicking the gear icon in the popup to access the full options page.
-4. **Use the Assistant** — click the AdGuard icon, then select "Block an element on this page" to visually pick and block unwanted page elements.
+4. **Use the Assistant** by clicking the AdGuard icon, then selecting "Block ads manually" to visually pick and block unwanted page elements.
 
 The extension works out of the box with sensible defaults.
 
