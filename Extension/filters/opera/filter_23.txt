@@ -1,9 +1,9 @@
-! Checksum: P75YH5LaeHqKY5L9g+4NOQ
-! Diff-Path: ../patches/23/23-s-1787289473-3600.patch
+! Checksum: kXi5MJ/0eQUS0D+RNaxH8Q
+! Diff-Path: ../patches/23/23-s-1791403843-3600.patch
 ! Title: AdGuard Ukrainian filter
 ! Description: Filter that enables ad blocking on websites in Ukrainian language.
-! Version: 2.0.9.18
-! TimeUpdated: 2026-08-21T05:14:42+00:00
+! Version: 2.0.9.36
+! TimeUpdated: 2026-10-07T20:07:29+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -18,6 +18,8 @@
 ! Good: .org/ads/
 ! Bad: .org/ads/$domain=example.org (for instance, should be in speficic.txt)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/240094
+?fre=*&nocredentials=1^$xmlhttprequest,third-party
 ! kinobase.org
 /assets/*.txt?fre=
 ! citysites.ua
@@ -31,7 +33,12 @@
 ! BASE64 = 'scope":"VAST"}'
 ?token=*c2NvcGUiOiJWQVNUIn0
 /kinogo/js/ads/*
-! Kinogo etc.
+! Kinogo etc. (api*.rstprgapipt.com)
+/^https:\/\/vveu.[a-z0-9]+\.[a-z]+\/.*\/[a-z0-9]+\.[a-z][a-z][a-z]$/$xmlhttprequest,other,media,third-party
+/^https:\/\/vveu.[a-z0-9]+\.[a-z]+\/.*\/[a-z0-9]+\.[a-z][a-z][a-z][a-z]$/$xmlhttprequest,other,media,third-party
+/^https:\/\/vveu.[a-z0-9]+\.[a-z]+\/.*\/[a-z0-9]+\.[a-z][a-z][a-z][?&]/$xmlhttprequest,other,media,third-party
+/^https:\/\/vveu.[a-z0-9]+\.[a-z]+\/.*\/[a-z0-9]+\.[a-z][a-z][a-z][a-z][?&]/$xmlhttprequest,other,media,third-party
+.link/*?*=*&referer=$xmlhttprequest
 /vast/ad-rotator/*
 /lib/*.xml?fre=$xmlhttprequest
 ||vveu.*/files/episodes/*.mp4
@@ -1460,6 +1467,63 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||poi.kinzazaza.org^
+||beloboka.link^
+||burunduksha.link^
+||bystroglaza.link^
+||dobrolyuba.link^
+||dolgoruka.link^
+||geralovod.link^
+||gigovatokal.link^
+||gorodyshka.link^
+||gromoboyara.link^
+||khitrozya.link^
+||kkkkkkkrrrrrrrr.link^
+||kleveromal.link^
+||koverdynya.link^
+||krasnomaga.link^
+||kruglyashka.link^
+||kudroshapka.link^
+||kurolesya.link^
+||leproletsu.link^
+||morozovnya.link^
+||mudrobasa.link^
+||myagkotela.link^
+||pelamedara.link^
+||pepyakanew.link^
+||perepolokha.link^
+||pustobrya.link^
+||ryabokoshka.link^
+||samograyka.link^
+||samokhvala.link^
+||sinebryuga.link^
+||skorobeyka.link^
+||skovorodnya.link^
+||svarogonil.link^
+||taramashka.link^
+||tazaromikaz.link^
+||teplodara.link^
+||tikhomira.link^
+||veselchaga.link^
+||vorogushka.link^
+||yaropolka.link^
+||zamorokeharu.link^
+||zhenivalka.link^
+||zlatobryuga.link^
+||zveroboyna.link^
+||beeparentdo.com^
+||balamutka.link^
+||nevalyashka.link^
+||aj2663.bid^
+||sentry.rstprgapipt.com^
+||vertiguzha.link^
+||dteifi.com^$all
+||thtrck.com^$all
+||crmared.com^$all
+||zcode19.com^$third-party
+||vnmfvnkd.win^
+||aj0453.top^
+||adslb.cc^
 ||adlook.tv^$third-party
 ||chernomaza.link^
 ||getter.cfd^
@@ -2183,7 +2247,7 @@ ucoz.ru/informer/
 ||fqwgi.com^$third-party
 ||admediator.ru^$third-party
 ||cdn.hunteryvely.com^$third-party
-||skwstat.ru^$third-party
+||skwstat.ru^
 ||kinoaction.ru^$third-party
 ||onemontay.ru^$third-party
 ||xyz0k4gfs.xyz^$third-party
@@ -3603,6 +3667,9 @@ http://w7.ru^$third-party
 ||zorkabiz.ru^$third-party
 ||zqmwf.xyz^$third-party
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/240094
+/^2.59.219.121/
+!
 ! etarg.network
 !
 ! https://github.com/AdguardTeam/AdguardFilters/issues/200915
@@ -4062,11 +4129,10 @@ avtocod.ru,love.ngs.ru,mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,del
 !
 ! NOTE: Specific rules
 !
+kinobase.org##div[id^="ad"]
+fakty.ua##.nts-ad
 liga.net##.remp-banner
 epravda.com.ua##div[style="height:290px; clear: both; margin-top: 10px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center;"]
-streamsports99.cx,streamsports99.tv,streamsports99.su,streamsports99.ru,streamsports99.*###main-content > div.container > div.grid div.border.bg-gradient-card:has(> div.flex > a[href^="https://billing.rocketstreams4k.com/"])
-streamsports99.cx,streamsports99.tv,streamsports99.su,streamsports99.ru,streamsports99.*##a[data-no-ad]
-streamsports99.cx,streamsports99.tv,streamsports99.su,streamsports99.ru,streamsports99.*##.musiqly-ad
 legalbet.by,legalbet.*##.top-three-block > div
 legalbet.by,legalbet.*##.bookmakers-in-footer
 legalbet.by,legalbet.*##.other-bonuses
@@ -4074,12 +4140,6 @@ grad.ua##.googleBnr
 grad.ua###post-entry > div.blok_header_title
 comments.ua###balu
 unian.net##div[id^="media_"][id$="_box"]
-||cdn.lbs.pw/promo/
-liveball.sx###fullscreen
-liveball.sx##.catfish_sec
-liveball.sx###brandContainerGeo
-liveball.sx#$#main.main_div { margin-top: 0 !important; }
-liveball.sx#%#//scriptlet('remove-node-text', 'script', 'createAdManager')
 telegraf.ua##aside > div.c-r:has(> div.tgr-ads)
 gordonua.com##aside[aria-label="advertisement"]
 vikna.tv##.promo-sidebar
@@ -4403,6 +4463,14 @@ rezka-tv.org,hdrezka.la,rezka-ag.net,hdrezka.fans,rezka-ua.co,rezka-ua.pub,hdrez
 [$domain=/rezka/]##.ad-branding
 [$domain=/rezka/]#%#//scriptlet('remove-class', 'active-brand', 'body')
 !
+! Hdrezka, Kinogo, etc.
+.bid^$xmlhttprequest,domain=mentalist-hdrezka.net|glee-hdrezka.net|kinozo.cam
+.link^$xmlhttprequest,third-party,domain=mentalist-hdrezka.net|glee-hdrezka.net|kinovod.pro|kinozo.cam
+kinozo.cam,hdreskaz.top,kinovod.pro,glee-hdrezka.net,mentalist-hdrezka.net,hdrezka-ted-lasso.net,kinob.net,kinobase.org#%#//scriptlet('trusted-json-set', 'JSON.parse', 'vast', '0', 'vast')
+kinozo.cam,hdreskaz.top,kinovod.pro,glee-hdrezka.net,mentalist-hdrezka.net,hdrezka-ted-lasso.net,kinob.net,kinobase.org#%#//scriptlet('trusted-json-set', 'JSON.parse', 'prerolls', '0', 'prerolls')
+[$domain=/hdreska|rezka|lostfilm/]#%#//scriptlet('trusted-json-set', 'JSON.parse', 'vast', '0', 'vast')
+[$domain=/hdreska|rezka|lostfilm/]#%#//scriptlet('trusted-json-set', 'JSON.parse', 'prerolls', '0', 'prerolls')
+!
 ! Группа компаний Актион
 kom-dir.ru,gd.ru,buhsoft.ru,dirklinik.ru,fd.ru,business.ru,pro-personal.ru,trudohrana.ru##.ASE_brandImage
 !
@@ -4431,6 +4499,7 @@ citrus.ua,xsport.ua,zi.dn.ua,zi.ua##img[src^="/upload/rk/"]
 !
 !
 !
+machineryline.ua##.index-bns
 kurs.com.ua##.advertising:not(#bottomWrap)
 hotline.finance##.side-popup
 football24.ua##.external-content
@@ -4477,7 +4546,6 @@ tochka.net#%#//scriptlet('remove-node-text', 'script', 'attachShadow')
 rayon.in.ua##.banner-slot-container
 rivnepost.rv.ua##.sqview
 rivnepost.rv.ua##.entry-top
-serialno.tv#$#body { padding-top: 0 !important; }
 sportarena.ua##.advertisment-events
 sportarena.ua##body > .nomobile
 superagronom.com##.sidebar__banner
@@ -4563,7 +4631,7 @@ versii.if.ua##:not(.fb-sidebar__main) > a:has(> img[alt^="рекламний б�
 varta1.com.ua##.ova-place-block
 varta1.com.ua##ins
 ||dev.ua/assets/ads/
-dev.ua##.header-banner
+dev.ua,zi.dn.ua##.header-banner
 dev.ua##.island__body-aside
 zaxid.net##.partner-insert-container
 24tv.ua,football24.ua##app-adv-placeholder
@@ -5344,7 +5412,6 @@ akzent.zp.ua##div[style="text-align: center;"] > a[target="_blank"] > img
 allfin.com.ua##.popup-credit-box
 allkharkov.ua##.firms_links
 allkharkov.ua##.lawyer_block
-zi.dn.ua##.header-banner
 videoprobki.ua##.brending
 apostrophe.ua,ogolosha.ua,bio.ukr.bio,focus.ua##.bnr
 archidea.com.ua##.block_banner

@@ -1,10 +1,13 @@
-! Checksum: V50zYbQLnzu8bFVQU+W/5w
-! Diff-Path: ../patches/13_optimized/13_optimized-s-1787646132-3600.patch
+! Checksum: 2Fk9Cc5NzrleQPTPqoe42Q
+! Diff-Path: ../patches/13_optimized/13_optimized-s-1791436237-3600.patch
 ! Title: AdGuard Turkish filter (Optimized)
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.67.41
-! TimeUpdated: 2026-08-25T08:18:52+00:00
+! Version: 2.0.68.79
+! TimeUpdated: 2026-10-08T05:07:17+00:00
 ! Expires: 10 days (update frequency)
+||geniusclickad.cc^
+||remotedesk.life^
+||zentryx.space^
 ||adcluster.com.tr^$third-party
 ||rtb-stack.com^
 ||impseeineclots.com^
@@ -233,11 +236,19 @@
 ||ttauri.livescience.com^
 ankarakampkafasi.com,zamaninvarken.com,kriptoradar.com,bakimlikadin.net,korsanedebiyat.com,genelpara.com,azbuz.org,mustafabukulmez.com#%#//scriptlet("prevent-setTimeout", "0===o.offsetLeft&&0===o.offsetTop")
 teknop.net,ozgunbilgi.com#%#//scriptlet("set-constant", "adblock.check", "noopFunc")
+kanunyolu.com.tr#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'run')
+[$domain=/turkifsa\d+\.best$/]#%#//scriptlet('trusted-replace-node-text', 'script', 'showModal', 'showModal', 'close')
+ictihatlar.com.tr#@#.ad-unit:not(.textads)
+ortacizgi.com#@#.sponsored-ad
+ortacizgi.com#@#.ad_unit
 summertoons.net#%#//scriptlet('prevent-addEventListener', 'load', 'checkAdblock')
 dramadizilerim.com#@#.ad-slot
 dramadizilerim.com#$#body { overflow: auto !important; }
 dramadizilerim.com#$##sysOverlay99 { display: none !important; }
 dramadizilerim.com#%#//scriptlet('abort-current-inline-script', 'EventTarget.prototype.addEventListener', '/\.offsetHeight[\s]*?===[\s]*?0|pagead2\.googlesyndication\.com/')
+dramadizilerim.com#%#//scriptlet('prevent-fetch', 'llvpn.com/tag.min.js')
+@@||dramadizilerim.com/assets/js/admanager.js$~third-party
+@@||dramadizilerim.com^$generichide
 paradoxscans.com#%#//scriptlet('abort-on-property-write', 'detectAdBlock')
 eczacidergisi.com.tr#@#.ad-slot
 eczacidergisi.com.tr#@#.ads-banner
@@ -266,6 +277,7 @@ merlinscans.com##body > div[style*="position: fixed;"][style*="z-index: 999999;"
 haber3.com###hbr3-ad-notice
 haber3.com#%#//scriptlet('set-constant', 'App.detectAdBlock', 'noopFunc')
 tabii.com#%#//scriptlet('prevent-element-src-loading', 'script', 'securepubads.g.doubleclick.net/tag/js/gpt.js')
+tabii.com#%#//scriptlet('google-ima3')
 ||securepubads.g.doubleclick.net/tag/js/gpt.js$script,redirect=noopjs,domain=tabii.com,important
 @@||securepubads.g.doubleclick.net/tag/js/gpt.js$domain=tabii.com
 ||imasdk.googleapis.com/js/sdkloader/ima3.js$script,redirect=noopjs,domain=tabii.com,important
@@ -318,7 +330,6 @@ exxen.com#%#//scriptlet('set-constant', 'eyeOfErstream.detectedBloke', 'falseFun
 kuponuna476.top,kuponuna477.top,kuponuna478.top,kuponuna479.top,kuponuna480.top,kuponuna481.top,kuponuna482.top,kuponuna483.top,kuponuna484.top,kuponuna485.top,kuponuna486.top,kuponuna487.top,kuponuna488.top,kuponuna489.top,kuponuna490.top,kuponuna491.top,kuponuna492.top,kuponuna493.top,kuponuna494.top,kuponuna495.top,kuponuna496.top,kuponuna497.top,kuponuna498.top,kuponuna499.top,kuponuna500.top,kuponuna501.top,kuponuna502.top,kuponuna503.top,kuponuna504.top,kuponuna505.top,kuponuna506.top,kuponuna507.top,kuponuna508.top,kuponuna509.top,kuponuna510.top,kuponuna511.top,kuponuna512.top,kuponuna513.top,kuponuna514.top,kuponuna515.top,kuponuna516.top,kuponuna517.top,kuponuna518.top,kuponuna519.top,kuponuna520.top,kuponuna521.top,kuponuna522.top,kuponuna523.top,kuponuna524.top,kuponuna525.top,kuponuna526.top,kuponuna527.top,kuponuna528.top,kuponuna529.top,kuponuna530.top,kuponuna531.top,kuponuna532.top,kuponuna533.top,kuponuna534.top,kuponuna535.top,kuponuna536.top,kuponuna537.top,kuponuna538.top,kuponuna539.top,kuponuna540.top,kuponuna541.top,kuponuna542.top,kuponuna543.top,kuponuna544.top,kuponuna545.top,kuponuna546.top,kuponuna547.top,kuponuna548.top,kuponuna549.top,kuponuna550.top,kuponuna551.top,kuponuna552.top,kuponuna553.top,kuponuna554.top,kuponuna555.top,kuponuna556.top,kuponuna557.top,kuponuna558.top,kuponuna559.top,kuponuna560.top,kuponuna561.top,kuponuna562.top,kuponuna563.top,kuponuna564.top,kuponuna565.top,kuponuna566.top,kuponuna567.top,kuponuna568.top,kuponuna569.top#%#//scriptlet('prevent-xhr', '/advert.js')
 kuponuna476.top,kuponuna477.top,kuponuna478.top,kuponuna479.top,kuponuna480.top,kuponuna481.top,kuponuna482.top,kuponuna483.top,kuponuna484.top,kuponuna485.top,kuponuna486.top,kuponuna487.top,kuponuna488.top,kuponuna489.top,kuponuna490.top,kuponuna491.top,kuponuna492.top,kuponuna493.top,kuponuna494.top,kuponuna495.top,kuponuna496.top,kuponuna497.top,kuponuna498.top,kuponuna499.top,kuponuna500.top,kuponuna501.top,kuponuna502.top,kuponuna503.top,kuponuna504.top,kuponuna505.top,kuponuna506.top,kuponuna507.top,kuponuna508.top,kuponuna509.top,kuponuna510.top,kuponuna511.top,kuponuna512.top,kuponuna513.top,kuponuna514.top,kuponuna515.top,kuponuna516.top,kuponuna517.top,kuponuna518.top,kuponuna519.top,kuponuna520.top,kuponuna521.top,kuponuna522.top,kuponuna523.top,kuponuna524.top,kuponuna525.top,kuponuna526.top,kuponuna527.top,kuponuna528.top,kuponuna529.top,kuponuna530.top,kuponuna531.top,kuponuna532.top,kuponuna533.top,kuponuna534.top,kuponuna535.top,kuponuna536.top,kuponuna537.top,kuponuna538.top,kuponuna539.top,kuponuna540.top,kuponuna541.top,kuponuna542.top,kuponuna543.top,kuponuna544.top,kuponuna545.top,kuponuna546.top,kuponuna547.top,kuponuna548.top,kuponuna549.top,kuponuna550.top,kuponuna551.top,kuponuna552.top,kuponuna553.top,kuponuna554.top,kuponuna555.top,kuponuna556.top,kuponuna557.top,kuponuna558.top,kuponuna559.top,kuponuna560.top,kuponuna561.top,kuponuna562.top,kuponuna563.top,kuponuna564.top,kuponuna565.top,kuponuna566.top,kuponuna567.top,kuponuna568.top,kuponuna569.top#%#//scriptlet("prevent-setTimeout", "$('body').empty().append")
 /r/*$domain=kuponuna476.top|kuponuna477.top|kuponuna478.top|kuponuna479.top|kuponuna480.top|kuponuna481.top|kuponuna482.top|kuponuna483.top|kuponuna484.top|kuponuna485.top|kuponuna486.top|kuponuna487.top|kuponuna488.top|kuponuna489.top|kuponuna490.top|kuponuna491.top|kuponuna492.top|kuponuna493.top|kuponuna494.top|kuponuna495.top|kuponuna496.top|kuponuna497.top|kuponuna498.top|kuponuna499.top|kuponuna500.top|kuponuna501.top|kuponuna502.top|kuponuna503.top|kuponuna504.top|kuponuna505.top|kuponuna506.top|kuponuna507.top|kuponuna508.top|kuponuna509.top|kuponuna510.top|kuponuna511.top|kuponuna512.top|kuponuna513.top|kuponuna514.top|kuponuna515.top|kuponuna516.top|kuponuna517.top|kuponuna518.top|kuponuna519.top|kuponuna520.top|kuponuna521.top|kuponuna522.top|kuponuna523.top|kuponuna524.top|kuponuna525.top|kuponuna526.top|kuponuna527.top|kuponuna528.top|kuponuna529.top|kuponuna530.top|kuponuna531.top|kuponuna532.top|kuponuna533.top|kuponuna534.top|kuponuna535.top|kuponuna536.top|kuponuna537.top|kuponuna538.top|kuponuna539.top|kuponuna540.top|kuponuna541.top|kuponuna542.top|kuponuna543.top|kuponuna544.top|kuponuna545.top|kuponuna546.top|kuponuna547.top|kuponuna548.top|kuponuna549.top|kuponuna550.top|kuponuna551.top|kuponuna552.top|kuponuna553.top|kuponuna554.top|kuponuna555.top|kuponuna556.top|kuponuna557.top|kuponuna558.top|kuponuna559.top|kuponuna560.top|kuponuna561.top|kuponuna562.top|kuponuna563.top|kuponuna564.top|kuponuna565.top|kuponuna566.top|kuponuna567.top|kuponuna568.top|kuponuna569.top
-[$domain=/(^\|.+\.)canlitribun\d+\.live/]#%#//scriptlet('prevent-xhr', '/advert.js')
 raindropteamfan.com#%#//scriptlet('prevent-fetch', 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js')
 @@||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$domain=mangawt.com
 mangawt.com#%#//scriptlet('prevent-xhr', 'static.doubleclick.net/instream/ad_status.js')
@@ -480,8 +491,14 @@ mackolik.com,sahadan.com#%#var advertisement_not_blocked = 1;
 mackolik.com,sahadan.com#%#var criteo_medyanet_loaded = 1;
 r10.net#%#//scriptlet('abort-on-property-read', 'rTargets')
 r10.net#%#//scriptlet('abort-on-property-write', 'rInt')
+##.background-link > a[target="_blank"]
+##.channel-area ~ div.popup-overlay
+##a[class="current-address-link"]
+##header > ul > li.blink > a[target]
 ##.playerTextReklam
 ##center > a[target="_blank"][style="color: red;"] > font[style="font-size: 15pt"]
+##.pageskin-container
+##.player-ad-banner
 ##.ads_single_font
 ##body div#hellobar
 ##body div.hellobar
@@ -954,6 +971,7 @@ sabah.com.tr#$#header.advertControlArea { top: 0!important; }
 #$#.film-tab > div.playerimiz { display: block !important; }
 filmizlehdfilm.com,hdfilmizlesene.org,contentx.me,siyahfilmizle.*,fullhdfilmizle.*,fullhdfilmizlesenebox.org,pchocasi.com.tr,jetfilmizle.*,dizilab9.*,dizilab8.*,fullhdfilmizletv.*,filmizletv.*,turkcealtyazi.org#$#html > body { background-image: none !important; }
 itemci.com#$#body { background: none !important; }
+ardaiptv-satis-banner-
 /pops-yeni.js
 /vendor/te/plugins/advert/*
 /reklam-$image,script,domain=~donanimhaber.com|~mediacat.com
@@ -1058,13 +1076,68 @@ eurosport.com.tr,sozcu.com.tr,korkusuz.com.tr,szctv.com.tr,bursa.com,sozcu.com.t
 gelirkapisi.com##div[id^="ad_"]
 indirin.co,maksatbilgi.com,bedavainternet.com.tr,turkedebiyati.org,frpnet.net,teknobh.com,begonya.com,egehaber.com,voleybolmagazin.com,kadinvekadin.net,savunmasanayist.com,aof.tc,m5dergi.com,sosyola.com,havadiskibris.com,unirehberi.com##.stream-item
 techolay.net,havadiskibris.com,oyunindir.club,armoniscans.com,teknobh.com,yoldaolmak.com,aof.tc,sorumatik.co,andronova.net,koinfinans.com,hwp.com.tr,konupara.com,lafmacun.net,oyundunyasi.net,bilgenc.com,teknodiot.com,ruyashoujo.com,pchocasi.com.tr,dusuncekatalogu.com##body .code-block
-vegoltv981.com,sierato.com,dizigom.love,cehennemizle.cc,cdnvexo.site,bingozade.com,ifsaciturksex99.site,99turkifsaizle.site,trkifsalariz.site,escobarvip.blog,dizipal.website,videojs.online,epikplayer.xyz,animeler.me,player.filmizle.in,tranimaci.com,izlekolik.org,4kfilmizlesene.*#%#//scriptlet('prevent-window-open')
+superfilmizle.*,plusizle.com,filmkuzusu.vip,hboxcdn.xyz,keplersociety.com,vegoltv981.com,sierato.com,dizigom.love,cehennemizle.cc,cdnvexo.site,bingozade.com,ifsaciturksex99.site,99turkifsaizle.site,trkifsalariz.site,escobarvip.blog,dizipal.website,videojs.online,epikplayer.xyz,animeler.me,player.filmizle.in,tranimaci.com,izlekolik.org,4kfilmizlesene.*#%#//scriptlet('prevent-window-open')
 /^(?!.*(mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.li|bytecdntp.com|doodcdn.io|intensedebate.com|vixcloud.co|cdn.plyr.io|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|(\/\/|\.)vk\.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|imgsmail.ru|cloudflare.net|rabbitstream.net|alicdn.com|(\/\/|\.)x\.com)).*$/$third-party,script,_____,domain=pollos.cyou|fullindirsene.net|ehliyetsinavsorulari.org|dizigom1.tv
 *$script,third-party,denyallow=mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.li|bytecdntp.com|doodcdn.io|intensedebate.com|vixcloud.co|cdn.plyr.io|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|imgsmail.ru|cloudflare.net|rabbitstream.net|x.com|alicdn.com,_____,domain=pollos.cyou|fullindirsene.net|ehliyetsinavsorulari.org|dizigom1.tv|mp3semti.com|jiangzaitoon.one
 $xmlhttprequest,third-party,denyallow=mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.li|bytecdntp.com|doodcdn.io|intensedebate.com|vixcloud.co|cdn.plyr.io|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|imgsmail.ru|cloudflare.net|rabbitstream.net|x.com,_____,domain=ruya-manga.com|hayalistic.com.tr|koreliscans.com
 /service/advertchannels?$domain=kocaelifikir.com|anayurtgazetesi.com|medyaankara.com|ozgunkocaeli.com.tr|urfanatik.com|dirilispostasi.com|turkuazgazetesi.net|yenialanya.com|bugunkocaeli.com.tr|cagdaskocaeli.com.tr|mansetaydin.com|enkocaeli.com|kocaelikoz.com|kocaelibarisgazetesi.com|seskocaeli.com|sigortahaber.com
 /service/advertchannels?$xmlhttprequest,redirect=nooptext,domain=mardinhaber.com.tr|gidahatti.com|bolugundem.com
 dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdaskocaeli.com.tr,mansetaydin.com,seskocaeli.com,kocaelibarisgazetesi.com,kocaelikoz.com,enkocaeli.com##.block-pano > div.us
+proje724.com##aside:has(> div > a[data-ad-link])
+turkifsa.blog##.center-overlay
+||cdn.okiksdelivery.com^$script,domain=turkifsa.blog
+||get.atechspace.live/pops-request
+btdunyasi.net##div[id^="tt-banner"]
+btdunyasi.net##aside.sidebar > div.theiaStickySidebar > .container-wrapper:has(> div.stream-item-widget-content > a[href^="https://landing.logo.com.tr/"])
+btdunyasi.net##.stream-item-below-post > div.stream-item-size:has(> a[href^="https://landing.logo.com.tr/"])
+||turkifsatube.com/*.gif
+azginkizlar.com#%#//scriptlet('abort-current-inline-script', 'EventTarget.prototype.addEventListener', 'AD_URL_')
+kanunyolu.com.tr##.cwv-ad-slot
+btt.community##.btt-sponsor-banner
+hava.ist###div-masthead
+||sohobettv*.com/view/theme/*.gif
+kiraztv.com##.kiraz-ad-reserve
+kiraztv.com##.kiraztv-player-alt-ad
+harbitv.site##a[href^="https://harbilink.pro"]
+bc4liveiframecdn.shop###promo-banner
+bc4liveiframecdn.shop###logo
+||compare.busbud.com/x/pas?placementId=
+yirmidort.tv##div[style="width:300px;height:250px;min-height:250px;"]
+canlitvvolo.com##.mobile-top-ads
+canlitvvolo.com##.container [style]:has(> .adsbygoogle:only-child)
+cizgivedizi.com#%#//scriptlet('prevent-window-open', '_blank')
+cizgivedizi.com##.custom-ad-overlay
+netspor.co###player-logo
+netspor.co###splash-banner
+/https?:\/\/blogger\.googleusercontent\.com\/img\/.*\/((?!sadece-tikla|goal-kral).)*\.webp$/$domain=netspor.co
+netspor.co,kralsportshd.com#%#//scriptlet('trusted-dispatch-event', 'ended', '#preroll-video')
+ahaber.com.tr##.tmd-articleSidebar__ads
+||biatsports*.com/*.gif
+||itemci.com/api/modal-advert?
+itemci.com##a[title="Reklam"]
+itemci.com##body > div.fixed:has(> a[title="Reklam"])
+mardinlife.com##body > div.container:has(> div.row > div.col-md-6 > a[href="https://www.artukbey.com/"])
+||demolarim.sbs/popup.js
+youizleo.sbs#%#//scriptlet('prevent-addEventListener', 'click', 'window.open')
+||plusizle.org/rek/road/*.js$script
+plusizle.org###video_under_banners_wrapper
+plusizle.org###hdr_all_banners_wrapper
+ortacizgi.com##.reklam-alan
+selcukhdyayin.com##.below-player-banner
+haber32.com.tr##section[data-widget-unique-key^="besli_manset_"]
+ifsasicak.com##.ad-banner-frame
+azginkizlar.com#%#//scriptlet('prevent-window-open', '_blank')
+||azginkizlar.com/wp-content/uploads/*.gif$image
+yemek.com##.affiliate-end-of-detail-banner
+||donanimhaber.com/ads/
+donanimhaber.com##.dh-inline-ad
+donanimhaber.com##.dh-comments-ad
+donanimhaber.com##.dh-embed:has(> div.dh-embed__inner > div.empower-ad)
+tranimeizle.io,tranimeizle.*#$#.videoSource-playlist { display: block !important; }
+tranimeizle.io,tranimeizle.*#$#.videoSource-video { display: block !important; }
+tranimeizle.io,tranimeizle.*#$#.df-ad-ovrly { display: none !important; }
+rotaborsa.com##.sticky-top-ad
+rotaborsa.com#$#body { padding-top: 0 !important; }
 ||istanbulticaretgazetesi.com/api/v*/ads/slot/
 mynet.com##.mynet-feed-ad
 ||podbeemedia.com/api/ads/
@@ -1074,6 +1147,7 @@ hibya.com##div[class^="card"]:has(> a[href^="https://www.vakifkatilim.com.tr/"])
 hibya.com##.col-md-3:has(> div.card > div.card-body > a[href][target="_blank"])
 hibya.com##main > div.container:has(> div.content > div.card > div.card-body > ins.adsbygoogle)
 haberturk.com##.widget-video:has(> div.block > div[class] > div[data-adv])
+haberturk.com##.widget-video:has(> div.block > div[class] button[onclick="location.reload()"])
 okatalog.com##div.w-full:has(> div.empower-ad)
 okatalog.com#$#body > header.mt-\[100px\] { margin-top: 0 !important; }
 sanayigazetesi.com.tr##.entry-header-ad-wrapper
@@ -1103,16 +1177,14 @@ fanatik.com.tr#?#.adRenderer
 aspor.com.tr##.layout-slot-square
 aspor.com.tr##.aside-slot
 ||720piz.org/prk1.js
-.gif$image,domain=betanotv2.site
-betanotv2.site##div.reklam-3
-betanotv2.site##a[href^="https://hemengit.link/"]
 cdnvexo.site###adOverlay
 ||sude.vxelo.org/mina.mp4$media,redirect=noopmp3-0.1s,domain=cdnvexo.site|utanmazkizlar.com
 polobettv.cc##header > ul > li:not(:has(> a[href="/"]))
 polobettv.cc##.odds-container
 ||30slotintv.live/view/theme/safir/img/pageskin0001.png
 30slotintv.live##a[href^="https://cutt.ly/"]
-ekonomist.com.tr,tureng.com##.nts-ad
+lezzet.com.tr##div[id^="doganBurdaAds_"]
+lezzet.com.tr,ekonomist.com.tr,tureng.com##.nts-ad
 hizlierotikizle.com##.player-top-ad
 cnnturk.com##.adv-container
 ||zerotik.space/maczer*.js
@@ -1129,7 +1201,6 @@ player01.cfd#%#//scriptlet('prevent-window-open', '', '1')
 ||hdflimizle.com/wp-content/uploads/2026/03/2.mp4
 dizibol.com##app-banner-zone
 ||superfilmizle.net/wp-content/plugins/popup-manager/
-superfilmizle.*#%#//scriptlet('prevent-window-open')
 r10.net##.thread[id^="sponsor"]
 r10.net##.rPanel:has(> div.content > a[href^="https://www.ideasoft.com.tr/"])
 r10.net##.featuredAjaxContent > div.list > ul[data-id="sonAcilan"] > li[class*="thread"][data-ri]
@@ -1211,7 +1282,6 @@ trhaber.com.tr##div[style^="min-height:"][style*="250px"]
 ensonhaber.com##.ad-wrap-home
 aspor.com.tr,ahaber.com.tr##.layout-slot-top
 ||izleplus.com/canavar.js
-plusizle.com#%#//scriptlet('prevent-window-open')
 canlidoviz.com##div.lg\:flex-row > div.flex:has(> a[href^="https://bit.ly/"] > img[alt="infoyatirim"])
 enucuzsistem.com##a[href^="https://ggentr.co/"]
 patronspor.is##.bonus-list
@@ -1224,7 +1294,7 @@ onedio.com###masthead-background
 kanald.com.tr#%#//scriptlet('set-attr', '.player-container', 'data-ad', 'false')
 sondakika.com###video-ad-container-desktop
 haberler.com##div[id^="video-ad-container-"]
-haberler.com##.new3detail-page-container > div.new3detail-left > article:has(> div[data-type="_mgwidget"])
+haberler.com##.new3detail-page-container > div.new3detail-left > [class]:has(> div[data-type="_mgwidget"])
 sozcu.com.tr#$#.news-body article[data-url] { min-height: auto !important; }
 ||bianet.org/api/Ads/AdsGetList?
 trhaber.com##div[data-canonical] > div.flex:has(> div.flex > div.flex > div.relative > div[id^="div-gpt-ad-"])
@@ -1374,7 +1444,6 @@ akakce.com##.leaderboard_ad
 tempestmangas.com#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'reklam')
 onedio.com##.layout__main > div.max-w-\[1100px\] > div.flex > a[href] ~ div.u-center.w-\[352px\]
 utanmazkizlar.com##.k-between-buttons-banner
-filmkuzusu.vip#%#//scriptlet('prevent-window-open')
 ifsagram6.com##.banner-wrap
 www.filmmolly.cc,filmgo2.org,filmmolly.com##.sayfa-sol > a[target="_blank"]
 turkifsahub.com##a[href^="https://go.aff.teslaaffilate.com/"]
@@ -1429,7 +1498,6 @@ grupbul.com##a[href^="/reklamYonlendir/"][target="_blank"] > img
 filmgo1.cc,zerotik.com##a[href^="https://medyabayim.com/"]
 ||dfilmizle.net/*.mp4
 dfilmizle.net###plyg > iframe#Ciframe_yeni
-bewins.tv##.sidebar-section:has(> h2 > i.fa-ad)
 ||vkfilmizlle.com/vast-player-*.php
 ||vkfilmizlee.org/vast-player-*.php
 ||720pizleplus.cc/rek/
@@ -1604,9 +1672,6 @@ hdfilmcehennemi.*#$#body { padding-top: 0 !important; }
 hdfilmcehennemi.*#%#//scriptlet('set-local-storage-item', '/^totalPlayTime/', '$remove$')
 gunhaber.com.tr##div[style]:has(> a[href^="/showad.asp?"])
 canakkalegundem.net##.saniyeli_reklam_header
-||bewins.tv/images/ads.gif
-||bewins.tv/images/1.png
-bewins.tv##.sidebar-section:has(> div[style] > a[href] > img.ads-img)
 ||kultfilmler.org^$image,third-party
 ||yabancidizim.com/ads/
 basarisiralamalari.com###ad-container
@@ -1643,6 +1708,7 @@ emlakjet.com##div[class^="styles_bannerWrapper__"]
 ntvspor.net##div[class*="h-[600px]"]:has(> .sticky > div[class*="dyg-"])
 thewikihow.com##.cb-header > div[style]:has(> div[id^="yandex_rtb"])
 thewikihow.com##.cb-content > div[style]:has(> div[id^="yandex_rtb"])
+||bosstv*.com/*.jpg
 ||bosstv*.com/*.gif
 /^https:\/\/[a-z]+\.basarisiralamalari\.com\/wp-content\/uploads\/[0-9]+\/[0-9]+\/kto-[0-9]+-[0-9]+-[0-9]+-[0-9]+(X|x)[0-9]+(\.|-)/$domain=basarisiralamalari.com
 basarisiralamalari.com##.safirCustomMenu:has(a[href*="?utm_source="])
@@ -2988,7 +3054,7 @@ bolgegundem.com.tr,bolgegundem.com,yenihaberden.com##.fixed-pub
 fivemturk.net,720pizle.*,yetiskinfilmizle.xyz,burasiduzce.com,coin-turk.com,turkerotikfilm.com##center > a[target="_blank"] > img
 yeniakit.com.tr##.sticky-ads
 cehennemstream.click###adStop
-filmizle.in,yildizkisafilm.org,movietube32.xyz##.pppx
+hboxcdn.xyz,filmizle.in,yildizkisafilm.org,movietube32.xyz##.pppx
 [$path=|/video/]buzz##body > .play-button-outer ~ .pppx
 burdenfly.com###block-38
 haberturk.com##.zone-area
@@ -4333,7 +4399,7 @@ fethiyehaber.com##a[href^=" https://www.ford-helvacioglu-mugla.com/"]
 cimri.com##div[id*="_MASTHEAD_DESKTOP_"]
 cimri.com##a[href^="https://www.trendyol.com?utm_source=aff_t&utm_medium=cpm&utm_campaign=cimri_sponsor_text_lin"]
 papajohns.com.tr##.popup-window
-betanotv2.site,betnistvizle.com,papajohns.com.tr##.popup-overlay
+papajohns.com.tr##.popup-overlay
 gmdergi.com,ntv.com.tr,superfb.com,yeniisfikirleri.net##a[href^="http://bit.ly/"]
 -reklam.$domain=ruyatabirleri.blog|magazinizmir.com|arenabodrumhaber.com
 sanayigazetesi.com.tr,paraanaliz.com,thegeyik.com,yenikutahya.com,arenabodrumhaber.com###mvp-leader-wrap
@@ -5533,20 +5599,74 @@ oyunu.com.tr#$##bir.oynama { display: none !important; }
 oyunu.com.tr#$##iki.oynama { display: block !important; }
 lovefilmizle.net,elzemfilm.org,dizicaps.*,erotikfilmtube.com,sexfilmleriizle.com#$#.play-that-video { display: none !important; }
 lovefilmizle.net,elzemfilm.org,dizicaps.*,erotikfilmtube.com,sexfilmleriizle.com#$#body div#player { display: block !important; }
+!+ NOT_VALIDATE
+||blogger.googleusercontent.com/img/$domain=/patronlig\d+\.cfd$/
+[$domain=/hadibettv\d+\.com$/]##.footer-links
+||hadibettv*.com/view/theme/ultimate/img/*.gif
+||pornocudayi*.com/klip/klip-*.mp4
+[$domain=/pornocudayi\d+\.com$/]##a[href][aria-label^="Bu alana reklam"]
+[$domain=/dizipalorjinal\d+\.com$/]##body > a[class^="pageskin-"]
+[$domain=/dizipalorjinal\d+\.com$/]#$#.has-pageskin { background-image: none !important; }
+[$domain=/dizipalorjinal\d+\.com$/]##[aria-label="Reklam"]
+videoplays.cfd##.vast-ad-overlay
+/rek.xml|$domain=videoplays.cfd
+videoplays.cfd#%#//scriptlet('abort-on-stack-trace', 'document.createElement', 'getAdMountPoint')
+[$domain=/golbettv\d+\.com$/]##body > a[target="_blank"]
+[$domain=/golbettv\d+\.com$/]##.bnr
+[$domain=/bahsinetv\d+\.site$/]##body > a[target="_blank"]
+[$domain=/bahsinetv\d+\.site$/]##body > div[class^="reklam-"]
+[$domain=/bahsinetv\d+\.site$/]##.footer-links
+[$domain=/piatv\d+\.site$/]##.footer-links
+!+ NOT_VALIDATE
+.gif|$domain=/macboxtv\d+\.xyz$/
+[$domain=/macboxtv\d+\.xyz$/]#%#//scriptlet('set-attr', '.player-box', 'data-preroll-enabled', '0')
+[$domain=/macboxtv\d+\.xyz$/]##.be-pageskin
+[$domain=/macboxtv\d+\.xyz$/]###gif-banner
+[$domain=/sampiyontv\d+\.xyz$/]##a[rel="nofollow sponsored noopener"]
+[$domain=/betanotv\d+\.site$/]##div[class^="reklam-"]
+[$domain=/betanotv\d+\.site$/]##body > header
+!+ NOT_VALIDATE
+.gif$domain=/betanotv\d+\.site$/
+||bovtv*.com/BOVBETTV.webm
+||bovtv*.com/view/theme/ultimate/img/*.gif
+[$domain=/bovtv\d+\.com$/]##div[class^="reklam-"]
+[$domain=/bovtv\d+\.com$/]##body > header
+[$domain=/bovtv\d+\.com$/]##.footer-links
+[$domain=/bovtv\d+\.com$/]##.odds-container
+[$domain=/bovtv\d+\.com$/]##.header-top > div.header-text
+!+ NOT_VALIDATE
+||blogger.googleusercontent.com/img/$domain=/restizle\d+\.com$/
+[$domain=/restizle\d+\.com$/]##.background-link
+[$domain=/restizle\d+\.com$/]##.banner-container
+[$domain=/restizle\d+\.com$/]##.header-nav > a[href="/"] ~ a[href][target="_blank"]
+[$domain=/harbitv\d+\.live$/]##div[class^="reklam-"]
+[$domain=/harbitv\d+\.live$/]##body > header
+[$domain=/harbitv\d+\.live$/]##.footer-links
+[$domain=/harbitv\d+\.live$/]###big-wins-ticker
+[$domain=/harbitv\d+\.live$/]##.odds-container
+[$domain=/harbitv\d+\.live$/]##.header-top > div.header-text
+||kodamantv*.com/*.gif
+[$domain=/kodamantv\d*\.com$/]###splashAd
+[$domain=/kodamantv\d*\.com$/]###sabitFooter
+[$domain=/kodamantv\d*\.com$/]#%#//scriptlet('prevent-window-open')
+[$domain=/bahisotv\d+\.com$/]##div[style^="margin:"]:has(> a[href][target="_blank"])
+[$domain=/bahisotv\d+\.com$/]##.footer-links
+[$domain=/gmatv\d+\.live$/]##div[class^="reklam-"]
 ||pelitcanlitv.com/admin/uploads/*.gif
 ||pelitcanlitv.com/admin/uploads/TV-PAGESKIN.png
 [$domain=/pelitcanlitv\d*\.com$/]###promoPopup
 [$domain=/pelitcanlitv\d*\.com$/]##.bg-link
 [$domain=/pelitcanlitv\d*\.com$/]##div[class^="ad-"]
-!+ NOT_VALIDATE
-.gif|$domain=/gizlidepo\d*\.com$/
-[$domain=/gizlidepo\d*\.com$/]##a[rel="nofollow noopener noreferrer sponsored"]
-[$domain=/gizlidepo\d*\.com$/]###tg-cta-container
-[$domain=/gizlidepo\d*\.com$/]##.banner-grid-wrap
-[$domain=/gizlidepo\d*\.com$/]###hcExit
-[$domain=/gizlidepo\d*\.com$/]##.pd-adbn
-[$domain=/gizlidepo\d*\.com$/]#$##offerBox { display: none !important; }
-[$domain=/gizlidepo\d*\.com$/]#$##mainVideo { display: block !important; }
+.gif|$domain=zevkdolu32.com
+zevkdolu32.com##.onwin-top-wrap
+zevkdolu32.com##a[href^="/tk/siteleriniz"]
+zevkdolu32.com##a[rel="nofollow noopener noreferrer sponsored"]
+zevkdolu32.com###tg-cta-container
+zevkdolu32.com##.banner-grid-wrap
+zevkdolu32.com###hcExit
+zevkdolu32.com##.pd-adbn
+zevkdolu32.com#$##offerBox { display: none !important; }
+zevkdolu32.com#$##mainVideo { display: block !important; }
 [$domain=/lionlinehd\d+\.com$/]##header > ul
 [$domain=/lionlinehd\d+\.com$/]##.odds-container
 [$domain=/lionlinehd\d+\.com$/]##.header-top > div.header-text
@@ -5557,13 +5677,6 @@ lovefilmizle.net,elzemfilm.org,dizicaps.*,erotikfilmtube.com,sexfilmleriizle.com
 [$domain=/kacakspor\d+\.com$/]###player-logo
 [$domain=/kacakspor\d+\.com$/]##.nav-menu > li:has(> a[href="https://bit.ly/BhsKa%C3%A7akspor"])
 [$domain=/kacakspor\d+\.com$/]###splash-banner
-||bahisligatv*.com/view/theme/ultimate/img/*.gif
-||bahisligatv*.com/view/theme/ultimate/assets/js/rc.js
-[$domain=/bahisligatv\d+\.com$/]##div[class^="reklam-"]
-[$domain=/bahisligatv\d+\.com$/]##body > header
-[$domain=/bahisligatv\d+\.com$/]##.odds-container
-[$domain=/bahisligatv\d+\.com$/]##.footer-links
-[$domain=/bahisligatv\d+\.com$/]##.header-top > div.header-text
 !+ NOT_VALIDATE
 ||blogger.googleusercontent.com/img/$domain=/pasizle\d+\.com$/
 [$domain=/pasizle\d+\.com$/]##.background-link
@@ -5577,10 +5690,6 @@ lovefilmizle.net,elzemfilm.org,dizicaps.*,erotikfilmtube.com,sexfilmleriizle.com
 [$domain=/taratv\d+\.shop$/]#%#//scriptlet('trusted-set-cookie', 'pop', '7')
 [$domain=/taratv\d+\.shop$/]##.pageskin-click
 [$domain=/taratv\d+\.shop$/]##.nk-nav-table > ul
-||gmatv*.live/view/theme/ultimate/img/*.gif
-||gmatv*.live/view/theme/ultimate/assets/js/rc.js
-[$domain=/gmatv\d+\.live$/]##div[class^="reklam-"]
-[$domain=/porno\d+\.shop$/]##div[rel="sponsored"]
 [$domain=/papaztv\d+\.live$/]##div[class^="reklam-"]
 [$domain=/papaztv\d+\.live$/]##body > header
 [$domain=/papaztv\d+\.live$/]##.footer-links
@@ -5610,7 +5719,6 @@ mahsunsports.xyz#%#//scriptlet('trusted-dispatch-event', 'ended', '#preroll-vide
 [$domain=/galyatv\d+\.com$/]##.nk-nav-logo ~ ul
 ||macvardi*.com/*.gif
 [$domain=/macvardi\d+\.com$/]##div[style^="margin:"]:has(> a[href][target="_blank"])
-[$domain=/macvardi\d+\.com$/]##header > ul > li.blink:has(> a[href="/"]) ~ li.blink
 [$domain=/macvardi\d+\.com$/]##.footer-links
 ||baycontitv*.com/view/theme/ultimate/img/*.gif
 ||baycontitv*.com/IMG_0060.MP4
@@ -5620,15 +5728,6 @@ mahsunsports.xyz#%#//scriptlet('trusted-dispatch-event', 'ended', '#preroll-vide
 [$domain=/baycontitv\d+\.com$/]##div[class^="reklam-"]
 [$domain=/baycontitv\d+\.com$/]##body > header
 [$domain=/baycontitv\d+\.com$/]##.footer-links
-||ibizacanli*.com/view/theme/ultimate/img/*.gif
-||ibizacanli*.com/view/theme/ultimate/img/700x600sss.png
-||ibizacanli*.com/view/theme/ultimate/assets/js/rc.js
-[$domain=/ibizacanli\d+\.com$/]##.popup-overlay
-[$domain=/ibizacanli\d+\.com$/]##div[class^="reklam-"]
-[$domain=/ibizacanli\d+\.com$/]##body > header
-[$domain=/ibizacanli\d+\.com$/]##.footer-links
-||jtvkanal*.vip/api/banner-img/
-[$domain=/jtvkanal\d+\.vip$/]##.banner
 ||*betine.live/view/theme/safir/img/betinepageskin.jpg
 ||*betine.live/view/theme/safir/img/*.gif
 [$domain=/\d+betine\.live$/]##.pageskin
@@ -5685,13 +5784,14 @@ x.palv2.cfd###adPlayerBanner
 [$domain=/taraftarium\d+\.xyz$/]##a[href="https://t.co/2nHFzBJcJJ"]
 [$domain=/taraftarium\d+\.xyz$/]##.ads-container
 [$domain=/taraftarium\d+\.xyz$/]##.pageskin-wrapper
-[$domain=/taraftarium\d+\.xyz$/]#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', 'prerollEnabled:true', 'prerollEnabled:false')
+[$domain=/taraftarium\d+\.xyz$/]#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', '/prerollEnabled:\s*true/', 'prerollEnabled:false')
 [$domain=/^turkzzersifsa\d+\.blog$/]#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'app_advert')
 [$domain=/^turkzzersifsa\d+\.blog$/]#%#//scriptlet('prevent-addEventListener', 'click', 'popUnder')
-[$domain=/^turkifsalife\d+\.blog$/]#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'app_advert')
-[$domain=/^turkifsalife\d+\.blog$/]#%#//scriptlet('prevent-addEventListener', 'click', 'popUnder')
-[$domain=/^turkifsalife\d+\.blog$/]###block-2
-[$domain=/^turkifsalife\d+\.blog$/]#%#//scriptlet('prevent-addEventListener', 'click', 'tik_sayac')
+[$domain=/^turkifsalife\d+\.(blog\|lat)$/]#%#//scriptlet('remove-node-text', 'script', 'reklamAcildi')
+[$domain=/^turkifsalife\d+\.(blog\|lat)$/]#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'app_advert')
+[$domain=/^turkifsalife\d+\.(blog\|lat)$/]#%#//scriptlet('prevent-addEventListener', 'click', 'popUnder')
+[$domain=/^turkifsalife\d+\.(blog\|lat)$/]###block-2
+[$domain=/^turkifsalife\d+\.(blog\|lat)$/]#%#//scriptlet('prevent-addEventListener', 'click', 'tik_sayac')
 [$domain=/^sotweturkifsa\d+\.blog$/]#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'app_advert')
 [$domain=/^sotweturkifsa\d+\.blog$/]#%#//scriptlet('prevent-addEventListener', 'click', 'popUnder')
 [$domain=/^sotweturkifsa\d+\.blog$/]##.entry-content > div:has(> a[href="https://t.me/turkifsalifevip"])
@@ -5717,27 +5817,23 @@ x.palv2.cfd###adPlayerBanner
 ||betpaributv*.com/*.gif
 [$domain=/betpaributv\d+\.com$/]##header > ul > li:not(:has(> a[href="/"]))
 [$domain=/betpaributv\d+\.com$/]##a[href="http://bpgir.vip/"]
-[$domain=/sultansportv\d+\.com$/]##.header-top > div.header-text
-[$domain=/sultansportv\d+\.com$/]##body > header:has(> a[href="https://tinyurl.com/sultanbetuyelik"])
-[$domain=/sultansportv\d+\.com$/]##.footer-links
 !+ NOT_VALIDATE
 ||blogger.googleusercontent.com/img/$domain=/restmacizle\d+\.cfd$/
 [$domain=/restmacizle\d+\.cfd$/]##.background-link
 [$domain=/restmacizle\d+\.cfd$/]##.header-nav > a[href="/"] ~ a[href][target="_blank"]
 [$domain=/tvakin\d?\.live$/]##div[onclick^="window.open('https://direk"]
 [$domain=/tvakin\d?\.live$/]##.marquee-banner
-patrongol34.cfd##a[href="https://x.com/patronsporis"] ~ a[href][target="_blank"]:not(#telegram-link)
-patrongol34.cfd##.background-link
-patrongol34.cfd##.top-banner-header
-||blogger.googleusercontent.com/img/$domain=patrongol34.cfd
+patrongol37.cfd##a[href="https://x.com/patronsporis"] ~ a[href][target="_blank"]:not(#telegram-link)
+patrongol37.cfd##.background-link
+patrongol37.cfd##.top-banner-header
+||blogger.googleusercontent.com/img/$domain=patrongol37.cfd
 !+ NOT_VALIDATE
 ||blogger.googleusercontent.com/img/$domain=/patron(live\|futbol)\d+\.cfd$/
 [$domain=/patron(live\|futbol)\d+\.cfd$/]##.channel-ad-item
 [$domain=/patron(live\|futbol)\d+\.cfd$/]##.background-link
 [$domain=/patron(live\|futbol)\d+\.cfd$/]##.top-banner-header
 [$domain=/patron(live\|futbol)\d+\.cfd$/]##a[href="https://x.com/patronsporis"] ~ a[href][target="_blank"]:not(#telegram-link)
-[$domain=/patron(live\|futbol)\d+\.cfd$/]#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', 'prerollEnabled: true', 'prerollEnabled: false')
-[$domain=/piabettv\d+\.live$/]##header > ul > li:not(:has(> a[href="/"]))
+[$domain=/patron(live\|futbol)\d+\.cfd$/]#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', '/prerollEnabled\s*:\s*true/g', 'prerollEnabled: false')
 ||papaztv*.com/assets/images/banners/
 [$domain=/papaztv\d?\.com$/]##div[class*="-banner"]
 [$domain=/papaztv\d?\.com$/]##.trusted-sites-section
@@ -5769,7 +5865,7 @@ turkkizlar.com##div[class^="vid-promo"]
 ||blogger.googleusercontent.com/img/$domain=/patronmac\d+\.cfd$/
 [$domain=/patronmac\d+\.cfd$/]#$#body { background-image: none !important; }
 [$domain=/patronmac\d+\.cfd$/]#$#.background-link { display: none !important; }
-[$domain=/patronmac\d+\.cfd$/]#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', 'prerollEnabled:true', 'prerollEnabled:false')
+[$domain=/patronmac\d+\.cfd$/]#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', '/prerollEnabled\s*:\s*true/g', 'prerollEnabled: false')
 ||cdn.jsdelivr.net/*.mp4$domain=/patronmac\d+\.cfd$/
 ||blogger.googleusercontent.com/img/$domain=patronmac101.cfd
 ||cdn.jsdelivr.net/*.mp4$domain=patronmac101.cfd
@@ -5925,7 +6021,6 @@ canlikolik.my,canlikolik1.my,canlikolik2.my,canlikolik3.my,canlikolik4.my,canlik
 [$domain=/bahisnowtv\d+\.com/]##a[href="https://tinyurl.com/tvbnow"]
 [$domain=/joybet\d+\.cam/]##a[href="https://tv.joybet.biz"]
 [$domain=/betmoneytv\d+\.live/]##a[href="https://www.clickone.pw/BetmoneyTV"]
-[$domain=/restizle\d+\.com/]##a[href="https://cutt.ly/8etKGUii"]
 [$domain=/betmarinotv\d+\.site/]##a[href="https://t2m.io/guncel"]
 [$domain=/betratv\d+\.online/]##a[href="https://t.ly/betra"]
 [$domain=/sporplushd\d+\.live/]##a[href="https://bit.ly/3ge3zQU"]
@@ -5935,17 +6030,6 @@ canlikolik.my,canlikolik1.my,canlikolik2.my,canlikolik3.my,canlikolik4.my,canlik
 ||bahisnowtv*.com/Uploads/*_Bahisnow_TV_Pageskin*.jpg
 ||joybet114.cam/Uploads/*_pageskinsablon*.png
 ##div[data-isbd-main-container] > section > div.hidden-xs.text-center
-||belestepe*.sbs//wp-content/uploads/*.gif
-||video.twimg.com/amplify_video/*/vid/*.mp4$domain=/^belestepe\d+\.sbs/
-[$domain=/belestepe\d+\.sbs/]##div[data-isbd-main-container] > section > div.hidden-xs.text-center
-[$domain=/belestepe\d+\.sbs/]#%#//scriptlet('set-constant', 'config.advertisement.enabled', 'false')
-[$domain=/izlemac\d+\.sbs/]#%#//scriptlet('set-constant', 'adscfg.enabled', 'false')
-[$domain=/izlemac\d+\.sbs/]##div[data-isbd-main-container] > section > div.hidden-xs.text-center
-||izlemac*.sbs/wp-content/uploads/*.gif
-||mactanmaca*.sbs/wp-content/*.gif|$image
-[$domain=/mactanmaca\d+\.sbs/]#%#//scriptlet('set-constant', 'config.advertisement.enabled', 'false')
-[$domain=/mactanmaca\d+\.sbs/]##div[data-isbd-main-container] > section > div.hidden-xs.text-center
-[$domain=/mactanmaca\d+\.sbs/]#%#//scriptlet('set-cookie', 'reklamgosterimx', 'ok')
 [$domain=/sultansportv\d+\.com/]##body > a[target="_blank"]
 ||justintv*.pro/izinler/*.gif
 ||justintv*.pro/izinler/ultrabetpage.
@@ -5970,7 +6054,7 @@ justintvsh.baby,dmlstechnology.com,justintvde.com,justin-tv.org,inattvgiris.pro,
 justintvsh.baby,dmlstechnology.com,justintvde.com,justin-tv.org,inattvgiris.pro,justintv.*##.wpb_wrapper > a[target="_blank"][style^="color:red; background-color:black; padding:10px; display:inline-block;"]
 tvjustin.*,justintvsh.baby,dmlstechnology.com,justintvde.com,justin-tv.org,inattvgiris.pro,justintv.*##a[target="_blank"][rel*="noopener"] > img
 justintvsh.baby,dmlstechnology.com,justintvde.com,justin-tv.org,inattvgiris.pro,justintv.*#%#//scriptlet('set-constant', 'window.config.adv.enabled', '0')
-justintvizle730.top###video_reklam
+justintvizle735.top###video_reklam
 ||justintvizle*.top/dimg/*.gif
 ||justintvizle*.top/cdn/r/
 ||selcuksports*.top/dimg/*.gif
@@ -5987,17 +6071,17 @@ justintvizle730.top###video_reklam
 !+ NOT_VALIDATE
 ||placehold.co^$domain=/selcuksports\d+\.com/
 [$domain=/selcuksports\d+\.com/]##img[id^="top-ads-"]
+taraftarium24bjk17.com,taraftarium24tvizle.com#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', '/prerollEnabled\s*:\s*true/g', 'prerollEnabled: false')
+taraftarium24bjk17.com,taraftarium24tvizle.com###ad-pageskin
+taraftarium24bjk17.com,taraftarium24tvizle.com##.playerStrip
+taraftarium24tvizle.com##.listAd
 24taraftarium12.xyz##.betcio-banner
 24taraftarium12.xyz##.modal-overlay
 24taraftarium12.xyz##div[id$="BannersContainer"]
 24taraftarium12.xyz##div[style="position:fixed; bottom:0px; left:0; width:100%; text-align:center; z-index:999999;"]
 .gif|$domain=24taraftarium12.xyz
 taraftarium3-24.online##a[href="https://wa.me/447347044673"]
-taraftarium3-24.online,taraftariumhd61.live,taraftarium2spor.top,selcuksports.cv,taraftariumcanli2.site,justintvizle1.my,taraftarium24live.plus,taraftariumtr.cv,netspor54.buzz##.pageskin-container
-taraftarium3-24.online,taraftariumhd61.live,taraftarium2spor.top,selcuksports.cv,taraftariumcanli2.site,justintvizle1.my,taraftarium24live.plus,taraftariumtr.cv,netspor54.buzz##.player-ad-banner
-taraftarium24bjk12.com###ad-pageskin
-taraftarium24bjk12.com##.listAd
-taraftarium24bjk12.com,justintaraftarium.net#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', 'prerollEnabled:true', 'prerollEnabled:false')
+justintaraftarium.net#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', '/prerollEnabled\s*:\s*true/g', 'prerollEnabled: false')
 ||taraftarium24pro*.site/*.gif
 [$domain=/taraftarium24pro\d+\.site$/]##.below-player-banner
 [$domain=/taraftarium24pro\d+\.site$/]##.t24-sq-overlay
@@ -6051,7 +6135,7 @@ hdtaraftartv1000.blogspot.com#$##main-wrapper { margin: 0 auto 0 !important; }
 hdfilmizleamk.net,birasyadizi.com,seyredeger.com#%#//scriptlet('abort-on-property-write', 'onPopUnderLoaded')
 ||royaltv*.com/reklam*.gif
 [$domain=/royaltv\d+\.com/]##a[href^="https://t2ly.io/"]
-royaltv35.com##a[href^="https://t2ly.io/"]
+royaltv38.com##a[href^="https://t2ly.io/"]
 ||diziyou*.com/wp-content/*.gif
 [$domain=/diziyou\d+\.com/]#%#//scriptlet('set-constant', 'player.vroll', 'noopFunc')
 diziyou.one#%#//scriptlet('set-constant', 'player.vroll', 'noopFunc')
@@ -6265,7 +6349,7 @@ sezonlukdizi3.com,sezonlukdizi5.com,sezonlukdizi6.com,sezonlukdizi7.com,sezonluk
 ||hdfilmcehennemi*.org/wp-content/themes/diziplus/js/pld.j
 [$domain=/inattv\d+\.xyz/]##.ads-container
 [$domain=/inattv\d+\.xyz/]##div[style="position:fixed; bottom:0px; left:0; width:100%; text-align:center; z-index:999999;"]
-[$domain=/inattv\d+\.xyz/]#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', '/prerollEnabled:\s*true/', 'prerollEnabled:false')
+[$domain=/inattv\d+\.xyz/]#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', '/prerollEnabled\s*:\s*true/g', 'prerollEnabled: false')
 !+ NOT_VALIDATE
 ||blogger.googleusercontent.com/img/$domain=/inattv\d+\.xyz/
 [$path=/^\/$/]itemci.com#%#//scriptlet('trusted-click-element', 'div[style^="background"][style*="https://cdn.itemci.com/assets/images/site_login_image.jpg"] > button.close', '', '3000')
@@ -6278,7 +6362,7 @@ sezonlukdizi3.com,sezonlukdizi5.com,sezonlukdizi6.com,sezonlukdizi7.com,sezonluk
 [$domain=/trgoals\d+\.xyz$/]##.rnd-qwert
 [$domain=/trgoals\d+\.xyz$/]##body > div[style^="position:fixed;"]
 [$domain=/trgoals\d+\.xyz$/]#$#.player-poster { background-image: none !important; }
-[$domain=/trgoals\d+\.xyz$/]#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', 'prerollEnabled:true', 'prerollEnabled:false')
+[$domain=/trgoals\d+\.xyz$/]#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', '/prerollEnabled\s*:\s*true/g', 'prerollEnabled: false')
 [$domain=/trgoals\d+\.xyz$/]#%#//scriptlet('set-constant', 'config.adv', 'emptyObj')
 [$domain=/trgoals\d+\.xyz$/]#%#//scriptlet("set-constant", "isShow", "true")
 [$domain=/trgoals\d+\.xyz$/]##div[style^="bottom:0;height:50px;left:0;position:fixed;"]
@@ -6290,7 +6374,7 @@ sezonlukdizi3.com,sezonlukdizi5.com,sezonlukdizi6.com,sezonlukdizi7.com,sezonluk
 [$domain=/trgoals\d+\.xyz$/]##.contentReklam
 noingoaithatgiare.com##.contentReklam
 noingoaithatgiare.com##.fixedFooterAd
-macizletaraftarium.online#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', 'prerollEnabled:true', 'prerollEnabled:false')
+macizletaraftarium.online#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', '/prerollEnabled\s*:\s*true/g', 'prerollEnabled: false')
 ||blogger.googleusercontent.com/img/$domain=noingoaithatgiare.com|macizletaraftarium.online
 ||trgoals*.top/lib/uploads/r/$image
 [$domain=/^www\.trgoals\d+\.top$/]#%#//scriptlet('set-constant', 'video_shown', '1')
@@ -6340,6 +6424,8 @@ driverdestek.com##.adsbygoogle
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_turkish
 !+ NOT_PLATFORM(windows, mac, android, cli, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
+@@||imasdk.googleapis.com/js/sdkloader/ima3.js$domain=dramadunyam.com
+@@||imasdk.googleapis.com/pal/sdkloader/pal.js$domain=beyaztv.com.tr
 aspor.com.tr#@#.amp-ad-container
 aspor.com.tr#@#[class^="amp-ad-"]
 makemytrip.com,makemytrip.global#@##top-banner
