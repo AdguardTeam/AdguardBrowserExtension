@@ -106,8 +106,15 @@ export enum TelemetryEventName {
     CloseWarningClick = 'close_warning_click',
     ManageExtensionsClick = 'manage_extensions_click',
     AdguardProductsClick = 'adguard_products_click',
+    UnusedFilterNotificationDisplayed = 'unused_filter_notification_displayed',
+    UnusedFilterReviewClick = 'unused_filter_review_click',
+    UnusedFilterCloseClick = 'unused_filter_close_click',
 }
 
+/**
+ * Screen of each custom event. Events mapped to `undefined` are not tied to
+ * a specific screen and are sent without `ref_name`.
+ */
 export type TelemetryActionToScreenMap = {
     [TelemetryEventName.CheckUpdatesClick]: TelemetryScreenName.MainPage;
     [TelemetryEventName.PauseClick]: TelemetryScreenName.MainPage;
@@ -156,4 +163,7 @@ export type TelemetryActionToScreenMap = {
     [TelemetryEventName.CloseWarningClick]: TelemetryScreenName.RulesLimitsError;
     [TelemetryEventName.ManageExtensionsClick]: TelemetryScreenName.RulesLimitsError;
     [TelemetryEventName.AdguardProductsClick]: TelemetryScreenName.MainPage;
+    [TelemetryEventName.UnusedFilterNotificationDisplayed]: undefined;
+    [TelemetryEventName.UnusedFilterReviewClick]: undefined;
+    [TelemetryEventName.UnusedFilterCloseClick]: undefined;
 };

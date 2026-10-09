@@ -158,8 +158,9 @@ export type TelemetryCustomEventData = {
 
         /**
          * Name of page where custom event occurs, e.g. "main_page".
+         * Not set for events that are not tied to a specific screen.
          */
-        ref_name: TelemetryActionToScreenMap[TelemetryEventName];
+        ref_name?: TelemetryActionToScreenMap[TelemetryEventName];
 
         /**
          * Action name.

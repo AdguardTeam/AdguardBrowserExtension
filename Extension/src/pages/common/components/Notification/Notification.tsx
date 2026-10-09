@@ -69,6 +69,7 @@ export const Notification = (props: NotificationProps) => {
         type,
         buttons,
         closeManually,
+        onClose,
         onRemove,
     } = props;
 
@@ -122,6 +123,15 @@ export const Notification = (props: NotificationProps) => {
     };
 
     /**
+     * Handles close button click: closes the notification and notifies
+     * the owner that the user dismissed it.
+     */
+    const handleCloseButtonClick = () => {
+        handleCloseClick();
+        onClose?.();
+    };
+
+    /**
      * Handles mouse over event which prevents notification from closing.
      */
     const handleMouseOver = () => {
@@ -162,7 +172,7 @@ export const Notification = (props: NotificationProps) => {
             <button
                 type="button"
                 className="notification__btn-close"
-                onClick={handleCloseClick}
+                onClick={handleCloseButtonClick}
                 aria-label={translator.getMessage('close_button_title')}
             >
                 <CloseIcon />

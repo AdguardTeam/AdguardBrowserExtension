@@ -182,6 +182,20 @@ describe('Telemetry', () => {
             });
         });
 
+        test('sends custom event without ref_name when it is not tied to a screen', async () => {
+            await Telemetry.init();
+
+            await Telemetry.sendCustomEvent(
+                undefined,
+                TelemetryEventName.UnusedFilterCloseClick,
+            );
+
+            const [data] = vi.mocked(TelemetryApi.sendEvent).mock.calls[0]!;
+            expect(JSON.stringify(data.event)).toBe(JSON.stringify({
+                name: TelemetryEventName.UnusedFilterCloseClick,
+            }));
+        });
+
         test('does not send custom event when telemetry is disabled', async () => {
             vi.mocked(SettingsApi.getSetting).mockImplementation((key) => {
                 if (key === SettingOption.AllowAnonymizedUsageData) {

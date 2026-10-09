@@ -24,6 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import { AntibannerGroupsId } from '../../../../common/constants';
 import { logger } from '../../../../common/logger';
 import { getFiltersGroupPath } from '../../../../common/nav';
+import { TelemetryEventName } from '../../../../common/telemetry';
 import { translator } from '../../../../common/translators/translator';
 import { AUTO_DISABLE_NOTIFICATION_DEDUPE_KEY } from '../../../common/constants';
 import { NotificationType } from '../../../common/types';
@@ -36,10 +37,13 @@ import { getAutoDisableNotificationMessage } from './message';
  * Shows pending automatic disables once per options-page lifetime and
  * acknowledges them after the notification is added.
  *
+ * Telemetry events of the notification are not tied to a specific screen,
+ * because the notification can appear on any options page section.
+ *
  * @returns Nothing to render.
  */
 export const AutoDisableNotification = () => {
-    const { uiStore } = useContext(rootStore);
+    const { uiStore, telemetryStore } = useContext(rootStore);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -58,12 +62,19 @@ export const AutoDisableNotification = () => {
                     closeManually: true,
                     buttons: [{
                         title: translator.getMessage('options_auto_disabled_filters_review'),
-                        onClick: () => navigate(`/${getFiltersGroupPath(AntibannerGroupsId.LanguageFiltersGroupId)}`),
+                        onClick: () => {
+                            telemetryStore.sendCustomEvent(TelemetryEventName.UnusedFilterReviewClick, undefined);
+                            navigate(`/${getFiltersGroupPath(AntibannerGroupsId.LanguageFiltersGroupId)}`);
+                        },
                     }],
+                    onClose: () => {
+                        telemetryStore.sendCustomEvent(TelemetryEventName.UnusedFilterCloseClick, undefined);
+                    },
                 });
                 if (notificationId === null) {
                     return;
                 }
+                telemetryStore.sendCustomEvent(TelemetryEventName.UnusedFilterNotificationDisplayed, undefined);
                 await messenger.acknowledgeAutoDisableNotifications(filters.map(({ filterId }) => filterId));
             } catch (error) {
                 logger.error('[ext.AutoDisableNotification-mv2]: failed to show notification:', error);
@@ -73,7 +84,7 @@ export const AutoDisableNotification = () => {
         return () => {
             active = false;
         };
-    }, [uiStore, navigate]);
+    }, [uiStore, telemetryStore, navigate]);
 
     return null;
 };

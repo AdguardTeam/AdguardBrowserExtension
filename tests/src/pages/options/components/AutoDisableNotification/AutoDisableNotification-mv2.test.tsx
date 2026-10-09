@@ -51,6 +51,9 @@ import {
 } from '../../../../../../Extension/src/pages/options/stores/RootStore';
 import { type default as UiStoreClass } from '../../../../../../Extension/src/pages/options/stores/UiStore';
 import {
+    type TelemetryStore as TelemetryStoreClass,
+} from '../../../../../../Extension/src/pages/common/telemetry/TelemetryStore';
+import {
     type Notifications as NotificationsComponent,
 } from '../../../../../../Extension/src/pages/options/components/Notifications/Notifications';
 import { type AutoDisabledFilter } from '../../../../../../Extension/src/common/auto-disable-notification';
@@ -62,6 +65,7 @@ import {
     TIME_TO_REMOVE_NOTIFICATION_MS,
 } from '../../../../../../Extension/src/pages/common/constants';
 import { NotificationType } from '../../../../../../Extension/src/pages/common/types';
+import { TelemetryEventName } from '../../../../../../Extension/src/common/telemetry';
 
 vi.mock('../../../../../../Extension/src/pages/options/stores/RootStore', async () => {
     const { createContext } = await import('react');
@@ -89,6 +93,7 @@ vi.doMock('../../../../../../Extension/src/common/translators/i18n', async () =>
 let messenger: typeof MessengerInstance;
 let rootStore: typeof RootStoreContext;
 let UiStore: typeof UiStoreClass;
+let TelemetryStore: typeof TelemetryStoreClass;
 let AutoDisableNotification: typeof AutoDisableNotificationComponent;
 let Notifications: typeof NotificationsComponent;
 let createMemoryRouter: typeof CreateMemoryRouter;
@@ -103,6 +108,9 @@ beforeAll(async () => {
     ));
     ({ rootStore } = await import('../../../../../../Extension/src/pages/options/stores/RootStore'));
     ({ default: UiStore } = await import('../../../../../../Extension/src/pages/options/stores/UiStore'));
+    ({ TelemetryStore } = await import(
+        '../../../../../../Extension/src/pages/common/telemetry/TelemetryStore'
+    ));
     ({ AutoDisableNotification } = await import('auto-disable-notification'));
     ({ Notifications } = await import(
         '../../../../../../Extension/src/pages/options/components/Notifications/Notifications'
@@ -147,18 +155,27 @@ function TestLayout() {
 }
 
 /**
+ * Stores shared by the test page.
+ */
+type TestStores = {
+    uiStore: InstanceType<typeof UiStore>;
+    telemetryStore: InstanceType<typeof TelemetryStore>;
+};
+
+/**
  * Renders the test page.
  *
  * @param props Component props.
  * @param props.uiStore Options UI store.
+ * @param props.telemetryStore Telemetry store.
  *
  * @returns Test page.
  */
-function TestPage({ uiStore }: { uiStore: InstanceType<typeof UiStore> }) {
+function TestPage({ uiStore, telemetryStore }: TestStores) {
     const [router] = React.useState(() => createMemoryRouter([
         { path: '*', element: <TestLayout /> },
     ], { initialEntries: ['/general'] }));
-    const value = React.useMemo(() => ({ uiStore } as RootStore), [uiStore]);
+    const value = React.useMemo(() => ({ uiStore, telemetryStore } as RootStore), [uiStore, telemetryStore]);
     return (
         <rootStore.Provider value={value}>
             <RouterProvider router={router} />
@@ -170,15 +187,17 @@ function TestPage({ uiStore }: { uiStore: InstanceType<typeof UiStore> }) {
  * Creates the test page element.
  *
  * @param uiStore Options UI store.
+ * @param telemetryStore Telemetry store.
  *
  * @returns Page element.
  */
-function page(uiStore: InstanceType<typeof UiStore>) {
-    return <TestPage uiStore={uiStore} />;
+function page(uiStore: InstanceType<typeof UiStore>, telemetryStore: InstanceType<typeof TelemetryStore>) {
+    return <TestPage uiStore={uiStore} telemetryStore={telemetryStore} />;
 }
 
 describe.skipIf(__IS_MV3__)('AutoDisableNotification', () => {
     let uiStore: InstanceType<typeof UiStore>;
+    let telemetryStore: InstanceType<typeof TelemetryStore>;
     let resolve: (filters: AutoDisabledFilter[]) => void;
     let reject: (error: Error) => void;
     const german: AutoDisabledFilter = { filterId: 1, name: 'German' };
@@ -187,6 +206,9 @@ describe.skipIf(__IS_MV3__)('AutoDisableNotification', () => {
     beforeEach(() => {
         vi.spyOn(browser.extension, 'getBackgroundPage').mockReturnValue(null as unknown as Window);
         uiStore = new UiStore({} as RootStore);
+        telemetryStore = new TelemetryStore();
+        telemetryStore.setIsAnonymizedUsageDataAllowed(true);
+        vi.spyOn(messenger, 'sendTelemetryCustomEvent').mockResolvedValue();
         vi.spyOn(messenger, 'getAutoDisableNotifications').mockReturnValue(new Promise((done, fail) => {
             resolve = done;
             reject = fail;
@@ -202,7 +224,7 @@ describe.skipIf(__IS_MV3__)('AutoDisableNotification', () => {
 
     it('shows one filter through messages and acknowledges it', async () => {
         const connect = vi.spyOn(browser.runtime, 'connect');
-        render(page(uiStore));
+        render(page(uiStore, telemetryStore));
 
         await act(async () => resolve([german]));
 
@@ -213,7 +235,7 @@ describe.skipIf(__IS_MV3__)('AutoDisableNotification', () => {
     });
 
     it('shows several filters in one aggregated notification', async () => {
-        render(page(uiStore));
+        render(page(uiStore, telemetryStore));
 
         await act(async () => resolve([german, turkish]));
 
@@ -223,7 +245,7 @@ describe.skipIf(__IS_MV3__)('AutoDisableNotification', () => {
 
     it('opens Language-specific filters on Review and closes the notification', async () => {
         vi.useFakeTimers();
-        render(page(uiStore));
+        render(page(uiStore, telemetryStore));
         await act(async () => resolve([german]));
 
         fireEvent.click(screen.getByRole('link', { name: 'Review' }));
@@ -237,11 +259,11 @@ describe.skipIf(__IS_MV3__)('AutoDisableNotification', () => {
 
     it('keeps one notification across route changes, rerenders and elapsed time', async () => {
         vi.useFakeTimers();
-        const view = render(page(uiStore));
+        const view = render(page(uiStore, telemetryStore));
         await act(async () => resolve([german]));
 
         fireEvent.click(screen.getByRole('button', { name: 'About section' }));
-        await act(async () => view.rerender(page(uiStore)));
+        await act(async () => view.rerender(page(uiStore, telemetryStore)));
         act(() => {
             vi.advanceTimersByTime(60000);
         });
@@ -256,7 +278,7 @@ describe.skipIf(__IS_MV3__)('AutoDisableNotification', () => {
     });
 
     it('does not show or acknowledge a response received after the page closes', async () => {
-        const view = render(page(uiStore));
+        const view = render(page(uiStore, telemetryStore));
 
         view.unmount();
         await act(async () => resolve([german]));
@@ -271,7 +293,7 @@ describe.skipIf(__IS_MV3__)('AutoDisableNotification', () => {
             text: 'Shown earlier',
             dedupeKey: AUTO_DISABLE_NOTIFICATION_DEDUPE_KEY,
         });
-        render(page(uiStore));
+        render(page(uiStore, telemetryStore));
 
         await act(async () => resolve([german]));
 
@@ -280,7 +302,7 @@ describe.skipIf(__IS_MV3__)('AutoDisableNotification', () => {
     });
 
     it('shows nothing when no filters are pending', async () => {
-        render(page(uiStore));
+        render(page(uiStore, telemetryStore));
 
         await act(async () => resolve([]));
 
@@ -289,7 +311,7 @@ describe.skipIf(__IS_MV3__)('AutoDisableNotification', () => {
     });
 
     it('keeps settings usable when the request fails', async () => {
-        render(page(uiStore));
+        render(page(uiStore, telemetryStore));
 
         await act(async () => reject(new Error('request failed')));
 
@@ -301,10 +323,97 @@ describe.skipIf(__IS_MV3__)('AutoDisableNotification', () => {
 
     it('keeps the notification when the acknowledgement fails', async () => {
         vi.mocked(messenger.acknowledgeAutoDisableNotifications).mockRejectedValueOnce(new Error('write failed'));
-        render(page(uiStore));
+        render(page(uiStore, telemetryStore));
 
         await act(async () => resolve([german]));
 
         expect(screen.getByRole('status').textContent).toContain('German was turned off as unused.');
+    });
+
+    it('reports a shown notification without a screen', async () => {
+        render(page(uiStore, telemetryStore));
+
+        await act(async () => resolve([german]));
+
+        expect(messenger.sendTelemetryCustomEvent).toHaveBeenCalledExactlyOnceWith(
+            undefined,
+            TelemetryEventName.UnusedFilterNotificationDisplayed,
+        );
+    });
+
+    it('reports a shown notification about several filters', async () => {
+        render(page(uiStore, telemetryStore));
+
+        await act(async () => resolve([german, turkish]));
+
+        expect(messenger.sendTelemetryCustomEvent).toHaveBeenCalledExactlyOnceWith(
+            undefined,
+            TelemetryEventName.UnusedFilterNotificationDisplayed,
+        );
+    });
+
+    it('does not report a notification that is already shown', async () => {
+        uiStore.addNotification({
+            type: NotificationType.Warning,
+            text: 'Shown earlier',
+            dedupeKey: AUTO_DISABLE_NOTIFICATION_DEDUPE_KEY,
+        });
+        render(page(uiStore, telemetryStore));
+
+        await act(async () => resolve([german]));
+
+        expect(messenger.sendTelemetryCustomEvent).not.toHaveBeenCalled();
+    });
+
+    it('does not report anything when no filters are pending', async () => {
+        render(page(uiStore, telemetryStore));
+
+        await act(async () => resolve([]));
+
+        expect(messenger.sendTelemetryCustomEvent).not.toHaveBeenCalled();
+    });
+
+    it('reports Review without reporting a close', async () => {
+        vi.useFakeTimers();
+        render(page(uiStore, telemetryStore));
+        await act(async () => resolve([german]));
+        vi.mocked(messenger.sendTelemetryCustomEvent).mockClear();
+
+        fireEvent.click(screen.getByRole('link', { name: 'Review' }));
+        act(() => {
+            vi.advanceTimersByTime(TIME_TO_REMOVE_NOTIFICATION_MS);
+        });
+
+        expect(messenger.sendTelemetryCustomEvent).toHaveBeenCalledExactlyOnceWith(
+            undefined,
+            TelemetryEventName.UnusedFilterReviewClick,
+        );
+    });
+
+    it('reports a close with the close button', async () => {
+        vi.useFakeTimers();
+        render(page(uiStore, telemetryStore));
+        await act(async () => resolve([german]));
+        vi.mocked(messenger.sendTelemetryCustomEvent).mockClear();
+
+        fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+        act(() => {
+            vi.advanceTimersByTime(TIME_TO_REMOVE_NOTIFICATION_MS);
+        });
+
+        expect(messenger.sendTelemetryCustomEvent).toHaveBeenCalledExactlyOnceWith(
+            undefined,
+            TelemetryEventName.UnusedFilterCloseClick,
+        );
+    });
+
+    it('does not report anything when anonymized usage data is not allowed', async () => {
+        telemetryStore.setIsAnonymizedUsageDataAllowed(false);
+        render(page(uiStore, telemetryStore));
+        await act(async () => resolve([german]));
+
+        fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+
+        expect(messenger.sendTelemetryCustomEvent).not.toHaveBeenCalled();
     });
 });

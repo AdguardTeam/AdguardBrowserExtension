@@ -113,6 +113,65 @@ describe('Notification display lifetime', () => {
         expect(onRemove).toHaveBeenCalledExactlyOnceWith('one');
     });
 
+    it('reports a close button click to the owner', () => {
+        const onClose = vi.fn();
+
+        render(
+            <Notification
+                id="one"
+                type={NotificationType.Warning}
+                text="Filter disabled"
+                closeManually
+                onRemove={vi.fn()}
+                onClose={onClose}
+            />,
+        );
+        fireEvent.click(screen.getByRole('button', { name: 'Close' }));
+
+        expect(onClose).toHaveBeenCalledOnce();
+    });
+
+    it('does not report a button click as closing', () => {
+        const onClose = vi.fn();
+
+        render(
+            <Notification
+                id="one"
+                type={NotificationType.Warning}
+                text="Filter disabled"
+                closeManually
+                onRemove={vi.fn()}
+                onClose={onClose}
+                buttons={[{ title: 'Review', onClick: vi.fn() }]}
+            />,
+        );
+        fireEvent.click(screen.getByRole('link', { name: 'Review' }));
+        act(() => {
+            vi.advanceTimersByTime(TIME_TO_REMOVE_NOTIFICATION_MS);
+        });
+
+        expect(onClose).not.toHaveBeenCalled();
+    });
+
+    it('does not report an automatic dismissal as closing', () => {
+        const onClose = vi.fn();
+
+        render(
+            <Notification
+                id="one"
+                type={NotificationType.Success}
+                text="Saved"
+                onRemove={vi.fn()}
+                onClose={onClose}
+            />,
+        );
+        act(() => {
+            vi.advanceTimersByTime(NOTIFICATION_TTL_MS + TIME_TO_REMOVE_NOTIFICATION_MS);
+        });
+
+        expect(onClose).not.toHaveBeenCalled();
+    });
+
     it('cancels pending dismissal work on unmount', () => {
         const onRemove = vi.fn();
 
