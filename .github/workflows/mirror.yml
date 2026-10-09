@@ -21,12 +21,13 @@ concurrency:
   cancel-in-progress: false
 
 # `contents: read` — checkout source repo
+# `actions: write` — the shared workflow's job requests it, so the call fails
+# at startup without the grant, even though `disable_workflows_source` is not
+# set (the public mirror is managed with the Octopass token).
 # `id-token: write` — Octopass token for push to public repo
-# No `actions: write`: the shared workflow disables workflows in the public
-# mirror with the Octopass token; the grant is only needed for
-# `disable_workflows_source`, which is not set here.
 permissions:
   contents: read
+  actions: write
   id-token: write
 
 jobs:
