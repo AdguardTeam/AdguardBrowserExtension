@@ -19053,179 +19053,179 @@
 		"120": {
 			"ar": {
 				"name": "AdBlockID",
-				"description": "قائمة تصفية إضافية لمواقع الويب باللغة الإندونيسية."
+				"description": "قائمة تصفية إضافية لمواقع الويب باللغة الإندونيسية والملايوية."
 			},
 			"be": {
 				"name": "AdBlockID",
-				"description": "Дадатковы спіс фільтраў для вэб-сайтаў на інданезійскай мове."
+				"description": "Дадатковы спіс фільтраў для вэб-сайтаў на інданезійскай і малайскай мовах."
 			},
 			"bg": {
 				"name": "AdBlockID",
-				"description": "Допълнителен списък с филтри за уебсайтове на индонезийски език."
+				"description": "Допълнителен списък с филтри за уеб сайтове на индонезийски и малайски."
 			},
 			"ca": {
 				"name": "AdBlockID",
-				"description": "Llista de filtres addicional per a llocs web en indonesi."
+				"description": "Llista de filtres addicional per a llocs web en indonesi i malai."
 			},
 			"cs": {
 				"name": "AdBlockID",
-				"description": "Doplňkový seznam filtrů pro webové stránky v indonéštině."
+				"description": "Doplňkový seznam filtrů pro webové stránky v indonéštině a malajštině."
 			},
 			"da": {
 				"name": "AdBlockID",
-				"description": "Ekstra filterliste til indonesisksprogede websteder."
+				"description": "Ekstra filterliste til indonesisk- og malajisksprogede websteder."
 			},
 			"de": {
 				"name": "AdBlockID",
-				"description": "Zusätzliche Filterliste für Websites auf Indonesisch."
+				"description": "Zusätzliche Filterliste für Websites auf Indonesisch und Malaiisch."
 			},
 			"el": {
 				"name": "AdBlockID",
-				"description": "Πρόσθετη λίστα φίλτρων για ιστότοπους στα ινδονησιακά."
+				"description": "Πρόσθετη λίστα φίλτρων για ιστότοπους στα Ινδονησιακά και τα Μαλαισιακά."
 			},
 			"en": {
 				"name": "AdBlockID",
-				"description": "Additional filter list for websites in Indonesian."
+				"description": "Additional filter list for websites in Indonesian and Malay."
 			},
 			"es": {
 				"name": "AdBlockID",
-				"description": "Lista de filtros adicionales para sitios web en indonesio."
+				"description": "Lista de filtros adicionales para sitios web en indonesio y malayo."
 			},
 			"es_ES": {
 				"name": "AdBlockID",
-				"description": "Lista de filtros adicionales para sitios web en indonesio."
+				"description": "Lista de filtros adicionales para sitios web en indonesio y malayo."
 			},
 			"fa": {
 				"name": "AdBlockID",
-				"description": "لیست فیلتر اضافی برای وب‌سایت‌ها به زبان اندونزیایی."
+				"description": "لیست فیلتر اضافی برای وب‌سایت‌ها به زبان اندونزیایی و مالایی."
 			},
 			"fi": {
 				"name": "AdBlockID",
-				"description": "Lisäsuodatinlista indonesiankielisille verkkosivustoille."
+				"description": "Lisäsuodatinluettelo indonesian- ja malaijinkielisille verkkosivustoille."
 			},
 			"fr": {
 				"name": "AdBlockID",
-				"description": "Liste de filtres supplémentaire pour les sites web en indonésien."
+				"description": "Liste de filtres supplémentaire pour les sites web en indonésien et malais."
 			},
 			"he": {
 				"name": "AdBlockID",
-				"description": "רשימת מסננים נוספת עבור אתרים באינדונזית."
+				"description": "רשימת מסננים נוספת עבור אתרים באינדונזית ובמלזית."
 			},
 			"hi": {
 				"name": "AdBlockID",
-				"description": "इंडोनेशियाई वेबसाइटों के लिए अतिरिक्त फ़िल्टर सूची।"
+				"description": "इंडोनेशियाई और मलय वेबसाइटों के लिए अतिरिक्त फ़िल्टर सूची।"
 			},
 			"hr": {
 				"name": "AdBlockID",
-				"description": "Indonezijski dodatak za EasyList i AdGuard Osnovni filtar."
+				"description": "Dodatan popis filtera za web-mjesta na indonezijskom i malajskom."
 			},
 			"hu": {
 				"name": "AdBlockID",
-				"description": "Indonéz kiegészítő az EasyList-hez és az AdGuard Alap szűrőhöz."
+				"description": "Kiegészítő szűrőlista indonéz és maláj nyelvű weboldalakhoz."
 			},
 			"hy": {
 				"name": "AdBlockID",
-				"description": "Լրացուցիչ զտիչների ցանկ, որը նախատեսված է ինդոնեզերեն լեզվով կայքերի համար։"
+				"description": "Լրացուցիչ զտիչների ցանկ ինդոնեզերեն և մալայերեն կայքերի համար։"
 			},
 			"id": {
 				"name": "AdBlockID",
-				"description": "Suplemen bahasa Indonesia untuk filter EasyList dan AdGuard Base."
+				"description": "Daftar filter tambahan untuk situs web dalam bahasa Indonesia dan Melayu."
 			},
 			"it": {
 				"name": "AdBlockID",
-				"description": "Elenco addizionale dei filtri per i siti web in indonesiano."
+				"description": "Elenco addizionale dei filtri per i siti web in indonesiano e malese."
 			},
 			"ja": {
 				"name": "AdBlockID",
-				"description": "インドネシア語サイト用、補足フィルタリストです。"
+				"description": "インドネシア語およびマレー語サイト用、補足フィルタリストです。"
 			},
 			"ko": {
 				"name": "AdBlockID",
-				"description": "인도네시아어 웹사이트를 위한 추가 필터 목록입니다."
+				"description": "인도네시아어 및 말레이어 웹사이트를 위한 추가 필터 목록입니다."
 			},
 			"lt": {
 				"name": "AdBlockID",
-				"description": "Papildomas filtrų sąrašas tinklalapiams indoneziečių kalba."
+				"description": "Papildomas filtrų sąrašas tinklalapiams indoneziečių ir malajų kalba."
 			},
 			"mk": {
 				"name": "AdBlockID",
-				"description": "Дополнителен список со филтри за веб-локации на индонезиски јазик."
+				"description": "Дополнителна листа на филтри за веб-локации на индонезиски и малајски јазик."
 			},
 			"ms": {
 				"name": "AdBlockID",
-				"description": "Senarai penapis tambahan untuk laman web dalam bahasa Indonesia."
+				"description": "Senarai penapis tambahan untuk laman web dalam bahasa Indonesia dan Melayu."
 			},
 			"nl": {
 				"name": "AdBlockID",
-				"description": "Extra filterlijst voor websites in het Indonesisch."
+				"description": "Aanvullende filterlijst voor websites in het Indonesisch en Maleis."
 			},
 			"no": {
 				"name": "AdBlockID",
-				"description": "Indonesisk og malaysisk supplement til EasyList og AdGuards hovedfilter."
+				"description": "Tilleggsfilterliste for nettsteder på indonesisk og malayisk."
 			},
 			"pl": {
 				"name": "AdBlockID",
-				"description": "Indonezyjski dodatek do filtra EasyList i Podstawowego filtra AdGuard."
+				"description": "Dodatkowa lista filtrów dla stron w języku indonezyjskim i malajskim."
 			},
 			"pt": {
 				"name": "AdBlockID",
-				"description": "Lista de filtros adicionais para sites em Indonésio."
+				"description": "Lista de filtros adicionais para sites em Indonésio e Malaio."
 			},
 			"pt_BR": {
 				"name": "AdBlockID",
-				"description": "Lista de filtros adicionais para sites em Indonésio."
+				"description": "Lista de filtros adicionais para sites em Indonésio e Malaio."
 			},
 			"pt_PT": {
 				"name": "AdBlockID",
-				"description": "Lista de filtros adicionais para sites em Indonésio."
+				"description": "Lista de filtros adicionais para sites em Indonésio e Malaio."
 			},
 			"ro": {
 				"name": "AdBlockID",
-				"description": "Listă suplimentară de filtre pentru site-uri web în indoneziană."
+				"description": "Listă suplimentară de filtre pentru site-uri web în limbile indoneziană și malaieză."
 			},
 			"ru": {
 				"name": "AdBlockID",
-				"description": "Дополнительный фильтр для сайтов на индонезийском языке."
+				"description": "Дополнительный список фильтров для cайтов на индонезийском и малайском языках."
 			},
 			"sk": {
 				"name": "AdBlockID",
-				"description": "Dodatočný zoznam filtrov pre webové stránky v indonézskom jazyku."
+				"description": "Dodatočný zoznam filtrov pre webové stránky v indonézštine a malajčine."
 			},
 			"sl": {
 				"name": "AdBlockID",
-				"description": "Dodaten seznam filtrov za spletne strani v indonezijskem jeziku."
+				"description": "Dodaten seznam filtrov za spletne strani v indonezijskem in malajskem jeziku."
 			},
 			"sr": {
 				"name": "AdBlockID",
-				"description": "Indonežanski dodatak za EasyList i AdGuard osnovni filter."
+				"description": "Dodatna lista filtera za veb lokacije na indonežanskom i malajskom jeziku."
 			},
 			"sv": {
 				"name": "AdBlockID",
-				"description": "Extra filterlista för indonesiska webbplatser."
+				"description": "Extra filterlista för webbplatser på indonesiska och malajiska."
 			},
 			"th": {
 				"name": "AdBlockID",
-				"description": "ภาคผนวกภาษาอินโดนีเซียสำหรับ EasyList และตัวกรองฐาน AdGuard"
+				"description": "รายการกรองเพิ่มเติมสำหรับเว็บไซต์ในภาษาอินโดนีเซียและมลายู"
 			},
 			"tr": {
 				"name": "AdBlockID",
-				"description": "Endonezce siteler için ek filtre listesi."
+				"description": "Endonezce ve Malayca siteler için ek filtre listesi."
 			},
 			"uk": {
 				"name": "AdBlockID",
-				"description": "Додатковий фільтр для вебсайтів індонезійською мовою."
+				"description": "Додатковий фільтр для вебсайтів індонезійською та малайською мовами."
 			},
 			"vi": {
 				"name": "AdBlockID",
-				"description": "Phần bổ trợ tiếng Indonesia cho EasyList và bộ lọc tiếng Anh của AdGuard."
+				"description": "Danh sách lọc bổ sung cho các trang web bằng tiếng Indonesia và tiếng Mã Lai."
 			},
 			"zh": {
 				"name": "AdBlockID",
-				"description": "印尼语网站的补充过滤器列表。"
+				"description": "印度尼西亚语和马来语网站的补充过滤器列表。"
 			},
 			"zh_TW": {
 				"name": "AdBlockID",
-				"description": "用於印尼文網站之額外的過濾清單。"
+				"description": "用於印尼文與馬來文網站之額外的過濾清單。"
 			}
 		},
 		"202": {
@@ -21184,184 +21184,6 @@
 			"zh_TW": {
 				"name": "Persian Blocker",
 				"description": "用於封鎖波斯文網站的廣告和追蹤器之過濾清單。"
-			}
-		},
-		"238": {
-			"ar": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "الفلاتر البولندية الرسمية ضد تنبيهات Adblock."
-			},
-			"be": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Афіцыйныя польскія фільтры ад паведамленняў AdBlock."
-			},
-			"bg": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Официални полски филтри срещу известия Adblock."
-			},
-			"ca": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Filtres oficials polonesos contra les alertes d'Adblock."
-			},
-			"cs": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Oficiální polské filtry proti upozornění Adblock."
-			},
-			"da": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Officielle polske filtre mod Adblock-alarmer."
-			},
-			"de": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Offizielle polnische Filter gegen Adblock-Warnhinweise."
-			},
-			"el": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Επίσημα πολωνικά φίλτρα κατά των ειδοποιήσεων Adblock."
-			},
-			"en": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Official Polish filters against Adblock alerts."
-			},
-			"es": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Filtros polacos oficiales contra alertas de Adblock."
-			},
-			"es_ES": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Filtros polacos oficiales contra alertas de Adblock."
-			},
-			"fa": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "فیلترهای رسمی لهستانی در برابر هشدارهای Adblock."
-			},
-			"fi": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Viralliset puolalaiset suodattimet mainosestoilmoituksia vastaan."
-			},
-			"fr": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Filtres Polonais officiels contre les alertes Adblock."
-			},
-			"he": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "מסננים פולניים רשמיים נגד אזהרות לגבי חסימת פרסומות."
-			},
-			"hi": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "एडब्लॉक अलर्ट के खिलाफ आधिकारिक पोलिश फ़िल्टर।"
-			},
-			"hr": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Službeni poljski filtri protiv AdBlock upozorenja."
-			},
-			"hu": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Hivatalos lengyel szűrők, amelyek a hirdetésblokkolók elleni figyelmeztetéseket tiltják."
-			},
-			"hy": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Պաշտոնական փոլանդական զտիչներ Adblock կատեգորիաների առաջացման դեմ։"
-			},
-			"id": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Filter Polandia resmi terhadap peringatan Adblock."
-			},
-			"it": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Filtri ufficiali polacchi contro gli avvisi di disattivazione del Blocca-annunci."
-			},
-			"ja": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "「広告ブロックを無効にしてください」系警告を対処するポーランドの公式フィルター。"
-			},
-			"ko": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "애드블록 경고에 대한 공식 폴란드어 필터."
-			},
-			"lt": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Oficialūs Lenkijos filtrai prieš Adblock įspėjimus."
-			},
-			"mk": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Официјални полски филтри против предупредувањата за користење Adblock."
-			},
-			"ms": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Penapis rasmi Poland menentang amaran Adblock."
-			},
-			"nl": {
-				"name": "Poolse Anti Adblock Filters",
-				"description": "Officiële Poolse filters tegen Adblock waarschuwingen."
-			},
-			"no": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Offisielle polske filtre mot Adblock-varsler."
-			},
-			"pl": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Oficjalne polskie filtry przeciwko alertom Adblock."
-			},
-			"pt": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Filtros oficiais poloneses de aviso de bloqueio de anúncios."
-			},
-			"pt_BR": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Filtros oficiais poloneses de aviso de bloqueio de anúncios."
-			},
-			"pt_PT": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Filtros oficiais poloneses de aviso de bloqueio de anúncios."
-			},
-			"ro": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Filtre poloneze oficiale contra alertelor Adblock."
-			},
-			"ru": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Официальные польские фильтры от оповещений AdBlock."
-			},
-			"sk": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Oficiálne poľské filtre proti upozorneniam Adblock."
-			},
-			"sl": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Uradni poljski filtri proti opozorilom zaviranja oglasov."
-			},
-			"sr": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Zvanični poljski filteri protiv upozorenja o blokiranju reklama."
-			},
-			"sv": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Officiella polska filter mot annonsblockerings-varningar."
-			},
-			"th": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "ตัวกรองภาษาโปแลนด์อย่างเป็นทางการกับการแจ้งเตือนปิดกั้นโฆษณา"
-			},
-			"tr": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Reklam engelleyici uyarılarına karşı resmi Lehçe filtreleri."
-			},
-			"uk": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Офіційні польські фільтри проти попереджень про Adblock."
-			},
-			"vi": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "Bộ lọc chặn cảnh báo chặn quảng cáo chính thức tiếng Ba Lan."
-			},
-			"zh": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "官方波兰语过滤器，用于反 Adblock 警告。"
-			},
-			"zh_TW": {
-				"name": "Polish Anti Adblock Filters",
-				"description": "防止廣告封鎖警報之官方的波蘭文過濾器。"
 			}
 		},
 		"243": {
