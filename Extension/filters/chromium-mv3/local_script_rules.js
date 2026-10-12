@@ -2796,6 +2796,37 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "22514194ad8441cc56e68716b1f75f69" due to: ' + e);
         }
     },
+    '(()=>{const o={apply:(o,t,e)=>{const n=e[0];return"boolean"==typeof n&&!0===n&&(e[0]=!1),Reflect.apply(o,t,e)}},t={apply:(t,e,n)=>{try{const t=n[0];"function"==typeof t&&t.toString().includes("blockAdblock")&&(n[0]=new Proxy(n[0],o))}catch(o){}return Reflect.apply(t,e,n)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t)})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["4c8eba62b8ceb037ed86696de9d3d264"] === e) return;
+            (() => {
+                const e = {
+                    apply: (e, o, t) => {
+                        const r = t[0];
+                        return "boolean" == typeof r && !0 === r && (t[0] = !1), Reflect.apply(e, o, t);
+                    }
+                }, o = {
+                    apply: (o, t, r) => {
+                        try {
+                            const o = r[0];
+                            "function" == typeof o && o.toString().includes("blockAdblock") && (r[0] = new Proxy(r[0], e));
+                        } catch (e) {}
+                        return Reflect.apply(o, t, r);
+                    }
+                };
+                window.Promise.prototype.then = new Proxy(window.Promise.prototype.then, o);
+            })();
+            Object.defineProperty(Window.prototype.toString, "4c8eba62b8ceb037ed86696de9d3d264", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "4c8eba62b8ceb037ed86696de9d3d264" due to: ' + e);
+        }
+    },
     '(()=>{const e={apply:(e,t,n)=>{const o=Reflect.apply(e,t,n);try{o instanceof HTMLIFrameElement&&""===o.src&&o.contentWindow&&(o.contentWindow.fetch=window.fetch,o.contentWindow.getComputedStyle=window.getComputedStyle)}catch(e){}return o}};Node.prototype.appendChild=new Proxy(Node.prototype.appendChild,e)})();': () => {
         try {
             const e = "done";
