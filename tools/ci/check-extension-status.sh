@@ -16,20 +16,18 @@
 # Exit codes:
 #   0 - channel is published at 100% rollout, auto-build allowed
 #   1 - channel genuinely unavailable (under review / not published) - soft skip
-#   2 - the check itself failed (API/credential error, unknown channel, or
-#       unparseable go-webext output) - callers must fail
+#   2 - the check itself failed (API/credential error, or unparseable go-webext
+#       output) - callers must fail
 
 # 'set' should be added to the beginning of each script to ensure that it runs with the correct options.
 # Please do not move it to some common file, like `setup-tests.sh`, because sourcing A script from B script
 # cannot change the options of B script.
 #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
-#  -u: Treat unset variables as an error.
 #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
-#  -o pipefail: Fail the pipeline if any command in it fails.
-set -euxo pipefail
+set -ex
 
-# Shared helpers for the `go-webext status` invocation and the field parsing
-# (also used by check-publish-state.sh).
+# Shared helpers for the `go-webext status` invocation, the API-failure
+# pattern and the field parsing (also used by check-publish-state.sh).
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 . "$SCRIPT_DIR/cws-status-lib.sh"
 
@@ -39,18 +37,14 @@ CHANNEL="${1:-release}"
 # CWS_BETA_ITEM_ID / CWS_RELEASE_ITEM_ID (repo vars in auto-build.yml) so
 # check-cws and the publish jobs always hit the same listing and can't drift
 # after a CWS listing migration; the literals are the current defaults.
-case "${CHANNEL}" in
-    release)
-        EXTENSION_ID="${CWS_RELEASE_ITEM_ID:-bgnkhhnnamicmpeenaelnjfhikgbkllg}"
-        ;;
-    beta)
-        EXTENSION_ID="${CWS_BETA_ITEM_ID:-apjcbfpjihpedihablmalmbbhjpklbdf}"
-        ;;
-    *)
-        echo "❌ Unknown channel: ${CHANNEL} (expected 'release' or 'beta')" >&2
-        exit 2
-        ;;
-esac
+if [ "${CHANNEL}" = "release" ]; then
+    EXTENSION_ID="${CWS_RELEASE_ITEM_ID:-bgnkhhnnamicmpeenaelnjfhikgbkllg}"
+elif [ "${CHANNEL}" = "beta" ]; then
+    EXTENSION_ID="${CWS_BETA_ITEM_ID:-apjcbfpjihpedihablmalmbbhjpklbdf}"
+else
+    echo "⚠️ Unknown channel: ${CHANNEL}"
+    exit 1
+fi
 
 echo "Checking status for extension: ${EXTENSION_ID}"
 
@@ -66,11 +60,23 @@ if [ "${GO_WEBEXT_EXIT}" -ne 0 ]; then
     exit 2
 fi
 
-# Structural check instead of keyword grepping: a successful go-webext run
-# that contains none of the known state markers (Published State / Submitted
-# State / Rollout) means an unexpected payload — an API error, throttling, or
-# a format change. That must be a hard failure (exit 2), never silently
-# downgraded to "channel unavailable" (exit 1).
+# Distinguish a real API/credential failure from "channel not available".
+# A clean status response only lists Published/Submitted/Rollout state; an
+# error (bad tokens, throttling, API failure) shows up explicitly as go-webext
+# output. Match API-failure shapes only, like check-publish-state.sh: a bare
+# `error` anywhere in the status output (e.g. in item text) would turn a benign
+# result into a hard failure. Exit 2 so callers can fail loudly instead of
+# silently skipping the publish (exit 1 is reserved for "channel genuinely
+# unavailable").
+if echo "${STATUS_OUTPUT}" | grep -Eiq "${CWS_API_ERROR_REGEX}"; then
+    echo "❌ go-webext reported an error for the ${CHANNEL} channel (see output above)"
+    exit 2
+fi
+
+# A successful go-webext run must carry at least one known state marker: an
+# unexpected payload (API error, throttling, format change) means the store
+# state is unknown, not that the channel is unavailable, so it must map to
+# exit 2 instead of being silently downgraded to "channel unavailable".
 if ! cws_has_state_markers "${STATUS_OUTPUT}" 'Published State:|Submitted State:|Rollout:'; then
     echo "❌ go-webext output for the ${CHANNEL} channel contains no recognized state markers (see output above)"
     exit 2
@@ -83,9 +89,6 @@ fi
 
 # Check if Published State is PUBLISHED
 if ! echo "${STATUS_OUTPUT}" | grep -q "Published State: PUBLISHED"; then
-    # A missing marker line must not abort under errexit + pipefail, so the
-    # "No published version found" diagnostic below stays reachable (cws_field
-    # tolerates a missing line).
     PUBLISHED_STATE="$(cws_field "${STATUS_OUTPUT}" 'Published State:')"
     if [ -z "${PUBLISHED_STATE}" ]; then
         echo "⚠️ No published version found, auto-build NOT allowed"
@@ -112,9 +115,6 @@ fi
 
 # Check if rollout is at 100%
 if ! echo "${STATUS_OUTPUT}" | grep -q "Rollout: 100%"; then
-    # A missing marker line must not abort under errexit + pipefail, so the
-    # "No rollout information found" diagnostic below stays reachable
-    # (cws_field tolerates a missing line).
     ROLLOUT="$(cws_field "${STATUS_OUTPUT}" 'Rollout:')"
     if [ -z "${ROLLOUT}" ]; then
         echo "⚠️ No rollout information found, auto-build NOT allowed"

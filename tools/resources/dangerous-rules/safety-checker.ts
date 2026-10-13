@@ -56,15 +56,11 @@ const getRulesText = (rules: RuleSample[]): string => {
 
 /**
  * Default TokenGuard endpoint used when TOKENGUARD_BASE_URL is not set.
- * The auto-build pipeline passes this explicitly (auto-build.yml /
- * .env.example) — the default only serves local development.
  */
 const DEFAULT_TOKENGUARD_BASE_URL = 'https://tokenguard.int.agrd.dev/api/v1/';
 
 /**
  * Default TokenGuard model used when TOKENGUARD_MODEL is not set.
- * The auto-build pipeline passes this explicitly (auto-build.yml /
- * .env.example) — the default only serves local development.
  */
 const DEFAULT_TOKENGUARD_MODEL = 'deepseek-v4-flash';
 
@@ -86,11 +82,11 @@ const SAFE_RULES_COUNT = 20;
  */
 class SafetyChecker {
     /**
-     * TokenGuard (OpenAI-compatible) API client.
+     * TokenGuard API client.
      *
      * @private
      */
-    private tokenguard: OpenAI;
+    private openai: OpenAI;
 
     /**
      * TokenGuard base URL, resolved from TOKENGUARD_BASE_URL or the default value.
@@ -122,7 +118,7 @@ class SafetyChecker {
     constructor(apiKey: string) {
         this.baseURL = process.env.TOKENGUARD_BASE_URL || DEFAULT_TOKENGUARD_BASE_URL;
         this.model = process.env.TOKENGUARD_MODEL || DEFAULT_TOKENGUARD_MODEL;
-        this.tokenguard = new OpenAI({
+        this.openai = new OpenAI({
             apiKey,
             baseURL: this.baseURL,
         });
@@ -137,7 +133,7 @@ class SafetyChecker {
      */
     async checkScriptText(scriptText: string): Promise<AIResponse> {
         const prompt = SafetyChecker.buildPrompt();
-        const chatCompletion = await this.tokenguard.chat.completions.create({
+        const chatCompletion = await this.openai.chat.completions.create({
             model: this.model,
             messages: [
                 {

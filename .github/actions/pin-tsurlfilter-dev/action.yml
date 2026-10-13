@@ -1,0 +1,64 @@
+# Pins the six bridged @adguard/* packages (dnr-converter, css-tokenizer,
+# agtree, tsurlfilter, dnr-rulesets, tswebextension) to the dev builds that
+# the DevEx bridge (ext-tsurlfilter: devex-bridge.yml) publishes to the
+# internal Artifact Keeper npm registry for every tsurlfilter PR, with
+# versions like `<next-patch>-dev.pr<N>.<run_number>`.
+#
+# tsurlfilter PR number source, in priority order:
+#   1. the `pr` input,
+#   2. tsurlfilter-dev-pr.txt in the repo root.
+#
+# When neither is set the action is a no-op (regular CI builds against npm
+# versions). Set required: 'true' to fail instead (the QA workflow does).
+#
+# The pin is workspace-local (pnpm.overrides in package.json + refreshed
+# pnpm-lock.yaml); nothing is committed, so every job re-downloads fresh AK
+# builds. Subsequent Docker build steps in the same job pick the pin up
+# automatically (the Dockerfile COPYs package.json and pnpm-lock.yaml).
+#
+# The pin tool (tools/ci/use-dev-builds.ts, the TypeScript consumer-side half
+# of the DevEx bridge) pins the bridged package set passed as --with-<package>
+# flags (the same flag style the old bamboo linking script used). Dev builds
+# are only ever published to the internal Artifact Keeper npm registry, so the
+# registry URL is hardcoded in the tool and not configurable.
+#
+# The action logic lives in pin.mjs (a plain Node script, so it is readable and
+# CI can `node --check` it — actionlint cannot parse action.yml files).
+
+name: Pin tsurlfilter PR dev builds
+
+description: >-
+  Pins bridged @adguard/* packages to Artifact Keeper dev builds of a
+  tsurlfilter PR (workspace-local pnpm.overrides). No-op unless a PR number
+  is configured via the `pr` input or tsurlfilter-dev-pr.txt.
+
+inputs:
+  pr:
+    description: 'tsurlfilter PR number (default: tsurlfilter-dev-pr.txt in repo root)'
+    required: false
+    default: ''
+  run:
+    description: 'Optional workflow run number to pin (default: highest published run for the PR)'
+    required: false
+    default: ''
+  required:
+    description: 'Set to "true" to fail when no PR is configured (QA workflow); default skips silently'
+    required: false
+    default: 'false'
+
+outputs:
+  pr:
+    description: 'Resolved tsurlfilter PR number (empty when not pinned)'
+    value: ${{ steps.pin.outputs.pr }}
+
+runs:
+  using: composite
+  steps:
+    - name: Pin tsurlfilter dev builds
+      id: pin
+      shell: bash
+      env:
+        PR_INPUT: ${{ inputs.pr }}
+        RUN_INPUT: ${{ inputs.run }}
+        REQUIRED: ${{ inputs.required }}
+      run: node "${GITHUB_ACTION_PATH}/pin.mjs"

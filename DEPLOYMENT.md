@@ -21,11 +21,11 @@ runner. Release/deploy flows:
 
 | Flow | Workflow | Path |
 | --- | --- | --- |
-| PR checks + QA builds | `ci.yml` | pull_request / push to master + `stable/**` |
+| PR checks + QA builds | `ci.yml` | pull_request / push to master |
 | E2E tests | `e2e.yml` | pull_request |
 | Release prep | `prepare-release.yml` | manual, tag input `vM.m.p.inc[-beta]` |
 | Publish (beta + release) | `publish-release.yml` | merged `release-bump/*` PR / manual |
-| Filters auto-update + CWS auto-publish | `auto-build.yml` | schedule 12:00/17:00 UTC + manual |
+| Filters auto-update + CWS/Edge auto-publish | `auto-build.yml` | schedule 12:00/17:00 UTC + manual |
 
 Release flow:
 
@@ -36,34 +36,29 @@ Release flow:
 3. `publish-release.yml` tags, builds, and deploys:
    - beta: static.adtidy.org (chromium CRX/ZIP + Firefox XPI/update.json),
      Chrome Web Store MV3, Firefox AMO beta, Firefox standalone signing,
-     GitHub Release (public repo, prerelease)
-   - release: static.adtidy.org (chromium + Firefox), Chrome Web Store MV2+MV3,
-     Firefox AMO, Edge Add-ons, GitHub Release (public repo)
+     GitHub Release draft (public repo, marked as prerelease)
+   - release: static.adtidy.org (chromium + Firefox), Chrome Web Store MV3,
+     Firefox AMO, Edge Add-ons (draft upload; submission is manual),
+     GitHub Release draft (public repo)
    - Opera zips ship as GitHub Release assets only (store submission is manual).
 4. Slack notifications go to `#adguard-extension-vcs`.
-
-Releasing from a stable branch (e.g. `stable/v5.5`):
-
-- `prepare-release.yml`: set the workflow `Ref` to the stable branch and set
-  the `base` input to the same branch, so the `release-bump/*` PR targets
-  `stable/v5.5` instead of `master`.
-- After merging, `publish-release.yml` runs automatically — its trigger covers
-  merged PRs into `master` and `stable/**` — and deploys using the merged
-  PR's commit. The version check in `prepare-release.ts` compares against the
-  checked-out branch's `package.json`, so a 5.5.x candidate is accepted when
-  the workflow runs on `stable/v5.5`.
+5. After the workflow completes, review the notes and assets in the
+   `AdguardTeam/AdguardBrowserExtension` GitHub Release draft and publish it
+   manually. Both channels stay in draft until this step; attaching signed
+   Firefox beta assets also preserves the draft state.
 
 Deploy gates are GitHub environments (approval rules): `beta-static`,
 `production-static`, `chrome-webstore-beta`, `chrome-webstore-release`,
 `firefox-amo-beta`, `firefox-amo-release`, `edge-addons-release`. The
 auto-publish environments `chrome-webstore-beta-auto` /
-`chrome-webstore-release-auto` have no gates (full automation).
+`chrome-webstore-release-auto` / `edge-addons-auto` have no gates (full
+automation).
 
 Workflow files:
 
 - `prepare-release.yml` — opens the `release-bump/*` PR (package.json + CHANGELOG)
-- `publish-release.yml` — tag, build, deploy to static/stores/GitHub, notify
-- `auto-build.yml` — twice-daily rulesets update + CWS auto-publish
+- `publish-release.yml` — tag, build, deploy to static/stores, prepare GitHub Release draft, notify
+- `auto-build.yml` — twice-daily rulesets update + CWS/Edge auto-publish
 
 ## Required repository configuration
 
@@ -75,7 +70,6 @@ mid-release runtime failures, so configure them before the first run.
 | Variable | Used by |
 | --- | --- |
 | `VAULT_URL` | Vault OIDC in publish / auto-build |
-| `CHROME_WEBSTORE_MV2_ITEM_ID` | CWS MV2 publish |
 | `CHROME_WEBSTORE_MV3_ITEM_ID` | CWS MV3 publish (release) |
 | `CHROME_WEBSTORE_MV3_BETA_ITEM_ID` | CWS MV3 publish (beta) |
 | `EDGE_ADDONS_PRODUCT_ID` | Edge Add-ons publish |
@@ -88,6 +82,7 @@ mid-release runtime failures, so configure them before the first run.
 - `firefox-amo-deployer` — `client-id`, `client-secret` (Firefox signing / AMO)
 - `chrome-webstore-deployer` — `client-id`, `client-secret`, `refresh-token`,
   `publisher-id` (CWS status + auto-publish)
+- `edge-addons-deployer` — `client-id`, `api-key` (Edge Add-ons publish)
 
 **Environments** with approval rules: `beta-static`, `production-static`,
 `chrome-webstore-beta`, `chrome-webstore-release`, `firefox-amo-beta`,
@@ -187,9 +182,7 @@ variants are noted.
 6. **Run `prepare-release.yml`** with the target 4-component tag
    (e.g. `v5.6.0.1-beta` for beta, `v5.6.0.1` for release). It validates the
    format and monotonicity, sets `package.json`, patches `CHANGELOG.md`, and
-   opens the `release-bump/*` PR. For a stable release, additionally set the
-   workflow `Ref` and the `base` input to the stable branch
-   (e.g. `stable/v5.5`).
+   opens the `release-bump/*` PR.
 
 7. **Merge the `release-bump/*` PR.** `publish-release.yml` takes over: it
    tags the merge commit, builds, and deploys to the destinations for the given
@@ -264,6 +257,13 @@ variants are noted.
   sooner, revert the `[skip ci] Rulesets update & increment patch version
   (autobuild-v…)` commit of that full-resources run on `stable/v5.5` — its
   generated changes are recreated by the next full-resources run — and let the
-  next scheduled run publish. The revert may conflict with later `[skip ci]`
-  ruleset commits (other runs keep committing ruleset updates on top of it), so
-  resolve the conflicts by keeping the later generated rulesets.
+  next scheduled run publish.
+- **Edge submission skipped (`InProgressSubmission`).** The product already has
+  a submission in review and the Edge API refuses a publish while one is in
+  flight; the upload only replaces the draft, it does not cancel the review.
+  The auto-build passes `skip-if-in-progress: true`, so the run logs a
+  `::notice::` that the submission is skipped and reports `state=skipped`
+  instead of failing, then retries on a later run. No notification fires: the
+  shared workflow skips its notify job for `slack-channel: ''`, and the
+  auto-build failure notification fires on a failed run only. Check the Edge
+  Partner Center only when the skip repeats for several days.

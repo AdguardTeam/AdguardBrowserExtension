@@ -26,8 +26,10 @@ import {
     FiltersApi,
     FilterUpdateApi,
     network,
+    toasts,
 } from '../api';
 import { engine } from '../engine';
+import { EdgeMv3Migration } from '../utils/edge-migration-mv3';
 
 import { AppCommon } from './app-common';
 
@@ -109,5 +111,20 @@ export class App extends AppCommon {
      */
     protected static override async manifestSpecificInit(): Promise<void> {
         await ExtensionUpdateService.init();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected static override showAppUpdatedPopup(
+        currentAppVersion: string,
+        previousAppVersion: string,
+    ): void {
+        if (EdgeMv3Migration.isMigrationUpdate(previousAppVersion, currentAppVersion)) {
+            toasts.showEdgeMv3MigrationPopup();
+            return;
+        }
+
+        super.showAppUpdatedPopup(currentAppVersion, previousAppVersion);
     }
 }

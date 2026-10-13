@@ -30,9 +30,10 @@ import { convertFilters } from '@adguard/dnr-converter/cli';
 import {
     Browser,
     MV3_BROWSERS,
-    MV3_BROWSER_TO_DNR_BROWSER_MAP,
+    MV3_BROWSER_TO_ASSETS_BROWSER_MAP,
     type Mv3Browser,
 } from './constants';
+import { getDnrRulesetsBrowser } from './resources/mv3';
 
 const exec = promisify(execCallback);
 
@@ -46,7 +47,7 @@ program
     .description('Load filters for the specified browser')
     .action(async (options) => {
         const browser = options.browser as Mv3Browser;
-        const dnrRulesetsBrowser = MV3_BROWSER_TO_DNR_BROWSER_MAP[browser];
+        const dnrRulesetsBrowser = getDnrRulesetsBrowser(MV3_BROWSER_TO_ASSETS_BROWSER_MAP[browser]);
 
         const loader = new AssetsLoader();
         const dest = `./build/dev/${browser}/filters`;
@@ -78,7 +79,7 @@ program
     .description('Watch for changes in filters and reload them')
     .action(async (options) => {
         const browser = options.browser as Mv3Browser;
-        const dnrRulesetsBrowser = MV3_BROWSER_TO_DNR_BROWSER_MAP[browser];
+        const dnrRulesetsBrowser = getDnrRulesetsBrowser(MV3_BROWSER_TO_ASSETS_BROWSER_MAP[browser]);
 
         const extractCommand = `pnpm debug-filters extract --browser ${browser}`;
         const watchCommand = `pnpm exec dnr-rulesets watch \\

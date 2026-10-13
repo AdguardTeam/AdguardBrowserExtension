@@ -1,9 +1,9 @@
-! Checksum: uGXHSEvPfqx/pSPHdALBQw
-! Diff-Path: ../patches/10_optimized/10_optimized-s-1786375725-3600.patch
+! Checksum: LNAF9D6oDK/TF0cHXaJNZg
+! Diff-Path: ../patches/10_optimized/10_optimized-s-1788196581-3600.patch
 ! Title: Filter unblocking search ads and self-promotion (Optimized)
 ! Description: Filter that unblocks search ads in Google, DuckDuckGo, Bing, or Yahoo and self-promotion on websites.
-! Version: 2.0.3.98
-! TimeUpdated: 2026-08-10T15:25:47+00:00
+! Version: 2.0.3.99
+! TimeUpdated: 2026-08-31T17:12:57+00:00
 ! Expires: 10 days (update frequency)
 !#safari_cb_affinity(general)
 bing.com#@#li[class="b_ans"][data-partnertag]:has(> div[class^="b_bza_"])
@@ -91,7 +91,7 @@ search.ask.com#@#.sponsoredTop
 search.ask.com#@##sponsoredTop
 yandex.*##ul[class^="mini-suggest__"] > li[data-type="nav"]
 ya.ru,yandex.*#@?#ul[id] > li:has(> div.Organic > div.Organic-Subtitle > div > span:contains(Промо))
-ya.ru,yandex.*#@#ul[id] > li:has(> div.Organic > div.Organic-ContentWrapper ~ div[class*=" Organic"] > span[class$="-Text"])
+ya.ru,yandex.*#@#ul[id] > li:has(> div.Organic > div[class*=" Organic"] > span:not([role]))
 ya.ru,yandex.*#@#ul[id] > li:has(> div.Organic > div.Organic-Subtitle > div.Organic-Path ~ div[class*=" Organic"] > span[class$="-Text"])
 ya.ru,yandex.*#@#ul[id] > li[class*="Organic"]:has(> div.Root a[href*="_crpd"] > div.Organic-OfferThumbWrap)
 ya.ru,yandex.*#@#.RsyaOrganic

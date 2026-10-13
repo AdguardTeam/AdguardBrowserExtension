@@ -24,7 +24,6 @@ import {
 } from '../../../../../../constants';
 import { BrowserUtils } from '../../../utils/browser-utils';
 import { logger } from '../../../../common/logger';
-import { UserAgent } from '../../../../common/user-agent';
 
 /**
  * NetworkSettings contains a bunch of url's which are using by extension.
@@ -94,32 +93,7 @@ export abstract class NetworkSettingsCommon {
      *
      * @returns The url from which filters can be downloaded.
      */
-    // eslint-disable-next-line class-methods-use-this
-    get filtersUrl(): string {
-        // First of all check whether it is mv3-build
-        // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2985
-
-        if (UserAgent.isOpera) {
-            return `${this.filtersRulesBaseUrl}/opera-mv3`;
-        }
-
-        /**
-         * Search for 'JS_RULES_EXECUTION' to find all parts of script execution
-         * process in the extension.
-         *
-         * 1. We collect and bundle all scripts that can be executed on web pages into
-         *    the extension package into so-called `localScriptRules`.
-         * 2. Rules that control when and where these scripts can be executed are also
-         *    bundled within the extension package inside ruleset files.
-         * 3. The rules look like: `example.org#%#scripttext`. Whenever the rule is
-         *    matched, we check if there's a function for `scripttext` in
-         *    `localScriptRules`, retrieve it from there and execute it.
-         *
-         * Downloading rules from remote server is completely disabled in the
-         * MV3 build by returning `null` here.
-         */
-        return `${this.filtersRulesBaseUrl}/chromium-mv3`;
-    }
+    abstract get filtersUrl(): string;
 
     /**
      * Returns URL for downloading AG filters.

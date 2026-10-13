@@ -19,6 +19,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { updateAllMv3LocalResources, excludeAllMv3UnsafeRules } from './resources/mv3';
 import { findDangerousRules } from './resources/dangerous-rules';
 import { downloadFilters } from './resources/download-filters';
 import { updateLocalScriptRulesForFirefox } from './resources/update-local-script-rules';
@@ -38,6 +39,8 @@ const resources = async () => {
 
     console.log('Updating local script rules...');
     await updateLocalScriptRulesForFirefox();
+    await updateAllMv3LocalResources();
+    await excludeAllMv3UnsafeRules();
     console.log('Local script rules updated');
 
     if (process.env.TOKENGUARD_API_KEY) {

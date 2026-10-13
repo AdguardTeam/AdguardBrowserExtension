@@ -18,6 +18,8 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { UserAgent } from '../../../../common/user-agent';
+
 import { NetworkSettingsCommon } from './settings-common';
 
 /**
@@ -25,20 +27,13 @@ import { NetworkSettingsCommon } from './settings-common';
  */
 export class NetworkSettings extends NetworkSettingsCommon {
     /**
-     * Returns the base URL for filter rules.
-     * In MV3, always returns the default URL since standard filters
-     * are loaded from IndexedDB (bundled with the extension).
-     *
-     * @returns Default filter rules base URL.
-     */
-    protected override async getFilterRulesBaseUrl(): Promise<string> {
-        return this.DEFAULT_FILTER_RULES_BASE_URL;
-    }
-
-    /**
      * @inheritdoc
      */
     override get filtersUrl(): string {
+        if (UserAgent.isEdge) {
+            return `${this.filtersRulesBaseUrl}/edge-mv3`;
+        }
+
         /**
          * Search for 'JS_RULES_EXECUTION' to find all parts of script execution
          * process in the extension.

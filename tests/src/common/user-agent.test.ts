@@ -108,6 +108,30 @@ describe('UserAgent', () => {
         expect(systemInfo).toBe(expectedSystemInfo);
     });
 
+    describe('isSupportedBrowser', () => {
+        test.each([
+            ['Chrome/78.0.0.0 Safari/537.36', false, false],
+            ['Chrome/79.0.0.0 Safari/537.36', true, false],
+            ['Chrome/120.0.0.0 Safari/537.36', true, false],
+            ['Chrome/121.0.0.0 Safari/537.36', true, true],
+            ['Chrome/79.0.0.0 Safari/537.36 Edg/79.0.0.0', false, false],
+            ['Chrome/80.0.0.0 Safari/537.36 Edg/80.0.0.0', true, false],
+            ['Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0', true, false],
+            ['Chrome/121.0.0.0 Safari/537.36 Edg/121.0.0.0', true, true],
+            ['Chrome/79.0.0.0 Safari/537.36 OPR/66.0.0.0', false, false],
+            ['Chrome/80.0.0.0 Safari/537.36 OPR/67.0.0.0', true, false],
+            ['Chrome/120.0.0.0 Safari/537.36 OPR/106.0.0.0', true, false],
+            ['Chrome/121.0.0.0 Safari/537.36 OPR/107.0.0.0', true, true],
+        ] as const)('checks the build-specific minimum for %s', async (browserAgent, supportedMv2, supportedMv3) => {
+            vi.spyOn(window.navigator, 'userAgent', 'get').mockReturnValue(
+                `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) ${browserAgent}`,
+            );
+            const { UserAgent } = await import('../../../Extension/src/common/user-agent');
+
+            expect(UserAgent.isSupportedBrowser).toBe(__IS_MV3__ ? supportedMv3 : supportedMv2);
+        });
+    });
+
     describe('getIsAndroid', () => {
         const FIREFOX_ANDROID_UA = 'Mozilla/5.0 (Android 10; Mobile; rv:121.0) Gecko/121.0 Firefox/121.0';
         const CHROME_DESKTOP_UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36';

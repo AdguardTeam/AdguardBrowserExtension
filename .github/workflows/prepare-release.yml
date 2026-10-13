@@ -4,11 +4,6 @@ name: Prepare release
 # finalizes CHANGELOG.md. After the PR is merged, publish-release.yml takes
 # over. Tags ending with "-beta" (e.g. v5.6.0.1-beta) deploy only to the beta
 # channel; tags without it (e.g. v5.6.0.1) deploy only to the release channel.
-#
-# Run the workflow with `Ref` set to the branch you are releasing FROM (master
-# for the mainline, e.g. stable/v5.5 for a stable release) and set the `base`
-# input to the same branch so the release-bump PR targets it. After merging,
-# publish-release.yml tags and deploys using that merged PR's commit.
 
 on:
   workflow_dispatch:
@@ -19,14 +14,6 @@ on:
           "-beta" suffix = beta channel only (e.g. v5.6.0.1-beta).
           No suffix = release channel only (e.g. v5.6.0.1).
         required: true
-        type: string
-      base:
-        description: >-
-          Base branch for the release-bump PR (default: master). For a stable
-          release, set the workflow Ref and this input to the same stable
-          branch (e.g. stable/v5.5).
-        required: false
-        default: master
         type: string
 
 # `contents: write` — push the release-bump branch
@@ -54,36 +41,31 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
+          # Don't persist the default GITHUB_TOKEN as a git credential: the
+          # protected-push step below authenticates with an Octopass-issued
+          # token, and a persisted http.extraheader would collide with the one
+          # protected-push sets, making git send two Authorization headers
+          # which GitHub rejects with HTTP 400 "Duplicate header:
+          # Authorization". The branch bootstrap below passes the workflow
+          # token explicitly instead.
+          persist-credentials: false
           # prepare-release.ts's getCurrentChannel() probes local tags
           # (refs/tags/vX.Y.Z.W-beta). fetch-tags: true fetches tag refs on top
           # of the shallow clone instead of a full history clone.
           fetch-tags: true
 
-      # Guards against dispatching Ref=stable/v5.5 while leaving `base` at its
-      # master default — the release-bump PR (carrying stable's versions) would
-      # otherwise silently target master.
-      - name: Verify base input matches workflow ref
-        env:
-          BASE: ${{ inputs.base || 'master' }}
-          REF: ${{ github.ref_name }}
-        run: |
-          set -uo pipefail
-          if [ "${BASE}" != "${REF}" ]; then
-            echo "::error::base input (${BASE}) does not match the workflow ref (${REF}); the release-bump PR would target the wrong branch. Set both to the branch you are releasing FROM." >&2
-            exit 1
-          fi
-          echo "✅ base input (${BASE}) matches workflow ref"
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v5
-        with:
-          version: ${{ env.PNPM_VERSION }}
-
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: pnpm
+
+      # The pnpm setup action is not in the organization Actions allowlist, so
+      # the workflow would be rejected at startup with zero jobs (AG-59355).
+      # Install pnpm the same way the Dockerfile does (see AGENTS.md, "CI/CD
+      # (GitHub Actions)"). `actions/setup-node` caching is not used: it resolves
+      # `pnpm store path` before pnpm is installed.
+      - name: Install pnpm
+        run: npm install -g "pnpm@${PNPM_VERSION}"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
@@ -106,34 +88,34 @@ jobs:
           BRANCH="release-bump/${TAG}"
           git checkout -b "${BRANCH}"
 
-      # protected-push (see below) requires the remote branch to exist before
-      # it can push with --force-with-lease, so the first run creates it — and
-      # it carries the bump commit itself, so the seeded ref is never a stale
-      # pre-bump HEAD. Re-runs of the same tag skip the seed and let
-      # protected-push reset the branch against the live remote head.
-      - name: Create remote release-bump branch (first run)
+      # protected-push requires the remote branch to exist before it can push
+      # with --force-with-lease; create it on the first run only. Re-runs of
+      # the same tag are safe: protected-push resets the branch against the
+      # live remote head.
+      - name: Ensure remote release-bump branch exists
         env:
           TAG: ${{ inputs.tag }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           BRANCH="release-bump/${TAG}"
-          if git ls-remote --exit-code --heads origin "refs/heads/${BRANCH}" >/dev/null 2>&1; then
-            echo "Branch ${BRANCH} already exists; skipping seed"
-            exit 0
+          # checkout no longer persists credentials (see the Checkout step),
+          # so pass the workflow token to these git commands explicitly.
+          AUTH_HEADER="AUTHORIZATION: basic $(printf 'x-access-token:%s' "${GITHUB_TOKEN}" | base64 | tr -d '\n')"
+          if ! git -c "http.https://github.com/.extraheader=${AUTH_HEADER}" ls-remote --exit-code --heads origin "refs/heads/${BRANCH}" >/dev/null 2>&1; then
+            git -c "http.https://github.com/.extraheader=${AUTH_HEADER}" push origin "HEAD:${BRANCH}"
           fi
-          git config user.name 'github-actions[bot]'
-          git config user.email 'github-actions[bot]@users.noreply.github.com'
-          git add package.json CHANGELOG.md
-          git commit -m "Release ${TAG}"
-          git push origin "HEAD:${BRANCH}"
 
       # Commits package.json + CHANGELOG.md and pushes the branch with the
       # company-shared protected-push action (Octopass token + force-with-lease
-      # safety) instead of a hand-rolled delete-then-push. On first runs the
-      # seed above already committed and pushed, so this becomes a no-op.
+      # safety) instead of a hand-rolled delete-then-push.
       - name: Push release-bump branch
         uses: AdGuardSoftwareLimited/actions/actions/protected-push@master
         with:
+          # Required: protected-push forwards this to Octopass as the target
+          # repository for the minted token. Without it, Octopass gets an empty
+          # repository and rejects the request ("invalid token scope request").
+          repository: ${{ github.repository }}
           branch: release-bump/${{ inputs.tag }}
           commit-message: Release ${{ inputs.tag }}
           files: package.json CHANGELOG.md
@@ -144,4 +126,4 @@ jobs:
           title: 'Release ${{ inputs.tag }}'
           body: "Release ${{ inputs.tag }}\n\nMerging this PR triggers the publish-release workflow."
           head: 'release-bump/${{ inputs.tag }}'
-          base: ${{ inputs.base || 'master' }}
+          base: master

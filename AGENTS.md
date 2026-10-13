@@ -105,7 +105,7 @@ Edge, and Opera. Licensed under GPL-3.0.
 ### Manifest Versions
 
 - **MV2**: Manifest V2 — Chrome, Firefox, Edge, Opera
-- **MV3**: Manifest V3 — Chrome MV3, Opera MV3
+- **MV3**: Manifest V3 — Chrome MV3, Opera MV3, Edge MV3
 
 Files are suffixed with `-mv2` or `-mv3` to indicate version-specific
 implementations. Common code must **not** import directly from these files
@@ -134,7 +134,7 @@ pnpm release                   # Release build (all browsers)
 pnpm release <browser>         # Release build for one browser
 ```
 
-Supported `<browser>` values: `chrome`, `chrome-mv3`, `edge`, `opera`,
+Supported `<browser>` values: `chrome`, `chrome-mv3`, `edge`, `edge-mv3`, `opera`,
 `opera-mv3`, `firefox-amo`, `firefox-standalone`.
 
 ### Test
@@ -364,7 +364,11 @@ Descriptions must be complete sentences.
 #### CI/CD (GitHub Actions)
 
 - Workflows: `.github/workflows/` (`ci.yml`, `e2e.yml`, `prepare-release.yml`,
-  `publish-release.yml`, `auto-build.yml`)
+  `publish-release.yml`, `auto-build.yml`, `tsurlfilter-dev-builds.yml`)
+- `tsurlfilter-dev-builds.yml` and the composite action
+  `.github/actions/pin-tsurlfilter-dev` run CI against tsurlfilter PR dev
+  builds from Artifact Keeper (see DEVELOPMENT.md, "Testing tsurlfilter PR
+  builds on CI")
 - All build/test jobs run inside Docker via `docker build --target <stage>`
   on the `team-extensions` self-hosted runner
 - `Dockerfile` defines multi-stage builds (lint, test, build, etc.)
@@ -378,14 +382,10 @@ Descriptions must be complete sentences.
 **Script Conventions** (apply to `tools/ci/*.sh`, called by the workflows and
 the Dockerfile):
 
-- Every script starts with `set -euxo pipefail` (hardened convention) and
-  includes the standard comment block explaining `-e`, `-u`, `-x` and
-  `-o pipefail`
-- Scripts that emit `::error::`/workflow-diagnostic output (e.g.
-  `check-exit-code.sh`) merge stderr into stdout with
-  `exec 2>&1` so nothing is lost when the workflow captures the output
-- Scripts are standalone: they must not be sourced for `set` options (sourcing
-  cannot change the caller's options)
+- Every script starts with `set -ex` and includes the standard comment block
+  explaining `-e` and `-x`
+- Use `exec 2>&1` after `set -ex` to fix mixed stdout/stderr logs in CI
+- Scripts should not be sourced for `set` options (they don't propagate)
 
 #### Bundle Size Monitoring
 

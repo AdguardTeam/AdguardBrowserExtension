@@ -35,9 +35,11 @@ mkdir -p "$OUTPUT_DIR"
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 . "$SCRIPT_DIR/parse-gitignore.sh" gitignore-excludes.txt
 
-# Find all files, excluding .git, .gitignore patterns and Extension/filters/
+# Find all files, excluding .git, .gitignore patterns, Extension/filters/ and
+# files un-ignored in .dockerignore only so the guard tests can read them
+# (DEPLOYMENT.md, Dockerfile).
 ALL_FILES=$(find . -type f ! -path './.git/*' "${GITIGNORE_EXCLUDE_ARGS[@]}" ! -path './Extension/filters/*' \
-  | sed 's|^\./||' | sort)
+  ! -name 'DEPLOYMENT.md' ! -name 'Dockerfile' | sed 's|^\./||' | sort)
 
 # Find Extension/filters/firefox files
 FIREFOX_FILTER_FILES=""

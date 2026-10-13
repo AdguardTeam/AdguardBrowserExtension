@@ -42,48 +42,28 @@ const PACKAGE_JSON_PATH = path.join(REPO_ROOT, 'package.json');
 const CHANGELOG_PATH = path.join(REPO_ROOT, 'CHANGELOG.md');
 
 /**
- * Returns the $GITHUB_OUTPUT path, failing loudly when it is not set (the
- * script is only useful inside the publish-release workflow).
- *
- * @returns Path to the $GITHUB_OUTPUT file.
- *
- * @throws Error when `GITHUB_OUTPUT` is not set.
- */
-const getGitHubOutputFile = (): string => {
-    const outputFile = process.env.GITHUB_OUTPUT;
-    if (!outputFile) {
-        throw new Error('GITHUB_OUTPUT is not set; run via the publish-release workflow');
-    }
-    return outputFile;
-};
-
-/**
- * Appends a simple `key=value` line to GitHub Actions' $GITHUB_OUTPUT.
- *
- * @param key Output name.
- * @param value Output value.
- */
-const appendToGitHubOutput = (key: string, value: string): void => {
-    fs.appendFileSync(getGitHubOutputFile(), `${key}=${value}\n`);
-};
-
-/**
  * Appends a multi-line `notes=` block to GitHub Actions' $GITHUB_OUTPUT so the
  * workflow does not need a temporary file round-trip.
  *
  * @param notes Release notes section.
+ *
+ * @throws Error when `GITHUB_OUTPUT` is not set.
  */
 const appendNotesToGitHubOutput = (notes: string): void => {
-    fs.appendFileSync(getGitHubOutputFile(), `notes<<__RESOLVE_EOF__\n${notes}\n__RESOLVE_EOF__\n`);
+    const outputFile = process.env.GITHUB_OUTPUT;
+    if (!outputFile) {
+        throw new Error('GITHUB_OUTPUT is not set; run via the publish-release workflow');
+    }
+    fs.appendFileSync(outputFile, `notes<<__RESOLVE_EOF__\n${notes}\n__RESOLVE_EOF__\n`);
 };
 
 /**
  * Resolves the release version from CHANGELOG.md for the publish-release
- * workflow: writes `tag=`, `channel=` and `notes=` directly to $GITHUB_OUTPUT.
+ * workflow: prints `tag=` and `channel=` lines (redirected to $GITHUB_OUTPUT
+ * by the caller) and appends the changelog section as `notes=`.
  *
- * @throws Error when no full-version heading exists in the changelog, the
- * changelog version does not match the package.json version, or $GITHUB_OUTPUT
- * is not set.
+ * @throws Error when no full-version heading exists in the changelog or the
+ * changelog version does not match the package.json version.
  */
 const main = (): void => {
     const changelog = fs.readFileSync(CHANGELOG_PATH, 'utf-8');
@@ -101,9 +81,10 @@ const main = (): void => {
         );
     }
 
-    appendToGitHubOutput('tag', formatTag(version));
-    appendToGitHubOutput('channel', version.channel);
     appendNotesToGitHubOutput(entry.section);
+
+    console.log(`tag=${formatTag(version)}`);
+    console.log(`channel=${version.channel}`);
 };
 
 try {

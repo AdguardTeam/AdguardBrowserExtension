@@ -19,7 +19,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { execFileSync } from 'node:child_process';
+import { execSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -59,11 +59,10 @@ const CHANGELOG_PATH = path.join(REPO_ROOT, 'CHANGELOG.md');
 const getCurrentChannel = (version: ReturnType<typeof parseExtensionVersion>): ReleaseChannel => {
     const betaTag = formatTag({ ...version, channel: 'beta' });
     try {
-        // execFileSync (no shell) so the tag is never interpolated into a
-        // shell string. Exit 1 means the ref does not exist; anything else is
-        // a real git failure (missing binary, not a repository) and must not
-        // silently fall back to `release`.
-        execFileSync('git', ['show-ref', '--verify', '--quiet', `refs/tags/${betaTag}`], { stdio: 'pipe' });
+        // Exit 1 means the ref does not exist; anything else is a real git
+        // failure (missing binary, not a repository) and must not silently
+        // fall back to `release`.
+        execSync(`git show-ref --verify --quiet "refs/tags/${betaTag}"`, { stdio: 'pipe' });
         return 'beta';
     } catch (error) {
         if ((error as { status?: number }).status === 1) {

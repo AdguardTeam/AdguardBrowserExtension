@@ -23,6 +23,7 @@ import {
     METADATA_RULESET_ID,
     MetadataRuleset,
     getRulesetPath,
+    parseCompactRuleset,
 } from '@adguard/dnr-converter';
 
 /**
@@ -41,10 +42,12 @@ export const readMetadataRuleset = async (folder: string): Promise<MetadataRules
 /**
  * Extracts the original filter content from a ruleset.
  *
- * @param rulesetId The path to the ruleset.
+ * @param rulesetId The ruleset id, e.g. `ruleset_2`.
  * @param folder The folder containing the ruleset.
  *
  * @returns A Promise that resolves to the original filter content.
+ *
+ * @throws {InvalidMetadataChunksError} If the file is not a chunked ruleset.
  */
 export const extractPreprocessedFilterContent = async (
     rulesetId: string,
@@ -52,7 +55,6 @@ export const extractPreprocessedFilterContent = async (
 ): Promise<string> => {
     const rulesetPath = getRulesetPath(rulesetId, folder);
     const rawRulesetContent = await readFile(rulesetPath, 'utf-8');
-    const rulesetContent = JSON.parse(rawRulesetContent);
 
-    return rulesetContent[0].metadata.filterContent;
+    return parseCompactRuleset(rulesetId, JSON.parse(rawRulesetContent)).filterContent;
 };

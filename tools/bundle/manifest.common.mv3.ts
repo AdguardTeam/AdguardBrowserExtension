@@ -22,10 +22,18 @@ import {
     DEVTOOLS_OUTPUT,
     MIN_SUPPORTED_VERSION,
     POPUP_OUTPUT,
-} from '../../../constants';
-import { OPTIONS_PAGE } from '../../../Extension/src/common/constants';
+} from '../../constants';
+import { OPTIONS_PAGE } from '../../Extension/src/common/constants';
+import { Browser, type Mv3Browser } from '../constants';
 
-export const chromeMv3Manifest = {
+/**
+ * Creates the MV3 manifest fields shared by Chrome, Edge and Opera.
+ *
+ * @param browser Target MV3 browser.
+ *
+ * @returns Manifest fields with the browser's minimum supported version.
+ */
+export const createMv3Manifest = (browser: Mv3Browser) => ({
     'manifest_version': 3,
     'action': {
         'default_icon': {
@@ -41,10 +49,25 @@ export const chromeMv3Manifest = {
     'host_permissions': [
         '<all_urls>',
     ],
-    'minimum_chrome_version': String(MIN_SUPPORTED_VERSION.CHROMIUM_MV3),
+    ...(browser === Browser.OperaMv3
+        ? { minimum_opera_version: String(MIN_SUPPORTED_VERSION.OPERA_MV3) }
+        : {
+            minimum_chrome_version: String(browser === Browser.EdgeMv3
+                ? MIN_SUPPORTED_VERSION.EDGE_CHROMIUM_MV3
+                : MIN_SUPPORTED_VERSION.CHROMIUM_MV3),
+        }),
     'web_accessible_resources': [
         {
             'resources': ['web-accessible-resources/*'],
+            'matches': [
+                'http://*/*',
+                'https://*/*',
+            ],
+            'use_dynamic_url': true,
+        },
+        {
+            // Font of the in-page popups: they are rendered in iframes on web pages.
+            'resources': ['assets/fonts/Roboto-Flex-Regular.woff2'],
             'matches': [
                 'http://*/*',
                 'https://*/*',
@@ -70,4 +93,4 @@ export const chromeMv3Manifest = {
     'optional_permissions': [
         'privacy',
     ],
-};
+});

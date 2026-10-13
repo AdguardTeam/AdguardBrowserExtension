@@ -1,6 +1,6 @@
 {
     "name": "browser-extension",
-    "version": "5.5.2+78.build.20261012131434",
+    "version": "5.5.3+5.build.20261013011339",
     "description": "AdGuard Extension",
     "type": "module",
     "scripts": {
@@ -23,7 +23,7 @@
         "resources:mv3": "tsx tools/resources/update-dnr-rulesets.ts && tsx tools/resources-mv3.ts",
         "resources:mv3:extract-unsafe-rules": "pnpm exec dnr-rulesets exclude-unsafe-rules ./Extension/filters/chromium-mv3/declarative",
         "resources:blocking-pages": "tsx tools/resources/download-blocking-pages.ts",
-        "lint:code": "eslint --cache --max-warnings=0 --ext .jsx,.js,.cjs,.mjs,.tsx,.ts .",
+        "lint:code": "eslint --cache --cache-location .cache/eslint/.eslintcache --cache-strategy content --max-warnings=0 --ext .jsx,.js,.cjs,.mjs,.tsx,.ts .",
         "lint": "pnpm lint:code && pnpm lint:types",
         "increment": "tsx tools/increment.ts",
         "prepare": "husky install",
@@ -48,7 +48,7 @@
         "pnpm": ">=10.33.4 <11"
     },
     "devDependencies": {
-        "@adguard/dnr-rulesets": "~5.0.20261012131434",
+        "@adguard/dnr-rulesets": "~6.0.20261013011339",
         "@adguard/eslint-plugin-logger-context": "1.0.1",
         "@adguard/re2-wasm": "1.2.0",
         "@csstools/postcss-global-data": "4.0.0",
@@ -142,7 +142,7 @@
     },
     "dependencies": {
         "@adguard/agtree": "4.2.1",
-        "@adguard/dnr-converter": "1.1.2",
+        "@adguard/dnr-converter": "2.0.0",
         "@adguard/filters-downloader": "2.4.4",
         "@adguard/logger": "2.0.0",
         "@adguard/rules-editor": "2.0.0",
@@ -150,7 +150,7 @@
         "@adguard/text-encoding": "0.8.3",
         "@adguard/translate": "2.0.1",
         "@adguard/tsurlfilter": "6.0.3",
-        "@adguard/tswebextension": "5.0.3",
+        "@adguard/tswebextension": "6.0.0",
         "@codemirror/commands": "6.10.3",
         "@codemirror/language": "6.12.3",
         "@codemirror/search": "6.7.0",

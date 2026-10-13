@@ -295,3 +295,55 @@ body::-webkit-scrollbar {
         background-color: #4d995F;
     }
 }
+
+/* In-page popup about the Edge MV2 to MV3 migration, AG-59537 */
+.adguard-update-popup--edge-mv3-migration {
+    box-sizing: border-box;
+    padding: 32px 24px;
+    font-weight: 400;
+    color: #3d3d3d;
+    /* macOS renders text bolder by default than the design does */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.adguard-update-popup--edge-mv3-migration .adguard-update-popup__close {
+    top: 16px;
+    right: 16px;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath stroke='%237f7f7f' d='M6.42857 6.42857L17.6043 17.6043' stroke-width='1.5' stroke-linecap='round'/%3E%3Cpath stroke='%237f7f7f' d='M6.42871 17.5714L17.6045 6.39563' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+}
+
+.adguard-update-popup--edge-mv3-migration .adguard-update-popup__logo {
+    margin-bottom: 24px;
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4NyIgaGVpZ2h0PSI4NyIgdmlld0JveD0iMCAwIDg3IDg3IiBmaWxsPSJub25lIj48ZGVmcz48bGluZWFyR3JhZGllbnQgaWQ9ImEiIHgxPSI0Ny44Mjg1IiB5MT0iMCIgeDI9IjQ3LjgyODUiIHkyPSI4NS42NTQzIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agc3RvcC1jb2xvcj0iIzY3QjI3OSIvPjxzdG9wIG9mZnNldD0iMSIgc3RvcC1jb2xvcj0iIzU4OTk2OCIvPjwvbGluZWFyR3JhZGllbnQ+PGxpbmVhckdyYWRpZW50IGlkPSJzIiB4MT0iMTIuMDAwMSIgeTE9IjIiIHgyPSIxMi4wMDAxIiB5Mj0iMjIiIGdyYWRpZW50VW5pdHM9InVzZXJTcGFjZU9uVXNlIj48c3RvcCBzdG9wLWNvbG9yPSIjNjdCMjc5Ii8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjNTg5OTY4Ii8+PC9saW5lYXJHcmFkaWVudD48L2RlZnM+PHBhdGggdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMzguOTcyIDQwLjk2OCkgcm90YXRlKDI5LjcxKSBza2V3WCgtMC41NykgdHJhbnNsYXRlKC00Ny44Mjg1IC00Mi44MjcyKSIgZD0iTTUyLjgyNzkgOS40NzgzNGUtMDZDNzYuNDk1OCAtMC4wMTU1NTY1IDk1LjY3MjggMTkuMTQzNSA5NS42NTcgNDIuNzk3OUM5NS42NDEgNjYuNDUyNSA3Ni40Mzc1IDg1LjYzODUgNTIuNzY5MyA4NS42NTQzQzM5LjM1MjUgODUuNjYzMSAyNy4zNzgzIDc5LjUwNjMgMTkuNTMgNjkuODcyMUMxOC42NTg5IDY4LjgwMjMgMTguODIwNiA2Ny4yMjgzIDE5Ljg5MTQgNjYuMzU1NUMyMC45NjIzIDY1LjQ4MjcgMjIuNTM3NSA2NS42NDIyIDIzLjQwODkgNjYuNzExOUMzMC4zNDg3IDc1LjIzMDcgNDAuOTIyMiA4MC42NjIyIDUyLjc3MzIgODAuNjU0M0M3My42ODM1IDgwLjY0MDMgOTAuNjQyNyA2My42OTExIDkwLjY1NyA0Mi44MDE4QzkwLjY3MTEgMjEuOTEyMiA3My43MzQ0IDQuOTg2MDggNTIuODI0IDUuMDAwMDFDMzMuMzM1OSA1LjAxMzA4IDE3LjI4MiAxOS43MzU1IDE1LjE3NjUgMzguNjQ4NEwyMS4yMDE5IDMyLjM0MDhDMjIuMTU1OSAzMS4zNDE3IDIzLjczOCAzMS4zMDQyIDI0LjczNjEgMzIuMjU2OEMyNS43MzM5IDMzLjIwOTYgMjUuNzcgMzQuNzkxOCAyNC44MTYyIDM1Ljc5MUwxNC45OTEgNDYuMDgyQzEzLjU3ODYgNDcuNTYxMyAxMS4yMDU2IDQ3LjUyMiA5Ljg0NjQzIDQ1Ljk5NzFMMC42MzI1NjUgMzUuNjU4MkMtMC4yODUyODggMzQuNjI4MSAtMC4xOTM0ODYgMzMuMDQ4MiAwLjgzNzY0NCAzMi4xMjg5QzEuODY4OSAzMS4yMDk4IDMuNDQ4OTIgMzEuMzAwMSA0LjM2Njk0IDMyLjMzMDFMMTAuMTM0NSAzOC44MDA4QzEyLjE5MzMgMTcuMDQ2OCAzMC41Mjc5IDAuMDE0ODcyNyA1Mi44Mjc5IDkuNDc4MzRlLTA2WiIgZmlsbD0idXJsKCNhKSIvPjxnIHRyYW5zZm9ybT0idHJhbnNsYXRlKDE4LjUgMjApIHNjYWxlKDIuMDgzMzMpIj48cGF0aCBmaWxsLXJ1bGU9ImV2ZW5vZGQiIGNsaXAtcnVsZT0iZXZlbm9kZCIgZD0iTTEyLjAwMDEgMkM4LjM1MyAyIDQuOTY0OCAzLjA3NzU2IDIuMTUzOTEgNC45MjMwOEMxLjk2MTA5IDguMjgwMTQgMi43MjE5OSAxMS43NTMyIDQuNTQ1NTMgMTQuOTExNkM2LjM2NTMgMTguMDYzNiA4Ljk4NTUxIDIwLjQ1NTcgMTEuOTgxNSAyMS45Njc3TDEyLjAwMDEgMjJMMTIuMDE4NyAyMS45Njc4QzE1LjAxNDYgMjAuNDU1NyAxNy42MzQ4IDE4LjA2MzYgMTkuNDU0NiAxNC45MTE2QzIxLjI3ODEgMTEuNzUzMiAyMi4wMzkgOC4yODAxNSAyMS44NDYyIDQuOTIzMDhDMTkuMDM1MyAzLjA3NzU2IDE1LjY0NzEgMiAxMi4wMDAxIDJaIiBmaWxsPSJ1cmwoI3MpIi8+PHBhdGggZmlsbC1ydWxlPSJldmVub2RkIiBjbGlwLXJ1bGU9ImV2ZW5vZGQiIGQ9Ik0xNS4xMDc0IDkuMjUzNDlDMTUuNDA5NCA5LjU5MDY4IDE1LjQwODUgMTAuMTM2NCAxNS4xMDU1IDEwLjQ3MjVMMTIuNzkyNiAxMy4wMzc1QzEyLjAwMDIgMTQgMTEuNTAwMiAxNCAxMC42NzYyIDEzLjAzNzVMOS4yMjc4MSAxMS40MzEzQzguOTI0NzkgMTEuMDk1MiA4LjkyMzk2IDEwLjU0OTUgOS4yMjU5NyAxMC4yMTIzQzkuNTI3OTcgOS44NzUxIDEwLjAxODUgOS44NzQxOCAxMC4zMjE1IDEwLjIxMDJMMTEuNzM0NCAxMS43NzcxTDE0LjAxMTkgOS4yNTE0NEMxNC4zMTQ5IDguOTE1MzkgMTQuODA1NCA4LjkxNjMxIDE1LjEwNzQgOS4yNTM0OVoiIGZpbGw9IndoaXRlIi8+PC9nPjwvc3ZnPg==);
+}
+
+.adguard-update-popup--edge-mv3-migration .adguard-update-popup__title {
+    /* the design sets the title in the system font (SF Pro) and the rest in Roboto Flex */
+    font-family: system-ui, sans-serif;
+    font-size: 18px;
+    line-height: 1.2;
+    margin-bottom: 16px;
+}
+
+.adguard-update-popup__migration-desc {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 270px;
+    font-size: 14px;
+    line-height: 1.3;
+    color: #5b5b5b;
+}
+
+.adguard-update-popup__migration-desc p {
+    margin: 0;
+}
+
+.adguard-update-popup__migration-desc b {
+    font-weight: 600;
+}
+
+.adguard-update-popup__migration-desc a {
+    color: inherit;
+}

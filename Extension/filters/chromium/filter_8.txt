@@ -1,9 +1,9 @@
-! Checksum: UEv7ie0zaF1MDrXV66tmSQ
-! Diff-Path: ../patches/8/8-s-1787047989-3600.patch
+! Checksum: Usvcd5+LQ7XC7PaHBXiCTg
+! Diff-Path: ../patches/8/8-s-1791371337-3600.patch
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.9.41
-! TimeUpdated: 2026-08-18T10:10:33+00:00
+! Version: 2.0.9.47
+! TimeUpdated: 2026-10-07T11:05:38+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1487,6 +1487,7 @@ krefel.be#?#div[class^="Flex-styled__StyledFlex-"]:has(h3:contains(Gesponsorde p
 bol.com##li.js_item_root:has(.dsa__list-padding)
 farmaline.be##li[data-qa-id="result-list-entry"]:has(a[href^="https://api.sae.systems/"])
 marktplaats.nl#?#.hz-Listing--list-item:contains(Topadvertentie)
+mediamarkt.*##aside[aria-label="Gesponsorde inhoud"]
 feijenoordnieuws.nl##.cv-table-left > a:not([target="_blank"]):not([rel="nofollow"]):not(a[href^="https://feijenoordnieuws.nl/"])
 autobahn.eu##.d-none.d-md-block.mb-3:has(a[target="_blank"][rel="noopener"])
 weer.nl##.shadow-lvl-2:has(a[href^="https://www.voordeeluitjes.nl/"])
@@ -1777,6 +1778,8 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ! Good: example.org###rek; ||example.com/ads/
 ! Bad: example.org#@##banner_ad (for instance, should be in allowlist.txt or in antiadblock.txt)
 !
+autoweek.nl##.teaser-group__items > a.teaser-tile ~ div
+autoweek.nl##.powered-by
 weeronline.nl#$#.adWrapper { height: 0px !important; }
 weeronline.nl##.fullScreenAdWrapper
 iphoned.nl##div[data-name="dynamic-content"]:has(> div[data-id^="gpt-ad-"])
@@ -1806,10 +1809,9 @@ trouw.nl###r2
 trouw.nl###b1
 trouw.nl###h0
 trouw.nl###h1
-iex.nl##.banner
 iex.nl##.native_positie
-volkskrant.nl#?#.h1-container:has(> div[class]:matches-css(before, content: /Advertentie/))
-volkskrant.nl#?#div[id][class][tabindex]:matches-css(before, content: /Advertentie/)
+parool.nl,volkskrant.nl#?#.h1-container:has(> div[class]:matches-css(before, content: /Advertentie/))
+parool.nl,volkskrant.nl#?#div[id][class][tabindex]:matches-css(before, content: /Advertentie/)
 f1maximaal.nl###article-blocks > .raw-html-component
 ||resources.planetnine.com/scripts/f1maximaal.nl.js
 fok.nl###r89-mobile-rectangle-low-0-wrapper
@@ -1862,7 +1864,7 @@ geenstijl.nl#%#//scriptlet('prevent-element-src-loading', 'script', 'instream/ht
 geenstijl.nl#%#//scriptlet('adjust-setTimeout', 'function () { [native code] }', '6000', '0.001')
 autoblog.nl##div[class^="ndm-min-"]
 autoblog.nl##.widget_ab_sidebar
-autoweek.nl##.advertise
+autoweek.nl,autoweek.nl##.advertise
 iphoned.nl##.no-content-styles
 puna.nl##.raw-html-component:has(> div[class^="r89-"])
 puna.nl##.raw-html-component:has(> div[id^="div-gpt-ad"])
@@ -1878,6 +1880,7 @@ grazia.nl##.sticky-incontent:has(> div[data-aa-adunit])
 grazia.nl##div[data-aa-adunit]
 demorgen.be##.position-after-main-home
 standaard.be##div[id^="ad_"]
+crypto-insiders.nl##.flex-col.items-center:has(> span:first-child + div[id^="div-gpt-"]:last-child)
 crypto-insiders.nl##.article-content > p > a.btn--highlighted.external-link
 crypto-insiders.nl##.affiliate-dropdown:not(#style_important)
 crypto-insiders.nl##.exp-banner-global
@@ -1921,6 +1924,7 @@ nieuwsblad.be##.mh-ad-label
 nieuwsblad.be##.cba_container_grid
 dumpert.nl##div[class^="css-"]:has(> div[class^="css-"]:only-child > .ad)
 402online.com##.bannerblock
+ed.nl##.tile-grid > li.tile:has(> .ankeiler--advertisement)
 7sur7.be,ad.nl,bd.nl,bndestem.nl,destentor.nl,ed.nl,gelderlander.nl,hln.be,pzc.nl,tubantia.nl##.tile:has(> article.ankeiler--advertisement)
 adultwebmaster.nl##.main-promo-bn-responsive
 afkortingen.nu###banner_rectangle
@@ -2076,9 +2080,9 @@ iphoned.nl###featured-header
 tvgids.nl###ligatus_under_content
 afkortingen.nu###link_unit
 fok.nl###mainContent > div.ad
-gezondheidsplein.nl,gelderlander.nl##.ad
+autoblog.nl,gezondheidsplein.nl,gelderlander.nl##.ad
 iphoned.nl##.advert-sidebar
-buienalarm.be,weerslag.nl,buienalarm.nl,nrc.nl,afkortingen.nu##.banner
+iex.nl,buienalarm.be,weerslag.nl,buienalarm.nl,nrc.nl,afkortingen.nu##.banner
 marktplaats.nl##.banner-vipbottom
 nu.nl##.block.advertoriallist
 televizier.nl,tvgids.nl##.interstitial_banner

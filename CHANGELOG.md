@@ -5,7 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased 5.5.2
+## [Unreleased]
+
+## [5.5.3.5] - 2026-10-13
+
+## [5.5.3.4] - 2026-10-08
+
+## [5.5.3.3] - 2026-09-30
+
+### Changed
+
+- Updated [@adguard/dnr-converter] to v2.0.0.
+- Updated [@adguard/dnr-rulesets] to v6.0.0.
+- Updated [@adguard/tswebextension] to v6.0.0.
+
+[5.5.3.3]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.5.3.0...v5.5.3.3
+
+## [5.5.3.0-beta] - 2026-09-23
+
+[5.5.3.0-beta]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.5.2.3...v5.5.3.0-beta
+
+## [5.5.2.3] - 2026-08-26
 
 ### Changed
 
@@ -29,6 +49,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3602]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3602
 [#3600]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3600
 [AdguardFilters#238305]: https://github.com/AdguardTeam/AdguardFilters/issues/238305
+
+[5.5.2.3]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.5.1.0...v5.5.2.3
 
 ## [5.5.1.0] - 2026-08-21
 

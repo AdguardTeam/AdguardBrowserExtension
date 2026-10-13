@@ -1,12 +1,11 @@
----
-
 name: 🧪 Bug report — for MV3 extension
-description: If you found something wrong in the MV3 extension.
+description: If you found something wrong in the MV3 extension
 labels: [Bug, MV3]
 body:
   - type: markdown
     attributes:
       value: Thanks for taking the time to fill out this bug report!
+
   - type: checkboxes
     attributes:
       label: Please answer the following questions for yourself before submitting an issue
@@ -17,30 +16,34 @@ body:
           required: true
         - label: I checked to make sure that this issue has not already been filed
           required: true
+
   - type: input
     id: app_version
     attributes:
-      label: AdGuard Extension version
-      description: What version of our extension are you running?
-      placeholder: For example, 5.0.1 beta
+      label: AdGuard Version
+      description: What version of AdGuard Browser Extension are you running?
+      placeholder: For example, 5.5.2.3
     validations:
       required: true
+
   - type: input
     id: br_version
     attributes:
-      label: Browser version
-      description: What browser do you use?
-      placeholder: For example, Chrome 125
+      label: Browser Version
+      description: What browser do you use, and what version are you running?
+      placeholder: For example, Chrome 153
     validations:
       required: true
+
   - type: input
     id: os_version
     attributes:
-      label: OS version
-      description: What operating system do you use?
-      placeholder: For example, macOS 14.5
+      label: OS Version
+      description: What operating system do you use, and what version are you running?
+      placeholder: For example, macOS Golden Gate 27.0.1 or Windows 11 26H2 (Build 26300)
     validations:
       required: true
+
   - type: markdown
     attributes:
       value: "### What filters do you have enabled?"
@@ -50,7 +53,7 @@ body:
       value: |
         Select enabled filters if they are related to the application bug.
         If the issue is related to the filtering (missed ads, cookie, etc.)
-        use the [Web Reporting Tool](https://kb.adguard.com/technical-support/reporting-tool) please.
+        please use the [Web Reporting Tool](https://link.adtidy.org/forward.html?action=report&app=home&from=github).
 
   - type: dropdown
     id: filters_adblock
@@ -70,6 +73,7 @@ body:
       multiple: true
       options:
         - AdGuard Tracking Protection filter
+        - AdGuard Mail Tracking Protection filter
         - AdGuard URL Tracking filter
     validations:
       required: false
@@ -95,6 +99,7 @@ body:
         - AdGuard Mobile App Banners filter
         - AdGuard Other Annoyances filter
         - AdGuard Widgets filter
+        - Stevo's AI Blocklist
     validations:
       required: false
 
@@ -108,6 +113,7 @@ body:
         - Phishing URL Blocklist
         - Scam Blocklist by DurableNapkin
         - uBlock Origin – Badware risks
+        - Dandelion Sprout's Anti-Malware List
     validations:
       required: false
 
@@ -153,14 +159,17 @@ body:
         - Hungarian filter
         - IndianList
         - Latvian List
-        - List-KR
+        - filterslist-KO Classic filter list
         - Liste AR
         - Macedonian adBlock Filters
         - Official Polish filters for AdBlock, uBlock Origin & AdGuard
         - Polish Anti Adblock Filters
+        - Polish GDPR-Cookies Filters
         - Persian Blocker
+        - ROList
     validations:
       required: false
+
   - type: dropdown
     id: stealth
     attributes:
@@ -174,7 +183,7 @@ body:
         - Ask websites not to track you
         - Hide Referrer from third parties
         - Remove X-Client-Data header
-        - Disable WebRTC
+        - Prevent IP address leaks through WebRTC
 
   - type: textarea
     id: what-happened
@@ -184,9 +193,9 @@ body:
       placeholder:
       value: |
         Steps to reproduce:
-        1.
-        2.
-        3.
+        1. 
+        2. 
+        3. 
     validations:
       required: true
 
@@ -211,15 +220,16 @@ body:
     attributes:
       label: Screenshots
       description: |
-        If applicable add screenshots explaining your problem.
+        If applicable, add screenshots explaining your problem.
         You can drag and drop images or paste them from clipboard.
         Use `<details> </details>` tag to hide screenshots under the spoiler.
-      placeholder: If applicable add screenshots explaining your problem.
+      placeholder: If applicable, add screenshots explaining your problem.
       value: |
           <details><summary>Screenshot 1</summary>
-
-          <!-- paste your screenshot here -->
-
+          <!-- Paste screenshot below. -->
+          
+          
+          
           </details>
     validations:
       required: false
@@ -228,6 +238,12 @@ body:
     id: additional
     attributes:
       label: Additional Information
-      placeholder: Add any other context about the problem here, custom filters, etc.
+      placeholder: Add any other context about the problem here.
     validations:
       required: false
+
+  - type: markdown
+    attributes:
+      value: |
+        ---
+        Upvote [important issues](https://github.com/AdguardTeam/AdguardBrowserExtension/issues?q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc+) with a :+1:

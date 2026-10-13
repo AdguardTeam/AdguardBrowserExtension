@@ -4,7 +4,7 @@ SHELL ["/bin/bash", "-lc"]
 
 # Install dependencies
 RUN apt-get update \
-    && apt-get install -y git curl zip \
+    && apt-get install -y git curl zip xz-utils \
     # clean up
     && rm -rf /var/lib/apt/lists/* \
     && npm install -g pnpm@10.33.4
@@ -15,6 +15,62 @@ RUN git config --global --add safe.directory '*'
 WORKDIR /extension
 
 ENV PNPM_STORE=/pnpm-store
+
+# ============================================================================
+# Stage: firefox-preinstall
+# Preinstalls the Mozilla Firefox build used by Selenium E2E tests so that
+# selenium-manager does not download it from mozilla.org on every run.
+# Its layer depends only on the base image, FIREFOX_VERSION and FIREFOX_SHA256,
+# so source changes do not invalidate it. The Firefox tree is copied into
+# `linked-deps-playwright` only, so the build, lint, unit and release stages no
+# longer pull it in; the integration and e2e stages inherit it through
+# `linked-deps-playwright`.
+# Keep FIREFOX_VERSION in sync with FIREFOX_PINNED_VERSION in
+# tools/browser-test/e2e/selenium-firefox.ts.
+# ============================================================================
+FROM base AS firefox-preinstall
+
+ARG FIREFOX_VERSION=153.0
+# SHA256 of linux-x86_64/en-US/firefox-${FIREFOX_VERSION}.tar.xz from
+# https://ftp.mozilla.org/pub/firefox/releases/${FIREFOX_VERSION}/SHA256SUMS.
+ARG FIREFOX_SHA256=bfc57e7b6b4e6204b11e7e03c4b93cff708e9fb37f6b9948be243455311d82ee
+
+RUN curl -fsSL \
+        "https://download.mozilla.org/?product=firefox-${FIREFOX_VERSION}&os=linux64&lang=en-US" \
+        -o /tmp/firefox.tar.xz \
+    && echo "${FIREFOX_SHA256}  /tmp/firefox.tar.xz" | sha256sum -c - \
+    && mkdir -p /opt/firefox \
+    && tar -xJf /tmp/firefox.tar.xz -C /opt/firefox --strip-components=1 \
+    && rm /tmp/firefox.tar.xz \
+    && /opt/firefox/firefox --version
+
+# ============================================================================
+# Stage: geckodriver-preinstall
+# Preinstalls the geckodriver build used by the Selenium Firefox E2E tests.
+# Without it, selenium-manager resolves and downloads the driver from
+# github.com/mozilla/geckodriver releases at session start, and a transient
+# GitHub error (HTTP 5xx) fails the whole `firefox-mv2` project before a single
+# test runs. Its layer depends only on the base image, GECKODRIVER_VERSION and
+# GECKODRIVER_SHA256, so source changes do not invalidate it. Kept separate from
+# `firefox-preinstall` so bumping one pin does not re-download the other.
+# Keep GECKODRIVER_VERSION in sync with GECKODRIVER_PINNED_VERSION in
+# tools/browser-test/e2e/selenium-firefox.ts.
+# ============================================================================
+FROM base AS geckodriver-preinstall
+
+ARG GECKODRIVER_VERSION=0.37.1
+# SHA256 of geckodriver-v${GECKODRIVER_VERSION}-linux64.tar.gz. The release
+# publishes a GPG signature, not a checksum file, so the digest is pinned here.
+ARG GECKODRIVER_SHA256=e815130ea95983e162ae91843b48d3a3ce991735635fce83a647afde21e09f7e
+
+RUN curl -fsSL \
+        "https://github.com/mozilla/geckodriver/releases/download/v${GECKODRIVER_VERSION}/geckodriver-v${GECKODRIVER_VERSION}-linux64.tar.gz" \
+        -o /tmp/geckodriver.tar.gz \
+    && echo "${GECKODRIVER_SHA256}  /tmp/geckodriver.tar.gz" | sha256sum -c - \
+    && mkdir -p /opt/geckodriver \
+    && tar -xzf /tmp/geckodriver.tar.gz -C /opt/geckodriver \
+    && rm /tmp/geckodriver.tar.gz \
+    && /opt/geckodriver/geckodriver --version
 
 # ============================================================================
 # Stage: deps
@@ -47,6 +103,15 @@ COPY . /extension
 # ============================================================================
 FROM source-deps AS linked-deps-playwright
 
+# The Selenium E2E harness reads E2E_FIREFOX_BIN and E2E_GECKODRIVER_BIN and
+# skips the selenium-manager downloads (see
+# tools/browser-test/e2e/selenium-firefox.ts). The COPY layers are keyed on the
+# preinstall stages, so they stay cacheable across source changes.
+COPY --from=firefox-preinstall /opt/firefox /opt/firefox
+ENV E2E_FIREFOX_BIN=/opt/firefox/firefox
+COPY --from=geckodriver-preinstall /opt/geckodriver /opt/geckodriver
+ENV E2E_GECKODRIVER_BIN=/opt/geckodriver/geckodriver
+
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     pnpm config set store-dir /pnpm-store && \
     pnpm exec playwright install
@@ -73,6 +138,7 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     mv build/dev/chrome.zip /out/artifacts/chrome-dev.zip && \
     mv build/dev/chrome-mv3.zip /out/artifacts/chrome-mv3-dev.zip && \
     mv build/dev/edge.zip /out/artifacts/edge-dev.zip && \
+    mv build/dev/edge-mv3.zip /out/artifacts/edge-mv3-dev.zip && \
     mv build/dev/firefox-amo.zip /out/artifacts/firefox-amo-dev.zip && \
     mv build/dev/firefox-standalone.zip /out/artifacts/firefox-standalone-dev.zip && \
     mv build/dev/opera.zip /out/artifacts/opera-dev.zip && \
@@ -108,9 +174,18 @@ COPY --from=chrome-crx /out/ /
 # ============================================================================
 FROM source-deps AS lint
 
+# `COPY . /extension` in source-deps invalidates this stage on every commit, so
+# the ESLint and TypeScript incremental caches are kept in BuildKit cache mounts:
+# stable ids persist them on the shared BuildKit between builds (same mechanism
+# as the pnpm store above) even though the layer itself is rebuilt. The cache
+# paths match the ones configured in package.json / tsconfig.mv2|mv3.json.
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    --mount=type=cache,target=/extension/.cache/eslint,id=browser-extension-eslint \
+    --mount=type=cache,target=/extension/.cache/tsc,id=browser-extension-tsc \
     # Run lint with timeout (cached until source changes).
-    ./tools/ci/timeout-wrapper.sh 240s pnpm lint && \
+    # ESLint + MV2/MV3 type checks take ~5 min on the shared runner under load;
+    # 240s was too tight and caused flaky timeouts.
+    ./tools/ci/timeout-wrapper.sh 600s pnpm lint && \
     mkdir -p /out && \
     touch /out/lint.txt
 
@@ -130,13 +205,18 @@ FROM source-deps AS unit-tests
 ARG TEST_RUN_ID
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
-    # Bust build cache so test stages always rerun.
-    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
-    # Run unit tests (cached until source changes).
-    mkdir -p /out/tests-reports && \
+    # Disable errexit first so failures below are recorded in exit-code.txt
+    # instead of aborting the RUN before /out is created (which would surface
+    # as a misleading "COPY /out: not found" in the output stage).
     set +e; \
+    # Bust build cache so test stages always rerun.
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id; \
+    # Create the reports directory unconditionally so the output stage can
+    # always copy it, even when the tests fail. If it cannot be created, fail
+    # the RUN so the real error is not masked by "COPY /out: not found".
+    mkdir -p /out/tests-reports || { echo "Failed to create /out/tests-reports" >&2; exit 1; }; \
     # Run unit tests with timeout.
-    ./tools/ci/timeout-wrapper.sh 600s pnpm test:ci; \
+    ./tools/ci/timeout-wrapper.sh 900s pnpm test:ci; \
     EXIT_CODE=$?; \
     # Keep tests-reports for junit parser.
     if [ -d tests-reports ]; then \
@@ -168,15 +248,28 @@ COPY --from=chrome-artifacts . /extension/artifacts/
 ARG TEST_RUN_ID
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
-    # Bust build cache so test/lint/build stages always rerun.
-    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
-    mkdir -p build/${BUILD_TYPE} && \
-    # Move artifact to build directory, because integration tests expect it there.
-    mv /extension/artifacts/chrome-mv3-${BUILD_TYPE}.zip /extension/build/${BUILD_TYPE}/chrome-mv3.zip && \
-    mkdir -p /out/tests-reports && \
+    # Disable errexit first so failures below are recorded in exit-code.txt
+    # instead of aborting the RUN before /out is created (which would surface
+    # as a misleading "COPY /out: not found" in the output stage).
     set +e; \
-    # Run integration tests.
-    pnpm test:integration ${BUILD_TYPE}; \
+    # Bust build cache so test/lint/build stages always rerun.
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id; \
+    # Create the reports directory unconditionally so the output stage can
+    # always copy it, even when the build artifact cannot be prepared. If it
+    # cannot be created, fail the RUN so the real error is not masked by
+    # "COPY /out: not found".
+    mkdir -p /out/tests-reports || { echo "Failed to create /out/tests-reports" >&2; exit 1; }; \
+    mkdir -p build/${BUILD_TYPE}; \
+    # Move artifact to build directory, because integration tests expect it there.
+    mv /extension/artifacts/chrome-mv3-${BUILD_TYPE}.zip /extension/build/${BUILD_TYPE}/chrome-mv3.zip; \
+    BUILD_EXIT_CODE=$?; \
+    if [ "${BUILD_EXIT_CODE}" -ne 0 ]; then \
+      echo "Preparing build artifacts failed with exit code ${BUILD_EXIT_CODE}; skipping tests." >&2; \
+      echo "${BUILD_EXIT_CODE}" > /out/exit-code.txt; \
+      exit 0; \
+    fi; \
+    # Run integration tests with timeout.
+    ./tools/ci/timeout-wrapper.sh 900s pnpm test:integration ${BUILD_TYPE}; \
     EXIT_CODE=$?; \
     if [ -d tests-reports ]; then \
       cp -R tests-reports/. /out/tests-reports/; \
@@ -202,14 +295,27 @@ FROM linked-deps-playwright AS integration-tests-standalone
 ARG TEST_RUN_ID
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
-    # Bust build cache so test stages always rerun.
-    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
-    # Build only chrome-mv3 dev extension with zip.
-    pnpm dev chrome-mv3 --zip && \
-    mkdir -p /out/tests-reports && \
+    # Disable errexit first so failures below are recorded in exit-code.txt
+    # instead of aborting the RUN before /out is created (which would surface
+    # as a misleading "COPY /out: not found" in the output stage).
     set +e; \
-    # Run integration tests.
-    pnpm test:integration dev; \
+    # Bust build cache so test stages always rerun.
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id; \
+    # Create the reports directory unconditionally before the build so the
+    # output stage can always copy it, even when the build fails. If it cannot
+    # be created, fail the RUN so the real error is not masked by
+    # "COPY /out: not found".
+    mkdir -p /out/tests-reports || { echo "Failed to create /out/tests-reports" >&2; exit 1; }; \
+    # Build only chrome-mv3 dev extension with zip.
+    pnpm dev chrome-mv3 --zip; \
+    BUILD_EXIT_CODE=$?; \
+    if [ "${BUILD_EXIT_CODE}" -ne 0 ]; then \
+      echo "Build failed with exit code ${BUILD_EXIT_CODE}; skipping tests." >&2; \
+      echo "${BUILD_EXIT_CODE}" > /out/exit-code.txt; \
+      exit 0; \
+    fi; \
+    # Run integration tests with timeout.
+    ./tools/ci/timeout-wrapper.sh 900s pnpm test:integration dev; \
     EXIT_CODE=$?; \
     if [ -d tests-reports ]; then \
       cp -R tests-reports/. /out/tests-reports/; \
@@ -234,16 +340,29 @@ FROM linked-deps-playwright AS e2e-tests-standalone
 ARG TEST_RUN_ID
 
 RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
+    # Disable errexit first so failures below are recorded in exit-code.txt
+    # instead of aborting the RUN before /out is created (which would surface
+    # as a misleading "COPY /out: not found" in the output stage).
+    set +e; \
     # Bust build cache so test stages always rerun.
-    echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
+    echo "${TEST_RUN_ID}" > /tmp/.test-run-id; \
+    # Create the reports directory unconditionally before the build so the
+    # output stage can always copy it, even when the build fails. If it cannot
+    # be created, fail the RUN so the real error is not masked by
+    # "COPY /out: not found".
+    mkdir -p /out/tests-reports || { echo "Failed to create /out/tests-reports" >&2; exit 1; }; \
     # Build only E2E target dev extensions with zip artifacts.
     pnpm dev chrome --zip && \
     pnpm dev chrome-mv3 --zip && \
-    pnpm dev firefox-standalone --zip && \
-    mkdir -p /out/tests-reports && \
-    set +e; \
-    # Run E2E tests.
-    E2E_HEADLESS=true pnpm test:e2e dev; \
+    pnpm dev firefox-standalone --zip; \
+    BUILD_EXIT_CODE=$?; \
+    if [ "${BUILD_EXIT_CODE}" -ne 0 ]; then \
+      echo "Build failed with exit code ${BUILD_EXIT_CODE}; skipping tests." >&2; \
+      echo "${BUILD_EXIT_CODE}" > /out/exit-code.txt; \
+      exit 0; \
+    fi; \
+    # Run E2E tests with timeout.
+    E2E_HEADLESS=true ./tools/ci/timeout-wrapper.sh 1500s pnpm test:e2e dev; \
     EXIT_CODE=$?; \
     if [ -d tests-reports ]; then \
         cp -R tests-reports/. /out/tests-reports/; \
@@ -270,13 +389,10 @@ RUN --mount=type=secret,id=CHROME_CERT,required=true \
     --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Bust build cache so build stages always rerun.
     echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
-    # Materialize the signing certificate from the BuildKit secret and consume
-    # it during the build. An EXIT trap removes it even when the build fails,
-    # so the certificate never persists in a BuildKit layer on the shared
-    # self-hosted runner.
+    # Materialize the signing certificate from the BuildKit secret, consume it
+    # during the build, then remove it so no trace survives in the layer.
     mkdir -p /extension/private/AdguardBrowserExtension && \
     cat /run/secrets/CHROME_CERT > /extension/private/AdguardBrowserExtension/certificate.pem && \
-    trap 'rm -rf /extension/private' EXIT && \
     # Create beta build with zip files for CI artifacts.
     pnpm beta --zip && \
     # Create artifacts directory if it doesn't exist.
@@ -285,7 +401,10 @@ RUN --mount=type=secret,id=CHROME_CERT,required=true \
     mv build/beta/build.txt /out/artifacts/ && \
     mv build/beta/chrome.zip /out/artifacts/ && \
     mv build/beta/chrome-mv3.zip /out/artifacts/ && \
-    mv build/beta/edge.zip /out/artifacts/
+    mv build/beta/edge.zip /out/artifacts/ && \
+    mv build/beta/edge-mv3.zip /out/artifacts/ && \
+    # Leave no trace of the private key in this image layer.
+    rm -rf /extension/private
 
 FROM scratch AS beta-build-output
 COPY --from=beta-build /out/ /
@@ -304,20 +423,19 @@ RUN --mount=type=secret,id=CHROME_CERT,required=true \
     --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Bust build cache so build stages always rerun.
     echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
-    # Materialize the signing certificate from the BuildKit secret and consume
-    # it during the build. An EXIT trap removes it even when the build fails,
-    # so the certificate never persists in a BuildKit layer on the shared
-    # self-hosted runner.
+    # Materialize the signing certificate from the BuildKit secret, consume it
+    # during the build, then remove it so no trace survives in the layer.
     mkdir -p /extension/private/AdguardBrowserExtension && \
     cat /run/secrets/CHROME_CERT > /extension/private/AdguardBrowserExtension/certificate.pem && \
-    trap 'rm -rf /extension/private' EXIT && \
     # Create beta CRX build.
     pnpm beta chrome-crx && \
     # Create artifacts directory if it doesn't exist.
     mkdir -p /out/artifacts && \
     # Move CRX and update.xml to artifacts.
     mv build/beta/chrome.crx /out/artifacts/ && \
-    mv build/beta/update.xml /out/artifacts/
+    mv build/beta/update.xml /out/artifacts/ && \
+    # Leave no trace of the private key in this image layer.
+    rm -rf /extension/private
 
 FROM scratch AS beta-chrome-crx-output
 COPY --from=beta-chrome-crx /out/ /
@@ -478,6 +596,7 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     mv build/release/chrome.zip /out/artifacts/ && \
     mv build/release/chrome-mv3.zip /out/artifacts/ && \
     mv build/release/edge.zip /out/artifacts/ && \
+    mv build/release/edge-mv3.zip /out/artifacts/ && \
     mv build/release/opera.zip /out/artifacts/ && \
     mv build/release/opera-mv3.zip /out/artifacts/ && \
     # TODO: (AG-41656) Remove this workaround and use the browser name as for all other builds.
@@ -534,15 +653,7 @@ RUN --mount=type=secret,id=CHROME_CLIENT_ID,required=true \
       [ "${ec}" -eq 0 ] && echo "true" > "/tmp/${1}_available"; \
       return 0; \
     }; \
-    check_channel beta; beta_ec=$?; \
-    check_channel release; release_ec=$?; \
-    # Report the worst exit code: a hard error (>=2) on either channel must
-    # fail the build even if the other channel checked fine.
-    if [ "${beta_ec}" -gt "${release_ec}" ]; then \
-      exit "${beta_ec}"; \
-    elif [ "${release_ec}" -ne 0 ]; then \
-      exit "${release_ec}"; \
-    fi && \
+    check_channel beta && check_channel release && \
     BETA_AVAILABLE=$(cat /tmp/beta_available) && \
     RELEASE_AVAILABLE=$(cat /tmp/release_available) && \
     echo "betaChannelAvailable=${BETA_AVAILABLE}" > /out/artifacts/cws-availability.properties && \
@@ -589,8 +700,6 @@ RUN --mount=type=secret,id=CHROME_CLIENT_ID,required=true \
     --mount=type=secret,id=CHROME_CLIENT_SECRET,required=true \
     --mount=type=secret,id=CHROME_REFRESH_TOKEN,required=true \
     echo "${TEST_RUN_ID}" > /tmp/.test-run-id && \
-    : "${CWS_ITEM_ID:?CWS_ITEM_ID build arg not provided}" && \
-    : "${CWS_EXPECTED_VERSION:?CWS_EXPECTED_VERSION build arg not provided}" && \
     CHROME_CLIENT_ID="$(cat /run/secrets/CHROME_CLIENT_ID)" \
     CHROME_CLIENT_SECRET="$(cat /run/secrets/CHROME_CLIENT_SECRET)" \
     CHROME_REFRESH_TOKEN="$(cat /run/secrets/CHROME_REFRESH_TOKEN)" \
@@ -601,6 +710,7 @@ RUN --mount=type=secret,id=CHROME_CLIENT_ID,required=true \
 # ============================================================================
 # Stage: auto-build
 # Updates filter rulesets, increments version, builds beta+release chrome-mv3
+# and release edge-mv3
 # Outputs: artifacts (zips + build.txt + cws-publish.properties) + modified
 # source files (rulesets, locales, local script rules and package.json) for git
 # commit
@@ -612,14 +722,17 @@ ARG TEST_RUN_ID
 ARG BETA_CHANNEL_AVAILABLE
 ARG RELEASE_CHANNEL_AVAILABLE
 # Registry used by `pnpm resources:mv3` (tools/resources/update-dnr-rulesets.ts)
-# to resolve the latest @adguard/dnr-rulesets. CI passes the internal Artifact
-# Keeper npm registry here because npm throttles the shared CI egress IPs;
-# empty falls back to the public npm registry.
+# to fetch the latest @adguard/dnr-rulesets. CI passes the internal Artifact
+# Keeper npm registry here because npm throttles the shared CI egress IPs; the
+# npm registry merely mirrors the @adguard scope, so only the dnr-rulesets
+# tarball is pulled from it and the rest of the tree resolves from npm; empty
+# falls back to the public npm registry.
 ARG DNR_RULESETS_REGISTRY
-# The dangerous-rules check endpoint/model are explicit CI inputs (passed via
-# --build-arg from auto-build.yml, with production defaults documented there
-# and in .env.example) so the production pipeline never silently relies on a
-# hardcoded internal default.
+# TokenGuard endpoint and model for the dangerous-rules check
+# (tools/resources/dangerous-rules/safety-checker.ts). CI passes repository
+# variables with production defaults; the guards below fail the build fast
+# when they are missing instead of letting the check silently fall back to
+# the hardcoded defaults in the script.
 ARG TOKENGUARD_BASE_URL
 ARG TOKENGUARD_MODEL
 # CWS item IDs for the skip-review change check. CI must pass the same
@@ -650,19 +763,19 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Update rulesets.
     TOKENGUARD_API_KEY="$(cat /run/secrets/TOKENGUARD_API_KEY)" && \
     : "${TOKENGUARD_API_KEY:?TOKENGUARD_API_KEY secret not provided}" && \
-    # Fail fast if the endpoint/model wiring is missing (see the ARGs above).
-    : "${TOKENGUARD_BASE_URL:?TOKENGUARD_BASE_URL build-arg must be set}" && \
-    : "${TOKENGUARD_MODEL:?TOKENGUARD_MODEL build-arg must be set}" && \
+    : "${TOKENGUARD_BASE_URL:?TOKENGUARD_BASE_URL build arg not provided}" && \
+    : "${TOKENGUARD_MODEL:?TOKENGUARD_MODEL build arg not provided}" && \
     if [ "${EXPEDITED}" = "true" ]; then \
-      TOKENGUARD_API_KEY="${TOKENGUARD_API_KEY}" TOKENGUARD_BASE_URL="${TOKENGUARD_BASE_URL}" TOKENGUARD_MODEL="${TOKENGUARD_MODEL}" pnpm resources:mv3 --skip-local-resources; \
+      TOKENGUARD_API_KEY="${TOKENGUARD_API_KEY}" pnpm resources:mv3 --skip-local-resources; \
     else \
-      TOKENGUARD_API_KEY="${TOKENGUARD_API_KEY}" TOKENGUARD_BASE_URL="${TOKENGUARD_BASE_URL}" TOKENGUARD_MODEL="${TOKENGUARD_MODEL}" pnpm resources:mv3; \
+      TOKENGUARD_API_KEY="${TOKENGUARD_API_KEY}" pnpm resources:mv3; \
     fi && \
     # Increment patch version.
     pnpm increment && \
-    # Build both channels.
+    # Build both channels; Edge MV3 is submitted as the release build only.
     pnpm beta chrome-mv3 --zip && \
     pnpm release chrome-mv3 --zip && \
+    pnpm release edge-mv3 --zip && \
     mkdir -p /out/artifacts && \
     # Compare the build with the extension currently published in CWS before
     # publishing it: an expedited build must contain only safe rule resources,
@@ -692,6 +805,7 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Collect build artifacts.
     mv build/beta/chrome-mv3.zip /out/artifacts/chrome-mv3-beta.zip && \
     mv build/release/chrome-mv3.zip /out/artifacts/chrome-mv3-release.zip && \
+    mv build/release/edge-mv3.zip /out/artifacts/edge-mv3-release.zip && \
     cp build/release/build.txt /out/artifacts/ && \
     # Collect modified source files for git commit.
     # Uses marker file to find files changed by pnpm resources:mv3 and pnpm increment.

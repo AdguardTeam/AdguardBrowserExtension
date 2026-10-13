@@ -12,8 +12,8 @@ importers:
         specifier: 4.2.1
         version: 4.2.1
       '@adguard/dnr-converter':
-        specifier: 1.1.2
-        version: 1.1.2(@adguard/re2-wasm@1.2.0)(typescript@5.6.3)
+        specifier: 2.0.0
+        version: 2.0.0(@adguard/re2-wasm@1.2.0)(typescript@5.6.3)
       '@adguard/filters-downloader':
         specifier: 2.4.4
         version: 2.4.4
@@ -36,8 +36,8 @@ importers:
         specifier: 6.0.3
         version: 6.0.3
       '@adguard/tswebextension':
-        specifier: 5.0.3
-        version: 5.0.3(@adguard/re2-wasm@1.2.0)(typescript@5.6.3)
+        specifier: 6.0.0
+        version: 6.0.0(@adguard/re2-wasm@1.2.0)(typescript@5.6.3)
       '@codemirror/commands':
         specifier: 6.10.3
         version: 6.10.3
@@ -166,8 +166,8 @@ importers:
         version: 3.4.0(zod@3.24.4)
     devDependencies:
       '@adguard/dnr-rulesets':
-        specifier: ~5.0.20261012131434
-        version: 5.0.20261012131434(typescript@5.6.3)
+        specifier: ~6.0.20261013011339
+        version: 6.0.20261013011339(typescript@5.6.3)
       '@adguard/eslint-plugin-logger-context':
         specifier: 1.0.1
         version: 1.0.1
@@ -456,15 +456,15 @@ packages:
     engines: {node: '>=20'}
     hasBin: true
 
-  '@adguard/dnr-converter@1.1.2':
-    resolution: {integrity: sha512-YYjKN5Oa87XGybUd1ByLf+b1AjV/TrNEDBtDDyeDdE5nCZ84Rt2BGW9qzKQRShk5YsLTD4NQkaW3GiKZr1vq6w==}
+  '@adguard/dnr-converter@2.0.0':
+    resolution: {integrity: sha512-BkbnLsUlRCMOLT7UgDg9RIJY/tZ24GYA8FQeaC6VU4QgzRH3idLexp1BfiN7m4/7oAt0FKuu/Ew8Gv7OWostdQ==}
     engines: {node: '>=22'}
     hasBin: true
     peerDependencies:
       '@adguard/re2-wasm': 1.2.0
 
-  '@adguard/dnr-rulesets@5.0.20261012131434':
-    resolution: {integrity: sha512-PPjP/p0meP8vNpAHUcQpjFlY1KLIVVAmbj7lKqqcpMATD+XKq5kRZU6Dsb33sN4V9jobAhNmRP7/ushJ+RigXA==, tarball: https://ak.int.agrd.dev/npm/npm-internal/@adguard/dnr-rulesets/-/dnr-rulesets-5.0.20261012131434.tgz}
+  '@adguard/dnr-rulesets@6.0.20261013011339':
+    resolution: {integrity: sha512-M5Wo1kPdsYeQpnaaMXCXoJKFWpKylp99IEtta/OlFlNUqBHEM+mm+B5XJ7d2ktskw0NdZX09rAHPe1UcsVZGZg==, tarball: https://ak.int.agrd.dev/npm/npm-internal/@adguard/dnr-rulesets/-/dnr-rulesets-6.0.20261013011339.tgz}
     hasBin: true
 
   '@adguard/eslint-plugin-logger-context@1.0.1':
@@ -480,6 +480,10 @@ packages:
 
   '@adguard/logger@2.0.0':
     resolution: {integrity: sha512-jOiL0gy+uhrezJwI5j1mzpXyta1AFOhpEgKrqRlLN6puArFmHDmLH06civQs12tFWjtUCX+uGgUd1i4x/PCU1g==}
+    engines: {node: '>=22'}
+
+  '@adguard/logger@2.0.1':
+    resolution: {integrity: sha512-ZHF6u0qN3RPjAJREOX0b9nDgkQnyIvu39yQOEl04BUXJqUSZvnOLcpaMTbqGIbT9/nuzR0hZx/nXBNuvRgTp9w==}
     engines: {node: '>=22'}
 
   '@adguard/re2-wasm@1.2.0':
@@ -512,8 +516,8 @@ packages:
     resolution: {integrity: sha512-CXdpEtVFKuvphlSTuvyjrinmYiLC6oRdkvcPM4H0lojfmQm00E2slDdTUue6vd+LQ8HhBDEjZps8q2XL9ljqmg==}
     engines: {node: '>=22'}
 
-  '@adguard/tswebextension@5.0.3':
-    resolution: {integrity: sha512-j3Vu+R9j8gZkUJU2iXeUBKItBYZROOvkjWz/KC5IexsxoUi/oVMw9JBse8Mw9a4ov8PJV30/B796Tee9UIeBdg==}
+  '@adguard/tswebextension@6.0.0':
+    resolution: {integrity: sha512-as+mPNt9zjuRsEhRkHkmtCjq6EmETe5aOlPSBIGiI7AmNO/tFTsF0X6IhGPKLH/YiWd3lLX21zqNdWrlGn30Bg==}
     engines: {node: '>=22'}
     hasBin: true
 
@@ -6043,10 +6047,10 @@ snapshots:
       commander: 11.1.0
       crypto-js: 4.2.0
 
-  '@adguard/dnr-converter@1.1.2(@adguard/re2-wasm@1.2.0)(typescript@5.6.3)':
+  '@adguard/dnr-converter@2.0.0(@adguard/re2-wasm@1.2.0)(typescript@5.6.3)':
     dependencies:
       '@adguard/agtree': 4.2.1
-      '@adguard/logger': 2.0.0
+      '@adguard/logger': 2.0.1
       '@adguard/re2-wasm': 1.2.0
       '@adguard/scriptlets': 2.5.1
       commander: 12.1.0
@@ -6055,11 +6059,11 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@adguard/dnr-rulesets@5.0.20261012131434(typescript@5.6.3)':
+  '@adguard/dnr-rulesets@6.0.20261013011339(typescript@5.6.3)':
     dependencies:
       '@adguard/agtree': 4.2.1
-      '@adguard/dnr-converter': 1.1.2(@adguard/re2-wasm@1.2.0)(typescript@5.6.3)
-      '@adguard/logger': 2.0.0
+      '@adguard/dnr-converter': 2.0.0(@adguard/re2-wasm@1.2.0)(typescript@5.6.3)
+      '@adguard/logger': 2.0.1
       '@adguard/re2-wasm': 1.2.0
       axios: 1.15.0
       chokidar: 4.0.3
@@ -6084,6 +6088,8 @@ snapshots:
       - debug
 
   '@adguard/logger@2.0.0': {}
+
+  '@adguard/logger@2.0.1': {}
 
   '@adguard/re2-wasm@1.2.0': {}
 
@@ -6124,13 +6130,13 @@ snapshots:
       zod: 3.24.4
       zod-validation-error: 3.4.0(zod@3.24.4)
 
-  '@adguard/tswebextension@5.0.3(@adguard/re2-wasm@1.2.0)(typescript@5.6.3)':
+  '@adguard/tswebextension@6.0.0(@adguard/re2-wasm@1.2.0)(typescript@5.6.3)':
     dependencies:
       '@adguard/agtree': 4.2.1
       '@adguard/assistant': 4.4.13
-      '@adguard/dnr-converter': 1.1.2(@adguard/re2-wasm@1.2.0)(typescript@5.6.3)
+      '@adguard/dnr-converter': 2.0.0(@adguard/re2-wasm@1.2.0)(typescript@5.6.3)
       '@adguard/extended-css': 2.2.0
-      '@adguard/logger': 2.0.0
+      '@adguard/logger': 2.0.1
       '@adguard/scriptlets': 2.5.1
       '@adguard/text-encoding': 0.8.3
       '@adguard/tsurlfilter': 6.0.3

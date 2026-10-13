@@ -1,9 +1,16 @@
 name: Auto build
 
 # Twice a day (12:00 and 17:00 UTC): updates @adguard/dnr-rulesets and
-# local resources on the stable branch, rebuilds Chrome MV3 beta + release,
-# and auto-publishes them to the Chrome Web Store when the store reports the
-# channel as available. Replaces Bamboo plans auto-build + auto-publish.
+# local resources on the stable branch, rebuilds Chrome MV3 beta + release and
+# Edge MV3 release, auto-publishes Chrome to the Chrome Web Store when the
+# store reports the channel as available, and submits Edge MV3 to Edge Add-ons.
+# Replaces Bamboo plans auto-build + auto-publish.
+# Builds are published with skip review, except on Mondays and Thursdays,
+# when the full resources update goes through the standard review. A build
+# whose diff against the version currently in the store falls outside the
+# scope allowed for its review mode (safe rule resources for skip review, any
+# file under `filters/` for the standard review) fails before the commit and
+# the publish.
 #
 # Note: the schedule trigger runs the workflow file from the DEFAULT branch
 # (master); all jobs explicitly check out the stable branch.
@@ -21,6 +28,11 @@ concurrency:
 
 env:
   STABLE_BRANCH: stable/v5.5
+  # Single source for the CWS item IDs: the check-cws stage, the scope check
+  # inside the auto-build stage and the publish/verify jobs must all hit the
+  # same listing after a CWS listing migration.
+  CWS_BETA_ITEM_ID: ${{ vars.CHROME_WEBSTORE_MV3_BETA_ITEM_ID || 'apjcbfpjihpedihablmalmbbhjpklbdf' }}
+  CWS_RELEASE_ITEM_ID: ${{ vars.CHROME_WEBSTORE_MV3_ITEM_ID || 'bgnkhhnnamicmpeenaelnjfhikgbkllg' }}
 
 jobs:
   check-cws:
@@ -33,6 +45,10 @@ jobs:
     outputs:
       beta-available: ${{ steps.props.outputs.beta-available }}
       release-available: ${{ steps.props.outputs.release-available }}
+      # Re-export the single-sourced IDs for the publish/verify `with:` blocks,
+      # which cannot read the `env` context themselves.
+      beta-item-id: ${{ env.CWS_BETA_ITEM_ID }}
+      release-item-id: ${{ env.CWS_RELEASE_ITEM_ID }}
     steps:
       - name: Checkout stable branch
         uses: actions/checkout@v6
@@ -62,8 +78,8 @@ jobs:
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
-            --build-arg CWS_BETA_ITEM_ID="${{ vars.CHROME_WEBSTORE_MV3_BETA_ITEM_ID || 'apjcbfpjihpedihablmalmbbhjpklbdf' }}" \
-            --build-arg CWS_RELEASE_ITEM_ID="${{ vars.CHROME_WEBSTORE_MV3_ITEM_ID || 'bgnkhhnnamicmpeenaelnjfhikgbkllg' }}" \
+            --build-arg CWS_BETA_ITEM_ID="${CWS_BETA_ITEM_ID}" \
+            --build-arg CWS_RELEASE_ITEM_ID="${CWS_RELEASE_ITEM_ID}" \
             --secret id=CHROME_CLIENT_ID,env=CHROME_CLIENT_ID \
             --secret id=CHROME_PUBLISHER_ID,env=CHROME_PUBLISHER_ID \
             --secret id=CHROME_CLIENT_SECRET,env=CHROME_CLIENT_SECRET \
@@ -76,10 +92,16 @@ jobs:
         run: |
           set -euo pipefail
           props=output/check-cws/artifacts/cws-availability.properties
-          beta="$(grep '^betaChannelAvailable=' "${props}" | cut -d= -f2)"
-          release="$(grep '^releaseChannelAvailable=' "${props}" | cut -d= -f2)"
-          [ -n "${beta}" ] || { echo "::error::betaChannelAvailable missing in ${props}"; exit 1; }
-          [ -n "${release}" ] || { echo "::error::releaseChannelAvailable missing in ${props}"; exit 1; }
+          beta="$(grep '^betaChannelAvailable=' "${props}" | cut -d= -f2 || true)"
+          release="$(grep '^releaseChannelAvailable=' "${props}" | cut -d= -f2 || true)"
+          case "${beta}" in
+            true|false) ;;
+            *) echo "::error::betaChannelAvailable must be 'true' or 'false' in ${props}, got '${beta}'"; exit 1 ;;
+          esac
+          case "${release}" in
+            true|false) ;;
+            *) echo "::error::releaseChannelAvailable must be 'true' or 'false' in ${props}, got '${release}'"; exit 1 ;;
+          esac
           echo "beta-available=${beta}" >> "$GITHUB_OUTPUT"
           echo "release-available=${release}" >> "$GITHUB_OUTPUT"
 
@@ -147,14 +169,22 @@ jobs:
     runs-on: team-extensions
     timeout-minutes: 15
     permissions:
-      contents: read    # checkout + fetch of the stable branch only (commit push is via protected-push/Octopass)
+      contents: read    # checkout of the stable branch only (commit push is via protected-push/Octopass)
       id-token: write   # Vault JWT/OIDC + Octopass OIDC for protected-push
     outputs:
       version: ${{ steps.version.outputs.version }}
+      expedited: ${{ steps.publish-mode.outputs.expedited }}
+      mode-name: ${{ steps.publish-mode.outputs.mode-name }}
     steps:
       - name: Checkout stable branch
         uses: actions/checkout@v6
         with:
+          # Don't persist the default GITHUB_TOKEN as a git credential. The
+          # push below authenticates with an Octopass-issued token, and a
+          # persisted http.extraheader would collide with the one protected-push
+          # sets, making git send two Authorization headers which GitHub rejects
+          # with HTTP 400 "Duplicate header: Authorization".
+          persist-credentials: false
           ref: ${{ env.STABLE_BRANCH }}
 
       - name: Fetch TokenGuard API key from Vault
@@ -172,8 +202,9 @@ jobs:
         run: ./tools/ci/generate-find-excludes.sh gitignore-excludes.txt
 
       # npm throttles the shared CI egress IPs, so the dnr-rulesets update
-      # resolves from the internal Artifact Keeper npm registry instead (see
-      # tools/resources/update-dnr-rulesets.ts). Fail loudly when the org
+      # fetches the package tarball from the internal Artifact Keeper npm
+      # registry instead (see tools/resources/update-dnr-rulesets.ts). Fail
+      # loudly when the org
       # variable is not visible to this repo instead of silently falling back
       # to the throttled npm path.
       - name: Resolve Artifact Keeper npm registry
@@ -187,9 +218,9 @@ jobs:
           fi
           echo "DNR_RULESETS_REGISTRY=${ARTIFACT_KEEPER_URL}/npm/npm-internal" >> "$GITHUB_ENV"
 
-      # The skip-review flag (full resources update on Mondays and Thursdays,
-      # skip-review eligibility check otherwise) is computed inside the
-      # Dockerfile stage.
+      # The review mode (full resources update + standard review on Mondays and
+      # Thursdays, skip-review-eligible build otherwise) is computed inside the
+      # Dockerfile stage and comes back in the cws-publish.properties artifact.
       # TOKENGUARD_BASE_URL/TOKENGUARD_MODEL are passed explicitly (production
       # defaults below, overridable via repository variables) so the
       # dangerous-rules check never silently falls back to a hardcoded default;
@@ -209,6 +240,8 @@ jobs:
             --build-arg DNR_RULESETS_REGISTRY="${DNR_RULESETS_REGISTRY}" \
             --build-arg TOKENGUARD_BASE_URL="${TOKENGUARD_BASE_URL}" \
             --build-arg TOKENGUARD_MODEL="${TOKENGUARD_MODEL}" \
+            --build-arg CWS_BETA_ITEM_ID="${CWS_BETA_ITEM_ID}" \
+            --build-arg CWS_RELEASE_ITEM_ID="${CWS_RELEASE_ITEM_ID}" \
             --secret id=TOKENGUARD_API_KEY,env=TOKENGUARD_API_KEY \
             --target auto-build-output \
             --output type=local,dest=output/auto-build .
@@ -218,18 +251,16 @@ jobs:
       # protected-push. The commit + push is done by the company-shared action
       # (Octopass token + --force-with-lease) instead of a hand-rolled
       # `git config user.name/email` + `git push` with the workflow GITHUB_TOKEN.
-      # First sync to the latest remote head of the stable branch so the push
-      # is a fast-forward and never clobbers a concurrent commit (e.g. an
-      # "Update stable branch" merge) that landed while this job was building;
-      # build outputs live under output/ and are unaffected by the reset.
-      # Note: protected-push authors the commit as github-actions[bot], the
-      # shared action's fixed identity, instead of the release-bot persona.
+      # The push is a plain fast-forward onto the head checked out at the start
+      # of the job: nothing else writes to the stable branch while the ~2-minute
+      # build runs (stable updates are manual release actions), so no mid-flow
+      # re-fetch is needed. Note: protected-push authors the commit as
+      # github-actions[bot], the shared action's fixed identity, instead of the
+      # release-bot persona.
       - name: Prepare auto-build commit
         id: commit
         run: |
           set -euo pipefail
-          git fetch origin "${STABLE_BRANCH}"
-          git reset --hard "origin/${STABLE_BRANCH}"
           cp -R output/auto-build/modified/. .
           if [ -z "$(git status --porcelain)" ]; then
             echo "No resource changes to commit"
@@ -242,17 +273,20 @@ jobs:
           [ -n "${files}" ]
           # The built version goes into the commit message (it used to live in
           # the autobuild-v* tag name, which is no longer created).
-          version="$(grep '^version=' output/auto-build/artifacts/build.txt | cut -d= -f2)"
-          {
-            echo "has-changes=true"
-            echo "files=${files}"
-            echo "version=${version}"
-          } >> "$GITHUB_OUTPUT"
+          version="$(grep '^version=' output/auto-build/artifacts/build.txt | cut -d= -f2 || true)"
+          [ -n "${version}" ] || { echo "::error::version missing in output/auto-build/artifacts/build.txt"; exit 1; }
+          echo "has-changes=true" >> "$GITHUB_OUTPUT"
+          echo "files=${files}" >> "$GITHUB_OUTPUT"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
 
       - name: Commit and push to the stable branch
         if: steps.commit.outputs.has-changes == 'true'
         uses: AdGuardSoftwareLimited/actions/actions/protected-push@master
         with:
+          # Required: protected-push forwards this to Octopass as the target
+          # repository for the minted token. Without it, Octopass gets an empty
+          # repository and rejects the request ("invalid token scope request").
+          repository: ${{ github.repository }}
           branch: ${{ env.STABLE_BRANCH }}
           commit-message: '[skip ci] Rulesets update & increment patch version (autobuild-v${{ steps.commit.outputs.version }})'
           files: ${{ steps.commit.outputs.files }}
@@ -264,8 +298,34 @@ jobs:
         id: version
         run: |
           set -euo pipefail
-          version="$(grep '^version=' output/auto-build/artifacts/build.txt | cut -d= -f2)"
+          version="$(grep '^version=' output/auto-build/artifacts/build.txt | cut -d= -f2 || true)"
+          [ -n "${version}" ] || { echo "::error::version missing in output/auto-build/artifacts/build.txt"; exit 1; }
           echo "version=${version}" >> "$GITHUB_OUTPUT"
+
+      # The publish mode travels with the build artifacts from the auto-build
+      # stage (Mondays and Thursdays request the standard CWS review) so the
+      # build and the publish jobs cannot drift apart.
+      - name: Resolve publish mode
+        id: publish-mode
+        run: |
+          set -euo pipefail
+          props=output/auto-build/artifacts/cws-publish.properties
+          # `|| true`: a missing properties file must reach the explicit check
+          # below instead of aborting this assignment under `set -e`.
+          expedited="$(grep '^expedited=' "${props}" | cut -d= -f2 || true)"
+          # Every consumer compares against 'true', so any other value (empty,
+          # 'True', '1') would silently select the standard review instead of
+          # failing the build.
+          if [ "${expedited}" != 'true' ] && [ "${expedited}" != 'false' ]; then
+            echo "::error::expected 'true' or 'false' for expedited in ${props}, got '${expedited}'"
+            exit 1
+          fi
+          echo "expedited=${expedited}" >> "$GITHUB_OUTPUT"
+          if [ "${expedited}" = 'true' ]; then
+            echo "mode-name=expedited" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode-name=standard review" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v7
@@ -275,13 +335,15 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-      # The CWS workflows expect the extension archive to be named chrome.zip.
-      - name: Stage CWS artifacts
+      # The CWS workflows expect the extension archive to be named chrome.zip;
+      # the Edge workflow expects edge.zip.
+      - name: Stage store artifacts
         run: |
           set -euo pipefail
-          mkdir -p staged/cws-auto-beta staged/cws-auto-release
+          mkdir -p staged/cws-auto-beta staged/cws-auto-release staged/edge-auto
           cp output/auto-build/artifacts/chrome-mv3-beta.zip staged/cws-auto-beta/chrome.zip
           cp output/auto-build/artifacts/chrome-mv3-release.zip staged/cws-auto-release/chrome.zip
+          cp output/auto-build/artifacts/edge-mv3-release.zip staged/edge-auto/edge.zip
 
       - name: Upload CWS beta artifact
         uses: actions/upload-artifact@v7
@@ -296,6 +358,14 @@ jobs:
         with:
           name: cws-auto-release
           path: staged/cws-auto-release/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload Edge artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: edge-auto-release
+          path: staged/edge-auto/
           if-no-files-found: error
           retention-days: 7
 
@@ -361,7 +431,7 @@ jobs:
           retention-days: 7
 
   publish-cws-beta:
-    name: Auto-publish MV3 beta to CWS (expedited)
+    name: Auto-publish MV3 beta to CWS (${{ needs.update-filters-and-build.outputs.mode-name || 'n/a' }})
     needs: [check-cws, update-filters-and-build, integration-tests]
     if: needs.check-cws.outputs.beta-available == 'true'
     uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-chrome-web-store.yml@master
@@ -369,9 +439,9 @@ jobs:
       team: extensions
       environment: chrome-webstore-beta-auto
       artifact-name: cws-auto-beta
-      item-id: ${{ vars.CHROME_WEBSTORE_MV3_BETA_ITEM_ID || 'apjcbfpjihpedihablmalmbbhjpklbdf' }}
+      item-id: ${{ needs.check-cws.outputs.beta-item-id }}
       api-version: v2
-      expedited: true
+      expedited: ${{ needs.update-filters-and-build.outputs.expedited == 'true' }}
       slack-channel: ''
       product: AdGuard Browser Extension MV3 Beta
       version-title: ${{ needs.update-filters-and-build.outputs.version }}
@@ -379,35 +449,28 @@ jobs:
       contents: read
       id-token: write
 
-  # NOTE: the non-expedited fallback only helps if the expedited run failed at
-  # the upload/update stage. If the expedited run failed AFTER a successful
-  # `go-webext update` (i.e. the store already holds this version), re-running
-  # here may be rejected by the store as a duplicate-version upload; in that
-  # case a manual publish from the CWS dashboard is required.
-  publish-cws-beta-fallback:
-    name: Auto-publish MV3 beta to CWS (non-expedited fallback)
+  # A failed publish is not necessarily real: CWS occasionally answers HTTP 502
+  # on the publish call even though the upload already succeeded and the
+  # extension is in the store. This job asks the store whether the built version
+  # is there; it fails (and the failure is reported) when it is not. There is
+  # deliberately no automatic standard-review fallback: an unexpected expedited
+  # failure means the build may contain changes that must not be auto-published.
+  verify-cws-beta:
+    name: Verify MV3 beta publish state
     needs: [check-cws, update-filters-and-build, publish-cws-beta]
     if: >-
       always() &&
-      needs.check-cws.outputs.beta-available == 'true' &&
       (needs.publish-cws-beta.result == 'failure' || needs.publish-cws-beta.result == 'cancelled')
-    uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-chrome-web-store.yml@master
+    uses: ./.github/workflows/verify-cws.yml
     with:
-      team: extensions
-      environment: chrome-webstore-beta-auto
-      artifact-name: cws-auto-beta
-      item-id: ${{ vars.CHROME_WEBSTORE_MV3_BETA_ITEM_ID || 'apjcbfpjihpedihablmalmbbhjpklbdf' }}
-      api-version: v2
-      expedited: false
-      slack-channel: ''
-      product: AdGuard Browser Extension MV3 Beta
-      version-title: ${{ needs.update-filters-and-build.outputs.version }}
+      item-id: ${{ needs.check-cws.outputs.beta-item-id }}
+      expected-version: ${{ needs.update-filters-and-build.outputs.version }}
     permissions:
       contents: read
-      id-token: write
+      id-token: write   # Vault JWT/OIDC
 
   publish-cws-release:
-    name: Auto-publish MV3 release to CWS (expedited)
+    name: Auto-publish MV3 release to CWS (${{ needs.update-filters-and-build.outputs.mode-name || 'n/a' }})
     needs: [check-cws, update-filters-and-build, integration-tests]
     if: needs.check-cws.outputs.release-available == 'true'
     uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-chrome-web-store.yml@master
@@ -415,9 +478,9 @@ jobs:
       team: extensions
       environment: chrome-webstore-release-auto
       artifact-name: cws-auto-release
-      item-id: ${{ vars.CHROME_WEBSTORE_MV3_ITEM_ID || 'bgnkhhnnamicmpeenaelnjfhikgbkllg' }}
+      item-id: ${{ needs.check-cws.outputs.release-item-id }}
       api-version: v2
-      expedited: true
+      expedited: ${{ needs.update-filters-and-build.outputs.expedited == 'true' }}
       slack-channel: ''
       product: AdGuard Browser Extension MV3
       version-title: ${{ needs.update-filters-and-build.outputs.version }}
@@ -425,44 +488,102 @@ jobs:
       contents: read
       id-token: write
 
-  publish-cws-release-fallback:
-    name: Auto-publish MV3 release to CWS (non-expedited fallback)
+  verify-cws-release:
+    name: Verify MV3 release publish state
     needs: [check-cws, update-filters-and-build, publish-cws-release]
     if: >-
       always() &&
-      needs.check-cws.outputs.release-available == 'true' &&
       (needs.publish-cws-release.result == 'failure' || needs.publish-cws-release.result == 'cancelled')
-    uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-chrome-web-store.yml@master
+    uses: ./.github/workflows/verify-cws.yml
+    with:
+      item-id: ${{ needs.check-cws.outputs.release-item-id }}
+      expected-version: ${{ needs.update-filters-and-build.outputs.version }}
+    permissions:
+      contents: read
+      id-token: write   # Vault JWT/OIDC
+
+  publish-edge:
+    name: Auto-publish MV3 release to Edge Add-ons
+    needs: [update-filters-and-build, integration-tests]
+    uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-edge-addons.yml@master
     with:
       team: extensions
-      environment: chrome-webstore-release-auto
-      artifact-name: cws-auto-release
-      item-id: ${{ vars.CHROME_WEBSTORE_MV3_ITEM_ID || 'bgnkhhnnamicmpeenaelnjfhikgbkllg' }}
-      api-version: v2
-      expedited: false
+      environment: edge-addons-auto
+      artifact-name: edge-auto-release
+      product-id: ${{ vars.EDGE_ADDONS_PRODUCT_ID }}
+      api-version: v1.1
+      # The scheduled auto-build is the only Edge publisher; the shared
+      # workflow defaults to publish: false, so releases only upload a draft.
+      publish: true
+      # Edge reviews every submission for days and refuses a publish while one
+      # is in review (`InProgressSubmission`); the upload only replaces the
+      # draft. The shared workflow turns that refusal into a benign skip, so
+      # the run reports `state=skipped` instead of failing until the review
+      # ends. Every other failure still fails the job.
+      skip-if-in-progress: true
       slack-channel: ''
       product: AdGuard Browser Extension MV3
       version-title: ${{ needs.update-filters-and-build.outputs.version }}
     permissions:
       contents: read
-      id-token: write
+      id-token: write   # Vault JWT/OIDC
 
   notify-failure:
     name: Notify (failure)
-    needs: [check-cws, lint, unit-tests, update-filters-and-build, integration-tests, publish-cws-beta, publish-cws-beta-fallback, publish-cws-release, publish-cws-release-fallback]
-    # Compact form so adding/removing a job only requires editing `needs`.
-    # Cancellation is reported too (a cancelled auto-build is never silent).
-    if: >-
-      always() &&
-      (contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled'))
+    needs: [check-cws, lint, unit-tests, update-filters-and-build, integration-tests, publish-cws-beta, verify-cws-beta, publish-cws-release, verify-cws-release, publish-edge]
+    # The decision is computed in the `Decide whether to notify` step from the
+    # results of every job in `needs`: a publish failure whose verify job proved
+    # the build is in the store is benign, which `needs.*.result` alone cannot
+    # express. Adding a job to `needs` requires only an entry in that step's
+    # `RESULTS` list.
+    if: always()
     runs-on: team-extensions
     timeout-minutes: 5
     permissions:
       contents: read
     steps:
+      - name: Decide whether to notify
+        id: decide
+        env:
+          # `job=result` for every job in `needs`; keep this list in sync with
+          # the `needs` list above.
+          RESULTS: |
+            check-cws=${{ needs.check-cws.result }}
+            lint=${{ needs.lint.result }}
+            unit-tests=${{ needs.unit-tests.result }}
+            update-filters-and-build=${{ needs.update-filters-and-build.result }}
+            integration-tests=${{ needs.integration-tests.result }}
+            publish-cws-beta=${{ needs.publish-cws-beta.result }}
+            verify-cws-beta=${{ needs.verify-cws-beta.result }}
+            publish-cws-release=${{ needs.publish-cws-release.result }}
+            verify-cws-release=${{ needs.verify-cws-release.result }}
+            publish-edge=${{ needs.publish-edge.result }}
+        run: |
+          set -euo pipefail
+          should_notify=false
+          while IFS='=' read -r job result; do
+            [ -n "${job}" ] || continue
+            case "${result}" in
+              failure|cancelled) ;;
+              *) continue ;;
+            esac
+            # A failed publish whose verify job succeeded is benign: the store
+            # already holds the built version.
+            if [[ "${job}" == publish-cws-* ]]; then
+              verify="verify-${job#publish-}"
+              if grep -q "^${verify}=success$" <<< "${RESULTS}"; then
+                continue
+              fi
+            fi
+            should_notify=true
+          done <<< "${RESULTS}"
+          echo "notify=${should_notify}" >> "$GITHUB_OUTPUT"
+          echo "Should notify: ${should_notify}"
+
       - name: Send Slack notification
+        if: steps.decide.outputs.notify == 'true'
         uses: AdGuardSoftwareLimited/actions/actions/slack@master
         with:
           channel: '#adguard-extension-vcs'
-          message: ':cross-mark: *browser-extension* auto-build failed (check-cws: ${{ needs.check-cws.result }}, lint: ${{ needs.lint.result }}, unit: ${{ needs.unit-tests.result }}, build: ${{ needs.update-filters-and-build.result }}, integration: ${{ needs.integration-tests.result }}, cws-beta: ${{ needs.publish-cws-beta.result }}, cws-beta-fallback: ${{ needs.publish-cws-beta-fallback.result }}, cws-release: ${{ needs.publish-cws-release.result }}, cws-release-fallback: ${{ needs.publish-cws-release-fallback.result }}) — <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>'
+          message: ':cross-mark: *browser-extension* auto-build failed (check-cws: ${{ needs.check-cws.result }}, lint: ${{ needs.lint.result }}, unit: ${{ needs.unit-tests.result }}, build: ${{ needs.update-filters-and-build.result }}, integration: ${{ needs.integration-tests.result }}, cws-beta: ${{ needs.publish-cws-beta.result }}, cws-beta-verify: ${{ needs.verify-cws-beta.result }}, cws-release: ${{ needs.publish-cws-release.result }}, cws-release-verify: ${{ needs.verify-cws-release.result }}, edge: ${{ needs.publish-edge.result }}) — <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>'
           color: danger

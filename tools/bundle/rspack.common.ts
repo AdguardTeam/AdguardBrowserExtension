@@ -202,6 +202,7 @@ export const genCommonConfig = (
 
     // Base aliases for MV-specific services and APIs
     const alias: Record<string, string> = {
+        'browser-versions': path.resolve(__dirname, `../../Extension/src/common/browser-versions-mv${manifestVersion}.ts`),
         'tswebextension': path.resolve(__dirname, `../../Extension/src/background/tswebextension/tswebextension-mv${manifestVersion}.ts`),
         'app': path.resolve(__dirname, `../../Extension/src/background/app/app-mv${manifestVersion}.ts`),
         'engine': path.resolve(__dirname, `../../Extension/src/background/engine/engine-mv${manifestVersion}.ts`),
@@ -644,6 +645,15 @@ export const genCommonConfig = (
                         context: 'Extension',
                         from: 'assets',
                         to: 'assets',
+                        globOptions: {
+                            // TODO (AG-59537): The offer image of the Edge MV2 to MV3 migration popup
+                            // is not used yet, it is kept for the promo and goes only to edge-mv3.
+                            // Remove it with the rest of the migration popup code
+                            // once Edge users have moved to MV3.
+                            ignore: browserConfig.browser === Browser.EdgeMv3
+                                ? []
+                                : ['**/images/edge-mv3-migration-promo.svg'],
+                        },
                     },
                     {
                         context: 'Extension',
@@ -666,6 +676,10 @@ export const genCommonConfig = (
                 // TODO consider making this variable to be less common used
                 //  (e.g., make it to be __IS_FIREFOX_AMO__ instead of IS_FIREFOX_AMO)
                 IS_FIREFOX_AMO: browserConfig.browser === Browser.FirefoxAmo,
+                // Other MV3 builds can run in Edge too (e.g. chrome-mv3 installed
+                // from the Chrome Web Store), so the Edge Add-ons build is told
+                // apart at build time.
+                IS_EDGE_MV3: browserConfig.browser === Browser.EdgeMv3,
                 // TODO consider making this variable to be less common used
                 //  (e.g., make it to be __IS_RELEASE__ instead of IS_RELEASE)
                 IS_RELEASE: BUILD_ENV === BuildTargetEnv.Release,

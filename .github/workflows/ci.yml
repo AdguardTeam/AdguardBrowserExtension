@@ -1,20 +1,14 @@
 name: CI
 
 # Lints, unit-tests, and builds the extension on pull requests and pushes to
-# the long-lived branches (master, stable/**). Uploads installable dev builds
-# as artifacts so QA can download them from any PR.
-#
-# Fork PRs are excluded from every job: the shared `team-extensions` runner
-# would otherwise execute PR-controlled npm scripts against the shared pnpm
-# store cache (cache-poisoning surface; no secrets are exposed, but the cache
-# is shared across branches).
+# master. Uploads installable dev builds as artifacts so QA can download them
+# from any PR.
 
 on:
   pull_request:
   push:
     branches:
       - master
-      - 'stable/**'
 
 # Cancel superseded runs of the same workflow/ref so the shared self-hosted
 # runner is never tied up by stale in-flight builds.
@@ -25,7 +19,6 @@ concurrency:
 jobs:
   lint:
     name: Lint
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: team-extensions
     # 30m: this job does two Docker builds (lint + locales) plus actionlint, and
     # the builds stall on the shared runner when several PRs run CI at once —
@@ -37,6 +30,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      # When tsurlfilter-dev-pr.txt on this branch names a tsurlfilter PR,
+      # pin its Artifact Keeper dev builds so the whole pipeline (lint,
+      # tests, builds) runs against them. No-op otherwise.
+      - name: Pin tsurlfilter dev builds (if configured)
+        uses: ./.github/actions/pin-tsurlfilter-dev
 
       # The lint stage fails the docker build directly on lint errors.
       - name: Run lint via Docker
@@ -103,9 +102,16 @@ jobs:
           "${DL}/actionlint" -version
           "${DL}/actionlint" .github/workflows/*.yml
 
+      # actionlint cannot parse action.yml files (it treats them as workflows
+      # and errors), so the pin action keeps its logic in a plain Node script
+      # (pin.mjs) which we syntax-check here.
+      - name: Syntax check composite action scripts
+        run: |
+          set -euo pipefail
+          node --check .github/actions/pin-tsurlfilter-dev/pin.mjs
+
   unit-tests:
     name: Unit tests
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: team-extensions
     timeout-minutes: 30
     permissions:
@@ -113,6 +119,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Pin tsurlfilter dev builds (if configured)
+        uses: ./.github/actions/pin-tsurlfilter-dev
 
       # The Docker stage always exits 0 and reports the result via
       # exit-code.txt so the JUnit report is available even on failure.
@@ -138,7 +147,6 @@ jobs:
 
   dev-build:
     name: Dev build (QA artifacts)
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: team-extensions
     timeout-minutes: 30
     permissions:
@@ -146,6 +154,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Pin tsurlfilter dev builds (if configured)
+        uses: ./.github/actions/pin-tsurlfilter-dev
 
       - name: Build dev extensions via Docker
         run: |
@@ -154,19 +165,67 @@ jobs:
             --target dev-build-output \
             --output type=local,dest=output/dev-build .
 
-      # All *-dev.zip files land here (chrome, chrome-mv3, edge, firefox-amo,
-      # firefox-standalone, opera, opera-mv3) — the QA-downloadable builds.
-      - name: Upload dev builds
+      # Each *-dev.zip (chrome, chrome-mv3, edge, edge-mv3, firefox-amo,
+      # firefox-standalone, opera, opera-mv3) is uploaded as its own artifact
+      # so QA can download only the browser they need.
+      - name: Upload Chrome dev build
         uses: actions/upload-artifact@v7
         with:
-          name: dev-builds
-          path: output/dev-build/artifacts/
+          name: chrome-dev
+          path: output/dev-build/artifacts/chrome-dev.zip
           if-no-files-found: error
-          retention-days: 7
+
+      - name: Upload Chrome MV3 dev build
+        uses: actions/upload-artifact@v7
+        with:
+          name: chrome-mv3-dev
+          path: output/dev-build/artifacts/chrome-mv3-dev.zip
+          if-no-files-found: error
+
+      - name: Upload Edge dev build
+        uses: actions/upload-artifact@v7
+        with:
+          name: edge-dev
+          path: output/dev-build/artifacts/edge-dev.zip
+          if-no-files-found: error
+
+      - name: Upload Edge MV3 dev build
+        uses: actions/upload-artifact@v7
+        with:
+          name: edge-mv3-dev
+          path: output/dev-build/artifacts/edge-mv3-dev.zip
+          if-no-files-found: error
+
+      - name: Upload Firefox AMO dev build
+        uses: actions/upload-artifact@v7
+        with:
+          name: firefox-amo-dev
+          path: output/dev-build/artifacts/firefox-amo-dev.zip
+          if-no-files-found: error
+
+      - name: Upload Firefox standalone dev build
+        uses: actions/upload-artifact@v7
+        with:
+          name: firefox-standalone-dev
+          path: output/dev-build/artifacts/firefox-standalone-dev.zip
+          if-no-files-found: error
+
+      - name: Upload Opera dev build
+        uses: actions/upload-artifact@v7
+        with:
+          name: opera-dev
+          path: output/dev-build/artifacts/opera-dev.zip
+          if-no-files-found: error
+
+      - name: Upload Opera MV3 dev build
+        uses: actions/upload-artifact@v7
+        with:
+          name: opera-mv3-dev
+          path: output/dev-build/artifacts/opera-mv3-dev.zip
+          if-no-files-found: error
 
   chrome-crx:
     name: Chrome CRX (dev)
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: team-extensions
     timeout-minutes: 30
     permissions:
@@ -174,6 +233,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Pin tsurlfilter dev builds (if configured)
+        uses: ./.github/actions/pin-tsurlfilter-dev
 
       - name: Build dev CRX via Docker
         run: |
@@ -192,7 +254,6 @@ jobs:
 
   bundle-size:
     name: Bundle size check
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: team-extensions
     timeout-minutes: 30
     permissions:
@@ -200,6 +261,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Pin tsurlfilter dev builds (if configured)
+        uses: ./.github/actions/pin-tsurlfilter-dev
 
       # Reuses the bundle-size-check Docker stage (same as the old Bamboo
       # "Size and locales check"): builds beta and fails on size regressions.
@@ -213,7 +277,6 @@ jobs:
 
   integration-tests:
     name: Integration tests
-    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: team-extensions
     timeout-minutes: 30
     permissions:
@@ -221,6 +284,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+
+      - name: Pin tsurlfilter dev builds (if configured)
+        uses: ./.github/actions/pin-tsurlfilter-dev
 
       - name: Run integration tests via Docker
         run: |

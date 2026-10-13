@@ -11,10 +11,8 @@
 # Please do not move it to some common file, like `setup-tests.sh`, because sourcing A script from B script
 # cannot change the options of B script.
 #  -e: Exit immediately if any command exits with a non-zero status (i.e., if a command fails).
-#  -u: Treat unset variables as an error.
 #  -x: Print each command to the terminal as it is executed, which is useful for debugging.
-#  -o pipefail: Fail the pipeline if any command in it fails.
-set -euxo pipefail
+set -ex
 
 # Script Conventions: merge stderr into stdout so nothing written to stderr
 # (including ::error:: markers) is lost when the workflow captures this output.

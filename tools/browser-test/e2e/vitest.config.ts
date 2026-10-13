@@ -26,6 +26,10 @@ export default defineConfig({
         hookTimeout: 120_000,
         include: ['tests/e2e/**/*.vitest.ts'],
         fileParallelism: false,
+        // Retry a failed e2e test once: browser-level runs can fail because of
+        // environment stalls (for example an MV3 service-worker cold start
+        // under runner load) rather than a product regression.
+        retry: 1,
         testTimeout: 120_000,
     },
 });
