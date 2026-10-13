@@ -30,10 +30,36 @@ const PACKAGE_JSON_PATH = 'package.json';
 const LOCKFILE_PATH = 'pnpm-lock.yaml';
 
 /**
- * Matches the stable `5.0.<UTC timestamp>` releases that the `~5.0` range
- * resolves to (dev/prerelease builds such as `5.0.2-dev.pr30.…` are excluded).
+ * Matches a stable `<major>.<minor>.<UTC timestamp>` release of the given line
+ * (e.g. `6.0.20261007011026`); dev/prerelease builds such as
+ * `5.0.2-dev.pr30.…` are excluded.
+ *
+ * @param line Target line, e.g. `6.0`.
+ *
+ * @returns Version-matching regular expression.
  */
-const STABLE_5_VERSION_RE = /^5\.0\.(\d+)$/;
+const buildStableVersionRe = (line: string): RegExp => {
+    const escapedLine = line.replace(/\./g, '\\.');
+    return new RegExp(`^${escapedLine}\\.(\\d+)$`);
+};
+
+/**
+ * Derives the target rulesets line (`major.minor`) from the dependency spec
+ * pinned in package.json, e.g. `6.0.0` or `~6.0.20261007011026` -> `6.0`.
+ *
+ * @param spec Pinned dependency spec.
+ *
+ * @returns Target line.
+ *
+ * @throws Error when the spec carries no `major.minor` version.
+ */
+export const resolveTargetLine = (spec: string): string => {
+    const match = /^[~^]?(\d+)\.(\d+)\./.exec(spec);
+    if (!match) {
+        throw new Error(`Cannot derive the dnr-rulesets line from the pinned spec "${spec}": expected a major.minor version`);
+    }
+    return `${match[1]}.${match[2]}`;
+};
 
 /**
  * Rewrites tarball URLs recorded in pnpm-lock.yaml back to the public npm
@@ -67,19 +93,43 @@ export const rewriteDnrRulesetsTarballUrls = (lockfileContent: string, registryB
 };
 
 /**
- * Picks the highest stable `5.0.<timestamp>` version out of a registry's
+ * Picks the version published under the `stable-<line>` dist-tag when it
+ * matches the requested line. Artifact Keeper publishes the 6.0 line under
+ * `stable-6.0`.
+ *
+ * @param distTags Registry `dist-tags` object, if any.
+ * @param line Target line, e.g. `6.0`.
+ *
+ * @returns The tagged version, or `undefined` when the tag is missing or
+ * points at another line.
+ */
+export const resolveStableDistTagVersion = (
+    distTags: Record<string, string> | undefined,
+    line: string,
+): string | undefined => {
+    const version = distTags?.[`stable-${line}`];
+    if (!version || !buildStableVersionRe(line).test(version)) {
+        return undefined;
+    }
+    return version;
+};
+
+/**
+ * Picks the highest stable `<line>.<timestamp>` version out of a registry's
  * published-version list (e.g. AK metadata `versions` keys). This is what
- * pnpm's `@adguard/dnr-rulesets@~5.0` would resolve to.
+ * pnpm's `@adguard/dnr-rulesets@~<line>` would resolve to.
  *
  * @param versions Published version strings.
+ * @param line Target line, e.g. `6.0`.
  *
  * @returns The highest matching version, or `undefined` when none matches.
  */
-export const resolveLatestStableVersion = (versions: string[]): string | undefined => {
+export const resolveLatestStableVersion = (versions: string[], line: string): string | undefined => {
+    const versionRe = buildStableVersionRe(line);
     let latest: string | undefined;
     let latestTimestamp = -1;
     for (const version of versions) {
-        const match = STABLE_5_VERSION_RE.exec(version);
+        const match = versionRe.exec(version);
         if (!match) {
             continue;
         }
@@ -90,6 +140,42 @@ export const resolveLatestStableVersion = (versions: string[]): string | undefin
         }
     }
     return latest;
+};
+
+/**
+ * Extracts the numeric build component of a stable `<line>.<timestamp>`
+ * version (e.g. `6.0.20261008010951` -> `20261008010951`), used to compare
+ * two versions of the same line.
+ *
+ * @param version Version string to parse.
+ * @param line Target line, e.g. `6.0`.
+ *
+ * @returns The numeric component, or `undefined` when the version is not a
+ * stable version of the line.
+ */
+const versionTimestamp = (version: string, line: string): number | undefined => {
+    const match = buildStableVersionRe(line).exec(version);
+    return match ? Number(match[1]) : undefined;
+};
+
+/**
+ * Reports whether installing `candidate` would roll the pinned spec backwards
+ * within the same line. Registry pointers (the `stable-<line>` dist-tag, the
+ * npm `latest`) can lag behind a pin resolved from a newer build, and the
+ * resources update must never downgrade the rulesets.
+ *
+ * @param candidate Resolved candidate version, e.g. `6.0.20261007011026`.
+ * @param pinnedSpec Pinned dependency spec, e.g. `~6.0.20261008010951`.
+ * @param line Target line, e.g. `6.0`.
+ *
+ * @returns `true` when the candidate is strictly older than the pin.
+ */
+export const wouldDowngrade = (candidate: string, pinnedSpec: string, line: string): boolean => {
+    const pinnedTimestamp = versionTimestamp(pinnedSpec.replace(/^[~^]/, ''), line);
+    const candidateTimestamp = versionTimestamp(candidate, line);
+    return pinnedTimestamp !== undefined
+        && candidateTimestamp !== undefined
+        && candidateTimestamp < pinnedTimestamp;
 };
 
 /**
@@ -108,7 +194,7 @@ interface NormalizeUrlDependencyResult {
 /**
  * Converts the "bare tarball URL" dependency entry produced by
  * `pnpm add -D <url>` back into the pinned-version form the repo is committed
- * in (`~5.0.<version>` in package.json, a normal versioned `resolution` in
+ * in (`~<line>.<version>` in package.json, a normal versioned `resolution` in
  * pnpm-lock.yaml).
  *
  * `pnpm add -D <tarball URL>` is used to pull the fresh dnr-rulesets tarball
@@ -120,7 +206,7 @@ interface NormalizeUrlDependencyResult {
  * @param packageJsonContent Raw package.json content.
  * @param lockfileContent Raw pnpm-lock.yaml content.
  * @param tarballUrl The AK tarball URL the package was installed from.
- * @param version The resolved version, e.g. `5.0.20260903144513`.
+ * @param version The resolved version, e.g. `6.0.20261007011026`.
  * @param integrity The sha512 integrity of the tarball.
  *
  * @returns The normalized package.json / lockfile content.
@@ -139,8 +225,8 @@ export const normalizeUrlDependency = (
         throw new Error(`tarball URL ${tarballUrl} not found in the dependency files — cannot normalize the entry`);
     }
 
-    // version already carries the `5.0.` prefix (e.g. 5.0.20260903144513), so
-    // the pinned spec is simply `~<version>`.
+    // version already carries the `<line>.` prefix (e.g. 6.0.20261008010951),
+    // so the pinned spec is simply `~<version>`.
     const specifier = `~${version}`;
     const replaceAll = (input: string, search: string, replacement: string): string => {
         return input.split(search).join(replacement);
@@ -176,7 +262,24 @@ const pnpmBin = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm';
 
 interface PackageMetadata {
     versions?: Record<string, { dist?: { tarball?: string } }>;
+    'dist-tags'?: Record<string, string>;
 }
+
+/**
+ * Resolves the version to install from registry metadata: the `stable-<line>`
+ * dist-tag when the registry publishes one, otherwise the newest published
+ * stable version of the line.
+ *
+ * @param metadata Registry package metadata.
+ * @param line Target line, e.g. `6.0`.
+ *
+ * @returns The resolved version, or `undefined` when the registry has no
+ * stable version of the line.
+ */
+export const resolveTargetVersion = (metadata: PackageMetadata, line: string): string | undefined => {
+    return resolveStableDistTagVersion(metadata['dist-tags'], line)
+        ?? resolveLatestStableVersion(Object.keys(metadata.versions ?? {}), line);
+};
 
 const fetchJson = async (url: string): Promise<PackageMetadata> => {
     const response = await fetch(url, { signal: AbortSignal.timeout(30_000) });
@@ -195,18 +298,21 @@ const sha512Integrity = async (tarballUrl: string): Promise<string> => {
 };
 
 /**
- * Updates stable @adguard/dnr-rulesets to the latest ~5.0, preserving exact prerelease pins.
+ * Updates @adguard/dnr-rulesets to the latest stable version of the line
+ * pinned in package.json (`major.minor`), preserving exact prerelease pins.
  *
  * When DNR_RULESETS_REGISTRY points at the internal Artifact Keeper, the
  * package tarball is fetched from there (npm throttles the shared CI egress
  * IPs) while the rest of the dependency tree still resolves from npm — the AK
  * npm registry only mirrors the @adguard scope, so pnpm cannot resolve the
  * whole tree from it. The committed files then use the pinned
- * `~5.0.<version>` form with tarball URLs pointing back at npm once the fresh
- * version is confirmed there.
+ * `~<line>.<version>` form with tarball URLs pointing back at npm once the
+ * fresh version is confirmed there. An exact pin on the public registry is the
+ * version the release flow selected and is left untouched.
  *
- * @throws {Error} When no stable 5.0.x version of the package is found in the
- * registry, when its metadata/tarball cannot be fetched, or when pnpm fails.
+ * @throws {Error} When the pinned spec carries no line, when no stable version
+ * of that line is found in the registry, when its metadata/tarball cannot be
+ * fetched, or when pnpm fails.
  */
 export const updateDnrRulesets = async (): Promise<void> => {
     const currentPackage = JSON.parse(readFileSync(PACKAGE_JSON_PATH, 'utf8')) as {
@@ -220,25 +326,63 @@ export const updateDnrRulesets = async (): Promise<void> => {
     }
 
     const registry = (process.env.DNR_RULESETS_REGISTRY ?? '').replace(/\/+$/, '') || NPM_REGISTRY;
-    console.log(`Updating ${PACKAGE_NAME} from ${registry}`);
+    const line = resolveTargetLine(pinnedVersion);
+    console.log(`Updating ${PACKAGE_NAME}@${line} from ${registry}`);
 
-    execFileSync(pnpmBin, ['remove', PACKAGE_NAME], { stdio: 'inherit' });
-
-    // Public registry: plain add, nothing else to do.
+    // Public registry: an exact pin is the version selected by the release
+    // flow and is kept as is. A range pin is refreshed only when the public
+    // registry actually carries the line — the 6.0 line is published to
+    // Artifact Keeper only, so there is nothing to resolve from npm.
     if (registry === NPM_REGISTRY) {
-        execFileSync(pnpmBin, ['add', '-D', `${PACKAGE_NAME}@~5.0`], { stdio: 'inherit' });
+        if (!/^[~^]/.test(pinnedVersion)) {
+            console.log(`Keeping exact pin ${PACKAGE_NAME}@${pinnedVersion} on the public registry`);
+            return;
+        }
+
+        // The metadata check is best-effort: npm throttles shared CI egress
+        // IPs (HTTP 429), and a failed check must not abort a resources update
+        // — keep the pin and let the next run retry.
+        let publicVersion: string | undefined;
+        try {
+            const publicMetadata = await fetchJson(`${NPM_REGISTRY}/${PACKAGE_NAME}`);
+            publicVersion = resolveLatestStableVersion(Object.keys(publicMetadata.versions ?? {}), line);
+        } catch (error) {
+            const reason = error instanceof Error ? error.message : String(error);
+            console.warn(`::warning::could not read the public registry metadata for ${PACKAGE_NAME} (${reason}); keeping ${pinnedVersion}`);
+            return;
+        }
+        if (!publicVersion) {
+            console.warn(`::warning::the public registry has no stable ${line}.x version of ${PACKAGE_NAME}; keeping ${pinnedVersion}`);
+            return;
+        }
+        if (wouldDowngrade(publicVersion, pinnedVersion, line)) {
+            console.warn(`::warning::the public registry resolves ${PACKAGE_NAME}@${publicVersion}, older than the pinned ${pinnedVersion}; keeping the pin`);
+            return;
+        }
+
+        execFileSync(pnpmBin, ['remove', PACKAGE_NAME], { stdio: 'inherit' });
+        execFileSync(pnpmBin, ['add', '-D', `${PACKAGE_NAME}@~${line}`], { stdio: 'inherit' });
         return;
     }
 
-    // Resolve the latest ~5.0 from the internal registry metadata.
+    // Resolve the latest stable version of the line from the internal registry
+    // metadata, preferring the `stable-<line>` dist-tag the line publishes
+    // under. The tag can lag behind a pin resolved from a newer build, so
+    // never roll the pin backwards within the line.
     const metadata = await fetchJson(`${registry}/${PACKAGE_NAME}`);
-    const version = resolveLatestStableVersion(Object.keys(metadata.versions ?? {}));
+    const version = resolveTargetVersion(metadata, line);
     if (!version) {
-        throw new Error(`found no stable 5.0.x version of ${PACKAGE_NAME} in ${registry}`);
+        throw new Error(`found no stable ${line}.x version of ${PACKAGE_NAME} in ${registry}`);
+    }
+    if (wouldDowngrade(version, pinnedVersion, line)) {
+        console.warn(`::warning::${registry} resolves ${PACKAGE_NAME}@${version}, older than the pinned ${pinnedVersion}; keeping the pin`);
+        return;
     }
     const tarballUrl = metadata.versions?.[version]?.dist?.tarball
         ?? `${registry}/${PACKAGE_NAME}/-/${PACKAGE_TARBALL_NAME}-${version}.tgz`;
     console.log(`Resolved ${PACKAGE_NAME}@${version} (${tarballUrl})`);
+
+    execFileSync(pnpmBin, ['remove', PACKAGE_NAME], { stdio: 'inherit' });
 
     // Fetch the fresh tarball from AK. pnpm records a bare tarball URL as a
     // URL dependency: the tarball itself is pulled from AK (unthrottled) while
@@ -281,7 +425,7 @@ export const updateDnrRulesets = async (): Promise<void> => {
             console.log(`Rewrote the registry tarball URL in ${LOCKFILE_PATH} back to ${NPM_REGISTRY}`);
         }
     } else {
-        // dnr-rulesets versions are one-shot `5.0.<UTC timestamp>`; a throttled
+        // dnr-rulesets versions are one-shot `<line>.<UTC timestamp>`; a throttled
         // round can produce a version that never lands on npm and is never
         // re-published. Rewriting its tarball URL to npm now would bake a 404
         // into the committed lockfile and wedge every later

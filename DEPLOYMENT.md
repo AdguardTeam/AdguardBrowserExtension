@@ -25,7 +25,7 @@ runner. Release/deploy flows:
 | E2E tests | `e2e.yml` | pull_request |
 | Release prep | `prepare-release.yml` | manual, tag input `vM.m.p.inc[-beta]` |
 | Publish (beta + release) | `publish-release.yml` | merged `release-bump/*` PR / manual |
-| Filters auto-update + CWS auto-publish | `auto-build.yml` | schedule 12:00/17:00 UTC + manual |
+| Filters auto-update + CWS/Edge auto-publish | `auto-build.yml` | schedule 12:00/17:00 UTC + manual |
 
 Release flow:
 
@@ -38,7 +38,8 @@ Release flow:
      Chrome Web Store MV3, Firefox AMO beta, Firefox standalone signing,
      GitHub Release draft (public repo, marked as prerelease)
    - release: static.adtidy.org (chromium + Firefox), Chrome Web Store MV3,
-     Firefox AMO, Edge Add-ons, GitHub Release draft (public repo)
+     Firefox AMO, Edge Add-ons (draft upload; submission is manual),
+     GitHub Release draft (public repo)
    - Opera zips ship as GitHub Release assets only (store submission is manual).
 4. Slack notifications go to `#adguard-extension-vcs`.
 5. After the workflow completes, review the notes and assets in the
@@ -50,13 +51,14 @@ Deploy gates are GitHub environments (approval rules): `beta-static`,
 `production-static`, `chrome-webstore-beta`, `chrome-webstore-release`,
 `firefox-amo-beta`, `firefox-amo-release`, `edge-addons-release`. The
 auto-publish environments `chrome-webstore-beta-auto` /
-`chrome-webstore-release-auto` have no gates (full automation).
+`chrome-webstore-release-auto` / `edge-addons-auto` have no gates (full
+automation).
 
 Workflow files:
 
 - `prepare-release.yml` — opens the `release-bump/*` PR (package.json + CHANGELOG)
 - `publish-release.yml` — tag, build, deploy to static/stores, prepare GitHub Release draft, notify
-- `auto-build.yml` — twice-daily rulesets update + CWS auto-publish
+- `auto-build.yml` — twice-daily rulesets update + CWS/Edge auto-publish
 
 ## Required repository configuration
 
@@ -80,6 +82,7 @@ mid-release runtime failures, so configure them before the first run.
 - `firefox-amo-deployer` — `client-id`, `client-secret` (Firefox signing / AMO)
 - `chrome-webstore-deployer` — `client-id`, `client-secret`, `refresh-token`,
   `publisher-id` (CWS status + auto-publish)
+- `edge-addons-deployer` — `client-id`, `api-key` (Edge Add-ons publish)
 
 **Environments** with approval rules: `beta-static`, `production-static`,
 `chrome-webstore-beta`, `chrome-webstore-release`, `firefox-amo-beta`,
@@ -255,3 +258,12 @@ variants are noted.
   (autobuild-v…)` commit of that full-resources run on `stable/v5.5` — its
   generated changes are recreated by the next full-resources run — and let the
   next scheduled run publish.
+- **Edge submission skipped (`InProgressSubmission`).** The product already has
+  a submission in review and the Edge API refuses a publish while one is in
+  flight; the upload only replaces the draft, it does not cancel the review.
+  The auto-build passes `skip-if-in-progress: true`, so the run logs a
+  `::notice::` that the submission is skipped and reports `state=skipped`
+  instead of failing, then retries on a later run. No notification fires: the
+  shared workflow skips its notify job for `slack-channel: ''`, and the
+  auto-build failure notification fires on a failed run only. Check the Edge
+  Partner Center only when the skip repeats for several days.

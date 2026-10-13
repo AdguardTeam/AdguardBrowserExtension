@@ -189,7 +189,11 @@ Therefore, any updates that include changes to script rules will require the ful
 
 These automated tasks will run all necessary checks: unit tests, translation checks, and linter. After that, they will update resources, including filters and local script rules, create a build, and run integration tests to ensure the update is safe.
 
-Finally, the new version of the extension will be published to the Chrome Web Store.
+Finally, the new version of the extension will be published to the Chrome Web Store, and the Edge MV3 release build will be submitted to Edge Add-ons.
+
+### Edge submission
+
+Edge Add-ons reviews every submission and has no skip-review mode, so the auto-build submits the Edge MV3 release build on every run. The Edge API has no endpoint that reports the review state: an upload only replaces the draft, and a publish while a submission is in review is refused with `InProgressSubmission`. The auto-build passes `skip-if-in-progress: true`, so such a run reports the submission as skipped (`state=skipped`) instead of failing; every other failure still fails the job. The scheduled auto-build is the only job that submits to Edge: manual releases upload the package as a draft (`publish: false`), and the submission is made from Partner Center. Edge has a single store listing; there is no Edge beta channel.
 
 ## <a name="versioning-schema"></a> Versioning Schema
 

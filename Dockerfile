@@ -710,6 +710,7 @@ RUN --mount=type=secret,id=CHROME_CLIENT_ID,required=true \
 # ============================================================================
 # Stage: auto-build
 # Updates filter rulesets, increments version, builds beta+release chrome-mv3
+# and release edge-mv3
 # Outputs: artifacts (zips + build.txt + cws-publish.properties) + modified
 # source files (rulesets, locales, local script rules and package.json) for git
 # commit
@@ -771,9 +772,10 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     fi && \
     # Increment patch version.
     pnpm increment && \
-    # Build both channels.
+    # Build both channels; Edge MV3 is submitted as the release build only.
     pnpm beta chrome-mv3 --zip && \
     pnpm release chrome-mv3 --zip && \
+    pnpm release edge-mv3 --zip && \
     mkdir -p /out/artifacts && \
     # Compare the build with the extension currently published in CWS before
     # publishing it: an expedited build must contain only safe rule resources,
@@ -803,6 +805,7 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # Collect build artifacts.
     mv build/beta/chrome-mv3.zip /out/artifacts/chrome-mv3-beta.zip && \
     mv build/release/chrome-mv3.zip /out/artifacts/chrome-mv3-release.zip && \
+    mv build/release/edge-mv3.zip /out/artifacts/edge-mv3-release.zip && \
     cp build/release/build.txt /out/artifacts/ && \
     # Collect modified source files for git commit.
     # Uses marker file to find files changed by pnpm resources:mv3 and pnpm increment.

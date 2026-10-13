@@ -1,9 +1,10 @@
 name: Auto build
 
 # Twice a day (12:00 and 17:00 UTC): updates @adguard/dnr-rulesets and
-# local resources on the stable branch, rebuilds Chrome MV3 beta + release,
-# and auto-publishes them to the Chrome Web Store when the store reports the
-# channel as available. Replaces Bamboo plans auto-build + auto-publish.
+# local resources on the stable branch, rebuilds Chrome MV3 beta + release and
+# Edge MV3 release, auto-publishes Chrome to the Chrome Web Store when the
+# store reports the channel as available, and submits Edge MV3 to Edge Add-ons.
+# Replaces Bamboo plans auto-build + auto-publish.
 # Builds are published with skip review, except on Mondays and Thursdays,
 # when the full resources update goes through the standard review. A build
 # whose diff against the version currently in the store falls outside the
@@ -334,13 +335,15 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
-      # The CWS workflows expect the extension archive to be named chrome.zip.
-      - name: Stage CWS artifacts
+      # The CWS workflows expect the extension archive to be named chrome.zip;
+      # the Edge workflow expects edge.zip.
+      - name: Stage store artifacts
         run: |
           set -euo pipefail
-          mkdir -p staged/cws-auto-beta staged/cws-auto-release
+          mkdir -p staged/cws-auto-beta staged/cws-auto-release staged/edge-auto
           cp output/auto-build/artifacts/chrome-mv3-beta.zip staged/cws-auto-beta/chrome.zip
           cp output/auto-build/artifacts/chrome-mv3-release.zip staged/cws-auto-release/chrome.zip
+          cp output/auto-build/artifacts/edge-mv3-release.zip staged/edge-auto/edge.zip
 
       - name: Upload CWS beta artifact
         uses: actions/upload-artifact@v7
@@ -355,6 +358,14 @@ jobs:
         with:
           name: cws-auto-release
           path: staged/cws-auto-release/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload Edge artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: edge-auto-release
+          path: staged/edge-auto/
           if-no-files-found: error
           retention-days: 7
 
@@ -491,9 +502,35 @@ jobs:
       contents: read
       id-token: write   # Vault JWT/OIDC
 
+  publish-edge:
+    name: Auto-publish MV3 release to Edge Add-ons
+    needs: [update-filters-and-build, integration-tests]
+    uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-edge-addons.yml@master
+    with:
+      team: extensions
+      environment: edge-addons-auto
+      artifact-name: edge-auto-release
+      product-id: ${{ vars.EDGE_ADDONS_PRODUCT_ID }}
+      api-version: v1.1
+      # The scheduled auto-build is the only Edge publisher; the shared
+      # workflow defaults to publish: false, so releases only upload a draft.
+      publish: true
+      # Edge reviews every submission for days and refuses a publish while one
+      # is in review (`InProgressSubmission`); the upload only replaces the
+      # draft. The shared workflow turns that refusal into a benign skip, so
+      # the run reports `state=skipped` instead of failing until the review
+      # ends. Every other failure still fails the job.
+      skip-if-in-progress: true
+      slack-channel: ''
+      product: AdGuard Browser Extension MV3
+      version-title: ${{ needs.update-filters-and-build.outputs.version }}
+    permissions:
+      contents: read
+      id-token: write   # Vault JWT/OIDC
+
   notify-failure:
     name: Notify (failure)
-    needs: [check-cws, lint, unit-tests, update-filters-and-build, integration-tests, publish-cws-beta, verify-cws-beta, publish-cws-release, verify-cws-release]
+    needs: [check-cws, lint, unit-tests, update-filters-and-build, integration-tests, publish-cws-beta, verify-cws-beta, publish-cws-release, verify-cws-release, publish-edge]
     # The decision is computed in the `Decide whether to notify` step from the
     # results of every job in `needs`: a publish failure whose verify job proved
     # the build is in the store is benign, which `needs.*.result` alone cannot
@@ -520,6 +557,7 @@ jobs:
             verify-cws-beta=${{ needs.verify-cws-beta.result }}
             publish-cws-release=${{ needs.publish-cws-release.result }}
             verify-cws-release=${{ needs.verify-cws-release.result }}
+            publish-edge=${{ needs.publish-edge.result }}
         run: |
           set -euo pipefail
           should_notify=false
@@ -547,5 +585,5 @@ jobs:
         uses: AdGuardSoftwareLimited/actions/actions/slack@master
         with:
           channel: '#adguard-extension-vcs'
-          message: ':cross-mark: *browser-extension* auto-build failed (check-cws: ${{ needs.check-cws.result }}, lint: ${{ needs.lint.result }}, unit: ${{ needs.unit-tests.result }}, build: ${{ needs.update-filters-and-build.result }}, integration: ${{ needs.integration-tests.result }}, cws-beta: ${{ needs.publish-cws-beta.result }}, cws-beta-verify: ${{ needs.verify-cws-beta.result }}, cws-release: ${{ needs.publish-cws-release.result }}, cws-release-verify: ${{ needs.verify-cws-release.result }}) — <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>'
+          message: ':cross-mark: *browser-extension* auto-build failed (check-cws: ${{ needs.check-cws.result }}, lint: ${{ needs.lint.result }}, unit: ${{ needs.unit-tests.result }}, build: ${{ needs.update-filters-and-build.result }}, integration: ${{ needs.integration-tests.result }}, cws-beta: ${{ needs.publish-cws-beta.result }}, cws-beta-verify: ${{ needs.verify-cws-beta.result }}, cws-release: ${{ needs.publish-cws-release.result }}, cws-release-verify: ${{ needs.verify-cws-release.result }}, edge: ${{ needs.publish-edge.result }}) — <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>'
           color: danger

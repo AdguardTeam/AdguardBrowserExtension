@@ -579,7 +579,7 @@ jobs:
       id-token: write
 
   publish-edge-release:
-    name: Publish release to Edge Add-ons
+    name: Upload release draft to Edge Add-ons
     needs: [resolve-version, build]
     if: needs.resolve-version.outputs.channel == 'release'
     uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-edge-addons.yml@master
@@ -588,6 +588,10 @@ jobs:
       environment: edge-addons-release
       artifact-name: edge-release
       product-id: ${{ vars.EDGE_ADDONS_PRODUCT_ID }}
+      # The scheduled auto-build is the only job that submits to Edge. Manual
+      # releases only upload the new version as a draft, so it can be reviewed
+      # and submitted from Partner Center after QA.
+      publish: false
       slack-channel: ''
       product: AdGuard AdBlocker
       version-title: ${{ needs.resolve-version.outputs.tag }}

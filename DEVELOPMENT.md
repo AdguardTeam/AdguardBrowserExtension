@@ -147,9 +147,9 @@ following the compiler and filter publication work in
 [AG-59359](https://jira.int.agrd.dev/browse/AG-59359) and
 [AG-59360](https://jira.int.agrd.dev/browse/AG-59360).
 
-Stable `5.0.<timestamp>` packages include Edge MV3 resources and are fetched
-from Artifact Keeper; installing them requires access to the work network.
-Run `pnpm resources:mv3` to populate
+Stable `6.0.<timestamp>` packages (Artifact Keeper dist-tag `stable-6.0`)
+include Edge MV3 resources and are fetched from Artifact Keeper; installing them
+requires access to the work network. Run `pnpm resources:mv3` to populate
 `Extension/filters/edge-mv3`, then build with `pnpm dev edge-mv3 --zip`
 (or `beta` / `release`). The build does not substitute Chromium resources when
 the Edge resources are missing. Before releasing, record measured bundle sizes
@@ -167,9 +167,11 @@ same extension ID and a higher extension version. Installing an unpacked copy
 with a different ID does not exercise migration. Check settings, user rules,
 allowlist, custom filters and enabled filter/group states after the update and
 after restarting Edge. Check blocking and MV3 rule-limit behavior separately
-from data preservation. Release publishing sends the Edge MV3 ZIP to the
-existing Edge Add-ons listing. Beta builds include the ZIP for QA without
-publishing it to Edge Add-ons.
+from data preservation. The scheduled auto-build is the only job that submits
+the Edge MV3 ZIP to the existing Edge Add-ons listing; manual release publishing
+only uploads it as a draft (`publish: false`), and the submission is made from
+Partner Center. Beta builds include the ZIP for QA without publishing it to
+Edge Add-ons.
 
 <a name="dev-tests-and-build"></a>
 
@@ -519,16 +521,25 @@ The `pnpm resources` command performs the following steps:
 
 The MV3-only command (`pnpm resources:mv3`) performs these steps:
 
-1. **Updates dnr-rulesets package**: Installs the latest `@adguard/dnr-rulesets`
-   stable package via `tools/resources/update-dnr-rulesets.ts`. An exactly pinned
-   prerelease is retained so preparing resources cannot downgrade it. CI passes the internal
-   Artifact Keeper npm registry (the `DNR_RULESETS_REGISTRY` env var) to avoid
-   npm rate limiting on shared CI egress IPs; when the variable is not set, the
-   public npm registry is used (set the variable locally only while on the VPN).
-   The Artifact Keeper `npm-internal` repository only mirrors `@adguard`-scoped
-   packages, so only the dnr-rulesets tarball is actually fetched from it — the
-   rest of the dependency tree still resolves from npm. The tarball URL recorded
-   in `pnpm-lock.yaml` is rewritten back to `registry.npmjs.org` once the fresh
+1. **Updates dnr-rulesets package**: Installs the latest stable
+   `@adguard/dnr-rulesets` version of the line pinned in `package.json` (`6.0`
+   for a `6.0.0` or `~6.0.<timestamp>` spec) via
+   `tools/resources/update-dnr-rulesets.ts`. An exactly pinned prerelease is
+   retained so preparing resources cannot downgrade it, and an exact stable pin
+   is left untouched on the public registry; a range pin is refreshed from npm
+   only when that line is actually published there (the 6.0 line is Artifact
+   Keeper-only). CI passes the internal Artifact
+   Keeper npm registry (the `DNR_RULESETS_REGISTRY` env var) to avoid npm rate
+   limiting on shared CI egress IPs; there the updater prefers the line's
+   `stable-<line>` dist-tag and falls back to the newest `<line>.<timestamp>`
+   version. A registry pointer that resolves older than the pin (for example a
+   lagging `stable-<line>` tag) keeps the pin and warns instead of rolling the
+   rulesets back. When the variable is not set, the public npm registry is used (set
+   the variable locally only while on the VPN). The Artifact Keeper
+   `npm-internal` repository only mirrors `@adguard`-scoped packages, so only
+   the dnr-rulesets tarball is actually fetched from it — the rest of the
+   dependency tree still resolves from npm. The tarball URL recorded in
+   `pnpm-lock.yaml` is rewritten back to `registry.npmjs.org` once the fresh
    version is confirmed published there, so installs keep working where Artifact
    Keeper is unreachable (e.g. the public mirror).
 2. **Copies MV3 resources**: Loads the prebuilt filters, metadata and declarative rulesets for Chrome, Opera and Edge from the updated package.
