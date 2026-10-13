@@ -1,9 +1,9 @@
-! Checksum: WoBO59z9h9Jtb8osdgtDWg
-! Diff-Path: ../patches/5/5-s-1791202323-3600.patch
+! Checksum: tpoQxWy5YOIGqePjRdRTCQ
+! Diff-Path: ../patches/5/5-s-1791821395-3600.patch
 ! Title: AdGuard Experimental filter
 ! Description: Filter designed to test certain hazardous filtering rules before they are added to the basic filters.
-! Version: 2.0.2.4
-! TimeUpdated: 2026-10-05T12:08:24+00:00
+! Version: 2.0.2.5
+! TimeUpdated: 2026-10-12T16:06:29+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -76,9 +76,6 @@
 ! Rules that are restricted to one or more domains.
 ! This section contain any type of rule grouped by domain.
 !
-! Fixes muting videos when `web_streaming_watch` is set to `true`
-! TODO: Move to Base filter after few days
-www.youtube.com#%#//scriptlet('json-prune', '$.playerResponse[?(@.cards&&!@.playabilityStatus.miniplayer)].playerConfig.audioConfig.muteOnStart')
 ! remove anti-adb
 ! !#if (!adguard_ext_firefox)
 ! www.youtube.com#%#(()=>{const wrapper=(target,thisArg,args)=>{let result=Reflect.apply(target,thisArg,args);try{const decoded=atob(result);if(decoded.includes('bkaEnforcementMessage')){const modifiedContent=decoded.replace(/\n.\n.auxiliaryUi\.messageRenderers\.bkaEnforcementMessageViewModel\.displayType.\dENFORCEMENT_MESSAGE_VIEW_MODEL_DISPLAY_TYPE_[A-Z]+\n.\n.auxiliaryUi\.messageRenderers\.bkaEnforcementMessageViewModel\.isVisible.{2}(?:tru|fals)e/,'');const encodeToBase64=btoa(modifiedContent);return encodeToBase64}}catch(e){} return result};const handler={apply:wrapper};window.Array.prototype.join=new Proxy(window.Array.prototype.join,handler)})();

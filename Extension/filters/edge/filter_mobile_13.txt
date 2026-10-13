@@ -1,10 +1,11 @@
-! Checksum: qAysiaB5SRk8x3K3F8nGlA
-! Diff-Path: ../patches/13_optimized/13_optimized-s-1791436229-3600.patch
+! Checksum: 6vzCn0g94EGP1lS6yvpitA
+! Diff-Path: ../patches/13_optimized/13_optimized-s-1791842946-3600.patch
 ! Title: AdGuard Turkish filter (Optimized)
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.68.79
-! TimeUpdated: 2026-10-08T05:07:17+00:00
+! Version: 2.0.68.93
+! TimeUpdated: 2026-10-12T22:06:13+00:00
 ! Expires: 10 days (update frequency)
+||apk-2.online^$third-party
 ||geniusclickad.cc^
 ||remotedesk.life^
 ||zentryx.space^
@@ -1065,6 +1066,11 @@ $xmlhttprequest,third-party,denyallow=mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.l
 /service/advertchannels?$domain=kocaelifikir.com|anayurtgazetesi.com|medyaankara.com|ozgunkocaeli.com.tr|urfanatik.com|dirilispostasi.com|turkuazgazetesi.net|yenialanya.com|bugunkocaeli.com.tr|cagdaskocaeli.com.tr|mansetaydin.com|enkocaeli.com|kocaelikoz.com|kocaelibarisgazetesi.com|seskocaeli.com|sigortahaber.com
 /service/advertchannels?$xmlhttprequest,redirect=nooptext,domain=mardinhaber.com.tr|gidahatti.com|bolugundem.com
 dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdaskocaeli.com.tr,mansetaydin.com,seskocaeli.com,kocaelibarisgazetesi.com,kocaelikoz.com,enkocaeli.com##.block-pano > div.us
+||storage.googleapis.com^$domain=log.com.tr
+ddizimag.com#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', '/popup/i')
+||betimtv.com/theme-images/
+betimtv.com##.navbar
+androidoyun.club##img[style^="width: 300px; height: 300px;"]
 proje724.com##aside:has(> div > a[data-ad-link])
 turkifsa.blog##.center-overlay
 ||cdn.okiksdelivery.com^$script,domain=turkifsa.blog
@@ -5805,17 +5811,17 @@ x.palv2.cfd###adPlayerBanner
 [$domain=/restmacizle\d+\.cfd$/]##.header-nav > a[href="/"] ~ a[href][target="_blank"]
 [$domain=/tvakin\d?\.live$/]##div[onclick^="window.open('https://direk"]
 [$domain=/tvakin\d?\.live$/]##.marquee-banner
-patrongol37.cfd##a[href="https://x.com/patronsporis"] ~ a[href][target="_blank"]:not(#telegram-link)
-patrongol37.cfd##.background-link
-patrongol37.cfd##.top-banner-header
-||blogger.googleusercontent.com/img/$domain=patrongol37.cfd
+patrongol38.cfd##a[href="https://x.com/patronsporis"] ~ a[href][target="_blank"]:not(#telegram-link)
+patrongol38.cfd##.background-link
+patrongol38.cfd##.top-banner-header
+||blogger.googleusercontent.com/img/$domain=patrongol38.cfd
 !+ NOT_VALIDATE
-||blogger.googleusercontent.com/img/$domain=/patron(live\|futbol)\d+\.cfd$/
-[$domain=/patron(live\|futbol)\d+\.cfd$/]##.channel-ad-item
-[$domain=/patron(live\|futbol)\d+\.cfd$/]##.background-link
-[$domain=/patron(live\|futbol)\d+\.cfd$/]##.top-banner-header
-[$domain=/patron(live\|futbol)\d+\.cfd$/]##a[href="https://x.com/patronsporis"] ~ a[href][target="_blank"]:not(#telegram-link)
-[$domain=/patron(live\|futbol)\d+\.cfd$/]#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', '/prerollEnabled\s*:\s*true/g', 'prerollEnabled: false')
+||blogger.googleusercontent.com/img/$domain=/patron(live\|futbol\|hd)\d+\.cfd$/
+[$domain=/patron(live\|futbol\|hd)\d+\.cfd$/]##.channel-ad-item
+[$domain=/patron(live\|futbol\|hd)\d+\.cfd$/]##.background-link
+[$domain=/patron(live\|futbol\|hd)\d+\.cfd$/]##.top-banner-header
+[$domain=/patron(live\|futbol\|hd)\d+\.cfd$/]##a[href="https://x.com/patronsporis"] ~ a[href][target="_blank"]:not(#telegram-link)
+[$domain=/patron(live\|futbol\|hd)\d+\.cfd$/]#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', '/prerollEnabled\s*:\s*true/g', 'prerollEnabled: false')
 ||papaztv*.com/assets/images/banners/
 [$domain=/papaztv\d?\.com$/]##div[class*="-banner"]
 [$domain=/papaztv\d?\.com$/]##.trusted-sites-section
@@ -6025,9 +6031,9 @@ canlikolik.my,canlikolik1.my,canlikolik2.my,canlikolik3.my,canlikolik4.my,canlik
 ##a[target="_blank"] > img.justintvizle
 ##.justintvizle > a[target="_blank"]
 [$path=/channel.html?id=]#%#//scriptlet('set-constant', 'window.config.adv.enabled', '0')
-||blogger.googleusercontent.com/img/$domain=netsporgiris.pro|taraftarium24turkiye.com|taraftarium24.is|melaniekannokada.com|taraftarium-24.pro|justintvsh.baby|dmlstechnology.com|justintvde.com|justin-tv.org|inattvgiris.pro|justintv.cc|justintv.*|taraftariumizle.org|taraftarium24.dev|taraftarium-24.com|taraftarium-24.co|tvjustin.com|tvjustin.*|sadeceiptv.com|justin-tv.pro|taraftarium24.xyz|taraftarium.co|melidonium.com|mgviagrtoomuch.com|uscoutfor.com
-||cdn.jsdelivr.net^$media,redirect=noopmp3-0.1s,domain=netsporgiris.pro|taraftarium24turkiye.com|taraftarium24.is|melaniekannokada.com|taraftarium-24.pro|justintvsh.baby|dmlstechnology.com|justintvde.com|justin-tv.org|inattvgiris.pro|justintv.cc|justintv.*|taraftariumizle.org|taraftarium24.dev|taraftarium-24.co|taraftarium-24.com|tvjustin.*|sadeceiptv.com|justin-tv.pro|taraftarium24.xyz|taraftarium.co|melidonium.com|mgviagrtoomuch.com|uscoutfor.com
-netsporgiris.pro,taraftarium24turkiye.com,taraftarium24.is,uscoutfor.com,mgviagrtoomuch.com,melidonium.com,melaniekannokada.com,taraftarium-24.pro,taraftarium24.xyz,justin-tv.pro,tvjustin.*,taraftarium.co,sadeceiptv.com,taraftariumizle.org,taraftarium24.dev,taraftarium-24.com,taraftarium-24.co,justintvsh.baby,dmlstechnology.com,justintvde.com,justin-tv.org,inattvgiris.pro,justintv.cc,justintv.*#%#//scriptlet('trusted-dispatch-event', 'ended', '#preroll-video')
+||blogger.googleusercontent.com/img/$domain=justintvturkiyesh.vip|netsporgiris.pro|taraftarium24turkiye.com|taraftarium24.is|melaniekannokada.com|taraftarium-24.pro|justintvsh.baby|dmlstechnology.com|justintvde.com|justin-tv.org|inattvgiris.pro|justintv.cc|justintv.*|taraftariumizle.org|taraftarium24.dev|taraftarium-24.com|taraftarium-24.co|tvjustin.com|tvjustin.*|sadeceiptv.com|justin-tv.pro|taraftarium24.xyz|taraftarium.co|melidonium.com|mgviagrtoomuch.com|uscoutfor.com
+||cdn.jsdelivr.net^$media,redirect=noopmp3-0.1s,domain=justintvturkiyesh.vip|netsporgiris.pro|taraftarium24turkiye.com|taraftarium24.is|melaniekannokada.com|taraftarium-24.pro|justintvsh.baby|dmlstechnology.com|justintvde.com|justin-tv.org|inattvgiris.pro|justintv.cc|justintv.*|taraftariumizle.org|taraftarium24.dev|taraftarium-24.co|taraftarium-24.com|tvjustin.*|sadeceiptv.com|justin-tv.pro|taraftarium24.xyz|taraftarium.co|melidonium.com|mgviagrtoomuch.com|uscoutfor.com
+justintvturkiyesh.vip,netsporgiris.pro,taraftarium24turkiye.com,taraftarium24.is,uscoutfor.com,mgviagrtoomuch.com,melidonium.com,melaniekannokada.com,taraftarium-24.pro,taraftarium24.xyz,justin-tv.pro,tvjustin.*,taraftarium.co,sadeceiptv.com,taraftariumizle.org,taraftarium24.dev,taraftarium-24.com,taraftarium-24.co,justintvsh.baby,dmlstechnology.com,justintvde.com,justin-tv.org,inattvgiris.pro,justintv.cc,justintv.*#%#//scriptlet('trusted-dispatch-event', 'ended', '#preroll-video')
 taraftarium.co##.topDuyuru
 netsporgiris.pro,taraftarium24turkiye.com,uscoutfor.com,mgviagrtoomuch.com,melidonium.com,melaniekannokada.com,taraftarium-24.pro,taraftarium24.xyz,tvjustin.*,taraftarium.co,sadeceiptv.com,taraftariumizle.org,taraftarium24.dev,taraftarium-24.co,taraftarium-24.com,justin-tv.pro,taraftarium24.is,justintvsh.baby,dmlstechnology.com,justintvde.com,justin-tv.org,inattvgiris.pro,justintv.cc,justintv.*###splash-banner
 justintvsh.baby,dmlstechnology.com,justintvde.com,justin-tv.org,inattvgiris.pro,justintv.*##div[class^="footer-"]
@@ -6036,7 +6042,7 @@ justintvsh.baby,dmlstechnology.com,justintvde.com,justin-tv.org,inattvgiris.pro,
 justintvsh.baby,dmlstechnology.com,justintvde.com,justin-tv.org,inattvgiris.pro,justintv.*##.wpb_wrapper > a[target="_blank"][style^="color:red; background-color:black; padding:10px; display:inline-block;"]
 tvjustin.*,justintvsh.baby,dmlstechnology.com,justintvde.com,justin-tv.org,inattvgiris.pro,justintv.*##a[target="_blank"][rel*="noopener"] > img
 justintvsh.baby,dmlstechnology.com,justintvde.com,justin-tv.org,inattvgiris.pro,justintv.*#%#//scriptlet('set-constant', 'window.config.adv.enabled', '0')
-justintvizle735.top###video_reklam
+justintvizle736.top,justintvizle737.top,justintvizle738.top,justintvizle739.top,justintvizle740.top###video_reklam
 ||justintvizle*.top/dimg/*.gif
 ||justintvizle*.top/cdn/r/
 ||selcuksports*.top/dimg/*.gif

@@ -1,9 +1,9 @@
-! Checksum: fNMxRf2SUjI1JDPkJH7WQA
-! Diff-Path: ../patches/1/1-s-1791443966-3600.patch
+! Checksum: 8A33TiOqpJuLe8A5ioV3OQ
+! Diff-Path: ../patches/1/1-s-1791814568-3600.patch
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.1.8.99
-! TimeUpdated: 2026-10-08T07:15:38+00:00
+! Version: 2.1.9.6
+! TimeUpdated: 2026-10-12T14:11:55+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -3916,6 +3916,8 @@ newsyou.info,4mama.ua,autoua.net,censor.net,eurointegration.com.ua,gagadget.com,
 ! NOTE: UA rules copied to Ukrainian filter
 ! TODO: Remove not multi lang rules with .ua tld after splitting the filter (look at the end of file)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/243621
+ani7.top,jut-su.online#%#//scriptlet('google-ima3')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/242938
 questtime.net#%#//scriptlet('abort-on-property-read', 'pageVars.itemAc')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/240854
@@ -5134,6 +5136,7 @@ eda.yandex.ru##main > div[style^="margin-bottom:"]:has(> div > div > button + di
 ! Yandex.Pogoda
 !
 ! Yandex.Market
+market.yandex.ru##div[data-apiary-widget-name="@monetize/MainShowcase"]
 market.yandex.ru##div[data-apiary-widget-name="@monetize/HeroContentCarousel"]
 market.yandex.ru##div[data-apiary-widget-name="@monetize/HeroSlideshow"]
 market.yandex.ru##div[data-zone-name="heroBannerCarousel"]
@@ -6775,6 +6778,7 @@ avtocod.ru,love.ngs.ru,mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,del
 !
 ! NOTE: Specific rules
 !
+||yandex.ru./ads/adfox/
 kinobase.org##div[id^="ad"]
 fakty.ua##.nts-ad
 liga.net##.remp-banner
@@ -7148,6 +7152,10 @@ sport-express.ru,gorod24.online,vedomosti.ru,kommersant.ru,rg.ru,glavbukh.ru,che
 !
 ! NOTE: Specific rules
 !
+rosteplo.ru##div[style="margin: auto; text-align:left;"]
+securitylab.ru##.webinar-shell
+securitylab.ru##.aside-col:has(> div.text-center > div[class^="ptad-"])
+banki.ru##aside > div[class^="node-wikibank_styles_"]:has(div[data-banner])
 aliexpress.ru##div[class^="ModuleBannerNew_ModuleBannerNew__banner"]
 kontragent.vbr.ru##div[data-component="interesting-products-content"]
 ||plusani.me/assets/promo/preroll.js

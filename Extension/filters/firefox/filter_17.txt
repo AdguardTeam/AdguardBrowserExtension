@@ -1,9 +1,9 @@
-! Checksum: lrkgkGZahFkNYhSJRxXF5g
-! Diff-Path: ../patches/17/17-s-1791439872-3600.patch
+! Checksum: W8ACOGjWe8RmAGFOadZ3Kg
+! Diff-Path: ../patches/17/17-s-1791803521-3600.patch
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.14.64
-! TimeUpdated: 2026-10-08T06:09:04+00:00
+! Version: 2.0.14.70
+! TimeUpdated: 2026-10-12T11:08:30+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -22,6 +22,9 @@
 !
 ! NOTE: Generic rules
 !
+! Prisjakt
+! https://developer.prisjakt.nu/docs/sections/for-shops/analytics/pj-pixel/
+$removeparam=pjclid
 ! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-17285759
 $removeparam=/^weekend-reading-link-\d{6}$/
 ! Not identified. Used on avira.com, malwarebytes.com and some other sites
@@ -535,6 +538,8 @@ $removeparam=tduid
 ! Good: ||example.org^$removeparam=cx
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/244026
+||elcomercio.es^$removeparam=mrfcid
 ! https://github.com/AdguardTeam/AdguardFilters/issues/243658
 ||sp.mbga.jp^$removeparam=_from
 ||sp.mbga.jp^$removeparam=_fr
@@ -939,7 +944,6 @@ ref=shadcn.com^$removeparam=ref
 ! https://github.com/AdguardTeam/AdguardFilters/issues/223062
 ||topics.smt.docomo.ne.jp^$removeparam=fm
 ||topics.smt.docomo.ne.jp^$removeparam=fm_topics_id
-||topics.smt.docomo.ne.jp^$removeparam=redirect
 ! https://github.com/AdguardTeam/AdguardFilters/issues/222573
 ||online.nojima.co.jp^$removeparam=campaign
 ! https://github.com/AdguardTeam/AdguardFilters/issues/221928
@@ -3887,6 +3891,7 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! https://github.com/AdguardTeam/AdguardFilters/issues/236387
 @@||shopify.com/authentication/$removeparam=analytics_trace_id
 ! https://github.com/AdguardTeam/AdguardFilters/issues/230641
+@@/e/er?$removeparam=elqCampaignId,domain=s1740541080.t.eloqua.com|app.econnect.utexas.edu|clk.texaslonghorns.com
 @@/e/er?$removeparam=elqTrackId,domain=s1740541080.t.eloqua.com|app.econnect.utexas.edu|clk.texaslonghorns.com
 @@/e/er?$removeparam=elq,domain=s1740541080.t.eloqua.com|app.econnect.utexas.edu|clk.texaslonghorns.com
 @@/e/er?$removeparam=elqaid,domain=s1740541080.t.eloqua.com|app.econnect.utexas.edu|clk.texaslonghorns.com

@@ -1,9 +1,9 @@
-! Checksum: hkUmC4iOBZ+HfguJX/x6/g
-! Diff-Path: ../patches/9_optimized/9_optimized-s-1791443984-3600.patch
+! Checksum: Uq40hIPMy/pXEU76dy6QHg
+! Diff-Path: ../patches/9_optimized/9_optimized-s-1791785899-3600.patch
 ! Title: AdGuard Spanish/Portuguese filter (Optimized)
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.35.99
-! TimeUpdated: 2026-10-08T07:16:18+00:00
+! Version: 2.0.36.1
+! TimeUpdated: 2026-10-12T06:14:20+00:00
 ! Expires: 10 days (update frequency)
 ||otzads.net^
 ||bivogrvfyoj.in^
@@ -193,6 +193,7 @@ hardwarepremium.com#@#.sponsored-ad
 otakufilmes.org#$#body { overflow: auto !important; }
 otakufilmes.org#$##adblock-overlay { display: none !important; }
 otakufilmes.org#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'adblock')
+darkmahou.io#%#//scriptlet('abort-on-stack-trace', 'setTimeout', 'start')
 darkmahou.io#%#//scriptlet("prevent-addEventListener", "DOMContentLoaded", "adblock")
 darkmahou.io#@#.ad-slot
 ||pagead2.googlesyndication.com/pagead/js/adsbygoogle.js$redirect=noopjs,domain=htforum.net
@@ -1527,6 +1528,7 @@ locopelis.com##.btn-download
 idinheiro.com.br##.ads-idi
 serasa.com.br##div[data-name="ads"]
 ||olympusxyz.com/ad-*.js
+redecanais.tr,redecanais.ae,redecanaistv.tr,redecanaistv.ae,redecanais.*,redecanaistv.*##div[data-rc1win-pronto]
 redecanais.pk,redecanaistv.pk,redecanais.*,redecanaistv.*#%#//scriptlet('prevent-addEventListener', 'click', '_0x')
 infobae.com##main > aside.rail-section:has(> div.ad-wrapper)
 infobae.com##.marfeel-recommender

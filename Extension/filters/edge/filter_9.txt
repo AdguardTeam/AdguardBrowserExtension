@@ -1,9 +1,9 @@
-! Checksum: EybpqmFx8oCKlgB22vKagg
-! Diff-Path: ../patches/9/9-s-1791443975-3600.patch
+! Checksum: N5x0i8FM40d1ZoclZgaFkg
+! Diff-Path: ../patches/9/9-s-1791785889-3600.patch
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.35.99
-! TimeUpdated: 2026-10-08T07:16:18+00:00
+! Version: 2.0.36.1
+! TimeUpdated: 2026-10-12T06:14:20+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -246,7 +246,9 @@ hardwarepremium.com#@#.sponsored-ad
 otakufilmes.org#$#body { overflow: auto !important; }
 otakufilmes.org#$##adblock-overlay { display: none !important; }
 otakufilmes.org#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'adblock')
+! https://github.com/uBlockOrigin/uAssets/issues/34810
 ! https://www.reddit.com/r/uBlockOrigin/comments/1vj17s5/adblock_detection_on_httpsdarkmahouio/
+darkmahou.io#%#//scriptlet('abort-on-stack-trace', 'setTimeout', 'start')
 darkmahou.io#%#//scriptlet("prevent-addEventListener", "DOMContentLoaded", "adblock")
 darkmahou.io#@#.ad-slot
 ! https://github.com/AdguardTeam/AdguardFilters/issues/237709
@@ -2267,6 +2269,7 @@ locopelis.com##.btn-download
 idinheiro.com.br##.ads-idi
 serasa.com.br##div[data-name="ads"]
 ||olympusxyz.com/ad-*.js
+redecanais.tr,redecanais.ae,redecanaistv.tr,redecanaistv.ae,redecanais.*,redecanaistv.*##div[data-rc1win-pronto]
 redecanais.pk,redecanaistv.pk,redecanais.*,redecanaistv.*#%#//scriptlet('prevent-addEventListener', 'click', '_0x')
 infobae.com##main > aside.rail-section:has(> div.ad-wrapper)
 infobae.com##.marfeel-recommender

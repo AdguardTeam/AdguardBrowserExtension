@@ -1,9 +1,9 @@
-! Checksum: sIEjqv5GqZyzk27YmT+etA
-! Diff-Path: ../patches/23_optimized/23_optimized-s-1791403835-3600.patch
+! Checksum: c2oDl7x5xgxEg6uwgFL+lA
+! Diff-Path: ../patches/23_optimized/23_optimized-s-1791814571-3600.patch
 ! Title: AdGuard Ukrainian filter (Optimized)
 ! Description: Filter that enables ad blocking on websites in Ukrainian language.
-! Version: 2.0.9.36
-! TimeUpdated: 2026-10-07T20:07:29+00:00
+! Version: 2.0.9.38
+! TimeUpdated: 2026-10-12T14:13:04+00:00
 ! Expires: 10 days (update frequency)
 ?fre=*&nocredentials=1^$xmlhttprequest,third-party
 /assets/*.txt?fre=
@@ -3718,6 +3718,7 @@ avtocod.ru,love.ngs.ru,mmo13.ru,altapress.ru,gastronom.ru,eg.ru,newsmaker.md,del
 *$xmlhttprequest,third-party,denyallow=mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.li|bytecdntp.com|doodcdn.io|intensedebate.com|vixcloud.co|cdn.plyr.io|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|imgsmail.ru|cloudflare.net|rabbitstream.net|x.com,_____,domain=lrepacks.net|ikinogo.com
 !+ NOT_PLATFORM(ext_ublock)
 /:\/\/([a-z-]{4,10}\.)?(?!aniqit|kodikapi)[a-z0-9]{4,}\.(video|com|in\.net|link|tech|ru)/$xmlhttprequest,domain=aniqit.com|kodik.info|start.u-cdn.top|u-stream.in|kodik.biz
+||yandex.ru./ads/adfox/
 kinobase.org##div[id^="ad"]
 fakty.ua##.nts-ad
 liga.net##.remp-banner
@@ -4250,7 +4251,6 @@ segodnya.ua##.article__banner-container
 goloskarpat.info##.gkad
 kurs.com.ua##div[data-display-before="РЕКЛАМА"]
 unn.ua###ads-sidebar
-censor.net##.container > div#w1001.d-print-none
 opentv.media##img[alt="ad"]
 /assets/vendor/*.xml$domain=tortuga.wtf
 liga.net##.ad
