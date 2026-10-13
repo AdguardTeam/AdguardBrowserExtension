@@ -156,10 +156,12 @@ To deploy new releases as soon as possible, we have implemented all the steps ou
 
 Auto-builds are published with one of two review modes:
 
-- **Other days** — only the declarative rulesets are updated, so the build is
+- **Other days** — the Chrome package gets only a declarative-rulesets update
+  (the declarative rulesets of every MV3 target are still refreshed), so it is
   eligible for the expedited (skip review) publishing and is submitted with
-  `expedited=true`. The store comparison still runs, but it allows only the safe
-  rule resources the expedited mode may change.
+  `expedited=true` (the Edge package still refreshes its local script rules,
+  see [Edge submission](#edge-submission)). The store comparison still runs,
+  but it allows only the safe rule resources the expedited mode may change.
 - **Mondays and Thursdays** — these builds collect the filter fixes made since
   the previous full update, so they perform a full resources update (including
   local script rules) and are submitted for the standard review
@@ -193,7 +195,7 @@ Finally, the new version of the extension will be published to the Chrome Web St
 
 ### Edge submission
 
-Edge Add-ons reviews every submission and has no skip-review mode, so the auto-build submits the Edge MV3 release build on every run. The Edge API has no endpoint that reports the review state: an upload only replaces the draft, and a publish while a submission is in review is refused with `InProgressSubmission`. The auto-build passes `skip-if-in-progress: true`, so such a run reports the submission as skipped (`state=skipped`) instead of failing; every other failure still fails the job. The scheduled auto-build is the only job that submits to Edge: manual releases upload the package as a draft (`publish: false`), and the submission is made from Partner Center. Edge has a single store listing; there is no Edge beta channel.
+Edge Add-ons reviews every submission and has no skip-review mode, so the auto-build submits the Edge MV3 release build on every run. Edge is not bound by the Chrome Web Store skip-review restriction either, so the auto-build refreshes the Edge local script rules (`local_script_rules.js`, see [Skip review restrictions](#skip-review-restrictions)) on every run, including the expedited days, and the Edge package always ships the JS rules matching the current declarative rulesets. The Edge API has no endpoint that reports the review state: an upload only replaces the draft, and a publish while a submission is in review is refused with `InProgressSubmission`. The auto-build passes `skip-if-in-progress: true`, so such a run reports the submission as skipped (`state=skipped`) instead of failing; every other failure still fails the job. The scheduled auto-build is the only job that submits to Edge: manual releases upload the package as a draft (`publish: false`), and the submission is made from Partner Center. Edge has a single store listing; there is no Edge beta channel.
 
 ## <a name="versioning-schema"></a> Versioning Schema
 

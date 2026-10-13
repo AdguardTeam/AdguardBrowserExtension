@@ -754,7 +754,9 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     # CWS review: the Monday and Thursday builds collect the fixes made since
     # the previous full update, so the build may contain changes that are not
     # eligible for skip review (mirrors the Bamboo job). All other days update
-    # only the declarative rulesets and request expedited (skip) review.
+    # only the declarative rulesets for the Chrome package and request
+    # expedited (skip) review. Edge has no skip-review mode, so its local
+    # script rules are refreshed on every run regardless of the review mode.
     if [ "$(date -u +%u)" = "1" ] || [ "$(date -u +%u)" = "4" ]; then \
         EXPEDITED=false; \
     else \
@@ -766,7 +768,7 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     : "${TOKENGUARD_BASE_URL:?TOKENGUARD_BASE_URL build arg not provided}" && \
     : "${TOKENGUARD_MODEL:?TOKENGUARD_MODEL build arg not provided}" && \
     if [ "${EXPEDITED}" = "true" ]; then \
-      TOKENGUARD_API_KEY="${TOKENGUARD_API_KEY}" pnpm resources:mv3 --skip-local-resources; \
+      TOKENGUARD_API_KEY="${TOKENGUARD_API_KEY}" pnpm resources:mv3 --local-resources=edge-mv3; \
     else \
       TOKENGUARD_API_KEY="${TOKENGUARD_API_KEY}" pnpm resources:mv3; \
     fi && \

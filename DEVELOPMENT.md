@@ -552,6 +552,16 @@ With `--skip-local-resources`, MV3 preparation copies only declarative rulesets
 and skips translation, testcase and local script updates. This mode is intended
 for the expedited Chrome Web Store filter-update flow, not normal builds.
 
+With `--local-resources=<browsers>` (e.g. `--local-resources=edge-mv3`), the
+declarative rulesets are still updated for every MV3 target, but the local
+resources update runs only for the listed targets: the other targets keep their
+committed local script rules. The expedited auto-build uses it to keep the
+Chrome package eligible for skip review while still refreshing the Edge local
+script rules, which are not subject to the Chrome Web Store restriction. The
+testcases refresh (step 3) runs only on a full update, because the MV3 local
+script rules are built from the declarative rulesets — a scoped update does not
+depend on the testcases API.
+
 See [dangerous rules documentation](tools/resources/dangerous-rules/README.md) for more details about the dangerous rules detection process.
 
 ```shell
