@@ -166,11 +166,21 @@ Auto-builds are published with one of two review modes:
   the previous full update, so they perform a full resources update (including
   local script rules) and are submitted for the standard review
   (`expedited=false`). Before such a build is published, the auto-build
-  compares it with the extension currently in the Chrome Web Store and fails if
-  any file outside the built `filters/` directory changed. This guarantees that
-  a manually reviewed submission never ships unexpected code changes. The check
-  ignores the CWS `_metadata/` folder, the expected `version` bump made by the
-  build, and the `update_url` field CWS adds to the published `manifest.json`.
+  compares it with the extension currently in the Chrome Web Store and skips
+  the CWS publish if any file outside the built `filters/` directory changed.
+  This guarantees that a manually reviewed submission never ships unexpected
+  code changes. The check ignores the CWS `_metadata/` folder, the expected
+  `version` bump made by the build, and the `update_url` field CWS adds to the
+  published `manifest.json`.
+
+When the comparison finds changes outside the allowed scope, the auto-build
+skips the CWS publish for the affected channel instead of failing the build.
+The build itself is valid, and the Edge submission is not bound by the Chrome
+Web Store skip-review restrictions, so it is still submitted to Edge (see
+[Edge submission](#edge-submission)). The run is still reported as failed,
+because the Chrome Web Store keeps serving the previous build until a
+standard-review submission ships the changes; see the recovery notes in
+[DEPLOYMENT.md](./DEPLOYMENT.md).
 
 A failed expedited publish is never escalated to the standard review
 automatically: if the expedited submission fails, the build may contain changes
@@ -195,7 +205,7 @@ Finally, the new version of the extension will be published to the Chrome Web St
 
 ### Edge submission
 
-Edge Add-ons reviews every submission and has no skip-review mode, so the auto-build submits the Edge MV3 release build on every run. Edge is not bound by the Chrome Web Store skip-review restriction either, so the auto-build refreshes the Edge local script rules (`local_script_rules.js`, see [Skip review restrictions](#skip-review-restrictions)) on every run, including the expedited days, and the Edge package always ships the JS rules matching the current declarative rulesets. The Edge API has no endpoint that reports the review state: an upload only replaces the draft, and a publish while a submission is in review is refused with `InProgressSubmission`. The auto-build passes `skip-if-in-progress: true`, so such a run reports the submission as skipped (`state=skipped`) instead of failing; every other failure still fails the job. The scheduled auto-build is the only job that submits to Edge: manual releases upload the package as a draft (`publish: false`), and the submission is made from Partner Center. Edge has a single store listing; there is no Edge beta channel.
+Edge Add-ons reviews every submission and has no skip-review mode, so the auto-build submits the Edge MV3 release build on every run. Edge is not bound by the Chrome Web Store skip-review restriction either, so the auto-build refreshes the Edge local script rules (`local_script_rules.js`, see [Skip review restrictions](#skip-review-restrictions)) and the filter translations (`filters_i18n.json`) on every run, including the expedited days, and the Edge package always ships the JS rules matching the current declarative rulesets. The Edge submission is not gated by the CWS scope check either: a build that the Chrome Web Store cannot take without a full review is still submitted to Edge, which reviews every submission. The Edge API has no endpoint that reports the review state: an upload only replaces the draft, and a publish while a submission is in review is refused with `InProgressSubmission`. The auto-build passes `skip-if-in-progress: true`, so such a run reports the submission as skipped (`state=skipped`) instead of failing; every other failure still fails the job. The scheduled auto-build is the only job that submits to Edge: manual releases upload the package as a draft (`publish: false`), and the submission is made from Partner Center. Edge has a single store listing; there is no Edge beta channel.
 
 ## <a name="versioning-schema"></a> Versioning Schema
 

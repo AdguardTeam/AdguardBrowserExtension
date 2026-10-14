@@ -52,21 +52,37 @@ export const getDnrRulesetsBrowser = (browser: Mv3AssetsFiltersBrowser): Browser
 };
 
 /**
- * Option which skips the local resources update entirely, e.g. during the
- * expedited Chrome Web Store filter-update flow.
+ * Value of {@link LOCAL_RESOURCES_OPTION} which skips the local resources
+ * update entirely, e.g. during the expedited Chrome Web Store filter-update
+ * flow.
  */
-export const SKIP_LOCAL_RESOURCES_FLAG = '--skip-local-resources';
+export const LOCAL_RESOURCES_NONE = 'none';
 
 /**
  * Name of the option which restricts the local resources update to the given
- * MV3 targets, e.g. `--local-resources=edge-mv3`.
+ * MV3 targets, e.g. `--local-resources=edge-mv3`, or skips it entirely with
+ * `--local-resources=none`.
  */
 export const LOCAL_RESOURCES_NAME = '--local-resources';
 
 /**
- * Full form of {@link LOCAL_RESOURCES_NAME} carrying the browser list.
+ * Full form of {@link LOCAL_RESOURCES_NAME} carrying the browser list or
+ * {@link LOCAL_RESOURCES_NONE}.
  */
 export const LOCAL_RESOURCES_OPTION = `${LOCAL_RESOURCES_NAME}=`;
+
+/**
+ * Accepted values of {@link LOCAL_RESOURCES_OPTION} as spelled out in the
+ * error messages.
+ */
+const LOCAL_RESOURCES_VALUES = `<browsers|${LOCAL_RESOURCES_NONE}>`;
+
+/**
+ * Option removed in favour of `--local-resources=none`. Kept only to fail fast
+ * when a stale caller still passes it: it would otherwise select the default
+ * full update, the opposite of the old intent.
+ */
+const REMOVED_SKIP_LOCAL_RESOURCES_FLAG = '--skip-local-resources';
 
 /**
  * Checks whether the value names an MV3 resource target.
@@ -75,9 +91,9 @@ export const LOCAL_RESOURCES_OPTION = `${LOCAL_RESOURCES_NAME}=`;
  *
  * @returns True when the value is a {@link Mv3AssetsFiltersBrowser}.
  */
-const isMv3AssetsFiltersBrowser = (value: string): value is Mv3AssetsFiltersBrowser => (
-    (MV3_ASSETS_FILTERS_BROWSERS as readonly string[]).includes(value)
-);
+const isMv3AssetsFiltersBrowser = (value: string): value is Mv3AssetsFiltersBrowser => {
+    return (MV3_ASSETS_FILTERS_BROWSERS as readonly string[]).includes(value);
+};
 
 /**
  * Resolves the MV3 targets whose local resources must be updated from the CLI
@@ -91,57 +107,57 @@ const isMv3AssetsFiltersBrowser = (value: string): value is Mv3AssetsFiltersBrow
  *
  * @param argv Process arguments.
  *
- * @returns Targets to update local resources for; an empty list skips the
- * update entirely, duplicated targets are ignored.
+ * @returns Targets to update local resources for; {@link LOCAL_RESOURCES_NONE}
+ * returns an empty list which skips the update entirely, duplicated targets are
+ * ignored.
  *
- * @throws Error if the option value is empty, names an unsupported browser, or
- * is combined with {@link SKIP_LOCAL_RESOURCES_FLAG}.
+ * @throws Error if the option is malformed or repeated, if its value is empty,
+ * mixes {@link LOCAL_RESOURCES_NONE} with targets, names an unsupported
+ * browser, or when the removed {@link REMOVED_SKIP_LOCAL_RESOURCES_FLAG} is
+ * still passed.
  */
 export const resolveLocalResourcesBrowsers = (argv: string[]): readonly Mv3AssetsFiltersBrowser[] => {
-    const skip = argv.includes(SKIP_LOCAL_RESOURCES_FLAG);
-    const option = argv.find((arg) => arg.startsWith(LOCAL_RESOURCES_OPTION));
-    if (!option) {
-        const malformed = argv.find((arg) => arg.startsWith(LOCAL_RESOURCES_NAME));
-        if (malformed) {
-            throw new Error(`Malformed ${malformed}: expected ${LOCAL_RESOURCES_OPTION}<browsers>`);
-        }
-        return skip ? [] : MV3_ASSETS_FILTERS_BROWSERS;
+    if (argv.includes(REMOVED_SKIP_LOCAL_RESOURCES_FLAG)) {
+        throw new Error(
+            `${REMOVED_SKIP_LOCAL_RESOURCES_FLAG} was removed: use ${LOCAL_RESOURCES_OPTION}${LOCAL_RESOURCES_NONE} instead`,
+        );
     }
-    if (skip) {
-        throw new Error(`${LOCAL_RESOURCES_OPTION}<browsers> cannot be combined with ${SKIP_LOCAL_RESOURCES_FLAG}`);
+    // Consider every occurrence: `Array.prototype.find` would silently drop a
+    // repeated option, and the run would update fewer targets than typed.
+    const occurrences = argv.filter((arg) => arg.startsWith(LOCAL_RESOURCES_NAME));
+    const malformed = occurrences.find((arg) => !arg.startsWith(LOCAL_RESOURCES_OPTION));
+    if (malformed) {
+        throw new Error(`Malformed ${malformed}: expected ${LOCAL_RESOURCES_OPTION}${LOCAL_RESOURCES_VALUES}`);
+    }
+    if (occurrences.length > 1) {
+        throw new Error(`Duplicate ${LOCAL_RESOURCES_NAME} option: ${occurrences.join(' ')}`);
+    }
+    const [option] = occurrences;
+    if (option === undefined) {
+        return MV3_ASSETS_FILTERS_BROWSERS;
     }
     const value = option.slice(LOCAL_RESOURCES_OPTION.length);
     const browsers = value.split(',').map((browser) => browser.trim()).filter(Boolean);
     if (browsers.length === 0) {
-        throw new Error(`Empty ${LOCAL_RESOURCES_OPTION}<browsers> value`);
+        throw new Error(`Empty ${LOCAL_RESOURCES_OPTION}${LOCAL_RESOURCES_VALUES} value`);
     }
-    const unsupported = browsers.filter((browser) => !isMv3AssetsFiltersBrowser(browser));
-    if (unsupported.length > 0) {
+    // Check the sentinel on the normalized list: `--local-resources=none,` is
+    // the only value once trimmed and split.
+    if (browsers.includes(LOCAL_RESOURCES_NONE)) {
+        if (browsers.length > 1) {
+            throw new Error(`${LOCAL_RESOURCES_NONE} must be the only value of ${LOCAL_RESOURCES_OPTION}`);
+        }
+        return [];
+    }
+    if (!browsers.every(isMv3AssetsFiltersBrowser)) {
+        const unsupported = browsers.filter((browser) => !isMv3AssetsFiltersBrowser(browser));
         throw new Error(
             `Unsupported browsers in ${option}: ${unsupported.join(', ')}; `
             + `supported: ${MV3_ASSETS_FILTERS_BROWSERS.join(', ')}`,
         );
     }
-    return [...new Set(browsers)] as Mv3AssetsFiltersBrowser[];
+    return [...new Set(browsers)];
 };
-
-/**
- * Checks whether the local resources of the target must be updated within the
- * given scope.
- *
- * Targets outside the scope keep their committed local script rules, which is
- * what keeps the Chrome package eligible for the CWS skip review during the
- * expedited auto-build.
- *
- * @param browser MV3 resource target.
- * @param browsers MV3 targets in scope.
- *
- * @returns True when the target is in scope.
- */
-export const shouldUpdateLocalResources = (
-    browser: Mv3AssetsFiltersBrowser,
-    browsers: readonly Mv3AssetsFiltersBrowser[],
-): boolean => browsers.includes(browser);
 
 /**
  * Updates bundled script registries for the given MV3 resource targets.

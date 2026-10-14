@@ -779,30 +779,36 @@ RUN --mount=type=cache,target=/pnpm-store,id=browser-extension-pnpm \
     pnpm release chrome-mv3 --zip && \
     pnpm release edge-mv3 --zip && \
     mkdir -p /out/artifacts && \
+    # Publish mode for the workflow jobs: expedited/skip review on other days,
+    # standard review on Mondays and Thursdays. The per-channel scope outcomes
+    # below are appended to the same file.
+    echo "expedited=${EXPEDITED}" > /out/artifacts/cws-publish.properties && \
     # Compare the build with the extension currently published in CWS before
     # publishing it: an expedited build must contain only safe rule resources,
     # while a standard-review (full-resources) build may only change files
     # under `filters/`, so the standard review never ships unexpected code
-    # changes. EXPEDITED=false (full-resources) maps to --standard-review here;
-    # the expedited mode passes no flag.
-    check_scope() { \
-      if [ "${EXPEDITED}" = "true" ]; then \
-        pnpm tsx tools/skip-review/check-changes-for-cws "$@"; \
-      else \
-        pnpm tsx tools/skip-review/check-changes-for-cws "$@" --standard-review; \
-      fi; \
-    } && \
+    # changes. EXPEDITED=false (full-resources) maps to the standard review
+    # here; the expedited mode passes no flag.
+    #
+    # A build that is not eligible for the requested CWS review must not be
+    # submitted to CWS, but it is still a valid build: the Edge submission
+    # always goes through the standard Edge review, so a scope mismatch skips
+    # only the CWS publish jobs and never blocks the Edge publish. The helper
+    # records the outcome per channel in the properties file for the workflow
+    # publish jobs; every failure that is not "ineligible" aborts the build.
+    if [ "${EXPEDITED}" = "true" ]; then \
+      review_mode="expedited"; \
+    else \
+      review_mode="standard-review"; \
+    fi && \
     if [ "${BETA_CHANNEL_AVAILABLE}" = "true" ]; then \
       CWS_BETA_ITEM_ID="${CWS_BETA_ITEM_ID}" pnpm tsx tools/skip-review/download-latest-extension-mv3 beta && \
-      check_scope ./tmp/extension-beta-latest ./build/beta/chrome-mv3; \
+      bash tools/ci/check-cws-scope.sh /out/artifacts/cws-publish.properties beta ./tmp/extension-beta-latest ./build/beta/chrome-mv3 "${review_mode}"; \
     fi && \
     if [ "${RELEASE_CHANNEL_AVAILABLE}" = "true" ]; then \
       CWS_RELEASE_ITEM_ID="${CWS_RELEASE_ITEM_ID}" pnpm tsx tools/skip-review/download-latest-extension-mv3 release && \
-      check_scope ./tmp/extension-release-latest ./build/release/chrome-mv3; \
+      bash tools/ci/check-cws-scope.sh /out/artifacts/cws-publish.properties release ./tmp/extension-release-latest ./build/release/chrome-mv3 "${review_mode}"; \
     fi && \
-    # Publish mode for the workflow jobs: expedited/skip review on other days,
-    # standard review on Mondays and Thursdays.
-    echo "expedited=${EXPEDITED}" > /out/artifacts/cws-publish.properties && \
     cat /out/artifacts/cws-publish.properties && \
     # Collect build artifacts.
     mv build/beta/chrome-mv3.zip /out/artifacts/chrome-mv3-beta.zip && \

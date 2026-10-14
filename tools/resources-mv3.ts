@@ -21,9 +21,9 @@
 
 import {
     excludeAllMv3UnsafeRules,
+    LOCAL_RESOURCES_NONE,
+    LOCAL_RESOURCES_OPTION,
     resolveLocalResourcesBrowsers,
-    shouldUpdateLocalResources,
-    SKIP_LOCAL_RESOURCES_FLAG,
     updateMv3LocalResources,
 } from './resources/mv3';
 import { findDangerousRules } from './resources/dangerous-rules';
@@ -43,22 +43,22 @@ const resourcesMv3 = async (localResourcesBrowsers: readonly Mv3AssetsFiltersBro
     // Skip translations and local resources only during fast auto-build with
     // skip review flow to minimize changes and stay eligible for expedited
     // review. Targets whose local resources are not refreshed keep their
-    // committed local script rules, so only the declarative rulesets are
-    // copied for them.
+    // committed local script rules and filter translations, so only the
+    // declarative rulesets are copied for them.
     await Promise.all(MV3_ASSETS_FILTERS_BROWSERS.map((browser) => {
-        const onlyDeclarativeRulesets = !shouldUpdateLocalResources(browser, localResourcesBrowsers);
+        const onlyDeclarativeRulesets = !localResourcesBrowsers.includes(browser);
         return downloadAndPrepareMv3Filters(browser, onlyDeclarativeRulesets);
     }));
     console.log('Resources for MV3 downloaded');
 
     if (localResourcesBrowsers.length === 0) {
-        console.log(`Skipping update of local resources for MV3 (${SKIP_LOCAL_RESOURCES_FLAG} flag set)`);
+        console.log(`Skipping update of local resources for MV3 (${LOCAL_RESOURCES_OPTION}${LOCAL_RESOURCES_NONE})`);
     } else {
         console.log(`Updating local resources for MV3 (${localResourcesBrowsers.join(', ')})...`);
-        // The MV3 local script rules are built from the downloaded declarative
-        // rulesets, so the testcases refresh (used by the MV2/Firefox rules and
-        // dependent on the testcases API) runs only on a full update: a scoped
-        // expedited update must not depend on that API.
+        // The testcases refresh (step 3) runs only on a full update: it depends
+        // on the testcases API, which a scoped expedited update must not. The
+        // MV3 local script rules embed the statically imported TESTCASES_RULES,
+        // so a scoped update still uses the committed list.
         if (localResourcesBrowsers.length === MV3_ASSETS_FILTERS_BROWSERS.length) {
             await updateTestcasesScriptRules();
             console.log('Local script rules from testcases updated');

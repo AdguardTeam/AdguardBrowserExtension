@@ -24,11 +24,11 @@ import {
     it,
 } from 'vitest';
 
-import { AssetsFiltersBrowser, type Mv3AssetsFiltersBrowser } from '../../../tools/constants';
+import { AssetsFiltersBrowser } from '../../../tools/constants';
 import {
+    LOCAL_RESOURCES_NONE,
+    LOCAL_RESOURCES_OPTION,
     resolveLocalResourcesBrowsers,
-    shouldUpdateLocalResources,
-    SKIP_LOCAL_RESOURCES_FLAG,
 } from '../../../tools/resources/mv3';
 
 describe('MV3 local resources options', () => {
@@ -47,20 +47,17 @@ describe('MV3 local resources options', () => {
             .toEqual([AssetsFiltersBrowser.EdgeMv3, AssetsFiltersBrowser.ChromiumMv3]);
     });
 
-    it('skips the update entirely with the skip flag', () => {
-        expect(resolveLocalResourcesBrowsers([SKIP_LOCAL_RESOURCES_FLAG])).toEqual([]);
+    it('skips the update entirely with the none value', () => {
+        expect(resolveLocalResourcesBrowsers([`${LOCAL_RESOURCES_OPTION}${LOCAL_RESOURCES_NONE}`])).toEqual([]);
+    });
+
+    it('accepts the none value with a trailing separator', () => {
+        expect(resolveLocalResourcesBrowsers(['--local-resources=none,'])).toEqual([]);
     });
 
     it('ignores duplicated targets', () => {
         expect(resolveLocalResourcesBrowsers(['--local-resources=edge-mv3,edge-mv3']))
             .toEqual([AssetsFiltersBrowser.EdgeMv3]);
-    });
-
-    it('reports which targets are in scope', () => {
-        const scope: Mv3AssetsFiltersBrowser[] = [AssetsFiltersBrowser.EdgeMv3];
-        expect(shouldUpdateLocalResources(AssetsFiltersBrowser.EdgeMv3, scope)).toBe(true);
-        expect(shouldUpdateLocalResources(AssetsFiltersBrowser.ChromiumMv3, scope)).toBe(false);
-        expect(shouldUpdateLocalResources(AssetsFiltersBrowser.OperaMv3, scope)).toBe(false);
     });
 
     it('rejects an unsupported target', () => {
@@ -75,11 +72,26 @@ describe('MV3 local resources options', () => {
 
     it('rejects a malformed option without the value separator', () => {
         expect(() => resolveLocalResourcesBrowsers(['--local-resources', 'edge-mv3']))
-            .toThrow('Malformed --local-resources: expected --local-resources=<browsers>');
+            .toThrow('Malformed --local-resources: expected --local-resources=<browsers|none>');
     });
 
-    it('rejects the skip flag combined with the target list', () => {
-        expect(() => resolveLocalResourcesBrowsers([SKIP_LOCAL_RESOURCES_FLAG, '--local-resources=edge-mv3']))
-            .toThrow('cannot be combined');
+    it('rejects a repeated option', () => {
+        expect(() => resolveLocalResourcesBrowsers(['--local-resources=edge-mv3', '--local-resources=opera-mv3']))
+            .toThrow('Duplicate --local-resources option: --local-resources=edge-mv3 --local-resources=opera-mv3');
+    });
+
+    it('rejects a malformed occurrence after a valid one', () => {
+        expect(() => resolveLocalResourcesBrowsers(['--local-resources=edge-mv3', '--local-resources', 'opera-mv3']))
+            .toThrow('Malformed --local-resources: expected --local-resources=<browsers|none>');
+    });
+
+    it('rejects the removed skip flag with a migration hint', () => {
+        expect(() => resolveLocalResourcesBrowsers(['--skip-local-resources']))
+            .toThrow('--skip-local-resources was removed: use --local-resources=none instead');
+    });
+
+    it('rejects none combined with targets', () => {
+        expect(() => resolveLocalResourcesBrowsers(['--local-resources=none,edge-mv3']))
+            .toThrow('none must be the only value of --local-resources=');
     });
 });
