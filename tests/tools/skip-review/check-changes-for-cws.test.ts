@@ -31,6 +31,7 @@ import {
 
 import {
     CheckMode,
+    CwsEligibilityError,
     EXPEDITED_SCOPE_HINT_HEADING,
     FILTERS_DIR,
     RULESET_DECLARATION_HINT_HEADING,
@@ -605,6 +606,119 @@ describe('compareManifestsAndRules', () => {
     });
 });
 
+describe('CwsEligibilityError', () => {
+    // The trees differ only where each test introduces its change, so an
+    // earlier check in `compareManifestsAndRules` cannot mask the path under
+    // test.
+    const baseOldFiles = {
+        'manifest.json': makeManifest('5.5.2.1'),
+        'background.js': 'console.log(1);',
+        'filters/declarative/ruleset_1/ruleset_1.json': SAFE_RULES,
+    };
+
+    const baseNewFiles = {
+        'manifest.json': makeManifest('5.5.2.2'),
+        'background.js': 'console.log(1);',
+        'filters/declarative/ruleset_1/ruleset_1.json': SAFE_RULES,
+    };
+
+    it('is thrown for changes outside the allowed scope', async () => {
+        await withFixture(
+            baseOldFiles,
+            { ...baseNewFiles, 'background.js': 'console.log(2);' },
+            async ({ oldDir, newDir }) => {
+                await expect(compareManifestsAndRules(oldDir, newDir, CheckMode.Expedited))
+                    .rejects.toBeInstanceOf(CwsEligibilityError);
+            },
+        );
+    });
+
+    it('is thrown for unsafe rules in the expedited mode', async () => {
+        await withFixture(
+            baseOldFiles,
+            { ...baseNewFiles, 'filters/declarative/ruleset_1/ruleset_1.json': UNSAFE_RULES },
+            async ({ oldDir, newDir }) => {
+                await expect(compareManifestsAndRules(oldDir, newDir, CheckMode.Expedited))
+                    .rejects.toBeInstanceOf(CwsEligibilityError);
+            },
+        );
+    });
+
+    it('is thrown when the ruleset declaration changes', async () => {
+        const newManifest = JSON.parse(makeManifest('5.5.2.2'));
+        newManifest.declarative_net_request.rule_resources.push({
+            id: 'ruleset_2',
+            enabled: true,
+            path: 'filters/declarative/ruleset_2/ruleset_2.json',
+        });
+
+        await withFixture(
+            baseOldFiles,
+            {
+                ...baseNewFiles,
+                'manifest.json': JSON.stringify(newManifest, null, 4),
+            },
+            async ({ oldDir, newDir }) => {
+                await expect(compareManifestsAndRules(oldDir, newDir, CheckMode.StandardReview))
+                    .rejects.toBeInstanceOf(CwsEligibilityError);
+            },
+        );
+    });
+
+    it('is not thrown for a real build error', async () => {
+        await withFixture({}, {}, async ({ oldDir, newDir }) => {
+            const error = await compareManifestsAndRules(oldDir, newDir, CheckMode.Expedited)
+                .catch((e: unknown) => e);
+
+            expect(error).toBeInstanceOf(Error);
+            expect(error).not.toBeInstanceOf(CwsEligibilityError);
+        });
+    });
+
+    it('is not thrown when a declared ruleset is missing from a tree', async () => {
+        await withFixture(
+            {
+                ...baseOldFiles,
+                // A second file in the ruleset directory keeps the directory
+                // present in both trees, so the diff reports the missing
+                // ruleset file itself instead of the whole directory.
+                'filters/declarative/ruleset_1/keep.txt': 'keep',
+            },
+            {
+                'manifest.json': makeManifest('5.5.2.2'),
+                'background.js': 'console.log(1);',
+                'filters/declarative/ruleset_1/keep.txt': 'keep',
+            },
+            async ({ oldDir, newDir }) => {
+                const error = await compareManifestsAndRules(oldDir, newDir, CheckMode.Expedited)
+                    .catch((e: unknown) => e);
+
+                expect(error).toBeInstanceOf(Error);
+                expect(error).not.toBeInstanceOf(CwsEligibilityError);
+                expect((error as Error).message).toContain('is missing in one of the compared directories');
+            },
+        );
+    });
+
+    it('is not thrown when a ruleset cannot be parsed', async () => {
+        await withFixture(
+            baseOldFiles,
+            {
+                ...baseNewFiles,
+                'filters/declarative/ruleset_1/ruleset_1.json': '{ not valid json',
+            },
+            async ({ oldDir, newDir }) => {
+                const error = await compareManifestsAndRules(oldDir, newDir, CheckMode.Expedited)
+                    .catch((e: unknown) => e);
+
+                expect(error).toBeInstanceOf(Error);
+                expect(error).not.toBeInstanceOf(CwsEligibilityError);
+                expect((error as Error).message).toContain('Failed to parse ruleset');
+            },
+        );
+    });
+});
+
 describe.skipIf(process.platform === 'win32')('CLI entry point', () => {
     const cliOldFiles = {
         'manifest.json': makeManifest('5.5.2.1'),
@@ -616,7 +730,7 @@ describe.skipIf(process.platform === 'win32')('CLI entry point', () => {
         'filters/declarative/ruleset_1/ruleset_1.json': UNSAFE_RULES,
     };
 
-    it('runs when invoked extensionless, as the Dockerfile does', async () => {
+    it('runs when invoked extensionless and reports an ineligible build with exit code 2', async () => {
         await withFixture(
             {
                 'manifest.json': makeManifest('5.5.2.1'),
@@ -631,11 +745,22 @@ describe.skipIf(process.platform === 'win32')('CLI entry point', () => {
             async ({ oldDir, newDir }) => {
                 const { status, output } = runCli([oldDir, newDir]);
 
-                expect(status).toBe(1);
+                // Exit code 2 tells the Dockerfile to skip the CWS publish
+                // instead of failing the build, so the Edge publish still runs.
+                expect(status).toBe(2);
                 expect(output).toContain('❌ Files outside the allowed scope were changed!');
                 expect(output).toContain('Auto-build failed on the expedited scope check');
             },
         );
+    });
+
+    it('reports a real build error with exit code 1', async () => {
+        await withFixture({}, {}, async ({ oldDir, newDir }) => {
+            const { status, output } = runCli([oldDir, newDir]);
+
+            expect(status).toBe(1);
+            expect(output).toContain('Manifest not found');
+        });
     });
 
     it('accepts filter-only changes with --standard-review', async () => {

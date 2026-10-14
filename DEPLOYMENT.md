@@ -217,7 +217,12 @@ variants are noted.
   (`verify-cws`, `tools/ci/check-publish-state.sh`, `cws-publish.properties`)
   must exist on `stable/v5.5` before or atomically with the workflow change.
   Otherwise every run commits the version bump and then fails on the missing
-  properties file.
+  properties file. The order is reversed for changes that alter the publish
+  gating: a Docker stage that stops failing the build (for example the CWS scope
+  check, which now only skips the CWS publish and records the outcome in
+  `cws-publish.properties`) must not reach `stable/v5.5` before the workflow
+  that reads that outcome, or the old workflow publishes the ineligible build to
+  CWS. Land such changes on `master` first and sync `stable/v5.5` afterwards.
 - **Auto-build publish job failed, but the extension is in the store.** CWS
   occasionally answers HTTP 502 on the publish call after the upload already
   succeeded. The `verify-cws-*` job checks the store state right after such a
@@ -229,35 +234,43 @@ variants are noted.
   real failure, re-running the publish job may be rejected by CWS as a
   duplicate-version upload; in that case publish manually from the CWS
   dashboard.
-- **Auto-build failed on the standard-review scope check.** A standard-review
-  build may only change files inside `filters/` compared to the published
-  extension. A failure means something else changed on the stable branch;
-  investigate and remove it before the next auto-build. Until it is removed the
-  scope check keeps failing the build before any publish job, so the change
-  never reaches the store. The generated `filters/local_script_rules.js` is
-  inlined into the MV3 `pages/background.js`, so the check allows that bundle to
-  change when the rules module changed as well; every other out-of-scope file
-  still fails.
+- **Auto-build skipped the CWS publish (scope check).** The built package
+  changed something the requested review may not ship: in the standard-review
+  mode any file outside `filters/` compared to the published extension, and in
+  the expedited mode anything outside the manifest `rule_resources` — for
+  example locale updates that arrived with a master merge, or `filters/` changes
+  committed by an unpublished full-resources run (see the next entry). The
+  auto-build skips the CWS publish jobs, so the store keeps serving the previous
+  build until a standard-review submission ships the changes. The Edge
+  submission is not affected and is still made. Investigate and remove the
+  out-of-scope change before the next auto-build. The generated
+  `filters/local_script_rules.js` is inlined into the MV3 `pages/background.js`,
+  so the check allows that bundle to change when the rules module changed as
+  well; every other out-of-scope file still skips the CWS publish.
 - **Auto-build failed on the ruleset declaration check.** A ruleset was added
   to or removed from `declarative_net_request.rule_resources` in the built
   manifest. The manifest is outside the change scope an auto-published build
   may touch (safe rules for skip review, files under `filters/` for the
-  standard review), so the build is never published automatically. Ship the
-  change through the regular release process, or revert the ruleset update on
-  `stable/v5.5` before the next auto-build.
+  standard review), so the build is never published to the Chrome Web Store
+  automatically: the auto-build skips the CWS publish jobs and still submits the
+  build to Edge, which reviews every submission. Ship the change through the
+  regular release process, or revert the ruleset update on `stable/v5.5` before
+  the next auto-build.
 - **Auto-build failed on the expedited scope check after an unpublished
   full-resources build.** A full-resources build commits `filters/` changes that
   only the standard review may ship, but when the CWS channel is unavailable the
   publish job is skipped, so those changes sit on `stable/v5.5` without ever
   reaching the store. Every later expedited build then fails the scope check
   because the changes are not in `rule_resources` (the expedited error in
-  `tools/skip-review/check-changes-for-cws.ts` points here). Wait for the next
-  full-resources run with an available channel: its standard-review submission
-  publishes the changes and later expedited checks pass again. To unblock
-  sooner, revert the `[skip ci] Rulesets update & increment patch version
-  (autobuild-v…)` commit of that full-resources run on `stable/v5.5` — its
-  generated changes are recreated by the next full-resources run — and let the
-  next scheduled run publish.
+  `tools/skip-review/check-changes-for-cws.ts` points here): the auto-build
+  skips the CWS publish jobs, while the Edge submission is still made. Wait for
+  the next full-resources run with an available channel: its standard-review
+  submission publishes the changes and later expedited checks pass again. To
+  unblock sooner, revert only the generated `filters/` changes of that run's
+  `[skip ci] Rulesets update & increment patch version (autobuild-v…)` commit
+  on `stable/v5.5` — they are recreated by the next full-resources run — and
+  keep its `package.json` version bump: reverting it too would make the next run
+  rebuild a version that has already been submitted to Edge.
 - **Edge submission skipped (`InProgressSubmission`).** The product already has
   a submission in review and the Edge API refuses a publish while one is in
   flight; the upload only replaces the draft, it does not cancel the review.

@@ -108,6 +108,16 @@ export enum CheckMode {
 }
 
 /**
+ * Error thrown when the build is not eligible for the requested CWS review:
+ * changes outside the review scope, unsafe rules in the expedited mode, or a
+ * changed ruleset declaration. The build itself is valid — the auto-build only
+ * skips the CWS publish jobs for it and keeps publishing the Edge submission,
+ * which always goes through the standard Edge review. The CLI reports this
+ * error with exit code 2 to tell it apart from a real build error (exit code 1).
+ */
+export class CwsEligibilityError extends Error {}
+
+/**
  * Prefix of an `Only in <dir>: <name>` line of `diff -qr` output.
  */
 const DIFF_ONLY_IN_PREFIX = 'Only in ';
@@ -250,7 +260,7 @@ const checkDNRPermission = (manifest: Manifest.WebExtensionManifest) => {
  *
  * @returns Array of ruleset objects from the new manifest.
  *
- * @throws Error if rulesets were added or removed.
+ * @throws CwsEligibilityError if rulesets were added or removed.
  */
 const checkRulesetDeclaration = (
     oldManifest: Manifest.WebExtensionManifest,
@@ -266,7 +276,7 @@ const checkRulesetDeclaration = (
     const onlyInNew = newSet.difference(oldSet);
 
     if (onlyInOld.size > 0 || onlyInNew.size > 0) {
-        throw new Error(
+        throw new CwsEligibilityError(
             `❌ Rulesets have been added or removed from manifest declaration!\n  Only in old: ${onlyInOld}\n  Only in new: ${onlyInNew}\n${RULESET_DECLARATION_SCOPE_HINT}`,
         );
     }
@@ -284,7 +294,9 @@ const checkRulesetDeclaration = (
  * @param newDir Directory containing the new rules.
  * @param rulesets Array of rulesets info from rule_resources in manifest.
  *
- * @throws Error if unsafe rule changes are found.
+ * @throws Error if a declared ruleset is missing from one of the compared
+ * directories or cannot be parsed.
+ * @throws CwsEligibilityError if unsafe rule changes are found.
  */
 const checkRuleResources = (
     oldDir: string,
@@ -298,10 +310,12 @@ const checkRuleResources = (
     for (const rulesetPath of rulesetPaths) {
         const oldFile = path.join(oldDir, rulesetPath);
         const newFile = path.join(newDir, rulesetPath);
+        // A ruleset declared in the manifest but missing from one of the trees
+        // means the build or the downloaded store package is broken, not that
+        // the build is ineligible for the requested review, so it must stay on
+        // the real-error path.
         if (!fs.existsSync(oldFile) || !fs.existsSync(newFile)) {
-            console.log(`⚠️ File ${rulesetPath} missing in one of the directories`);
-            changesAreSafe = false;
-            continue;
+            throw new Error(`❌ Ruleset ${rulesetPath} is missing in one of the compared directories`);
         }
 
         const dataOld = fs.readFileSync(oldFile, 'utf8');
@@ -316,9 +330,9 @@ const checkRuleResources = (
             rulesOld = JSON.parse(dataOld);
             rulesNew = JSON.parse(dataNew);
         } catch (e: any) {
-            console.log(`Parse error in ${rulesetPath}: ${e.message}`);
-            changesAreSafe = false;
-            continue;
+            // Same reasoning as above: unparsable ruleset data is a broken
+            // build or download, not a review-eligibility problem.
+            throw new Error(`❌ Failed to parse ruleset ${rulesetPath}: ${e.message}`);
         }
 
         const mapOld = buildRulesMap(rulesOld);
@@ -358,7 +372,7 @@ const checkRuleResources = (
     }
 
     if (!changesAreSafe) {
-        throw new Error('❌ There are changes NOT in safe rules (see above)');
+        throw new CwsEligibilityError('❌ There are changes NOT in safe rules (see above)');
     }
     console.log('✅ All changes in ruleset files are only safe rules');
 };
@@ -571,7 +585,7 @@ export const getChangedFiles = (oldDir: string, newDir: string): Promise<Set<str
  * {@link getChangedFiles} when omitted. Callers that need the set to build the
  * `isAllowedChange` predicate pass it to avoid diffing the trees twice.
  *
- * @throws Error if files outside the allowed scope were changed.
+ * @throws CwsEligibilityError if files outside the allowed scope were changed.
  */
 export const ensureOnlyAllowedChanges = async (
     oldDir: string,
@@ -616,7 +630,9 @@ export const ensureOnlyAllowedChanges = async (
     }
 
     if (!changedOnlyAllowed) {
-        throw new Error(scopeErrorHint ? `${SCOPE_ERROR_MESSAGE}\n${scopeErrorHint}` : SCOPE_ERROR_MESSAGE);
+        throw new CwsEligibilityError(
+            scopeErrorHint ? `${SCOPE_ERROR_MESSAGE}\n${scopeErrorHint}` : SCOPE_ERROR_MESSAGE,
+        );
     }
 
     console.log('✅ Only allowed files changed');
@@ -804,7 +820,11 @@ program
         } catch (e) {
             const err = e as any;
             console.log(`Error: ${err && err.message ? err.message : err}`);
-            process.exit(1);
+            // A build that is not eligible for the requested CWS review is not
+            // broken: the auto-build skips the CWS publish for it (see
+            // `tools/ci/check-cws-scope.sh`) and keeps the Edge submission.
+            // Every other error is a real failure.
+            process.exit(e instanceof CwsEligibilityError ? 2 : 1);
         }
     });
 

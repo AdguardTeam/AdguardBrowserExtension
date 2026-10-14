@@ -548,7 +548,21 @@ The MV3-only command (`pnpm resources:mv3`) performs these steps:
 5. **Finds dangerous rules** (optional): If `TOKENGUARD_API_KEY` environment variable is provided, uses the TokenGuard API to analyze and identify potentially dangerous rules in the filters
 6. **Extracts unsafe rules**: Moves unsafe rules into ruleset metadata using the same session-rule budget as `pnpm resources`.
 
-With `--skip-local-resources`, MV3 preparation copies only declarative rulesets
+With `--local-resources=<browsers>` (e.g. `--local-resources=edge-mv3`), the
+declarative rulesets are still updated for every MV3 target, but the local
+resources update runs only for the listed targets: the other targets keep their
+committed local script rules and filter translations, so only the declarative
+rulesets are copied for them. A listed target gets a full local resources
+update, which also copies the filter translations (`filters_i18n.json`) and the
+local script rules (`local_script_rules.json`). The expedited auto-build uses it
+to keep the Chrome package eligible for skip review while still refreshing the
+Edge package, which is not subject to the Chrome Web Store restriction. The
+testcases refresh (step 3) runs only on a full update: it depends on the
+testcases API, which a scoped expedited update must not. The MV3 local script
+rules embed the statically imported `TESTCASES_RULES`, so a scoped update still
+uses the committed list.
+
+With `--local-resources=none`, MV3 preparation copies only declarative rulesets
 and skips translation, testcase and local script updates. This mode is intended
 for the expedited Chrome Web Store filter-update flow, not normal builds.
 
@@ -931,6 +945,11 @@ This guide explains how to update MV3 rulesets and submit them for Chrome Web St
     ```shell
     pnpm tsx tools/skip-review/check-changes-for-cws.ts ./tmp/extension-beta-latest ./build/beta/chrome-mv3
     ```
+
+    The tool exits with `0` when the changes are acceptable for the requested
+    review, `2` when the build is not eligible for the CWS review (the
+    auto-build skips the CWS publish for it and still submits the build to
+    Edge), and `1` on a real error.
 
 9. **Deploy:**
 

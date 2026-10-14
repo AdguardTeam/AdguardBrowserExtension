@@ -9,8 +9,9 @@ name: Auto build
 # when the full resources update goes through the standard review. A build
 # whose diff against the version currently in the store falls outside the
 # scope allowed for its review mode (safe rule resources for skip review, any
-# file under `filters/` for the standard review) fails before the commit and
-# the publish.
+# file under `filters/` for the standard review) is still committed and
+# published to Edge, but its CWS publish jobs are skipped and the run is
+# reported as failed by the `report-cws-scope` job.
 #
 # Note: the schedule trigger runs the workflow file from the DEFAULT branch
 # (master); all jobs explicitly check out the stable branch.
@@ -175,6 +176,8 @@ jobs:
       version: ${{ steps.version.outputs.version }}
       expedited: ${{ steps.publish-mode.outputs.expedited }}
       mode-name: ${{ steps.publish-mode.outputs.mode-name }}
+      beta-scope: ${{ steps.publish-mode.outputs.beta-scope }}
+      release-scope: ${{ steps.publish-mode.outputs.release-scope }}
     steps:
       - name: Checkout stable branch
         uses: actions/checkout@v6
@@ -304,7 +307,10 @@ jobs:
 
       # The publish mode travels with the build artifacts from the auto-build
       # stage (Mondays and Thursdays request the standard CWS review) so the
-      # build and the publish jobs cannot drift apart.
+      # build and the publish jobs cannot drift apart. The same file carries the
+      # per-channel outcome of the CWS scope check: a build that is not eligible
+      # for the requested review must not be submitted to CWS, but it is still
+      # published to Edge, which always goes through the standard Edge review.
       - name: Resolve publish mode
         id: publish-mode
         run: |
@@ -326,6 +332,21 @@ jobs:
           else
             echo "mode-name=standard review" >> "$GITHUB_OUTPUT"
           fi
+          # Scope outcome of the CWS change check per channel. A missing line
+          # means the channel was not checked (the check-cws job gates its
+          # publish job anyway), so it defaults to eligible.
+          for channel in beta release; do
+            scope="$(grep "^${channel}-scope=" "${props}" | cut -d= -f2 || true)"
+            [ -n "${scope}" ] || scope='ok'
+            if [ "${scope}" != 'ok' ] && [ "${scope}" != 'ineligible' ]; then
+              echo "::error::expected 'ok' or 'ineligible' for ${channel}-scope in ${props}, got '${scope}'"
+              exit 1
+            fi
+            echo "${channel}-scope=${scope}" >> "$GITHUB_OUTPUT"
+            if [ "${scope}" = 'ineligible' ]; then
+              echo "::warning::CWS ${channel} publish is skipped: the build is not eligible for the requested review (see DEPLOYMENT.md)"
+            fi
+          done
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v7
@@ -433,7 +454,9 @@ jobs:
   publish-cws-beta:
     name: Auto-publish MV3 beta to CWS (${{ needs.update-filters-and-build.outputs.mode-name || 'n/a' }})
     needs: [check-cws, update-filters-and-build, integration-tests]
-    if: needs.check-cws.outputs.beta-available == 'true'
+    if: >-
+      needs.check-cws.outputs.beta-available == 'true'
+      && needs.update-filters-and-build.outputs.beta-scope != 'ineligible'
     uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-chrome-web-store.yml@master
     with:
       team: extensions
@@ -472,7 +495,9 @@ jobs:
   publish-cws-release:
     name: Auto-publish MV3 release to CWS (${{ needs.update-filters-and-build.outputs.mode-name || 'n/a' }})
     needs: [check-cws, update-filters-and-build, integration-tests]
-    if: needs.check-cws.outputs.release-available == 'true'
+    if: >-
+      needs.check-cws.outputs.release-available == 'true'
+      && needs.update-filters-and-build.outputs.release-scope != 'ineligible'
     uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-chrome-web-store.yml@master
     with:
       team: extensions
@@ -528,9 +553,44 @@ jobs:
       contents: read
       id-token: write   # Vault JWT/OIDC
 
+  # The Edge publish must not be blocked by a CWS scope mismatch, but the
+  # mismatch itself must stay visible: the CWS channels keep serving the
+  # previous build until a standard-review submission ships the changes, so the
+  # run is still reported as failed after the Edge publish has been made.
+  report-cws-scope:
+    name: Report skipped CWS publish
+    needs: [update-filters-and-build, integration-tests, publish-cws-beta, publish-cws-release, publish-edge]
+    if: >-
+      always()
+      && (needs.update-filters-and-build.outputs.beta-scope == 'ineligible'
+      || needs.update-filters-and-build.outputs.release-scope == 'ineligible')
+    runs-on: team-extensions
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - name: Report
+        env:
+          BETA_SCOPE: ${{ needs.update-filters-and-build.outputs.beta-scope }}
+          RELEASE_SCOPE: ${{ needs.update-filters-and-build.outputs.release-scope }}
+        run: |
+          set -euo pipefail
+          blocked=""
+          for channel in beta release; do
+            case "${channel}" in
+              beta) scope="${BETA_SCOPE}" ;;
+              release) scope="${RELEASE_SCOPE}" ;;
+            esac
+            if [ "${scope}" = 'ineligible' ]; then
+              blocked="${blocked}${blocked:+, }${channel}"
+            fi
+          done
+          echo "::error::CWS ${blocked} publish skipped: the build is not eligible for the requested review, so the store keeps the previous build until a standard-review submission ships the changes. The Edge submission is not affected. See DEPLOYMENT.md for the recovery."
+          exit 1
+
   notify-failure:
     name: Notify (failure)
-    needs: [check-cws, lint, unit-tests, update-filters-and-build, integration-tests, publish-cws-beta, verify-cws-beta, publish-cws-release, verify-cws-release, publish-edge]
+    needs: [check-cws, lint, unit-tests, update-filters-and-build, integration-tests, publish-cws-beta, verify-cws-beta, publish-cws-release, verify-cws-release, publish-edge, report-cws-scope]
     # The decision is computed in the `Decide whether to notify` step from the
     # results of every job in `needs`: a publish failure whose verify job proved
     # the build is in the store is benign, which `needs.*.result` alone cannot
@@ -558,6 +618,7 @@ jobs:
             publish-cws-release=${{ needs.publish-cws-release.result }}
             verify-cws-release=${{ needs.verify-cws-release.result }}
             publish-edge=${{ needs.publish-edge.result }}
+            report-cws-scope=${{ needs.report-cws-scope.result }}
         run: |
           set -euo pipefail
           should_notify=false
@@ -585,5 +646,5 @@ jobs:
         uses: AdGuardSoftwareLimited/actions/actions/slack@master
         with:
           channel: '#adguard-extension-vcs'
-          message: ':cross-mark: *browser-extension* auto-build failed (check-cws: ${{ needs.check-cws.result }}, lint: ${{ needs.lint.result }}, unit: ${{ needs.unit-tests.result }}, build: ${{ needs.update-filters-and-build.result }}, integration: ${{ needs.integration-tests.result }}, cws-beta: ${{ needs.publish-cws-beta.result }}, cws-beta-verify: ${{ needs.verify-cws-beta.result }}, cws-release: ${{ needs.publish-cws-release.result }}, cws-release-verify: ${{ needs.verify-cws-release.result }}, edge: ${{ needs.publish-edge.result }}) — <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>'
+          message: ':cross-mark: *browser-extension* auto-build failed (check-cws: ${{ needs.check-cws.result }}, lint: ${{ needs.lint.result }}, unit: ${{ needs.unit-tests.result }}, build: ${{ needs.update-filters-and-build.result }}, integration: ${{ needs.integration-tests.result }}, cws-beta: ${{ needs.publish-cws-beta.result }}, cws-beta-verify: ${{ needs.verify-cws-beta.result }}, cws-release: ${{ needs.publish-cws-release.result }}, cws-release-verify: ${{ needs.verify-cws-release.result }}, edge: ${{ needs.publish-edge.result }}, cws-scope: ${{ needs.report-cws-scope.result }}) — <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>'
           color: danger
