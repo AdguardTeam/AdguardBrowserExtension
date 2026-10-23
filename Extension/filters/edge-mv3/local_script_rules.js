@@ -11624,6 +11624,48 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "49ea6d8a2498702a6527351de1b83b18" due to: ' + e);
         }
     },
+    "(function(){if(window.__cmgCont)return;window.__cmgCont=1;var S=['.game-meta-header','#continue-container','#timer-div'];var fk=function(e){var ks=Object.keys(e),i=0;for(;i<ks.length;i++){if(ks[i].indexOf('__reactFiber$')===0)return e[ks[i]]}return null};var get=function(){var i=0,j=0,es,e,b,n,m;for(;i<S.length;i++){es=document.querySelectorAll(S[i]);j=0;for(;j<es.length;j++){e=es[j];b=fk(e);for(n=0;b&&n<40;b=b.return,n++){m=b.memoizedProps;if(m&&typeof m.onContinue==='function')return m.onContinue}}}return null};var k=0,t=0,r=function(){var f=get();if(f){f();k+=1;if(k>3)return}t+=1;if(t>150)return;setTimeout(r,120)};setTimeout(r,0)})();": () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.f6703934c6a19be573d585816a9f7130 === e) return;
+            !function() {
+                if (!window.__cmgCont) {
+                    window.__cmgCont = 1;
+                    var e = [ ".game-meta-header", "#continue-container", "#timer-div" ], n = function(e) {
+                        for (var n = Object.keys(e), t = 0; t < n.length; t++) if (0 === n[t].indexOf("__reactFiber$")) return e[n[t]];
+                        return null;
+                    }, t = 0, r = 0, o = function() {
+                        var i = function() {
+                            for (var t, r, o, i, u, f = 0, c = 0; f < e.length; f++) {
+                                t = document.querySelectorAll(e[f]);
+                                c = 0;
+                                for (;c < t.length; c++) {
+                                    r = t[c];
+                                    o = n(r);
+                                    for (i = 0; o && i < 40; o = o.return, i++) if ((u = o.memoizedProps) && "function" == typeof u.onContinue) return u.onContinue;
+                                }
+                            }
+                            return null;
+                        }();
+                        if (i) {
+                            i();
+                            if ((t += 1) > 3) return;
+                        }
+                        (r += 1) > 150 || setTimeout(o, 120);
+                    };
+                    setTimeout(o, 0);
+                }
+            }();
+            Object.defineProperty(Window.prototype.toString, "f6703934c6a19be573d585816a9f7130", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "f6703934c6a19be573d585816a9f7130" due to: ' + e);
+        }
+    },
     '(()=>{if(!location.href.includes("://embed.wcostream.com/inc/embed/index.php?file="))return;const e=`/inc/embed/video-js-new.php${location.search}`;location.href=e})();': () => {
         try {
             const e = "done";
