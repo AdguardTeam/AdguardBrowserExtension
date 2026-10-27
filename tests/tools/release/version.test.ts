@@ -25,6 +25,7 @@ import {
 } from 'vitest';
 
 import {
+    allocateVersion,
     compareExtensionVersions,
     composePackageVersion,
     formatManifestVersion,
@@ -32,115 +33,226 @@ import {
     getDnrPatchVersion,
     isNewerVersion,
     parseExtensionVersion,
+    parsePackageVersion,
+    parseReleaseTag,
 } from '../../../tools/release/version';
 
-describe('parseExtensionVersion', () => {
+describe('parseReleaseTag', () => {
     test('parses a release tag', () => {
-        expect(parseExtensionVersion('v5.6.0.1')).toEqual({
-            major: 5, minor: 6, patch: 0, increment: 1, channel: 'release',
+        expect(parseReleaseTag('v5.6.0')).toEqual({
+            major: 5, minor: 6, patch: 0, channel: 'release',
         });
     });
 
     test('parses a beta tag', () => {
-        expect(parseExtensionVersion('v5.5.0.8-beta')).toEqual({
-            major: 5, minor: 5, patch: 0, increment: 8, channel: 'beta',
+        expect(parseReleaseTag('v5.5.3-beta.7')).toEqual({
+            major: 5, minor: 5, patch: 3, channel: 'beta', betaNumber: 7,
         });
     });
 
     test('accepts a tag without the v prefix', () => {
-        expect(parseExtensionVersion('5.6.0.1').increment).toBe(1);
+        expect(parseReleaseTag('5.6.0-beta.7').betaNumber).toBe(7);
     });
 
-    test.each(['5.5', 'v5.5.0', 'v5.6.0.1-beta.1', 'v5.6.0.1-beta-1', 'vx.6.0.1', 'garbage'])(
-        'rejects invalid version %s',
+    test.each([
+        '5.5',
+        'v5.5.0.7',
+        'v5.6.0-beta',
+        'v5.6.0-beta.7.1',
+        'v5.6.0-rc.1',
+        'v5.6.0-beta.7+build',
+        'v05.6.0',
+        'vx.6.0',
+        'garbage',
+    ])('rejects invalid release tag %s', (input) => {
+        expect(() => parseReleaseTag(input)).toThrow(/Invalid release tag/);
+    });
+});
+
+describe('parseExtensionVersion', () => {
+    test('parses a 4-component release version', () => {
+        expect(parseExtensionVersion('5.6.0.7')).toEqual({
+            major: 5, minor: 6, patch: 0, build: 7, channel: 'release',
+        });
+    });
+
+    test('parses a 4-component beta version', () => {
+        expect(parseExtensionVersion('5.5.3.7-beta')).toEqual({
+            major: 5, minor: 5, patch: 3, build: 7, channel: 'beta',
+        });
+    });
+
+    test.each(['5.5', 'v5.6.0', 'v5.6.0-beta.7', 'vx.6.0.1', 'garbage'])(
+        'rejects invalid 4-component version %s',
         (input) => {
             expect(() => parseExtensionVersion(input)).toThrow(/Invalid extension version/);
         },
     );
 });
 
-describe('formatManifestVersion and formatTag', () => {
-    test('formats the 4-component manifest version', () => {
-        expect(formatManifestVersion(parseExtensionVersion('v5.6.0.1'))).toBe('5.6.0.1');
+describe('parsePackageVersion', () => {
+    test('reads the version and build counter without adding a channel', () => {
+        expect(parsePackageVersion('5.6.0+7.build.20261020120000')).toStrictEqual({
+            major: 5, minor: 6, patch: 0, build: 7,
+        });
     });
 
-    test('formats tags for both channels', () => {
-        expect(formatTag(parseExtensionVersion('v5.6.0.1'))).toBe('v5.6.0.1');
-        expect(formatTag(parseExtensionVersion('v5.6.0.1-beta'))).toBe('v5.6.0.1-beta');
+    test('throws on an unparsable package version', () => {
+        expect(() => parsePackageVersion('not-a-version'))
+            .toThrow(/Cannot parse package version/);
+    });
+
+    test('throws on a package version without build metadata', () => {
+        expect(() => parsePackageVersion('5.6.0'))
+            .toThrow(/Invalid build format in package version/);
+    });
+
+    test('throws on a package version missing the build metatag or dnr version', () => {
+        expect(() => parsePackageVersion('5.6.0+7.other'))
+            .toThrow(/Invalid build format in package version/);
+        expect(() => parsePackageVersion('5.6.0+7.build'))
+            .toThrow(/Invalid build format in package version/);
+        expect(() => parsePackageVersion('5.6.0+next.build.20261020120000'))
+            .toThrow(/Invalid build format in package version/);
+    });
+});
+
+describe('allocateVersion', () => {
+    test('allocates the next build for a release', () => {
+        expect(allocateVersion(
+            parseReleaseTag('v5.5.3'),
+            '5.5.3+6.build.20260817120135',
+        )).toEqual({
+            major: 5, minor: 5, patch: 3, build: 7, channel: 'release',
+        });
+    });
+
+    test('allocates the next build for a matching beta tag', () => {
+        expect(allocateVersion(
+            parseReleaseTag('v5.5.3-beta.7'),
+            '5.5.3+6.build.20260817120135',
+        )).toEqual({
+            major: 5, minor: 5, patch: 3, build: 7, channel: 'beta',
+        });
+    });
+
+    test('rejects a beta number different from the allocated build', () => {
+        expect(() => allocateVersion(
+            parseReleaseTag('v5.5.3-beta.8'),
+            '5.5.3+6.build.20260817120135',
+        )).toThrow(/expected v5\.5\.3-beta\.7/);
+    });
+
+    test('accepts an explicit build override for a stable branch with a higher counter', () => {
+        expect(allocateVersion(
+            parseReleaseTag('v5.5.3-beta.29'),
+            '5.5.3+6.build.20260817120135',
+            29,
+        )).toEqual({
+            major: 5, minor: 5, patch: 3, build: 29, channel: 'beta',
+        });
+        expect(allocateVersion(
+            parseReleaseTag('v5.5.3'),
+            '5.5.3+28.build.20260817120135',
+            29,
+        )).toEqual({
+            major: 5, minor: 5, patch: 3, build: 29, channel: 'release',
+        });
+    });
+
+    test('requires the beta number to match an explicit build override', () => {
+        expect(() => allocateVersion(
+            parseReleaseTag('v5.5.3-beta.28'),
+            '5.5.3+6.build.20260817120135',
+            29,
+        )).toThrow(/expected v5\.5\.3-beta\.29/);
+    });
+
+    test.each([0, -1, 1.5, 6, Number.NaN])('rejects invalid build override %s', (buildOverride) => {
+        expect(() => allocateVersion(
+            parseReleaseTag('v5.5.3'),
+            '5.5.3+6.build.20260817120135',
+            buildOverride,
+        )).toThrow(/Build override must be an integer greater than the current package build 6/);
+    });
+});
+
+describe('formatManifestVersion and formatTag', () => {
+    test('formats the 4-component manifest version', () => {
+        expect(formatManifestVersion(parseExtensionVersion('5.6.0.7'))).toBe('5.6.0.7');
+        expect(formatManifestVersion(parseExtensionVersion('5.6.0.7-beta'))).toBe('5.6.0.7');
+    });
+
+    test('formats a release tag as semver without the build number', () => {
+        expect(formatTag(parseExtensionVersion('5.6.0.7'))).toBe('v5.6.0');
+    });
+
+    test('formats a beta tag with the build number as the beta number', () => {
+        expect(formatTag(parseExtensionVersion('5.6.0.7-beta'))).toBe('v5.6.0-beta.7');
     });
 });
 
 describe('composePackageVersion', () => {
     test('composes the package.json version with build metadata', () => {
-        const version = parseExtensionVersion('v5.6.0.1-beta');
-        expect(composePackageVersion(version, '20260820120135')).toBe('5.6.0+1.build.20260820120135');
+        const version = parseExtensionVersion('5.6.0.7-beta');
+        expect(composePackageVersion(version, '20260820120135')).toBe('5.6.0+7.build.20260820120135');
     });
 });
 
 describe('compareExtensionVersions and isNewerVersion', () => {
-    test('compares 4-component versions', () => {
-        const a = parseExtensionVersion('v5.5.0.8');
-        const b = parseExtensionVersion('v5.6.0.1-beta');
-        const c = parseExtensionVersion('v5.6.0.1');
+    test('compares versions by major.minor.patch first', () => {
+        const a = parseExtensionVersion('5.5.3.8');
+        const b = parseExtensionVersion('5.6.0.7-beta');
         expect(compareExtensionVersions(a, b)).toBeLessThan(0);
-        expect(compareExtensionVersions(b, c)).toBeLessThan(0);
-        expect(compareExtensionVersions(c, a)).toBeGreaterThan(0);
+        expect(compareExtensionVersions(b, a)).toBeGreaterThan(0);
     });
 
-    test('treats beta as strictly older than release for equal 4-component versions', () => {
-        const beta = parseExtensionVersion('v5.5.0.7-beta');
-        const release = parseExtensionVersion('v5.5.0.7');
+    test('treats beta as strictly older than release for equal major.minor.patch', () => {
+        const beta = parseExtensionVersion('5.5.3.9-beta');
+        const release = parseExtensionVersion('5.5.3.8');
         expect(compareExtensionVersions(beta, release)).toBeLessThan(0);
         expect(compareExtensionVersions(release, beta)).toBeGreaterThan(0);
-        expect(compareExtensionVersions(beta, beta)).toBe(0);
-        expect(compareExtensionVersions(release, release)).toBe(0);
     });
 
-    test('accepts a candidate newer than the current package version', () => {
-        expect(isNewerVersion(parseExtensionVersion('v5.5.0.8'), '5.5.0+7.build.20260817120135'))
+    test('compares build numbers within the same channel', () => {
+        const olderBeta = parseExtensionVersion('5.5.3.7-beta');
+        const newerBeta = parseExtensionVersion('5.5.3.8-beta');
+        const olderRelease = parseExtensionVersion('5.5.3.7');
+        const newerRelease = parseExtensionVersion('5.5.3.8');
+
+        expect(compareExtensionVersions(olderBeta, newerBeta)).toBeLessThan(0);
+        expect(compareExtensionVersions(newerBeta, olderBeta)).toBeGreaterThan(0);
+        expect(compareExtensionVersions(olderBeta, olderBeta)).toBe(0);
+        expect(compareExtensionVersions(olderRelease, newerRelease)).toBeLessThan(0);
+        expect(compareExtensionVersions(newerRelease, olderRelease)).toBeGreaterThan(0);
+    });
+
+    test('accepts a candidate with the next build number', () => {
+        expect(isNewerVersion(parseExtensionVersion('5.5.3.7'), '5.5.3+6.build.20260817120135'))
+            .toBe(true);
+        expect(isNewerVersion(parseExtensionVersion('5.5.3.7-beta'), '5.5.3+6.build.20260817120135'))
             .toBe(true);
     });
 
     test('rejects a candidate equal to the current package version', () => {
-        expect(isNewerVersion(parseExtensionVersion('v5.5.0.7'), '5.5.0+7.build.20260817120135'))
+        expect(isNewerVersion(parseExtensionVersion('5.5.3.6'), '5.5.3+6.build.20260817120135'))
+            .toBe(false);
+        expect(isNewerVersion(parseExtensionVersion('5.5.3.6-beta'), '5.5.3+6.build.20260817120135'))
             .toBe(false);
     });
 
-    test('accepts a release candidate equal to a previously published beta (promotion)', () => {
-        expect(isNewerVersion(
-            parseExtensionVersion('v5.5.0.7'),
-            '5.5.0+7.build.20260817120135',
-            'beta',
-        )).toBe(true);
-    });
-
-    test('rejects a beta candidate equal to a previously published release', () => {
-        expect(isNewerVersion(
-            parseExtensionVersion('v5.5.0.7-beta'),
-            '5.5.0+7.build.20260817120135',
-            'release',
-        )).toBe(false);
-    });
-
-    test('rejects a candidate older than the current package version', () => {
-        expect(isNewerVersion(parseExtensionVersion('v5.5.0.6'), '5.5.0+7.build.20260817120135'))
+    test('rejects a candidate with a lower major.minor.patch even if the build is higher', () => {
+        expect(isNewerVersion(parseExtensionVersion('5.5.2.7'), '5.5.3+6.build.20260817120135'))
             .toBe(false);
     });
 
     test('throws on an unparsable package version', () => {
-        expect(() => isNewerVersion(parseExtensionVersion('v5.5.0.8'), 'not-a-version'))
+        expect(() => isNewerVersion(parseExtensionVersion('5.5.3.8'), 'not-a-version'))
             .toThrow(/Cannot parse package version/);
     });
 
     test('throws on a package version without build metadata instead of crashing', () => {
-        expect(() => isNewerVersion(parseExtensionVersion('v5.5.0.8'), '5.5.0'))
-            .toThrow(/Invalid build format in package version/);
-    });
-
-    test('throws on a package version missing the build metatag or dnr version', () => {
-        expect(() => isNewerVersion(parseExtensionVersion('v5.5.0.8'), '5.5.0+7.other'))
-            .toThrow(/Invalid build format in package version/);
-        expect(() => isNewerVersion(parseExtensionVersion('v5.5.0.8'), '5.5.0+7.build'))
+        expect(() => isNewerVersion(parseExtensionVersion('5.5.3.8'), '5.5.3'))
             .toThrow(/Invalid build format in package version/);
     });
 });

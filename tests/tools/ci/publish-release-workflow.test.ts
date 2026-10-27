@@ -202,6 +202,32 @@ describe('Chrome Web Store deploy guards', () => {
         expect(workflow).toMatch(/^ {2}publish-cws-mv3-release:$/m);
     });
 
+    it('publish-release.yml tags after the main build and before deploy jobs', () => {
+        const workflow = getWorkflow('publish-release.yml');
+
+        expect(parseJobNeeds(workflow, 'tag').sort()).toEqual([
+            'build',
+            'preflight',
+            'resolve-version',
+        ]);
+
+        const deployJobIds = [
+            'create-release',
+            'deploy-static-chrome',
+            'deploy-static-edge',
+            'deploy-static-firefox-beta',
+            'deploy-static-firefox-release',
+            'publish-amo-beta',
+            'publish-amo-release',
+            'publish-cws-mv3-beta',
+            'publish-cws-mv3-release',
+            'publish-edge-release',
+        ];
+        for (const jobId of deployJobIds) {
+            expect(parseJobNeeds(workflow, jobId), `${jobId} needs tag`).toContain('tag');
+        }
+    });
+
     it('publish-release.yml notify jobs depend on every other job', () => {
         const workflow = getWorkflow('publish-release.yml');
         const otherJobIds = parseJobIds(workflow)

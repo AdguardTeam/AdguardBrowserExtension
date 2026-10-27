@@ -9,7 +9,7 @@
 # Usage: ./check-publish-state.sh <item-id> <expected-version>
 #   item-id:          Chrome Web Store item ID (32 chars)
 #   expected-version: version the failed publish call uploaded
-#                     (major.minor.patch.increment)
+#                     (major.minor.patch.build)
 #
 # Required environment variables (must be set by the caller):
 #   CHROME_CLIENT_ID       - Chrome Web Store API client ID

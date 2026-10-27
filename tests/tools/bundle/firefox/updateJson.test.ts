@@ -40,7 +40,7 @@ describe('Firefox update.json version formatting', () => {
         expect(getFormattedVersion(rawVersion)).toBe(expected);
     });
 
-    it('formats version with higher increment number', () => {
+    it('formats version with higher build number', () => {
         const rawVersion = '5.4.2+42.build.20260501120000';
         expect(getFormattedVersion(rawVersion)).toBe('5.4.2.42');
     });

@@ -59,8 +59,11 @@ const appendNotesToGitHubOutput = (notes: string): void => {
 
 /**
  * Resolves the release version from CHANGELOG.md for the publish-release
- * workflow: prints `tag=` and `channel=` lines (redirected to $GITHUB_OUTPUT
- * by the caller) and appends the changelog section as `notes=`.
+ * workflow: prints the semver `tag=` (`vX.Y.Z` or `vX.Y.Z-beta.BUILD`) and
+ * `channel=` lines (redirected to $GITHUB_OUTPUT by the caller) and appends the
+ * changelog section as `notes=`. The CHANGELOG heading itself keeps the
+ * 4-component form (`## [X.Y.Z.BUILD(-beta)]`), which is also what package.json
+ * builds into the manifest.
  *
  * @throws Error when no full-version heading exists in the changelog or the
  * changelog version does not match the package.json version.

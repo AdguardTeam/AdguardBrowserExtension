@@ -34,7 +34,7 @@ const __dirname = path.dirname(__filename);
 
 /**
  * Increments the package version according to the specified rules:
- * - Increments the first number in build metatag (incrementVersion)
+ * - Increments the build number in build metatag (buildNumber)
  * - Replaces the last number with the patch version from dnr-rulesets (dnrVersion)
  * - Keeps the middle build metatag unchanged
  */
@@ -54,25 +54,25 @@ const incrementVersion = async (): Promise<void> => {
 
     const { build } = parsedVersion;
     if (!build || build.length !== 3) {
-        throw new Error(`Invalid build format in version: ${currentVersion}. Expected format: major.minor.patch+incrementVersion.buildMetatag.dnrVersion`);
+        throw new Error(`Invalid build format in version: ${currentVersion}. Expected format: major.minor.patch+buildNumber.buildMetatag.dnrVersion`);
     }
 
     const [
-        incrementVersionStr,
+        buildNumberStr,
         buildMetatag,
         dnrVersionStr,
     ] = build;
 
-    if (!incrementVersionStr || !buildMetatag || !dnrVersionStr) {
-        throw new Error(`Invalid build components in version: ${currentVersion}. Expected format: major.minor.patch+incrementVersion.buildMetatag.dnrVersion`);
+    if (!buildNumberStr || !buildMetatag || !dnrVersionStr) {
+        throw new Error(`Invalid build components in version: ${currentVersion}. Expected format: major.minor.patch+buildNumber.buildMetatag.dnrVersion`);
     }
 
-    // Increment the first number (incrementVersion)
-    const currentIncrementVersion = parseInt(incrementVersionStr, 10);
-    if (Number.isNaN(currentIncrementVersion)) {
-        throw new Error(`Invalid increment version: ${incrementVersionStr}`);
+    // Increment the build number.
+    const currentBuildNumber = parseInt(buildNumberStr, 10);
+    if (Number.isNaN(currentBuildNumber)) {
+        throw new Error(`Invalid build number: ${buildNumberStr}`);
     }
-    const newIncrementVersion = currentIncrementVersion + 1;
+    const newBuildNumber = currentBuildNumber + 1;
 
     // Get the patch version from dnr-rulesets
     const dnrVersion = getVersion();
@@ -85,12 +85,12 @@ const incrementVersion = async (): Promise<void> => {
 
     // Construct the new version manually
     const baseVersion = `${parsedVersion.major}.${parsedVersion.minor}.${parsedVersion.patch}`;
-    const newBuildString = `${newIncrementVersion}.${buildMetatag}.${newDnrPatchVersion}`;
+    const newBuildString = `${newBuildNumber}.${buildMetatag}.${newDnrPatchVersion}`;
     const newVersion = `${baseVersion}+${newBuildString}`;
 
     console.log(`New version: ${newVersion}`);
     console.log('Changes:');
-    console.log(`  - Increment version: ${incrementVersionStr} -> ${newIncrementVersion}`);
+    console.log(`  - Build number: ${buildNumberStr} -> ${newBuildNumber}`);
     console.log(`  - Build metatag: ${buildMetatag} (unchanged)`);
     if (dnrVersionStr === String(newDnrPatchVersion)) {
         console.log(`  - DNR version: ${dnrVersionStr} (unchanged)`);

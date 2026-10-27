@@ -1,13 +1,14 @@
 name: Publish release
 
-# Tags the release commit, builds all channel artifacts, deploys to
+# Builds the main channel artifacts, tags the release commit, deploys to
 # static.adtidy.org, submits to browser stores, and creates the GitHub
 # Release draft on the public repo (AdguardTeam/AdguardBrowserExtension).
 #
 # Triggered automatically by merging a release-bump/* PR opened by
 # prepare-release.yml, or manually via workflow_dispatch.
-# Beta tags (v5.6.0.1-beta) deploy only to beta channels; plain tags
-# (v5.6.0.1) only to release channels.
+# Beta tags (v5.6.0-beta.7) deploy only to beta channels; plain tags
+# (v5.6.0) only to release channels. The 4-component build number
+# (e.g. 5.6.0.7) lives in the manifest and the CHANGELOG heading only.
 #
 # Replaces Bamboo plans: build-beta, build-release,
 # build-firefox-standalone-beta, build-firefox-amo-beta, deploy-beta,
@@ -45,12 +46,11 @@ jobs:
       (github.event.pull_request.merged == true &&
        startsWith(github.event.pull_request.head.ref, 'release-bump/') &&
        github.event.pull_request.user.id == fromJSON(vars.RELEASE_BOT_USER_ID || '285975488'))
-    name: Resolve version and tag
+    name: Resolve version
     runs-on: team-extensions
     timeout-minutes: 15
     permissions:
-      contents: write   # push the git tag
-      actions: write    # dispatch mirror.yml after tagging
+      contents: read
     outputs:
       tag: ${{ steps.resolve.outputs.tag }}
       channel: ${{ steps.resolve.outputs.channel }}
@@ -77,33 +77,15 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
-      # Reads the first full-version heading (## [M.m.p.inc(-beta)]) from
-      # CHANGELOG.md, verifies it matches package.json, and prints tag/channel
-      # plus a notes= block into $GITHUB_OUTPUT.
+      # Reads the first full-version heading (## [M.m.p.BUILD(-beta)]) from
+      # CHANGELOG.md, verifies it matches package.json, and prints the semver
+      # tag (vM.m.p or vM.m.p-beta.BUILD) and channel plus a notes= block into
+      # $GITHUB_OUTPUT.
       - name: Resolve version from changelog
         id: resolve
         run: |
           set -euo pipefail
           pnpm tsx tools/release/resolve-version.ts >> "$GITHUB_OUTPUT"
-
-      # Force-retag keeps re-runs of a failed publish working; store uploads
-      # are idempotent (stores reject duplicate versions — documented in the
-      # shared store workflows).
-      - name: Create git tag
-        env:
-          TAG: ${{ steps.resolve.outputs.tag }}
-        run: |
-          git tag -f "${TAG}"
-          git push -f origin "${TAG}"
-
-      # A tag pushed with GITHUB_TOKEN does not start workflow runs, so
-      # mirror.yml's `push: tags` trigger never fires for release tags.
-      # Dispatch it explicitly; it mirrors master and all v* tags, including
-      # the tag pushed above.
-      - name: Dispatch mirror workflow
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run mirror.yml --repo "${GITHUB_REPOSITORY}"
 
   # Restores the Bamboo "Size and locales check": bundle-size and translation
   # validation gate every release before any build/upload happens. An oversize
@@ -317,6 +299,53 @@ jobs:
         if: always()
         run: rm -rf private/
 
+  tag:
+    name: Create git tag
+    needs: [resolve-version, preflight, build]
+    runs-on: team-extensions
+    timeout-minutes: 15
+    permissions:
+      contents: write   # push the git tag
+      actions: write    # dispatch mirror.yml after tagging
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.ref || github.event.pull_request.merge_commit_sha || github.ref_name }}
+
+      # Create the tag only after the main build succeeds. If it already
+      # exists at the release commit, a re-run continues without touching it.
+      # If it exists at another commit, fail instead of moving it. A manual
+      # retry must use the tag or its release commit, not a moved master.
+      # The remote check is authoritative. Force only the local tag because a
+      # previous attempt can leave it on the shared runner before a failed push.
+      - name: Create git tag
+        env:
+          TAG: ${{ needs.resolve-version.outputs.tag }}
+        run: |
+          set -euo pipefail
+          EXISTING_TAG_SHA=$(git ls-remote --tags --refs origin "refs/tags/${TAG}" | awk '{print $1}')
+          if [ -n "${EXISTING_TAG_SHA}" ]; then
+            HEAD_SHA=$(git rev-parse HEAD)
+            if [ "${EXISTING_TAG_SHA}" != "${HEAD_SHA}" ]; then
+              echo "::error::Tag ${TAG} already exists at ${EXISTING_TAG_SHA}, not at ${HEAD_SHA}. For a manual retry, dispatch on ${TAG} or ${EXISTING_TAG_SHA}. Otherwise bump the patch version instead of re-releasing ${TAG}. Tags are never force-moved."
+              exit 1
+            fi
+            echo "Tag ${TAG} already points to the release commit; keeping it as is."
+          else
+            git tag -f "${TAG}"
+            git push origin "${TAG}"
+          fi
+
+      # A tag pushed with GITHUB_TOKEN does not start workflow runs, so
+      # mirror.yml's `push: tags` trigger never fires for release tags.
+      # Dispatch it explicitly; it mirrors master and all v* tags, including
+      # the tag pushed above.
+      - name: Dispatch mirror workflow
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run mirror.yml --repo "${GITHUB_REPOSITORY}"
+
   build-firefox-standalone:
     # Firefox standalone beta is signed by Mozilla via go-webext. Kept in an
     # isolated job (signing can take up to ~20 minutes) so it never blocks
@@ -452,7 +481,7 @@ jobs:
 
   deploy-static-chrome:
     name: Deploy Chrome to static.adtidy.org
-    needs: [resolve-version, build]
+    needs: [resolve-version, tag, build]
     uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-static.yml@master
     with:
       team: extensions
@@ -465,7 +494,7 @@ jobs:
 
   deploy-static-edge:
     name: Deploy Edge to static.adtidy.org
-    needs: [resolve-version, build]
+    needs: [resolve-version, tag, build]
     uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-static.yml@master
     with:
       team: extensions
@@ -478,7 +507,7 @@ jobs:
 
   deploy-static-firefox-beta:
     name: Deploy Firefox beta to static.adtidy.org
-    needs: [resolve-version, build-firefox-standalone]
+    needs: [resolve-version, tag, build-firefox-standalone]
     if: needs.resolve-version.outputs.channel == 'beta'
     uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-static.yml@master
     with:
@@ -492,7 +521,7 @@ jobs:
 
   deploy-static-firefox-release:
     name: Deploy Firefox release to static.adtidy.org
-    needs: [resolve-version, build]
+    needs: [resolve-version, tag, build]
     if: needs.resolve-version.outputs.channel == 'release'
     uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-static.yml@master
     with:
@@ -506,7 +535,7 @@ jobs:
 
   publish-cws-mv3-beta:
     name: Publish MV3 beta to Chrome Web Store
-    needs: [resolve-version, build]
+    needs: [resolve-version, tag, build]
     if: needs.resolve-version.outputs.channel == 'beta'
     uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-chrome-web-store.yml@master
     with:
@@ -524,7 +553,7 @@ jobs:
 
   publish-cws-mv3-release:
     name: Publish MV3 release to Chrome Web Store
-    needs: [resolve-version, build]
+    needs: [resolve-version, tag, build]
     if: needs.resolve-version.outputs.channel == 'release'
     uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-chrome-web-store.yml@master
     with:
@@ -542,7 +571,7 @@ jobs:
 
   publish-amo-release:
     name: Publish release to Firefox AMO
-    needs: [resolve-version, build]
+    needs: [resolve-version, tag, build]
     if: needs.resolve-version.outputs.channel == 'release'
     uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-firefox-addons.yml@master
     with:
@@ -561,7 +590,7 @@ jobs:
 
   publish-amo-beta:
     name: Publish beta to Firefox AMO
-    needs: [resolve-version, build-firefox-amo-beta]
+    needs: [resolve-version, tag, build-firefox-amo-beta]
     if: needs.resolve-version.outputs.channel == 'beta'
     uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-firefox-addons.yml@master
     with:
@@ -580,7 +609,7 @@ jobs:
 
   publish-edge-release:
     name: Upload release draft to Edge Add-ons
-    needs: [resolve-version, build]
+    needs: [resolve-version, tag, build]
     if: needs.resolve-version.outputs.channel == 'release'
     uses: AdGuardSoftwareLimited/actions/.github/workflows/deploy-to-edge-addons.yml@master
     with:
@@ -604,7 +633,7 @@ jobs:
 
   create-release:
     name: Create GitHub Release draft (public repo)
-    needs: [resolve-version, build]
+    needs: [resolve-version, tag, build]
     uses: AdGuardSoftwareLimited/actions/.github/workflows/create-gh-release.yml@master
     with:
       team: extensions
@@ -639,12 +668,13 @@ jobs:
 
   notify-success:
     name: Notify (success)
-    needs: [resolve-version, preflight, build, build-firefox-standalone, build-firefox-amo-beta, deploy-static-chrome, deploy-static-edge, deploy-static-firefox-beta, deploy-static-firefox-release, publish-cws-mv3-beta, publish-cws-mv3-release, publish-amo-release, publish-amo-beta, publish-edge-release, create-release, attach-firefox-assets-beta]
+    needs: [resolve-version, tag, preflight, build, build-firefox-standalone, build-firefox-amo-beta, deploy-static-chrome, deploy-static-edge, deploy-static-firefox-beta, deploy-static-firefox-release, publish-cws-mv3-beta, publish-cws-mv3-release, publish-amo-release, publish-amo-beta, publish-edge-release, create-release, attach-firefox-assets-beta]
     # Skipped channel-specific jobs count as success; any failure or
     # cancellation switches to the failure notification.
     if: >-
       always() &&
       needs.resolve-version.result == 'success' &&
+      needs.tag.result == 'success' &&
       !contains(needs.*.result, 'failure') &&
       !contains(needs.*.result, 'cancelled')
     runs-on: team-extensions
@@ -661,7 +691,7 @@ jobs:
 
   notify-failure:
     name: Notify (failure)
-    needs: [resolve-version, preflight, build, build-firefox-standalone, build-firefox-amo-beta, deploy-static-chrome, deploy-static-edge, deploy-static-firefox-beta, deploy-static-firefox-release, publish-cws-mv3-beta, publish-cws-mv3-release, publish-amo-release, publish-amo-beta, publish-edge-release, create-release, attach-firefox-assets-beta]
+    needs: [resolve-version, tag, preflight, build, build-firefox-standalone, build-firefox-amo-beta, deploy-static-chrome, deploy-static-edge, deploy-static-firefox-beta, deploy-static-firefox-release, publish-cws-mv3-beta, publish-cws-mv3-release, publish-amo-release, publish-amo-beta, publish-edge-release, create-release, attach-firefox-assets-beta]
     # resolve-version must succeed so we have a tag to report; build jobs are
     # included so a build failure is never hidden behind "deploy: skipped".
     # Cancellation (manual cancel or a lost runner) is reported too so a
@@ -679,13 +709,15 @@ jobs:
         uses: AdGuardSoftwareLimited/actions/actions/slack@master
         with:
           channel: '#adguard-extension-vcs'
-          message: ':cross-mark: *browser-extension* *${{ needs.resolve-version.outputs.tag }}* deploy failed (preflight: ${{ needs.preflight.result }}, build: ${{ needs.build.result }}, build-ff: ${{ needs.build-firefox-standalone.result }}, build-ff-amo: ${{ needs.build-firefox-amo-beta.result }}, static-chrome: ${{ needs.deploy-static-chrome.result }}, static-edge: ${{ needs.deploy-static-edge.result }}, static-ff-beta: ${{ needs.deploy-static-firefox-beta.result }}, static-ff-release: ${{ needs.deploy-static-firefox-release.result }}, cws-mv3-beta: ${{ needs.publish-cws-mv3-beta.result }}, cws-mv3-release: ${{ needs.publish-cws-mv3-release.result }}, amo-release: ${{ needs.publish-amo-release.result }}, amo-beta: ${{ needs.publish-amo-beta.result }}, edge: ${{ needs.publish-edge-release.result }}, gh-release: ${{ needs.create-release.result }}, ff-assets: ${{ needs.attach-firefox-assets-beta.result }}) — <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>'
+          message: ':cross-mark: *browser-extension* *${{ needs.resolve-version.outputs.tag }}* deploy failed (preflight: ${{ needs.preflight.result }}, tag: ${{ needs.tag.result }}, build: ${{ needs.build.result }}, build-ff: ${{ needs.build-firefox-standalone.result }}, build-ff-amo: ${{ needs.build-firefox-amo-beta.result }}, static-chrome: ${{ needs.deploy-static-chrome.result }}, static-edge: ${{ needs.deploy-static-edge.result }}, static-ff-beta: ${{ needs.deploy-static-firefox-beta.result }}, static-ff-release: ${{ needs.deploy-static-firefox-release.result }}, cws-mv3-beta: ${{ needs.publish-cws-mv3-beta.result }}, cws-mv3-release: ${{ needs.publish-cws-mv3-release.result }}, amo-release: ${{ needs.publish-amo-release.result }}, amo-beta: ${{ needs.publish-amo-beta.result }}, edge: ${{ needs.publish-edge-release.result }}, gh-release: ${{ needs.create-release.result }}, ff-assets: ${{ needs.attach-firefox-assets-beta.result }}) — <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>'
           color: danger
 
-  notify-tag-failure:
-    name: Notify (tag failure)
+  notify-resolve-failure:
+    name: Notify (resolve failure)
     needs: [resolve-version]
-    if: always() && needs.resolve-version.result == 'failure'
+    if: >-
+      always() &&
+      (needs.resolve-version.result == 'failure' || needs.resolve-version.result == 'cancelled')
     runs-on: team-extensions
     timeout-minutes: 5
     permissions:
@@ -695,5 +727,5 @@ jobs:
         uses: AdGuardSoftwareLimited/actions/actions/slack@master
         with:
           channel: '#adguard-extension-vcs'
-          message: ':cross-mark: *browser-extension* release failed at the resolve-version/tag step (result: ${{ needs.resolve-version.result }}) — <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>'
+          message: ':cross-mark: *browser-extension* release failed at resolve-version (result: ${{ needs.resolve-version.result }}) — <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>'
           color: danger

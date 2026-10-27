@@ -58,6 +58,12 @@ Edge, and Opera. Licensed under GPL-3.0.
 - **Testing**: Vitest 4 (unit), Playwright 1.53 (integration)
 - **Target Platform**: Browser extension (Chromium MV2/MV3, Firefox, Edge, Opera)
 - **Project Type**: Single-package repository (not a monorepo)
+- **Release versioning**: git tags are semver (`vX.Y.Z` for a release,
+  `vX.Y.Z-beta.N` for a beta); the manifest/store version keeps the 4-part
+  build number (`X.Y.Z.BUILD`). By default, it is allocated from the `build[0]`
+  counter in `package.json` (`X.Y.Z+BUILD.build.<dnrPatch>`), with an optional
+  higher override for release branches with higher counters. The CHANGELOG
+  heading uses the 4-part form. See README.md, "Versioning Schema".
 - **Constraints**: MV3 bundle must stay under 30 MB; Firefox `.js` files under
   4 MB
 

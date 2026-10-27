@@ -23,31 +23,113 @@ import { parse } from 'semver';
 import { getVersion } from '@adguard/dnr-rulesets/utils';
 
 /**
- * Release channel derived from the version tag.
+ * Release channel derived from the release tag.
  */
 export type ReleaseChannel = 'beta' | 'release';
 
 /**
- * Parsed 4-component extension version.
+ * Parsed 4-component extension version: the store-facing manifest/build version.
+ *
+ * The fourth component is the monotonic build number allocated by the release
+ * process. It is not part of the git tag, which is semver.
  */
 export type ExtensionVersion = {
     major: number;
     minor: number;
     patch: number;
-    increment: number;
+    /**
+     * Monotonic build number, the fourth component of the manifest version.
+     */
+    build: number;
     channel: ReleaseChannel;
 };
 
 /**
- * Matches the extension release tag format: `v<major>.<minor>.<patch>.<increment>`
- * with an optional `-beta` suffix. The `v` prefix is optional.
+ * Parsed package.json version. The package version has no release channel.
+ */
+export type PackageVersion = Omit<ExtensionVersion, 'channel'>;
+
+/**
+ * Parsed semver release tag: `v<major>.<minor>.<patch>` for a release or
+ * `v<major>.<minor>.<patch>-beta.<n>` for a beta.
+ */
+export type ReleaseTag = {
+    major: number;
+    minor: number;
+    patch: number;
+    channel: ReleaseChannel;
+    /**
+     * Pre-release number of the `-beta.<n>` suffix; undefined for release tags.
+     */
+    betaNumber?: number;
+};
+
+/**
+ * Human-readable description of the accepted semver tag format.
+ */
+const TAG_FORMAT_HINT = 'v<major>.<minor>.<patch>[-beta.<n>] (e.g. v5.6.0 or v5.6.0-beta.7)';
+
+/**
+ * Human-readable description of the accepted 4-component manifest format.
+ */
+const MANIFEST_FORMAT_HINT = 'v<major>.<minor>.<patch>.<build>[-beta] (e.g. v5.6.0.7 or v5.6.0.7-beta)';
+
+/**
+ * Matches the 4-component extension version used in the manifest, in
+ * build.txt, and in the CHANGELOG heading:
+ * `v<major>.<minor>.<patch>.<build>` with an optional `-beta` suffix. The `v`
+ * prefix is optional.
  */
 const VERSION_RE = /^v?(\d+)\.(\d+)\.(\d+)\.(\d+)(-beta)?$/;
 
 /**
- * Parses an extension version tag into its components.
+ * Parses a semver release tag into its components.
  *
- * @param input Version tag, e.g. `v5.6.0.1` or `v5.6.0.1-beta`.
+ * @param input Release tag, e.g. `v5.6.0` or `v5.6.0-beta.7`.
+ *
+ * @returns Parsed release tag.
+ *
+ * @throws Error when the input is not a release tag in the expected format.
+ */
+export const parseReleaseTag = (input: string): ReleaseTag => {
+    // semver's strict parser rejects leading zeros but accepts build metadata.
+    // Reject build metadata explicitly because release tags do not allow it.
+    const parsed = parse(input);
+    if (!parsed || parsed.build.length > 0) {
+        throw new Error(`Invalid release tag: "${input}". Expected format: ${TAG_FORMAT_HINT}`);
+    }
+
+    const [prereleaseType, prereleaseNumber, ...extraPrereleaseIdentifiers] = parsed.prerelease;
+    if (parsed.prerelease.length === 0) {
+        return {
+            major: parsed.major,
+            minor: parsed.minor,
+            patch: parsed.patch,
+            channel: 'release',
+        };
+    }
+
+    if (
+        prereleaseType !== 'beta'
+        || typeof prereleaseNumber !== 'number'
+        || extraPrereleaseIdentifiers.length > 0
+    ) {
+        throw new Error(`Invalid release tag: "${input}". Expected format: ${TAG_FORMAT_HINT}`);
+    }
+
+    return {
+        major: parsed.major,
+        minor: parsed.minor,
+        patch: parsed.patch,
+        channel: 'beta',
+        betaNumber: prereleaseNumber,
+    };
+};
+
+/**
+ * Parses a 4-component extension version into its components.
+ *
+ * @param input Version string, e.g. `5.6.0.7` or `5.6.0.7-beta`.
  *
  * @returns Parsed version.
  *
@@ -56,42 +138,131 @@ const VERSION_RE = /^v?(\d+)\.(\d+)\.(\d+)\.(\d+)(-beta)?$/;
 export const parseExtensionVersion = (input: string): ExtensionVersion => {
     const match = input.match(VERSION_RE);
     if (!match) {
-        throw new Error(
-            `Invalid extension version: "${input}". Expected format: v<major>.<minor>.<patch>.<increment>[-beta] (e.g. v5.6.0.1 or v5.6.0.1-beta)`,
-        );
+        throw new Error(`Invalid extension version: "${input}". Expected format: ${MANIFEST_FORMAT_HINT}`);
     }
-    const [, major, minor, patch, increment, beta] = match;
+    const [, major, minor, patch, build, beta] = match;
     return {
         major: Number(major),
         minor: Number(minor),
         patch: Number(patch),
-        increment: Number(increment),
+        build: Number(build),
         channel: beta ? 'beta' : 'release',
     };
 };
 
 /**
+ * Parses the package.json version into the current extension version. The
+ * package.json version carries the monotonic build counter in its build
+ * metadata (`major.minor.patch+<build>.build.<dnrPatch>`), so it is the
+ * default source of truth for the next build number.
+ *
+ * @param packageVersion package.json version string.
+ *
+ * @returns Parsed package version without a release channel.
+ *
+ * @throws Error when the package version cannot be parsed or its build
+ * metadata does not follow the expected format.
+ */
+export const parsePackageVersion = (packageVersion: string): PackageVersion => {
+    const parsed = parse(packageVersion);
+    if (!parsed) {
+        throw new Error(`Cannot parse package version: ${packageVersion}`);
+    }
+    // Enforce the same major.minor.patch+build.build.<dnrPatch> contract as
+    // tools/increment.ts, so a malformed version is rejected instead of being
+    // silently read as a valid build number.
+    const { build } = parsed;
+    if (!build || build.length !== 3) {
+        throw new Error(`Invalid build format in package version: ${packageVersion}. Expected format: major.minor.patch+build.build.dnrVersion`);
+    }
+    const [buildNumberStr, buildMetatag, dnrVersionStr] = build;
+    if (!buildNumberStr || !/^\d+$/.test(buildNumberStr) || buildMetatag !== 'build' || !dnrVersionStr) {
+        throw new Error(`Invalid build format in package version: ${packageVersion}. Expected format: major.minor.patch+build.build.dnrVersion`);
+    }
+    return {
+        major: parsed.major,
+        minor: parsed.minor,
+        patch: parsed.patch,
+        build: Number(buildNumberStr),
+    };
+};
+
+/**
  * Formats the version as it appears in the extension manifest and build.txt:
- * major.minor.patch.increment (e.g. `5.6.0.1`).
+ * major.minor.patch.build (e.g. `5.6.0.7`).
  *
  * @param version Parsed version.
  *
  * @returns Manifest-formatted version string.
  */
 export const formatManifestVersion = (version: ExtensionVersion): string => {
-    return `${version.major}.${version.minor}.${version.patch}.${version.increment}`;
+    return `${version.major}.${version.minor}.${version.patch}.${version.build}`;
 };
 
 /**
- * Formats the git tag for the version (e.g. `v5.6.0.1` or `v5.6.0.1-beta`).
+ * Formats the semver git tag for the version: `v5.6.0` for a release or
+ * `v5.6.0-beta.7` for a beta. The build number is part of the manifest only
+ * and is not included in the tag, except as the beta pre-release number.
  *
  * @param version Parsed version.
  *
- * @returns Git tag string.
+ * @returns Semver git tag string.
  */
 export const formatTag = (version: ExtensionVersion): string => {
-    const base = `v${formatManifestVersion(version)}`;
-    return version.channel === 'beta' ? `${base}-beta` : base;
+    const base = `v${version.major}.${version.minor}.${version.patch}`;
+    return version.channel === 'beta' ? `${base}-beta.${version.build}` : base;
+};
+
+/**
+ * Allocates a version for the requested release tag.
+ *
+ * The allocated build defaults to the next package.json counter. An explicit
+ * override can allocate a higher build when another release branch has a
+ * higher counter. Beta tags must contain the allocated build number.
+ *
+ * @param tag Parsed release tag.
+ * @param currentPackageVersion Current package.json version string.
+ * @param buildOverride Optional explicit build number.
+ *
+ * @returns Allocated extension version.
+ *
+ * @throws Error when the override is not greater than the current build or the
+ * beta number differs from the allocated build.
+ */
+export const allocateVersion = (
+    tag: ReleaseTag,
+    currentPackageVersion: string,
+    buildOverride?: number,
+): ExtensionVersion => {
+    const current = parsePackageVersion(currentPackageVersion);
+    if (
+        buildOverride !== undefined
+        && (!Number.isInteger(buildOverride) || buildOverride <= current.build)
+    ) {
+        throw new Error(
+            `Build override must be an integer greater than the current package build ${current.build}, got ${buildOverride}`,
+        );
+    }
+
+    const version: ExtensionVersion = {
+        major: tag.major,
+        minor: tag.minor,
+        patch: tag.patch,
+        build: buildOverride ?? current.build + 1,
+        channel: tag.channel,
+    };
+
+    if (tag.channel === 'beta' && tag.betaNumber !== version.build) {
+        const buildSource = buildOverride === undefined
+            ? `package.json build ${current.build} + 1`
+            : `explicit build override ${buildOverride}`;
+        throw new Error(
+            `The beta tag must use the allocated build number: expected ${formatTag(version)} `
+            + `(${buildSource}), got beta number ${tag.betaNumber}`,
+        );
+    }
+
+    return version;
 };
 
 /**
@@ -114,7 +285,7 @@ export const getDnrPatchVersion = (): string => {
 
 /**
  * Composes the package.json version string from the parsed version and the
- * dnr-rulesets patch: major.minor.patch+increment.build.<dnrPatchVersion>.
+ * dnr-rulesets patch: major.minor.patch+<build>.build.<dnrPatchVersion>.
  *
  * @param version Parsed version.
  * @param dnrPatchVersion Patch component of the dnr-rulesets version.
@@ -122,15 +293,15 @@ export const getDnrPatchVersion = (): string => {
  * @returns package.json version string.
  */
 export const composePackageVersion = (version: ExtensionVersion, dnrPatchVersion: string): string => {
-    return `${version.major}.${version.minor}.${version.patch}+${version.increment}.build.${dnrPatchVersion}`;
+    return `${version.major}.${version.minor}.${version.patch}+${version.build}.build.${dnrPatchVersion}`;
 };
 
 /**
- * Compares two 4-component versions component by component. When the four
- * components are equal the channels are compared, so that a `beta` is strictly
- * older than the `release` with the same 4-component version. This allows the
- * documented beta -> release promotion flow (both channels ship on the same
- * 4-component version, e.g. `v5.5.0.5` and `v5.5.0.5-beta`).
+ * Compares two versions component by component. For equal
+ * major.minor.patch the channels are compared first, so a `beta` is strictly
+ * older than a `release` of the same major.minor.patch (e.g.
+ * `v5.6.0-beta.7` < `v5.6.0`), and only versions of the same channel are
+ * compared by build number.
  *
  * @param a First version.
  * @param b Second version.
@@ -147,29 +318,23 @@ export const compareExtensionVersions = (a: ExtensionVersion, b: ExtensionVersio
     if (a.patch !== b.patch) {
         return a.patch - b.patch;
     }
-    if (a.increment !== b.increment) {
-        return a.increment - b.increment;
-    }
     if (a.channel !== b.channel) {
         return a.channel === 'release' ? 1 : -1;
     }
-    return 0;
+    return a.build - b.build;
 };
 
 /**
  * Checks that a candidate version is newer than the version stored in the
- * current package.json (compared via the 4-component form, i.e. the increment
- * is taken from the first build-metadata component).
+ * current package.json.
  *
- * Because `beta` is treated as strictly older than `release` for equal
- * 4-component versions, a `release` candidate with the same components as a
- * previously published `beta` (e.g. preparing `v5.6.0.1` after `v5.6.0.1-beta`)
- * is considered newer and passes the check.
+ * The package version carries the monotonic build counter (`build[0]`) but no
+ * channel, so the candidate channel is used for both sides of the comparison:
+ * the counter only grows, and a beta must not be prepared for a
+ * major.minor.patch that is already below the current one.
  *
  * @param candidate Candidate release version.
  * @param currentPackageVersion Current package.json version string.
- * @param currentChannel Channel of the last published version for the current
- * 4-component components, used to break ties. Defaults to `release`.
  *
  * @returns True when the candidate is newer.
  *
@@ -178,33 +343,10 @@ export const compareExtensionVersions = (a: ExtensionVersion, b: ExtensionVersio
 export const isNewerVersion = (
     candidate: ExtensionVersion,
     currentPackageVersion: string,
-    currentChannel: ReleaseChannel = 'release',
 ): boolean => {
-    const parsed = parse(currentPackageVersion);
-    if (!parsed) {
-        throw new Error(`Cannot parse package version: ${currentPackageVersion}`);
-    }
-    // Enforce the same major.minor.patch+increment.build.<dnrPatch> contract as
-    // tools/increment.ts, so a malformed version is rejected instead of being
-    // silently read as a valid increment.
-    const { build } = parsed;
-    if (!build || build.length !== 3) {
-        throw new Error(`Invalid build format in package version: ${currentPackageVersion}. Expected format: major.minor.patch+increment.build.dnrVersion`);
-    }
-    const [incrementStr, buildMetatag, dnrVersionStr] = build;
-    if (!incrementStr || buildMetatag !== 'build' || !dnrVersionStr) {
-        throw new Error(`Invalid build format in package version: ${currentPackageVersion}. Expected format: major.minor.patch+increment.build.dnrVersion`);
-    }
-    const increment = Number(incrementStr);
-    if (Number.isNaN(increment)) {
-        throw new Error(`Invalid increment version in package version: ${currentPackageVersion}`);
-    }
     const current: ExtensionVersion = {
-        major: parsed.major,
-        minor: parsed.minor,
-        patch: parsed.patch,
-        increment,
-        channel: currentChannel,
+        ...parsePackageVersion(currentPackageVersion),
+        channel: candidate.channel,
     };
     return compareExtensionVersions(candidate, current) > 0;
 };

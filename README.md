@@ -209,20 +209,41 @@ Edge Add-ons reviews every submission and has no skip-review mode, so the auto-b
 
 ## <a name="versioning-schema"></a> Versioning Schema
 
-The extension uses the following versioning schema:
+The release version (git tag) and the store-facing build number are kept
+separate:
+
+- **Git tag / release version** — semver, produced by the release tooling:
+    - `v5.6.0` for a release;
+    - `v5.6.0-beta.7` for a beta.
+- **Manifest / store build number** — 4 integers, `major.minor.patch.build`
+  (each `0`-`65535`, no letters and no `+`), required by the browser stores:
+  `5.6.0.7`. It is also used in the CHANGELOG heading
+  (`## [5.6.0.7-beta]`).
+
+The `package.json` version carries the build number and the DNR rulesets patch:
 
 ```
-major.minor.patch+autoBuildIncrementVersion.buildTag.dnrRulesetsVersion
+major.minor.patch+build.buildTag.dnrRulesetsVersion
 ```
 
 - **major.minor.patch**: Standard semantic versioning for the extension codebase.
-- **autoBuildIncrementVersion**: An incrementing number used as the fourth part of the manifest version (e.g., `88` in `5.2.1.88`).
-- **buildTag**: A delimiter indicating the build's readiness.
+- **build**: The monotonic build number, used as the fourth part of the
+  manifest version (e.g., `7` in `5.6.0.7`). By default, `prepare-release`
+  consumes the next value from `build[0]` in `package.json`. An optional
+  override can allocate a higher build when another release branch has a
+  higher counter. A beta is tagged `v5.6.0-beta.7` with manifest `5.6.0.7`,
+  and a release prepared after that beta is tagged `v5.6.0` with manifest
+  `5.6.0.8`.
+- **buildTag**: A literal delimiter indicating that the next component is the DNR rulesets version.
 - **dnrRulesetsVersion**: The patch version of the DNR rulesets, which includes the build date for those rulesets.
 
-Example: `5.2.1+88.beta.20251014`
+Example: preparing `v5.6.0-beta.7` sets `package.json` to
+`5.6.0+7.build.20261020120000`, builds manifest `5.6.0.7`, and adds the
+`## [5.6.0.7-beta]` CHANGELOG heading.
 
-But for build versions we will use following format: `major.minor.patch.autoBuildIncrementVersion` to comply with the browser requirements for version.
+Filter-only auto-builds (`pnpm increment`) bump only the `build` counter: they
+create no tag and do not change `major.minor.patch`. Historical 4-component tags
+are left as they are and are not migrated to the semver form.
 
 ## <a name="browser-compatibility"></a> Minimum supported browser versions
 

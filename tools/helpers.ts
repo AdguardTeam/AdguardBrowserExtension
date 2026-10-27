@@ -57,14 +57,17 @@ export type ParsedVersion = {
      * Parsed SemVer object.
      */
     parsedVersion: SemVer;
+
     /**
-     * Build increment number.
+     * Build number.
      */
-    incrementVersion: string;
+    buildNumber: string;
+
     /**
      * Build tag identifier.
      */
     buildMetatag: string;
+
     /**
      * DNR version timestamp in YYYYMMDDHHmmss format.
      */
@@ -130,7 +133,7 @@ const getEnvPolicy = (env: BuildTargetEnv, browser: Browser) => {
  * Parses and validates the package.json version string.
  *
  * Extracts and validates all required build metadata components from the version string.
- * The expected version format is: `major.minor.patch+increment.build.dnrVersion`
+ * The expected version format is: `major.minor.patch+buildNumber.build.dnrVersion`
  * (e.g., "5.3.0+88.build.20251001150205").
  *
  * @param version The version string to parse and validate.
@@ -149,13 +152,13 @@ const parseAndValidateVersion = (version: string): ParsedVersion => {
     const { build } = parsedVersion;
 
     const [
-        incrementVersion,
+        buildNumber,
         buildMetatag,
         dnrVersion,
     ] = build;
 
-    if (incrementVersion === undefined) {
-        throw new Error(`Invalid increment version format: ${packageJson.version}`);
+    if (buildNumber === undefined) {
+        throw new Error(`Invalid build number format: ${packageJson.version}`);
     }
 
     if (buildMetatag === undefined) {
@@ -168,7 +171,7 @@ const parseAndValidateVersion = (version: string): ParsedVersion => {
 
     return {
         parsedVersion,
-        incrementVersion,
+        buildNumber,
         buildMetatag,
         dnrVersion,
     };
@@ -176,9 +179,9 @@ const parseAndValidateVersion = (version: string): ParsedVersion => {
 
 /**
  * Parses the package.json version and returns the formatted version string
- * in the format major.minor.patch.increment (e.g., "5.3.0.88").
+ * in the format major.minor.patch.build (e.g., "5.3.0.88").
  *
- * This function extracts the increment version from the build metadata
+ * This function extracts the build number from the build metadata
  * and formats it for use in manifest.json and build.txt files.
  *
  * @param version The version string to format.
@@ -188,19 +191,19 @@ const parseAndValidateVersion = (version: string): ParsedVersion => {
  * @throws Error when package version cannot be parsed or has invalid format.
  */
 export const getFormattedVersion = (version: string): string => {
-    const { parsedVersion, incrementVersion } = parseAndValidateVersion(version);
+    const { parsedVersion, buildNumber } = parseAndValidateVersion(version);
 
     // Clear the build metatag since it's not allowed in manifest version.
     parsedVersion.build = [];
 
-    return `${parsedVersion.format()}.${incrementVersion}`;
+    return `${parsedVersion.format()}.${buildNumber}`;
 };
 
 /**
  * Updates a manifest object with new values and returns the updated manifest.
  * Also updates the version and name fields based on the package.json version,
  * since package.json version contains the build metatag, which itself contains
- * the increment version that should be passed to the manifest version to make
+ * the build number that should be passed to the manifest version to make
  * each build unique.
  *
  * @param buildEnv The build environment.
@@ -229,7 +232,7 @@ export const updateManifest = (
 
     // Build the final manifest object
     const result: WebExtensionManifest = {
-        // Passing build increment version to the version in the manifest
+        // Passing build number to the version in the manifest
         // to make each build unique and easily identifiable, since we often
         // update builds for MV3 via skip review process.
         version: getFormattedVersion(packageJson.version),

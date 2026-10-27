@@ -19,19 +19,19 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { execSync } from 'node:child_process';
+import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
+    allocateVersion,
     composePackageVersion,
     formatManifestVersion,
     formatTag,
     getDnrPatchVersion,
     isNewerVersion,
-    parseExtensionVersion,
-    type ReleaseChannel,
+    parseReleaseTag,
 } from './version';
 import { patchChangelog } from './changelog';
 
@@ -45,54 +45,83 @@ const PACKAGE_JSON_PATH = path.join(REPO_ROOT, 'package.json');
 const CHANGELOG_PATH = path.join(REPO_ROOT, 'CHANGELOG.md');
 
 /**
- * Returns the channel of the last published version for the given version by
- * checking whether a matching `-beta` tag exists locally (e.g. `v5.5.0.5-beta`).
- * Both channels ship on the same 4-component version, so a `-beta` tag means the
- * same components were already released on the beta channel.
+ * Checks whether a tag exists on the origin remote.
  *
- * @param version Version to look up.
+ * @param tag Semver tag to check.
  *
- * @returns `beta` when the matching `-beta` tag exists, `release` otherwise.
+ * @returns True when the remote tag exists.
  *
- * @throws Error when git itself fails (not when the tag is merely absent).
+ * @throws Error when the remote check fails.
  */
-const getCurrentChannel = (version: ReturnType<typeof parseExtensionVersion>): ReleaseChannel => {
-    const betaTag = formatTag({ ...version, channel: 'beta' });
-    try {
-        // Exit 1 means the ref does not exist; anything else is a real git
-        // failure (missing binary, not a repository) and must not silently
-        // fall back to `release`.
-        execSync(`git show-ref --verify --quiet "refs/tags/${betaTag}"`, { stdio: 'pipe' });
-        return 'beta';
-    } catch (error) {
-        if ((error as { status?: number }).status === 1) {
-            return 'release';
-        }
-        throw error;
+const remoteTagExists = (tag: string): boolean => {
+    const result = spawnSync(
+        'git',
+        ['ls-remote', '--exit-code', '--tags', '--refs', 'origin', `refs/tags/${tag}`],
+        { cwd: REPO_ROOT, encoding: 'utf8' },
+    );
+
+    if (result.error) {
+        throw new Error(`Cannot check remote tag ${tag}: ${result.error.message}`);
     }
+    if (result.status === 0) {
+        return true;
+    }
+    if (result.status === 2) {
+        return false;
+    }
+
+    const details = result.stderr.trim();
+    throw new Error(`Cannot check remote tag ${tag} on origin${details ? `: ${details}` : ''}`);
 };
 
 /**
- * Prepares a release: bumps package.json to the requested 4-component version
- * and patches CHANGELOG.md. Used by the prepare-release workflow.
+ * Prepares a release: allocates the next build number, bumps package.json and
+ * patches CHANGELOG.md. Used by the prepare-release workflow.
  *
- * @throws Error when the requested version is invalid, not newer than the
- * current package version, or the dnr-rulesets version cannot be parsed.
+ * The build number is a single monotonic counter stored as `build[0]` in the
+ * package.json version. Every prepare-release consumes the next value unless
+ * an explicit higher build override is supplied: a beta is tagged
+ * `vX.Y.Z-beta.N` with manifest `X.Y.Z.N`, and a release is tagged `vX.Y.Z`
+ * with manifest `X.Y.Z.(N+1)`, where `N` is the beta build number for the same
+ * `X.Y.Z`. A release prepared after that beta therefore bumps the build by
+ * one, which keeps it installable over the beta on the same store item.
+ *
+ * @throws Error when the requested tag is invalid, its beta number does not
+ * match the allocated build number, the version is not newer than the current
+ * package version, a required remote tag exists, or the dnr-rulesets version
+ * cannot be parsed.
  */
 const main = (): void => {
-    const tag = process.argv[2]?.trim();
-    if (!tag) {
-        throw new Error('Usage: pnpm tsx tools/release/prepare-release.ts <vM.m.p.inc[-beta]>');
+    const tagInput = process.argv[2]?.trim();
+    if (!tagInput) {
+        throw new Error('Usage: pnpm tsx tools/release/prepare-release.ts <vX.Y.Z[-beta.N]> [build]');
     }
 
-    const version = parseExtensionVersion(tag);
+    const tag = parseReleaseTag(tagInput);
+    const buildOverrideInput = process.argv[3]?.trim();
+    const buildOverride = buildOverrideInput ? Number(buildOverrideInput) : undefined;
+
+    const packageJson = JSON.parse(fs.readFileSync(PACKAGE_JSON_PATH, 'utf-8'));
+    const version = allocateVersion(tag, packageJson.version, buildOverride);
     const manifestVersion = formatManifestVersion(version);
     const headingVersion = version.channel === 'beta' ? `${manifestVersion}-beta` : manifestVersion;
 
-    const packageJson = JSON.parse(fs.readFileSync(PACKAGE_JSON_PATH, 'utf-8'));
-    if (!isNewerVersion(version, packageJson.version, getCurrentChannel(version))) {
+    if (!isNewerVersion(version, packageJson.version)) {
         throw new Error(
             `Version ${manifestVersion} is not newer than the current package version ${packageJson.version}`,
+        );
+    }
+
+    const candidateTag = formatTag(version);
+    const requiredRemoteTags = [candidateTag];
+    if (version.channel === 'beta') {
+        requiredRemoteTags.push(formatTag({ ...version, channel: 'release' }));
+    }
+    const existingRemoteTag = requiredRemoteTags.find((remoteTag) => remoteTagExists(remoteTag));
+    if (existingRemoteTag) {
+        throw new Error(
+            `Cannot prepare ${candidateTag}: remote tag ${existingRemoteTag} already exists on origin. `
+            + 'Choose a version that has not been released',
         );
     }
 
@@ -104,6 +133,7 @@ const main = (): void => {
     fs.writeFileSync(CHANGELOG_PATH, patchChangelog(changelog, headingVersion, today));
 
     console.log(`Prepared release ${formatTag(version)}:`);
+    console.log(`  manifest version -> ${manifestVersion}`);
     console.log(`  package.json version -> ${packageJson.version}`);
     console.log(`  CHANGELOG.md heading -> [${headingVersion}] - ${today}`);
 };

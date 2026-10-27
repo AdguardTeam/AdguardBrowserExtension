@@ -23,17 +23,24 @@ runner. Release/deploy flows:
 | --- | --- | --- |
 | PR checks + QA builds | `ci.yml` | pull_request / push to master |
 | E2E tests | `e2e.yml` | pull_request |
-| Release prep | `prepare-release.yml` | manual, tag input `vM.m.p.inc[-beta]` |
+| Release prep | `prepare-release.yml` | manual, semver tag `vX.Y.Z[-beta.N]` + optional build override |
 | Publish (beta + release) | `publish-release.yml` | merged `release-bump/*` PR / manual |
 | Filters auto-update + CWS/Edge auto-publish | `auto-build.yml` | schedule 12:00/17:00 UTC + manual |
 
 Release flow:
 
-1. Run `prepare-release.yml` with the target tag (e.g. `v5.6.0.1-beta`).
-   It bumps `package.json` to `5.6.0+1.build.<dnrPatch>` and adds the
-   `## [5.6.0.1-beta]` CHANGELOG heading.
+1. Run `prepare-release.yml` with the target semver tag (e.g. `v5.6.0-beta.7`).
+   By default, it consumes the next build number, bumps `package.json` to
+   `5.6.0+7.build.<dnrPatch>` and adds the `## [5.6.0.7-beta]` CHANGELOG heading.
+   If a stable branch has a higher counter, enter a build override greater
+   than the highest counter on both branches and use it as the beta suffix. The workflow rejects requested tags that
+   already exist on origin. For a beta, it also rejects an existing plain
+   release tag with the same `X.Y.Z`. A release tag has no build suffix (e.g.
+   `v5.6.0`). Without an override, its manifest build is the next counter
+   value, so a release prepared after `v5.6.0-beta.7` gets the `5.6.0.8`
+   manifest.
 2. Merge the `release-bump/*` PR.
-3. `publish-release.yml` tags, builds, and deploys:
+3. `publish-release.yml` builds the main artifacts, creates the tag, and deploys:
    - beta: static.adtidy.org (chromium CRX/ZIP + Firefox XPI/update.json),
      Chrome Web Store MV3, Firefox AMO beta, Firefox standalone signing,
      GitHub Release draft (public repo, marked as prerelease)
@@ -57,7 +64,7 @@ automation).
 Workflow files:
 
 - `prepare-release.yml` — opens the `release-bump/*` PR (package.json + CHANGELOG)
-- `publish-release.yml` — tag, build, deploy to static/stores, prepare GitHub Release draft, notify
+- `publish-release.yml` — build, tag, deploy to static/stores, prepare GitHub Release draft, notify
 - `auto-build.yml` — twice-daily rulesets update + CWS/Edge auto-publish
 
 ## Required repository configuration
@@ -91,15 +98,18 @@ mid-release runtime failures, so configure them before the first run.
 ## Release flow
 
 `publish-release.yml` resolves the version from the first full 4-component
-CHANGELOG heading (`## [M.m.p.inc[-beta]] - YYYY-MM-DD`), verifies it matches
-`package.json`, force-tags the commit, and builds channel artifacts through the
-existing Docker stages.
+CHANGELOG heading (`## [M.m.p.BUILD[-beta]] - YYYY-MM-DD`) and verifies it
+matches `package.json`. It builds the main channel artifacts through the
+existing Docker stages before it creates the semver tag. The tag is never moved:
+a re-run whose tag already points to the release commit keeps it, while a tag at
+another commit fails the run. For a manual retry, dispatch on the existing tag
+or its release commit. Otherwise bump the patch instead of re-releasing.
 
-- Beta tags (`v5.6.0.1-beta`) build the signed CRX (cert delivered as the
+- Beta tags (`v5.6.0-beta.7`) build the signed CRX (cert delivered as the
   `CHROME_CERT` BuildKit secret from Vault, never written to the workspace or an
   image layer) plus the Firefox standalone and AMO beta packages; only
   beta-channel jobs run.
-- Release tags (`v5.6.0.1`) build all browser bundles; only release-channel
+- Release tags (`v5.6.0`) build all browser bundles; only release-channel
   jobs run.
 - Artifacts are laid out per consumer and consumed by the shared org workflows:
   `deploy-to-static.yml`, `deploy-to-chrome-web-store.yml`,
@@ -132,8 +142,9 @@ Job `build-firefox-standalone` in `publish-release.yml` (beta channel only):
    exists so the two never race).
 
 Signing may hit the 20-minute timeout while waiting for Mozilla. If so, re-run
-the **same** `publish-release.yml` run (force-retag) after Mozilla finishes
-signing to download the signed `.xpi`.
+the **same** `publish-release.yml` run after Mozilla finishes signing to
+download the signed `.xpi`; the tag already points to the release commit, so
+the re-run keeps it instead of moving it.
 
 ### AMO Firefox beta
 
@@ -147,7 +158,7 @@ Mozilla signs them during review. The artifact (`firefox.zip` + `source.zip` +
 ### How to release a Firefox beta
 
 The beta channel of `publish-release.yml` automatically covers both Firefox
-variants. Run `prepare-release.yml` with a `-beta` tag (e.g. `v5.6.0.1-beta`),
+variants. Run `prepare-release.yml` with a `-beta` tag (e.g. `v5.6.0-beta.7`),
 merge the resulting `release-bump/*` PR, and let `publish-release.yml` run. The
 standalone and AMO jobs run independently and never block each other; if
 standalone signing times out, AMO proceeds and the standalone run can be
@@ -179,14 +190,17 @@ variants are noted.
 
 5. **Run `pnpm locales validate`** and, if needed, create a task for translators.
 
-6. **Run `prepare-release.yml`** with the target 4-component tag
-   (e.g. `v5.6.0.1-beta` for beta, `v5.6.0.1` for release). It validates the
-   format and monotonicity, sets `package.json`, patches `CHANGELOG.md`, and
-   opens the `release-bump/*` PR.
+6. **Run `prepare-release.yml`** with the target semver tag
+   (e.g. `v5.6.0-beta.7` for beta, `v5.6.0` for release). It validates the
+   format and monotonicity, allocates the next build number, checks remote
+   tags, sets `package.json`, patches `CHANGELOG.md`, and opens the
+   `release-bump/*` PR. If a stable branch has a higher counter, enter a build
+   override greater than the highest counter on both branches and use it as the
+   beta suffix.
 
 7. **Merge the `release-bump/*` PR.** `publish-release.yml` takes over: it
-   tags the merge commit, builds, and deploys to the destinations for the given
-   channel.
+   builds the main artifacts, tags the merge commit, and deploys to the
+   destinations for the given channel.
 
 ## Troubleshooting
 
@@ -205,9 +219,10 @@ variants are noted.
   `prepare-release.yml` again) before any deploy happens — the workflow refuses
   to publish an inconsistent version.
 - **Store upload rejected as a duplicate version.** The shared store workflows
-  reject duplicate versions on re-run. Re-runs of `publish-release.yml` rely on
-  the force-retag and the documented idempotency of the deployer. If a store
-  still rejects a duplicate, publish manually via the store dashboard.
+  reject duplicate versions on re-run. Re-runs of `publish-release.yml` keep the
+  existing tag (it points to the same release commit) and rely on the documented
+  idempotency of the deployer. If a store still rejects a duplicate, publish
+  manually via the store dashboard.
 - **Permissions error on a deploy job.** The GitHub environments must be
   pre-created with the exact names used in the workflow, otherwise GitHub
   silently auto-creates a misspelled environment without approval gates.

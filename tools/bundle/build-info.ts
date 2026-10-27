@@ -35,7 +35,7 @@ const FILE_NAME = 'build.txt';
 const filePath = path.join(BUILD_PATH, OUTPUT_PATH, FILE_NAME);
 
 /**
- * Writes build.txt file with current version in format major.minor.patch.increment
+ * Writes build.txt file with current version in format major.minor.patch.build
  * (same format as used in manifest.json).
  *
  * @returns Promise which resolves when the file is written.

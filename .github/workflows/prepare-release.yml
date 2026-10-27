@@ -2,18 +2,30 @@ name: Prepare release
 
 # Opens a release-bump PR that sets package.json to the requested version and
 # finalizes CHANGELOG.md. After the PR is merged, publish-release.yml takes
-# over. Tags ending with "-beta" (e.g. v5.6.0.1-beta) deploy only to the beta
-# channel; tags without it (e.g. v5.6.0.1) deploy only to the release channel.
+# over. The tag is semver: "-beta.N" (e.g. v5.6.0-beta.7) deploys only to the
+# beta channel; no suffix (e.g. v5.6.0) deploys only to the release channel.
+# The 4-component build number (e.g. 5.6.0.7) is allocated from package.json
+# unless an explicit higher override is supplied. It stays in the manifest and
+# the CHANGELOG heading only.
 
 on:
   workflow_dispatch:
     inputs:
       tag:
         description: >-
-          Release tag WITH "v" prefix, 4-component version.
-          "-beta" suffix = beta channel only (e.g. v5.6.0.1-beta).
-          No suffix = release channel only (e.g. v5.6.0.1).
+          Semver release tag WITH "v" prefix.
+          "-beta.N" suffix = beta channel only (e.g. v5.6.0-beta.7;
+          N must equal the allocated build number).
+          No suffix = release channel only (e.g. v5.6.0).
         required: true
+        type: string
+      build:
+        description: >-
+          Optional manifest build number. If a stable branch has a higher
+          counter than master, choose a value greater than both counters.
+          It must be greater than the current package.json build.
+          For a beta, it must equal N in the tag.
+        required: false
         type: string
 
 # `contents: write` — push the release-bump branch
@@ -49,10 +61,6 @@ jobs:
           # Authorization". The branch bootstrap below passes the workflow
           # token explicitly instead.
           persist-credentials: false
-          # prepare-release.ts's getCurrentChannel() probes local tags
-          # (refs/tags/vX.Y.Z.W-beta). fetch-tags: true fetches tag refs on top
-          # of the shallow clone instead of a full history clone.
-          fetch-tags: true
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
@@ -70,14 +78,24 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --ignore-scripts
 
-      # Sets package.json version (M.m.p+inc.build.<dnrPatch>) and patches
-      # CHANGELOG.md (moves Unreleased content under the new heading).
-      # The tag is passed via env to avoid interpolating workflow inputs into
-      # the shell command.
+      # Checks that the requested tag and, for a beta, its plain release tag do
+      # not exist on origin. Allocates the build number, sets package.json to
+      # M.m.p+BUILD.build.<dnrPatch>, and patches CHANGELOG.md.
+      # The inputs are passed via env to avoid interpolating them into the
+      # shell command. The temporary git configuration authenticates the
+      # remote-tag checks because checkout does not persist credentials.
       - name: Bump version and changelog
         env:
           TAG: ${{ inputs.tag }}
-        run: pnpm tsx tools/release/prepare-release.ts "${TAG}"
+          BUILD: ${{ inputs.build }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          AUTH_HEADER="AUTHORIZATION: basic $(printf 'x-access-token:%s' "${GITHUB_TOKEN}" | base64 | tr -d '\n')"
+          export GIT_CONFIG_COUNT=1
+          export GIT_CONFIG_KEY_0="http.https://github.com/.extraheader"
+          export GIT_CONFIG_VALUE_0="${AUTH_HEADER}"
+          pnpm tsx tools/release/prepare-release.ts "${TAG}" "${BUILD}"
 
       # Create the local branch carrying the (still uncommitted) bump changes.
       - name: Create release-bump branch

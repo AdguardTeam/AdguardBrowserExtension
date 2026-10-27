@@ -108,7 +108,10 @@ export const extractLatestEntry = (content: string): ChangelogEntry => {
     }
 
     if (start === -1) {
-        throw new Error('No full-version release heading (## [M.m.p.inc[-beta]] - YYYY-MM-DD) found in the changelog');
+        throw new Error(
+            'No full-version release heading (## [M.m.p.BUILD[-beta]] - YYYY-MM-DD) '
+            + 'found in the changelog',
+        );
     }
 
     let end = lines.length;
