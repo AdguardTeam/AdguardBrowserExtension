@@ -271,6 +271,13 @@ export const genCommonConfig = (
             runtimeChunk: 'single',
             usedExports: true,
             sideEffects: true,
+            // Deterministic ids hash the module name with a collision salt assigned in
+            // graph order, so adding or removing one module renumbers unrelated ones.
+            // Named ids come from module paths instead: a rules or resources update then
+            // leaves vendor chunks byte-identical, and the CWS change-scope check stays
+            // green. Duplicate module names get a `?hash` suffix derived from the full
+            // path, which is stable for a fixed dependency set.
+            moduleIds: 'named',
             splitChunks: {
                 cacheGroups: {
                     // Keep agtree in a separate chunk to avoid duplication
