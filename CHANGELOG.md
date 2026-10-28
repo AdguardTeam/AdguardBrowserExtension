@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Bundle module ids now come from module paths, so a rules or resources update
+  no longer renumbers vendor chunks and the Chrome Web Store change-scope check
+  stays green.
+
 ## [5.5.3.6-beta] - 2026-10-16
 
 ## [5.5.3.5] - 2026-10-13
