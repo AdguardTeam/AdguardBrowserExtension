@@ -2796,6 +2796,55 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "22514194ad8441cc56e68716b1f75f69" due to: ' + e);
         }
     },
+    "(()=>{const verifiedKey=typeof popupPermVerifiedKey!=='undefined'?popupPermVerifiedKey:'popupPermVerifiedKey';const originalGetItem=Storage.prototype.getItem;Storage.prototype.getItem=function(key){if(this===sessionStorage){const keyStr=String(key);if(keyStr.includes('al_dl_fired_')||keyStr.includes('al_dl_opened_')||keyStr.includes(verifiedKey)){return'1';}}return originalGetItem.call(this,key);};const fakeWindow={closed:false,outerHeight:100,innerHeight:100,location:{replace:function(){}},close:function(){}};const fakeOpen=()=>fakeWindow;try{Object.defineProperty(window,'open',{value:fakeOpen,writable:false,configurable:false});}catch(e){window.open=fakeOpen;}try{Object.defineProperty(window,'__amritNativeOpen',{value:fakeOpen,writable:false,configurable:false});}catch(e){}})();": () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["4bba389b109280d95c2ba5dff7b10b1a"] === e) return;
+            (() => {
+                const e = "undefined" != typeof popupPermVerifiedKey ? popupPermVerifiedKey : "popupPermVerifiedKey", t = Storage.prototype.getItem;
+                Storage.prototype.getItem = function(o) {
+                    if (this === sessionStorage) {
+                        const t = String(o);
+                        if (t.includes("al_dl_fired_") || t.includes("al_dl_opened_") || t.includes(e)) return "1";
+                    }
+                    return t.call(this, o);
+                };
+                const o = {
+                    closed: !1,
+                    outerHeight: 100,
+                    innerHeight: 100,
+                    location: {
+                        replace: function() {}
+                    },
+                    close: function() {}
+                }, r = () => o;
+                try {
+                    Object.defineProperty(window, "open", {
+                        value: r,
+                        writable: !1,
+                        configurable: !1
+                    });
+                } catch (e) {
+                    window.open = r;
+                }
+                try {
+                    Object.defineProperty(window, "__amritNativeOpen", {
+                        value: r,
+                        writable: !1,
+                        configurable: !1
+                    });
+                } catch (e) {}
+            })();
+            Object.defineProperty(Window.prototype.toString, "4bba389b109280d95c2ba5dff7b10b1a", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "4bba389b109280d95c2ba5dff7b10b1a" due to: ' + e);
+        }
+    },
     '(()=>{const o={apply:(o,t,e)=>{const n=e[0];return"boolean"==typeof n&&!0===n&&(e[0]=!1),Reflect.apply(o,t,e)}},t={apply:(t,e,n)=>{try{const t=n[0];"function"==typeof t&&t.toString().includes("blockAdblock")&&(n[0]=new Proxy(n[0],o))}catch(o){}return Reflect.apply(t,e,n)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t)})();': () => {
         try {
             const e = "done";

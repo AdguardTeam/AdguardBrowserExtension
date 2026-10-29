@@ -1228,6 +1228,14 @@
                 "restrictedDomains": []
             }
         ],
+        "(()=>{const verifiedKey=typeof popupPermVerifiedKey!=='undefined'?popupPermVerifiedKey:'popupPermVerifiedKey';const originalGetItem=Storage.prototype.getItem;Storage.prototype.getItem=function(key){if(this===sessionStorage){const keyStr=String(key);if(keyStr.includes('al_dl_fired_')||keyStr.includes('al_dl_opened_')||keyStr.includes(verifiedKey)){return'1';}}return originalGetItem.call(this,key);};const fakeWindow={closed:false,outerHeight:100,innerHeight:100,location:{replace:function(){}},close:function(){}};const fakeOpen=()=>fakeWindow;try{Object.defineProperty(window,'open',{value:fakeOpen,writable:false,configurable:false});}catch(e){window.open=fakeOpen;}try{Object.defineProperty(window,'__amritNativeOpen',{value:fakeOpen,writable:false,configurable:false});}catch(e){}})();": [
+            {
+                "permittedDomains": [
+                    "amritlink.xyz"
+                ],
+                "restrictedDomains": []
+            }
+        ],
         "(()=>{const o={apply:(o,t,e)=>{const n=e[0];return\"boolean\"==typeof n&&!0===n&&(e[0]=!1),Reflect.apply(o,t,e)}},t={apply:(t,e,n)=>{try{const t=n[0];\"function\"==typeof t&&t.toString().includes(\"blockAdblock\")&&(n[0]=new Proxy(n[0],o))}catch(o){}return Reflect.apply(t,e,n)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,t)})();": [
             {
                 "permittedDomains": [
@@ -3427,6 +3435,11 @@
         "(()=>{const e=/adshield|adsentinel/,t=\"(function(){})();\",r=/^\\(\\s*\\.\\.\\.\\s*([A-Za-z_$][\\w$]*)\\s*\\)\\s*=>\\s*[A-Za-z_$][\\w$]*\\s*\\.\\s*apply\\s*\\(\\s*this\\s*,\\s*\\1\\s*\\)\\s*$/,s=/^function\\s*\\(\\s*\\)\\s*\\{\\s*return\\s+[A-Za-z_$][\\w$]*\\s*\\.\\s*apply\\s*\\(\\s*this\\s*,\\s*arguments\\s*\\)\\s*;?\\s*\\}$/,o=/^(?:\"use strict\"|'use strict');\\s*\\(\\(\\)\\s*=>\\s*\\{[\\s\\S]*\\}\\)\\(\\s*\\);?\\s*$/,n=/^([A-Za-z_$][\\w$]*\\(\\s*\\)\\s*;)\\s*\\(async(?:\\s+function\\s*\\(\\s*\\)|\\s*\\(\\s*\\)\\s*=>)\\s*\\{[\\s\\S]*\\}\\)\\(\\s*\\);?\\s*$/,a=[\"requestAnimationFrame\",\"requestIdleCallback\",\"setInterval\",\"setTimeout\"],p=/html-load\\.com|loader\\.min\\.js|\\/recovery(?:-light)?\\.js(?:[?#:\\s)]|$)|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\.|:\\/\\/loader\\.|core\\.js|\\/sdk\\.js|\\/app\\.js|\\/main\\.js|\\/vendor\\.js|\\/bundle\\.js|(?:whoinasmuch|assuredwhoa|contentyet)\\.com|\\/(?:routes|output|framework|shared)\\/.*\\.js/,i={apply:Reflect.apply,construct:Reflect.construct,filter:Array.prototype.filter,every:Array.prototype.every,some:Array.prototype.some,isArray:Array.isArray,getOwnPropertyDescriptor:Object.getOwnPropertyDescriptor,includes:String.prototype.includes,regexTest:RegExp.prototype.test,regexExec:RegExp.prototype.exec,functionToString:Function.prototype.toString,queueMicrotask:window.queueMicrotask},y=new Set,c=()=>i.apply(i.regexTest,p,[(new Error).stack]),l={construct:(r,s,o)=>{let n=!1;try{const[r,o]=s,a=o&&\"object\"==typeof o?i.getOwnPropertyDescriptor(o,\"type\")?.value:void 0;(\"application/javascript\"===a||\"text/javascript\"===a)&&i.isArray(r)&&i.apply(i.every,r,[e=>\"string\"==typeof e])&&i.apply(i.some,r,[t=>i.apply(i.regexTest,e,[t])])&&c()&&(s[0]=[t],n=!0)}catch(e){}const a=i.construct(r,s,o);if(n)try{(()=>{const e={};i.apply(i.queueMicrotask,window,[()=>y.delete(e)]),y.add(e)})()}catch(e){}return a}};window.Blob=new Proxy(window.Blob,l);const d={apply:(e,t,o)=>{const n=y.values().next().value;y.delete(n);try{const[e,t]=o;if(n&&\"number\"==typeof t&&t>=4900&&t<5100){const t=\"function\"==typeof e?i.apply(i.functionToString,e,[]):\"string\"==typeof e?e:\"\";(i.apply(i.includes,t,[\"new Error\"])||\"function\"==typeof e&&(i.apply(i.regexTest,r,[t])||i.apply(i.regexTest,s,[t])))&&c()&&(o[0]=()=>{})}}catch(e){}return i.apply(e,t,o)}};window.setTimeout=new Proxy(window.setTimeout,d);const u={apply:(e,t,r)=>{try{\"function\"==typeof r[0]&&i.isArray(t)&&t.length===a.length&&i.apply(i.every,a,[(e,r)=>t[r]===e])&&c()&&(t=i.apply(i.filter,t,[e=>\"setTimeout\"!==e]))}catch(e){}return i.apply(e,t,r)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,u);const w={apply(e,r,s){const a=i.apply(e,r,s);try{if(\"string\"!=typeof a)return a;const e=e=>i.apply(i.includes,a,[e]),r=()=>e(\"loader_light\")&&e(\"last_bfa_at\")&&e(\"/report?type=\")&&e(\"as_modal_loaded\")&&e(\"close-error-report\")&&e(\"ECDSA\")&&e(\"P-256\"),s=i.apply(i.regexExec,n,[a]);if(s&&r())return s[1];if(!i.apply(i.regexTest,o,[a]))return a;if(e(\"__as_tag2_done\")||e(\"_as_prehooked\")||e(\"_onload2\")||e(\"_onerror2\"))return e(\"__as_tag2_done\")&&e(\"_as_prehooked\")&&e(\"_onload2\")&&e(\"_onerror2\")&&e('data-sdk^=\"pk/\"')?\"window.__as_tag2_done=true;void 0;\":a;if(e('data-sdk^=\"pk/\"')&&e(\"/recovery-light.js\")&&e(\"/recovery.js\")&&e(\"__as_cbs\")&&e(\"__as_start_recovery\")&&e(\"AdBlock detected\")||r())return t}catch(e){}return a}};window.Array.prototype.join=new Proxy(window.Array.prototype.join,w)})();": [
             {
                 "permittedDomains": [
+                    "getnews.jp",
+                    "reuters.com",
+                    "laptopmag.com",
+                    "theweek.com",
+                    "tvtechnology.com",
                     "freemcserver.net",
                     "merkur.de",
                     "looopings.nl",
@@ -4320,7 +4333,6 @@
                 "permittedDomains": [
                     "gyanitheme.com",
                     "meclipstudy.in",
-                    "proappapk.com",
                     "recursosinformaticos.org",
                     "m.appsmodz.com"
                 ],
