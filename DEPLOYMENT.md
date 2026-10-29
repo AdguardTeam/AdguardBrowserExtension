@@ -48,6 +48,8 @@ Release flow:
      Firefox AMO, Edge Add-ons (draft upload; submission is manual),
      GitHub Release draft (public repo)
    - Opera zips ship as GitHub Release assets only (store submission is manual).
+   - Chrome Web Store versions are staged: after review, publish them manually
+     from the Developer Dashboard and set the rollout percentage there.
 4. Slack notifications go to `#adguard-extension-vcs`.
 5. After the workflow completes, review the notes and assets in the
    `AdguardTeam/AdguardBrowserExtension` GitHub Release draft and publish it

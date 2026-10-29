@@ -544,6 +544,9 @@ jobs:
       artifact-name: cws-mv3-beta
       item-id: ${{ vars.CHROME_WEBSTORE_MV3_BETA_ITEM_ID || 'apjcbfpjihpedihablmalmbbhjpklbdf' }}
       api-version: v2
+      # Wait for a manual publish in the CWS dashboard after review, so the
+      # rollout percentage is set by hand instead of going live at 100%.
+      staged: true
       slack-channel: ''
       product: AdGuard Browser Extension MV3 Beta
       version-title: ${{ needs.resolve-version.outputs.tag }}
@@ -562,6 +565,9 @@ jobs:
       artifact-name: cws-mv3-release
       item-id: ${{ vars.CHROME_WEBSTORE_MV3_ITEM_ID || 'bgnkhhnnamicmpeenaelnjfhikgbkllg' }}
       api-version: v2
+      # Wait for a manual publish in the CWS dashboard after review, so the
+      # rollout percentage is set by hand instead of going live at 100%.
+      staged: true
       slack-channel: ''
       product: AdGuard Browser Extension MV3
       version-title: ${{ needs.resolve-version.outputs.tag }}
@@ -686,7 +692,7 @@ jobs:
         uses: AdGuardSoftwareLimited/actions/actions/slack@master
         with:
           channel: '#adguard-extension-vcs'
-          message: ':white_check_mark: *browser-extension* *${{ needs.resolve-version.outputs.tag }}* (${{ needs.resolve-version.outputs.channel }}) deployed to static.adtidy.org + stores; GitHub Release draft ready for manual publication — <${{ needs.create-release.outputs.release-url }}|draft> | <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>'
+          message: ':white_check_mark: *browser-extension* *${{ needs.resolve-version.outputs.tag }}* (${{ needs.resolve-version.outputs.channel }}) deployed to static.adtidy.org + stores; CWS version waits for a manual publish after review; GitHub Release draft ready for manual publication — <${{ needs.create-release.outputs.release-url }}|draft> | <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>'
           color: good
 
   notify-failure:
