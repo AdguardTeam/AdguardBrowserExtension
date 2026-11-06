@@ -253,7 +253,7 @@ The extension supports both Manifest V2 (MV2) and Manifest V3 (MV3) platforms. M
 
 | Browser                     | Version |
 |---------------------------- |---------|
-| Chromium-based browsers MV2 | ✅ 106  |
+| Chromium-based browsers MV2 | ✅ 79   |
 | Chromium-based browsers MV3 | ✅ 121  |
 | Firefox                     | ✅ 78   |
 | Firefox Mobile              | ✅ 113  |
@@ -262,6 +262,9 @@ The extension supports both Manifest V2 (MV2) and Manifest V3 (MV3) platforms. M
 | Edge Chromium MV2           | ✅ 80   |
 | Edge Chromium MV3           | ✅ 121  |
 | Edge Legacy                 | ❌      |
+
+> **Note:** Prerender request handling requires Chromium 106+. The extension
+> still supports Chromium 79+ for all other functionality.
 
 ## <a name="documentation"></a> Documentation
 
