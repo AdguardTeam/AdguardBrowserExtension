@@ -1,9 +1,9 @@
-! Checksum: ZuAlPq09OFrHPpW0pqs/dA
-! Diff-Path: ../patches/8/8-s-1791371350-3600.patch
+! Checksum: g4KxBuiV4bYqAkjEdiW/hw
+! Diff-Path: ../patches/8/8-s-1793636030-3600.patch
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.9.47
-! TimeUpdated: 2026-10-07T11:05:38+00:00
+! Version: 2.0.9.51
+! TimeUpdated: 2026-11-02T16:09:36+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -15,8 +15,8 @@
 /adv_tekstlinks.
 /adverteerders/*
 /advertentie-banner-
-/advertentie.$domain=~anzeigen-aufgabe-alpha.de|~anzeigen-aufgabe-beta.de|~anzeigen-aufgabe-test.de|~rd.nl
-/advertentie/*$domain=~anzeigen-aufgabe-alpha.de|~anzeigen-aufgabe-beta.de|~anzeigen-aufgabe-test.de|~rd.nl
+/advertentie.$domain=~anzeigen-aufgabe-alpha.de|~anzeigen-aufgabe-beta.de|~anzeigen-aufgabe-test.de|~araba.nl|~rd.nl
+/advertentie/*$domain=~anzeigen-aufgabe-alpha.de|~anzeigen-aufgabe-beta.de|~anzeigen-aufgabe-test.de|~araba.nl|~rd.nl
 /advertentie1.
 /advertentie2/*
 /advertentie_head.
@@ -897,6 +897,7 @@ tpo.nl##.bol_pml_box
 wijwedden.net##.bookies
 autoreview.nl##.bottom-bannuring
 onderwijsnieuwsdienst.nl##.bottomSpace
+buienradar.nl##.br-ad-slot
 bnr.nl##.branded
 classic.nl##.brievenbus
 xgn.nl##.bs
@@ -1782,6 +1783,9 @@ omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -40
 ! Good: example.org###rek; ||example.com/ads/
 ! Bad: example.org#@##banner_ad (for instance, should be in allowlist.txt or in antiadblock.txt)
 !
+wielerflits.be,wielerflits.nl##div[class^="r89-"]
+looopings.nl##.indexAdFrame
+looopings.nl##.sidebarAdFrame
 autoweek.nl##.teaser-group__items > a.teaser-tile ~ div
 autoweek.nl##.powered-by
 weeronline.nl#$#.adWrapper { height: 0px !important; }

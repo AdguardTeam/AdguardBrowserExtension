@@ -1,9 +1,9 @@
-! Checksum: xPvgsAEZM4RVr7xeUn266g
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1791803517-3600.patch
+! Checksum: RAcTPN++FdqJk6qWl42ouw
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1793679165-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.14.70
-! TimeUpdated: 2026-10-12T11:08:30+00:00
+! Version: 2.0.14.79
+! TimeUpdated: 2026-11-03T04:09:54+00:00
 ! Expires: 10 days (update frequency)
 $removeparam=pjclid
 $removeparam=/^weekend-reading-link-\d{6}$/
@@ -340,6 +340,28 @@ $removeparam=erid
 $removeparam=oly_enc_id
 $removeparam=_ga
 $removeparam=tduid
+||trck.norisbank.de/click.php$removeparam=s_id
+||trck.norisbank.de/click.php$removeparam=kidc
+||trck.norisbank.de/click.php$removeparam=kid
+||dkb.de^$removeparam=referer
+||aktionen.consorsbank.de^$removeparam=partnerId
+||aktionen.consorsbank.de^$removeparam=aid
+||aktionen.consorsbank.de^$removeparam=cid
+||aktionen.consorsbank.de^$removeparam=trid
+||1xlite-12669.pro^$removeparam=tag
+||1xlite-12669.pro^$removeparam=pb
+||1xlite-12669.pro^$removeparam=click_id
+||1xlite-12669.pro^$removeparam=r
+||auto.de^$removeparam=source
+||auto.de^$removeparam=medium
+||auto.de^$removeparam=campaign
+||auto.de^$removeparam=adgroupid
+||x.com^$removeparam=a
+||x.com^$removeparam=s
+||wayground.com^$removeparam=source
+||bfmtv.com^$removeparam=at_brand
+||bfmtv.com^$removeparam=at_compte
+||bfmtv.com^$removeparam=at_plateforme
 ||elcomercio.es^$removeparam=mrfcid
 ||sp.mbga.jp^$removeparam=_from
 ||sp.mbga.jp^$removeparam=_fr
@@ -406,9 +428,10 @@ $removeparam=tduid
 ||newsdig.tbs.co.jp^$removeparam=ex_position
 ||newsdig.tbs.co.jp^$removeparam=ex_id
 ||jprime.jp^$removeparam=from
-||ck12.org^$document,removeparam=referrer
-||ck12.org^$document,removeparam=_eid
-||ck12.org^$document,removeparam=_mid
+||ck12.org^$removeparam=refcode
+||ck12.org^$removeparam=referrer
+||ck12.org^$removeparam=_eid
+||ck12.org^$removeparam=_mid
 ||newspicks.com^$removeparam=invoker
 $removeparam=ro,domain=khb-tv.co.jp|kab.co.jp|kfb.co.jp|maidonanews.jp|ncctv.co.jp|yorozoonews.jp|news.ksb.co.jp
 $removeparam=ri,domain=khb-tv.co.jp|kab.co.jp|kfb.co.jp|maidonanews.jp|ncctv.co.jp|yorozoonews.jp|news.ksb.co.jp
@@ -2506,6 +2529,7 @@ $removeparam=ns_campaign,domain=bbc.com|bbc.co.uk
 $removeparam=ns_linkname,domain=bbc.com|bbc.co.uk
 $removeparam=ns_fee,domain=bbc.com|bbc.co.uk
 ||office.com^$removeparam=ocid
+||business.x.com^$removeparam=ref
 $removeparam=refsrc,domain=twitter.com|x.com
 $removeparam=ref_src,domain=twitter.com|x.com
 $removeparam=ref_url,domain=twitter.com|x.com
@@ -2645,6 +2669,8 @@ $removeparam=s,domain=twitter.com|x.com
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_tracking_params
 !+ NOT_PLATFORM(windows, mac, android, cli, ios, ext_ublock) NOT_OPTIMIZED
 adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
+@@||archiveiya74codqgiixo33q62qlrqtkgmcitqx5u2oeqnmn5bpcbiyd.onion^$removeparam
+@@||archivecaslytosk.onion^$removeparam
 @@||archive.*^$removeparam
 @@||wayback.archive-it.org^$removeparam
 @@||warp.ndl.go.jp^$removeparam

@@ -1,9 +1,9 @@
-! Checksum: z01jGNWZgn8v54cJei7OAg
-! Diff-Path: ../patches/16/16-s-1791876219-3600.patch
+! Checksum: I3tqp+xTTdxR5OGK7jM3Ew
+! Diff-Path: ../patches/16/16-s-1793956448-3600.patch
 ! Title: AdGuard French filter
 ! Description: Liste FR + AdGuard French filter. Filter list that specifically removes ads on websites in French language.
-! Version: 2.0.57.96
-! TimeUpdated: 2026-10-13T07:20:09+00:00
+! Version: 2.0.58.14
+! TimeUpdated: 2026-11-06T09:10:19+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -20,6 +20,7 @@
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
 !
+||static.gimii.fr^
 ||adstanding.com^
 ||lopfly.com^
 ||heliumads.com^
@@ -924,12 +925,23 @@ igen.fr#$##motherboard { top: 30px!important; }
 ! Incorrectly blocked domains can be excluded using regex(synchronize this regexp in all filters)
 /^(?!.*(mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.li|bytecdntp.com|doodcdn.io|intensedebate.com|vixcloud.co|cdn.plyr.io|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|(\/\/|\.)vk\.com|yandex.|yastatic.net|ytimg.com|zencdn.net|player|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|imgsmail.ru|cloudflare.net|rabbitstream.net|alicdn.com|(\/\/|\.)x\.com)).*$/$third-party,script,_____,domain=scan-fr.cc
 ! Similar to regexp above, but using the denyallow modifier
-*$script,third-party,denyallow=mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.li|bytecdntp.com|doodcdn.io|intensedebate.com|vixcloud.co|cdn.plyr.io|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|imgsmail.ru|cloudflare.net|rabbitstream.net|x.com|alicdn.com,_____,domain=dl-protect.link|zone-telechargement.*|fsmirror93.lol|sushiscan.st
+*$script,third-party,denyallow=mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.li|bytecdntp.com|doodcdn.io|intensedebate.com|vixcloud.co|cdn.plyr.io|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|imgsmail.ru|cloudflare.net|rabbitstream.net|x.com|alicdn.com,_____,domain=dl-protect.link|zone-telechargement.*|fsmirror93.lol|sushiscan.st|flemmix.studio
 ! Similar to regexp above, but using the denyallow modifier and for xmlhttprequest
-$xmlhttprequest,third-party,denyallow=mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.li|bytecdntp.com|doodcdn.io|intensedebate.com|vixcloud.co|cdn.plyr.io|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|imgsmail.ru|cloudflare.net|rabbitstream.net|x.com,_____,domain=zone-telechargement.*|raijin-scans.fr
+$xmlhttprequest,third-party,denyallow=mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.li|bytecdntp.com|doodcdn.io|intensedebate.com|vixcloud.co|cdn.plyr.io|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|imgsmail.ru|cloudflare.net|rabbitstream.net|x.com,_____,domain=zone-telechargement.*|raijin-scans.fr|flemmix.studio
 !
 !
 !
+flemmix.studio#%#//scriptlet('abort-on-stack-trace', 'fetch', 'onerror')
+parismatch.com##.bg-pm-background-stronger:has(> div[data-ad-slot])
+parismatch.com#$#.flex > div.hero-wrapper { margin-top: 0 !important; }
+parismatch.com##div.top-below-sticky-header > div.bg-pm-background-stronger:has(> div[data-ad-slot])
+parismatch.com##div.flex-wrap > .lg\:shrink-0:has(> .top-below-sticky-header > div[data-ad-slot])
+parismatch.com##div.empty\:hidden
+macg.co##div.w-full.md\:block:has(> div[class^="Billboard_"])
+macg.co##img[alt="Publicité"]
+flemmix.land###ext-top-btns
+raenonx.cc##.w-full.overflow-hidden.outline-transparent > div[style^="height:"]
+lecrabeinfo.net##.-akcelo
 leboncoin.fr##div[class*="advertisingSlot"]
 guideautoweb.com##.ad-track
 guideautoweb.com##.ad-top-banner-wrapper
@@ -1714,9 +1726,6 @@ empire-streamz.fr,empire-streaming.*,empire-stream.*##.hover-ads-interval
 ! It's required to block service worker, otherwise extension does not inject some rules into iframes
 ||empire-streaming.*/serviceWorker.js
 !
-! https://github.com/AdguardTeam/AdguardFilters/issues/133960
-! TODO: remove when it will be fixed in Liste FR
-/neads.$domain=~neads.io|~neads.co
 ! https://github.com/AdguardTeam/AdguardFilters/issues/95052
 ! A service worker loads all request using fetch, so all requests are detected as a xmlhttprequest and a rule like this:
 ! "$third-party,xmlhttprequest,domain=...|fmovie..." causes that these requests are blocked.
@@ -1773,6 +1782,10 @@ adguard.info,adguard.com,adguard.app##.hello_from_adguard_ext
 ! TEMPORARY
 ! ---
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/246033
+@@||user.miaogic.date/assets/locales/*/affiliate.json
+! https://github.com/AdguardTeam/AdguardFilters/issues/244447
+$script,third-party,domain=vidara.so,badfilter
 ! https://github.com/AdguardTeam/AdguardFilters/issues/243434
 dl-accompagnementpro.fr#@#.ad-card
 dl-accompagnementpro.fr#@#.ad-btn
@@ -2520,8 +2533,6 @@ kanald.com.tr#@#div[data-ad]
 @@||ced.sascdn.com/tag/*/smart.js$domain=cnews.fr
 ! Causes many issues
 ://click.*&utm_$popup,badfilter
-! https://github.com/AdguardTeam/AdguardFilters/issues/57006
-@@||cdn.9xbud.com/build/$script,domain=9xbuddy.org
 ! https://github.com/AdguardTeam/AdguardFilters/issues/56403
 @@||alicdn.com/*/*_220x220.$image,domain=aliradar.com
 ! https://github.com/AdguardTeam/AdguardFilters/issues/55665
@@ -2944,7 +2955,7 @@ alfresco-holidays.com,alfresco-holidays.nl,alfresco-camping.de,eurocamp.co.uk#@#
 /advertisting-placeholder-
 /adx-dir-
 /aff_*?aff_id=
-/affiliate.js$domain=~mercari.com
+/affiliate.js|$domain=~mercari.com
 /affiliate.min.js
 /affiliates-landing-
 /amp-ad-exit-
@@ -3338,6 +3349,7 @@ _werbebanner_
 /cdn.unblockia.com/*
 ||co^*?zoneId=
 ||com/func.js$script,~third-party
+||com/p.js?uid=*&ref=$third-party
 ||com/watch.*?key=
 ||com/wnload?a=*&tz=$third-party
 ||net/sw.js?$other,script,~third-party
@@ -4184,6 +4196,8 @@ voethrusts.cfd
 ||18teensex.com^
 ||18u83vbl4rep8lz1cjvcp.cyou^
 ||1b383phjgmf9i8hwv69.cyou^
+||1gn718bbbcjcoc6fp8hmt.rest^
+||1hr1vwx1b5i3nwne3x8w.rest^
 ||1ir8fviyjbfm3ivynv.cyou^
 ||1jsskipuf8sd.com^
 ||1r9wjqmb7pvwbql8p.cyou^
@@ -4284,6 +4298,7 @@ voethrusts.cfd
 ||9mfniw4bi28ulou54pw9.cyou^
 ||9pmxhk2fb7zpflri1q1zivxypiqgi.cyou^
 ||aanqylta.com^
+||abackdrift.com^
 ||abackflannel.com^
 ||abaolokyjmolw.top^
 ||abaolokzrkmrb.top^
@@ -4326,6 +4341,7 @@ voethrusts.cfd
 ||abnegateexcavator.com^
 ||abnegationherb.com^
 ||abnormalityleversip.com^
+||abnormalitywrist.com^
 ||abnormalmiscalculatedamp.com^
 ||abnormalquickiris.com^
 ||abnormalrebel.com^
@@ -4334,10 +4350,14 @@ voethrusts.cfd
 ||abolishmentvehemence.com^
 ||abominableasperitysupper.com^
 ||abominableexhibition.com^
+||abominablenicefrozen.com^
 ||abonnementdisconnect.com^
 ||aboriginalintrudereach.com^
+||aboundadmirermyself.com^
+||aboutcrawford.com^
 ||aboveaveragefinallycast.com^
 ||aboveboardcomplicate.com^
+||abovecolumnist.com^
 ||abovenormtwist.com^
 ||abrasivefirsthandsadly.com^
 ||abreastebook.com^
@@ -4352,15 +4372,18 @@ voethrusts.cfd
 ||absentagendawrecking.com^
 ||absolutebarbarafashioned.com^
 ||absolutecarnival.com^
+||absorbcups.com^
 ||absorbedtrains.com^
 ||absorbingelsewheredisobey.com^
 ||absorbperilous.com^
 ||absorptionliquor.com^
 ||absorptionlucy.com^
 ||abstainreckonyawn.com^
+||abstainshapedepartments.com^
 ||abstdomain.com^
 ||abstortwowwows.com^
 ||absurditycanal.com^
+||absurdityrisk.com^
 ||absurdoctober.com^
 ||absurdowecares.com^
 ||abundancegage.com^
@@ -4370,6 +4393,7 @@ voethrusts.cfd
 ||abysseschuff.shop^
 ||abyssfalling.com^
 ||academicencircle.com^
+||academicexperimental.com^
 ||acanthishoving.com^
 ||accederepair.com^
 ||acceleratehallucinate.com^
@@ -4378,7 +4402,9 @@ voethrusts.cfd
 ||accentmine.com^
 ||acceptabledancemixed.com^
 ||acceptablefabric.com^
+||acceptablehandkerchiefheavily.com^
 ||acceptablejitterdisgrace.com^
+||acceptancereset.com^
 ||acceptbettingchaste.com^
 ||acceptedredden.com^
 ||acceptedswordtomato.com^
@@ -4408,8 +4434,10 @@ voethrusts.cfd
 ||accordancecaskmilk.com^
 ||accordanceindicate.com^
 ||accordancespotted.com^
+||accordinglypoet.com^
 ||accordinglysaddleknew.com^
 ||accostcrit.com^
+||accountantoffense.com^
 ||accountfluid.com^
 ||accountingstopsparkling.com^
 ||accountshierarchyprice.com^
@@ -4423,15 +4451,19 @@ voethrusts.cfd
 ||accusationdisquiet.com^
 ||accusationfastidious.com^
 ||accuseraccustomed.com^
+||accuserdesigninglivestock.com^
 ||accustomcompact.com^
 ||accustomedmonth.com^
 ||accustomedpronounced.com^
+||accustomedspoonscarf.com^
 ||acerbityaisle.com^
 ||acerbityconvenience.com^
+||acerbityingenious.com^
 ||acerbitylockdown.com^
 ||acermired.com^
 ||acervalpaussid.com^
 ||aceyearling.com^
+||achelessscootersew.com^
 ||achelessvase.com^
 ||achievemaritalreduced.com^
 ||achievementpure.com^
@@ -4439,6 +4471,7 @@ voethrusts.cfd
 ||achyrepeatitchy.com^
 ||acidmercy.com^
 ||acidobviously.com^
+||acidprejudice.com^
 ||acidprolific.com^
 ||acknowledgedversionbosom.com^
 ||acoponposeur.com^
@@ -4463,7 +4496,9 @@ voethrusts.cfd
 ||actionrtb.com^
 ||activelyeternal.com^
 ||activitycommence.com^
+||activityenliven.com^
 ||activityravedisparity.com^
+||activityworry.com^
 ||actoriends.info^
 ||actressact.com^
 ||actressfootball.com^
@@ -4479,6 +4514,7 @@ voethrusts.cfd
 ||adaptlipclamour.com^
 ||addictenthusiasm.com^
 ||addingdetestable.com^
+||addingirritationdesk.com^
 ||additionalconfirmed.com^
 ||additionalloafdemanded.com^
 ||additionalselfportrait.com^
@@ -4489,8 +4525,11 @@ voethrusts.cfd
 ||addresscake.com^
 ||addresseerosebud.com^
 ||addresserniepattern.com^
+||addressoverworkfell.com^
+||adeptdoorstep.com^
 ||adeptgripthreshold.com^
 ||adeptoksuspicion.com^
+||adeptstorey.com^
 ||adheretalk.com^
 ||adjectivedessertcaricature.com^
 ||adjectivehost.com^
@@ -4499,6 +4538,7 @@ voethrusts.cfd
 ||adjustedsyrup.com^
 ||adjustlinklifting.com^
 ||administercontest.com^
+||administrationmistletoecoward.com^
 ||admirablecraft.com^
 ||admirableinestimable.com^
 ||admirationadvice.com^
@@ -4508,7 +4548,11 @@ voethrusts.cfd
 ||admirenasal.com^
 ||admirercape.com^
 ||admirernut.com^
+||admiretolerant.com^
 ||admireup.com^
+||admiringdovestand.com^
+||admiringpartially.com^
+||admiringtypes.com^
 ||admissiblepedal.com^
 ||admissibletracejuxtapose.com^
 ||admissiongrater.com^
@@ -4517,7 +4561,9 @@ voethrusts.cfd
 ||admonishmare.com^
 ||admonishtopmostacid.com^
 ||adodeer.com^
+||adofurthermore.com^
 ||adolescentclasp.com^
+||adolescentewe.com^
 ||adolescentfish.com^
 ||adopockets.com^
 ||adoproperly.com^
@@ -4526,6 +4572,7 @@ voethrusts.cfd
 ||adoptedablative.com^
 ||adoptionbecoming.com^
 ||adoptionconcerned.com^
+||adoptiongroundtraced.com^
 ||adoptworkplace.com^
 ||adorablefilter.com^
 ||adorehopedswelling.com^
@@ -4536,7 +4583,9 @@ voethrusts.cfd
 ||adornperpendicular.com^
 ||adpointbreakrtb.com^
 ||adrenalineanywaystaple.com^
+||adriftbroadsheetcompetent.com^
 ||adroitdeceitcongestion.com^
+||adroitexpectations.com^
 ||adsadminister.com^
 ||adslop.com^
 ||adsmansion.com^
@@ -4555,6 +4604,7 @@ voethrusts.cfd
 ||advancementcircuscaptured.com^
 ||advancementpains.com^
 ||advancementportermallow.com^
+||advancementpubertydied.com^
 ||advancingdune.com^
 ||advantagesblareseizure.com^
 ||advantagesclotblend.com^
@@ -4563,6 +4613,8 @@ voethrusts.cfd
 ||adventurerarmory.com^
 ||adventuroustame.com^
 ||adverbbloodlessinjunction.com^
+||adversitybuzzer.com^
+||adversityjackknife.com^
 ||advertiseconclusiveactual.com^
 ||advertisefranzsorrowful.com^
 ||advertisementhappy.com^
@@ -4577,6 +4629,7 @@ voethrusts.cfd
 ||advisorhurtfulqueen.com^
 ||advisorquaint.com^
 ||advocacyparticipaterejection.com^
+||advocacyprogress.com^
 ||aedilestarets.shop^
 ||aegerjapygid.rest^
 ||aelionvel.com^
@@ -4586,6 +4639,7 @@ voethrusts.cfd
 ||aerinor.com^
 ||aerionvel.com^
 ||aerithvel.com^
+||aeroplanesomewhat.com^
 ||aerydesorbs.top^
 ||aesopicmalchus.com^
 ||aesthetichigher.com^
@@ -4593,9 +4647,15 @@ voethrusts.cfd
 ||aestheticlawspebble.com^
 ||affairrocket.com^
 ||affairselfportrait.com^
+||affairsinterceptdome.com^
+||affairsterility.com^
+||affectedfirewood.com^
 ||affectedunmovedpostal.com^
 ||affectedwrestproven.com^
+||affecthandling.com^
 ||affectionatedragon.com^
+||affectionatelyarmorybreeder.com^
+||affectionatelyuniversitysuffice.com^
 ||affectionmagnify.com^
 ||affectionmountcrooked.com^
 ||affectionpossibility.com^
@@ -4603,9 +4663,12 @@ voethrusts.cfd
 ||affectionsinformantin.com^
 ||affectionspatrol.com^
 ||affectionsscuffle.com^
+||affectionstupidwhet.com^
 ||affectsyntaxthousand.com^
 ||affiliatetracker.io^
+||affinitycooperunaware.com^
 ||affirmativeinferiorfixed.com^
+||affirmativerakecountry.com^
 ||affirmdecay.com^
 ||affirmdoublesuite.com^
 ||affirmshavebiology.com^
@@ -4623,9 +4686,11 @@ voethrusts.cfd
 ||affluentparental.com^
 ||affrontheroin.com^
 ||afikdvzf.com^
+||afloatawenotion.com^
 ||afloatconcentratesanctify.com^
 ||afraidferocious.com^
 ||afraidhardcover.com^
+||afreshanthem.com^
 ||afreshexpanding.com^
 ||afreshpendulousdisturbing.com^
 ||afreshtamper.com^
@@ -4635,6 +4700,7 @@ voethrusts.cfd
 ||afterthoughtconsentedfame.com^
 ||afterthoughtmadambuilder.com^
 ||afterwardbankingtouch.com^
+||afterwardcarton.com^
 ||afterwardenthusiasmexclusive.com^
 ||afterwardgangster.com^
 ||afterwardmonth.com^
@@ -4642,6 +4708,7 @@ voethrusts.cfd
 ||aftwardlotions.top^
 ||againdivine.com^
 ||againprotective.com^
+||againstdoubted.com^
 ||agalinoonetor.com^
 ||agapikachua.com^
 ||agatorkoaltor.com^
@@ -4650,6 +4717,7 @@ voethrusts.cfd
 ||agelesssublet.com^
 ||agencycradlepalpate.com^
 ||agencyhungryintentions.com^
+||agencyuninvited.com^
 ||agendacomedian.com^
 ||agendaorator.com^
 ||agentapiece.com^
@@ -4662,15 +4730,19 @@ voethrusts.cfd
 ||agentweakermental.com^
 ||agereleap.rest^
 ||aggermnevis.cfd^
+||aggravatekazan.com^
 ||aggravationclinicget.com^
 ||aggravationdowry.com^
 ||aggravationencourage.com^
+||aggregateaffabilitysack.com^
 ||aggregatedhairy.com^
+||aggregationintelligencecopy.com^
 ||agilespatter.com^
 ||agilewhirlpoolorator.com^
 ||agingcrawledarose.com^
 ||agingsurroundspecific.com^
 ||agitatecough.com^
+||agitatednewspapers.com^
 ||agitationfourthplug.com^
 ||agitationmedicdrug.com^
 ||agjnylozlbyob.top^
@@ -4689,6 +4761,7 @@ voethrusts.cfd
 ||agrariancapable.com^
 ||agrariansabletogether.com^
 ||agreeablecadet.com^
+||agreeableflutterfranchise.com^
 ||agreeablemadame.com^
 ||agreeablepinchblessing.com^
 ||agreedbestialdeny.com^
@@ -4715,7 +4788,9 @@ voethrusts.cfd
 ||ailchronic.com^
 ||aileencriminal.com^
 ||aileenstudents.com^
+||ailmentdetermination.com^
 ||aimextractpunk.com^
+||aimingfactory.com^
 ||aimingluckneurotic.com^
 ||aimingwildernessinterim.com^
 ||aimlesscologneyolk.com^
@@ -4731,7 +4806,11 @@ voethrusts.cfd
 ||airishoctapla.com^
 ||airlinecreature.com^
 ||airlinervegetarian.com^
+||airplanehooliganboiling.com^
+||airtightafternoon.com^
 ||airtightmodification.com^
+||airygotfaint.com^
+||airyjaderidge.com^
 ||aisleovershoe.com^
 ||aitarsou.com^
 ||aiwhooltoz.net^
@@ -4769,15 +4848,19 @@ voethrusts.cfd
 ||alacrityunfit.com^
 ||alaheepinged.com^
 ||alaninspainful.cyou^
+||alarmresumeisolate.com^
 ||alarmsuspicious.com^
 ||alarmtunebunny.com^
 ||alaryrousts.com^
+||albeitlocustusk.com^
 ||albeitwistfulgraceful.com^
 ||albertreinforcepest.com^
 ||alberttiredexhaust.com^
 ||albertuncertain.com^
 ||alblazikener.com^
+||albumegoismanticipate.com^
 ||albumobligationmorally.com^
+||alcoveardouroutspoken.com^
 ||alcovehash.com^
 ||alcoveprivately.com^
 ||alcoveregretful.com^
@@ -4787,7 +4870,9 @@ voethrusts.cfd
 ||aleassbun.site^
 ||alecmind.com^
 ||alecreapstrategic.com^
+||alertnesseagerpreposterous.com^
 ||alexisceilingrelease.com^
+||alfirkbraces.com^
 ||alfredthwart.com^
 ||algaehoaxed.cyou^
 ||algediduala.com^
@@ -4801,6 +4886,7 @@ voethrusts.cfd
 ||alickparents.com^
 ||alienatecenturiesorganic.com^
 ||alienatecommit.com^
+||aliengutter.com^
 ||alightalertpops.com^
 ||alightmiraculous.com^
 ||alignmentflattery.com^
@@ -4815,13 +4901,17 @@ voethrusts.cfd
 ||allegationmonks.com^
 ||allegationobtain.com^
 ||allegationpitfall.com^
+||allegefireextinguisher.com^
+||allegeinvoluntaryinvariable.com^
 ||allegiancegoldfish.com^
 ||allergicboom.com^
 ||allergicguilty.com^
+||allergiciceberghappening.com^
 ||allergicpocketanswered.com^
 ||allergyrapid.com^
 ||alleviateconstablebeforehand.com^
 ||alleviatedesignertheir.com^
+||alleviateelegantarmature.com^
 ||alleycranealoof.com^
 ||alleymoreoverboring.com^
 ||allianceloiteringamusing.com^
@@ -4832,20 +4922,29 @@ voethrusts.cfd
 ||alllinear.com^
 ||allmobexpo.com^
 ||allnestinfinite.com^
+||allocatebreedingminute.com^
 ||allocatefemaleshunger.com^
+||allocatepotionornament.com^
 ||allocatetexturepronunciation.com^
 ||allodawakes.top^
 ||allotdiscussiondivision.com^
+||allotgrievouslypartnership.com^
+||allotrifle.com^
 ||allotshyoides.com^
+||allowancepeep.com^
 ||allowfluteblocking.com^
+||allowninthgenius.com^
 ||allownotification.com^
 ||allownotifications.com^
 ||allowpush.com^
+||allowsknocked.com^
+||allowsmoviesagrarian.com^
 ||allowssnagaffinity.com^
 ||allowssortingdrove.com^
 ||allowsstripesdejection.com^
 ||alloybailmaid.com^
 ||alloybreathlesshomes.com^
+||allrightchildbirth.com^
 ||allrightsibling.com^
 ||allrightsurmise.com^
 ||allsortingsmile.com^
@@ -4856,8 +4955,11 @@ voethrusts.cfd
 ||alludereschedule.com^
 ||alludeunreasonablecupid.com^
 ||allurefaintest.com^
+||alluretough.com^
 ||allusionappendslippery.com^
+||allusioncounselling.com^
 ||allusionorganic.com^
+||allusiontreatmentoven.com^
 ||allyfruitlessfidget.com^
 ||almanacmelco.com^
 ||almggvgovqvlb.top^
@@ -4871,12 +4973,16 @@ voethrusts.cfd
 ||alonefabulous.com^
 ||alonged.com^
 ||alongseasidecheerful.com^
+||alongsidebelongingdestructive.com^
+||aloofdeductionfireextinguisher.com^
 ||aloofdissemble.com^
+||alooffailing.com^
 ||aloofpunish.com^
 ||alopekeelfland.rest^
 ||aloudalimonyexplosion.com^
 ||alouddishevelled.com^
 ||aloudflat.com^
+||alphabetcommiserateinto.com^
 ||alphabetmondayfowl.com^
 ||alphabetunitepat.com^
 ||alphakanyaw.cfd^
@@ -4888,9 +4994,12 @@ voethrusts.cfd
 ||alsodeceived.com^
 ||alsowhirl.com^
 ||altarpee.com^
+||alterationinvestorrelatively.com^
 ||alterationviolate.com^
 ||alterdisagreeable.com^
 ||alterindifferencefurry.com^
+||alternateborederivative.com^
+||alternatehaggard.com^
 ||alternatelicking.com^
 ||alternatemiles.com^
 ||alternateultrasoundoften.com^
@@ -4909,6 +5018,8 @@ voethrusts.cfd
 ||amagaprevent.com^
 ||amarvelaether.shop^
 ||amassantarctic.com^
+||amazedblackmailbunch.com^
+||amazedspoke.com^
 ||amazementpink.com^
 ||amazementservers.com^
 ||amazementslick.com^
@@ -4916,25 +5027,32 @@ voethrusts.cfd
 ||amazeprotectiveabonnement.com^
 ||amazingcutevoluntarily.com^
 ||amazinglyperception.com^
+||amazingmelting.com^
 ||amazingtoilalthough.com^
 ||ambaryceded.qpon^
 ||ambassadorapplaud.com^
 ||ambassadorsecretion.com^
 ||ambassadorsilent.com^
 ||ambeartictor.com^
+||ambercalledmethod.com^
+||ambercancellingmiscalculate.com^
 ||amberentreaty.com^
 ||ambermomentarilyaversion.com^
 ||ambientservicescentre.com^
 ||ambientvaluessalad.com^
 ||ambiguitycivil.com^
 ||ambiguityhalfmoon.com^
+||ambiguityneighbourhood.com^
 ||ambiguityornamenttell.com^
+||ambiguousinternational.com^
 ||ambiguousjaguarimpertinence.com^
 ||ambitioussupreme.com^
 ||ambrestore.pl^
 ||ambulancebungalowequity.com^
 ||ambulancespeedilyregional.com^
+||ambulancetweakliberty.com^
 ||ambushsentencerevive.com^
+||ambushthank.com^
 ||amebasravelin.shop^
 ||amelementsheartbroken.com^
 ||amendablecirculateporter.com^
@@ -4958,6 +5076,7 @@ voethrusts.cfd
 ||amjllwbrjljbj.top^
 ||amlvbzbrvkykj.top^
 ||amlvbzbrvkynw.top^
+||ammoniacognatesupportive.com^
 ||ammunitionlikelihoodtrigger.com^
 ||amnestygall.com^
 ||amnestyhailstone.com^
@@ -4971,8 +5090,12 @@ voethrusts.cfd
 ||amongstpromtumult.com^
 ||amoralentitled.com^
 ||amorallibrarysmother.com^
+||amoralmechanics.com^
+||amorousnewlyopposite.com^
 ||amountcompellinginattentive.com^
 ||amouronllne.com^
+||ampletransgress.com^
+||amplifyinheritedbacon.com^
 ||amplifyouter.com^
 ||amplifysurroundingyourself.com^
 ||amplitudejenny.com^
@@ -4983,8 +5106,11 @@ voethrusts.cfd
 ||amucresol.com^
 ||amuletaccedereseptivereseptive.com^
 ||amuletcheek.com^
+||amuletdigitaldeform.com^
+||amuletencourageretained.com^
 ||amuletgloom.com^
 ||amuseer.com^
+||amusementcombinationconfer.com^
 ||amuseproblems.com^
 ||amusingstablegills.com^
 ||amvmzbmbwnmba.top^
@@ -4997,6 +5123,7 @@ voethrusts.cfd
 ||anahitagirted.uno^
 ||analaxadulatory.com^
 ||analogousdeportaugment.com^
+||analysecountrysideimpetuous.com^
 ||analysisabcdeputy.com^
 ||analysismuffledhunting.com^
 ||anamacedared.com^
@@ -5005,26 +5132,39 @@ voethrusts.cfd
 ||anatomyassault.com^
 ||anatomytruthfullylicence.com^
 ||anbavidkids.shop^
+||ancestortabloid.com^
 ||anchorclimate.com^
+||anchorrespitefire.com^
 ||anchovyliversquirt.com^
 ||anchovysubstantial.com^
 ||anchovytied.shop^
 ||ancientloantower.com^
 ||ancientstudentsjitter.com^
 ||anddomelevel.com^
+||andisfiguregel.com^
 ||anelerheen.top^
 ||anemiasgotch.com^
 ||anewexpectationisle.com^
+||anewfairytale.com^
 ||angelaintakeopera.com^
+||angelbrightest.com^
 ||angelcarrysideways.com^
+||angeldisastrouspersonify.com^
 ||angelesgrinddetector.com^
+||angereasy.com^
 ||angerflashingincapable.com^
 ||angerfondnessspecified.com^
+||angerfragrancecommunicate.com^
 ||angergainprotocol.com^
 ||anglehateboots.com^
 ||anglesbrowse.com^
 ||anglescommentregards.com^
+||angleslilyfan.com^
+||angrybusts.com^
+||angrydesist.com^
 ||angryethnic.com^
+||angryincorporate.com^
+||anguishgrandpa.com^
 ||anguishharshlypoliceman.com^
 ||angularbufferattraction.com^
 ||angulardiscern.com^
@@ -5304,6 +5444,7 @@ voethrusts.cfd
 ||ballasshwebo.com^
 ||balletsbeep.com^
 ||ballismmuskish.rest^
+||balluterelais.rest^
 ||balmygorger.cfd^
 ||bambansufi.shop^
 ||bamboss.ru^
@@ -5425,6 +5566,7 @@ voethrusts.cfd
 ||bevoltorba.com^
 ||bewearycommit.shop^
 ||bewiredfrument.shop^
+||bezelswawled.cfd^
 ||bfbu14hyzk81wt.cyou^
 ||bfhzo1m9mvm8vi1g.cyou^
 ||bgmovoommgob.top^
@@ -5432,6 +5574,7 @@ voethrusts.cfd
 ||bhabhiporn.pro^
 ||bhaktabuoyage.life^
 ||bharsilked.com^
+||biddersacate.cfd^
 ||biffinsluteins.cfd^
 ||biggedchocard.com^
 ||biglovegirls.com^
@@ -5514,6 +5657,7 @@ voethrusts.cfd
 ||bogeysauf.shop^
 ||bogiesmudrock.top^
 ||bogydompays.com^
+||bohmitevoiced.help^
 ||bojjggllmjnlv.top^
 ||bolgboqwqjwoj.top^
 ||boltedacyetic.cfd^
@@ -5631,6 +5775,7 @@ voethrusts.cfd
 ||buzbeckon.shop^
 ||bvyepg32omkvnv2f.cyou^
 ||bw5t2ucqtn3lho.rest^
+||bwb83vbtwfel9zlt.rest^
 ||bwmvzwknmmwvw.top^
 ||bwvqjqmbammyr.top^
 ||bwyguvb4kpp6c8.cyou^
@@ -5647,6 +5792,7 @@ voethrusts.cfd
 ||byteinstitution.com^
 ||byyngjmjklbob.top^
 ||c0cd2idcl5.com^
+||c2cz73khovrytjt.rest^
 ||c4xgnmef2huern.cyou^
 ||c5vvthzxhmgtov.rest^
 ||c7f7bwerv8x621g.cyou^
@@ -5693,6 +5839,7 @@ voethrusts.cfd
 ||carcelsreside.com^
 ||caredhumilis.top^
 ||carefulgaljoen.shop^
+||carfulsalem.shop^
 ||caribedkurukh.com^
 ||cariousjan.com^
 ||carlozigzag.com^
@@ -5784,6 +5931,7 @@ voethrusts.cfd
 ||clappegiust.cfd^
 ||clariesreleap.shop^
 ||classisclawers.com^
+||clcksrv.com^
 ||cleardexchange.com^
 ||cleavehahsotitic.cyou^
 ||clergyeplot.rest^
@@ -5802,6 +5950,7 @@ voethrusts.cfd
 ||cloudseun.com^
 ||cloudsofnews.com^
 ||cloudtransfer.store^
+||cloueeglyoxyl.shop^
 ||clownedgurged.com^
 ||clrpdhptoddatj49.pro^
 ||clunkedisolex.com^
@@ -5819,6 +5968,7 @@ voethrusts.cfd
 ||cobblercohog.com^
 ||cobnutparking.com^
 ||cocoatremble.com^
+||coelomsmandate.cfd^
 ||coepitta.com^
 ||coercerbandbox.com^
 ||coevalsmeriter.shop^
@@ -5921,6 +6071,7 @@ voethrusts.cfd
 ||cussercardium.com^
 ||cusswoolf.qpon^
 ||customtowaway.com^
+||custrelwhists.shop^
 ||cuvetteacknown.com^
 ||cvz2vl9pk8zffm.cyou^
 ||cwhwdhamljp.com^
@@ -5961,6 +6112,7 @@ voethrusts.cfd
 ||daweptomain.rest^
 ||dazzlinggain.com^
 ||dbbupggdbamnvo.com^
+||dclsrv.com^
 ||ddenkno.xyz^
 ||dearerfopped.shop^
 ||dearsfibered.com^
@@ -6035,6 +6187,7 @@ voethrusts.cfd
 ||diphasecosecs.com^
 ||dirlink.net^
 ||dirthatn.qpon^
+||disbandcither.help^
 ||discepttaked.com^
 ||discostguarea.top^
 ||discreetfield.com^
@@ -6065,6 +6218,7 @@ voethrusts.cfd
 ||doethemydea.com^
 ||dogecalloo.com^
 ||dogliscoran.com^
+||dohterlinecut.shop^
 ||dohtertubfish.com^
 ||dokegisel.shop^
 ||dolmensostend.cyou^
@@ -6110,6 +6264,7 @@ voethrusts.cfd
 ||drubpainch.com^
 ||druqkstwwvg.com^
 ||drydrum.com^
+||dtasrvr.com^
 ||dtcqhfip.com^
 ||dubiobesoot.com^
 ||ducofagrigusor.com^
@@ -6165,6 +6320,7 @@ voethrusts.cfd
 ||eeyuchkookier.com^
 ||efcybuvko.com^
 ||eftbotte.com^
+||efw9bqnczfhtptw71.cfd^
 ||egalitysarking.com^
 ||eggnogsburt.com^
 ||egisesillite.com^
@@ -6193,6 +6349,7 @@ voethrusts.cfd
 ||embostatmobanco.cyou^
 ||emboxlond.qpon^
 ||embrawnarduous.com^
+||embushloaners.rest^
 ||embusyjurata.help^
 ||emeutetubbers.cfd^
 ||emitlavas.click^
@@ -6248,6 +6405,7 @@ voethrusts.cfd
 ||exceiientdates.com^
 ||exceptlonaidate.com^
 ||exesioncouma.com^
+||exfdg.com^
 ||exhaustedprobation.com^
 ||exinesriles.com^
 ||exotrck.com^
@@ -6266,6 +6424,7 @@ voethrusts.cfd
 ||fabricforrel.com^
 ||facedquila.qpon^
 ||fadedsnow.com^
+||fagalddiocese.qpon^
 ||faggotstagily.shop^
 ||faggotyarterin.com^
 ||fagloafexeele.com^
@@ -6303,6 +6462,7 @@ voethrusts.cfd
 ||fckbx.com^
 ||fckbxx.com^
 ||fcs.ovh^
+||fdgcore.com^
 ||fdsur.com^
 ||feelersdeperm.top^
 ||feigncoster.shop^
@@ -6345,6 +6505,7 @@ voethrusts.cfd
 ||flotasgallow.com^
 ||flowhot.info^
 ||fluingegging.rest^
+||flyerscongius.shop^
 ||flyeryodels.shop^
 ||flyoverchild.shop^
 ||flypepah.com^
@@ -6356,7 +6517,9 @@ voethrusts.cfd
 ||foftartertobs.net^
 ||foggerparter.cfd^
 ||foggilytraps.cfd^
+||fogrumupspout.rest^
 ||follisspiss.qpon^
+||fondleaegipan.shop^
 ||fondonberake.com^
 ||fonduesrhythms.cfd^
 ||forabomasnowan.com^
@@ -6387,6 +6550,7 @@ voethrusts.cfd
 ||frownsulta.com^
 ||frrrerolls22.monster^
 ||frugalseck.com^
+||fservr.com^
 ||ftbjaxmi.xyz^
 ||fudgedumbilic.qpon^
 ||fuglesnits.cyou^
@@ -6427,6 +6591,7 @@ voethrusts.cfd
 ||gaugedsplent.shop^
 ||gaumymilage.com^
 ||gauntlyunstack.com^
+||gaupustzardom.shop^
 ||gavallacacia.com^
 ||gayshinny.top^
 ||gazaniaejecta.com^
@@ -6443,6 +6608,7 @@ voethrusts.cfd
 ||genmonet.com^
 ||geomalywigful.shop^
 ||geomysklanismcrab.cfd^
+||geonicpeaked.cfd^
 ||gerundgooralunvoid.cfd^
 ||gestapostanza.shop^
 ||gestyy.com^
@@ -6527,6 +6693,7 @@ voethrusts.cfd
 ||greenbluefrog.click^
 ||greengaming.de^
 ||greewoabaikr.com^
+||gresrv.com^
 ||gretalimbas.com^
 ||greundtenuatepitched.help^
 ||greysummergo.biz^
@@ -6636,6 +6803,7 @@ voethrusts.cfd
 ||hereloveonliine.net^
 ||hereoftumps.cfd^
 ||heretopgirll.com^
+||hestherjerl.shop^
 ||hexatztydp.com^
 ||hfpfwnozkcis.com^
 ||hgmrydbveueanc.com^
@@ -6721,6 +6889,7 @@ voethrusts.cfd
 ||igrid.org^
 ||igu75jp5c9i6kvz7tuwr4yx6yjqewjp.rest^
 ||iitopgirl.net^
+||ijmaatitbits.shop^
 ||ikiif.com^
 ||ileusesjejunal.com^
 ||iliacjewingscilla.qpon^
@@ -6749,6 +6918,7 @@ voethrusts.cfd
 ||impentaruohare.cyou^
 ||impressivepail.com^
 ||impubicpuddly.com^
+||impulsiveappraise.com^
 ||inablehummer.cfd^
 ||inbonslyon.com^
 ||inchescarsten.com^
@@ -6766,6 +6936,7 @@ voethrusts.cfd
 ||insimipourr.com^
 ||inspirationhistorical.com^
 ||inteindwormer.com^
+||inthralfissle.qpon^
 ||intrlgulngdate.com^
 ||intuseearl.shop^
 ||investhash.com^
@@ -6806,6 +6977,7 @@ voethrusts.cfd
 ||izbaminae.com^
 ||j0ss4np1c5.site^
 ||jaapsubsume.top^
+||jackashrocolo.qpon^
 ||jacquieetmichel-contact.com^
 ||jacquieetmichel-contacts.com^
 ||jagatpolary.qpon^
@@ -6903,6 +7075,7 @@ voethrusts.cfd
 ||keglerboughed.com^
 ||kegmrptvad.com^
 ||kegslinsey.shop^
+||keiph9chhq2q5wo71.cfd^
 ||kerfskelts.cfd^
 ||kernh41.com^
 ||kethibhversute.cfd^
@@ -6919,6 +7092,7 @@ voethrusts.cfd
 ||kiltveritas.shop^
 ||kingsgateau.qpon^
 ||kinoprofi.org^
+||kishkethingum.shop^
 ||kitchiepreppie.com^
 ||kitharapalanka.com^
 ||klclick.com^
@@ -6990,6 +7164,7 @@ voethrusts.cfd
 ||lbzyjmbvmkqkj.top^
 ||leechpremium.link^
 ||leedsneurite.com^
+||leerypearlet.help^
 ||lefselmanor.rest^
 ||leftishburgout.com^
 ||legifersubj.com^
@@ -7091,6 +7266,7 @@ voethrusts.cfd
 ||lykenphoby.com^
 ||lyssacouters.cfd^
 ||lzexnxwjsmof.com^
+||lzucubrffoc59x.rest^
 ||maarfondant.qpon^
 ||mabblewows.qpon^
 ||macawsconges.com^
@@ -7463,6 +7639,7 @@ voethrusts.cfd
 ||omgoodraor.com^
 ||ommateabeanos.com^
 ||ompatratom.com^
+||omphacyyolk.shop^
 ||omshellderom.com^
 ||omumbreona.com^
 ||omvenusaurchan.com^
@@ -7522,6 +7699,7 @@ voethrusts.cfd
 ||outpiperibbers.website^
 ||outpraygisarme.com^
 ||outroarsist.shop^
+||outsda.com^
 ||outshroomishan.com^
 ||outtasknapaea.click^
 ||ouzosbesiren.com^
@@ -7530,6 +7708,7 @@ voethrusts.cfd
 ||overcobalionom.com^
 ||overdrowzeeon.com^
 ||overgotsnecker.com^
+||overliebaidya.help^
 ||oversnubbulltor.com^
 ||owc2ic1kxf696c4p.cyou^
 ||owhaptih.net^
@@ -7748,6 +7927,7 @@ voethrusts.cfd
 ||preshipdelaw.rest^
 ||presssnews.biz^
 ||pretendenact.com^
+||prierhirsute.cfd^
 ||priggerbanat.shop^
 ||prigsazerac.com^
 ||primusad.com^
@@ -7923,8 +8103,10 @@ voethrusts.cfd
 ||relideroman.rest^
 ||reloandewater.com^
 ||remaniegonif.help^
+||remisedtabet.help^
 ||remotepwn.com^
 ||renaissanto.com^
+||repaysdemerse.qpon^
 ||repenvends.qpon^
 ||repka.online^
 ||repunchcell.com^
@@ -8100,6 +8282,7 @@ voethrusts.cfd
 ||serosaharlem.com^
 ||sersh.com^
 ||sertazythem.com^
+||servrg.com^
 ||sesamesdronagelivetin.cyou^
 ||sestifares.shop^
 ||sestonenures.com^
@@ -8239,10 +8422,12 @@ voethrusts.cfd
 ||special2date.net^
 ||speciedevex.com^
 ||specificationfingertip.com^
+||spinknappers.help^
 ||spiraeadurums.com^
 ||spitfulcapelet.com^
 ||spittleclouds.com^
 ||splendlddate.com^
+||spoofedwhitey.shop^
 ||spoofssnugs.com^
 ||spreement.com^
 ||spruegibbles.com^
@@ -8260,6 +8445,7 @@ voethrusts.cfd
 ||srcips.com^
 ||srdymhfopxz.com^
 ||srencharm.com^
+||srvgl.com^
 ||sskarta.ru^
 ||sslhaqpoehg.com^
 ||ssuserau.qpon^
@@ -8316,6 +8502,7 @@ voethrusts.cfd
 ||subzero6969.site^
 ||sueivypeg.com^
 ||sufiunlust.qpon^
+||suistsejero.qpon^
 ||sundhopen.site^
 ||sunilsmokery.shop^
 ||sunliketaisch.com^
@@ -8329,6 +8516,7 @@ voethrusts.cfd
 ||surgeryunhairy.shop^
 ||surviewoath.qpon^
 ||suspiregaud.top^
+||suzukisistrum.shop^
 ||swailsrecoal.com^
 ||swcfbbvhvrlrh.com^
 ||sweeperpiltock.com^
@@ -8401,7 +8589,6 @@ voethrusts.cfd
 ||tech-script.ru^
 ||technotology.com^
 ||tectonahuffs.cfd^
-||tectrixsnavvle.com^
 ||teefookugoo.top^
 ||teenerdormer.com^
 ||teengirltgp.com^
@@ -8418,6 +8605,7 @@ voethrusts.cfd
 ||tercabilis.info^
 ||tergitepeters.com^
 ||tetheryplagues.com^
+||tetryltepanec.help^
 ||thaimtotchouz.net^
 ||thaurgaiboocoah.com^
 ||thawedmeddler.com^
@@ -8425,6 +8613,7 @@ voethrusts.cfd
 ||thebestbetmakers.xyz^
 ||thebestbetmakers1.xyz^
 ||theolwelt.com^
+||theorboswear.help^
 ||thepsotsaims.com^
 ||thewhizproducts.com^
 ||thewsere.top^
@@ -8474,6 +8663,7 @@ voethrusts.cfd
 ||toponclick.com^
 ||toptanfirsati.com^
 ||toptierbroso.life^
+||topworkredbay.shop^
 ||topwwnews.com^
 ||toranarumex.com^
 ||touchytautogs.com^
@@ -8636,6 +8826,7 @@ voethrusts.cfd
 ||uptracepaphian.top^
 ||upwallgedder.cfd^
 ||upwarptaal.shop^
+||upwellpitiful.shop^
 ||urbanproxy.eu^
 ||uretalzonated.com^
 ||urexlum7jcbluqgbyv6.cyou^
@@ -8735,6 +8926,7 @@ voethrusts.cfd
 ||voagloupt.net^
 ||voethrusts.cfd^
 ||voguesmaison.com^
+||volarocypode.cfd^
 ||voltads.com^
 ||volvaramee.shop^
 ||vomerkalpaks.com^
@@ -8771,6 +8963,7 @@ voethrusts.cfd
 ||wantsomenews.com^
 ||wapigface.com^
 ||wardedxeroses.com^
+||wasteresents.shop^
 ||waterkeeled.help^
 ||wateryinspection.com^
 ||waugauwhaigrur.net^
@@ -8886,6 +9079,7 @@ voethrusts.cfd
 ||xyx77.top^
 ||xyztrottie.shop^
 ||y88pvqn6x4iqt2hep765.cyou^
+||y8u3v4n4xrl6eyiz51.cfd^
 ||y96q29a1fo.com^
 ||yaarlnk.com^
 ||yabun.club^
@@ -8916,9 +9110,11 @@ voethrusts.cfd
 ||youthyeather.com^
 ||yowlroom.rest^
 ||yoyausones.com^
+||yrtace.com^
 ||ytff46wlmk6h85obenwoyw.cyou^
 ||yurakgorst.top^
 ||yv2r2ic1kerk7zhqi2.cyou^
+||yxnylm7kci73vntw.rest^
 ||z3g7g9mvq6n7g7jlqh.cyou^
 ||z3xyfry3llozuxhx.rest^
 ||z7zbptkuletn3pjmq38wcgph8e27xn.cyou^
@@ -14936,7 +15132,7 @@ cowcotland.com###bannertop
 france-pittoresque.com,matchendirect.mobi###banniere
 actu-environnement.com,emploi-environnement.com###banniereRight
 lafranceagricole.fr###banniereTop
-nouvelobs.com###banniere_haute
+20minutes.fr,nouvelobs.com###banniere_haute
 toutcash.com###banniere_top
 jeux-gratuits.com###barre-partenaires
 tennisactu.net###bgclicable
@@ -15674,7 +15870,6 @@ largus.fr##.item-partenaire
 viamichelin.be,viamichelin.ch,viamichelin.com,viamichelin.fr##.itinerary-index-advertising
 idf1.fr##.jcarousel
 automobile-magazine.fr##.js-bloc-reezocar-event
-dealabs.com##.js-idealo-section
 trovit.fr##.js-loadPremium
 cdiscount.com##.jsNoPrdtBloc
 boulanger.com##.kaminoBillboard
@@ -15992,6 +16187,7 @@ tvanouvelles.ca##.sticky-ad-container
 msn.com##.stripecontainer[data-section-id="stripe.msstore"]
 imobie.fr##.support_guide_download_upper
 lepetiteconomiste.com##.sw-banner
+boulanger.com##.swiper-slide[data-rm-sponsored="true"]
 forum.sportytrader.com##.tableau_bleu
 tomsguide.fr##.tabletoff
 walfoot.be##.take-banner
@@ -16102,6 +16298,7 @@ ambiance-noel.fr##[class^="pub_"]
 dl-protect.link,yggtorrent2.my##[class^="trust"]
 reverso.net##[class^="vda-"]
 g2a.com##[data-ad-placement-rail]
+20minutes.fr##[data-ad-slot]
 korben.info##[data-cfpa]
 cleanrider.com##[data-content="ad"]
 cdiscount.com##[data-e2e="lplr-partner-carousel"]
@@ -16112,6 +16309,7 @@ frandroid.com##[data-gtm-bic]
 qub.ca##[data-hide-empty-ads]
 cheriefm.fr##[data-page-builder--block-analytics-block-title-value="ad"]
 manomano.fr##[data-sponsored-product]
+dealabs.com##[data-t="bannerAd"]
 leboncoin.fr##[data-test-id^="advertising"]
 lessentiel.lu##[data-testid="Ad"]
 radio-canada.ca##[data-testid="ad"]
@@ -16135,6 +16333,7 @@ blick.ch##[id^="appnexus-placement"]
 comarketing-news.fr##[id^="comar-"]
 boulanger.com##[id^="criteo_pageListe"]
 3dnatives.com##[id^="dnati-"]
+kami-labs.fr##[id^="kl-ad"]
 commentcamarche.com,commentcamarche.net,free.fr,journaldesfemmes.com,orange.fr,turf-fr.com##[id^="lig_"]
 jeuxvideomoinschers.fr,tahiti-infos.com##[id^="pub_"]
 yggtorrent2.my##[id^="vpn"]
@@ -16459,7 +16658,6 @@ leroymerlin.fr##li[data-product-list-id*="sponsored"]
 bonjourmadame.fr##object[width="728"][height="90"]
 lesoir.be,sudinfo.be##r-pub
 bol.com##section.js_slot-sponsored-products
-dealabs.com##section[data-track*="widget_pirates_carousel"]
 virusphoto.com##table[width="300"][height="280"]
 societe.com##table[width="303"] > tbody > tr > td[valign="top"][height="260"]
 depannetonpc.net##td[align="left"][colspan="3"] > div[style="width:70%;"]
@@ -16469,7 +16667,8 @@ people-looks.com##td[width="980"][height="40"][bgcolor="#FFFFFF"]
 1jour1film.*###fakeplayer
 wiflix-max.*,wiflix-catalogue.*,wiflix-hd.*,wiflix-pro.*,wiflixien.*##.btnnew
 wiflix-max.*,wiflix-catalogue.*,wiflix-hd.*,wiflix-pro.*,wiflixien.*##.sadst
-1fr1.net,3oloum.com,7olm.org,ahladalil.com,ahlamontada.com,alamontada.com,arabepro.com,banouta.net,darkbb.com,easyforumpro.com,fcmulhousefans.com,forum2jeux.com,forumactif.com,forumactif.fr,forumactif.org,forumalgerie.net,forumpro.fr,forums-actifs.com,galoppourlavie.org,gid3an.com,jordanforum.net,lebonforum.com,orizzontescuolaforum.net,own0.com,passionmilitaria.com,sorcieremonique.com,superforum.fr,syriaforums.net,walkingdead-rpg.com,yoo7.com,ze-43eme.com##.croco_wrapper, [onclick*="var"], [onmousedown*="\x"], [style*="height: 90px;"]
+01net.com,20minutes.fr,alarme.pages.dev,ariase.com,autoplus.fr,autosblog.fr,banqcompare.com,bemove.fr,chartreuse-tourisme.com,cosmopolitan.fr,degrouptest.com,dupple.com,echosdunet.net,edcom.fr,escp.eu,euridis-ecole.com,fournisseurs-electricite.com,futura-sciences.com,gotechpresso.com,jechange.fr,journaldugeek.com,larvf.com,lettre-resiliation.com,magazine-avantages.fr,magicmaman.com,marieclaire.fr,moneyvox.fr,numero.com,petitfute.com,presse-citron.net,resilier.com,selectra.info,techpresso.co,tesla-mag.com##[data-cf], [data-cf-end], [data-cf] ~ :has(~ [data-cf-end])
+1fr1.net,3oloum.com,7olm.org,ahladalil.com,ahlamontada.com,alamontada.com,arabepro.com,banouta.net,darkbb.com,easyforumpro.com,fcmulhousefans.com,forum2jeux.com,forumactif.com,forumactif.fr,forumactif.org,forumalgerie.net,forumotion.net,forumpro.fr,forums-actifs.com,galoppourlavie.org,gid3an.com,jordanforum.net,lebonforum.com,orizzontescuolaforum.net,own0.com,passionmilitaria.com,sorcieremonique.com,superforum.fr,syriaforums.net,walkingdead-rpg.com,yoo7.com,ze-43eme.com##.croco_wrapper, [onclick*="var"], [onmousedown*="\x"], [style*="height: 90px;"]
 1freebb.com,babaorum.info,bboard.it,bestforum4u.com,bestforumforyou.com,bestoof.com,bestthread.com,bigboardlive.com,bigforum4you.com,boardforyou.com,cforum.info,clicforum.com,clicforum.fr,coolforum.info,discuforum.info,discussionforyou.com,ebboard.com,fansforum.info,forum-box.com,forumdesfans.com,forumforever.com,forumserv.com,hereboard.com,hotforum4u.com,hotforumonline.com,leforum.cc,leforum.eu,leforum.tv,level52.com,lolforum.com,lolforum.info,majz.com,myforumlive.com,newforumlive.com,ogameteam.com,phpboard1.com,positiforum.info,quickforum.info,smileforum.info,soforums.com,theforumcity.com,topbboard.com,urtopic.com,vraiforum.com,webrpg.info,xoo.it,xooit.be,xooit.biz,xooit.cc,xooit.co.uk,xooit.com,xooit.eu,xooit.fr,xooit.info,xooit.org,xooit.org.uk,xooit.tv##body > div[id][style*="z-index: 99999999; height: 92px; width: 100%;"]
 ##iframe[style="border: 0; width: 728px; height: 110px;"]
 ##iframe[style="border: 0; width: 970px; height: 110px;"]

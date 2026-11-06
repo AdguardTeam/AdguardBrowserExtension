@@ -1,9 +1,9 @@
-! Checksum: lX4rJLM0E2qfCvoUh9qgrA
-! Diff-Path: ../patches/8_optimized/8_optimized-s-1791371342-3600.patch
+! Checksum: 1ALQkEJzNn7SES7E+/BjAg
+! Diff-Path: ../patches/8_optimized/8_optimized-s-1793636018-3600.patch
 ! Title: AdGuard Dutch filter (Optimized)
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.9.47
-! TimeUpdated: 2026-10-07T11:05:38+00:00
+! Version: 2.0.9.51
+! TimeUpdated: 2026-11-02T16:09:36+00:00
 ! Expires: 10 days (update frequency)
 -reclameplaatjes/
 /adbron.
@@ -11,8 +11,8 @@
 /adv_tekstlinks.
 /adverteerders/*
 /advertentie-banner-
-/advertentie.$domain=~anzeigen-aufgabe-alpha.de|~anzeigen-aufgabe-beta.de|~anzeigen-aufgabe-test.de|~rd.nl
-/advertentie/*$domain=~anzeigen-aufgabe-alpha.de|~anzeigen-aufgabe-beta.de|~anzeigen-aufgabe-test.de|~rd.nl
+/advertentie.$domain=~anzeigen-aufgabe-alpha.de|~anzeigen-aufgabe-beta.de|~anzeigen-aufgabe-test.de|~araba.nl|~rd.nl
+/advertentie/*$domain=~anzeigen-aufgabe-alpha.de|~anzeigen-aufgabe-beta.de|~anzeigen-aufgabe-test.de|~araba.nl|~rd.nl
 /advertentie1.
 /advertentie2/*
 /advertentie_head.
@@ -893,6 +893,7 @@ tpo.nl##.bol_pml_box
 wijwedden.net##.bookies
 autoreview.nl##.bottom-bannuring
 onderwijsnieuwsdienst.nl##.bottomSpace
+buienradar.nl##.br-ad-slot
 bnr.nl##.branded
 classic.nl##.brievenbus
 xgn.nl##.bs
@@ -1620,6 +1621,9 @@ gpblog.com#$#aside[class^="Ad_"] { position: absolute !important; left: -3000px 
 omroepbrabant.nl#$#.ad-banner-container { position: absolute!important; left: -3000px!important; }
 handbalstartpunt.nl#$##advertentie-top { height: 0!important; }
 omroepwest.nl#$#.adcontainer-Rectangle { position: absolute!important; left: -4000px!important; }
+wielerflits.be,wielerflits.nl##div[class^="r89-"]
+looopings.nl##.indexAdFrame
+looopings.nl##.sidebarAdFrame
 autoweek.nl##.teaser-group__items > a.teaser-tile ~ div
 autoweek.nl##.powered-by
 weeronline.nl#$#.adWrapper { height: 0px !important; }
