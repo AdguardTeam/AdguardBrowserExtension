@@ -20,6 +20,8 @@
 import { debounce } from 'lodash-es';
 
 import { ADGUARD_SETTINGS_KEY } from '../../common/constants';
+import { getZodErrorMessage } from '../../common/error';
+import { logger } from '../../common/logger';
 import { type StorageInterface } from '../../common/storage';
 import { type Settings, type SettingOption } from '../schema';
 
@@ -35,7 +37,11 @@ class SettingsStorage implements StorageInterface<SettingOption, Settings[Settin
      * Saves settings in browser.storage.local with {@link saveTimeoutMs} debounce.
      */
     private save = debounce(() => {
-        browserStorage.set(ADGUARD_SETTINGS_KEY, this.settings);
+        // The promise is not awaited, so a failed write has to be reported here,
+        // otherwise settings silently stay in memory only.
+        browserStorage.set(ADGUARD_SETTINGS_KEY, this.settings).catch((e) => {
+            logger.error('[ext.SettingsStorage]: cannot save settings to storage:', getZodErrorMessage(e));
+        });
     }, SettingsStorage.saveTimeoutMs);
 
     private settings: Settings | undefined;

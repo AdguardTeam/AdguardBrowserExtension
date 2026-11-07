@@ -132,3 +132,51 @@ export const mockLocalStorage = (initData?: Record<string, unknown>): Storage.St
 
     return localStorage;
 };
+
+/**
+ * Mocks browser.storage.local where one entry is broken the way Firefox leaves it
+ * when the IndexedDB file of a large value is lost: every get/set/remove touching
+ * the key (including get(null)) rejects with "An unexpected error occurred", and
+ * only clear() drops the entry.
+ *
+ * @param initData Initial data for the mock storage.
+ * @param brokenKey Key of the broken entry.
+ *
+ * @returns Mocked storage instance. Its own methods bypass the broken entry,
+ * so read through `browser.storage.local` to see what the extension sees.
+ */
+export const mockLocalStorageWithBrokenKey = (
+    initData: Record<string, unknown>,
+    brokenKey: string,
+): Storage.StorageArea => {
+    const localStorage = mockLocalStorage(initData);
+    let isBroken = true;
+
+    const touchesBrokenKey = (keys: unknown): boolean => {
+        if (!isBroken) {
+            return false;
+        }
+        if (keys === null || keys === undefined) {
+            return true;
+        }
+        if (typeof keys === 'string') {
+            return keys === brokenKey;
+        }
+        if (Array.isArray(keys)) {
+            return keys.includes(brokenKey);
+        }
+        return brokenKey in (keys as Record<string, unknown>);
+    };
+
+    const reject = (): Promise<never> => Promise.reject(new Error('An unexpected error occurred'));
+
+    browser.storage.local.get.callsFake((keys) => (touchesBrokenKey(keys) ? reject() : localStorage.get(keys)));
+    browser.storage.local.set.callsFake((items) => (touchesBrokenKey(items) ? reject() : localStorage.set(items)));
+    browser.storage.local.remove.callsFake((keys) => (touchesBrokenKey(keys) ? reject() : localStorage.remove(keys)));
+    browser.storage.local.clear.callsFake(() => {
+        isBroken = false;
+        return localStorage.clear();
+    });
+
+    return localStorage;
+};

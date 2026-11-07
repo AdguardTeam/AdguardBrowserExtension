@@ -18,7 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { mockLocalStorage } from './storage';
+export { mockLocalStorage, mockLocalStorageWithBrokenKey } from './storage';
 export { mockFilterPath, mockXhrRequests } from './xhr';
 export { MockedTsWebExtension } from './tswebextension';
 export { MockedTsWebExtensionMV3 } from './tswebextensionMv3';

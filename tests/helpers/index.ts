@@ -56,6 +56,7 @@ export {
 
 export {
     mockLocalStorage,
+    mockLocalStorageWithBrokenKey,
     mockFilterPath,
     mockXhrRequests,
     MockedTsWebExtension,

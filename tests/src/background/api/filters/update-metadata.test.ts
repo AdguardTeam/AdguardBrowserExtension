@@ -74,6 +74,7 @@ vi.mock('../../../../../Extension/src/background/api/settings', () => ({
         init: vi.fn().mockResolvedValue(undefined),
         getSettings: vi.fn().mockResolvedValue({}),
         getSetting: vi.fn().mockReturnValue(false),
+        isResetToDefaultsOnInit: vi.fn().mockReturnValue(false),
     },
 }));
 

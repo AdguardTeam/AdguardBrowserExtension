@@ -48,6 +48,7 @@ import {
     settingsStorage,
     browserStorage,
 } from '../../storages';
+import { HybridStorage } from '../../storages/hybrid-storage';
 import {
     CommonFilterApi,
     CustomFilterApi,
@@ -58,6 +59,9 @@ import {
 } from '../filters';
 import {
     ADGUARD_SETTINGS_KEY,
+    APP_VERSION_KEY,
+    CLIENT_ID_KEY,
+    SCHEMA_VERSION_KEY,
     AntiBannerFiltersId,
     type AppearanceTheme,
     NotifierType,
@@ -96,12 +100,50 @@ type CommonSettingsConfig = Omit<SettingsConfig,
  */
 export class SettingsApiCommon {
     /**
+     * Storage keys that are written back after the storage is cleared
+     * by {@link SettingsApiCommon.recoverUnreadableStorage}. Without them
+     * the next start would be handled as a fresh install.
+     */
+    private static readonly STORAGE_KEYS_TO_PRESERVE = [
+        APP_VERSION_KEY,
+        SCHEMA_VERSION_KEY,
+        CLIENT_ID_KEY,
+    ];
+
+    /**
+     * True if {@link SettingsApiCommon.init} could not use the stored settings
+     * and reverted them to the defaults.
+     */
+    private static resetToDefaultsOnInit = false;
+
+    /**
+     * Returns whether the stored settings were reverted to the defaults
+     * during the last {@link SettingsApiCommon.init}. Default settings have
+     * every filter disabled, so the caller should enable the default filters,
+     * as it does on install.
+     *
+     * @returns True if the settings were reverted to the defaults.
+     */
+    public static isResetToDefaultsOnInit(): boolean {
+        return SettingsApiCommon.resetToDefaultsOnInit;
+    }
+
+    /**
      * Initializes settings: checks the settings from the repository and resets
      * them to defaults if the data are not valid.
      */
     public static async init(): Promise<void> {
+        SettingsApiCommon.resetToDefaultsOnInit = false;
+        let data: unknown;
+
         try {
-            const data = await browserStorage.get(ADGUARD_SETTINGS_KEY);
+            data = await browserStorage.get(ADGUARD_SETTINGS_KEY);
+        } catch (e) {
+            logger.error('[ext.SettingsApiCommon.init]: cannot read settings from storage:', getZodErrorMessage(e));
+            await SettingsApiCommon.recoverUnreadableStorage();
+        }
+
+        try {
             const settings = settingsValidator.parse(data);
             settingsStorage.setCache(settings);
         } catch (e) {
@@ -111,6 +153,57 @@ export class SettingsApiCommon {
 
             // Update settings in the cache and in the storage
             settingsStorage.setData(settings);
+            SettingsApiCommon.resetToDefaultsOnInit = true;
+        }
+    }
+
+    /**
+     * Drops a `browser.storage.local` entry that can no longer be read.
+     *
+     * Firefox keeps large `storage.local` values in external IndexedDB files.
+     * If such a file is lost (e.g. after an unclean shutdown), every `get`,
+     * `set` and `remove` touching the key rejects with "An unexpected error
+     * occurred", so the settings could neither be read nor overwritten, and
+     * every change was lost on the next browser start. Only `clear()` drops
+     * the broken entry, so the storage is cleared and the keys needed to keep
+     * the run info (app version, schema version, client id) are written back.
+     *
+     * Regression test: tests/src/background/api/settings.test.ts,
+     * "Recovering when the stored settings cannot be read".
+     */
+    private static async recoverUnreadableStorage(): Promise<void> {
+        // TODO(settings-recovery): when IndexedDB is unavailable (Firefox with
+        // "Never Remember History"), filters and user rules are stored in
+        // browser.storage.local too, and clear() would erase them. In that mode
+        // the broken entry is left as is, so settings still are not persisted.
+        if (!await HybridStorage.isIDBSupported()) {
+            logger.error('[ext.SettingsApiCommon.recoverUnreadableStorage]: storage is not cleared because filters are kept in browser.storage.local');
+            return;
+        }
+
+        const preserved: Record<string, unknown> = {};
+
+        for (const key of SettingsApiCommon.STORAGE_KEYS_TO_PRESERVE) {
+            try {
+                // eslint-disable-next-line no-await-in-loop
+                const value = await browserStorage.get(key);
+                if (value !== undefined) {
+                    preserved[key] = value;
+                }
+            } catch (e) {
+                logger.warn(`[ext.SettingsApiCommon.recoverUnreadableStorage]: cannot read "${key}":`, getZodErrorMessage(e));
+            }
+        }
+
+        try {
+            await browserStorage.clear();
+            if (!await browserStorage.setMultiple(preserved)) {
+                logger.error('[ext.SettingsApiCommon.recoverUnreadableStorage]: storage is cleared, but cannot write back keys:', Object.keys(preserved));
+                return;
+            }
+            logger.info('[ext.SettingsApiCommon.recoverUnreadableStorage]: storage is cleared, kept keys:', Object.keys(preserved));
+        } catch (e) {
+            logger.error('[ext.SettingsApiCommon.recoverUnreadableStorage]: cannot recover storage:', getZodErrorMessage(e));
         }
     }
 

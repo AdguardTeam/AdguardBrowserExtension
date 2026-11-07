@@ -37,6 +37,7 @@ import { HybridStorage } from '../../../../Extension/src/background/storages/hyb
 import { UpdateApi } from '../../../../Extension/src/background/api';
 import {
     mockLocalStorage,
+    mockLocalStorageWithBrokenKey,
     getStorageFixturesV0,
     getStorageFixturesV1,
     getStorageFixturesV2,
@@ -59,6 +60,7 @@ import { getRunInfo } from '../../../../Extension/src/background/utils';
 import { SbCache, hybridStorage } from '../../../../Extension/src/background/storages';
 import { FILTER_KEY_PREFIX } from '../../../../Extension/src/background/api/update/assets/old-filters-storage-v1';
 import { settingsValidator } from '../../../../Extension/src/background/schema';
+import { ADGUARD_SETTINGS_KEY } from '../../../../Extension/src/common/constants';
 
 vi.mock('../../../../Extension/src/background/engine');
 vi.mock('../../../../Extension/src/background/api/ui/icons');
@@ -243,6 +245,29 @@ describe('Update Api (without indexedDB)', () => {
                     }, {}),
                 ),
             );
+        });
+
+        // Regression: in Firefox the settings entry can become unreadable (its IndexedDB
+        // file is lost), so every get/set of it rejects. A schema migration then threw,
+        // and resetting the settings in the catch block threw again, so the whole
+        // extension init failed before SettingsApi.init() could recover the storage.
+        it('does not throw when the settings entry is unreadable', async () => {
+            // The v13 -> v14 migration reads the settings.
+            const [data] = getStorageFixturesV13(expires);
+
+            if (!data) {
+                throw new Error('fixture is not defined');
+            }
+
+            mockLocalStorageWithBrokenKey(data, ADGUARD_SETTINGS_KEY);
+
+            await expect(UpdateApi.update({
+                clientId: 'test-client-id',
+                currentAppVersion: '5.5.4',
+                previousAppVersion: '5.5.3',
+                currentSchemaVersion: 15,
+                previousSchemaVersion: 13,
+            })).resolves.toBeUndefined();
         });
 
         // Test for migration from V13 to V14: filter format migration

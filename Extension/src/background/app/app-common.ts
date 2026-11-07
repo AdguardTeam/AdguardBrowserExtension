@@ -265,6 +265,11 @@ export abstract class AppCommon {
 
             // Write the current version to the storage only after successful initialization of the extension
             await InstallApi.postSuccessInstall(currentAppVersion);
+        } else if (SettingsApi.isResetToDefaultsOnInit()) {
+            // Stored settings were unreadable or invalid and were reverted to the
+            // defaults, which have every filter disabled. Enable the default
+            // filters as on install, otherwise the user is left without blocking.
+            await CommonFilterApi.initDefaultFilters(true);
         }
 
         if (isUpdate) {

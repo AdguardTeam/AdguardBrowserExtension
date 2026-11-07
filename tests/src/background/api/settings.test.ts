@@ -51,7 +51,14 @@ import {
     StealthOption,
 } from '../../../../Extension/src/background/schema';
 import { settingsStorage } from '../../../../Extension/src/background/storages';
-import { ADGUARD_SETTINGS_KEY } from '../../../../Extension/src/common/constants';
+import { HybridStorage } from '../../../../Extension/src/background/storages/hybrid-storage';
+import {
+    ADGUARD_SETTINGS_KEY,
+    APP_VERSION_KEY,
+    CLIENT_ID_KEY,
+    PAGE_STATISTIC_KEY,
+    SCHEMA_VERSION_KEY,
+} from '../../../../Extension/src/common/constants';
 import { defaultSettings } from '../../../../Extension/src/common/settings';
 import {
     getDefaultExportFixture,
@@ -61,6 +68,7 @@ import {
     getExportedSettingsProtocolV2Fixture,
     getImportedSettingsFromV1Fixture,
     mockLocalStorage,
+    mockLocalStorageWithBrokenKey,
     getSettingsV1,
     getExportedSettingsV2,
     filterNameFixture,
@@ -107,6 +115,85 @@ describe('Settings Api', () => {
 
             const settings = await storage.get(ADGUARD_SETTINGS_KEY);
             expect(settings).toStrictEqual({ [ADGUARD_SETTINGS_KEY]: defaultSettings });
+        });
+    });
+
+    // Regression: in Firefox, browser.storage.local stores large values in external
+    // IndexedDB files. If such a file is lost (e.g. after an unclean shutdown), every
+    // get/set/remove that touches the key rejects with "An unexpected error occurred",
+    // and only clear() drops the broken entry. The extension used to fall back to
+    // default settings in memory only: the debounced save rejected silently, so the
+    // user's changes were lost again on every browser restart.
+    // This was not caught because storage mocks never fail on a single key.
+    describe('Recovering when the stored settings cannot be read', () => {
+        const mockStorageWithBrokenSettings = (initData: Record<string, unknown>): Storage.StorageArea => (
+            mockLocalStorageWithBrokenKey(initData, ADGUARD_SETTINGS_KEY)
+        );
+
+        let isIDBSupportedSpy: ReturnType<typeof vi.spyOn>;
+
+        beforeEach(() => {
+            isIDBSupportedSpy = vi.spyOn(HybridStorage, 'isIDBSupported').mockResolvedValue(true);
+        });
+
+        afterEach(() => {
+            isIDBSupportedSpy.mockRestore();
+        });
+
+        it('persists default settings and keeps run info keys', async () => {
+            storage = mockStorageWithBrokenSettings({
+                [ADGUARD_SETTINGS_KEY]: defaultSettings,
+                [APP_VERSION_KEY]: '5.5.3.5',
+                [SCHEMA_VERSION_KEY]: 13,
+                [CLIENT_ID_KEY]: 'test-client-id',
+                [PAGE_STATISTIC_KEY]: { totalBlocked: 1 },
+            });
+
+            await SettingsApi.init();
+
+            expect(settingsStorage.getData()).toStrictEqual(defaultSettings);
+            // Read through the browser API, as the extension does: it rejects while the entry is broken.
+            expect(await browser.storage.local.get(ADGUARD_SETTINGS_KEY))
+                .toStrictEqual({ [ADGUARD_SETTINGS_KEY]: defaultSettings });
+            const runInfoKeys = [APP_VERSION_KEY, SCHEMA_VERSION_KEY, CLIENT_ID_KEY];
+            expect(await browser.storage.local.get(runInfoKeys)).toStrictEqual({
+                [APP_VERSION_KEY]: '5.5.3.5',
+                [SCHEMA_VERSION_KEY]: 13,
+                [CLIENT_ID_KEY]: 'test-client-id',
+            });
+        });
+
+        it('reports that settings were reset, so default filters can be enabled', async () => {
+            storage = mockStorageWithBrokenSettings({ [ADGUARD_SETTINGS_KEY]: defaultSettings });
+            await SettingsApi.init();
+            expect(SettingsApi.isResetToDefaultsOnInit()).toBe(true);
+
+            storage = mockLocalStorage({ [ADGUARD_SETTINGS_KEY]: defaultSettings });
+            await SettingsApi.init();
+            expect(SettingsApi.isResetToDefaultsOnInit()).toBe(false);
+        });
+
+        it('persists settings changed after recovery', async () => {
+            storage = mockStorageWithBrokenSettings({ [ADGUARD_SETTINGS_KEY]: defaultSettings });
+
+            await SettingsApi.init();
+            await SettingsApi.setSetting(SettingOption.AllowlistEnabled, false);
+
+            const { [ADGUARD_SETTINGS_KEY]: saved } = await browser.storage.local.get(ADGUARD_SETTINGS_KEY);
+            expect((saved as typeof defaultSettings)[SettingOption.AllowlistEnabled]).toBe(false);
+        });
+
+        it('does not clear storage when filters are kept in browser.storage.local', async () => {
+            isIDBSupportedSpy.mockResolvedValue(false);
+            storage = mockStorageWithBrokenSettings({
+                [ADGUARD_SETTINGS_KEY]: defaultSettings,
+                'filterrules_1000.txt': '||example.org^',
+            });
+
+            await SettingsApi.init();
+
+            expect(browser.storage.local.clear.called).toBe(false);
+            expect(settingsStorage.getData()).toStrictEqual(defaultSettings);
         });
     });
 

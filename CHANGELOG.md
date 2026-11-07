@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Settings reset to the defaults on every Firefox start, with all filters
+  disabled, when the stored settings entry became unreadable (its IndexedDB
+  file was lost after an unclean shutdown). The broken entry is now dropped,
+  the default filters are enabled and later changes are saved again.
+
 ## [5.5.4.47-beta] - 2026-11-06
 
 ### Fixed

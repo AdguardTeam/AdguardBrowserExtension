@@ -155,7 +155,16 @@ export class UpdateApi {
         } catch (e) {
             logger.error('[ext.UpdateApi.runMigrations]: error while migrate:', getZodErrorMessage(e));
             logger.info('[ext.UpdateApi.runMigrations]: Reset settings...');
-            await browserStorage.set(ADGUARD_SETTINGS_KEY, defaultSettings);
+            try {
+                await browserStorage.set(ADGUARD_SETTINGS_KEY, defaultSettings);
+            } catch (setError) {
+                // The settings entry may be unreadable and not writable (Firefox
+                // lost its IndexedDB file). Do not fail the whole init here:
+                // SettingsApi.init() recovers the storage later.
+                // Regression test: tests/src/background/api/update.test.ts,
+                // "does not throw when the settings entry is unreadable".
+                logger.error('[ext.UpdateApi.runMigrations]: cannot reset settings:', getZodErrorMessage(setError));
+            }
         }
     }
 
