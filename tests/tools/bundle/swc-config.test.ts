@@ -26,11 +26,37 @@ import {
     it,
 } from 'vitest';
 
-import { getSwcTargets, OBJECT_CREATE_MODULE_REGEX } from '../../../tools/bundle/swc-config';
+import {
+    getSwcTargets,
+    NODE_MODULES_EXCLUDE_REGEX,
+    OBJECT_CREATE_MODULE_REGEX,
+} from '../../../tools/bundle/swc-config';
 
 const require = createRequire(import.meta.url);
 
 describe('SWC build config', () => {
+    // Regression: the exclude regex was /node_modules\/(?!@adguard\/tswebextension)/,
+    // which never matches Windows paths with backslashes, so SWC re-transpiled
+    // core-js itself and `pnpm release firefox-amo` failed with "'import', and
+    // 'export' cannot be used outside of module code". CI builds on Linux only.
+    describe('NODE_MODULES_EXCLUDE_REGEX', () => {
+        it.each([
+            '/repo/node_modules/core-js/internals/a-callable.js',
+            'C:\\repo\\node_modules\\core-js\\internals\\a-callable.js',
+            require.resolve('core-js/internals/a-callable.js'),
+        ])('excludes %s', (modulePath) => {
+            expect(NODE_MODULES_EXCLUDE_REGEX.test(modulePath)).toBe(true);
+        });
+
+        it.each([
+            '/repo/node_modules/@adguard/tswebextension/dist/index.js',
+            'C:\\repo\\node_modules\\@adguard\\tswebextension\\dist\\index.js',
+            'C:\\repo\\Extension\\src\\background\\index.ts',
+        ])('does not exclude %s', (modulePath) => {
+            expect(NODE_MODULES_EXCLUDE_REGEX.test(modulePath)).toBe(false);
+        });
+    });
+
     describe('OBJECT_CREATE_MODULE_REGEX', () => {
         it('matches the resolved core-js object-create module', () => {
             const modulePath = require.resolve('core-js/internals/object-create.js');

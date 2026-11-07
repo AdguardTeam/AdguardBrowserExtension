@@ -83,7 +83,11 @@ import {
     THANKYOU_PATH,
 } from './common-constants';
 import { getEnvConf, isBrowserMv3 } from './helpers';
-import { getSwcTargets, OBJECT_CREATE_MODULE_REGEX } from './swc-config';
+import {
+    getSwcTargets,
+    NODE_MODULES_EXCLUDE_REGEX,
+    OBJECT_CREATE_MODULE_REGEX,
+} from './swc-config';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 const __filename = fileURLToPath(import.meta.url);
@@ -498,7 +502,7 @@ export const genCommonConfig = (
                     test: /\.(js|ts)x?$/,
                     exclude: [
                         // TODO: Check, maybe it can be removed. Added in AG-28996.
-                        /node_modules\/(?!@adguard\/tswebextension)/,
+                        NODE_MODULES_EXCLUDE_REGEX,
                         // When @adguard/rules-editor is linked from a sibling
                         // checkout (CI/local pnpm link), `symlinks: true`
                         // resolves it to a path outside node_modules, so the
