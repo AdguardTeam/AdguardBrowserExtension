@@ -183,17 +183,30 @@ describe('Settings Api', () => {
             expect((saved as typeof defaultSettings)[SettingOption.AllowlistEnabled]).toBe(false);
         });
 
-        it('does not clear storage when filters are kept in browser.storage.local', async () => {
+        it('keeps user rules when filters are kept in browser.storage.local', async () => {
+            // Without IndexedDB (Firefox "Never Remember History") HybridStorage keeps
+            // filter lists in browser.storage.local, so clear() also drops them.
             isIDBSupportedSpy.mockResolvedValue(false);
+            const userRules = {
+                'filterContent_0': { json: 'user-rules-content' },
+                'conversionData_0': { json: 'user-rules-conversion' },
+                'raw_filterrules_0.txt': { json: '||example.org^' },
+            };
             storage = mockStorageWithBrokenSettings({
                 [ADGUARD_SETTINGS_KEY]: defaultSettings,
-                'filterrules_1000.txt': '||example.org^',
+                [APP_VERSION_KEY]: '5.5.3.5',
+                ...userRules,
+                'filterContent_2': { json: 'base-filter-content' },
             });
 
             await SettingsApi.init();
 
-            expect(browser.storage.local.clear.called).toBe(false);
-            expect(settingsStorage.getData()).toStrictEqual(defaultSettings);
+            expect(await browser.storage.local.get(ADGUARD_SETTINGS_KEY))
+                .toStrictEqual({ [ADGUARD_SETTINGS_KEY]: defaultSettings });
+            expect(await browser.storage.local.get([APP_VERSION_KEY, ...Object.keys(userRules)])).toStrictEqual({
+                [APP_VERSION_KEY]: '5.5.3.5',
+                ...userRules,
+            });
         });
     });
 

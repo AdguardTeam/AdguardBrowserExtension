@@ -49,6 +49,8 @@ import {
     browserStorage,
 } from '../../storages';
 import { HybridStorage } from '../../storages/hybrid-storage';
+import { FiltersStorage } from '../../storages/filters';
+import { RAW_FILTER_KEY_PREFIX } from '../../storages/raw-filters';
 import {
     CommonFilterApi,
     CustomFilterApi,
@@ -64,6 +66,7 @@ import {
     SCHEMA_VERSION_KEY,
     AntiBannerFiltersId,
     type AppearanceTheme,
+    FILTER_LIST_EXTENSION,
     NotifierType,
     SEPARATE_ANNOYANCE_FILTER_IDS,
 } from '../../../common/constants';
@@ -168,22 +171,30 @@ export class SettingsApiCommon {
      * the broken entry, so the storage is cleared and the keys needed to keep
      * the run info (app version, schema version, client id) are written back.
      *
+     * Without IndexedDB (Firefox with "Never Remember History") filter lists
+     * are kept in `browser.storage.local` too, so the user rules are written
+     * back as well. Other filters are reloaded as the default filters are
+     * enabled after the reset; custom filters and the allowlist are part of
+     * the lost settings.
+     *
      * Regression test: tests/src/background/api/settings.test.ts,
      * "Recovering when the stored settings cannot be read".
      */
     private static async recoverUnreadableStorage(): Promise<void> {
-        // TODO(settings-recovery): when IndexedDB is unavailable (Firefox with
-        // "Never Remember History"), filters and user rules are stored in
-        // browser.storage.local too, and clear() would erase them. In that mode
-        // the broken entry is left as is, so settings still are not persisted.
+        const keysToPreserve: string[] = [...SettingsApiCommon.STORAGE_KEYS_TO_PRESERVE];
+
         if (!await HybridStorage.isIDBSupported()) {
-            logger.error('[ext.SettingsApiCommon.recoverUnreadableStorage]: storage is not cleared because filters are kept in browser.storage.local');
-            return;
+            const userFilterId = AntiBannerFiltersId.UserFilterId;
+            keysToPreserve.push(
+                `${FiltersStorage.KEY_FILTER_CONTENT}${FiltersStorage.KEY_COMBINER}${userFilterId}`,
+                `${FiltersStorage.KEY_CONVERSION_DATA}${FiltersStorage.KEY_COMBINER}${userFilterId}`,
+                `${RAW_FILTER_KEY_PREFIX}${userFilterId}${FILTER_LIST_EXTENSION}`,
+            );
         }
 
         const preserved: Record<string, unknown> = {};
 
-        for (const key of SettingsApiCommon.STORAGE_KEYS_TO_PRESERVE) {
+        for (const key of keysToPreserve) {
             try {
                 // eslint-disable-next-line no-await-in-loop
                 const value = await browserStorage.get(key);
