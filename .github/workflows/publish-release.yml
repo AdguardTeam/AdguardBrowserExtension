@@ -27,7 +27,7 @@ on:
 
 # Serialize all publishes for this repo: two release-bump PRs merged close
 # together (or a merged PR racing a manual dispatch) would otherwise run in
-# parallel and race on the same environments and store listings.
+# parallel and race on the same store environments, Deployer modules and tag.
 # An in-flight release is never cancelled.
 concurrency:
   group: publish-release-${{ github.repository }}
@@ -487,7 +487,7 @@ jobs:
       team: extensions
       deployer-module: adblocker-webext-chrome-${{ needs.build.outputs.channel }}
       artifact-name: static-chrome-${{ needs.build.outputs.channel }}
-      environment: ${{ needs.build.outputs.channel == 'beta' && 'beta-static' || 'production-static' }}
+      environment: chrome-static-${{ needs.build.outputs.channel }}
     permissions:
       contents: read
       id-token: write   # OIDC token for authenticated Deployer upload
@@ -500,7 +500,7 @@ jobs:
       team: extensions
       deployer-module: adblocker-webext-edge-${{ needs.build.outputs.channel }}
       artifact-name: static-edge-${{ needs.build.outputs.channel }}
-      environment: ${{ needs.build.outputs.channel == 'beta' && 'beta-static' || 'production-static' }}
+      environment: edge-static-${{ needs.build.outputs.channel }}
     permissions:
       contents: read
       id-token: write
@@ -514,7 +514,7 @@ jobs:
       team: extensions
       deployer-module: adblocker-webext-firefox-beta
       artifact-name: static-firefox-beta
-      environment: beta-static
+      environment: firefox-static-beta
     permissions:
       contents: read
       id-token: write
@@ -528,7 +528,7 @@ jobs:
       team: extensions
       deployer-module: adblocker-webext-firefox-release
       artifact-name: static-firefox-release
-      environment: production-static
+      environment: firefox-static-release
     permissions:
       contents: read
       id-token: write

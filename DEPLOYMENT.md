@@ -41,11 +41,12 @@ Release flow:
    manifest.
 2. Merge the `release-bump/*` PR.
 3. `publish-release.yml` builds the main artifacts, creates the tag, and deploys:
-   - beta: static.adtidy.org (chromium CRX/ZIP + Firefox XPI/update.json),
-     Chrome Web Store MV3, Firefox AMO beta, Firefox standalone signing,
-     GitHub Release draft (public repo, marked as prerelease)
-   - release: static.adtidy.org (chromium + Firefox), Chrome Web Store MV3,
-     Firefox AMO, Edge Add-ons (draft upload; submission is manual),
+   - beta: static.adtidy.org (chromium CRX/ZIP + Edge MV3 + Firefox
+     XPI/update.json), Chrome Web Store MV3, Firefox AMO beta, Firefox
+     standalone signing, GitHub Release draft (public repo, marked as
+     prerelease)
+   - release: static.adtidy.org (chromium + Edge MV3 + Firefox), Chrome Web
+     Store MV3, Firefox AMO, Edge Add-ons (draft upload; submission is manual),
      GitHub Release draft (public repo)
    - Opera zips ship as GitHub Release assets only (store submission is manual).
    - Chrome Web Store versions are staged: after review, publish them manually
@@ -56,12 +57,10 @@ Release flow:
    manually. Both channels stay in draft until this step; attaching signed
    Firefox beta assets also preserves the draft state.
 
-Deploy gates are GitHub environments (approval rules): `beta-static`,
-`production-static`, `chrome-webstore-beta`, `chrome-webstore-release`,
-`firefox-amo-beta`, `firefox-amo-release`, `edge-addons-release`. The
-auto-publish environments `chrome-webstore-beta-auto` /
-`chrome-webstore-release-auto` / `edge-addons-auto` have no gates (full
-automation).
+Deploy gates are GitHub environments (approval rules); the complete list is in
+[Required repository configuration](#required-repository-configuration). Each
+browser's static deploy has its own environment, so static files of one browser
+are approved and deployed without approving the others.
 
 Workflow files:
 
@@ -93,9 +92,22 @@ mid-release runtime failures, so configure them before the first run.
   `publisher-id` (CWS status + auto-publish)
 - `edge-addons-deployer` — `client-id`, `api-key` (Edge Add-ons publish)
 
-**Environments** with approval rules: `beta-static`, `production-static`,
-`chrome-webstore-beta`, `chrome-webstore-release`, `firefox-amo-beta`,
-`firefox-amo-release`, `edge-addons-release`.
+**Environments** with approval rules: `chrome-static-beta`,
+`chrome-static-release`, `edge-static-beta`, `edge-static-release`,
+`firefox-static-beta`, `firefox-static-release`, `chrome-webstore-beta`,
+`chrome-webstore-release`, `firefox-amo-beta`, `firefox-amo-release`,
+`edge-addons-release`. The auto-publish environments
+`chrome-webstore-beta-auto` / `chrome-webstore-release-auto` /
+`edge-addons-auto` have no gates (full automation). All of them are declared
+for the `browser-extension` repository in
+`AdGuardSoftwareLimited/terraform-github` (`team_extensions.tf`).
+
+Apply the static environments before the first publish run that uses them; a
+missing environment is created by GitHub without protection rules. The previous
+`beta-static` and `production-static` stay declared for now: `stable/v5.5` and
+the already published tags still run a workflow that references them, and
+removing them would let those runs recreate the environments without reviewers.
+They are removed separately, once nothing references them.
 
 ## Release flow
 
@@ -127,10 +139,10 @@ isolated job in `publish-release.yml` so that one never blocks the other.
 ### Why two Firefox beta pipelines
 
 The standalone build is signed by Mozilla through `go-webext`, which can block
-for a long time (up to a 20-minute CI timeout) while waiting for Mozilla's
-review. The standalone and AMO variants are two separate build jobs with
-separate artifact sets, so a slow or failed standalone signing never blocks the
-AMO submission, and vice versa.
+for a long time (up to ~20 minutes) while waiting for Mozilla's review — longer
+than the job's `timeout-minutes: 15`. The standalone and AMO variants are two
+separate build jobs with separate artifact sets, so a slow or failed standalone
+signing never blocks the AMO submission, and vice versa.
 
 ### Standalone Firefox beta
 
@@ -143,8 +155,8 @@ Job `build-firefox-standalone` in `publish-release.yml` (beta channel only):
    GitHub Release asset (`gh-assets-firefox-beta`, attached after the release
    exists so the two never race).
 
-Signing may hit the 20-minute timeout while waiting for Mozilla. If so, re-run
-the **same** `publish-release.yml` run after Mozilla finishes signing to
+Signing may hit the job's 15-minute timeout while waiting for Mozilla. If so,
+re-run the **same** `publish-release.yml` run after Mozilla finishes signing to
 download the signed `.xpi`; the tag already points to the release commit, so
 the re-run keeps it instead of moving it.
 
@@ -206,9 +218,10 @@ variants are noted.
 
 ## Troubleshooting
 
-- **Standalone signing times out (20 min).** This is expected when Mozilla is
-  slow. It does **not** affect AMO. Re-run the `publish-release.yml` run after
-  signing completes; it will pick up the signed `.xpi`. The re-run is safe
+- **Standalone signing times out (15 min).** This is expected when Mozilla
+  takes longer than the job's `timeout-minutes: 15`. It does **not** affect AMO.
+  Re-run the `publish-release.yml` run after signing completes; it will pick up
+  the signed `.xpi`. The re-run is safe
   because idempotency lives in `go-webext`, not in the workflow: on the second
   run it detects the version is already uploaded to Mozilla, skips
   re-uploading, polls the signing status, and downloads the signed `.xpi`.
@@ -225,9 +238,9 @@ variants are noted.
   existing tag (it points to the same release commit) and rely on the documented
   idempotency of the deployer. If a store still rejects a duplicate, publish
   manually via the store dashboard.
-- **Permissions error on a deploy job.** The GitHub environments must be
-  pre-created with the exact names used in the workflow, otherwise GitHub
-  silently auto-creates a misspelled environment without approval gates.
+- **A deploy job does not wait for approval.** The GitHub environments must
+  exist with the exact names the workflow resolves, otherwise GitHub silently
+  auto-creates the missing environment without approval gates.
 - **Auto-build workflow change must be back-ported to the stable branch.** The
   scheduled run takes `auto-build.yml` from `master` but every job checks out
   `stable/v5.5`, so the Docker stages and scripts the workflow uses

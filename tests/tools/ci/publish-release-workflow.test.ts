@@ -37,6 +37,9 @@ import {
  * assets: `chrome.zip` on both channels, while the signed `chrome.crx` and
  * `update.xml` are shipped on the beta channel only. Those references are
  * intentionally not asserted here.
+ *
+ * The same workflow sources are also scanned for the per-browser static deploy
+ * gates and their approval environments (AG-59389).
  */
 const WORKFLOWS_DIR_PATH = path.resolve(__dirname, '../../../.github/workflows');
 const DEPLOYMENT_PATH = path.resolve(__dirname, '../../../DEPLOYMENT.md');
@@ -70,6 +73,28 @@ const WORKFLOWS = new Map<string, string>(
  * Contents of the deployment documentation, read once at module load.
  */
 const DEPLOYMENT = fs.readFileSync(DEPLOYMENT_PATH, 'utf8');
+
+/**
+ * Opens the list of environments that gate a deploy with approval rules.
+ */
+const APPROVAL_ENVIRONMENTS_START = '**Environments** with approval rules:';
+
+/**
+ * Ends the approval list: everything after it is explicitly ungated.
+ */
+const APPROVAL_ENVIRONMENTS_END = 'The auto-publish environments';
+
+const approvalStart = DEPLOYMENT.indexOf(APPROVAL_ENVIRONMENTS_START);
+const approvalEnd = DEPLOYMENT.indexOf(APPROVAL_ENVIRONMENTS_END);
+
+/**
+ * The part of DEPLOYMENT.md that lists the gated environments. Scanning the
+ * whole file would let an ungated auto-publish name or an artifact name count
+ * as documentation for an approval gate.
+ */
+const APPROVAL_ENVIRONMENTS = approvalEnd > approvalStart && approvalStart !== -1
+    ? DEPLOYMENT.slice(approvalStart, approvalEnd)
+    : '';
 
 /**
  * Looks up a workflow source by file name.
@@ -182,6 +207,257 @@ const parseJobNeeds = (workflow: string, jobId: string): string[] => {
     return [];
 };
 
+/**
+ * Matches a named `with:` input of a reusable-workflow call job.
+ */
+const JOB_WITH_INPUT_RE = /^\s+([a-z0-9-]+): (.+)$/;
+
+/**
+ * Matches the channel expression interpolated into a `with:` input value. The
+ * two channel outputs carry the same value, so either source is accepted.
+ */
+const CHANNEL_EXPRESSION_RE = /\$\{\{\s*needs\.(?:build|resolve-version)\.outputs\.channel\s*\}\}/;
+
+/**
+ * Strips a trailing YAML comment and surrounding quotes from an input value.
+ *
+ * @param value Raw value as it appears after the `:`.
+ *
+ * @returns The bare value.
+ */
+const unquote = (value: string): string => {
+    const withoutComment = value.replace(/\s+#.*$/, '').trim();
+    const match = /^(['"])(.*)\1$/.exec(withoutComment);
+
+    return match?.[2] ?? withoutComment;
+};
+
+/**
+ * Extracts a `with:` input of a reusable-workflow call job.
+ *
+ * @param workflow Workflow YAML source.
+ * @param jobId Job id to look up.
+ * @param inputName Input name, e.g. `environment`.
+ *
+ * @returns The bare input value, e.g. `chrome-static-${{ needs.build.outputs.channel }}`.
+ *
+ * @throws If the job has no input with that name.
+ */
+const getWithInput = (workflow: string, jobId: string, inputName: string): string => {
+    for (const line of getJobBlock(workflow, jobId)) {
+        const [, name, value] = JOB_WITH_INPUT_RE.exec(line) ?? [];
+
+        if (name === inputName && value !== undefined) {
+            return unquote(value);
+        }
+    }
+
+    throw new Error(`Job ${jobId} has no ${inputName} input`);
+};
+
+/**
+ * Resolves the release channel interpolated into a `with:` input value.
+ *
+ * @param value Raw input value.
+ * @param channel Release channel to substitute.
+ *
+ * @returns The value the job uses on that channel.
+ */
+const resolveChannel = (value: string, channel: string): string => (
+    value.replace(CHANNEL_EXPRESSION_RE, channel)
+);
+
+/**
+ * Matches the top-level `if:` condition of a job.
+ */
+const JOB_IF_RE = /^ {4}if: (.*)$/;
+
+/**
+ * Matches a continuation line of a block-scalar `if:` condition. Job-level keys
+ * sit at four spaces, nested values at six or more.
+ */
+const JOB_IF_CONTINUATION_RE = /^ {6,}\S/;
+
+/**
+ * Extracts the raw lines of the job-level `if:` condition: the value after
+ * `if:` followed by the continuation lines of a block scalar, blank lines
+ * included. `getJobIf` folds them into one expression.
+ *
+ * @param workflow Workflow YAML source.
+ * @param jobId Job id to look up.
+ *
+ * @returns Condition lines, or an empty array when the job has no `if:`.
+ */
+const getJobIfLines = (workflow: string, jobId: string): string[] => {
+    const lines = getJobBlock(workflow, jobId);
+    const index = lines.findIndex((line) => JOB_IF_RE.test(line));
+    const ifLine = lines[index];
+
+    if (ifLine === undefined) {
+        return [];
+    }
+
+    const condition = [JOB_IF_RE.exec(ifLine)?.[1] ?? ''];
+
+    for (const line of lines.slice(index + 1)) {
+        // A blank line belongs to the block scalar: the condition may continue
+        // after it, so it must not end the scan.
+        if (line.trim() === '') {
+            continue;
+        }
+
+        if (!JOB_IF_CONTINUATION_RE.test(line)) {
+            break;
+        }
+
+        condition.push(line);
+    }
+
+    return condition;
+};
+
+/**
+ * Matches the header of a block-scalar `if:` condition: the indicator (`>`,
+ * `|`), an optional chomping and indentation pair in either order (`>-`, `|2`,
+ * `>2-`, `>-2`) and an optional trailing comment.
+ */
+const BLOCK_SCALAR_INDICATOR_RE = /^[>|](?:[1-9][+-]?|[+-][1-9]?)?(?:\s+#.*)?$/;
+
+/**
+ * Extracts the `if:` condition of a job.
+ *
+ * The indicator of a block scalar is not part of the condition, and both block
+ * and plain continuation lines fold into one expression, so the same condition
+ * reads the same in every style.
+ *
+ * @param workflow Workflow YAML source.
+ * @param jobId Job id to look up.
+ *
+ * @returns The condition without a trailing comment or quotes, or `undefined`
+ * when the job has no `if:`.
+ */
+const getJobIf = (workflow: string, jobId: string): string | undefined => {
+    const condition = unquote(
+        getJobIfLines(workflow, jobId)
+            .map((line) => line.trim())
+            .filter((line) => line !== '' && !BLOCK_SCALAR_INDICATOR_RE.test(line))
+            .join(' '),
+    );
+
+    return condition === '' ? undefined : condition;
+};
+
+/**
+ * Matches the only condition shape that restricts a job to one release channel.
+ * Any other condition, including `always()` or a channel check combined with an
+ * extra clause, may run on both channels.
+ */
+const CHANNEL_CONDITION_RE = /^needs\.resolve-version\.outputs\.channel == '(beta|release)'$/;
+
+/**
+ * Release channels a static deploy job can run on.
+ *
+ * @param workflow Workflow YAML source.
+ * @param jobId Job id to look up.
+ *
+ * @returns One channel when the `if:` restricts the job to it, both otherwise.
+ */
+const getJobChannels = (workflow: string, jobId: string): string[] => {
+    const condition = getJobIf(workflow, jobId);
+    const channel = condition === undefined ? undefined : CHANNEL_CONDITION_RE.exec(condition)?.[1];
+
+    return channel === undefined ? ['beta', 'release'] : [channel];
+};
+
+/**
+ * What a static deploy job must use on one release channel (AG-59389): its own
+ * browser's artifact, its own Deployer module and its own approval environment.
+ */
+type StaticDeployGate = {
+    channel: string;
+    artifactName: string;
+    deployerModule: string;
+    environment: string;
+};
+
+/**
+ * Static deploy jobs and the resources they must use on every channel they run
+ * on. Chrome and Edge deploy from one job that runs on both channels; the
+ * Firefox jobs are channel-filtered by their `if:` condition.
+ */
+const STATIC_DEPLOY_GATES: Record<string, StaticDeployGate[]> = {
+    'deploy-static-chrome': [
+        {
+            channel: 'beta',
+            artifactName: 'static-chrome-beta',
+            deployerModule: 'adblocker-webext-chrome-beta',
+            environment: 'chrome-static-beta',
+        },
+        {
+            channel: 'release',
+            artifactName: 'static-chrome-release',
+            deployerModule: 'adblocker-webext-chrome-release',
+            environment: 'chrome-static-release',
+        },
+    ],
+    'deploy-static-edge': [
+        {
+            channel: 'beta',
+            artifactName: 'static-edge-beta',
+            deployerModule: 'adblocker-webext-edge-beta',
+            environment: 'edge-static-beta',
+        },
+        {
+            channel: 'release',
+            artifactName: 'static-edge-release',
+            deployerModule: 'adblocker-webext-edge-release',
+            environment: 'edge-static-release',
+        },
+    ],
+    'deploy-static-firefox-beta': [
+        {
+            channel: 'beta',
+            artifactName: 'static-firefox-beta',
+            deployerModule: 'adblocker-webext-firefox-beta',
+            environment: 'firefox-static-beta',
+        },
+    ],
+    'deploy-static-firefox-release': [
+        {
+            channel: 'release',
+            artifactName: 'static-firefox-release',
+            deployerModule: 'adblocker-webext-firefox-release',
+            environment: 'firefox-static-release',
+        },
+    ],
+};
+
+/**
+ * Exact `needs` of every static deploy job.
+ */
+const STATIC_DEPLOY_NEEDS: Record<string, string[]> = {
+    'deploy-static-chrome': ['build', 'resolve-version', 'tag'],
+    'deploy-static-edge': ['build', 'resolve-version', 'tag'],
+    'deploy-static-firefox-beta': ['build-firefox-standalone', 'resolve-version', 'tag'],
+    'deploy-static-firefox-release': ['build', 'resolve-version', 'tag'],
+};
+
+/**
+ * Channel a static deploy job is restricted to; `undefined` means it runs on
+ * both channels.
+ */
+const STATIC_DEPLOY_CHANNEL_FILTERS: Record<string, string | undefined> = {
+    'deploy-static-chrome': undefined,
+    'deploy-static-edge': undefined,
+    'deploy-static-firefox-beta': 'beta',
+    'deploy-static-firefox-release': 'release',
+};
+
+/**
+ * Matches the shared static environment names replaced by the per-browser ones.
+ */
+const SHARED_STATIC_ENVIRONMENT_RE = /beta-static|production-static/;
+
 describe('Chrome Web Store deploy guards', () => {
     it('no workflow references the removed CWS MV2 target', () => {
         for (const [fileName, source] of WORKFLOWS) {
@@ -250,6 +526,111 @@ describe('Chrome Web Store deploy guards', () => {
         // the failure notification can run, so any reference to it counts.
         for (const jobId of parseJobNeeds(workflow, 'notify-failure')) {
             expect(failureMessage).toContain(`needs.${jobId}.`);
+        }
+    });
+});
+
+describe('Static deploy approval gates', () => {
+    it('each static deploy job uses its own browser artifacts and environment', () => {
+        const workflow = getWorkflow('publish-release.yml');
+
+        for (const [jobId, gates] of Object.entries(STATIC_DEPLOY_GATES)) {
+            for (const gate of gates) {
+                const context = `${jobId} on ${gate.channel}`;
+
+                expect(
+                    resolveChannel(getWithInput(workflow, jobId, 'environment'), gate.channel),
+                    `${context}: environment`,
+                ).toBe(gate.environment);
+                expect(
+                    resolveChannel(getWithInput(workflow, jobId, 'deployer-module'), gate.channel),
+                    `${context}: deployer module`,
+                ).toBe(gate.deployerModule);
+                expect(
+                    resolveChannel(getWithInput(workflow, jobId, 'artifact-name'), gate.channel),
+                    `${context}: artifact`,
+                ).toBe(gate.artifactName);
+            }
+        }
+    });
+
+    it('each static deploy job runs only on its own channels', () => {
+        const workflow = getWorkflow('publish-release.yml');
+
+        for (const [jobId, channel] of Object.entries(STATIC_DEPLOY_CHANNEL_FILTERS)) {
+            const condition = getJobIf(workflow, jobId);
+
+            if (channel === undefined) {
+                expect(condition, `${jobId} must run on both channels`).toBeUndefined();
+                continue;
+            }
+
+            expect(condition, `${jobId} channel filter`)
+                .toBe(`needs.resolve-version.outputs.channel == '${channel}'`);
+        }
+    });
+
+    it('each static deploy job keeps its exact dependencies', () => {
+        const workflow = getWorkflow('publish-release.yml');
+
+        for (const [jobId, needs] of Object.entries(STATIC_DEPLOY_NEEDS)) {
+            expect(parseJobNeeds(workflow, jobId).sort(), `${jobId} needs`).toEqual(needs);
+        }
+    });
+
+    it('every job deploying to static storage has its own documented environment', () => {
+        const workflow = getWorkflow('publish-release.yml');
+        const jobsByEnvironment = new Map<string, Set<string>>();
+
+        expect(APPROVAL_ENVIRONMENTS, 'DEPLOYMENT.md lists the approval environments').not.toBe('');
+
+        for (const jobId of parseJobIds(workflow)) {
+            const jobBlock = getJobBlock(workflow, jobId);
+            // Match the reusable workflow reference itself, not a comment that
+            // happens to mention it.
+            const deploysToStatic = jobBlock.some((line) => /^\s+uses: \S*deploy-to-static\.yml@\S+/.test(line));
+
+            if (!deploysToStatic) {
+                continue;
+            }
+
+            // Throws when the job has no `environment` input at all.
+            const environment = getWithInput(workflow, jobId, 'environment');
+            const channels = getJobChannels(workflow, jobId);
+
+            // A job that runs on both channels must not resolve to one
+            // environment, or a single approval would release both.
+            if (channels.length > 1) {
+                expect(
+                    new Set(channels.map((channel) => resolveChannel(environment, channel))).size,
+                    `${jobId} runs on both channels but uses one environment`,
+                ).toBe(channels.length);
+            }
+
+            // Only the channels the job actually runs on are recorded, so a
+            // channel-filtered job cannot collide with its sibling.
+            for (const channel of channels) {
+                const name = resolveChannel(environment, channel);
+                const jobIds = jobsByEnvironment.get(name) ?? new Set<string>();
+
+                expect(APPROVAL_ENVIRONMENTS, `${name} must be in the approval list`)
+                    .toContain(`\`${name}\``);
+                jobIds.add(jobId);
+                jobsByEnvironment.set(name, jobIds);
+            }
+        }
+
+        // Two jobs behind one environment would release both browsers with a
+        // single approval.
+        for (const [name, jobIds] of jobsByEnvironment) {
+            expect([...jobIds], `${name} must gate a single job`).toHaveLength(1);
+        }
+    });
+
+    it('no workflow references the shared static environments', () => {
+        for (const [fileName, source] of WORKFLOWS) {
+            expect(source, `shared static environment in ${fileName}`)
+                .not.toMatch(SHARED_STATIC_ENVIRONMENT_RE);
         }
     });
 });
