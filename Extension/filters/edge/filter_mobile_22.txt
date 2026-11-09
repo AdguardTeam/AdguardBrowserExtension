@@ -1,9 +1,9 @@
-! Checksum: XkpF3IPPiWc1WL4q6PoPew
-! Diff-Path: ../patches/22_optimized/22_optimized-s-1793931233-3600.patch
+! Checksum: ZwYxG7fxucnNWGBjuiwgvw
+! Diff-Path: ../patches/22_optimized/22_optimized-s-1794233584-3600.patch
 ! Title: AdGuard Widgets filter (Optimized)
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.15.49
-! TimeUpdated: 2026-11-05T21:08:40+00:00
+! Version: 2.0.15.51
+! TimeUpdated: 2026-11-09T14:09:17+00:00
 ! Expires: 10 days (update frequency)
 !#######################################################
 !######### Block useless widgets #######################
@@ -200,6 +200,7 @@ umamusume.net##.rss-box
 vipsister23.com###share2
 vipsister23.com###share3
 vipsister23.com##blockquote
+ero-shame.club##.kanren > dl:has(> dt > a[href*="://new"][target="_blank"])
 tousatu-ch.net###side-fixed > div.widget_custom_html:not(:first-child):not(:last-child)
 tousatu-ch.net##.head-under.widget_custom_html
 tousatu-ch.net##.video-container
@@ -690,7 +691,6 @@ warotanikki.com##.code-block
 suresuta.jp,sikopedia.com,kisslog2.com###custom_html-6
 akankore.doorblog.jp,beelzeboulxxx.com,gossip1.net,kisslog2.com##.rss_wrapper
 ddd-smart.net#?#aside > h4.card-panel:contains(色々な同人誌)
-||feed.mikle.com^$domain=news.railway-pressnet.com|gensen5ch.blog.jp|blog.livedoor.jp|crx7601.com|hayamimi-gunpla.com|hdouga.com|ibarakinews.jp|obutu.com|totalwar.doorblog.jp|spread-sports.jp|ff14net.2chblog.jp
 ||doujinlist.com/rss.js
 eromanga-cafe.com,revuestarlightre.com###custom_html-4
 eromanga-cafe.com##.loop-single-widget
@@ -797,7 +797,6 @@ goldennews.blog.jp,blog.livedoor.jp##.sp_kizi_recommend
 blog.livedoor.jp#?#.plugin-memo > div.side > script[src$="/blogroll.js"]:upward(2)
 blog.livedoor.jp#?#.plugin-memo > div.side > div.pickups:upward(2)
 blog.livedoor.jp##.pickup
-||blog.livedoor.jp/aoba_f/$subdocument,~third-party
 ||blog.livedoor.jp/jyoushiki43/$subdocument,~third-party
 blog.livedoor.jp###pickrightcon
 blog.livedoor.jp##.rss3rd
@@ -997,6 +996,7 @@ surabaya.tribunnews.com##.widgettshop
 g2.com##.g2-sideframe__toggle
 g2.com##.g2-sideframe__initial
 ||snippet.maze.co^$domain=traderie.com
+nutraceuticalsworld.com##.sc-conversation--trigger-widget
 navitime.co.jp##.ntj-web-nps
 jotform.com##.jfFeedbackButton
 ||blog.livedoor.com/plugins/news/topics.js
@@ -1016,6 +1016,7 @@ infranken.de###singlewidget_standalone
 24tv.ua###user-vote-trigger
 unitedutilities.com##.c-recite-me
 acefitness.org##.qn-chat-prompt
+ambria.de,sieh-an.de,creation-l.de###userlikeCustomTab
 blamper.ru##div[data-module^="widgets/common/FakeChat/"]
 centr-hirurgii.ru,smclinic.ru###call-btn
 eldorado.ru###custom-livetex-fab
@@ -1073,6 +1074,7 @@ volyninfa.com.ua###custom_html-2
 ||w.chatlio.com/v5/w.chatlio-widget.js
 ||wchat.freshchat.com/js/widget.js
 ||widget.info-*.ru/js/init.js?t=$script,third-party
+@@||mod.calltouch.ru^$domain=winelab.ru
 @@||secure.livechatinc.com/customer/action/open_chat?$domain=njumobile.pl
 @@||api.popin.cc/searchbox/$domain=ampproject.net
 @@||static.landbot.io/landbot-widget/landbot-widget-*.js$domain=emma-matratze.de
@@ -1195,6 +1197,7 @@ daddyhd.com##.sidebar__inner
 ||helpdeskeddy.com//js/contact-widget.js$domain=litres.ru
 ||static.zdassets.com/web_widget/messenger/$domain=op.gg|p2pb2b.com|revouninstaller.com
 litres.ru###call_support
+mercedes-benz.com.tr##.ocm-floating-cta
 reifendirekt.de##.rctw-multiple-launcher
 privatbank.ua##.chat-icon-load
 on.com.tr###chatapp-icon
@@ -1213,7 +1216,6 @@ lg.com##.al-proactive-msg
 asus.com###initMiniContainer
 podorozhnyk.ua##.chat-bot
 controld.com##.css-1t8t6ts
-ru.getflix.com##flowise-chatbot
 internxt.com##.live-chat-loader-placeholder
 iphone-mania.jp###custom-chat-embed-v3-root
 cyberscore.live##body > div.cursor-pointer.items-center[class*="mb:right-"]:has(+ .chat)
@@ -1228,6 +1230,7 @@ asviva.de##.o-livechat-root
 dns-shop.ru###chat-button
 pacjent.gov.pl###sprintbot-chat
 careers.dhl.com##.phenom-chatbot-wrapper
+namesilo.com##.ai-chat-widget-container
 xbox.com##.copilot-container
 microsoft.com###msChatContainer
 games-world4you.de###shopify-chat
@@ -1333,7 +1336,6 @@ ign.com##div[data-cy="tierlist-view-trigger"]
 vg247.com##.poll_wrapper
 t-online.de#?#div[data-testid="StageLayout.StreamItem"]:has(> figure:only-child > iframe[src*="civey"])
 tagesspiegel.de###story-elements > div[class]:has(> div#opinary-automation-placeholder)
-echo-online.de##.pollBlock__wrapper
 freiepresse.de##.opinary-widget-embed
 sport1.de,nordbayern.de,heise.de##.apester-media
 t-online.de,welt.de##iframe[src^="https://widget.civey.com"]
@@ -1347,6 +1349,7 @@ t-online.de,welt.de##iframe[src^="https://widget.civey.com"]
 ~civey.com##iframe[src^="https://widget.civey.com"]
 ##amp-iframe[src^="https://widget.civey.com"]
 ##iframe[src*="compass.pressekompass.net/compasses"]
+||embed-v*.sided.co^$third-party
 ||aflt.travel.yandex.ru^$script,third-party
 ||widget.justwatch.com^$third-party
 ||insticator.com^$third-party
@@ -1432,6 +1435,7 @@ modxvm.com#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'checkA
 theintercept.com##div[data-module="DirectAsk"]
 pbs.org##.inline-invite-type__funding
 9to5linux.com##.theiaStickySidebar > section:has(> div.kofi)
+istories.media##div[class^="MaterialDonationBanner-module--"]
 boykot.co#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'lastClosed')
 ncronline.org##.region-main-top
 perito.media##.footer__swiper-row > div.footer-swiper:has(> div.footer-swiper__container a[href="https://perito.media/posts/perito-zapuskaet-patreon-i-boosty"])

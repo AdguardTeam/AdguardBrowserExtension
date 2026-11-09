@@ -1,9 +1,9 @@
-! Checksum: p091t8Dc+iX3n9Mm5+Hddg
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1793679159-3600.patch
+! Checksum: Vp+SzjB/5CjPqp2Ot5elKw
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1794233575-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.14.79
-! TimeUpdated: 2026-11-03T04:09:54+00:00
+! Version: 2.0.14.81
+! TimeUpdated: 2026-11-09T14:09:13+00:00
 ! Expires: 10 days (update frequency)
 $removeparam=pjclid
 $removeparam=/^weekend-reading-link-\d{6}$/
@@ -340,6 +340,8 @@ $removeparam=erid
 $removeparam=oly_enc_id
 $removeparam=_ga
 $removeparam=tduid
+||check24.de/suche/?q$removeparam=source
+||euronews.com^$removeparam=webPushId
 ||trck.norisbank.de/click.php$removeparam=s_id
 ||trck.norisbank.de/click.php$removeparam=kidc
 ||trck.norisbank.de/click.php$removeparam=kid

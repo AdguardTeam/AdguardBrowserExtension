@@ -1,9 +1,9 @@
-! Checksum: /g/VJF3EaKmDofZYjCjjmg
-! Diff-Path: ../patches/17/17-s-1793679170-3600.patch
+! Checksum: QEFczGjL741BddlgQVlfWw
+! Diff-Path: ../patches/17/17-s-1794233589-3600.patch
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.14.79
-! TimeUpdated: 2026-11-03T04:09:54+00:00
+! Version: 2.0.14.81
+! TimeUpdated: 2026-11-09T14:09:13+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -538,6 +538,10 @@ $removeparam=tduid
 ! Good: ||example.org^$removeparam=cx
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
+! check24.de searching for article
+||check24.de/suche/?q$removeparam=source
+! https://github.com/AdguardTeam/AdguardFilters/issues/246385
+||euronews.com^$removeparam=webPushId
 ! https://github.com/AdguardTeam/AdguardFilters/issues/246067
 ||trck.norisbank.de/click.php$removeparam=s_id
 ||trck.norisbank.de/click.php$removeparam=kidc

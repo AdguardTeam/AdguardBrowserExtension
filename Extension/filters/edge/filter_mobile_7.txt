@@ -1,9 +1,9 @@
-! Checksum: cff/zPh00UNVpgYzm3LwnQ
-! Diff-Path: ../patches/7_optimized/7_optimized-s-1793952793-3600.patch
+! Checksum: i9jscFjzZNy7HX0+xdMbcQ
+! Diff-Path: ../patches/7_optimized/7_optimized-s-1794222747-3600.patch
 ! Title: AdGuard Japanese filter (Optimized)
 ! Description: Filter that enables ad blocking on websites in Japanese language.
-! Version: 2.0.78.24
-! TimeUpdated: 2026-11-06T08:10:31+00:00
+! Version: 2.0.78.31
+! TimeUpdated: 2026-11-09T11:08:21+00:00
 ! Expires: 10 days (update frequency)
 ||ias.rakuten.co.jp^$third-party,domain=~rakuten-co.jp|~rakuten.ne.jp
 ||re-n-ai.com^$third-party
@@ -754,6 +754,7 @@ modalina.jp#%#//scriptlet('abort-on-property-read', 'AdBlockLimitation')
 @@||sekai-kabuka.com^$generichide
 ||googleads.g.doubleclick.net/pagead/ads?$subdocument,redirect=noopframe,domain=realtime-chart.info|sekai-kabuka.com
 ouminews.net#$#.ad_unit.ad-unit.text-ad.text_ad.pub_300x250 { display: block !important; }
+knshow.com#%#//scriptlet('prevent-setTimeout', 'brave')
 knshow.com#$#.ads { display: block!important;height: 1px!important; }
 crefan.jp#%#//scriptlet('prevent-setTimeout', 'objDef.resolve')
 nihongo-pro.com#%#//scriptlet('prevent-element-src-loading', 'script', 'pagead2.googlesyndication.com')
@@ -1234,6 +1235,7 @@ hostlove.com#$##index_nav > h1 { padding-top: 30px!important; }
 /wp-content/plugins/kyujin-box/*
 /wp-content/themes/CashLINESystem/js/modal.$script
 /wp-content/uploads/2024/09/fanza_ad$image
+/download/cloud/c9_googlePlayCashBack_*.apk$document
 ||amazonaws.com/Tiktok18.apk?$document
 ||amazonaws.com/*/e-Tax%E$document
 ||amazonaws.com/app.apk?id=$document
@@ -1542,6 +1544,7 @@ city.aomori.aomori.jp,lg.jp,city.numata.gunma.jp,city.tokai.aichi.jp,city.noda.c
 city.iwakura.aichi.jp,city.gose.nara.jp,city.inazawa.aichi.jp,city.kawasaki.jp,city.nagoya.jp,city.yao.osaka.jp,city.ikoma.lg.jp,city.higashiosaka.lg.jp,city.higashiomi.shiga.jp,city.ogaki.lg.jp,city.tama.lg.jp,city.inzai.lg.jp,city.kyotanabe.lg.jp,city.himeji.lg.jp,city.hirakata.osaka.jp,city.osaka.lg.jp,city.kyoto.lg.jp,city.maizuru.kyoto.jp,city.iga.lg.jp##.bana
 city.shiroishi.miyagi.jp,city.motomiya.lg.jp,city.sanyo-onoda.lg.jp,pref.hiroshima.lg.jp,city.fukuyama.hiroshima.jp,city.niiza.lg.jp,city.kure.lg.jp,city.hatsukaichi.hiroshima.jp,city.ebetsu.hokkaido.jp,city.shunan.lg.jp,city.tondabayashi.lg.jp,city.miki.lg.jp,city.ozu.ehime.jp,city.toda.saitama.jp,city.ageo.lg.jp,pref.fukushima.lg.jp,pref.okayama.jp,city.oyama.tochigi.jp,city.kimitsu.lg.jp,city.ishikari.hokkaido.jp,city.minamiawaji.hyogo.jp,city.yamaguchi.lg.jp###banner_footer1
 gundamlog.com###more > iframe[src^="https://richlink.blogsys.jp"]
+eigachannel.jp###main_content > div[style^="width:100%; min-height:3"]:has(> div[id^="ats_"])
 f1-gate.com##.ad-flex-group
 soraraw.com##section[class^="home-v2_adsSection"]
 doumori.com,mario2-3ds.net,mario-wiiu.net,mario3d-wiiu.net##.splink
@@ -1583,6 +1586,12 @@ dengekionline.com#?#.gLinkList:has(> li > a[target="_blank"]:contains(で調べ�
 dengekionline.com#?#div[class^="ArticleDetailBody-"][class$="_buttonList"]:has(> a[data-event-click="button_amazon"]:contains(で調べる))
 dengekionline.com##div[class$="rectangleBanner"]
 dengekionline.com##div[class^="InLead-"]
+!+ NOT_VALIDATE
+||socialxup.com/go/$urltransform=/go\/.*//
+socialxup.com#%#//scriptlet('prevent-addEventListener', 'click', '[native code]')
+socialxup.com#?#:not(a):matches-css(cursor:pointer):xpath(div[not(ancestor::a)])
+socialxup.com##.cursor-pointer
+socialxup.com##[style*="cursor:"]
 socialxup.com##a:not([href])
 socialxup.com##.relative.overflow-hidden:has(> div.mx-auto > section[class] > div.space-y-2 > a:not([href]))
 memo.wiki#?##extra > div.column-inner > div.free-box:has(> div.box-inner > div.title > h2:contains(/^AD$/))
@@ -4896,7 +4905,7 @@ fob.jp###sidebar > div.widget_custom_html:has(+ div#fix_sidebar)
 city.kamisu.ibaraki.jp###topsadbg
 saku-city.mamafre.jp###bottomBanner
 ||city.saku.nagano.jp/banner/
-jmanga.golf##div[style^="max-width:700px"]
+jmanga.cloud##div[style^="max-width:700px"]
 gihyo.jp##.m-listitem--ad
 musicman.co.jp##.bannerBox
 ||tool2.nan-net.com/doujin/depression1.jpg
@@ -11631,7 +11640,7 @@ tokai-tv.com#?#.contents_right > div.box > div#ad_rectangle_1:upward(1)
 wired.jp#?#div[class*="ContentFooterWrapper-"]:has(> div > div.wide-adrail)
 simtaro.com#?#.entry-content > div[style^="box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.25);"] > ins.adsbygoogle:upward(1)
 gamedbs.jp#?#div > div[style="text-align:center;"] > ins.adsbygoogle:upward(1)
-smhn.info##aside:has(> ins.adsbygoogle)
+tsurigu-np.jp,smhn.info##aside:has(> ins.adsbygoogle)
 onepiece-log.com#?#.entry_body > center:contains([スポンサーリンク])
 azby.fmworld.net#?##recommended > div > div.floatL > a > img[title^="[PR]"]:upward(3)
 viet-jo.com#?##irelated > div > ul > div.bds > div.bd_left1[name]:contains(PR):upward(4)

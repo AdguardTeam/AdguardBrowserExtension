@@ -1,9 +1,9 @@
-! Checksum: 1jQdOgFiptjle08EwjEUiw
-! Diff-Path: ../patches/20/20-s-1793956438-3600.patch
+! Checksum: 7K8UyQSq//x1/xpg/So8Pw
+! Diff-Path: ../patches/20/20-s-1794226543-3600.patch
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.33.88
-! TimeUpdated: 2026-11-06T09:10:24+00:00
+! Version: 2.0.34.0
+! TimeUpdated: 2026-11-09T12:12:03+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -60,6 +60,14 @@ rxgo.com,alfastrah.ru,turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepe
 !
 !
 !
+autonomic.care##.bl-ans[data-cta="article_answer_box"]
+autonomic.care##.bl-pcard[data-app-card]
+autonomic.care##.bl-rail-app
+idlixku.com##.announcement-bar__inner
+m.glassesusa.com#%#//scriptlet('trusted-set-cookie-reload', 'app_banner_closed', '2050-11-09T09%3A01%3A35.524Z')
+minkara.carview.co.jp##.dlbanner.cen
+minkara.carview.co.jp##.footer_app_banner
+tweetviewer.com##.app-promo
 fucknovelpia.com##.install-banner
 prothomalo.com##.null-wrapper > div[class]:has(> div[role="dialog"] a[href*="com.mcc.prothomalo"])
 wellrx.com##.cta-banner
@@ -1013,7 +1021,6 @@ bristol.ru##.first-order-modal
 raycast.com##div[class^="GlobalBanner"]
 imdb.com##.imdb-header__app-button
 doordash.com##div[class^="StyledStackChildren-"]:has(> div[data-testid="appDownload"]:first-child + button[data-testid="appDownloadButton"]:last-child)
-doordash.com#%#//scriptlet('trusted-set-local-storage-item', 'appDownloadPromptDismissedV2Ttl', '{"value":"99999999999999","expiresAt":99999999999999}')
 t.shuqi.com##.ReaderFreeFixedGuideBtn
 enerjisa.com.tr,easy.co.il##.qr-container
 easy.co.il##.open-app-button
@@ -4538,6 +4545,15 @@ m.tokopedia.com#$#div[data-testid="divOverlay"] { display: none!important; }
 ! Limit it to mobile versions only
 ! causes some issues: https://github.com/AdguardTeam/AdguardForMac/issues/550
 !
+autonomic.care###aj-sticky-cta
+reddit.com###sticky-community-header-open-app-cta
+doordash.com#%#//scriptlet('trusted-set-local-storage-item', 'appDownloadPromptDismissedV3Ttl', '{"value":"99999999999999","expiresAt":99999999999999}')
+doordash.com##div[class^="sc-"]:has(> div[class^="ListCellContainer-sc"] a[href^="https://doordash.sng.link/Afic8/prws?"])
+zeelool.com###header > div.flex:not([id]):has(> button[aria-label="Download APP"])
+weather.yahoo.co.jp##.digestBlog > div#promo:has(> p > a[href="https://weather.yahoo.co.jp/weather/promo/app/"])
+weather.yahoo.co.jp##.digestBlog > section#induction:has(> button[onclick="location.href='https://weather.yahoo.co.jp/weather/promo/app/'"])
+daily.dev##div.fixed > div.pointer-events-auto:has(> div.pointer-events-none > div.relative > div.animate-charm-button-press)
+f1-fansite.com###f1fs-a2hs
 m.x.com##div[role="dialog"][data-interaction="app-store-obstruction"]
 likebus.ua###likebus-app-banner
 rome2rio.com#%#//scriptlet('set-session-storage-item', 'appPromoNudgeDismissed_modal_v7_android', 'true')
@@ -4693,7 +4709,6 @@ mainichi.jp#$##pianoj_ribbon + .tp-modal-overscroll-prevented[style="z-index: 30
 mainichi.jp#$##pianoj_ribbon + .tp-modal-overscroll-prevented[style="z-index: 300050; display: block;"] ~ .tp-backdrop { display: none !important; }
 mainichi.jp#$#.tp-scroll-prevented { overflow: auto !important; height: unset !important; touch-action: auto !important; }
 mainichi.jp#$#html > body.tp-modal-open { overflow: auto !important; height: unset !important; touch-action: auto !important; }
-11st.co.kr##.c-fixed-bottom:has(a[href^="http://m.11st.co.kr/MW/Gate/executeApp.tmall?"])
 m.11st.co.kr##.c-webtoapp
 11st.co.kr##.c-fixed-bottom:has(a[href^="http://m.11st.co.kr/MW/Gate/executeApp.tmall?"])
 11st.co.kr#%#//scriptlet('set-cookie', 'web2AppPopupDisable', 'Y')
@@ -5619,7 +5634,7 @@ dealseek.com,tokubai.co.jp##.smart_app_banner
 tokubai.co.jp##.refusable_app_banner_wrapper
 m.digi24.ro#$#div.smartbanner { display: none !important; }
 m.digi24.ro#%#//scriptlet('remove-class', 'smartbanner-visible', 'body')
-agoda.com#%#div[data-element-test="prominent-app-download-popover"]
+agoda.com##div[data-element-test="prominent-app-download-popover"]
 tour.ne.jp##.str-footer-app
 jmty.jp##.gtm-app-induction-article-detail-footer
 jmty.jp#%#//scriptlet('set-cookie-reload', 'close_recommend_app', 'true')

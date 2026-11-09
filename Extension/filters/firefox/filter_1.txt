@@ -1,9 +1,9 @@
-! Checksum: V1fLkkfWQ/qKaMyKG4T7Pw
-! Diff-Path: ../patches/1/1-s-1793956440-3600.patch
+! Checksum: EK9rH5vAyZ2VosqGmAV/lA
+! Diff-Path: ../patches/1/1-s-1794226545-3600.patch
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.1.9.50
-! TimeUpdated: 2026-11-06T09:09:03+00:00
+! Version: 2.1.9.52
+! TimeUpdated: 2026-11-09T12:10:57+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -5076,6 +5076,7 @@ ya.ru##.i-mini-bem:has(> div[data-hydration-id] > div > div.direct-close-block)
 ya.ru##.main-home-banner
 !
 ! Yandex.Search
+yandex.*##.main__top > div.main__carousel
 ya.ru,yandex.*##div[id^="search-"] div[style="width:240px"]
 ya.ru,yandex.*###search-result-aside div[style="width:240px"]
 yandex.*##.SerpListFeature div.Skeleton_type_ad_search
@@ -7220,6 +7221,7 @@ sport-express.ru,gorod24.online,vedomosti.ru,kommersant.ru,rg.ru,glavbukh.ru,che
 !
 ! NOTE: Specific rules
 !
+allsoft.ru##div[class^="b-banner_fluid"]
 ||byrutgame.org/templates/byrut_upd/modules/game-window/
 freetp.org##.ftp-dl-page > noindex
 ogolosha.ua##.sqr-bnr-box

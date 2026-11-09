@@ -1,9 +1,9 @@
-! Checksum: jq5/Rst39942d+J5K6Uwpw
-! Diff-Path: ../patches/4_optimized/4_optimized-s-1793945903-3600.patch
+! Checksum: 0LpTAER68PLAtUZCCAEokA
+! Diff-Path: ../patches/4_optimized/4_optimized-s-1794229999-3600.patch
 ! Title: AdGuard Social Media filter (Optimized)
 ! Description: Filter for social media widgets such as 'Like' and 'Share' buttons and more.
-! Version: 2.1.34.89
-! TimeUpdated: 2026-11-06T06:14:13+00:00
+! Version: 2.1.34.97
+! TimeUpdated: 2026-11-09T13:08:59+00:00
 ! Expires: 10 days (update frequency)
 ||share-count.donreach.com^$third-party
 ||button-follow.zalo.me^$third-party
@@ -328,6 +328,13 @@ esquire.com,dotesports.com,mashable.com,pcmag.com,onefootball.com,ign.com,israel
 esquire.com,dotesports.com,mashable.com,pcmag.com,onefootball.com,ign.com,israelnationalnews.com,lifehacker.com,cgmagonline.com,gizmodo.com,gamerevolution.com,metro.co.uk,thurrott.com,stereogum.com,ign.com,newsweek.com,dailymail.co.uk,comingsoon.net,timesofisrael.com,nypost.com,9to5google.com,9to5mac.com,9to5toys.com,dronedj.com,electrek.co#%#//scriptlet('remove-in-shadow-dom', 'div[data-spot-im-class="vote-links"] + span[class$="index__dot"]')
 cogconnected.com,echofm.online,2ality.com,smarttubeapp.github.io,videogameschronicle.com,troyhunt.com,disqus.com##.comment__share > *
 cogconnected.com,echofm.online,antirez.com,comicbook.com,alexp.pl,2ality.com,smarttubeapp.github.io,videogameschronicle.com,troyhunt.com,disqus.com###thread-share-bar
+nfl.com##div[aria-label="Share this article"]
+autonomic.care##.bl-rail-share
+dzen.ru##button[aria-label="Поделиться"]
+ldplayer.net##.inline-flex:has(> button[aria-label="Поделиться"])
+eventsify.ai##.focus-visible\:outline-none.focus-visible\:ring-2.gap-2:has(> svg[viewBox="0 0 24 24"] > line[y1="13.51"])
+dbsullca.com##.post-block:has(> .sharethis-inline-reaction-buttons)
+biggo.jp##button[aria-label="共有"]
 prothomalo.com##.fb-twitter
 reporteri.net##.article-body + div.grid
 waszregion.pl##button[onclick^="shareArticle"]
@@ -449,8 +456,6 @@ bankadunyasi.com##.kan-banner
 bankadunyasi.com##div.theiaStickySidebar > aside.widget_custom_html:has(> div.textwidget a[href^="https://whatsapp.com/channel/"])
 cdn.vuukle.com##button[class^="_social-button"]:not(.social-button--link)
 diamond.jp##.share-article > div:not(.sa-clip, .sa-copy, .sa-print)
-paperpaper.io##.main-socials
-paperpaper.io##.text__content > p:has(> a[href="https://www.youtube.com/paperpapertv"])
 note.com###main-content + div.fixed[class*="bottom-"] > div.flex > div.flex-1:has(button svg[aria-label="共有"])
 note.com##footer > div.print\:hidden > div.flex > div.flex:has(button svg[aria-label="シェア"])
 klix.ba##button[onclick="shareArticle(this)"]
@@ -508,7 +513,6 @@ senshi.to##.relative:has(> div.items-center > img[alt="Mascot"])
 politicshome.com##.av-share
 gazetaexpress.com##a[href^="https://3p3x.adj.st/"]
 note.com###shareButton
-fukuishimbun.co.jp###sub-column > .line-info:has(> a[href] img.line-info__img) + hr.line
 gori.me##.single-footer
 ggrealm.ru##.vk-block
 businessinsider.es##.c-detail__share
@@ -549,6 +553,7 @@ ad.nl##div[data-content-type="SHARE"]
 kankocho.jp##button[aria-label="Facebookでシェア"]
 winningpc.com##.share-link-image
 taka.full-count.jp##.c-share-area
+hakimiyet.com##.col-span-1 > div.grid:has(> div.flex > a[title="X Sayfası"])
 linegee.net##.si-share
 liga.net##.article-nav > li.article-nav__item:has(> div.share-popup)
 bookbang.jp##.box_content:has(> ul.sns_button_list)
@@ -568,12 +573,15 @@ smartnews.com##a[aria-label="Facebookでシェア"]
 daily.afisha.ru##div[class^="Share"]
 mila.by##.fix-soc-link-wrapper
 pixhost.cc##aside[data-announcement-key="telegram-v1"]
+parallels.com###in-the-news > .social
 dailyshincho.jp##section.l-contents__section:has(> ul.c-list-sns--lg)
 novayagazeta.eu##main > div.flex > div[class]:has(> div[class] > a[href^="https://t.me/share/"])
 tokyo-np.co.jp##.container > .wrp:has(> .js-sns)
 weathernews.jp##div[data-component="a-share"]
 seriesflixhd.win,seriesflixhd.*##.ShareList
 fitbook.de##section[data-type="headline"]:has(> h3#h3-fitbook-folgen)
+fitbook.de##section[data-type="headline"]:has(> h3#h3-fitbook-folgen) + section[data-type="rich-text"]
+kureansiklopedi.com##.flex > div.block:has(> div.flex svg > path[d^="M444.7"])
 siliconcanals.com##.article__byline-share
 otvet.mail.ru##div[class^="_slotwrapper_"] > button:has(> div[align="center"] svg[data-icon^="ShareOutline"])
 kinopoisk.ru##div[class^="styles_share"]
@@ -598,6 +606,7 @@ familyhandyman.com###tp-social-icons
 rakko.tools##button[data-testid="tool-page-share-button"]
 antigravity.google,security.snyk.io##.share-dropdown-wrapper
 ahaber.com.tr,aspor.com.tr##.tmd-articleShare
+timesofkarachi.pk###stkSocialToggle
 dir.bg##.share-btns-container
 rodo.co.jp##.snsBtns > ul
 m.drtuber.desi,m.drtuber.com,m.drtuber.*##.item:has(> .share_button)
@@ -623,7 +632,7 @@ gazzetta.it##[data-social="tw"]
 gazzetta.it##[data-social="fb"]
 gazzetta.it##[data-social="wa"]
 gazzetta.it##[data-social="fbm"]
-mandiner.hu##mandiner-social-share-modal
+group.ntt##.c-sns-2
 leparisien.fr##.tooltip-share-article-container
 haberturk.com##li[onclick="HTJS.newsShare(this)"]
 itmedia.co.jp##.p-sns-box
@@ -711,7 +720,6 @@ koha.net##li:has(> div.social_media)
 elpinguino.com##.encuesta-compartir
 elpinguino.com##.site3-compartir-diario
 elpinguino.com##div.site3-widget:has(> div.site3-widget-content > div.fb-page)
-security.nl##.content_right > div.sidebar_block:has(> div.posting > div.category_promotion)
 geeky-gadgets.com##.ess-button--email
 hurriyet.com.tr##button[data-action="toggle-share-menu"]
 onedio.com##.mt-2:has(> div > img[alt="article/share"])
@@ -729,12 +737,10 @@ teluguone.com##.HomeMobileAnchor
 bianet.org##.gps-banner
 oceanofpdf.com##.share-posts
 filmyfocus.com##.wa_mob
-sport-express.ru##[class^="sharing_matchcenter"]
 uol.com.br##.solar-social-media
 onedio.co##figure > div ~ div.hover-menu
 gamingbible.com##div[class^="article-header-meta_shareLink"]
 womo.ua##.li-whatsapp
-zakarpattya.net.ua##.afterPost > a[onclick*="socialLinksAfter"]
 youcontrol.com.ua##.share-btn-yc
 work.ua###react-company ~ div.card.hidden-print
 buienradar.nl##.br-grid > div.br-col-lg-8:has(> h2.buienradar-socials__title)
@@ -820,6 +826,7 @@ komersant.ua##.short_yt
 vesty.co.il#$#.topBtns { visibility: hidden !important; }
 dev.ua##.article__container > figure.incut:has(> div.card_media > div.card__info > div.card__body > a[href^="https://t.me/devukraine"])
 express.co.uk##div.text-description:has(> p > a[href^="https://www.facebook.com/DailyExpressSport#"])
+thedailybeast.com,on3.com,maltadaily.mt##button[aria-label="Share article"]
 atn.ua##.penci-social-media
 devonlive.com,dailyrecord.co.uk##div[class^="ShareBar_sharebar-wrapper_"] > div[class^="ShareBar_"]
 nypost.com##.google-preferred-sources
@@ -843,7 +850,6 @@ alternathistory.ru##.share-link-image.fb
 alternathistory.ru##.share-link-image.tw
 alternathistory.ru##.share-link-image.pn
 alternathistory.ru##a[href^="https://t.me/alternathistory/"]
-seudinheiro.com##.npsd_sidebar > div.npsd_sidebar-item:has(> div.npsd_sidebar-item-social)
 cheezburger.com##button[data-chz-trigger="share-pinterest"]
 hme.tw##div[class^="CenterSocialMediaIconListContainer-"]
 barefootcontessa.com##.EntryPostTop__soc-header
@@ -852,6 +858,7 @@ asahi.co.jp##.share-recipe-box
 haberturk.com,ntvspor.net,enucuzsistem.com##button[aria-label="Paylaş"]
 elle.com##button[alt="Open share options"]
 lettuceclub.net##a[href^="https://www.instagram.com/lettuce_official/"]
+lettuceclub.net##a[href^="javascript:void(0);"][class^="inline-block"]
 cumhuriyet.com.tr##.flex.gap-2:has(> nav > a[data-platform="facebook"])
 n-tv.de##div[class^="ArticleShare_share-items"]
 tools.pdf24.org###sharePageSection
@@ -861,7 +868,6 @@ transparencyreport.google.com##.h-c-social__title
 jp.rohto.com###c3Share
 helloproject.com##div.mx-auto:has(> div.ShareIcons)
 joysound.com##.flex > button:has(>span > svg > g > path[d^="M12 10"])
-vozpopuli.com##.post-info > .authors-container + .items-center > .flex:has(> .facebook-rrss)
 vozpopuli.com##.post-info > .authors-container + .items-center > .flex:has(> .facebook-rrss) + span
 igroray.ru##.product-controls__button--shared
 youtube.com##.icon-share_arrow
@@ -870,9 +876,11 @@ gamingonlinux.com##.article_list_social_media
 volleyballking.jp,motor-fan.jp,suzuri.jp##.share-area
 tria.ge##div.button-bar:has(> a[href^="https://twitter.com/intent/"])
 adecco.com##section.resource-body-sidebar > section:has(> .social-sharing)
+btv.bg##.next-news
 troypoint.com,mtgphil.org##.ast-post-social-sharing
 bettycrocker.com##.floatingBox ul > li.bm-seq3
 folhadelondrina.com.br##.mobile-share-options
+check.lenta.com##.chek_wrapper > div.hidden-print:has(> div[style] > div[style] > div.soc_item)
 seatemperature.info##form:has(> input[alt="Twitter"])
 apd.cat##.m-social-share
 ofuse.me##.flex > button[type="button"]:has(> svg > path[d^="M11.4697 1.71967C1"][d$="9.75H6.375Z"])
@@ -904,6 +912,7 @@ livelib.ru##.post-sab__link
 versii.if.ua##aside > div.fb-s-blog-two-main__box:has(> ul.fb-share-one)
 varta1.com.ua##.ova-engine-native-share-button
 banki.ru##div[data-test="tooltip"] div[role="button"]
+20minut.ua##.dropdown-soc
 notion.site##div[data-popup-origin="true"] > div[role="button"]:has(> svg.squareAndArrowUp)
 sn-jp.com##.p-entry__tw-follow
 msdmanuals.com##button[class*="StickyRightToolbar_shareIcon"]
@@ -962,12 +971,9 @@ world.kbs.co.kr##.comp_right_SNS
 hentaila.com##button[aria-label="Compartir"]
 qiita.com##div[id^="PersonalArticlePage-"] > div[class^="style-"] > div[class^="style-"] > button[aria-label]:has(> span.is-fill.material-symbols-outlined)
 realty.yandex.ru##footer div[class^="container-"]:has(> div[class*="shareStack-"])
-cosme.net##.question-detail-sns
-fxempire.com##div[data-playwright="social-share-bar-mobile"]
 fxempire.com##div[data-playwright="social-share-bar"]
 sentabi.jp###sns-share-button
-francfranc.com##.sn-product-sns
-jm-madeira.pt##.portlet-column > div.portlet-boundary:has(> div.portlet-boundary > div > div.aside-redes)
+glam.jp##.p-entry-headshare
 rr.pt##.push-right > div.ink-flex:has(> div > a.facebookIco)
 iport.ru##div[class^="ShareButton_shareButton__"]
 journal.sovcombank.ru##button[data-track-click-id="share-button"]
@@ -982,7 +988,9 @@ arenda.yandex.ru##.CzGS7
 livgolf.com##header ~ div:has(> div > button + button)
 cian.ru##iframe[data-name="VKWidget"]
 jalam.ne.jp##ul[class^="share"]
+tracktollywood.com,telugucinema.com###vuukle-emote
 shopify.com##.sm\:grid-cols-8.md\:grid-cols-12 .md\:flex.flex-col.justify-start
+mercedes-benz.io##.mq4\:flex-row.mq4\:items-center > .gap-4
 urlebird.com##div.share
 ssense.com##.ed-HeaderRowSocialNav
 yapo.cl##a[id^="share-"]
@@ -990,6 +998,7 @@ gendai.media##div[data-app-component="SocialButtonListRaw"]
 pauta.cl##.main-section-socials
 pauta.cl##.d-main-social-container__body
 lacuarta.com##.article-body__social__share
+havahaber.com##div[data-toggle^="kanews-popup-share"]
 vk.com##div[data-testid="video_page_share_button"]
 googlegaido.quest,androidjapan.one#%#//scriptlet('set-cookie', 'tpgwcc', '1')
 elmostrador.cl##.the-share
@@ -1011,14 +1020,17 @@ iranintl.com##div[class^="URLShareDialog-"]
 korea.net##.others-function
 prensalibre.com##.note-normal-container__author-description-icon
 marr.jp##.c-tools-share
+beincrypto.com#?#div[class^="Container-sc-"] > div[class^="Label-"]:contains(Share Article)
 chess.com##button[data-cy="sidebar-share-icon"]
 gazetepencere.com##div[data-twitter]
 premier.twitcasting.tv##.tw-popup-menu-invoker
 premier.twitcasting.tv##.tw-shop-social-button
+voice.charity##.snsbtniti2
 wikiwiki.jp###share-button-root
 liberal.gr##.article__share-wrapper
 mainichi.jp##.sns > li.btn-sns.hb
 hdfilmcixx.com##.dropit-trigger
+vistazo.com##.autor-social-footer > div.footer-right > div.social-icons
 borgexpert.com##.article2-share
 patient.info##li[data-testid="action-bar-share"]
 webmd.com##.module-social-share-footer
@@ -1061,11 +1073,12 @@ media1.hu##.elementor-widget-heading:has(> div.elementor-widget-container a[href
 media1.hu#?#.elementor-widget-wrap > div.elementor-widget-heading:has(> div > h4:contains(Kövessen minket!))
 m.twitch.tv##div[class*="secondaryContent-"] > div[class^="Layout-sc-"]:has(> button[class^="ScCoreButton-sc-"] [data-a-selector="tw-core-button-icon"])
 kinogo.org,kinogo.tm,uakinogo.io,uakinogo.online##.shareUs
-13dl.me##.share-icon:not(.follow, .report)
 dessertsonadime.com,eatingonadime.com##.wprm-pinterest-cta
 birdsandblooms.com,tasteofhome.com###pch-social-icons
 nikkan-gendai.com##.articles_share_box
+reciperunner.com###dpsp-content-bottom
 dancearoundthekitchen.com##.wprm-callout-custom
+12tomatoes.com###recipe > .s2c-card:has(> .wrapper > .clash-card.hearts)
 yesstyle.com##button[aria-label="friend rewards"]
 garaz.cz,novinky.cz##div[data-dot="mol-social-share-popover"]
 motorsport.com##.ms-article-end
@@ -1116,6 +1129,9 @@ eatwell101.com##.share-mobile-button[onclick^="displaySharePanel"]
 eatwell101.com##.pr > a.bold[onclick^="displaySharePanel"]
 eatwell101.com##.shareafterbox
 news.com.au##.op-share
+123telugu.com##.elementor-widget-penci-social-counter
+123telugu.com#?#.elementor-widget-heading:contains(Social Media)
+openai.com##.grid-cols-12.w-full .ms-auto div.gap-5xs[aria-haspopup="dialog"]
 onvista.de##div:has(> a[href^="https://www.facebook.com/sharer.php"])
 hominis.media##li:has(> a.share-modal-open)
 kyivindependent.com##div[class^="ShareButton_wrapButton"]
@@ -1142,8 +1158,8 @@ telecinco.es##astro-island[opts*="ShareBar"]
 zozo.jp#?#button:has(> span:contains(シェアする))
 grajapa.shueisha.co.jp##.c-share-icons-block
 planetazdorovo.ru##.product-detail-share
-aixploria.com##.social-share-article-pc
 lmarena.ai#%#//scriptlet('trusted-set-cookie', 'app_banner_state', '%7B%22id%22%3A%22x-follow%22%2C%22firstSeenTimestamp%22%3A1764765047561%2C%22dismissedTimestamp%22%3A99999999999999%7D')
+nissin.com##.ShareSNS
 seeklogo.com##.containerSocialShare
 arigus.tv##.e-share
 shonanjin.com##.p-post-detail__sns
@@ -1153,7 +1169,6 @@ ynjn.jp##.flex:has(> a[href^="https://twitter.com/intent/tweet?"])
 sdaa.jp##.container > div:has(> div.p-6 > div > div.flex > a[href^="http://www.facebook.com/sharer"])
 trafficnews.jp##.side-social-count
 railf.jp###box_dateandsns
-volleyballking.jp,baseballking.jp##.share-btn-area
 academia.edu##.js-tc-loswp--share-button--work-card
 techcommunity.microsoft.com##div[class^="custom_widget_SocialSharing_"]
 stylecaster.com##div[data-theme="sharing"]
@@ -1164,7 +1179,6 @@ ura.news##.hH
 ign.com##.box-wrapper > div.promo-card:has(a[href="https://x.com/IGNDeals"])
 jauns.lv##div.flex:has(> div.flex > a.social-share-button)
 coemee.com##.flex > button:has(> svg.lucide-share2)
-kaspersky.com##div[data-at-selector-content-key="share-buttons"]
 v2rayng.en.aptoide.com##div[class^="appview-header-desktopstyles__ActionContainer-"]:has(path[d^="M10.542 9.896c-.534 0-1.012.21-1."])
 u-tv.ru##[title="Поделиться"]
 globalfreedomofexpression.columbia.edu##.socials-b
@@ -1172,7 +1186,6 @@ pikuco.ru##.sharing-wrap
 pikuco.ru#?#h3:has(> span:contains(Поделиться:))
 aniworld.to##iframe[src^="https://platform.twitter.com/widgets/tweet_button.html"]
 qiita.com##[class^="style-"] > [class^="style-"] > div[class^="style-"]:has(> button[aria-label][title][aria-describedby] + p[id][role="tooltip"])
-tech.eu##.share-m-title
 fleetnews.co.uk##a[aria-label="Share"]
 qiita.com##div[id^="AdventCalendar"] hr ~ div[class^="style-"]:has(> button[class^="style-"][aria-label][title])
 gizmodo.com##.mt-10:has(> ul > a[href^="https://www.facebook.com/sharer.php?"])
@@ -1181,14 +1194,12 @@ billboard.com##.c-gallery-vertical-featured-image__share-icons
 enuygun.com##div[data-testid="social-share-container"]
 forbes.ru##._2Z8Sf
 gemotest.ru##.goto__social
-npistanbul.com###content ~ div.bg-white:has(> div.flex-col > div.items-center > button[aria-label^="facebook"])
 gisreportsonline.com#?#.section-meta:contains(Share this post)
 asia.nikkei.com##div[class*="ArticleShareIcons_articleShareIcons"]
 pod.link#?#ul[aria-labelledby="sidebar-menu-button"] > li[role="menuitem"]:contains(Share)
 noticiascaracol.com##ps-share-button
 technopat.net##.widget_jnews_social
 chocolatecoveredkatie.com##.top-hat--has-socials
-thekrazycouponlady.com##.share-rail-container
 egw.news,security.apple.com,locipo.jp,cybersport.ru##div[class^="share_"]
 news.blizzard.com#%#//scriptlet('hide-in-shadow-dom', 'blz-news-social-sharing')
 washingtontimes.com##.share-and-comments-wrap
@@ -1207,7 +1218,6 @@ phileweb.com###rmenu_sns
 digitimes.com##.share-frame
 laplata1.com##.mshare
 webuhr.de###btn-tool-share
-ertv.com.tr##.w-full > div.flex:has(> ul.ssk-group)
 oneindia.com##.oi-article-share-wrapper
 zw.pl##div[aria-label="Udostępnij zawartość"]
 workable.com##button[data-ui="share-job-button"]
@@ -1221,13 +1231,13 @@ emosurff.com##.feedSocialsArea
 anime4i.com##.announ
 steamcommunity.com##.tool-tip-source:has(> a[href^="https://steamcommunity.com/"][href*="/announcements/share/"])
 huffpost.com##.js-share-link:not([data-vars-action-value="comments"])
-okinawatimes.co.jp,dailydot.com##.article-footer__share
 europapress.es##.ep-share
 axios.com##div[data-vars-event-name="share_view"]
 theoatmeal.com##.floor2:has(> a[onclick^="copyToClipboard"])
 tripadvisor.ru##button[data-automation="shareCta"]
 storm.mg##.panel1 > button:has(> .icon-facebook)
 elcomercio.pe##.s-buttons
+fastmail.com##button[data-share-action]
 steipete.me##.sm\:items-end.sm\:gap-4 > .gap-2.sm\:gap-1
 go2senkyo.com##.m_senkyo_share
 yumpu.com##.eagle-share__shares
@@ -1246,7 +1256,6 @@ motorsport.com##.msnt-share
 buymeacoffee.com##.editorContent + div[class="xs:hidden"]
 buymeacoffee.com##.h-max > div.flex + div[class="hidden xs:block mt-6"]
 milliyet.com.tr##body .social-share:not(#style_important)
-techdergi.net##.geo_mobile_share
 heart-net.nhk.or.jp##.flex:has(> li[data-twitter-share-button])
 vision360.bo##.floatShareWhatsapp
 elcordillerano.com.ar,vision360.bo##.noticia-social-share
@@ -1285,8 +1294,6 @@ fincult.info##.article-meta-bar__actions > .article-functionality-panel__item:ha
 athlosnews.gr##.vc_column > div.wpb_wrapper:has(> div.tdb_single_post_share)
 mt.today,antonovsad.ru##.sidebar-social
 antonovsad.ru##.btn-action_share
-cordis.europa.eu##.container-full .t-margin-bottom-30:has(> #sharethispage)
-paxnews.com##.news-article-main-grid > div.border-bottom:has(> ul.share-links)
 [$domain=/betivotv\d+\.com/]##.nk-post-share > div[style="margin-left:auto; margin-right:5px"]
 theplayerstribune.com##figure[data-mm-type] ~ div[class^="style_"]:has(g[fill-rule] > path[d^="M18.75 0L8.125 10.709 9.658 12.247"])
 datenbank.nwb.de##.icon-share-alt
@@ -1294,13 +1301,13 @@ gazeteoksijen.com##.share-all-button
 u-tv.ru##.popup__body:has(> .socials)
 cbssports.com##.Video-captionShare--button
 mein-schoener-garten.de##div[data-sentry-element="Flex"] > div[class^="css-"]:has(> button.chakra-button path[d^="M13.12"])
+univ-journal.jp##.snsSpace
 security-insider.de##.inf-toolbar > a:not(.inf-icon--mail, .inf-icon--print, .inf-icon--download, .inf-icon--bookmark)
 zena.aktualne.cz##.e-web-zena-ui-share
 mezha.ua,mezha.media##.post_social_wrapper
 hyperts.net###profile
 aljazeera.com##.rich-share__wrapper
 ixbt.com,ixbt.games,ixbt.pro##.publication-container > h2.items-center > div.flex-row > a > svg
-bloomberg.com##ul[aria-label="Social Media Share Buttons"]
 bloomberg.com##.ds-my-8 > p[style="font-size:14px"]
 matechan.com,hisubway.online###hs-share
 star-tex.ru##.article-business__share-container
@@ -1323,13 +1330,13 @@ moika78.ru#?#.wpb_wrapper > .vc_row_inner:contains(Поделиться:)
 raiffeisen-media.ru##.dropdown_share
 riatomsk.ru##.article-layout__social
 ben54.jp##.p-news__sns
-erzrf.ru##app-sws-share-container
 vost.pw##div[id^="leftBlock"] > div[id^="moduleLeft"]:has(> div[class^="interDub"] a[href="https://vk.com/animevostorg"])
 sakuhindb.com##.boxBa
 docomo.ne.jp##.list-cmn-sns
 themirror.com##div[class^="ShareBar_"]
 vov.vn##article > .justify-content-end:has(> .col-auto > .menu-social)
 eigo.plus##.sns-countlist
+canaln.pe##.gap-6 > .justify-center.gap-4
 android-developers.googleblog.com##.icon-sidebar
 lesswrong.com##div.LWPopper-default[style] .DropdownMenu-root > div:not([class]):has(path[d^="M18 16.08c-.76 0-1.44.3-1.96."])
 americatv.com.pe##button[aria-label="compartir en twitter"]
@@ -1351,9 +1358,9 @@ kadikama.com##.col-mov-left > div[style="text-align:center;"]
 reforma.com##.wa-icons
 baseus.com##.product-meta__share
 e-himart.co.kr###share_sns_layer
-sokuyaku.jp##.facebookbox
 ilfattoquotidiano.it##.fqm-share-end
 ilfattoquotidiano.it##.ifq-news-meta__share
+gravidia.jp##.sw-SnsShare
 eltiempo.com##.c-articulo__compartir-media__elemento--compartir
 20minutes.fr###mbrs-social-share-container
 championat.ru##.article-footer__row:has(> div > div.article-social)
@@ -1363,7 +1370,6 @@ fikriyat.com##.social-media > ul > .twitter
 fikriyat.com##.social-media > ul > .telegram
 fikriyat.com##.social-media > ul > .flipboard
 fikriyat.com##.social-media > ul > .whatsapp
-correio24horas.com.br##.widget-social > .facebook
 correio24horas.com.br##.widget-social > .whatsapp
 ubie.app##.GenpakuCQDetailShareSection_twitterIconBgColor___DKVF
 ubie.app##.GenpakuCQDetailShareSection_lineIconBgColor__FvT6H
@@ -1373,6 +1379,7 @@ ubie.app##aside[class^="SnsShareSection_"]
 fan.books.rakuten.co.jp##button[class*="/images/icon/share-filled.svg"]
 fan.books.rakuten.co.jp#?#.text-content-base:contains(あなたの想いをシェアしよう)
 fan.books.rakuten.co.jp##.grid:has(> a[href="https://www.facebook.com/share.php"])
+cooperativa.cl##.botones-redes-sociales
 behance.net##div[class*="Project-shareAndEmbed"]
 behance.net#?#div[class*="Project-userActions"] > label[class*="Project-actionName"]:contains(Share)
 dp.ru##.social-white:not(#style_important)
@@ -1426,7 +1433,6 @@ muchohentai.com###text-38
 operanewsapp.com##.horizontal-share-box
 dogruhaber.com.tr,meridyenhaber.com,24saatgazetesi.com,diyanethaber.com.tr,aydinkulis.com##body .mobile-share-button-container
 gmx.net,web.de##.content__share
-colegialacasero.com##.lst-shr
 haberler.com###share-whatsapp
 eurosport.com.tr,hotrod.com,motortrend.com##div[aria-label="Share"]
 israelnationalnews.com##.article-edit-out:has(+ #fb-root)
@@ -1552,6 +1558,7 @@ academia.edu##button[data-signup-modal*="share-button"]
 indiaglitz.com##.commentsshare
 brookings.edu##.social-icons-small
 realnoevremya.ru##.wrap-social-share
+travelweekly.co.uk##.aos-Article-ShareLinks
 trellix.com,arcticwolf.com##.zDocsTopicShare
 stroki.mts.ru##.sharing-position
 inc.com,fastcompany.com###article_share_button
@@ -1559,7 +1566,7 @@ bookys-ebooks.com##a[href^="tg://msg_url?"]
 wiki.newdn.ru##.page-col-sd > div.page-shortcuts-card > header[style="height: 48px;"]
 amazon.*##label[data-testid="share-widget-button"]
 royalcanin.com##div[data-qa="social-share"]
-pianetamamma.it##.par-foglia-sharecont-top
+postnews.ru#?#div[class*=" styles_animate__"] > a:contains(поделиться)
 koreatimes.co.kr##button[aria-controls="share-popover"]
 koreatimes.co.kr#$#div[class^="FnBar_inner_"]:has(> button[aria-controls="share-popover"]) { height: 100px !important; }
 tupaki.com,kontur.ru,eaomedia.ru,helpnetsecurity.com,stavropol.media,unicreditgroup.eu##.share:not(#style_important)
@@ -1589,7 +1596,6 @@ adl.org##.jump-list--cloned__share
 renderhub.com##.itemInfo:has(> div > a[href^="https://www.facebook.com/sharer/"])
 deepl.com##div[data-testid="translator-target-toolbar-share-popup"]
 istories.media##div[class^="PhotoCard-module--ShareLink"]
-terappin.com##.blog-share-buttons
 boosty.to##div[class^="PostFooter-scss--module_share"]
 lsm.lv##.social-icons-block
 techemails.com,nicolasbustamante.com,blog.bytebytego.com,architecture-weekly.com,latent.space,dwarkesh.com,chipsandcheese.com,noahpinion.blog,newcomer.co,blog.corkmac.app,blog.sshh.io,hardcoresoftware.learningbyshipping.com,newsguardrealitycheck.com,newsletter.techworld-with-milan.com,newsletter.pragmaticengineer.com,substack.com,gamefile.news##span > a.pencraft:has(> div.pencraft > svg.lucide-share)
@@ -1622,6 +1628,7 @@ idos.cz##.share-button--fb
 maziyabacity.com,audee-membership.jp##.MuiBox-root:has(> .react-share__ShareButton)
 redheadsound.studio#?#.col-side > div.side-block > div.side-block__title:has( > p:contains(МЫ ВКОНТАКТЕ))
 app.nimbusweb.me##.nns-toggle-share
+sentaku.co.jp#$##editor { padding-top: 25px !important; }
 adage.com##.u-flex > div.u-relative:has(> button > svg > path[d^="M13 4.5a2.5"])
 americatv.com.pe##button[data-variant="shared"]
 americatv.com.pe##.items-center > span:has(+ button[data-variant="shared"])
@@ -1920,6 +1927,7 @@ zona.media##.material-footer-share
 lime-shop.com##.ShareBlockWrapper
 oxfam.org##footer > div.container:has(> div.social-icons-share)
 journaldesfemmes.fr,journaldunet.com##.api_share
+crazylabs.com##.post-share-title
 dnpphoto.jp##.search_result_box_sns
 ilsole24ore.com##button[class*="share-"]
 bibamagazine.fr##.biba__share-bloc
@@ -1945,7 +1953,6 @@ cnnturk.com##.social-share-list> .share-item:not(.three-dots)
 foxnews.com##header > div.article-meta:has(> div.article-social:only-child)
 criticker.com##.news_share
 standard.co.uk##article > div > div > div:has(> div > a[href^="https://www.facebook.com/sharer/"])
-fastcompany.com##main ul[class^="gap-"]:has(li.border-r > button#Share_button_link)
 gagadget.com##.shareme
 couples.jp##.hd-share
 business-standard.com##i[class^="socialshare"]
@@ -1963,13 +1970,13 @@ softonic.com##ul[data-meta="article-buttons-sharing"]
 noticiasaominuto.com#?#p.text-center:contains(Partilhe a notícia)
 noticiasaominuto.com##div.flex:has(> a[href^="https://www.facebook.com/sharer/"])
 ndtv.com##.SSR_btn-lnk
+cbsaustin.com###js-Social-Share-0
 t-j.ru##div[class^="_sharer_"]
 politika.rs##.social-share-title
 lettuceclub.net###pro-message div.w-full:has(> div.w-full > div.w-full > div[class] > a[onclick^="linksbm"])
 foxford.ru##div[class^="styled__Share-"]
 publico.es##li[data-modal-target="share-modal"]
 vistazo.com##.rrss
-transformernews.ai,ciw.news##a[aria-label*="share"]
 newindianexpress.com##div[class^="text-story-m_share"]
 homemate.co.jp##.m_bnr_contact_box_btm
 liferbc.ru#$#.bottom-panel-item { width: 33% !important; }
@@ -2208,6 +2215,7 @@ news.owlting.com##.mobile-toolbar > li.tool:has(> i[class*="owl-share-"])
 gamegrin.com##article > div.actions:has(> span.subshare)
 macked.app##a.tabbar-item[data-remote*="?action=share_modal"]
 esports.bcnretail.com##.news__sns
+bushikaku.net##.cms-social-button
 watchguard.com##.addtoany
 pokemon.co.jp##.p-global-sns
 playmods.net##.common-convenient-share
@@ -2644,7 +2652,7 @@ irishtimes.com##.social_share_expand_menu_btn
 theguardian.com##gu-island[name="ShareButton"]
 screendaily.com##.pageOptions > ul:not(.pageOptions_right)
 current.ndl.go.jp##.widget_ca_sns
-wiki3.jp##.share_button_wrapper
+news.ladytopi.jp,wiki3.jp##.share_button_wrapper
 wiki3.jp#?#.uk-margin-large-top:contains(シェアボタン： このページをSNSに投稿するのに便利です。)
 retail.ru##.articles-share
 dospara.co.jp##.snsButtonElement
@@ -2656,7 +2664,6 @@ rosario3.com##.nota-share
 t24.com.tr#?#.row > div[class^="col-lg-"] ~ div[class^="_"] > p:contains(Paylaş):upward(1)
 bleepingcomputer.com##.cz-breadcrumb-right-area
 substack.com,theolognion.com##.like-button-container + a.post-ufi-comment-button + a[role="button"]
-materializedview.io##button[class*="frontend-components-NavbarShare"]
 screens-lab.jp##.side-block.plugin
 cifras.com.br##button[icon="share"]
 ig.com.br#?#.noticia > button:contains(Contribua usando o Google)
@@ -2829,6 +2836,7 @@ blog.skillfactory.ru##.block__history-share
 gartic.com.br###blocoFacebook
 thehansindia.com##.social-share-wrap
 block.fm##.bg-card-01.px-8
+bnnbreaking.com##.post__socials
 autonomous.ai##div[class^="BlogDetail_SocialWrapper"]
 turkish123.com##.social-home
 digital-expert.online##.comment-action-wrapper
@@ -2900,6 +2908,7 @@ inpad.com.tw##.links-social
 thepinknews.com#?#.article__content-sharing--list > li:has(> button[data-sharing-toggle])
 tv-asahi.co.jp##.parts-section-share
 mydiv.net##.qa-mess__share-link
+impiego24.it##.condivisione
 121clicks.com###dpsp-content-top
 axios.com#?#.gtmView > div[class^="space-"]:has(> div.inline > button[data-cy$="share"])
 lasvegasweekly.com##.ui-state-default[aria-controls="shareBar"]
@@ -2981,7 +2990,6 @@ news.dtkt.ua##.article-sharer
 longform.asmartbear.com#?##nav-sidebar-src-container > .card:has(> .share)
 stv.jp##.SNSbtn
 news.mingpao.com##.articlesharepart
-10short.co##.text-left > center
 bookwalker.jp##.m-list-share-btn
 petri.com##div[data-petri-section="widget-share"]
 axios.com##div[data-cy^="social-share-"]
@@ -2994,6 +3002,7 @@ sports.ifeng.com##li[class^="index_titshare"]
 sports.ifeng.com##li[class^="index_titshare"] + li[class^="index_line"]
 closermag.fr##.social_links__widget
 3minx.com,javsunday.com,kin8-av.com,555fap.com,idol69.net,javball.com##.fileviewer-sidebar-open
+mangaku.blog##div.fndsosmed-social > a.fndsosmed-link:not([id])
 ao-buta.com##.c-nav__share
 mootoon.co.kr##.hmn_sns
 hercanberra.com.au#?#.side-bar .cell[class*="small-"] > .side-bar__block:has(> .addthis_toolbox)
@@ -3202,7 +3211,6 @@ muzmo.su##.item-track-share
 ultrabookreview.com##div[id^="social-box"]
 gadget.phileweb.com##.p--singleMeta-tags + section.p--singleMeta-author
 pussyspace.net,pussyspace.com##.socialShareLink
-maousama.jp##div[class*="_shareWrap"]
 businessinsider.com##.standard-detailSocialShare
 xn--eckvas1f0ewfnc.com##.new-share-box
 mancity.com##.article-tags-share__share-block
@@ -3223,11 +3231,11 @@ nationalgeographic.com.es##.top-share-article
 epe.es##.detail_rrss
 news.ebc.net.tw##.right-fb
 ictv.ua##.fb-link-post
-hromadske.ua##.singlePost__soc
 tv.dmm.com##button[name="share"]
 englishprime.ua##.post-social-list
 cafef.vn##.sharemxh
 practicum.yandex.ru###share-block-title
+blog.simplecast.com,blog.talosintelligence.com##.social-media-wrapper
 icy-veins.com,wowma.jp##button[class^="ShareButton_"]
 smoothieking.com###app > .social-follow-buttons
 macwelt.de,pcwelt.de,csoonline.com,protocol.ua##.article-hero__social
@@ -3246,6 +3254,7 @@ aastocks.com###pShareContent
 ||ministop.co.jp/site_common/js/sns_
 askdoctors.jp##ul[class^="topics-share-lst"]
 inmyroom.ru##.__share_vk
+sumaity.com##.headings-p-sns
 metropoles.com##.bnt-share
 brother.co.jp##.mod-SNSButtons
 meteoblue.com##.twitter-follow-wrapper
@@ -3267,17 +3276,18 @@ hypebeast.com##[class*="-share"] + hr
 musicman.co.jp###content_single_snsBox
 nestle.co.jp##.page-header__social-share
 maximonline.ru##.ds-block-quiz-result-sharing
+tennis-infinity.com##button[onclick^="window.open("][onclick*="whatsapp://send"]
 browserhow.com##.nv-post-share
 klook.com##.share-comp
 jotform.com##.section-articleshare
 nasdaq.com##div[class$="-social-links"]
 ototeknikveri.com##div.social
 theheadline.jp###shared-sns
-canadianliving.com,vladday.ru##.sticky-social
 mofa.go.jp##.social-btn-top
 thuvienphapluat.vn##p > a.SayMS + a[href]
 eltiempo.com##.compartir-seguir-comentar
 deavita.net##.touchable.social-icon-navi
+crazyegg.com##.single-post__social
 maison.kose.co.jp##.p-beauty-detail__contents__share
 connpass.com##.side_social_area
 elecom.co.jp##.p-social-button-module
@@ -3423,6 +3433,7 @@ motilaloswal.com##h1.section-title-mytag + div.icons ~ br
 girlsvip-matome.com##.top_sosial
 1tv.ru###eump-lottie-share
 store.steampowered.com##a[class^="discussionwidget_ShareBtn_"]
+pixabay.com##button[class^="shareButton"]
 live.nicovideo.jp##div[class*="__share-popup-control__"]
 natureasia.com##.c-social-icons
 boston.com##.m-social-share__item
@@ -3430,6 +3441,7 @@ newslab.ru##.sharing-list-air
 pinterest.*##div[data-test-id="share-board-button"]
 m.olx.ua##div[data-testid="share-button"]
 romstal.ro,grabien.com##.sharebutton
+dailymotion.com##.icon_share_button
 theserverside.com##.main-article-share-counts
 tagesanzeiger.ch##div[class^="ShareAndComment_buttonwrapper"]:has(> button[aria-label="teilen"])
 hre-net.com###article-sns
@@ -3583,6 +3595,7 @@ strazpozarna.maps.arcgis.com##instant-apps-social-share
 windowsreport.com##.mega-menu-share-btn
 mindtools.com##button[data-test="article-share"]
 arine.jp##article > div.clearfix
+note.com##.m-sidebarSocial
 hatena.ne.jp###container > div.social-button-unit > div.button-wrapper
 worldbank.org##div[id$="social-sharing"]
 corp.rakuten.co.jp##.ttlBtnWrap
@@ -3693,6 +3706,7 @@ hdstudio.org##div[class^="top-right_"]
 player.smotrim.ru##.pl-vid__btn-wrap_share-btn
 wtools.io,camslib.com##button[data-target="#shareModal"]
 kyivpost.com##.soc-icons-block
+seibii.co.jp##.release__sns-links
 proprofs.com###modern-social-share
 xda-developers.com##.sharing > a.sharing-btn
 gem.cbc.ca##button[title*="Share"]
@@ -3743,7 +3757,6 @@ asahi.com##.UtilityBar
 asahi.com##div[x-component-name="TwitterIcon"]
 asahi.com##div[x-component-name="HatenaIcon"]
 asahi.com##.notPrint div[x-component-name="Dialog"]
-prog-8.com##.blog-contents__share
 zasvetfoto.com##.ya_shring_block
 smulderstextiel.nl##.productdetail-socialmedia
 zbporn.com##.js-view-share
@@ -3764,7 +3777,6 @@ starnewskorea.com##ul[class^="lst_sc"]
 nikkei.com##button[data-rn-track^="share_"] ~ div[class^="container_"]
 exbets.ru##.widget-socials
 asahi.com##div[x-component-name="MailIcon"]
-m.jd.co.th##.x-share
 jd.co.th##.p-head-share
 squallchannel.com##.article_bottom
 nostalgie.fr##div[class^="StyledPersistentPlayerShare-"]
@@ -3942,6 +3954,7 @@ bonnycards.ru###block > div.right_col > p.p1 + p.p1
 indiatoday.in##a[title="Twitter"]
 indiatoday.in##a[title="Facebook"]
 novilist.hr##.social-wrap > ul
+beaglesecurity.com,opensubtitles.com,eenewseurope.com###share-section
 eenewseurope.com###share-section + hr
 googlewatchblog.de##.card-content > .aawp-disclaimer ~ div[style="border-top:1px solid #dddddd"]
 mobile.francetvinfo.fr###socialMediaBar
@@ -3977,7 +3990,6 @@ corearoadbike.com##img[onclick*="facebook.com/sharer/sharer.php"]
 corearoadbike.com##form[name="form_view"] ~ table[align="center"]
 nationalreview.com##.floating-share-buttons--inner > span.floating-share-buttons--inner-label
 nationalreview.com##.floating-share-buttons--inner ul.article-utility-nav__list > li.article-utility-nav__item:not([data-service="comment"])
-tokubai.co.jp##.c-share-wrap
 smule.com##a[aria-label="Share Link"][href*="http"]
 magazine.tabelog.com##.bookmark-buttons
 a-z-animals.com###social-shares
@@ -4016,7 +4028,6 @@ watson.de##.watson-snippet__shareBubblesGroup
 arcamax.com##.comic-share
 eleconomista.es##.Article__socialShareContent
 thekisscartoon.com,vikingi.live##.sbox
-ua.tribuna.com##div[class^="ContentCard_about__interaction-block_"]
 esports-world.jp##.sidebar__item__twitter
 ilsole24ore.com##.icon-share-small
 smartpress.by##[id^="ok_shareWidget"]
@@ -4036,6 +4047,7 @@ coinpost.jp##.kjstsns
 roscontrol.com##.share_sidebar
 qodeinteractive.com##.qodef-ts-social-item:not(.qodef-colored)
 vitaminic.ru##.header-save-wrap
+jumpmatome2ch.biz###text-17
 universfreebox.com###g-sidebar > div.g-grid div.module-banniere
 universfreebox.com##.partage
 trojka.polskieradio.pl##ul[class^="ArticleContent_socials_"]
@@ -4075,7 +4087,6 @@ cnbnews.com##.viewsubject > ul
 schlock.ru##.ya-share2 + div.h_h2
 mondaq.com##img[src="/images/Article-Share.webp"]
 mondaq.com##.articleShare-text
-newstomato.com##.vi_remot img[src$="-share.png"]
 chibanippo.co.jp##.sns_btn_f
 ryukyushimpo.jp###share_block
 fbi.gov##.share-buttons-tile
@@ -4231,6 +4242,7 @@ appmaster.io##.explore-stick > .soc-w
 semrush.com##div[data-test="share-block"]
 canalnet.tv##.the-single-body__share
 canalnet.tv##.main-video-single__socials
+recipesandcooker.com,lectortmo.com##button.btn-social[onclick^="copyToClipboard"]
 mynavi-agent.jp##.box_share
 ipforce.jp,extra-life.org###socialBtns
 mailchimp.com##.article__shareLinks
@@ -4311,7 +4323,6 @@ dailypharm.com##img[onclick^="sendSns"]
 theguru.co.kr,medifonews.com##.btn_share_small
 zakon.kz##.followSocial
 aucfan.com##.searchResultsShareList span
-aucfan.com##.searchShareListType01
 m.newspim.com##.topsns > ul
 newspim.com##.fncbtnbox > ul
 ivi.tv,ivi.ru##.userButtons__item_share
@@ -4423,7 +4434,6 @@ onews.tv,labortoday.co.kr##button[data-open="article-sns"]
 fntimes.com##a[href^="javascript:loginWithKakao"][class]
 fntimes.com##a[href^="javascript:sendSns("][class]
 dnews.co.kr##.btnSocial
-ed-live.de##.sharingTools
 shein.com##i[class*="sui_icon_share_"]
 pornedup.com###show-share
 l-iz.de##.lz-sharing-handler
@@ -4539,6 +4549,7 @@ woman.nikkei.com##.articleSNS
 thepage.ua##div[class^="article__social-icons"]
 35mm.online##.share-control__icons__icon:not([aria-label])
 foriio.com##div[class^="ShareWorkOrNote__"]
+sisajournal.com###article-sns-tile
 suikei.co.jp###socialbutton
 tmz.com##.gallery-lightbox__social
 shadow-garden.jp,kakegurui-twin-anime.com##.footer__shareWrap
@@ -4604,6 +4615,7 @@ quote-citation.com##div[id^="likes"]
 vk.sportsbull.jp##.social-fixed-btn
 nordvpn.com##.BlogPost__social-block
 flightradar24.com##li[data-trigger="shareMenu"]
+job.rikunabi.com##.ts-ph-_share
 resheto.net##.sharew
 fc1adult.com##.art-bot
 krzbb.de##div[data-b-title*="Sharing Button"]
@@ -4671,6 +4683,7 @@ newsroom.consilium.europa.eu##.modal-content dl.download-list + h4 + ul
 gamewith.jp##.w-share-wrap
 aoki-style.com##.item_sns
 simplyrecipes.com##.social-share-sticky
+contact.mewshop.jp##article[class^="snsbox"]
 public.fr##.js-IconShare
 ||uaz.ru/js/analytics/gtm.js
 photosku.com##.prbox
@@ -4701,6 +4714,7 @@ einvestidor.estadao.com.br##.teaser-share
 estadao.com.br##.share-icon-holder
 store.united-arrows.co.jp##div[data-css="sns-wrapper"]
 tms-outsource.com,webspoon.ru##.ShareBlock
+insideedition.com##.player__social-items
 lemonde.fr##.wp-socializer
 lemonde.fr##.wpsr-followbar
 paraphrasetool.com##div[class^="TextEntry_socialBlock"]
@@ -4738,7 +4752,6 @@ manutd.com##.icon-share-card-lite
 itokin.net###page-body li.sns
 ailand-store.jp##ul.item_detail_img
 freaksstore.com##.share-sns-section
-indiatimes.com,m.timesofindia.com##.mob-share-button
 github.com##.readme-sharing
 band.com.br,quiz.community.fmworld.net,nsp.ru##app-share
 voi.0101.co.jp##.snssharearea
@@ -4773,6 +4786,7 @@ brutus.jp##.o-wrapper > div[class^="u-ml"]
 mart-magazine.com##div[class^="c-article"][class$="Share"]
 getnavi.jp##.relative-links ~ div.meta-wrap
 imgflip.com##.shr-btns
+geass.jp##div[class^="sns"]
 anura.io##.social-share-section
 moguravr.com##.mg-wp-article ~ aside.d-flex
 handelsblatt.com##.hb-sharemenu
@@ -4790,7 +4804,6 @@ ruvideo.cc,changelog.com,shuba.life,stopgame.ru,engadget.com,kp.ru,techtudo.com.
 locari.jp##.socialize-buttons
 ozmall.co.jp##.cmp__banner-item > a[href^="/introduction/"]
 mecicolle.gnavi.co.jp###mecicolleFollow
-j-sen.jp##.c-shareList__outer
 moshimoshi-nippon.jp##.mmn_postshare
 tetsudo-ch.com##.sns_big
 weather.yahoo.co.jp,typhoon.yahoo.co.jp##.snsbtnWrapper
@@ -4823,7 +4836,7 @@ rskrf.ru###page-content .social
 advice.co.th##.chat_shop
 g-witch.net##.footer__sub__share
 lepoint.fr##.NavbarShareLinks
-in.gr,himajin-block30.com,hatenastaff.com,megamouth.info,digimobil.it,qafqazinfo.az,konoe.studio,tomatazos.com,ural-meridian.ru,opencritic.com,mundodaeletrica.com.br,levelup.com,hateblo.jp,hatena.ne.jp,hatenablog.com,hatenablog.jp,hatenadiary.com,hatenadiary.jp,hatenadiary.org,open.online,androidiani.com,leomolenaar.nl,habervakti.com,obzorposudy.ru,onewatch.by,mitanyan98.hatenablog.com,goope.jp,rai.it,homesha.co.jp,mblx.ru,newspicks.com,otdelka-remont.ru,zan.kz,kanalmaras.com,lanacion.com.co,cars.com,gaitame.com,lr21.com.uy,edehaber.com.tr,pervasiz.com.tr,gazeteyenigun.com.tr,number.bunshun.jp,tv5.com.tr,miuirom.org,conterfrag.ru,pay-day.ru,altarena.ru,pocket.shonenmagazine.com,haberts.com,cookpad.com,finans7.com,aforismo.ru,studyhacker.net,portableapps.com,click-or-die.ru,graniru.org,maxedtech.com,rockpapershotgun.com,souspark.ru,nakamorikzs.net,kitanoiwashi.com,blog.electricsea.io,zigsow.jp##.social-buttons
+3710920.com,blog.hamayanhamayan.com,in.gr,himajin-block30.com,hatenastaff.com,megamouth.info,digimobil.it,qafqazinfo.az,konoe.studio,tomatazos.com,ural-meridian.ru,opencritic.com,mundodaeletrica.com.br,levelup.com,hateblo.jp,hatena.ne.jp,hatenablog.com,hatenablog.jp,hatenadiary.com,hatenadiary.jp,hatenadiary.org,open.online,androidiani.com,leomolenaar.nl,habervakti.com,obzorposudy.ru,onewatch.by,mitanyan98.hatenablog.com,goope.jp,rai.it,homesha.co.jp,mblx.ru,newspicks.com,otdelka-remont.ru,zan.kz,kanalmaras.com,lanacion.com.co,cars.com,gaitame.com,lr21.com.uy,edehaber.com.tr,pervasiz.com.tr,gazeteyenigun.com.tr,number.bunshun.jp,tv5.com.tr,miuirom.org,conterfrag.ru,pay-day.ru,altarena.ru,pocket.shonenmagazine.com,haberts.com,cookpad.com,finans7.com,aforismo.ru,studyhacker.net,portableapps.com,click-or-die.ru,graniru.org,maxedtech.com,rockpapershotgun.com,souspark.ru,nakamorikzs.net,kitanoiwashi.com,blog.electricsea.io,zigsow.jp##.social-buttons
 abff.by##.news_single-meta-share
 tv.bluelock-pr.com,ragnarok-official.com##.foot--share
 goredb.com##my-video-rate + button[class="action-button"]
@@ -4934,8 +4947,8 @@ smaker.pl##.recipe--share
 spur.hpplus.jp##.sns_wrapp
 kocaeli.bel.tr###stickySocial
 pub.towardsai.net##body > div#root ~ div:not([class]):not([id]) > div[class*=" "]
-||bhol.co.il/forums/media/twitter_full.asp
 emais.estadao.com.br##.social-midias
+nsn.fm###articleBody div[itemprop="articleBody"] + div > section[class] + div[class^="_"]
 pay.rakuten.co.jp##.rp-social
 gorodrabot.by##.sidebar > aside.block.d-print-none
 storm.mg##.article_sns_btn
@@ -5003,7 +5016,6 @@ eluniversal.com.mx##.socialMediaBottom-Section
 niusnews.com##.post-fixed-share
 imageride.net,img.javstore.net##a[data-action="share"]
 becloud.by##.social-wrp
-freiepresse.de###share-Buttons
 economist.com##.ds-actioned-link--share
 thegirl.ru,maximonline.ru,ellegirl.ru,vokrugsveta.ru,marieclaire.ru,psychologies.ru##.quiz-block-result-share-buttons
 psychologies.ru##.test-block
@@ -5082,7 +5094,6 @@ jimin.jp##a[data-sns]
 rawmanga.cc##.social_btn_share
 dmm.co.jp##.p-box-productInfo__detail__sns
 stylehaus.jp##.article__actions--social
-hotpepper.jp##.social-buttons-sp
 arine.jp##li[class^="SnsBtn-"]:not(.SnsBtn-Like-square)
 mag.sendenkaigi.com##.sns_box_lt
 order-order.com##.mdi-share-variant
@@ -5364,7 +5375,6 @@ pokemon.co.jp##.p-site-footer-share
 bang-dream.com,pokemon.co.jp##.footerSns
 pokemon.co.jp##.mod-sns > div.sub-text
 pokemon.co.jp##.vckg-sns
-mbp-japan.com,yodoran.com,news.tv-asahi.co.jp,rugby-rp.com,pokemon.co.jp,realdgame.jp##.sns-wrap
 touhoulostword.com,vap.co.jp,smbc-card.com,pokemon.co.jp,web-ace.jp##.footer-sns
 pokemon.co.jp###modSns
 pokemon-card.com##.SnsArea
@@ -5390,7 +5400,6 @@ wacul-ai.com###content__sns
 gekiyaku.com,barulab.blog.fc2.com###social_box
 collesiru.jp,store.wacoal.jp,pokemonsleep.net,hikaku.com,pixiin.com,kurokaminootome.com,oreyubi.cf-anime.com,crank-in.net,belluna.jp,biz-journal.jp,colopl.co.jp,barulab.blog.fc2.com###sns
 pachinko-max.com,g-journal.jp,biz-journal.jp###vertical_sns
-express.co.uk##.facebook-container
 mdn.co.jp##.secShareSns
 kleinanzeigen.de##[id^="vip-"][id$="-share"]
 pubgmobile.jp###snsBar
@@ -5399,6 +5408,7 @@ radiotrek.rv.ua###like-mobile
 wiocha.pl##.shareall > span
 gizchina.com###block-23
 gizchina.com###block-22
+milliyet.com.tr##.bs-social-list
 riatomsk.ru##.stat-share
 dallasnews.com##div[class^="dmnc_generic-share-bar-share-bar"]
 anniversarys-mag.jp,study-z.net##.gowp-share-box
@@ -5456,6 +5466,8 @@ village-v.co.jp##.inner__column__heading--fourth
 nikkei.com##button[data-rn-track^="share_"]
 nikkei.com##img[alt="この記事を共有する"]
 lovelive-anime.jp,sova-center.ru,weathermap.co.jp,japanhousela.com,tabigo-media.net,cinra.net##.p-article__share
+hypnosismic-anime.com##.c-side__share
+hoiku-is.jp,shonenjump.com##.sns_icon
 kamuy-anime.com##.twitterSection
 kamuy-anime.com##.sociallist
 kamihiro-anime.com##.fv-news__twitter
@@ -5475,16 +5487,17 @@ zentrum-der-gesundheit.de##button[aria-label="Teile das"]
 honto.jp##.stSns01
 0101.co.jp##.s_snsListBlock
 sovet-ingenera.com##.bottom_post_social_right
-doga.hikakujoho.com##.page-sns-box
 yajimaya.co.jp##.p-footer__sns
 kwm.co.jp##.single_sns > li:not(.writer)
 japan.cnet.com##.leaf_sbm_button_space_note
 japan.cnet.com##.leaf_sbm_button_space_twitter
 toonippo.co.jp##.ad-billbaord
 munesada.com##.sns-bottom-frame
+wjsm.co.jp,nrm.jp,mtame.jp,currymeshi.com,wear.jp,banei-keiba.or.jp###sns_share
 pen-online.jp##.p-article__intro-sns
 logsign.com##.share-horizontal-title
 square-enix.com##.js-sns-sp
+jp.square-enix.com###socialicon
 ebten.jp,dragonquest.jp,jp.square-enix.com##.socialicon
 manutd.com##div[class^="home-content-panel_"] > div.left > ul > li:not(.email):not(.copy-link-btn)
 gdpi.hitbullseye.com##.post-entry-share
@@ -5525,7 +5538,6 @@ mouse-jp.co.jp##.block-goods-detail-share
 woman.excite.co.jp##.socialModule
 baraou-anime.com##.ft_sns
 fate-strange-fake.com,jitsuhaoresaikyo-anime.com,nierautomata-anime.com,onepunchman-anime.net,tomo-chan.jp,bokuyaba-anime.com,shingeki.tv,kaguya.love,madoka-magica.com,umamusume.cystore.com,bishonen-tanteidan.com,akebi-chan.jp##.l-footer__share
-yasui-archi.co.jp,youramateurporn.com,orient-anime.jp##.-share
 akuyakureijou.af-original.com##.sharaListsWrap
 dospara.co.jp##.sns_btn_wrap
 vergleich.org##.share [data-type="facebook"]
@@ -5588,6 +5600,7 @@ mobile.mi.com##.product-information__share
 blog.fc2.com##ul.entry-footer-sns-ul
 j-town.net##.entry-contents_share-list > a#facebook
 cooltechzone.com##.field-name-ds-share
+streamdb0web.securenetsystems.net##.songShareLink[onclick^="shareApp"]
 isna.ir,khabaronline.ir##.item-sharing
 tvinfo.de##.sn
 ren.tv##.news-delimiter.nomarginbottom
@@ -5624,7 +5637,6 @@ analyticssteps.com##.stick_lft_social
 goal.ge##app-share-socials
 traunsteiner-tagblatt.de##.nfy-detail-social-media
 linuxadictos.com,ubunlog.com,androidayuda.com,androidsis.com###abn-shares-buttons
-woman.at##.md_social_wrapper
 animenewsnetwork.com###social-bookmarks
 followchain.org###media_image-16
 stevivor.com,followchain.org##.herald-share-content
@@ -5650,6 +5662,7 @@ kamigame.jp##.share-base
 cronista.com##.share > ul > li:not(.comments)
 potepan.com##.ArticleBody__sns-share
 puppet.com##.pm-social--share
+clarin.com##.entry-head > div.content-top
 m.hvg.hu##.article-share_badges
 apkpure.*,nhk.or.jp##.share-fixed
 nhk-ondemand.jp,nhk.or.jp##.nhk-snsbtn
@@ -5685,6 +5698,7 @@ octagon.media##.art_footer > ul
 yamal-media.ru##div[class^="share_Share__"]
 miningweekly.com###sidebar_items_container
 ubergizmo.com##.social_button_li[shareurl]
+news18.com##.socalWrap
 ctnews.ru##.social__block-background
 golos.ua##.tags-social-links
 myresume.ru##.p-article-info
@@ -5711,18 +5725,19 @@ tdk.gov.tr,bayreuther-tagblatt.de##.av-social-sharing-box
 abc13.com,6abc.com##.StickyContainer
 ittefaq.com.bd,ekattor.tv,dhakatribune.com,banglatribune.com##.social_share_holder
 ||u.xgoo.jp/img/sns/button/
-indiatoday.in##.social-share-new
 sagligabiradim.com,ivona.ua##.widget-social
 openworldnews.net###shareBtns
 3lion-anime.com##.l-share_this__container
 coliss.com###articleInfo2
 nordot.app##.shareButtonList
+sourcecodester.com###block-connectonfacebook
 indiamart.com##.FM_Social
 quickdraw.withgoogle.com##.card-text > div#portfolio-text
 quickdraw.withgoogle.com##.card-text > div#portfolio-text + div
 bola.net###kl-social-share
 nhk.or.jp###movieShare
 rssing.com##a[title="Share Article"]
+mazimazi-party.com##.add
 motifyublog.com##article .sns
 diarionecochea.com,motifyublog.com##.widget_a2a_follow_widget
 pokemon.jp##.listSns
@@ -5787,7 +5802,6 @@ lifo.gr,currymeshi.com,zombielandsaga.com,time.com##.header__share
 straight.com##.social--article > .icons:not(.comment-icon)
 ze.tt##.ph-sharing-wrapper
 fdocuments.in###box-like
-fdocuments.in###document_download + p:not([class]):not([style])
 trip101.com##.section-social
 thestreet.com,coe.int###share-widget
 bloomberg.com##.share-article-button
@@ -5855,6 +5869,7 @@ liquipedia.net###dropdown-share
 topspeed.sk##.shareArticleBtn
 vedantu.com##div[class^="Share_text_"]
 findhard.ru###socialP
+producthunt.com##div[class*="styles_descriptionContent_"] div[class*="styles_socialButtons_"] > button[class*="Button_"]:not([data-test="collect-button"])
 all-episodes.fun,all-episodes.club##.content > div.citata1
 polskieradio.pl,polskieradio24.pl##.article-social-panel
 gearedtoyou.com##.zox-post-soc-list
@@ -5998,6 +6013,7 @@ queer.pl##a[href^="https://twitter.com/home?"]
 corrieredellosport.it##div[class^="SocialColumn_"]
 sahadan.com,mackolik.com##.widget-article__share-button
 mackolik.com###fancybox-close
+mackolik.com###fancybox-frame
 mskgazeta.ru##.soc_commnt
 mk.ru##.article__share-and-comments
 shiseido.co.jp##.sns2019
@@ -6024,6 +6040,7 @@ rawstory.com##.body-share-wrap
 ibtimes.co.in##.share-btn-wrp
 play.tv3.lt,tv3play.skaties.lv##.c-share-product
 businesstoday.in,indiatoday.in##.rhs-fixwhtsapp
+oursounds.net###sns_wrapper
 fl.ru##.b-free-share
 spokesman.com##ul[aria-label="Ways to share this story"]
 quotemaster.org##a.sh-b[onclick]:not([data-vote])
@@ -6069,6 +6086,7 @@ m.timesofindia.com##._3tGhQ
 avporner.com,phim-18.tv,pcgamer.com,aznude.com,tasteofhome.com,steamplay.*,steanplay.*,streamp1ay.*,streanplay.*,envivo5.com##.jw-settings-sharing
 colorlib.com##.wpex-fa-social-widget
 gumtree.com.au##.vip-ad-social-share
+pershij.com.ua##.post-wrapper__post-share
 biod.ro##.thrv_social
 cubiq.ru##.subs
 salon.com###social_total
@@ -6107,6 +6125,7 @@ news.lankasri.com##.ds-share-blurb > [class$="share"]
 u-f.ru##body div.ya-news
 findfood.ru##noindex > div[align="center"] > p + p
 ||hh-online.jp/ec/shop/*/images/goods/sns_fb.png
+chicagotribune.com##.trb_sc_item[data-role="sc_share"]
 forbes.pl##.socialButton:not(.com)
 italianbark.com##.zoom-instagram-widget
 b17.ru##.a_art_share
@@ -6133,8 +6152,10 @@ ok-magazine.ru##.socNetworks-footer-article
 video.repubblica.it###gs-social-sharebuttons
 eckovation.com##.widget_mo_optin_widgets
 dengarden.com,oregonlive.com,skateboarding.com,mdcalc.com,datawrapper.dwcdn.net,washingtonpost.com,lehighvalleylive.com,thingiverse.com,reuters.com,cleveland.com,shaiyallin.com,airly.org,infosecwriteups.com,blog.getadblock.com,medium.datadriveninvestor.com,mlblogs.com,music.apple.com##button[aria-label^="Share"]
+infosecwriteups.com,blog.getadblock.com,medium.datadriveninvestor.com##div[data-popper-reference-hidden] span[tabindex] ~ div > div[class] div ~ button[class]
 goal-life.com##.authors + div.text-center
 filmtipo.com,rutrailer.com,handmadekultur.de,bestsimilar.com,film-like.com##.ssk-sticky
+doctorslon.ru##.detail-news__share
 netzwelt.de###article > .brdc-gr.reset-to-content
 scribd.com##.share_document_wrapper
 gotradio.com##.share-open
@@ -6227,9 +6248,9 @@ acm.org##.rlist > li[title="Share"]
 lifehacker.ru##div[class*="footer__share"]
 gadgetsnow.com,timesofindia.indiatimes.com##div[data-socialshare]
 jn.pt##div[class^="mrec-"]
-blog.doist.com##.db-share
 fastcompany.com##.highlight-share-popover
 blog.netwrix.com##.social-button-list
+besoccer.com,doityourself.com,bigkyiv.com.ua,musixmatch.com##.share-row
 team29.org##ul[class*="socials--share-"]
 gsm1x.xyz###HTML8
 sadhguru.org##.padding-podcast-social
@@ -6281,7 +6302,6 @@ novosti.dn.ua##.social > li[data-count]
 larende.com##div[class$="Facebook_Sayfam"]
 delfi.lt,delfi.ee##.C-article-social
 hrej.cz##.un-chip-group > a[data-share-type]
-suntory.co.jp,keizai.biz,hamakei.com,akiba.keizai.biz,freeserial.cmoa.jp,shiki.jp,goobike.com,ozmall.co.jp,beauty.hotpepper.jp,ktn.co.jp,hominis.media,kikubon.jp,shibukei.com##.snsArea
 ogolosha.ua##.gallery-icon-box__share
 zn.ua##.top_social_holder
 mobilenet.cz##.detailButtons > a.btn--facebook
@@ -6400,6 +6420,7 @@ gamekillerapp.com,popville.com,nekoray.org,erothots.co,news.cornell.edu,clashfor
 wellsfargo.com##.sideUtility
 nytimes.com##div[data-testid="share-tools"] li:not([class^="css-"])
 spid.center##._37vAM
+crictime.com##td[height="46"][align="center"]
 apple.com##.nr-article-share
 greenpost.ua##div[class^="article_share_side_"]
 mosgorzdrav.ru##a[href^="javascript:jQuery().share()"]
@@ -6567,6 +6588,7 @@ totalbike.hu##.index-social-box
 agazeta.com.br##.assinatura-abertura .social-items
 drop.com##div[class^="SocialSharingBar__"]
 theguardian.com,vpn-anbieter-vergleich-test.de##a[aria-label^="Share "]
+inquirer.com###share-bar-docked
 perelki.net##.widget_fb
 24tv.ua##.social-buttons-wrp
 24tv.ua##.subscribe-wrap
@@ -6688,6 +6710,7 @@ nydailynews.com,glamourmagazine.co.uk,wired.co.uk##.a-share
 tweaktown.com##div[class^="sharedesktop"]
 heavyequipmentguide.ca,newsbomb.gr,biomedya.com##.share-url
 pravmir.ru##.hh-share-block
+elhow.ru##.art-social-wrapper-ahchor
 news.milli.az,elhow.ru##.social-banner
 bursahakimiyet.com.tr##.sharenewsin
 ekantipur.com##.bottom-share-count
@@ -6707,8 +6730,10 @@ wetanz.com,allnations.com.br##.product-social-buttons
 ukrlib.com.ua,trapz.io##.youtuber
 trapz.io###gameover > div.main-trapz__form-wrapper + div.main-trapz__download[style="margin-top: 43px;"]
 4shared.com##.jsFBsharingLink
+4shared.com##.fbsharing
 prostomob.com##footer + div[class]
 wowkorea.jp,pazarlamasyon.com,posta.com.tr##.news-detail__share
+trashbox.ru,trashbox.mobi##.div_subcaption2_subs
 newwell.com.tr,maisfutebol.iol.pt##.shareDiv
 ehow.com##.component-pinterest
 ichip.ru##body .article-action
@@ -6788,6 +6813,7 @@ m.guancha.cn##.shareMain
 wday.ru,maximonline.ru,ellegirl.ru,kudago.com##.quiz-share
 lounge.fm##.share > .twitter
 bianet.org,rusplt.ru##.actions-wrapper
+nationalpost.com###breakingnews-social
 wysokieobcasy.pl,wyborcza.pl,wyborcza.biz##.socialBar > ul > .fbShare
 nyafilmer.*##.a2a_default_style
 vp.rambler.ru,media.eagleplatform.com##.eplayer-skin-share
@@ -6827,7 +6853,6 @@ nbcnews.com,thestar.com,steemit.com##.shareMenu
 kinomania.ru##.pagelist-social
 tehnichka.pro##.aside-soc-cont
 nikkeibp.co.jp,nikkei.com##.p-fixedShare
-lublin112.pl###facebook-section
 medicalxpress.com,techxplore.com,phys.org###js-soc-panel
 phys.org##.article-interaction > a[href="javascript:void(0)"].btn-info
 yomiuri.co.jp##.fn-article-social-share
@@ -6883,6 +6908,7 @@ depor.com##a[data-social="share-more"]
 post-gazette.com,toledoblade.com##.pgevoke-contentarea-socialbuttons-wrapper
 expressen.se##.article .social-panel
 coronavirus.mash.ru##.share_a
+embetronicx.com##.ArevicoModal
 showdream.org##.rcol > div.bc.review + center
 ||getsocial.io/*/gs_async.js$third-party
 merriam-webster.com###social-sidebar-container
@@ -6964,6 +6990,7 @@ joxi.ru##.dropdown-container div.content > div.js-tile-item-control-copy + div >
 androidpolice.com##.addthis_fallback
 jobs.sap.com###rss-wrapper
 ekabu.ru##.f-social-container
+amazon.*###swf-sheet-facebook
 it-actual.ru###content > article.status-publish + div[class]
 businesstech.co.za##.article-share-buttons
 smashingmagazine.com##.meta-box--share
@@ -6974,6 +7001,8 @@ c.mi.com##.thread-share-btn
 audycje.tokfm.pl##.share--mainbutton
 sakaryadanhaber.com##.sn-entry > .row > .share
 blog.google,g-ek.com##.article-sticky-share
+yenicaggazetesi.com.tr##div[class^="bookmark-block-"]
+windows-faq.de##.theiaStickySidebar > #monarchwidget-2
 marieclaire.ru##.fb-like-div
 amp.marca.com,expansion.com,elmundo.es##.ue-c-article__share-tools
 kulturologia.ru##.post > div.content > center + p
@@ -7017,6 +7046,7 @@ horoscopes.rambler.ru##.rambler-share
 ||discordapp.com/widget?id=$domain=creatorlabs.net
 ambitiouskitchen.com,dokoiku.club,tomoyuki65.com,pointtown.com,geekdays.jp,hidebusa1.com,fruitfulenglish.com,mamastar.jp,smatu.net,usimaru.net,chimolog.co,kurume-it.ac.jp,bita.jp,worldometers.info,softantenna.com##.sharewrap
 gamegaz.com##.snsb > li:not(.comments-balloon-btn)
+postnauka.ru##a[ng-click*="share"]
 postnauka.ru##.psy-share
 nogizakalife.tokyo,trendview.info,garberas.com,premirea.jp,daij1n.info,kotyanlife.info,nichepcgamer.com##.snsf-c
 blimey.pro##.st-sticky-share-buttons
@@ -7138,7 +7168,6 @@ dzfoot.com##.bloc-social
 washingtonpost.com##.pg-shareBar
 mrvintage.pl##.social-counters
 ea.com##.eapl-section-column > ea-social-bar
-arkade.com.br##.share-buttons-post
 ukranews.com,armeniasputnik.am,sputnik-abkhazia.ru,sputnik-georgia.ru##.b-article__share
 galinfo.com.ua##.socials-items
 iz.com.ua##.article__socials-share
@@ -7162,6 +7191,7 @@ xgore.net,atn.ua,300gospodarka.pl,telekritika.ua##.tags-share-box
 sobitie.com.ua##.facebook_my
 kulturologia.ru,novate.ru##.postLikesBox
 chosun.com##.news_left_aside_sns > li > a[class^="share_"]
+chosun.com##.news_left_aside_sns > div#news_left_aside_sns_more_id
 tengrinews.kz,news.nextapple.com,prtimes.jp,thepatriotjournal.com,techbang.com##.side-share
 techbang.com##.total-share
 video.az##.jw-sharing-dock-btn
@@ -7177,8 +7207,8 @@ bbc.com##.lx-stream-post__footer-share
 tichyseinblick.de##.sharing.bar
 thegamesdb.net##div[data-url^="https://www.facebook.com/sharer/sharer.php"]
 thegamesdb.net##div[data-url^="http://www.stumbleupon.com/submit?url"]
+haberaramizda.com##.haberDetaySosyal > div[style] > a[target="_blank"]
 socratify.net##a[href^="https://socratify.net/action/share"]
-opensource.com##.region-os-social
 tlt.ru,yesiltopuklar.com##.single-social-share
 ensonhaber.com,flankesports.com##.nd-share
 m.timesofindia.com##div[data-ga*="share-whatsapp"]
@@ -7212,7 +7242,7 @@ interesnyefakty.org###fbknopka
 zingat.com##.custom-addthis
 investmentwatchblog.com##.wpsr-buttons
 gp.by##.social-block-top
-zeflix.online,zetfix-online.net,hdi.zetfix.online,animeonline.cc,rg-mechanics.cc##.yx-share
+cryptocurrencytopnews.com##.dp-social-media-share-wrap
 oyunceviri.net##.widget_jnews_facebook_page
 mumbaimirror.indiatimes.com,timesofindia.indiatimes.com##.videoshare
 gadgetsnow.com,timesofindia.indiatimes.com##.scl-wdgt
@@ -7330,6 +7360,7 @@ spin.ph##.btn--shre
 spin.ph##.artl__head  > .shre
 spin.ph##.wrap__sns > div[class^="artl-ovly__count--"][class*="share"]
 spin.ph##.wrap__sns > .sns-float > .btn--sns:not(.gtm-articleCommentSide)
+cnn.com##.Article__component .SocialBar__component
 pokipsie.ch##.cactus-share-and-like
 sciencedaily.com##.dl-horizontal > .no-print
 joxi.userecho.com,yandexmail.userecho.com##.module-vk
@@ -7362,7 +7393,6 @@ mshowto.org,teknop.net##.social_btn_default
 fischundfleisch.com##.mobile-share-buttons
 newsru.com##img[onclick="shareinverter()"]
 boston25news.com,wftv.com,wsoctv.com,wpxi.com##.ui-social
-vnexpress.net##.share_tw
 bgr.in,bollywoodlife.com,akcenty.com.ua,znaj.ua##a[href^="https://m.me/"]
 webtoons.com##ul.spi_area > li:has(> a.ico_facebook)
 webtoons.com##ul.spi_area > li:has(> a.ico_twitter)
@@ -7386,9 +7416,11 @@ formel1.de##.shariff-button
 microsoft.com##.jetpack_widget_social_icons
 microsoft.com##.social-footer-wrap
 microsoft.com##.pad-social
+clujust.ro,portalenf.com,rumaysho.com,ofigenno.com,lubimiygorod.od.ua,point.md,fronda.pl,bodrumguncelhaber.com,tailieuhoctiengnhat.com,ingilizcenotlar.com,ozengen.com,kitekinto.hu,kutahyaekspres.com##.facebook-widget
 forum.redfox.bz,excel.web.tr##div[data-widget-key="forum_overview_share_page"]
 tapatalk.com,porn.com##span[title="Share"]
 chepetsk.ru##.float-social-wrp
+hubpages.com###social_share_widget > a[class]
 etfcheck.co.kr,equity.today##.share_item
 nv.ua##.promo_telegram
 gdetraffic.com##.widgets.wbg
@@ -7403,13 +7435,13 @@ news.yahoo.co.jp##.nhSareBtn
 novagente.pt,gazetebilkent.com##.article-share-area
 gazetebilkent.com##.article-like-area
 europe1.fr,mifirm.net,peers.tv###btn-share
-sobesednik.ru##.article-section > div.align-items-center > div[class="col-md-4 text-right"]
 escolakids.uol.com.br##.post__item__internal__share
 ||image.inforesist.org/uploads/2016/06/viber2.png
 metro.co.uk##.item-share-buttons
 metro.co.uk##.share-item-twitter
 metro.co.uk##.share-item-facebook
 everyeye.it##.social_containerx
+everyeye.it##.social_top > #tw_countz
 everyeye.it##.social_top > #fb_countz
 haibunda.com,7review.com,omaske.ru##.top_share
 inosmi.ru,ria.ru##.article__sharebar
@@ -7417,6 +7449,7 @@ napisy24.pl##.pwebfblikebox
 techspot.com##.social-share-text
 thebrandage.com##.left > a.li
 dynamo.kiev.ua##.social-likes
+vesti.kz,istories.media,ukr-mova.in.ua,fashion-likes.ru,orda.kz,rtvi.com,a-angel.ru,xbox.in.ua,gazetadaily.ru,anekdotikov.net,ex-news.net,kinomax.ru,utro.ru##.soc
 wordvbalab.com,ekilog.info,channel-jk.com###sns-group
 kayserigundem.com.tr,haberler33.com,gaziantephaber.com,cryptodaily.co.uk,elazighaber23.com,kayisihaber.com,wowkeren.com,gercekfethiye.com,gunisigigazetesi.net##.post-share-area
 slidstvo.info,ppt.ru##.bottom-social
@@ -7463,7 +7496,6 @@ hb-nippon.com,jsports.co.jp,jod.jsports.co.jp,uverworld.jp,gorilla.clinic,jujuts
 km.ru##.km-shares-counter
 truetrophies.com,trueachievements.com##*[onclick^="oShare.Go("]
 catracalivre.com.br,ileilgili.org,record.pt,academic-tour.com,orakul.com###socialShare
-ganganonline.com##.gn_detail_header_sns
 bafrahaber.com##.detay-sosyal-alan
 bunshun.jp###verticalSnsBar
 cinematoday.jp##.ct-snsbar-holder
@@ -7475,6 +7507,7 @@ posfie.com,togetter.com,eropasture.com##.social_box
 artstation.com##ul.s-bar
 caliber.az,biteki.com,yogajournal.ru,games.mail.ru##.block_share
 toolbaz.com,emailregex.com##.a2a_kit > a[class^="a2a_button_"]
+boston.com##.page-header > .content-social
 presseportal.de##.story-sharing
 otvet.mail.ru##.action--share
 otvet.mail.ru##.actions--social
@@ -7635,8 +7668,10 @@ apk.tw##.socialshare_social
 m.suedkurier.de##.under-article-box
 lepoint.fr##.art-social > li.social-li:nth-child(5)
 m.bazonline.ch##.share-menu-buttons > li:not(:last-child)
+philosophia-perennis.com##.post-content .et_social_networks > ul > li:not(.et_social_printfriendly)
 coub.com##.sharing__dropdown__item[class*="social"]:not([data-clipboard-text])
 buzzfeed.com##.bfa-share-btn
+buzzfeed.com##ul[class^="shareBar__"]
 buzzfeed.com##.action-bar--position-floating
 buzzfeed.com##.js-inline-share-bar
 buzzfeed.com##div[class^="shareButton__"]
@@ -7671,10 +7706,12 @@ gepigeny.hu##.sidebar-spacer > .side-panel[style="text-align:center;height:130px
 petition.president.gov.ua##.petition_share_wijet
 torrentoyunindir.com###sidebar > .sidebarborder:first-child
 ictnews.vn##a[href^="http://linkhay.com/submit"]
+allenwestrepublic.com##.mashsb-count
 dailymail.co.uk##.article-icon-links > li.facebook
 gamme.com.tw##.metas > .shareblock
 shuminoengei.jp,syokuraku-web.com,vippers.jp,yahoo.co.jp##.socialBtn
 eurogamer.net##.subscribe.outline
+m.nosalty.hu##.user-options-social
 syl.ru##.share_img
 porn300.com,porndroids.com##.video-footer__social .btn-facebook
 bomba32.com##.news-share > [class^="ns-"]:not(.ns-print)
@@ -7749,6 +7786,7 @@ haberturk.com##.socialBoxWrap
 tnctr.com##.facebook_right
 facileporno.com,jpopasia.com,png.is,nohat.cc,blogkurdu.net##.btn-twitter
 blogkurdu.net##.btn-stumbleupon
+horoscopes.rambler.ru##._2kMG[data-reactid="119"]
 deraktionaer.de###story-social
 duzcepusula.com,denizlidesiyaset.com,gazete365.com##.SocialTools > ul > li:not(.print):not(.resizer)
 muzikmp3indir.com##.indirPaylas
@@ -7757,7 +7795,6 @@ wattpad.com##.highlight-tooltip
 tunein.com##div[data-testid="shareIconsContainer"]
 tokyo-np.co.jp,shrib.com,kb.pl,std.stheadline.com,flixclassic.pl,trovo.live,tehnar.ru,pult.ru,unicreditgroup.eu,di.fm,fparf.ru,kizlarsoruyor.com,onlinetestpad.com,livelib.ru,m.bazonline.ch,naviny.by,dailyhive.com,ottawacitizen.com,thestarphoenix.com##.icon-share
 francais.rt.com,glavred.info,foxtime.ru,hochu.ua,likar.info,tvp.pl##.article__socials
-tvp.info##.info-article__social
 tvp.pl,tvp.info##.social-article__social
 tvp.pl##.article__social > a[class^="article__social-"]
 krasnoyarskmedia.ru,eaomedia.ru,primamedia.ru##.comment-ss
@@ -7801,6 +7838,7 @@ incrussia.ru##.incshare
 uscoutfor.com,mgviagrtoomuch.com,melidonium.com,mahsunsports51.xyz,filmyfocus.com,maketecheasier.com,thehealthsite.com,india.com,nnchaber.com,cricxtasy.com,sonichits.com,broadwayworld.com,m.brigitte.de,mahsunsports81.xyz,mahsunsports82.xyz,mahsunsports80.xyz,mahsunsports52.xyz,mahsunsports53.xyz,mahsunsports54.xyz,mahsunsports55.xyz,mahsunsports56.xyz,mahsunsports57.xyz,mahsunsports58.xyz##.social-icon
 pz-news.de###sebox_213_0
 nbcsports.com##.IconFacebook
+bleacherreport.com##.shareTwitter
 bleacherreport.com##.shareFacebook
 tvnz.co.nz##body .ShareButton
 ||d5k6iufjynyu8.cloudfront.net/script/button.js
@@ -7819,6 +7857,7 @@ novyny.live,kakprosto.ru,edebiyatla.com,f35.com##.content__share
 realmofdarkness.net##.widget_ssba_widget
 engadget.com,youtube.com##a[href^="http://www.facebook.com/dialog/share?"]
 youtube.com##a[href^="https://twitter.com/intent/tweet?"]
+b4bschwaben.de##.nfy-social-media
 goodreads.com##.gcaSocial
 goodreads.com##.shareModuleBar
 goodreads.com##.facebook_account
@@ -7826,7 +7865,6 @@ behance.net##.social-sharing__icon
 cbssports.com##.sharebar-fixate
 technobuffalo.com###sharing-floater
 hrkgame.com##.share-platform
-motorradonline.de##.mps-article-social
 ||sp.zalo.me/plugins/share?dev=$third-party
 ||sp.zalo.me/plugins/follow?$third-party
 lenta.ru,ramblernews.media.eagleplatform.com,gazeta.media.eagleplatform.com##.eplayer-share-social
@@ -7859,6 +7897,7 @@ vol.at##.vodl-region-article__social-share-bar
 calorizator.ru###social_group
 travelbook.de,stylebook.de,techbook.de##body > #mashbar-header
 expansion.com,cienradios.com,stanglwirt.com,mobile2.tagesanzeiger.ch,macwelt.de,pcwelt.de,haberturk.com,showturk.com.tr,infor.pl,wdr.de##.socialMedia
+mangaberri.com,mangacherri.com,abola.pt,kagome.co.jp,whoer.net,app.famitsu.com,vsemirnyjbank.org,worldbank.org,bancomundial.org,albankaldawli.org,shihang.org,banquemondiale.org##.social-btn
 vsemirnyjbank.org,worldbank.org,bancomundial.org,albankaldawli.org,shihang.org,banquemondiale.org##li.plus-btn[title]
 biznesradar.pl,handelszeitung.ch##iframe[src^="//www.facebook.com/plugins/likebox.php"]
 cumhuriyet.com.tr##.share > div.fb-like~ul.buttons
@@ -7899,13 +7938,12 @@ care2.com###hover_share
 klavyer.com##.dpArticleShare
 bestfree.ru##div[id^="share"]
 tichyseinblick.de,mixcloud.com##.social.facebook
-iz.ru##.share_bottom
 aetv.com,fyi.tv,history.com##.share-facebook
 fotomac.com.tr,aspor.com.tr,anews.com.tr,ahaber.com.tr##.pageTools > ul > li:not(.print):not(.send):not(.mail):not(.resizer):not(.comment)
+anpfiff.info##[id$="SocialMediaValues"] + [id$="divSpTgAkt"] > .content-col-r > [id$="_divFB"]
 shopozz.ru,parallaximag.gr,amazon.co.jp,flagma.ua,meczyki.pl,scmp.com,lybrate.com,gorsovet.com.ua,dnpr.com.ua,flagma.ru,pentestpartners.com,lingq.com,androidheadlines.com,autobytel.com##.share-widget
 bezprovodoff.com,psychologies.ru,starhit.ru,v-androide.com,wildo.ru##.social-tabs
 namethatporn.com###item_share
-iphonetweak.fr,iphonesoft.fr##.homeShare
 giphy.com##._30TivBhtfM2RTCPxVIcvvT
 mobil.krone.at##.c_hxcms_social_buttons
 onlinegamer.jp,news.tv-asahi.co.jp,evoworx.co.jp,ternitoday.it,dowellbydoinggood.jp,eltiempolatino.com,game8.co,0101.co.jp,itsfoss.com,palermotoday.it,agrigentonotizie.it,anconatoday.it,arezzonotizie.it,avellinotoday.it,baritoday.it,bolognatoday.it,bresciatoday.it,brindisireport.it,casertanews.it,cataniatoday.it,cesenatoday.it,chietitoday.it,ferraratoday.it,firenzetoday.it,foggiatoday.it,forlitoday.it,frosinonetoday.it,genovatoday.it,ilpescara.it,ilpiacenza.it,latinatoday.it,lecceprima.it,leccotoday.it,livornotoday.it,messinatoday.it,milanotoday.it,modenatoday.it,monzatoday.it,napolitoday.it,novaratoday.it,padovaoggi.it,parmatoday.it,perugiatoday.it,pisatoday.it,pordenonetoday.it,quicomo.it,ravennatoday.it,reggiotoday.it,riminitoday.it,romatoday.it,salernotoday.it,sondriotoday.it,ternitoday.it,torinotoday.it,trentotoday.it,trevisotoday.it,triesteprima.it,udinetoday.it,veneziatoday.it,veronasera.it,vicenzatoday.it,viterbotoday.it,chubu.ac.jp,pressgazette.co.uk,techmonitor.ai,sauna-ikitai.com,today.it,lovelive-anime.jp,crazyraccoon.jp,uazmi.net,animatetimes.com,coconala.com,thenextweb.com,mart-magazine.com,shingeki.tv,game8.jp,power-technology.com,custom-cursor.com,rockinon.com,anime-86.com,sao-p.net,robihachi.jp,vivy-portal.com,boredteachers.com,newstatesman.com,telegraf.com.ua,especiais.g1.globo.com,citylab.com,m-kurier-at.cdn.ampproject.org##.c-share
@@ -7922,13 +7960,13 @@ clashroyaleforum.de##.boxesFooterBoxes > .layoutBoundary > .boxContainer > [clas
 vpnmentor.com##a[id^="sl_share_"]
 cbsnews.com##.right-headline > .box.twitter
 computerworld.com.au##.art-share > li:not(.print_li):not(.email_li)
-mobil.nwzonline.de##.page-footer > a[href^="https://aktion.nwzonline.de/landingpages/whatsapp/?utm_source=off&utm_medium="]
 scoopwhoop.com##[class^="socialStyle"] > a[onclick*="sharer"]
 ibtimes.co.uk###article-left-side-share-panel
 votpusk.ru,stau.info###socialButtons
 huffingtonpost.com.au##.share-bar__list > .bN:not(.email)
 index.hr,simpladent.com,hotstar.com,trthaber.com,stereogum.com##.social-holder
 tah.de,autobild.de,computerbild.de,wetteronline.de###socialmedia
+cosmo.ru##.social-box-widget
 shariki-games.ru##a#link_test
 cn.ru##.cnsocnets
 ||img-css.friends.yandex.net//js/api/Share.js
@@ -7960,7 +7998,6 @@ matchtv.ru,shueisha.online,walkerplus.com,gauchazh.clicrbs.com.br,netzwelt.de,cn
 wareable.com##.article-media-icons
 irk.ru##.j-share-buttons
 nydailynews.com###ra-share-bottom
-porneq.com##.share-body
 thesslstore.com##.ampforwp-social-icons
 mactechnews.de##.SynFacebookLike
 mactechnews.de##.SynTwitterShare
@@ -7974,6 +8011,7 @@ ibb.co###tabbed-content-group .panel-networks
 ibb.co##.header-content-right > a.btn[data-target="modal-share"]
 developer.samsung.com##a[id^="rs_send_"]
 garten.de##h2.pane-title:first-of-type
+androidcentral.com,crackberry.com,imore.com,teslacentral.com,vrheads.com,windowscentral.com##.mn_mbn_share
 paperpaper.*##.r-likes-wrapper
 uip.me##.post-share > div.show
 ||finikeakdeniz.com.tr/images/facebook.png
@@ -7981,6 +8019,7 @@ re-port.net,newsweek.com,amp.ibtimes.co.uk##.article--share
 referandum.ntv.com.tr##.fixed-social-share
 line.do##timeline-moment-share
 schnelle-online.info,gooool.org##.socialb
+fstoppers.com##a[data-featherlight=".share-buttons"]
 itremont.info,autogrodno.by,planet-today.ru##div[id^="jlvkgroup"]
 m.gsmarena.com##.share-buttons > a[class*="-share-button"]
 wired.com##.amp-wp-social
@@ -7989,20 +8028,25 @@ sportarena.com##.ui-widget-overlay
 koskomp.ru##.social_widget
 apk.dog,hololivepro.com,m.etnews.com,rose.marv.jp,khan.co.kr##.share_wrap
 abplive.com,wccftech.com,history.com,refinery29.com,politico.com##.story-share
+software.informer.com##.wrapper_like
 robtex.com##.soctop
+cnbc.com###social-tools-panel_gig_containerParent
 realnoevremya.ru##.colorShareBtn
 realnoevremya.ru##.grayShareBtn
 inkazan.ru,newizv.ru##.share-popups-component
 mirror.co.uk##.mod-socialFollow
 womenshealthmag.com,mirror.co.uk##.sharebar
+eonline.com##.cs-share
 outlookindia.com##.addthis_button
 therecord.media,brax.com,metro.us##.social-share-icons
 hi-news.ru,appleinsider.ru###ShareButton
 hpe.com##.footer-social
 newsfs.com,bloter.net,comworld.co.kr,jejudomin.co.kr,kbmaeil.com,sports-g.com,chungnamilbo.co.kr,incheonilbo.com,newsnjoy.or.kr,digitaltoday.co.kr,slist.kr,dnainfo.com##.social-group
+huffingtonpost.fr##aside[id^="highlight-share_"]
 ||karakartal.com/_iframe/haber_paylas_kutular.php?
 karakartal.com##.body > div > .img ~ div[style^="border: 3px"]
 statista.com##.socialMediaBox
+latimes.com##.trb_sc
 gearburn.com##.csi_sharing
 dazeddigital.com,tecmundo.com.br,moslenta.ru##.social-floating
 q.hatena.ne.jp,thequestion.ru##.question-share
@@ -8022,20 +8066,27 @@ polrail.com###facebooksocialpluginlink
 zagranitsa.com###facebookWindow
 polszczyzna.pl,elise.com.ua###fanback
 onedio.ru###fbbox
+thehackerblog.com,nasiloluyo.com,pixelo.net###floatingSocialShare
+acura.com###global-social-networking
 trendblog.net###googleplus_widget
+surfingbird.ru###js-share
 isitdownrightnow.com,hometheater.co.il###likebox
+cxid.info,emlakkulisi.com,strana.in.ua,study.ru,uaexpert.blogspot.ru,wotspeak.ru###overlay
 mixesdb.com###pageIconGoogle
 3mv.ru###popupDarkness
+kinogb.net###rshare
+lenovo-smart.ru,xperia-droid.ru###sb_popup
 nepu.*,youcine.plus,apkmirror.com###shareDropdown
 pcmag.com,extremetech.com###share_container
 katfile.cloud,katfile.com,down.mdiaload.com,down.fast-down.com,userupload.net,file-upload.com###sharebuttons
 appsliced.co###sharing_bar
 focus.de###singlepostSlideInBoxHoch
+politeka.net###soc-no-header
 m.interfax.ru###soc_net
 telegraf.com.ua###soc_popup
 aa.com.tr###socailfootericon
 benchmark.pl###socialEntryBar
-0154.by,0312.ua,032.ua,0332.ua,0342.ua,0352.ua,0362.ua,0372.ua,0382.ua,0412.ua,04141.com.ua,0432.ua,04563.com.ua,04597.com.ua,04598.com.ua,0462.ua,0472.ua,048.ua,04868.com.ua,0512.com.ua,05136.com.ua,0522.ua,0532.ua,05366.com.ua,0542.ua,05447.com.ua,0552.ua,056.ua,0564.ua,0566.com.ua,0569.com.ua,057.ua,061.ua,06153.com.ua,0619.com.ua,06236.com.ua,06237.com.ua,06239.com.ua,06242.ua,06252.com.ua,06267.com.ua,06272.com.ua,06274.com.ua,06277.com.ua,0629.com.ua,0642.ua,06452.com.ua,1rnd.ru,3849.com.ua,44.ua,4594.com.ua,5692.com.ua,62.ua,6262.com.ua,6264.com.ua,65.media,7152.kz,7232.kz,86155city.ru,8692.ru,city04.kz,city41.ru,citydomodedovo.ru,go31.ru,go61.ru,go7812.ru,gorod3466.ru,goroddomodedovo.ru,inaktau.kz,inalmaty.kz,inastana.kz,inatyrau.kz,inkaragandy.kz,inshymkent.kz,karelia.news,kaskelenec.kz,kinokadr.ru,labaved.ru,qapshagai-city.kz,uralskcity.kz###socialpopup
+gqmagazine.fr###socialbox-float
 kinokadr.ru###socialpopup2
 bier.by,aero.de,wrc.com,raetsel-loesungen.de,niederlausitz-aktuell.de,ffn.de,nordbayern.de,dlh.net###socialshareprivacy
 sostav.ru###sostavFacebookPanel
@@ -8056,11 +8107,9 @@ maksavit.ru,charentelibre.fr,delfi.ee,delfi.lt,delfi.lv,bilimland.kz,fox35orland
 focus.ua##.at4-jumboshare
 evrensel.net##.author-socials
 sibnet.ru,svoy.ru##.b-social-widget
-uptodown.com##.b_like
 favorit-motors.ru,sefon.pro,khl.ru,uptodown.com##.b_share
 fontpark.net##.background-box
 cpu-world.com##.bottom_ad
-mvd.ru##.bp-bottom > div.bp-prop
 si.com##.btn-fb
 parasut.com,mailonsunday.co.uk,thisismoney.co.uk,dailymail.co.uk##.button-share-facebook
 bolgegazetesi.com##.buyukpaylas
@@ -8114,7 +8163,6 @@ trabzonspor.org.tr##.newdetailsocialwrapper
 ajansspor.com,trhaber.com,zn.ua,almaty.tv,kuban24.tv,m.inews24.com,m.joynews24.com,group.softbank,informador.mx,recordchina.co.jp,samsunkenthaber.com.tr,haber7.com,toneto.net,aksam.com.tr,dalealbo.cl,yenienerji.com,pirogovclinic.ru,yenikocaeli.com,hellomagazine.com,hola.com,dk.ru,maxicep.com,sporx.com##.news-share
 foobar2000.org##.padding > table[style="margin-left:auto;margin-right:auto;width:auto;font-size:75%"] + h2
 lyricsmode.com##.personal-social-btns
-fishki.net##.pic-share
 monetory.io,thenextweb.com##.post-share
 vviruslove.com,yeniulke.net##.post-sharing-bd
 thedroidguy.com##.post-soc-count
@@ -8133,7 +8181,6 @@ thedailystar.net,jetfilmizle.*,nspk.ru,japantimes.co.jp,salon24.pl,gamespot.com#
 jijitsu.net,magicbase.xyz,kaldata.com##.share-flat
 furfur.me,wonderzine.com##.share-images
 economist.com##.share-inline-footer-reddit
-40407.com,musescore.com,skidkaonline.ru##.share-item:not(.comments)
 romaniatv.net,bigbangnews.com##.share-me
 vulture.com##.share-mini
 grammarly.com##.share-more-wrap
@@ -8161,7 +8208,6 @@ atv.com.tr##.site-social
 zdnet.com##.siu-btns-cont
 focus.de##.socFbLikeShare
 zaxid.net##.soc_list_for_news
-kibrispostasi.com##.social > li[class]:nth-child(-n+3)
 66.ru##.social-button:not(.social-button_blablanator)
 lmn.in.ua,news.zoom.us,msspalert.com,rprealtyplus.com,broadwayworld.com,foxweather.com,scmagazine.com,zyro.com,1plus1.ua,wargaming.com,f5haber.com,dizimom.*,limon.kg,filmmakinesi.*,radio.net,radio.at,radio.de,avvir.no,theatlantic.com,indiatimes.com,m.beautypageants.in##.social-icons
 sports.ru##.social-icons-big.likes
@@ -8187,6 +8233,7 @@ sz-online.de##.szoSocialMediaShare
 probiyotix.com##.td-post-sharing
 motor.ru##.topic-social__list
 dospara.co.jp,gazetevatan.com,pastebin.com##.tweet
+forbes.com##.tweet-this
 bandcamp.com##.tweetThis
 hollywood.com##.twitter-btn
 liveuamap.com##.twitter-icon
@@ -8194,12 +8241,14 @@ blogto.com##.twitter-plain-control
 blogto.com##.twitter-solid-control
 matomame.jp,galatasaray.org##.twitter_follow
 otakomu.jp,sabah.com.tr,browserleaks.com##.twt
+censor.net.ua##.user_activity_like_block
 steambuy.com##.vk-group
 stranamam.ru,povarenok.ru##.vkfb
 vocativ.com##.voc-article-share-btn
 vox.de##.voxde-social-share
 /jquery.fancybox.pack.js$domain=ultraslan.com
 /s_code.js$domain=ge.com
+thenextweb.com##[class^="post-actions-share"]
 thefreedictionary.com##a[class^="shr-"]
 techrepublic.com##a[data-location^="bottomsharebar"]
 ilacrehberi.com,lostfilm.tv##a[href^="//twitter.com/home?status"]
@@ -8212,8 +8261,6 @@ sinemalar.com##a[onclick^="facebookShare"]
 habergazetesi.com.tr##a[onclick^="payla("]
 slovopedia.org.ua,academic.ru##a[onclick^="share("]
 u-f.ru##body > div#pp
-ted.com##button.sb[data-service-name="linkedin"]
-theregister.co.uk##div.faceb
 indiatimes.com##div.leftsocial
 zaytung.com##div[align="left"] > font > span[width="220px"][style]
 atlantak.com,samara24.ru##div[class*="share-button"]
@@ -8370,6 +8417,7 @@ rakukan.net#?#.module:has(> [class^="twitter-"])
 coolrom.com.au#?#font table[width][cellpadding="3"]:has(> tbody > tr > td > b:contains(/^Share:$/))
 sravni.ru#?#div[class^="article-header_interactiveBlock_"] > div:has(svg[data-qa="Share"])
 opensubtitles.com#?##menu-footer-links > .nav > li:last-child:contains(Share)
+android-robot.com#?#.entry-info > div.entry-categories:has(> div.ya-share2)
 obrazovaka.ru#?#.lft > h3:contains(Поделитесь результатом в социальной сети:)
 fashionsnap.com#?#div[class^="_"] > div[class^="_"]:has(> div > a[href*="share"])
 vgr.by#?#.edgtf-post-text-inner > div.edgtf-post-info-bottom:has(> div.edgtf-share-label)
@@ -8386,6 +8434,7 @@ calc-site.com#?##right_navi > .left_navi01:has(> .left_navi05.left_navi05_pad)
 timesnownews.com#?#.trinity-skip-it div[class]:has(> div > a[href^="https://www.facebook.com/sharer/sharer.php"])
 zaytung.com#?#font > div:has(> iframe[src^="http://www.facebook.com/plugins/likebox.php"])
 zaytung.com#?#font > div:has(> div.fb_iframe_widget)
+zaytung.com#?#div[align="left"] > p:has(> span[width="220px"] > a[href^="http://twitter.com/share?"])
 nativecamp.net#?#.individual_sidebar_content_bottom > div.tab_content_action_column > a[href^="http://twitter.com/"]:upward(2)
 healthline.com#?#div[data-article-body] h1 ~ div[class] > div[class]:has(> p + div > div.facebook)
 cepro.com#?#.social-share-new > .et_pb_column > .et_pb_text > .et_pb_text_inner > p:contains(/^SHARE$/)
@@ -8454,6 +8503,7 @@ japan.zdnet.com#?#article > div.pg-mod:has(> div.article-sns)
 hotpepper.jp#?#.shopInfoBody > dd.shopInfoContents:has(> div.shopInfoInner > div.shopInfoShare)
 motorsport-total.com#?#.pull-right > div.teaser_container:has(> div.f1de-container > div.block-title:contains(/Twitter|Facebook|Instagram/))
 film.ru#?##recommendation > div.recommendation_button:contains(/^Поделиться в социальных сетях$/)
+saga-s.co.jp#?#.article-footer-bottom:has(> div.article-sns > div.article-sns__item)
 meteored.com.ar#?#.franjas > aside:has(> div#meteored_share)
 lectormanga.com,lectortmo.com#?#div.text-center:has(> h3:contains(/^Compartir/))
 washingtonpost.com#?#div[data-qa="article-actions"] > div[class^="wpds-c-"] > div[class^="wpds-c-"]:has(> button[aria-label="Share"])
@@ -8625,7 +8675,6 @@ psychologies.ru#?#.aside-title:contains(Psychologies в cоц.сетях)
 calculate.plus#?#.col-xs-12 > .panel-application > .panel-body > .social-share:only-child:upward(2)
 kaspersky.*#?#.js-sticky-sidebar-visible > div.c-widget:has(> nav.c-social-sharing)
 eg.ru#?#.article div[id][onclick]:has(> i[class$="fa-share-square"])
-namemc.com##.row > div.col-xl-4 > div.card:has(> a.twitter-timeline)
 ilovepdf.com#?#.container > div[class]:has(> div.card div.share)
 buildcomputers.net#?##ContentColumn > .Liner > div[style="width: 100%; box-sizing: border-box"] > h2:contains(/^Like and Share$/):upward(1)
 softportal.com#?#.cardPageLinks > div.Menu2ETd:has(> a[onclick^="showShare"])
@@ -8660,6 +8709,7 @@ mega-porno.me#?##oframemega-jwplayer > pjsdiv[style]:has(> pjsdiv[style]:contain
 der-postillon.com#?#.sidebar > div.widget:has(> div.widget-content > div#postillon24-videos > div.yt-subscribe-widget)
 musicrock24.ru#?#.art-layout-cell > div.art-box:has(> div.art-box-body > div.art-blockheader > h3:contains(Наша группа ВКонтакте!))
 info-comp.ru#?##secondary > div.widget:has(> div.textwidget div#vk_groups)
+novate.ru#?#.content > p:contains(Понравилась статья)
 novate.ru#?#.native > div[class="colored2"]:has(> .fb-like)
 vgorodekirove.ru#?#.c_mr_20.flexbox > span:contains(Поделиться)
 roem.ru#?#footer > .entry-counters > span:contains(Поделиться)
@@ -8793,13 +8843,12 @@ gog.com#?#div[gog-hide-by-window-name="galaxy_order_popup"] > div[gog-dropdown]:
 suckhoedoisong.vn##.fixed-navigation
 suckhoedoisong.vn##.detail-like-fb
 the21.php.co.jp,pro-golfacademy.com,lister.tokyo,sbisec.co.jp,realsound.jp,m.edaily.co.kr,mana-lom-tc.com,choukadou-anime.com,etnews.com##.sns_btn
+imnews.imbc.com##div[class="share fixed"]
 m.joseilbo.com##.sns_icon_set
 cyberlink.com,eveeve.jp,sugoren.com,m.pann.nate.com##.social_area
-m.sportsseoul.com##.bottom_iconMenu
 m.thisisgame.com##.m-top-nav-fixed-sns
 mnews.sbs.co.kr##.ec_icshare_ca
 naver.com##.naver-splugin
-news.kmib.co.kr##.btn_google
 news.tf.co.kr###SUDA_SHARE_BOX
 news.tf.co.kr##.subSnsBtn
 newstomato.com##.rnsc_sns
@@ -9520,7 +9569,6 @@ href^="https://facebook.com/sharer?u=
 ###smthemes_share
 ###social-actions
 ###social-bar-fixed
-###social-bottom-article
 ~swappa.com###social-buttons
 ~mlh.com,~drwindows.de###social-media
 ###social-plugins
@@ -10531,6 +10579,7 @@ azerbaycan24.com##body > #ouibounce-modal
 femida.az##body > #colorbox
 femida.az##body > #cboxOverlay
 ibrasoftware.com##.msb
+wildo.ru###shadow_vk
 wildo.ru###vk_wiget_popup
 prizyv.ru##.pum-overlay
 tvnetil.net##.warnpop
@@ -10625,6 +10674,7 @@ justanime.to##.share-popup-overlay
 !+ NOT_OPTIMIZED
 medonet.pl##body.withFPU::before
 vgorodekirove.ru#$##fancybox-container-1 { display: none !important; }
+vgorodekirove.ru#$#html { overflow: visible !important; }
 hardreset.info#$##modal-facebook { display: none !important; }
 hardreset.info#$#.modal-backdrop { display: none !important; }
 hardreset.info#$#body { overflow: visible!important; }
@@ -10639,6 +10689,7 @@ dynamo.kiev.ua#$#.fader-social { display: none!important; }
 deccoria.pl#$#html.dc-modal-is-locked > body.dc-layout--modal-active[style="padding-right: 17px;"] { overflow: visible!important; padding-right: 0!important; }
 deccoria.pl#$#html.dc-modal-is-locked > body.dc-layout--modal-active[style="padding-right: 17px;"] > .dc-modal-overlay.dc-modal-is-opened:empty { display: none!important; }
 deccoria.pl#$#html.dc-modal-is-locked > body.dc-layout--modal-active[style="padding-right: 17px;"] > .dc-modal-wrapper.dc-modal-is-opened > .dc-modal--site-facebook-like { display: none!important; }
+smaker.pl#$#html > body.scrollingDisabled { overflow: visible!important; }
 smaker.pl#$#body.scrollingDisabled > .fanPlug { display: none!important; }
 smaker.pl#$#body.scrollingDisabled > #overlay { display: none!important; }
 agrimpasa.com#$#div[class^="ArevicoModal"] { display: none!important; }
@@ -10647,7 +10698,7 @@ pravda.if.ua#$#body { overflow: visible!important; }
 pravda.if.ua#$#.modal-backdrop { display: none!important; }
 bim.com.tr#$#div[class^="modal"] { display: none!important; }
 bim.com.tr#$#body.modal-open { overflow: visible!important; }
-forum.autoua.net#$#.fader-social { display: none!important; }
+ringside24.com#$#.social-open { overflow: visible!important; }
 forum.autoua.net#$#body { overflow: visible!important; }
 newkaliningrad.ru#$#.modal-backdrop { display: none!important; }
 newkaliningrad.ru#$#body > noindex { display: none!important; }

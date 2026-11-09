@@ -8231,18 +8231,18 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "f108a248579190d52136e6e135a4d6c9" due to: ' + e);
         }
     },
-    '(()=>{const e="SPONSORED",t="SponsoredData",r="AdsSideFeedUnit",n=["sponsored_data","th_dat_spo","qrz_ctx_seg"],o="MarketplaceFeedAdStory",a=new WeakMap,i=[e,t,r,...n],s=[t,o,...n],p=window.String.prototype.split,l=window.String.prototype.trim,d=new WeakMap,c=new WeakMap,y=new WeakSet,f=(e,t,r=Proxy)=>{const n=c.get(e)??Reflect.apply(window.Function.prototype.toString,e,[]),o=new r(e,t);return d.set(o,d.get(e)??e),c.set(o,n),o},w=(e,t)=>e?.length>300&&t.some(t=>e?.includes?.(t)),u=e=>w(e,i),h=e=>Boolean(e?.startsWith?.("{")&&e?.endsWith?.("}")||e?.startsWith?.("[")&&e?.endsWith?.("]")),g=e=>h(e)&&u(e),_=e=>{try{e.JSON.parse=f(e.JSON.parse,C,e.Proxy),e.String.prototype.split=f(e.String.prototype.split,V,e.Proxy),e.String=f(e.String,Y,e.Proxy),e.String.prototype.constructor=e.String,e.Function.prototype.call=f(e.Function.prototype.call,ce,e.Proxy),e.Function.prototype.toString=f(e.Function.prototype.toString,fe,e.Proxy)}catch(e){}},m=e=>Boolean(e instanceof HTMLIFrameElement&&(""===e.src||e?.src?.startsWith("about:blank"))&&e.contentWindow),S=new Set(["append","prepend","before","after","insertNode","replaceWith","replaceChild","replaceChildren"]),{apply:b}={apply(e,t,r){const n=Reflect.apply(e,t,r);try{m(n)?_(n.contentWindow):S.has(e.name)&&r.forEach(e=>{m(e)&&_(e.contentWindow)})}catch(e){}return n}},A={apply:b};window.Node.prototype.appendChild=f(window.Node.prototype.appendChild,A),window.Node.prototype.insertBefore=f(window.Node.prototype.insertBefore,A),window.Node.prototype.replaceChild=f(window.Node.prototype.replaceChild,A),window.Element.prototype.append=f(window.Element.prototype.append,A),window.Element.prototype.prepend=f(window.Element.prototype.prepend,A),window.Element.prototype.replaceChildren=f(window.Element.prototype.replaceChildren,A),window.Element.prototype.replaceWith=f(window.Element.prototype.replaceWith,A),window.Element.prototype.before=f(window.Element.prototype.before,A),window.Element.prototype.after=f(window.Element.prototype.after,A),window.Element.prototype.insertAdjacentElement=f(window.Element.prototype.insertAdjacentElement,A),window.Range.prototype.insertNode=f(window.Range.prototype.insertNode,A),window.CharacterData.prototype.replaceWith=f(window.CharacterData.prototype.replaceWith,A);const x=["item_collection","ads"],E=["auxColumnUnits","sideFeed"],v=e=>Boolean(e)&&(Object.values(e).some(e=>e?.__typename===t)||n.some(t=>{const r=e[t];return r&&"object"==typeof r&&!Array.isArray(r)&&[r.ad_id,r.lbl_adv_iden].some(e=>"string"==typeof e&&e.length>0)})),O=(e,t)=>{if(!e||"object"!=typeof e||Array.isArray(e))return!1;const r=Object.keys(e);return r.length===t.length&&t.every(e=>r.includes(e))},N=e=>O(e,["node"])&&O(e.node,["s"])&&O(e.node.s,["__typename"])&&e.node.s.__typename===t,j=["p","z9","k4","w7","q8","n3","v6","j5","t8","m6","h4","r2"],P=new Set(["h4","r2"]),W=e=>{const t=Array.isArray(e)&&1===e.length?e[0]:e;if(!t||"object"!=typeof t||Array.isArray(t))return!1;const r=j.find(e=>"string"==typeof t[e]);if(void 0===r)return!1;const n=["data","edges","require",r];if(Object.hasOwn(t,"extensions")){if(!(O(t.extensions,[])||O(t.extensions,["is_final"])&&!0===t.extensions.is_final))return!1;n.push("extensions")}if(Object.hasOwn(t,"__bbox")){if(!(P.has(r)&&O(t.extensions,["is_final"])&&!0===t.extensions.is_final&&(o=t.__bbox,O(o,["result"])&&O(o.result,["data"])&&O(o.result.data,["node"])&&O(o.result.data.node,["s","th_dat_spo"])&&O(o.result.data.node.s,["__typename"])&&"CometStorySponsoredLabelStrategy"===o.result.data.node.s.__typename&&O(o.result.data.node.th_dat_spo,["s"])&&1===o.result.data.node.th_dat_spo.s)))return!1;n.push("__bbox")}var o;return O(t,n)&&N(t.data)&&Array.isArray(t.edges)&&1===t.edges.length&&N(t.edges[0])&&Array.isArray(t.require)&&1===t.require.length&&N(t.require[0])},B=(e,t,n,o)=>{if(!e||"object"!=typeof e||n<0)return!1;let a=!1;if(Array.isArray(e.nodes)){const t=e.nodes.filter(e=>!(e=>e?.__typename===r||x.some(t=>{const r=e?.[t]?.nodes;return Array.isArray(r)&&r.some(e=>e?.sponsored_data?.ad_id)}))(e));e.nodes.length-t.length>0&&(e.nodes=t,a=!0)}return Object.entries(e).forEach(([e,r])=>{a=B(r,`${t}.${e}`,n-1,o)||a}),a},k=(e,t=10)=>{const r=e?.data?.viewer,n=r??e?.[3]?.[1]?.__bbox?.result?.data?.viewer;if(!n)return!1;return B(n,r?"data.viewer":"item[3][1].__bbox.result.data.viewer",t,e)},R=(t,r=10,n=new WeakMap)=>{if(!t||"object"!=typeof t||r<0)return!1;const o=n.get(t);if(void 0!==o&&o>=r)return!1;if(n.set(t,r),W(t))return!1;let a=((t,r)=>{if(!t||"object"!=typeof t)return!1;let n=!1;try{if(r){if(Array.isArray(t.require?.[0]?.[3]?.[0]?.__bbox?.require)&&t.require[0][3][0].__bbox.require.forEach(t=>{t[3]?.[1]?.__bbox?.result?.data?.category===e&&(delete t[3][1].__bbox.result.data.node,n=!0),v(t[3]?.[1]?.__bbox?.result?.data?.node)&&(delete t[3][1].__bbox.result.data.node,n=!0),n=k(t)||n}),E.some(e=>Array.isArray(t.data?.viewer?.[e]?.nodes))&&(n=k(t)||n),Array.isArray(t.data?.viewer?.news_feed?.edges)){const r=t.data.viewer.news_feed.edges.length;t.data.viewer.news_feed.edges=t.data.viewer.news_feed.edges.filter(t=>!v(t.node)&&t.category!==e),n=n||t.data.viewer.news_feed.edges.length!==r}v(t.data?.node)&&(delete t.data.node,n=!0),t.data?.category===e&&(delete t.data.node,n=!0)}}catch(e){}return n})(t,!0);return 0===r||Object.values(t).forEach(e=>{a=R(e,r-1,n)||a}),a},q=(e,t)=>{try{const r="string"==typeof t;if(r&&!u(t))return e;if(W(e))return e;if(!r&&!u(JSON.stringify(e)))return e;R(e)&&e&&"object"==typeof e&&y.add(e)}catch(e){}return e},{apply:J}={apply(e,t,r){K();const n=Reflect.apply(e,t,r);return q(n,r[0])}},C={apply:J};window.JSON.parse=f(window.JSON.parse,C);const F=(e,t,r)=>{if(!e||"object"!=typeof e&&"function"!=typeof e)return;let n=a.get(e);if(!t.some(t=>"function"==typeof e[t]&&!d.has(e[t])&&(n?.get(t)??0)<10))return;n||(n=new Map,a.set(e,n));const o=new Map;t.forEach(t=>{const r=e[t];"function"==typeof r&&d.has(r)&&o.set(d.get(r),r)}),t.forEach(t=>{const a=e[t],i=n.get(t)??0;if("function"!=typeof a||d.has(a)||i>=10)return;n.set(t,i+1);let s=o.get(a);if(!s){const{apply:e}={apply(e,t,n){const o=Reflect.apply(e,t,n);return r?q(o,n[0]):q(o)}};s=f(a,{apply:e}),o.set(a,s)}e[t]=s})},M=["parse","parseText","readText","fromText","fromSource","fromChunk","fromBlock","fromSlice","fromPiece","fromSection","fromSegment","fromExcerpt"],$=["ghlParseServerJSPayload","readBootPayload","decodeBootScript","hydrateBootData","inflateBootPayload","expandBootPayload","unpackBootPayload","openBootPayload","loadBootPayload","readBootState","readBootRecord","readBootEntry"],z=[[["json5"],e=>F(e,M,!0)],[["GHLServerJSParse"],e=>F(e,$,!1)]],D=e=>{Array.isArray(e)&&z.forEach(t=>{e.some(e=>e?.[1]===t[1])||e.push(t)})};let L=null,T=!1,H=!1;const U=new Map,G=z.map(([[e],t])=>r=>{U.set(e,r),t(r)}),I=()=>{if(!T&&"function"==typeof window.require){T=!0;const e=window.require("ifRequired");"function"==typeof e&&(L=e)}return L},K=()=>{if(!H)try{for(let e=0;e<z.length;e+=1){const[[t],r]=z[e],n=U.get(t);if(void 0===n){if(null===I())return;L(t,G[e])}else r(n)}}catch(e){H=!0}},{apply:Q}={apply(e,t,r){let n;K();try{if(h(t),g(t)){const e=JSON.parse(t);y.has(e)&&(n=JSON.stringify(e))}}catch(e){}return Reflect.apply(e,n??t,r)}},V={apply:Q};window.String.prototype.split=f(window.String.prototype.split,V),window.String.prototype.substring=f(window.String.prototype.substring,V);const{apply:X}={apply(e,t,r){K();const n=Reflect.apply(e,t,r);try{if(g(n)){const e=JSON.parse(n);if(y.has(e)){return JSON.stringify(e)}}}catch(e){}return n}},Y={apply:X};window.String=f(window.String,Y),window.String.prototype.constructor=window.String;const Z=new Map,ee=/^[\\t\\r\\n \\u00a0]*\\u00a0[\\t\\r\\n ]*/,te=/^(?:[\\t\\r\\n ]*(?:\\/\\/[^\\r\\n]*(?:\\r\\n?|\\n)|\\/\\*[\\s\\S]*?\\*\\/))+/,re=/"(?:[^"\\\\]|\\\\[\\s\\S])*"|((?:(?:\\/\\*[\\s\\S]*?\\*\\/|\\/\\/[^\\r\\n]*(?:\\r\\n?|\\n|$))[\\t\\r\\n ]*)+)/g,ne=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:/,oe=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"|[[{]|true|false|null|-?[\\d.eE+-]+)/,ae=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"|[[{]|true|false|null|-?[\\d.eE+-]+)[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:|[,[{\\]}])/,ie=e=>{const t=Z.get(e);if(void 0!==t)return t;let r=e;try{const t=u(e),n=e.match(ee)?.[0]??"",o=e.slice(n.length),a=o.match(te)?.[0]??"",i=o.slice(a.length);let s=i,p="";if(t&&(/\\*\\/[\\t\\r\\n ]*$/.test(i)||/(?:\\r\\n?|\\n)[\\t ]*\\/\\/[^\\r\\n]*(?:[\\r\\n][\\t ]*)*$/.test(i)))for(const e of i.matchAll(re))if(e[1]&&e.index+e[0].length===i.length){const t=i.slice(0,e.index).search(/[\\t\\r\\n ]*$/);s=i.slice(0,t),p=i.slice(t);break}const d=Reflect.apply(l,s,[]);if(h(d)&&t){const e=d.slice(1).match(te)?.[0]??"";let t=""===e?s:s.replace(e,"");const o=t.match(ne)?.[0]??"",i=""===o?"":t.slice(o.length).match(te)?.[0]??"";""!==i&&(t=o+t.slice(o.length+i.length));const l=t.match(oe)?.[0]??"",c=""===l?"":t.slice(l.length).match(te)?.[0]??"";""!==c&&(t=l+" "+t.slice(l.length+c.length));const f=t.match(ae)?.[0]??"",w=""===f?"":t.slice(f.length).match(te)?.[0]??"";""!==w&&(t=f+" "+t.slice(f.length+w.length));let u="";if(t.includes("/*")||t.includes("//"))for(const e of t.matchAll(re))if(e[1]&&/^[\\]}][\\t\\r\\n ]*$/.test(t.slice(e.index+e[0].length))){u=e[1],t=t.slice(0,e.index)+" "+t.slice(e.index+u.length);break}const h=JSON.parse(t);if(y.has(h)){let t=JSON.stringify(h);""!==w&&(t=t.replace(ae,e=>e+w)),""!==c&&(t=t.replace(oe,e=>e+c)),""!==i&&(t=t.replace(ne,e=>e+i)),""!==u&&(t=t.slice(0,-1)+u+t.slice(-1)),r=n+a+t[0]+e+t.slice(1)+p}}}catch(e){}return((e,t)=>{if(Z.size>=2){const e=Z.keys().next().value;Z.delete(e)}return Z.set(e,t),t})(e,r)},{apply:se}={apply(e,t,r){let n=t;try{"string"==typeof t&&t.length>300&&(n=ie(t))}catch(e){}return Reflect.apply(e,n,r)}},pe={apply:se};window.String.prototype.charAt=f(window.String.prototype.charAt,pe);const le=e=>{const t=e?.data?.viewer?.marketplace_feed_stories;if(!Array.isArray(t?.edges))return!1;const r=t.edges.filter(e=>!(e=>{const t=e?.__typename;return"string"==typeof t&&t.includes(o)})(e?.node));return r.length!==t.edges.length&&(t.edges=r,!0)},{apply:de}={apply(e,t,r){const n=r[2]?.[0];if(w(n,s))try{const e=(e=>{let t=!1;const r=Reflect.apply(p,e,[/\\r?\\n|\\r/]).map(e=>{if(""===e.trim())return e;let r;try{r=JSON.parse(e)}catch{return e}const n=y.has(r),o=le(r);return n||o?(t=!0,JSON.stringify(r)):e});return t?r.join("\\r\\n"):e})(n);if(e!==n){const t=r[2].slice();t[0]=e,r[2]=t}}catch(e){}return Reflect.apply(e,t,r)}},ce={apply:de};window.Function.prototype.call=f(window.Function.prototype.call,ce);const{apply:ye}={apply:(e,t,r)=>c.has(t)?c.get(t):Reflect.apply(e,t,r)},fe={apply:ye};window.Function.prototype.toString=f(window.Function.prototype.toString,fe),(()=>{const e=window.__rl_stub;if("function"==typeof window.requireLazy&&!Array.isArray(e))return void z.forEach(([e,t])=>{window.requireLazy(e,t)});let t=Array.isArray(e)?e:[];D(t);try{Object.defineProperty(window,"__rl_stub",{configurable:!0,enumerable:!0,get:()=>t,set(e){t=e,D(e)}})}catch(e){window.__rl_stub=t}})()})();': () => {
+    '(()=>{const e="SPONSORED",t="SponsoredData",r="AdsSideFeedUnit",n=["sponsored_data","th_dat_spo","qrz_ctx_seg","pso_tad_rens"],o="MarketplaceFeedAdStory",a=new WeakMap,i=[e,t,r,...n],s=[t,o,...n],p=window.String.prototype.split,l=window.String.prototype.trim,d=new WeakMap,c=new WeakMap,y=new WeakSet,f=(e,t,r=Proxy)=>{const n=c.get(e)??Reflect.apply(window.Function.prototype.toString,e,[]),o=new r(e,t);return d.set(o,d.get(e)??e),c.set(o,n),o},w=(e,t)=>e?.length>300&&t.some(t=>e?.includes?.(t)),u=e=>w(e,i),h=e=>Boolean(e?.startsWith?.("{")&&e?.endsWith?.("}")||e?.startsWith?.("[")&&e?.endsWith?.("]")),g=e=>h(e)&&u(e),_=e=>{try{e.JSON.parse=f(e.JSON.parse,J,e.Proxy),e.String.prototype.split=f(e.String.prototype.split,V,e.Proxy),e.String=f(e.String,Y,e.Proxy),e.String.prototype.constructor=e.String,e.Function.prototype.call=f(e.Function.prototype.call,ce,e.Proxy),e.Function.prototype.toString=f(e.Function.prototype.toString,fe,e.Proxy)}catch(e){}},m=e=>Boolean(e instanceof HTMLIFrameElement&&(""===e.src||e?.src?.startsWith("about:blank"))&&e.contentWindow),S=new Set(["append","prepend","before","after","insertNode","replaceWith","replaceChild","replaceChildren"]),{apply:b}={apply(e,t,r){const n=Reflect.apply(e,t,r);try{m(n)?_(n.contentWindow):S.has(e.name)&&r.forEach(e=>{m(e)&&_(e.contentWindow)})}catch(e){}return n}},A={apply:b};window.Node.prototype.appendChild=f(window.Node.prototype.appendChild,A),window.Node.prototype.insertBefore=f(window.Node.prototype.insertBefore,A),window.Node.prototype.replaceChild=f(window.Node.prototype.replaceChild,A),window.Element.prototype.append=f(window.Element.prototype.append,A),window.Element.prototype.prepend=f(window.Element.prototype.prepend,A),window.Element.prototype.replaceChildren=f(window.Element.prototype.replaceChildren,A),window.Element.prototype.replaceWith=f(window.Element.prototype.replaceWith,A),window.Element.prototype.before=f(window.Element.prototype.before,A),window.Element.prototype.after=f(window.Element.prototype.after,A),window.Element.prototype.insertAdjacentElement=f(window.Element.prototype.insertAdjacentElement,A),window.Range.prototype.insertNode=f(window.Range.prototype.insertNode,A),window.CharacterData.prototype.replaceWith=f(window.CharacterData.prototype.replaceWith,A);const x=["item_collection","ads"],E=["auxColumnUnits","sdieFede","sideFeed"],v=e=>Boolean(e)&&(Object.values(e).some(e=>e?.__typename===t)||n.some(t=>{const r=e[t];return r&&"object"==typeof r&&!Array.isArray(r)&&[r.ad_id,r.lbl_adv_iden].some(e=>"string"==typeof e&&e.length>0)})),O=(e,t)=>{if(!e||"object"!=typeof e||Array.isArray(e))return!1;const r=Object.keys(e);return r.length===t.length&&t.every(e=>r.includes(e))},N=e=>O(e,["node"])&&O(e.node,["s"])&&O(e.node.s,["__typename"])&&e.node.s.__typename===t,j=["p","z9","k4","w7","q8","n3","v6","j5","t8","m6","h4","r2","b3"],B=new Set(["h4","r2","b3"]),P=e=>{const t=Array.isArray(e)&&1===e.length?e[0]:e;if(!t||"object"!=typeof t||Array.isArray(t))return!1;const r=j.find(e=>"string"==typeof t[e]);if(void 0===r)return!1;const n=["data","edges","require",r];if(Object.hasOwn(t,"extensions")){if(!(O(t.extensions,[])||O(t.extensions,["is_final"])&&!0===t.extensions.is_final))return!1;n.push("extensions")}if(Object.hasOwn(t,"__bbox")){if(!(B.has(r)&&O(t.extensions,["is_final"])&&!0===t.extensions.is_final&&(o=t.__bbox,O(o,["result"])&&O(o.result,["data"])&&O(o.result.data,["node"])&&O(o.result.data.node,["s","th_dat_spo"])&&O(o.result.data.node.s,["__typename"])&&"CometStorySponsoredLabelStrategy"===o.result.data.node.s.__typename&&O(o.result.data.node.th_dat_spo,["s"])&&1===o.result.data.node.th_dat_spo.s)))return!1;n.push("__bbox")}var o;return O(t,n)&&N(t.data)&&Array.isArray(t.edges)&&1===t.edges.length&&N(t.edges[0])&&Array.isArray(t.require)&&1===t.require.length&&N(t.require[0])},W=(e,t,n,o)=>{if(!e||"object"!=typeof e||n<0)return!1;let a=!1;if(Array.isArray(e.nodes)){const t=e.nodes.filter(e=>!(e=>e?.__typename===r||x.some(t=>{const r=e?.[t]?.nodes;return Array.isArray(r)&&r.some(e=>e?.sponsored_data?.ad_id)}))(e));e.nodes.length-t.length>0&&(e.nodes=t,a=!0)}return Object.entries(e).forEach(([e,r])=>{a=W(r,`${t}.${e}`,n-1,o)||a}),a},k=(e,t=10)=>{const r=e?.data?.viewer,n=r??e?.[3]?.[1]?.__bbox?.result?.data?.viewer;if(!n)return!1;return W(n,r?"data.viewer":"item[3][1].__bbox.result.data.viewer",t,e)},F=(t,r=10,n=new WeakMap)=>{if(!t||"object"!=typeof t||r<0)return!1;const o=n.get(t);if(void 0!==o&&o>=r)return!1;if(n.set(t,r),P(t))return!1;let a=((t,r)=>{if(!t||"object"!=typeof t)return!1;let n=!1;try{if(r){if(Array.isArray(t.require?.[0]?.[3]?.[0]?.__bbox?.require)&&t.require[0][3][0].__bbox.require.forEach(t=>{t[3]?.[1]?.__bbox?.result?.data?.category===e&&(delete t[3][1].__bbox.result.data.node,n=!0),v(t[3]?.[1]?.__bbox?.result?.data?.node)&&(delete t[3][1].__bbox.result.data.node,n=!0),n=k(t)||n}),E.some(e=>Array.isArray(t.data?.viewer?.[e]?.nodes))&&(n=k(t)||n),Array.isArray(t.data?.viewer?.news_feed?.edges)){const r=t.data.viewer.news_feed.edges.length;t.data.viewer.news_feed.edges=t.data.viewer.news_feed.edges.filter(t=>!v(t.node)&&t.category!==e),n=n||t.data.viewer.news_feed.edges.length!==r}v(t.data?.node)&&(delete t.data.node,n=!0),t.data?.category===e&&(delete t.data.node,n=!0)}}catch(e){}return n})(t,!0);return 0===r||Object.values(t).forEach(e=>{a=F(e,r-1,n)||a}),a},R=(e,t)=>{try{const r="string"==typeof t;if(r&&!u(t))return e;if(P(e))return e;if(!r&&!u(JSON.stringify(e)))return e;F(e)&&e&&"object"==typeof e&&y.add(e)}catch(e){}return e},{apply:q}={apply(e,t,r){K();const n=Reflect.apply(e,t,r);return R(n,r[0])}},J={apply:q};window.JSON.parse=f(window.JSON.parse,J);const C=(e,t,r)=>{if(!e||"object"!=typeof e&&"function"!=typeof e)return;let n=a.get(e);if(!t.some(t=>"function"==typeof e[t]&&!d.has(e[t])&&(n?.get(t)??0)<10))return;n||(n=new Map,a.set(e,n));const o=new Map;t.forEach(t=>{const r=e[t];"function"==typeof r&&d.has(r)&&o.set(d.get(r),r)}),t.forEach(t=>{const a=e[t],i=n.get(t)??0;if("function"!=typeof a||d.has(a)||i>=10)return;n.set(t,i+1);let s=o.get(a);if(!s){const{apply:e}={apply(e,t,n){const o=Reflect.apply(e,t,n);return r?R(o,n[0]):R(o)}};s=f(a,{apply:e}),o.set(a,s)}e[t]=s})},M=["parse","parseText","readText","fromText","fromSource","fromChunk","fromBlock","fromSlice","fromPiece","fromSection","fromSegment","fromExcerpt","fromFragment"],$=["ghlParseServerJSPayload","readBootPayload","decodeBootScript","hydrateBootData","inflateBootPayload","expandBootPayload","unpackBootPayload","openBootPayload","loadBootPayload","readBootState","readBootRecord","readBootEntry","takeBootFrame"],z=[[["json5"],e=>C(e,M,!0)],[["GHLServerJSParse"],e=>C(e,$,!1)]],D=e=>{Array.isArray(e)&&z.forEach(t=>{e.some(e=>e?.[1]===t[1])||e.push(t)})};let L=null,T=!1,H=!1;const U=new Map,G=z.map(([[e],t])=>r=>{U.set(e,r),t(r)}),I=()=>{if(!T&&"function"==typeof window.require){T=!0;const e=window.require("ifRequired");"function"==typeof e&&(L=e)}return L},K=()=>{if(!H)try{for(let e=0;e<z.length;e+=1){const[[t],r]=z[e],n=U.get(t);if(void 0===n){if(null===I())return;L(t,G[e])}else r(n)}}catch(e){H=!0}},{apply:Q}={apply(e,t,r){let n;K();try{if(h(t),g(t)){const e=JSON.parse(t);y.has(e)&&(n=JSON.stringify(e))}}catch(e){}return Reflect.apply(e,n??t,r)}},V={apply:Q};window.String.prototype.split=f(window.String.prototype.split,V),window.String.prototype.substring=f(window.String.prototype.substring,V);const{apply:X}={apply(e,t,r){K();const n=Reflect.apply(e,t,r);try{if(g(n)){const e=JSON.parse(n);if(y.has(e)){return JSON.stringify(e)}}}catch(e){}return n}},Y={apply:X};window.String=f(window.String,Y),window.String.prototype.constructor=window.String;const Z=new Map,ee=/^[\\t\\r\\n \\u00a0\\ufeff]*[\\u00a0\\ufeff][\\t\\r\\n ]*/,te=/^(?:[\\t\\r\\n ]*(?:\\/\\/[^\\r\\n]*(?:\\r\\n?|\\n)|\\/\\*[\\s\\S]*?\\*\\/))+/,re=/"(?:[^"\\\\]|\\\\[\\s\\S])*"|((?:(?:\\/\\*[\\s\\S]*?\\*\\/|\\/\\/[^\\r\\n]*(?:\\r\\n?|\\n|$))[\\t\\r\\n ]*)+)/g,ne=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:/,oe=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"|[[{]|true|false|null|-?[\\d.eE+-]+)/,ae=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"|[[{]|true|false|null|-?[\\d.eE+-]+)[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:|[,[{\\]}])/,ie=e=>{const t=Z.get(e);if(void 0!==t)return t;let r=e;try{const t=u(e),n=e.match(ee)?.[0]??"",o=e.slice(n.length),a=o.match(te)?.[0]??"",i=o.slice(a.length);let s=i,p="";if(t&&(/\\*\\/[\\t\\r\\n ]*$/.test(i)||/(?:\\r\\n?|\\n)[\\t ]*\\/\\/[^\\r\\n]*(?:[\\r\\n][\\t ]*)*$/.test(i)))for(const e of i.matchAll(re))if(e[1]&&e.index+e[0].length===i.length){const t=i.slice(0,e.index).search(/[\\t\\r\\n ]*$/);s=i.slice(0,t),p=i.slice(t);break}const d=Reflect.apply(l,s,[]);if(h(d)&&t){const e=d.slice(1).match(te)?.[0]??"";let t=""===e?s:s.replace(e,"");const o=t.match(ne)?.[0]??"",i=""===o?"":t.slice(o.length).match(te)?.[0]??"";""!==i&&(t=o+t.slice(o.length+i.length));const l=t.match(oe)?.[0]??"",c=""===l?"":t.slice(l.length).match(te)?.[0]??"";""!==c&&(t=l+" "+t.slice(l.length+c.length));const f=t.match(ae)?.[0]??"",w=""===f?"":t.slice(f.length).match(te)?.[0]??"";""!==w&&(t=f+" "+t.slice(f.length+w.length));let u="";if(t.includes("/*")||t.includes("//"))for(const e of t.matchAll(re))if(e[1]&&/^[\\]}][\\t\\r\\n ]*$/.test(t.slice(e.index+e[0].length))){u=e[1],t=t.slice(0,e.index)+" "+t.slice(e.index+u.length);break}const h=JSON.parse(t);if(y.has(h)){let t=JSON.stringify(h);""!==w&&(t=t.replace(ae,e=>e+w)),""!==c&&(t=t.replace(oe,e=>e+c)),""!==i&&(t=t.replace(ne,e=>e+i)),""!==u&&(t=t.slice(0,-1)+u+t.slice(-1)),r=n+a+t[0]+e+t.slice(1)+p}}}catch(e){}return((e,t)=>{if(Z.size>=2){const e=Z.keys().next().value;Z.delete(e)}return Z.set(e,t),t})(e,r)},{apply:se}={apply(e,t,r){let n=t;try{"string"==typeof t&&t.length>300&&(n=ie(t))}catch(e){}return Reflect.apply(e,n,r)}},pe={apply:se};window.String.prototype.charAt=f(window.String.prototype.charAt,pe);const le=e=>{const t=e?.data?.viewer?.marketplace_feed_stories;if(!Array.isArray(t?.edges))return!1;const r=t.edges.filter(e=>!(e=>{const t=e?.__typename;return"string"==typeof t&&t.includes(o)})(e?.node));return r.length!==t.edges.length&&(t.edges=r,!0)},{apply:de}={apply(e,t,r){const n=r[2]?.[0];if(w(n,s))try{const e=(e=>{let t=!1;const r=Reflect.apply(p,e,[/\\r?\\n|\\r/]).map(e=>{if(""===e.trim())return e;let r;try{r=JSON.parse(e)}catch{return e}const n=y.has(r),o=le(r);return n||o?(t=!0,JSON.stringify(r)):e});return t?r.join("\\r\\n"):e})(n);if(e!==n){const t=r[2].slice();t[0]=e,r[2]=t}}catch(e){}return Reflect.apply(e,t,r)}},ce={apply:de};window.Function.prototype.call=f(window.Function.prototype.call,ce);const{apply:ye}={apply:(e,t,r)=>c.has(t)?c.get(t):Reflect.apply(e,t,r)},fe={apply:ye};window.Function.prototype.toString=f(window.Function.prototype.toString,fe),(()=>{const e=window.__rl_stub;if("function"==typeof window.requireLazy&&!Array.isArray(e))return void z.forEach(([e,t])=>{window.requireLazy(e,t)});let t=Array.isArray(e)?e:[];D(t);try{Object.defineProperty(window,"__rl_stub",{configurable:!0,enumerable:!0,get:()=>t,set(e){t=e,D(e)}})}catch(e){window.__rl_stub=t}})()})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.f59ec5beec63206273fa89c42671bfb3 === e) return;
+            if (Window.prototype.toString["6d2ebc751db65375064cae4192609eda"] === e) return;
             (() => {
-                const e = "SPONSORED", t = "SponsoredData", r = "AdsSideFeedUnit", n = [ "sponsored_data", "th_dat_spo", "qrz_ctx_seg" ], o = "MarketplaceFeedAdStory", a = new WeakMap, i = [ e, t, r, ...n ], s = [ t, o, ...n ], p = window.String.prototype.split, l = window.String.prototype.trim, c = new WeakMap, d = new WeakMap, y = new WeakSet, f = (e, t, r = Proxy) => {
-                    const n = d.get(e) ?? Reflect.apply(window.Function.prototype.toString, e, []), o = new r(e, t);
-                    return c.set(o, c.get(e) ?? e), d.set(o, n), o;
+                const e = "SPONSORED", t = "SponsoredData", r = "AdsSideFeedUnit", n = [ "sponsored_data", "th_dat_spo", "qrz_ctx_seg", "pso_tad_rens" ], o = "MarketplaceFeedAdStory", a = new WeakMap, i = [ e, t, r, ...n ], s = [ t, o, ...n ], p = window.String.prototype.split, l = window.String.prototype.trim, d = new WeakMap, c = new WeakMap, y = new WeakSet, f = (e, t, r = Proxy) => {
+                    const n = c.get(e) ?? Reflect.apply(window.Function.prototype.toString, e, []), o = new r(e, t);
+                    return d.set(o, d.get(e) ?? e), c.set(o, n), o;
                 }, w = (e, t) => e?.length > 300 && t.some((t => e?.includes?.(t))), u = e => w(e, i), h = e => Boolean(e?.startsWith?.("{") && e?.endsWith?.("}") || e?.startsWith?.("[") && e?.endsWith?.("]")), g = e => h(e) && u(e), _ = e => {
                     try {
-                        e.JSON.parse = f(e.JSON.parse, C, e.Proxy), e.String.prototype.split = f(e.String.prototype.split, V, e.Proxy), 
-                        e.String = f(e.String, Y, e.Proxy), e.String.prototype.constructor = e.String, e.Function.prototype.call = f(e.Function.prototype.call, ce, e.Proxy), 
+                        e.JSON.parse = f(e.JSON.parse, J, e.Proxy), e.String.prototype.split = f(e.String.prototype.split, V, e.Proxy), 
+                        e.String = f(e.String, Y, e.Proxy), e.String.prototype.constructor = e.String, e.Function.prototype.call = f(e.Function.prototype.call, de, e.Proxy), 
                         e.Function.prototype.toString = f(e.Function.prototype.toString, ye, e.Proxy);
                     } catch (e) {}
                 }, m = e => Boolean(e instanceof HTMLIFrameElement && ("" === e.src || e?.src?.startsWith("about:blank")) && e.contentWindow), b = new Set([ "append", "prepend", "before", "after", "insertNode", "replaceWith", "replaceChild", "replaceChildren" ]), {apply: S} = {
@@ -8265,14 +8265,14 @@ export const localScriptRules = {
                 window.Element.prototype.before = f(window.Element.prototype.before, A), window.Element.prototype.after = f(window.Element.prototype.after, A), 
                 window.Element.prototype.insertAdjacentElement = f(window.Element.prototype.insertAdjacentElement, A), 
                 window.Range.prototype.insertNode = f(window.Range.prototype.insertNode, A), window.CharacterData.prototype.replaceWith = f(window.CharacterData.prototype.replaceWith, A);
-                const x = [ "item_collection", "ads" ], E = [ "auxColumnUnits", "sideFeed" ], v = e => Boolean(e) && (Object.values(e).some((e => e?.__typename === t)) || n.some((t => {
+                const x = [ "item_collection", "ads" ], E = [ "auxColumnUnits", "sdieFede", "sideFeed" ], v = e => Boolean(e) && (Object.values(e).some((e => e?.__typename === t)) || n.some((t => {
                     const r = e[t];
                     return r && "object" == typeof r && !Array.isArray(r) && [ r.ad_id, r.lbl_adv_iden ].some((e => "string" == typeof e && e.length > 0));
                 }))), O = (e, t) => {
                     if (!e || "object" != typeof e || Array.isArray(e)) return !1;
                     const r = Object.keys(e);
                     return r.length === t.length && t.every((e => r.includes(e)));
-                }, N = e => O(e, [ "node" ]) && O(e.node, [ "s" ]) && O(e.node.s, [ "__typename" ]) && e.node.s.__typename === t, j = [ "p", "z9", "k4", "w7", "q8", "n3", "v6", "j5", "t8", "m6", "h4", "r2" ], W = new Set([ "h4", "r2" ]), P = e => {
+                }, N = e => O(e, [ "node" ]) && O(e.node, [ "s" ]) && O(e.node.s, [ "__typename" ]) && e.node.s.__typename === t, j = [ "p", "z9", "k4", "w7", "q8", "n3", "v6", "j5", "t8", "m6", "h4", "r2", "b3" ], W = new Set([ "h4", "r2", "b3" ]), P = e => {
                     const t = Array.isArray(e) && 1 === e.length ? e[0] : e;
                     if (!t || "object" != typeof t || Array.isArray(t)) return !1;
                     const r = j.find((e => "string" == typeof t[e]));
@@ -8332,7 +8332,7 @@ export const localScriptRules = {
                     return 0 === r || Object.values(t).forEach((e => {
                         a = q(e, r - 1, n) || a;
                     })), a;
-                }, R = (e, t) => {
+                }, F = (e, t) => {
                     try {
                         const r = "string" == typeof t;
                         if (r && !u(t)) return e;
@@ -8341,35 +8341,35 @@ export const localScriptRules = {
                         q(e) && e && "object" == typeof e && y.add(e);
                     } catch (e) {}
                     return e;
-                }, {apply: J} = {
+                }, {apply: R} = {
                     apply(e, t, r) {
                         K();
                         const n = Reflect.apply(e, t, r);
-                        return R(n, r[0]);
+                        return F(n, r[0]);
                     }
-                }, C = {
-                    apply: J
+                }, J = {
+                    apply: R
                 };
-                window.JSON.parse = f(window.JSON.parse, C);
-                const F = (e, t, r) => {
+                window.JSON.parse = f(window.JSON.parse, J);
+                const C = (e, t, r) => {
                     if (!e || "object" != typeof e && "function" != typeof e) return;
                     let n = a.get(e);
-                    if (!t.some((t => "function" == typeof e[t] && !c.has(e[t]) && (n?.get(t) ?? 0) < 10))) return;
+                    if (!t.some((t => "function" == typeof e[t] && !d.has(e[t]) && (n?.get(t) ?? 0) < 10))) return;
                     n || (n = new Map, a.set(e, n));
                     const o = new Map;
                     t.forEach((t => {
                         const r = e[t];
-                        "function" == typeof r && c.has(r) && o.set(c.get(r), r);
+                        "function" == typeof r && d.has(r) && o.set(d.get(r), r);
                     })), t.forEach((t => {
                         const a = e[t], i = n.get(t) ?? 0;
-                        if ("function" != typeof a || c.has(a) || i >= 10) return;
+                        if ("function" != typeof a || d.has(a) || i >= 10) return;
                         n.set(t, i + 1);
                         let s = o.get(a);
                         if (!s) {
                             const {apply: e} = {
                                 apply(e, t, n) {
                                     const o = Reflect.apply(e, t, n);
-                                    return r ? R(o, n[0]) : R(o);
+                                    return r ? F(o, n[0]) : F(o);
                                 }
                             };
                             s = f(a, {
@@ -8378,7 +8378,7 @@ export const localScriptRules = {
                         }
                         e[t] = s;
                     }));
-                }, M = [ "parse", "parseText", "readText", "fromText", "fromSource", "fromChunk", "fromBlock", "fromSlice", "fromPiece", "fromSection", "fromSegment", "fromExcerpt" ], $ = [ "ghlParseServerJSPayload", "readBootPayload", "decodeBootScript", "hydrateBootData", "inflateBootPayload", "expandBootPayload", "unpackBootPayload", "openBootPayload", "loadBootPayload", "readBootState", "readBootRecord", "readBootEntry" ], z = [ [ [ "json5" ], e => F(e, M, !0) ], [ [ "GHLServerJSParse" ], e => F(e, $, !1) ] ], D = e => {
+                }, M = [ "parse", "parseText", "readText", "fromText", "fromSource", "fromChunk", "fromBlock", "fromSlice", "fromPiece", "fromSection", "fromSegment", "fromExcerpt", "fromFragment" ], $ = [ "ghlParseServerJSPayload", "readBootPayload", "decodeBootScript", "hydrateBootData", "inflateBootPayload", "expandBootPayload", "unpackBootPayload", "openBootPayload", "loadBootPayload", "readBootState", "readBootRecord", "readBootEntry", "takeBootFrame" ], z = [ [ [ "json5" ], e => C(e, M, !0) ], [ [ "GHLServerJSParse" ], e => C(e, $, !1) ] ], D = e => {
                     Array.isArray(e) && z.forEach((t => {
                         e.some((e => e?.[1] === t[1])) || e.push(t);
                     }));
@@ -8437,7 +8437,7 @@ export const localScriptRules = {
                     apply: X
                 };
                 window.String = f(window.String, Y), window.String.prototype.constructor = window.String;
-                const Z = new Map, ee = /^[\t\r\n \u00a0]*\u00a0[\t\r\n ]*/, te = /^(?:[\t\r\n ]*(?:\/\/[^\r\n]*(?:\r\n?|\n)|\/\*[\s\S]*?\*\/))+/, re = /"(?:[^"\\]|\\[\s\S])*"|((?:(?:\/\*[\s\S]*?\*\/|\/\/[^\r\n]*(?:\r\n?|\n|$))[\t\r\n ]*)+)/g, ne = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:/, oe = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"|[[{]|true|false|null|-?[\d.eE+-]+)/, ae = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"|[[{]|true|false|null|-?[\d.eE+-]+)[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"[\t\r\n ]*:|[,[{\]}])/, {apply: ie} = {
+                const Z = new Map, ee = /^[\t\r\n \u00a0\ufeff]*[\u00a0\ufeff][\t\r\n ]*/, te = /^(?:[\t\r\n ]*(?:\/\/[^\r\n]*(?:\r\n?|\n)|\/\*[\s\S]*?\*\/))+/, re = /"(?:[^"\\]|\\[\s\S])*"|((?:(?:\/\*[\s\S]*?\*\/|\/\/[^\r\n]*(?:\r\n?|\n|$))[\t\r\n ]*)+)/g, ne = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:/, oe = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"|[[{]|true|false|null|-?[\d.eE+-]+)/, ae = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"|[[{]|true|false|null|-?[\d.eE+-]+)[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"[\t\r\n ]*:|[,[{\]}])/, {apply: ie} = {
                     apply(e, t, r) {
                         let n = t;
                         try {
@@ -8453,14 +8453,14 @@ export const localScriptRules = {
                                         s = i.slice(0, t), p = i.slice(t);
                                         break;
                                     }
-                                    const c = Reflect.apply(l, s, []);
-                                    if (h(c) && t) {
-                                        const e = c.slice(1).match(te)?.[0] ?? "";
+                                    const d = Reflect.apply(l, s, []);
+                                    if (h(d) && t) {
+                                        const e = d.slice(1).match(te)?.[0] ?? "";
                                         let t = "" === e ? s : s.replace(e, "");
                                         const o = t.match(ne)?.[0] ?? "", i = "" === o ? "" : t.slice(o.length).match(te)?.[0] ?? "";
                                         "" !== i && (t = o + t.slice(o.length + i.length));
-                                        const l = t.match(oe)?.[0] ?? "", d = "" === l ? "" : t.slice(l.length).match(te)?.[0] ?? "";
-                                        "" !== d && (t = l + " " + t.slice(l.length + d.length));
+                                        const l = t.match(oe)?.[0] ?? "", c = "" === l ? "" : t.slice(l.length).match(te)?.[0] ?? "";
+                                        "" !== c && (t = l + " " + t.slice(l.length + c.length));
                                         const f = t.match(ae)?.[0] ?? "", w = "" === f ? "" : t.slice(f.length).match(te)?.[0] ?? "";
                                         "" !== w && (t = f + " " + t.slice(f.length + w.length));
                                         let u = "";
@@ -8471,7 +8471,7 @@ export const localScriptRules = {
                                         const h = JSON.parse(t);
                                         if (y.has(h)) {
                                             let t = JSON.stringify(h);
-                                            "" !== w && (t = t.replace(ae, (e => e + w))), "" !== d && (t = t.replace(oe, (e => e + d))), 
+                                            "" !== w && (t = t.replace(ae, (e => e + w))), "" !== c && (t = t.replace(oe, (e => e + c))), 
                                             "" !== i && (t = t.replace(ne, (e => e + i))), "" !== u && (t = t.slice(0, -1) + u + t.slice(-1)), 
                                             r = n + a + t[0] + e + t.slice(1) + p;
                                         }
@@ -8526,14 +8526,14 @@ export const localScriptRules = {
                         } catch (e) {}
                         return Reflect.apply(e, t, r);
                     }
-                }, ce = {
+                }, de = {
                     apply: le
                 };
-                window.Function.prototype.call = f(window.Function.prototype.call, ce);
-                const {apply: de} = {
-                    apply: (e, t, r) => d.has(t) ? d.get(t) : Reflect.apply(e, t, r)
+                window.Function.prototype.call = f(window.Function.prototype.call, de);
+                const {apply: ce} = {
+                    apply: (e, t, r) => c.has(t) ? c.get(t) : Reflect.apply(e, t, r)
                 }, ye = {
-                    apply: de
+                    apply: ce
                 };
                 window.Function.prototype.toString = f(window.Function.prototype.toString, ye), 
                 (() => {
@@ -8557,14 +8557,14 @@ export const localScriptRules = {
                     }
                 })();
             })();
-            Object.defineProperty(Window.prototype.toString, "f59ec5beec63206273fa89c42671bfb3", {
+            Object.defineProperty(Window.prototype.toString, "6d2ebc751db65375064cae4192609eda", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "f59ec5beec63206273fa89c42671bfb3" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "6d2ebc751db65375064cae4192609eda" due to: ' + e);
         }
     },
     '!function(){var e=new MutationObserver(function(){var m=document.querySelectorAll("div[id^=\'mount_\']");{var e;e=0<m.length?document.querySelectorAll(\'div[role="feed"] > div[data-pagelet^="FeedUnit"] > div[class]:not([style*="height"])\'):document.querySelectorAll(\'[id^="substream"] > div:not(.hidden_elem) div[id^="hyperfeed_story_id"]\')}e.forEach(function(e){function n(e,n){for(0<m.length?"0"==(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span > span > span[data-content]\')).length&&(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span[aria-label]\')):h=e.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [class] [class]"),socheck=0;socheck<h.length;socheck++)h[socheck].innerText.contains(n)&&(p=["1"],d=["1"],u=["1"],i=r=l=1,socheck=h.length)}function t(e,n,t,c,a){for(0<m.length?"0"==(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span > span > span[data-content]\')).length&&(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] div[role="button"][tabindex]\')):h=e.querySelectorAll(".userContentWrapper h5 + div[data-testid] > span a > [class] [class]"),"0"==h.length&&(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span[aria-label]\')),socheck=0;socheck<h.length;socheck++){spancheck=0,1<h.length?(spancheck=h[socheck].querySelectorAll("span")[0],0==spancheck&&(spancheck=h[socheck].querySelectorAll("b")[0])):(spancheck=h[0].querySelectorAll("span")[socheck],0==spancheck&&(spancheck=h[0].querySelectorAll("b")[socheck]));var o=h[0];if(0!=spancheck&&spancheck){if(2==spancheck.children.length&&0<m.length)for(spancheck=spancheck.querySelectorAll("span:not([style])"),spcheck=0;spcheck<spancheck.length;spcheck++)spancheck[spcheck].innerText.contains(n)?s=1:!spancheck[spcheck].innerText.contains(t)||0!=spancheck[spcheck].offsetTop||spancheck[spcheck].innerText.contains(n)||spancheck[spcheck].innerText.contains(c)||spancheck[spcheck].innerText.contains(a)?!spancheck[spcheck].innerText.contains(c)||0!=spancheck[spcheck].offsetTop||spancheck[spcheck].innerText.contains(t)||spancheck[spcheck].innerText.contains(n)||spancheck[spcheck].innerText.contains(a)?!spancheck[spcheck].innerText.contains(a)||0!=spancheck[spcheck].offsetTop||spancheck[spcheck].innerText.contains(t)||spancheck[spcheck].innerText.contains(c)||spancheck[spcheck].innerText.contains(n)||(u=["1"],i=1):(d=["1"],r=1):(p=["1"],l=1);0==m.length&&((!(spancheck.innerText.contains(n)&&0==spancheck.offsetTop||h[0].innerText.contains(n)&&0==h[0].offsetTop)||spancheck.innerText.contains(t)&&!h[0].innerText.contains(t)||spancheck.innerText.contains(c)&&!h[0].innerText.contains(c)||spancheck.innerText.contains(a)&&!h[0].innerText.contains(a))&&(!o.innerText.contains(n)||0!=o.offsetTop||o.innerText.contains(t)||o.innerText.contains(c)||o.innerText.contains(a))?!spancheck.innerText.contains(t)||0!=spancheck.offsetTop||spancheck.innerText.contains(n)||spancheck.innerText.contains(c)||spancheck.innerText.contains(a)?!spancheck.innerText.contains(c)||0!=spancheck.offsetTop||spancheck.innerText.contains(t)||spancheck.innerText.contains(n)||spancheck.innerText.contains(a)?!spancheck.innerText.contains(a)||0!=spancheck.offsetTop||spancheck.innerText.contains(t)||spancheck.innerText.contains(c)||spancheck.innerText.contains(n)||(u=["1"],i=1):(d=["1"],r=1):(p=["1"],l=1):s=1)}}}function c(e,n,t,c,a){u=0<m.length?(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span span[data-content=\'+n+"]"),p=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span span[data-content=\'+t+"]"),d=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span span[data-content=\'+c+"]"),e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span span[data-content=\'+a+"]")):(h=e.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content="+n+"]"),p=e.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content="+t+"]"),d=e.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content="+c+"]"),e.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content="+a+"]"))}var s=0,l=0,r=0,i=0,h=0,p=0,d=0,u=0,a=e.querySelectorAll("div[style=\'width: 100%\'] > a[href*=\'oculus.com/quest\'] > div"),o=document.querySelector("[lang]"),k=document.querySelectorAll("link[rel=\'preload\'][href*=\'/l/\']");o=o?document.querySelector("[lang]").lang:"en";var y,g=e.querySelectorAll(\'a[ajaxify*="ad_id"] > span\'),f=e.querySelectorAll(\'a[href*="ads/about"]\'),S=e.querySelectorAll(\'a[href*="https://www.facebook.com/business/help"]\');if("display: none !important;"!=e.getAttribute("style")&&!e.classList.contains("hidden_elem")&&(0<g.length||0<f.length||0<S.length?(T+=1,0<m.length?(""==(y=e.querySelectorAll("a[href]")[0].innerText)&&(y=e.querySelectorAll("a[href]")[1].innerText),""==y&&(y=e.querySelectorAll("a[href]")[0].querySelectorAll("a[aria-label]")[0].getAttribute("aria-label"))):y=e.querySelectorAll("a[href]")[2].innerText,console.log("--------"),console.log("Ad hidden from: "+y),console.log("Total ads hidden: "+T),console.log("F length: "+g.length),console.log("H length: "+f.length),console.log("I length (Paid partnership): "+S.length),console.log("--------"),e.style="display:none!important;"):0<a.length?(T+=1,y="Facebook",console.log("--------"),console.log("Ad hidden from: "+y),console.log("Total ads hidden: "+T),console.log("Non-declared ad"),console.log("--------"),e.style="display:none!important;"):"af"==o?n(e,"Geborg"):"de"==o||"nl"==o?c(e,"G","e","s","n"):"am"==o?n(e,"የተከፈለበት ማስታወቂያ"):"ar"==o?n(e,"مُموَّل"):"as"==o?n(e,"পৃষ্ঠপোষকতা কৰা"):"az"==o?n(e,"Sponsor dəstəkli"):"co"==o?n(e,"Spunsurizatu"):"bs"==o||"sl"==o||"cs"==o?c(e,"S","p","z","n"):"da"==o||"en"==o||"et"==o||"fy"==o||"it"==o||"ku"==o||"nb"==o||"nn"==o||"pl"==o||"sq"==o||"sv"==o||"zz"==o?0<m.length?k[0].href.contains("en_UD")?n(e,"pəɹosuodS"):k[0].href.contains("ja_KS")?n(e,"広告"):k[0].href.contains("tz_MA")?n(e,"ⵉⴷⵍ"):k[0].href.contains("sy_SY")?n(e,"ܒܘܕܩܐ ܡܡܘܘܢܐ"):k[0].href.contains("cb_IQ")?n(e,"پاڵپشتیکراو"):k[0].href.contains("ar_AR")?n(e,"مُموَّل"):k[0].href.contains("sz_PL")?n(e,"Szpōnzorowane"):k[0].href.contains("eo_EO")?n(e,"Reklamo"):k[0].href.contains("es_LA")?c(e,"P","u","c","d"):(c(e,"S","p","s","n"),"0"==h.length&&t(e,"S","p","s","n"),"0"==h.length&&n(e,"Sponsored")):document.querySelector("body").className.includes("Locale_en_UD")?n(e,"pəɹosuodS"):document.querySelector("body").className.includes("ja_KS")?n(e,"広告"):document.querySelector("body").className.includes("tz_MA")?n(e,"ⵉⴷⵍ"):document.querySelector("body").className.includes("sy_SY")?n(e,"ܒܘܕܩܐ ܡܡܘܘܢܐ"):document.querySelector("body").className.includes("cb_IQ")?n(e,"پاڵپشتیکراو"):document.querySelector("body").className.includes("ar_AR")?n(e,"مُموَّل"):document.querySelector("body").className.includes("sz_PL")?n(e,"Szpōnzorowane"):document.querySelector("body").className.includes("eo_EO")?n(e,"Reklamo"):document.querySelector("body").className.includes("es_LA")?c(e,"P","u","c","d"):(c(e,"S","p","s","n"),"0"==h.length&&t(e,"S","p","s","n")):"be"==o?n(e,"Рэклама"):"bg"==o?n(e,"Спонсорирано"):"mk"==o?n(e,"Спонзорирано"):"br"==o?n(e,"Paeroniet"):"ca"==o?n(e,"Patrocinat"):"gl"==o||"pt"==o?(n(e,"Patrocinado"),"0"==l&&c(e,"P","a","c","o")):"bn"==o?n(e,"সৌজন্যে"):"cb"==o?n(e,"پاڵپشتیکراو"):"cx"==o?c(e,"G","i","s","n"):"cy"==o?n(e,"Noddwyd"):"el"==o?n(e,"Χορηγούμενη"):"eo"==o?n(e,"Reklamo"):"es"==o?c(e,"P","u","c","d"):"eu"==o?n(e,"Babestua"):"fa"==o?n(e,"دارای پشتیبانی مالی"):"ff"==o?n(e,"Yoɓanaama"):"fi"==o?n(e,"Sponsoroitu"):"fo"==o?n(e,"Stuðlað"):"fr"==o?0<m.length?k[0].href.contains("fr_FR")?c(e,"S","p","s","n"):c(e,"C","o","m","n"):document.querySelector("body").className.includes("Locale_fr_FR")?c(e,"S","p","s","n"):c(e,"C","o","m","n"):"ga"==o?n(e,"Urraithe"):"gn"==o?n(e,"Oñepatrosinapyre"):"gu"==o?n(e,"પ્રાયોજિત"):"ha"==o?n(e,"Daukar Nauyi"):"he"==o?n(e,"ממומן"):"hr"==o?n(e,"Plaćeni oglas"):"ht"==o?n(e,"Peye"):"ne"==o||"mr"==o||"hi"==o?n(e,"प्रायोजित"):"hu"==o?c(e,"H","i","r","d"):"hy"==o?n(e,"Գովազդային"):"id"==o?c(e,"B","e","p","n"):"is"==o?n(e,"Kostað"):"ja"==o?n(e,"広告"):"ms"==o?n(e,"Ditaja"):"jv"==o?n(e,"Disponsori"):"ka"==o?n(e,"რეკლამა"):"kk"==o?n(e,"Демеушілік көрсеткен"):"km"==o?n(e,"បានឧបត្ថម្ភ"):"kn"==o?n(e,"ಪ್ರಾಯೋಜಿತ"):"ko"==o?n(e,"Sponsored"):"ky"==o?n(e,"Демөөрчүлөнгөн"):"lo"==o?n(e,"ຜູ້ສະໜັບສະໜູນ"):"lt"==o?n(e,"Remiama"):"lv"==o?n(e,"Apmaksāta reklāma"):"mg"==o?n(e,"Misy Mpiantoka"):"ml"==o?n(e,"സ്പോൺസർ ചെയ്തത്"):"mn"==o?n(e,"Ивээн тэтгэсэн"):"mt"==o?n(e,"Sponsorjat"):"my"==o?(n(e,"ပံ့ပိုးထားသည်"),"0"==l&&n(e,"အခပေးကြော်ငြာ")):"or"==o?n(e,"ପ୍ରଯୋଜିତ"):"pa"==o?n(e,"ਸਰਪ੍ਰਸਤੀ ਪ੍ਰਾਪਤ"):"ps"==o?n(e,"تمويل شوي"):"ro"==o?n(e,"Sponsorizat"):"ru"==o||"uk"==o?n(e,"Реклама"):"rw"==o?n(e,"Icyamamaza ndasukirwaho"):"sc"==o?n(e,"Patronadu de"):"si"==o?n(e,"අනුග්රාහක"):"sk"==o?n(e,"Sponzorované"):"sn"==o?n(e,"Zvabhadharirwa"):"so"==o?n(e,"La maalgeliyey"):"sr"==o?n(e,"Спонзорисано"):"sw"==o?n(e,"Imedhaminiwa"):"sy"==o?n(e,"ܒܘܕܩܐ ܡܡܘܘܢܐ"):"sz"==o?n(e,"Szpōnzorowane"):"ta"==o?n(e,"விளம்பரம்"):"te"==o?n(e,"ప్రాయోజితం చేయబడింది"):"tg"==o?n(e,"Бо сарпарастӣ"):"th"==o?n(e,"ได้รับการสนับสนุน"):"tl"==o?n(e,"May Sponsor"):"tr"==o?n(e,"Sponsorlu"):"tt"==o?n(e,"Хәйрияче"):"tz"==o?n(e,"ⵉⴷⵍ"):"ur"==o?n(e,"سپانسرڈ"):"uz"==o?n(e,"Reklama"):"vi"==o?n(e,"Được tài trợ"):"zh-Hans"==o?n(e,"赞助内容"):"zh-Hant"==o&&n(e,"贊助"),0<h.length&&0<p.length&&0<d.length&&0<u.length)){for(cont=0;cont<h.length;cont++)0<h[cont].offsetHeight&&(cont=h.length,s=1);for(cont1=0;cont1<p.length;cont1++)0<p[cont1].offsetHeight&&(cont1=p.length,l=1);for(cont2=0;cont2<d.length;cont2++)0<d[cont2].offsetHeight&&(cont2=d.length,r=1);for(cont3=0;cont3<u.length;cont3++)0<u[cont3].offsetHeight&&(cont3=u.length,i=1);1==s&&1==l&&1==r&&1==i&&(0<m.length&&""!=(y=e.querySelectorAll("a[href]")[1].innerText)||(y=e.querySelectorAll("a[href]")[2].innerText),T+=1,console.log("--------"),console.log("Ad hidden from: "+y),console.log("Total ads hidden: "+T),console.log("--------"),e.style="display:none!important;")}})}),T=0;e.observe(document,{childList:!0,subtree:!0})}();': () => {
@@ -9272,12 +9272,12 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "ed57bbfd824aa9ad074678e5893c0dfa" due to: ' + e);
         }
     },
-    '(()=>{const e=/adshield|adsentinel/,t="(function(){})();",r=/^\\(\\s*\\.\\.\\.\\s*([A-Za-z_$][\\w$]*)\\s*\\)\\s*=>\\s*[A-Za-z_$][\\w$]*\\s*\\.\\s*apply\\s*\\(\\s*this\\s*,\\s*\\1\\s*\\)\\s*$/,o=/^function\\s*\\(\\s*\\)\\s*\\{\\s*return\\s+[A-Za-z_$][\\w$]*\\s*\\.\\s*apply\\s*\\(\\s*this\\s*,\\s*arguments\\s*\\)\\s*;?\\s*\\}$/,s=/^(?:"use strict"|\'use strict\');\\s*\\(\\(\\)\\s*=>\\s*\\{[\\s\\S]*\\}\\)\\(\\s*\\);?\\s*$/,p=/^([A-Za-z_$][\\w$]*\\(\\s*\\)\\s*;)\\s*\\(async(?:\\s+function\\s*\\(\\s*\\)|\\s*\\(\\s*\\)\\s*=>)\\s*\\{[\\s\\S]*\\}\\)\\(\\s*\\);?\\s*$/,n=["requestAnimationFrame","requestIdleCallback","setInterval","setTimeout"],a=/html-load\\.com|loader\\.min\\.js|\\/recovery(?:-light)?\\.js(?:[?#:\\s)]|$)|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\.|:\\/\\/loader\\.|core\\.js|\\/sdk\\.js|\\/app\\.js|\\/main\\.js|\\/vendor\\.js|\\/bundle\\.js|(?:whoinasmuch|assuredwhoa|contentyet)\\.com|\\/(?:routes|output|framework|vendors~framework|shared)\\/.*\\.js/,y={apply:Reflect.apply,construct:Reflect.construct,filter:Array.prototype.filter,every:Array.prototype.every,some:Array.prototype.some,isArray:Array.isArray,getOwnPropertyDescriptor:Object.getOwnPropertyDescriptor,includes:String.prototype.includes,regexTest:RegExp.prototype.test,regexExec:RegExp.prototype.exec,functionToString:Function.prototype.toString,queueMicrotask:window.queueMicrotask},c=new Set,i=()=>y.apply(y.regexTest,a,[(new Error).stack]),l=window.crypto?.subtle;if("function"==typeof l?.digest&&window.TextEncoder&&window.TextDecoder){const r=Object.getPrototypeOf(Uint8Array.prototype),o=y.getOwnPropertyDescriptor(r,Symbol.toStringTag).get,s=y.getOwnPropertyDescriptor(r,"buffer").get,p=y.getOwnPropertyDescriptor(ArrayBuffer.prototype,"byteLength").get,n=y.getOwnPropertyDescriptor(ArrayBuffer.prototype,"resizable")?.get,a=new TextDecoder("utf-8",{fatal:!0}),c=TextDecoder.prototype.decode,d=(new TextEncoder).encode(t),u=/([\'"])recovery\\1/,w=/([\'"])r_\\1/;l.digest=new Proxy(l.digest,{apply(t,r,f){try{const[t,g]=f;if(r===l&&"SHA-256"===t&&"Uint8Array"===y.apply(o,g,[])&&i()){const t=y.apply(s,g,[]);if(y.apply(p,t,[])>0&&(!n||!y.apply(n,t,[]))){const t=y.apply(c,a,[g]);y.apply(y.regexTest,e,[t])&&y.apply(y.includes,t,["currentScript"])&&y.apply(y.includes,t,["postMessage"])&&y.apply(y.regexTest,u,[t])&&y.apply(y.regexTest,w,[t])&&(f[1]=d)}}}catch{}return y.apply(t,r,f)}})}const d=()=>{const e={};y.apply(y.queueMicrotask,window,[()=>c.delete(e)]),c.add(e)},u={construct:(r,o,s)=>{let p=!1;try{const[r,s]=o,n=s&&"object"==typeof s?y.getOwnPropertyDescriptor(s,"type")?.value:void 0;("application/javascript"===n||"text/javascript"===n)&&y.isArray(r)&&y.apply(y.every,r,[e=>"string"==typeof e])&&y.apply(y.some,r,[t=>y.apply(y.regexTest,e,[t])])&&i()&&(o[0]=[t],p=!0)}catch(e){}const n=y.construct(r,o,s);if(p)try{d()}catch(e){}return n}};window.Blob=new Proxy(window.Blob,u);const w=window.HTMLScriptElement,f=window.Element?.prototype.getAttribute;let g,_=w?.prototype;for(;_&&(g=y.getOwnPropertyDescriptor(_,"textContent"),!g);)_=Object.getPrototypeOf(_);g?.set&&f&&Object.defineProperty(_,"textContent",{...g,set:new Proxy(g.set,{apply(r,o,s){let p=!1;try{const r=s[0];if("string"==typeof r&&o instanceof w&&y.apply(y.regexTest,e,[r])){const e=e=>y.apply(f,o,[e]),r=e("type");e("recovery")&&e("data-src")&&null===e("src")&&(!r||"application/javascript"===r||"text/javascript"===r)&&i()&&(s[0]=t,p=!0)}}catch(e){}const n=y.apply(r,o,s);if(p)try{d()}catch(e){}return n}})});const x={apply:(e,t,s)=>{const p=c.values().next().value;c.delete(p);try{const[e,t]=s;if(p&&"number"==typeof t&&t>=4900&&t<5100){const t="function"==typeof e?y.apply(y.functionToString,e,[]):"string"==typeof e?e:"";(y.apply(y.includes,t,["new Error"])||"function"==typeof e&&(y.apply(y.regexTest,r,[t])||y.apply(y.regexTest,o,[t])))&&i()&&(s[0]=()=>{})}}catch(e){}return y.apply(e,t,s)}};window.setTimeout=new Proxy(window.setTimeout,x);const h={apply:(e,t,r)=>{try{"function"==typeof r[0]&&y.isArray(t)&&t.length===n.length&&y.apply(y.every,n,[(e,r)=>t[r]===e])&&i()&&(t=y.apply(y.filter,t,[e=>"setTimeout"!==e]))}catch(e){}return y.apply(e,t,r)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,h);const m={apply(e,r,o){const n=y.apply(e,r,o);try{if("string"!=typeof n)return n;const e=e=>y.apply(y.includes,n,[e]),r=()=>e("loader_light")&&e("last_bfa_at")&&e("/report?type=")&&e("as_modal_loaded")&&e("close-error-report")&&e("ECDSA")&&e("P-256"),o=y.apply(y.regexExec,p,[n]);if(o&&r())return o[1];if(!y.apply(y.regexTest,s,[n]))return n;if(e("__as_tag2_done")||e("_as_prehooked")||e("_onload2")||e("_onerror2"))return e("__as_tag2_done")&&e("_as_prehooked")&&e("_onload2")&&e("_onerror2")&&e(\'data-sdk^="pk/"\')?"window.__as_tag2_done=true;void 0;":n;if(e(\'data-sdk^="pk/"\')&&e("/recovery-light.js")&&e("/recovery.js")&&e("__as_cbs")&&e("__as_start_recovery")&&e("AdBlock detected")||r())return t}catch(e){}return n}};window.Array.prototype.join=new Proxy(window.Array.prototype.join,m)})();': () => {
+    '(()=>{const e=/adshield|adsentinel/,t="(function(){})();",r=/^\\(\\s*\\.\\.\\.\\s*([A-Za-z_$][\\w$]*)\\s*\\)\\s*=>\\s*[A-Za-z_$][\\w$]*\\s*\\.\\s*apply\\s*\\(\\s*this\\s*,\\s*\\1\\s*\\)\\s*$/,o=/^function\\s*\\(\\s*\\)\\s*\\{\\s*return\\s+[A-Za-z_$][\\w$]*\\s*\\.\\s*apply\\s*\\(\\s*this\\s*,\\s*arguments\\s*\\)\\s*;?\\s*\\}$/,s=/^(?:"use strict"|\'use strict\');\\s*\\(\\(\\)\\s*=>\\s*\\{[\\s\\S]*\\}\\)\\(\\s*\\);?\\s*$/,p=/^([A-Za-z_$][\\w$]*\\(\\s*\\)\\s*;)\\s*\\(async(?:\\s+function\\s*\\(\\s*\\)|\\s*\\(\\s*\\)\\s*=>)\\s*\\{[\\s\\S]*\\}\\)\\(\\s*\\);?\\s*$/,n=["requestAnimationFrame","requestIdleCallback","setInterval","setTimeout"],a=/html-load\\.com|loader\\.min\\.js|\\/recovery(?:-light)?\\.js(?:[?#:\\s)]|$)|andwonderful\\.com\\/safe\\.min\\.js|shieldload\\.|:\\/\\/loader\\.|core\\.js|\\/sdk\\.js|\\/app\\.js|\\/main\\.js|\\/vendor\\.js|\\/bundle\\.js|(?:whoinasmuch|assuredwhoa|contentyet)\\.com|\\/(?:routes|output|framework|vendors~framework|_vendors-lib\\.core|shared)\\/.*\\.js/,c={apply:Reflect.apply,construct:Reflect.construct,filter:Array.prototype.filter,every:Array.prototype.every,some:Array.prototype.some,isArray:Array.isArray,getOwnPropertyDescriptor:Object.getOwnPropertyDescriptor,includes:String.prototype.includes,regexTest:RegExp.prototype.test,regexExec:RegExp.prototype.exec,functionToString:Function.prototype.toString,queueMicrotask:window.queueMicrotask},y=new Set,i=()=>c.apply(c.regexTest,a,[(new Error).stack]),l=/([\'"])recovery\\1/,d=/([\'"])r_\\1/,u=t=>c.apply(c.regexTest,e,[t])&&c.apply(c.includes,t,["currentScript"])&&c.apply(c.includes,t,["postMessage"])&&c.apply(c.regexTest,l,[t])&&c.apply(c.regexTest,d,[t]);let w;if(window.TextDecoder){const e=Object.getPrototypeOf(Uint8Array.prototype),t=c.getOwnPropertyDescriptor(e,Symbol.toStringTag).get,r=c.getOwnPropertyDescriptor(e,"buffer").get,o=c.getOwnPropertyDescriptor(ArrayBuffer.prototype,"byteLength").get,s=c.getOwnPropertyDescriptor(ArrayBuffer.prototype,"resizable")?.get,p=new TextDecoder("utf-8",{fatal:!0}),n=TextDecoder.prototype.decode;w=(e,a=!1)=>{try{const y="Uint8Array"===c.apply(t,e,[]);if(!y&&!a)return"";const i=y?c.apply(r,e,[]):e;if(c.apply(o,i,[])>0&&(!s||!c.apply(s,i,[])))return c.apply(n,p,[e])}catch{}return""}}else w=()=>"";const f=window.crypto?.subtle;if("function"==typeof f?.digest&&window.TextEncoder&&window.TextDecoder){const e=(new TextEncoder).encode(t);f.digest=new Proxy(f.digest,{apply(t,r,o){try{const[t,s]=o;r===f&&"SHA-256"===t&&i()&&u(w(s,!0))&&(o[1]=e)}catch{}return c.apply(t,r,o)}})}const g=()=>{const e={};c.apply(c.queueMicrotask,window,[()=>y.delete(e)]),y.add(e)},_={construct:(r,o,s)=>{let p=!1;try{const[r,s]=o,n=s&&"object"==typeof s?c.getOwnPropertyDescriptor(s,"type")?.value:void 0;("application/javascript"===n||"text/javascript"===n)&&c.isArray(r)&&(c.apply(c.every,r,[e=>"string"==typeof e])&&c.apply(c.some,r,[t=>c.apply(c.regexTest,e,[t])])||1===r.length&&u(w(r[0])))&&i()&&(o[0]=[t],p=!0)}catch(e){}const n=c.construct(r,o,s);if(p)try{g()}catch(e){}return n}};window.Blob=new Proxy(window.Blob,_);const x=window.HTMLScriptElement,h=window.Element?.prototype.getAttribute;let m,A=x?.prototype;for(;A&&(m=c.getOwnPropertyDescriptor(A,"textContent"),!m);)A=Object.getPrototypeOf(A);m?.set&&h&&Object.defineProperty(A,"textContent",{...m,set:new Proxy(m.set,{apply(r,o,s){let p=!1;try{const r=s[0];if("string"==typeof r&&o instanceof x&&c.apply(c.regexTest,e,[r])){const e=e=>c.apply(h,o,[e]),n=e("type"),a=e("recovery"),y=e("data-src");!(a&&y||null===a&&null===y&&u(r))||null!==e("src")||n&&"application/javascript"!==n&&"text/javascript"!==n||!i()||(s[0]=t,p=!0)}}catch(e){}const n=c.apply(r,o,s);if(p)try{g()}catch(e){}return n}})});const T={apply:(e,t,s)=>{const p=y.values().next().value;y.delete(p);try{const[e,t]=s;if(p&&"number"==typeof t&&t>=4900&&t<5100){const t="function"==typeof e?c.apply(c.functionToString,e,[]):"string"==typeof e?e:"";(c.apply(c.includes,t,["new Error"])||"function"==typeof e&&(c.apply(c.regexTest,r,[t])||c.apply(c.regexTest,o,[t])))&&i()&&(s[0]=()=>{})}}catch(e){}return c.apply(e,t,s)}};window.setTimeout=new Proxy(window.setTimeout,T);const j={apply:(e,t,r)=>{try{"function"==typeof r[0]&&c.isArray(t)&&t.length===n.length&&c.apply(c.every,n,[(e,r)=>t[r]===e])&&i()&&(t=c.apply(c.filter,t,[e=>"setTimeout"!==e]))}catch(e){}return c.apply(e,t,r)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,j);const v={apply(e,r,o){const n=c.apply(e,r,o);try{if("string"!=typeof n)return n;const e=e=>c.apply(c.includes,n,[e]),r=()=>e("loader_light")&&e("last_bfa_at")&&e("/report?type=")&&e("as_modal_loaded")&&e("close-error-report")&&e("ECDSA")&&e("P-256"),o=c.apply(c.regexExec,p,[n]);if(o&&r())return o[1];if(!c.apply(c.regexTest,s,[n]))return n;if(e("__as_tag2_done")||e("_as_prehooked")||e("_onload2")||e("_onerror2"))return e("__as_tag2_done")&&e("_as_prehooked")&&e("_onload2")&&e("_onerror2")&&e(\'data-sdk^="pk/"\')?"window.__as_tag2_done=true;void 0;":n;if(e(\'data-sdk^="pk/"\')&&e("/recovery-light.js")&&e("/recovery.js")&&e("__as_cbs")&&e("__as_start_recovery")&&e("AdBlock detected")||r())return t}catch(e){}return n}};window.Array.prototype.join=new Proxy(window.Array.prototype.join,v)})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["84999181ca0fd348e13f1f7b9c73e6f6"] === e) return;
+            if (Window.prototype.toString.acf08dca2d61776f635279d3bcc0d7e8 === e) return;
             (() => {
-                const e = /adshield|adsentinel/, t = "(function(){})();", r = /^\(\s*\.\.\.\s*([A-Za-z_$][\w$]*)\s*\)\s*=>\s*[A-Za-z_$][\w$]*\s*\.\s*apply\s*\(\s*this\s*,\s*\1\s*\)\s*$/, o = /^function\s*\(\s*\)\s*\{\s*return\s+[A-Za-z_$][\w$]*\s*\.\s*apply\s*\(\s*this\s*,\s*arguments\s*\)\s*;?\s*\}$/, s = /^(?:"use strict"|'use strict');\s*\(\(\)\s*=>\s*\{[\s\S]*\}\)\(\s*\);?\s*$/, p = /^([A-Za-z_$][\w$]*\(\s*\)\s*;)\s*\(async(?:\s+function\s*\(\s*\)|\s*\(\s*\)\s*=>)\s*\{[\s\S]*\}\)\(\s*\);?\s*$/, n = [ "requestAnimationFrame", "requestIdleCallback", "setInterval", "setTimeout" ], a = /html-load\.com|loader\.min\.js|\/recovery(?:-light)?\.js(?:[?#:\s)]|$)|andwonderful\.com\/safe\.min\.js|shieldload\.|:\/\/loader\.|core\.js|\/sdk\.js|\/app\.js|\/main\.js|\/vendor\.js|\/bundle\.js|(?:whoinasmuch|assuredwhoa|contentyet)\.com|\/(?:routes|output|framework|vendors~framework|shared)\/.*\.js/, c = {
+                const e = /adshield|adsentinel/, t = "(function(){})();", r = /^\(\s*\.\.\.\s*([A-Za-z_$][\w$]*)\s*\)\s*=>\s*[A-Za-z_$][\w$]*\s*\.\s*apply\s*\(\s*this\s*,\s*\1\s*\)\s*$/, o = /^function\s*\(\s*\)\s*\{\s*return\s+[A-Za-z_$][\w$]*\s*\.\s*apply\s*\(\s*this\s*,\s*arguments\s*\)\s*;?\s*\}$/, s = /^(?:"use strict"|'use strict');\s*\(\(\)\s*=>\s*\{[\s\S]*\}\)\(\s*\);?\s*$/, n = /^([A-Za-z_$][\w$]*\(\s*\)\s*;)\s*\(async(?:\s+function\s*\(\s*\)|\s*\(\s*\)\s*=>)\s*\{[\s\S]*\}\)\(\s*\);?\s*$/, p = [ "requestAnimationFrame", "requestIdleCallback", "setInterval", "setTimeout" ], a = /html-load\.com|loader\.min\.js|\/recovery(?:-light)?\.js(?:[?#:\s)]|$)|andwonderful\.com\/safe\.min\.js|shieldload\.|:\/\/loader\.|core\.js|\/sdk\.js|\/app\.js|\/main\.js|\/vendor\.js|\/bundle\.js|(?:whoinasmuch|assuredwhoa|contentyet)\.com|\/(?:routes|output|framework|vendors~framework|_vendors-lib\.core|shared)\/.*\.js/, c = {
                     apply: Reflect.apply,
                     construct: Reflect.construct,
                     filter: Array.prototype.filter,
@@ -9290,77 +9290,85 @@ export const localScriptRules = {
                     regexExec: RegExp.prototype.exec,
                     functionToString: Function.prototype.toString,
                     queueMicrotask: window.queueMicrotask
-                }, y = new Set, i = () => c.apply(c.regexTest, a, [ (new Error).stack ]), l = window.crypto?.subtle;
-                if ("function" == typeof l?.digest && window.TextEncoder && window.TextDecoder) {
-                    const r = Object.getPrototypeOf(Uint8Array.prototype), o = c.getOwnPropertyDescriptor(r, Symbol.toStringTag).get, s = c.getOwnPropertyDescriptor(r, "buffer").get, p = c.getOwnPropertyDescriptor(ArrayBuffer.prototype, "byteLength").get, n = c.getOwnPropertyDescriptor(ArrayBuffer.prototype, "resizable")?.get, a = new TextDecoder("utf-8", {
+                }, y = new Set, i = () => c.apply(c.regexTest, a, [ (new Error).stack ]), l = /(['"])recovery\1/, d = /(['"])r_\1/, u = t => c.apply(c.regexTest, e, [ t ]) && c.apply(c.includes, t, [ "currentScript" ]) && c.apply(c.includes, t, [ "postMessage" ]) && c.apply(c.regexTest, l, [ t ]) && c.apply(c.regexTest, d, [ t ]);
+                let f;
+                if (window.TextDecoder) {
+                    const e = Object.getPrototypeOf(Uint8Array.prototype), t = c.getOwnPropertyDescriptor(e, Symbol.toStringTag).get, r = c.getOwnPropertyDescriptor(e, "buffer").get, o = c.getOwnPropertyDescriptor(ArrayBuffer.prototype, "byteLength").get, s = c.getOwnPropertyDescriptor(ArrayBuffer.prototype, "resizable")?.get, n = new TextDecoder("utf-8", {
                         fatal: !0
-                    }), y = TextDecoder.prototype.decode, d = (new TextEncoder).encode(t), u = /(['"])recovery\1/, f = /(['"])r_\1/;
-                    l.digest = new Proxy(l.digest, {
-                        apply(t, r, w) {
+                    }), p = TextDecoder.prototype.decode;
+                    f = (e, a = !1) => {
+                        try {
+                            const y = "Uint8Array" === c.apply(t, e, []);
+                            if (!y && !a) return "";
+                            const i = y ? c.apply(r, e, []) : e;
+                            if (c.apply(o, i, []) > 0 && (!s || !c.apply(s, i, []))) return c.apply(p, n, [ e ]);
+                        } catch {}
+                        return "";
+                    };
+                } else f = () => "";
+                const w = window.crypto?.subtle;
+                if ("function" == typeof w?.digest && window.TextEncoder && window.TextDecoder) {
+                    const e = (new TextEncoder).encode(t);
+                    w.digest = new Proxy(w.digest, {
+                        apply(t, r, o) {
                             try {
-                                const [t, g] = w;
-                                if (r === l && "SHA-256" === t && "Uint8Array" === c.apply(o, g, []) && i()) {
-                                    const t = c.apply(s, g, []);
-                                    if (c.apply(p, t, []) > 0 && (!n || !c.apply(n, t, []))) {
-                                        const t = c.apply(y, a, [ g ]);
-                                        c.apply(c.regexTest, e, [ t ]) && c.apply(c.includes, t, [ "currentScript" ]) && c.apply(c.includes, t, [ "postMessage" ]) && c.apply(c.regexTest, u, [ t ]) && c.apply(c.regexTest, f, [ t ]) && (w[1] = d);
-                                    }
-                                }
+                                const [t, s] = o;
+                                r === w && "SHA-256" === t && i() && u(f(s, !0)) && (o[1] = e);
                             } catch {}
-                            return c.apply(t, r, w);
+                            return c.apply(t, r, o);
                         }
                     });
                 }
-                const d = () => {
+                const g = () => {
                     const e = {};
                     c.apply(c.queueMicrotask, window, [ () => y.delete(e) ]), y.add(e);
-                }, u = {
+                }, _ = {
                     construct: (r, o, s) => {
-                        let p = !1;
+                        let n = !1;
                         try {
-                            const [r, s] = o, n = s && "object" == typeof s ? c.getOwnPropertyDescriptor(s, "type")?.value : void 0;
-                            ("application/javascript" === n || "text/javascript" === n) && c.isArray(r) && c.apply(c.every, r, [ e => "string" == typeof e ]) && c.apply(c.some, r, [ t => c.apply(c.regexTest, e, [ t ]) ]) && i() && (o[0] = [ t ], 
-                            p = !0);
+                            const [r, s] = o, p = s && "object" == typeof s ? c.getOwnPropertyDescriptor(s, "type")?.value : void 0;
+                            ("application/javascript" === p || "text/javascript" === p) && c.isArray(r) && (c.apply(c.every, r, [ e => "string" == typeof e ]) && c.apply(c.some, r, [ t => c.apply(c.regexTest, e, [ t ]) ]) || 1 === r.length && u(f(r[0]))) && i() && (o[0] = [ t ], 
+                            n = !0);
                         } catch (e) {}
-                        const n = c.construct(r, o, s);
-                        if (p) try {
-                            d();
+                        const p = c.construct(r, o, s);
+                        if (n) try {
+                            g();
                         } catch (e) {}
-                        return n;
+                        return p;
                     }
                 };
-                window.Blob = new Proxy(window.Blob, u);
-                const f = window.HTMLScriptElement, w = window.Element?.prototype.getAttribute;
-                let g, _ = f?.prototype;
-                for (;_ && (g = c.getOwnPropertyDescriptor(_, "textContent"), !g); ) _ = Object.getPrototypeOf(_);
-                g?.set && w && Object.defineProperty(_, "textContent", {
-                    ...g,
-                    set: new Proxy(g.set, {
+                window.Blob = new Proxy(window.Blob, _);
+                const x = window.HTMLScriptElement, h = window.Element?.prototype.getAttribute;
+                let b, m = x?.prototype;
+                for (;m && (b = c.getOwnPropertyDescriptor(m, "textContent"), !b); ) m = Object.getPrototypeOf(m);
+                b?.set && h && Object.defineProperty(m, "textContent", {
+                    ...b,
+                    set: new Proxy(b.set, {
                         apply(r, o, s) {
-                            let p = !1;
+                            let n = !1;
                             try {
                                 const r = s[0];
-                                if ("string" == typeof r && o instanceof f && c.apply(c.regexTest, e, [ r ])) {
-                                    const e = e => c.apply(w, o, [ e ]), r = e("type");
-                                    e("recovery") && e("data-src") && null === e("src") && (!r || "application/javascript" === r || "text/javascript" === r) && i() && (s[0] = t, 
-                                    p = !0);
+                                if ("string" == typeof r && o instanceof x && c.apply(c.regexTest, e, [ r ])) {
+                                    const e = e => c.apply(h, o, [ e ]), p = e("type"), a = e("recovery"), y = e("data-src");
+                                    !(a && y || null === a && null === y && u(r)) || null !== e("src") || p && "application/javascript" !== p && "text/javascript" !== p || !i() || (s[0] = t, 
+                                    n = !0);
                                 }
                             } catch (e) {}
-                            const n = c.apply(r, o, s);
-                            if (p) try {
-                                d();
+                            const p = c.apply(r, o, s);
+                            if (n) try {
+                                g();
                             } catch (e) {}
-                            return n;
+                            return p;
                         }
                     })
                 });
-                const x = {
+                const A = {
                     apply: (e, t, s) => {
-                        const p = y.values().next().value;
-                        y.delete(p);
+                        const n = y.values().next().value;
+                        y.delete(n);
                         try {
                             const [e, t] = s;
-                            if (p && "number" == typeof t && t >= 4900 && t < 5100) {
+                            if (n && "number" == typeof t && t >= 4900 && t < 5100) {
                                 const t = "function" == typeof e ? c.apply(c.functionToString, e, []) : "string" == typeof e ? e : "";
                                 (c.apply(c.includes, t, [ "new Error" ]) || "function" == typeof e && (c.apply(c.regexTest, r, [ t ]) || c.apply(c.regexTest, o, [ t ]))) && i() && (s[0] = () => {});
                             }
@@ -9368,48 +9376,48 @@ export const localScriptRules = {
                         return c.apply(e, t, s);
                     }
                 };
-                window.setTimeout = new Proxy(window.setTimeout, x);
-                const h = {
+                window.setTimeout = new Proxy(window.setTimeout, A);
+                const j = {
                     apply: (e, t, r) => {
                         try {
-                            "function" == typeof r[0] && c.isArray(t) && t.length === n.length && c.apply(c.every, n, [ (e, r) => t[r] === e ]) && i() && (t = c.apply(c.filter, t, [ e => "setTimeout" !== e ]));
+                            "function" == typeof r[0] && c.isArray(t) && t.length === p.length && c.apply(c.every, p, [ (e, r) => t[r] === e ]) && i() && (t = c.apply(c.filter, t, [ e => "setTimeout" !== e ]));
                         } catch (e) {}
                         return c.apply(e, t, r);
                     }
                 };
-                window.Array.prototype.filter = new Proxy(window.Array.prototype.filter, h);
-                const m = {
+                window.Array.prototype.filter = new Proxy(window.Array.prototype.filter, j);
+                const v = {
                     apply(e, r, o) {
-                        const n = c.apply(e, r, o);
+                        const p = c.apply(e, r, o);
                         try {
-                            if ("string" != typeof n) return n;
-                            const e = e => c.apply(c.includes, n, [ e ]), r = () => e("loader_light") && e("last_bfa_at") && e("/report?type=") && e("as_modal_loaded") && e("close-error-report") && e("ECDSA") && e("P-256"), o = c.apply(c.regexExec, p, [ n ]);
+                            if ("string" != typeof p) return p;
+                            const e = e => c.apply(c.includes, p, [ e ]), r = () => e("loader_light") && e("last_bfa_at") && e("/report?type=") && e("as_modal_loaded") && e("close-error-report") && e("ECDSA") && e("P-256"), o = c.apply(c.regexExec, n, [ p ]);
                             if (o && r()) return o[1];
-                            if (!c.apply(c.regexTest, s, [ n ])) return n;
-                            if (e("__as_tag2_done") || e("_as_prehooked") || e("_onload2") || e("_onerror2")) return e("__as_tag2_done") && e("_as_prehooked") && e("_onload2") && e("_onerror2") && e('data-sdk^="pk/"') ? "window.__as_tag2_done=true;void 0;" : n;
+                            if (!c.apply(c.regexTest, s, [ p ])) return p;
+                            if (e("__as_tag2_done") || e("_as_prehooked") || e("_onload2") || e("_onerror2")) return e("__as_tag2_done") && e("_as_prehooked") && e("_onload2") && e("_onerror2") && e('data-sdk^="pk/"') ? "window.__as_tag2_done=true;void 0;" : p;
                             if (e('data-sdk^="pk/"') && e("/recovery-light.js") && e("/recovery.js") && e("__as_cbs") && e("__as_start_recovery") && e("AdBlock detected") || r()) return t;
                         } catch (e) {}
-                        return n;
+                        return p;
                     }
                 };
-                window.Array.prototype.join = new Proxy(window.Array.prototype.join, m);
+                window.Array.prototype.join = new Proxy(window.Array.prototype.join, v);
             })();
-            Object.defineProperty(Window.prototype.toString, "84999181ca0fd348e13f1f7b9c73e6f6", {
+            Object.defineProperty(Window.prototype.toString, "acf08dca2d61776f635279d3bcc0d7e8", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "84999181ca0fd348e13f1f7b9c73e6f6" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "acf08dca2d61776f635279d3bcc0d7e8" due to: ' + e);
         }
     },
-    '(()=>{const t=/adshield|adsentinel/,e="(function(){})();",r=/^\\(\\s*\\.\\.\\.\\s*([A-Za-z_$][\\w$]*)\\s*\\)\\s*=>\\s*[A-Za-z_$][\\w$]*\\s*\\.\\s*apply\\s*\\(\\s*this\\s*,\\s*\\1\\s*\\)\\s*$/,o=/^function\\s*\\(\\s*\\)\\s*\\{\\s*return\\s+[A-Za-z_$][\\w$]*\\s*\\.\\s*apply\\s*\\(\\s*this\\s*,\\s*arguments\\s*\\)\\s*;?\\s*\\}$/,p=/^(?:"use strict"|\'use strict\');\\s*\\(\\(\\)\\s*=>\\s*\\{[\\s\\S]*\\}\\)\\(\\s*\\);?\\s*$/,s=/^([A-Za-z_$][\\w$]*\\(\\s*\\)\\s*;)\\s*\\(async(?:\\s+function\\s*\\(\\s*\\)|\\s*\\(\\s*\\)\\s*=>)\\s*\\{[\\s\\S]*\\}\\)\\(\\s*\\);?\\s*$/,n=["requestAnimationFrame","requestIdleCallback","setInterval","setTimeout"],a={apply:Reflect.apply,construct:Reflect.construct,filter:Array.prototype.filter,every:Array.prototype.every,some:Array.prototype.some,isArray:Array.isArray,getOwnPropertyDescriptor:Object.getOwnPropertyDescriptor,includes:String.prototype.includes,regexTest:RegExp.prototype.test,regexExec:RegExp.prototype.exec,functionToString:Function.prototype.toString,queueMicrotask:window.queueMicrotask},y=new Set,c=window.crypto?.subtle;if("function"==typeof c?.digest&&window.TextEncoder&&window.TextDecoder){const r=Object.getPrototypeOf(Uint8Array.prototype),o=a.getOwnPropertyDescriptor(r,Symbol.toStringTag).get,p=a.getOwnPropertyDescriptor(r,"buffer").get,s=a.getOwnPropertyDescriptor(ArrayBuffer.prototype,"byteLength").get,n=a.getOwnPropertyDescriptor(ArrayBuffer.prototype,"resizable")?.get,y=new TextDecoder("utf-8",{fatal:!0}),i=TextDecoder.prototype.decode,l=(new TextEncoder).encode(e),d=/([\'"])recovery\\1/,u=/([\'"])r_\\1/;c.digest=new Proxy(c.digest,{apply(e,r,w){try{const[e,f]=w;if(r===c&&"SHA-256"===e&&"Uint8Array"===a.apply(o,f,[])){const e=a.apply(p,f,[]);if(a.apply(s,e,[])>0&&(!n||!a.apply(n,e,[]))){const e=a.apply(i,y,[f]);a.apply(a.regexTest,t,[e])&&a.apply(a.includes,e,["currentScript"])&&a.apply(a.includes,e,["postMessage"])&&a.apply(a.regexTest,d,[e])&&a.apply(a.regexTest,u,[e])&&(w[1]=l)}}}catch{}return a.apply(e,r,w)}})}const i=()=>{const t={};a.apply(a.queueMicrotask,window,[()=>y.delete(t)]),y.add(t)},l={construct:(r,o,p)=>{let s=!1;try{const[r,p]=o,n=p&&"object"==typeof p?a.getOwnPropertyDescriptor(p,"type")?.value:void 0;("application/javascript"===n||"text/javascript"===n)&&a.isArray(r)&&a.apply(a.every,r,[t=>"string"==typeof t])&&a.apply(a.some,r,[e=>a.apply(a.regexTest,t,[e])])&&(o[0]=[e],s=!0)}catch(t){}const n=a.construct(r,o,p);if(s)try{i()}catch(t){}return n}};window.Blob=new Proxy(window.Blob,l);const d=window.HTMLScriptElement,u=window.Element?.prototype.getAttribute;let w,f=d?.prototype;for(;f&&(w=a.getOwnPropertyDescriptor(f,"textContent"),!w);)f=Object.getPrototypeOf(f);w?.set&&u&&Object.defineProperty(f,"textContent",{...w,set:new Proxy(w.set,{apply(r,o,p){let s=!1;try{const r=p[0];if("string"==typeof r&&o instanceof d&&a.apply(a.regexTest,t,[r])){const t=t=>a.apply(u,o,[t]),r=t("type");!t("recovery")||!t("data-src")||null!==t("src")||r&&"application/javascript"!==r&&"text/javascript"!==r||(p[0]=e,s=!0)}}catch(t){}const n=a.apply(r,o,p);if(s)try{i()}catch(t){}return n}})});const g={apply:(t,e,p)=>{const s=y.values().next().value;y.delete(s);try{const[t,e]=p;if(s&&"number"==typeof e&&e>=4900&&e<5100){const e="function"==typeof t?a.apply(a.functionToString,t,[]):"string"==typeof t?t:"";(a.apply(a.includes,e,["new Error"])||"function"==typeof t&&(a.apply(a.regexTest,r,[e])||a.apply(a.regexTest,o,[e])))&&(p[0]=()=>{})}}catch(t){}return a.apply(t,e,p)}};window.setTimeout=new Proxy(window.setTimeout,g);const _={apply:(t,e,r)=>{try{"function"==typeof r[0]&&a.isArray(e)&&e.length===n.length&&a.apply(a.every,n,[(t,r)=>e[r]===t])&&(e=a.apply(a.filter,e,[t=>"setTimeout"!==t]))}catch(t){}return a.apply(t,e,r)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,_);const x={apply(t,r,o){const n=a.apply(t,r,o);try{if("string"!=typeof n)return n;const t=t=>a.apply(a.includes,n,[t]),r=()=>t("loader_light")&&t("last_bfa_at")&&t("/report?type=")&&t("as_modal_loaded")&&t("close-error-report")&&t("ECDSA")&&t("P-256"),o=a.apply(a.regexExec,s,[n]);if(o&&r())return o[1];if(!a.apply(a.regexTest,p,[n]))return n;if(t("__as_tag2_done")||t("_as_prehooked")||t("_onload2")||t("_onerror2"))return t("__as_tag2_done")&&t("_as_prehooked")&&t("_onload2")&&t("_onerror2")&&t(\'data-sdk^="pk/"\')?"window.__as_tag2_done=true;void 0;":n;if(t(\'data-sdk^="pk/"\')&&t("/recovery-light.js")&&t("/recovery.js")&&t("__as_cbs")&&t("__as_start_recovery")&&t("AdBlock detected")||r())return e}catch(t){}return n}};window.Array.prototype.join=new Proxy(window.Array.prototype.join,x)})();': () => {
+    '(()=>{const t=/adshield|adsentinel/,e="(function(){})();",r=/^\\(\\s*\\.\\.\\.\\s*([A-Za-z_$][\\w$]*)\\s*\\)\\s*=>\\s*[A-Za-z_$][\\w$]*\\s*\\.\\s*apply\\s*\\(\\s*this\\s*,\\s*\\1\\s*\\)\\s*$/,o=/^function\\s*\\(\\s*\\)\\s*\\{\\s*return\\s+[A-Za-z_$][\\w$]*\\s*\\.\\s*apply\\s*\\(\\s*this\\s*,\\s*arguments\\s*\\)\\s*;?\\s*\\}$/,p=/^(?:"use strict"|\'use strict\');\\s*\\(\\(\\)\\s*=>\\s*\\{[\\s\\S]*\\}\\)\\(\\s*\\);?\\s*$/,s=/^([A-Za-z_$][\\w$]*\\(\\s*\\)\\s*;)\\s*\\(async(?:\\s+function\\s*\\(\\s*\\)|\\s*\\(\\s*\\)\\s*=>)\\s*\\{[\\s\\S]*\\}\\)\\(\\s*\\);?\\s*$/,n=["requestAnimationFrame","requestIdleCallback","setInterval","setTimeout"],a={apply:Reflect.apply,construct:Reflect.construct,filter:Array.prototype.filter,every:Array.prototype.every,some:Array.prototype.some,isArray:Array.isArray,getOwnPropertyDescriptor:Object.getOwnPropertyDescriptor,includes:String.prototype.includes,regexTest:RegExp.prototype.test,regexExec:RegExp.prototype.exec,functionToString:Function.prototype.toString,queueMicrotask:window.queueMicrotask},y=new Set,c=/([\'"])recovery\\1/,i=/([\'"])r_\\1/,l=e=>a.apply(a.regexTest,t,[e])&&a.apply(a.includes,e,["currentScript"])&&a.apply(a.includes,e,["postMessage"])&&a.apply(a.regexTest,c,[e])&&a.apply(a.regexTest,i,[e]);let d;if(window.TextDecoder){const t=Object.getPrototypeOf(Uint8Array.prototype),e=a.getOwnPropertyDescriptor(t,Symbol.toStringTag).get,r=a.getOwnPropertyDescriptor(t,"buffer").get,o=a.getOwnPropertyDescriptor(ArrayBuffer.prototype,"byteLength").get,p=a.getOwnPropertyDescriptor(ArrayBuffer.prototype,"resizable")?.get,s=new TextDecoder("utf-8",{fatal:!0}),n=TextDecoder.prototype.decode;d=(t,y=!1)=>{try{const c="Uint8Array"===a.apply(e,t,[]);if(!c&&!y)return"";const i=c?a.apply(r,t,[]):t;if(a.apply(o,i,[])>0&&(!p||!a.apply(p,i,[])))return a.apply(n,s,[t])}catch{}return""}}else d=()=>"";const u=window.crypto?.subtle;if("function"==typeof u?.digest&&window.TextEncoder&&window.TextDecoder){const t=(new TextEncoder).encode(e);u.digest=new Proxy(u.digest,{apply(e,r,o){try{const[e,p]=o;r===u&&"SHA-256"===e&&l(d(p,!0))&&(o[1]=t)}catch{}return a.apply(e,r,o)}})}const w=()=>{const t={};a.apply(a.queueMicrotask,window,[()=>y.delete(t)]),y.add(t)},f={construct:(r,o,p)=>{let s=!1;try{const[r,p]=o,n=p&&"object"==typeof p?a.getOwnPropertyDescriptor(p,"type")?.value:void 0;("application/javascript"===n||"text/javascript"===n)&&a.isArray(r)&&(a.apply(a.every,r,[t=>"string"==typeof t])&&a.apply(a.some,r,[e=>a.apply(a.regexTest,t,[e])])||1===r.length&&l(d(r[0])))&&(o[0]=[e],s=!0)}catch(t){}const n=a.construct(r,o,p);if(s)try{w()}catch(t){}return n}};window.Blob=new Proxy(window.Blob,f);const g=window.HTMLScriptElement,_=window.Element?.prototype.getAttribute;let x,A=g?.prototype;for(;A&&(x=a.getOwnPropertyDescriptor(A,"textContent"),!x);)A=Object.getPrototypeOf(A);x?.set&&_&&Object.defineProperty(A,"textContent",{...x,set:new Proxy(x.set,{apply(r,o,p){let s=!1;try{const r=p[0];if("string"==typeof r&&o instanceof g&&a.apply(a.regexTest,t,[r])){const t=t=>a.apply(_,o,[t]),n=t("type"),y=t("recovery"),c=t("data-src");!(y&&c||null===y&&null===c&&l(r))||null!==t("src")||n&&"application/javascript"!==n&&"text/javascript"!==n||(p[0]=e,s=!0)}}catch(t){}const n=a.apply(r,o,p);if(s)try{w()}catch(t){}return n}})});const T={apply:(t,e,p)=>{const s=y.values().next().value;y.delete(s);try{const[t,e]=p;if(s&&"number"==typeof e&&e>=4900&&e<5100){const e="function"==typeof t?a.apply(a.functionToString,t,[]):"string"==typeof t?t:"";(a.apply(a.includes,e,["new Error"])||"function"==typeof t&&(a.apply(a.regexTest,r,[e])||a.apply(a.regexTest,o,[e])))&&(p[0]=()=>{})}}catch(t){}return a.apply(t,e,p)}};window.setTimeout=new Proxy(window.setTimeout,T);const h={apply:(t,e,r)=>{try{"function"==typeof r[0]&&a.isArray(e)&&e.length===n.length&&a.apply(a.every,n,[(t,r)=>e[r]===t])&&(e=a.apply(a.filter,e,[t=>"setTimeout"!==t]))}catch(t){}return a.apply(t,e,r)}};window.Array.prototype.filter=new Proxy(window.Array.prototype.filter,h);const v={apply(t,r,o){const n=a.apply(t,r,o);try{if("string"!=typeof n)return n;const t=t=>a.apply(a.includes,n,[t]),r=()=>t("loader_light")&&t("last_bfa_at")&&t("/report?type=")&&t("as_modal_loaded")&&t("close-error-report")&&t("ECDSA")&&t("P-256"),o=a.apply(a.regexExec,s,[n]);if(o&&r())return o[1];if(!a.apply(a.regexTest,p,[n]))return n;if(t("__as_tag2_done")||t("_as_prehooked")||t("_onload2")||t("_onerror2"))return t("__as_tag2_done")&&t("_as_prehooked")&&t("_onload2")&&t("_onerror2")&&t(\'data-sdk^="pk/"\')?"window.__as_tag2_done=true;void 0;":n;if(t(\'data-sdk^="pk/"\')&&t("/recovery-light.js")&&t("/recovery.js")&&t("__as_cbs")&&t("__as_start_recovery")&&t("AdBlock detected")||r())return e}catch(t){}return n}};window.Array.prototype.join=new Proxy(window.Array.prototype.join,v)})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.e6564d279a3609293a96471a63075b7a === e) return;
+            if (Window.prototype.toString["603eae5adb03f4c7cd347c941efff0ef"] === e) return;
             (() => {
-                const e = /adshield|adsentinel/, t = "(function(){})();", r = /^\(\s*\.\.\.\s*([A-Za-z_$][\w$]*)\s*\)\s*=>\s*[A-Za-z_$][\w$]*\s*\.\s*apply\s*\(\s*this\s*,\s*\1\s*\)\s*$/, o = /^function\s*\(\s*\)\s*\{\s*return\s+[A-Za-z_$][\w$]*\s*\.\s*apply\s*\(\s*this\s*,\s*arguments\s*\)\s*;?\s*\}$/, p = /^(?:"use strict"|'use strict');\s*\(\(\)\s*=>\s*\{[\s\S]*\}\)\(\s*\);?\s*$/, s = /^([A-Za-z_$][\w$]*\(\s*\)\s*;)\s*\(async(?:\s+function\s*\(\s*\)|\s*\(\s*\)\s*=>)\s*\{[\s\S]*\}\)\(\s*\);?\s*$/, n = [ "requestAnimationFrame", "requestIdleCallback", "setInterval", "setTimeout" ], a = {
+                const e = /adshield|adsentinel/, t = "(function(){})();", r = /^\(\s*\.\.\.\s*([A-Za-z_$][\w$]*)\s*\)\s*=>\s*[A-Za-z_$][\w$]*\s*\.\s*apply\s*\(\s*this\s*,\s*\1\s*\)\s*$/, o = /^function\s*\(\s*\)\s*\{\s*return\s+[A-Za-z_$][\w$]*\s*\.\s*apply\s*\(\s*this\s*,\s*arguments\s*\)\s*;?\s*\}$/, p = /^(?:"use strict"|'use strict');\s*\(\(\)\s*=>\s*\{[\s\S]*\}\)\(\s*\);?\s*$/, n = /^([A-Za-z_$][\w$]*\(\s*\)\s*;)\s*\(async(?:\s+function\s*\(\s*\)|\s*\(\s*\)\s*=>)\s*\{[\s\S]*\}\)\(\s*\);?\s*$/, s = [ "requestAnimationFrame", "requestIdleCallback", "setInterval", "setTimeout" ], a = {
                     apply: Reflect.apply,
                     construct: Reflect.construct,
                     filter: Array.prototype.filter,
@@ -9422,77 +9430,85 @@ export const localScriptRules = {
                     regexExec: RegExp.prototype.exec,
                     functionToString: Function.prototype.toString,
                     queueMicrotask: window.queueMicrotask
-                }, y = new Set, c = window.crypto?.subtle;
-                if ("function" == typeof c?.digest && window.TextEncoder && window.TextDecoder) {
-                    const r = Object.getPrototypeOf(Uint8Array.prototype), o = a.getOwnPropertyDescriptor(r, Symbol.toStringTag).get, p = a.getOwnPropertyDescriptor(r, "buffer").get, s = a.getOwnPropertyDescriptor(ArrayBuffer.prototype, "byteLength").get, n = a.getOwnPropertyDescriptor(ArrayBuffer.prototype, "resizable")?.get, y = new TextDecoder("utf-8", {
+                }, c = new Set, y = /(['"])recovery\1/, i = /(['"])r_\1/, l = t => a.apply(a.regexTest, e, [ t ]) && a.apply(a.includes, t, [ "currentScript" ]) && a.apply(a.includes, t, [ "postMessage" ]) && a.apply(a.regexTest, y, [ t ]) && a.apply(a.regexTest, i, [ t ]);
+                let d;
+                if (window.TextDecoder) {
+                    const e = Object.getPrototypeOf(Uint8Array.prototype), t = a.getOwnPropertyDescriptor(e, Symbol.toStringTag).get, r = a.getOwnPropertyDescriptor(e, "buffer").get, o = a.getOwnPropertyDescriptor(ArrayBuffer.prototype, "byteLength").get, p = a.getOwnPropertyDescriptor(ArrayBuffer.prototype, "resizable")?.get, n = new TextDecoder("utf-8", {
                         fatal: !0
-                    }), i = TextDecoder.prototype.decode, l = (new TextEncoder).encode(t), d = /(['"])recovery\1/, u = /(['"])r_\1/;
-                    c.digest = new Proxy(c.digest, {
-                        apply(t, r, w) {
+                    }), s = TextDecoder.prototype.decode;
+                    d = (e, c = !1) => {
+                        try {
+                            const y = "Uint8Array" === a.apply(t, e, []);
+                            if (!y && !c) return "";
+                            const i = y ? a.apply(r, e, []) : e;
+                            if (a.apply(o, i, []) > 0 && (!p || !a.apply(p, i, []))) return a.apply(s, n, [ e ]);
+                        } catch {}
+                        return "";
+                    };
+                } else d = () => "";
+                const u = window.crypto?.subtle;
+                if ("function" == typeof u?.digest && window.TextEncoder && window.TextDecoder) {
+                    const e = (new TextEncoder).encode(t);
+                    u.digest = new Proxy(u.digest, {
+                        apply(t, r, o) {
                             try {
-                                const [t, f] = w;
-                                if (r === c && "SHA-256" === t && "Uint8Array" === a.apply(o, f, [])) {
-                                    const t = a.apply(p, f, []);
-                                    if (a.apply(s, t, []) > 0 && (!n || !a.apply(n, t, []))) {
-                                        const t = a.apply(i, y, [ f ]);
-                                        a.apply(a.regexTest, e, [ t ]) && a.apply(a.includes, t, [ "currentScript" ]) && a.apply(a.includes, t, [ "postMessage" ]) && a.apply(a.regexTest, d, [ t ]) && a.apply(a.regexTest, u, [ t ]) && (w[1] = l);
-                                    }
-                                }
+                                const [t, p] = o;
+                                r === u && "SHA-256" === t && l(d(p, !0)) && (o[1] = e);
                             } catch {}
-                            return a.apply(t, r, w);
+                            return a.apply(t, r, o);
                         }
                     });
                 }
-                const i = () => {
+                const f = () => {
                     const e = {};
-                    a.apply(a.queueMicrotask, window, [ () => y.delete(e) ]), y.add(e);
-                }, l = {
+                    a.apply(a.queueMicrotask, window, [ () => c.delete(e) ]), c.add(e);
+                }, w = {
                     construct: (r, o, p) => {
-                        let s = !1;
+                        let n = !1;
                         try {
-                            const [r, p] = o, n = p && "object" == typeof p ? a.getOwnPropertyDescriptor(p, "type")?.value : void 0;
-                            ("application/javascript" === n || "text/javascript" === n) && a.isArray(r) && a.apply(a.every, r, [ e => "string" == typeof e ]) && a.apply(a.some, r, [ t => a.apply(a.regexTest, e, [ t ]) ]) && (o[0] = [ t ], 
-                            s = !0);
+                            const [r, p] = o, s = p && "object" == typeof p ? a.getOwnPropertyDescriptor(p, "type")?.value : void 0;
+                            ("application/javascript" === s || "text/javascript" === s) && a.isArray(r) && (a.apply(a.every, r, [ e => "string" == typeof e ]) && a.apply(a.some, r, [ t => a.apply(a.regexTest, e, [ t ]) ]) || 1 === r.length && l(d(r[0]))) && (o[0] = [ t ], 
+                            n = !0);
                         } catch (e) {}
-                        const n = a.construct(r, o, p);
-                        if (s) try {
-                            i();
+                        const s = a.construct(r, o, p);
+                        if (n) try {
+                            f();
                         } catch (e) {}
-                        return n;
+                        return s;
                     }
                 };
-                window.Blob = new Proxy(window.Blob, l);
-                const d = window.HTMLScriptElement, u = window.Element?.prototype.getAttribute;
-                let w, f = d?.prototype;
-                for (;f && (w = a.getOwnPropertyDescriptor(f, "textContent"), !w); ) f = Object.getPrototypeOf(f);
-                w?.set && u && Object.defineProperty(f, "textContent", {
-                    ...w,
-                    set: new Proxy(w.set, {
+                window.Blob = new Proxy(window.Blob, w);
+                const g = window.HTMLScriptElement, _ = window.Element?.prototype.getAttribute;
+                let x, A = g?.prototype;
+                for (;A && (x = a.getOwnPropertyDescriptor(A, "textContent"), !x); ) A = Object.getPrototypeOf(A);
+                x?.set && _ && Object.defineProperty(A, "textContent", {
+                    ...x,
+                    set: new Proxy(x.set, {
                         apply(r, o, p) {
-                            let s = !1;
+                            let n = !1;
                             try {
                                 const r = p[0];
-                                if ("string" == typeof r && o instanceof d && a.apply(a.regexTest, e, [ r ])) {
-                                    const e = e => a.apply(u, o, [ e ]), r = e("type");
-                                    !e("recovery") || !e("data-src") || null !== e("src") || r && "application/javascript" !== r && "text/javascript" !== r || (p[0] = t, 
-                                    s = !0);
+                                if ("string" == typeof r && o instanceof g && a.apply(a.regexTest, e, [ r ])) {
+                                    const e = e => a.apply(_, o, [ e ]), s = e("type"), c = e("recovery"), y = e("data-src");
+                                    !(c && y || null === c && null === y && l(r)) || null !== e("src") || s && "application/javascript" !== s && "text/javascript" !== s || (p[0] = t, 
+                                    n = !0);
                                 }
                             } catch (e) {}
-                            const n = a.apply(r, o, p);
-                            if (s) try {
-                                i();
+                            const s = a.apply(r, o, p);
+                            if (n) try {
+                                f();
                             } catch (e) {}
-                            return n;
+                            return s;
                         }
                     })
                 });
-                const g = {
+                const b = {
                     apply: (e, t, p) => {
-                        const s = y.values().next().value;
-                        y.delete(s);
+                        const n = c.values().next().value;
+                        c.delete(n);
                         try {
                             const [e, t] = p;
-                            if (s && "number" == typeof t && t >= 4900 && t < 5100) {
+                            if (n && "number" == typeof t && t >= 4900 && t < 5100) {
                                 const t = "function" == typeof e ? a.apply(a.functionToString, e, []) : "string" == typeof e ? e : "";
                                 (a.apply(a.includes, t, [ "new Error" ]) || "function" == typeof e && (a.apply(a.regexTest, r, [ t ]) || a.apply(a.regexTest, o, [ t ]))) && (p[0] = () => {});
                             }
@@ -9500,40 +9516,40 @@ export const localScriptRules = {
                         return a.apply(e, t, p);
                     }
                 };
-                window.setTimeout = new Proxy(window.setTimeout, g);
-                const _ = {
+                window.setTimeout = new Proxy(window.setTimeout, b);
+                const T = {
                     apply: (e, t, r) => {
                         try {
-                            "function" == typeof r[0] && a.isArray(t) && t.length === n.length && a.apply(a.every, n, [ (e, r) => t[r] === e ]) && (t = a.apply(a.filter, t, [ e => "setTimeout" !== e ]));
+                            "function" == typeof r[0] && a.isArray(t) && t.length === s.length && a.apply(a.every, s, [ (e, r) => t[r] === e ]) && (t = a.apply(a.filter, t, [ e => "setTimeout" !== e ]));
                         } catch (e) {}
                         return a.apply(e, t, r);
                     }
                 };
-                window.Array.prototype.filter = new Proxy(window.Array.prototype.filter, _);
-                const x = {
+                window.Array.prototype.filter = new Proxy(window.Array.prototype.filter, T);
+                const h = {
                     apply(e, r, o) {
-                        const n = a.apply(e, r, o);
+                        const s = a.apply(e, r, o);
                         try {
-                            if ("string" != typeof n) return n;
-                            const e = e => a.apply(a.includes, n, [ e ]), r = () => e("loader_light") && e("last_bfa_at") && e("/report?type=") && e("as_modal_loaded") && e("close-error-report") && e("ECDSA") && e("P-256"), o = a.apply(a.regexExec, s, [ n ]);
+                            if ("string" != typeof s) return s;
+                            const e = e => a.apply(a.includes, s, [ e ]), r = () => e("loader_light") && e("last_bfa_at") && e("/report?type=") && e("as_modal_loaded") && e("close-error-report") && e("ECDSA") && e("P-256"), o = a.apply(a.regexExec, n, [ s ]);
                             if (o && r()) return o[1];
-                            if (!a.apply(a.regexTest, p, [ n ])) return n;
-                            if (e("__as_tag2_done") || e("_as_prehooked") || e("_onload2") || e("_onerror2")) return e("__as_tag2_done") && e("_as_prehooked") && e("_onload2") && e("_onerror2") && e('data-sdk^="pk/"') ? "window.__as_tag2_done=true;void 0;" : n;
+                            if (!a.apply(a.regexTest, p, [ s ])) return s;
+                            if (e("__as_tag2_done") || e("_as_prehooked") || e("_onload2") || e("_onerror2")) return e("__as_tag2_done") && e("_as_prehooked") && e("_onload2") && e("_onerror2") && e('data-sdk^="pk/"') ? "window.__as_tag2_done=true;void 0;" : s;
                             if (e('data-sdk^="pk/"') && e("/recovery-light.js") && e("/recovery.js") && e("__as_cbs") && e("__as_start_recovery") && e("AdBlock detected") || r()) return t;
                         } catch (e) {}
-                        return n;
+                        return s;
                     }
                 };
-                window.Array.prototype.join = new Proxy(window.Array.prototype.join, x);
+                window.Array.prototype.join = new Proxy(window.Array.prototype.join, h);
             })();
-            Object.defineProperty(Window.prototype.toString, "e6564d279a3609293a96471a63075b7a", {
+            Object.defineProperty(Window.prototype.toString, "603eae5adb03f4c7cd347c941efff0ef", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "e6564d279a3609293a96471a63075b7a" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "603eae5adb03f4c7cd347c941efff0ef" due to: ' + e);
         }
     },
     '(()=>{const A={apply:(A,B,Q)=>{try{const A=Q[0];A&&A._uri&&A._uri.startsWith("spotify:ad:")&&A._url&&(A._url="data:video/mp4;base64,AAAAHGZ0eXBNNFYgAAACAGlzb21pc28yYXZjMQAAAAhmcmVlAAAGF21kYXTeBAAAbGliZmFhYyAxLjI4AABCAJMgBDIARwAAArEGBf//rdxF6b3m2Ui3lizYINkj7u94MjY0IC0gY29yZSAxNDIgcjIgOTU2YzhkOCAtIEguMjY0L01QRUctNCBBVkMgY29kZWMgLSBDb3B5bGVmdCAyMDAzLTIwMTQgLSBodHRwOi8vd3d3LnZpZGVvbGFuLm9yZy94MjY0Lmh0bWwgLSBvcHRpb25zOiBjYWJhYz0wIHJlZj0zIGRlYmxvY2s9MTowOjAgYW5hbHlzZT0weDE6MHgxMTEgbWU9aGV4IHN1Ym1lPTcgcHN5PTEgcHN5X3JkPTEuMDA6MC4wMCBtaXhlZF9yZWY9MSBtZV9yYW5nZT0xNiBjaHJvbWFfbWU9MSB0cmVsbGlzPTEgOHg4ZGN0PTAgY3FtPTAgZGVhZHpvbmU9MjEsMTEgZmFzdF9wc2tpcD0xIGNocm9tYV9xcF9vZmZzZXQ9LTIgdGhyZWFkcz02IGxvb2thaGVhZF90aHJlYWRzPTEgc2xpY2VkX3RocmVhZHM9MCBucj0wIGRlY2ltYXRlPTEgaW50ZXJsYWNlZD0wIGJsdXJheV9jb21wYXQ9MCBjb25zdHJhaW5lZF9pbnRyYT0wIGJmcmFtZXM9MCB3ZWlnaHRwPTAga2V5aW50PTI1MCBrZXlpbnRfbWluPTI1IHNjZW5lY3V0PTQwIGludHJhX3JlZnJlc2g9MCByY19sb29rYWhlYWQ9NDAgcmM9Y3JmIG1idHJlZT0xIGNyZj0yMy4wIHFjb21wPTAuNjAgcXBtaW49MCBxcG1heD02OSBxcHN0ZXA9NCB2YnZfbWF4cmF0ZT03NjggdmJ2X2J1ZnNpemU9MzAwMCBjcmZfbWF4PTAuMCBuYWxfaHJkPW5vbmUgZmlsbGVyPTAgaXBfcmF0aW89MS40MCBhcT0xOjEuMDAAgAAAAFZliIQL8mKAAKvMnJycnJycnJycnXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXiEASZACGQAjgCEASZACGQAjgAAAAAdBmjgX4GSAIQBJkAIZACOAAAAAB0GaVAX4GSAhAEmQAhkAI4AhAEmQAhkAI4AAAAAGQZpgL8DJIQBJkAIZACOAIQBJkAIZACOAAAAABkGagC/AySEASZACGQAjgAAAAAZBmqAvwMkhAEmQAhkAI4AhAEmQAhkAI4AAAAAGQZrAL8DJIQBJkAIZACOAAAAABkGa4C/AySEASZACGQAjgCEASZACGQAjgAAAAAZBmwAvwMkhAEmQAhkAI4AAAAAGQZsgL8DJIQBJkAIZACOAIQBJkAIZACOAAAAABkGbQC/AySEASZACGQAjgCEASZACGQAjgAAAAAZBm2AvwMkhAEmQAhkAI4AAAAAGQZuAL8DJIQBJkAIZACOAIQBJkAIZACOAAAAABkGboC/AySEASZACGQAjgAAAAAZBm8AvwMkhAEmQAhkAI4AhAEmQAhkAI4AAAAAGQZvgL8DJIQBJkAIZACOAAAAABkGaAC/AySEASZACGQAjgCEASZACGQAjgAAAAAZBmiAvwMkhAEmQAhkAI4AhAEmQAhkAI4AAAAAGQZpAL8DJIQBJkAIZACOAAAAABkGaYC/AySEASZACGQAjgCEASZACGQAjgAAAAAZBmoAvwMkhAEmQAhkAI4AAAAAGQZqgL8DJIQBJkAIZACOAIQBJkAIZACOAAAAABkGawC/AySEASZACGQAjgAAAAAZBmuAvwMkhAEmQAhkAI4AhAEmQAhkAI4AAAAAGQZsAL8DJIQBJkAIZACOAAAAABkGbIC/AySEASZACGQAjgCEASZACGQAjgAAAAAZBm0AvwMkhAEmQAhkAI4AhAEmQAhkAI4AAAAAGQZtgL8DJIQBJkAIZACOAAAAABkGbgCvAySEASZACGQAjgCEASZACGQAjgAAAAAZBm6AnwMkhAEmQAhkAI4AhAEmQAhkAI4AhAEmQAhkAI4AhAEmQAhkAI4AAAAhubW9vdgAAAGxtdmhkAAAAAAAAAAAAAAAAAAAD6AAABDcAAQAAAQAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAzB0cmFrAAAAXHRraGQAAAADAAAAAAAAAAAAAAABAAAAAAAAA+kAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAALAAAACQAAAAAAAkZWR0cwAAABxlbHN0AAAAAAAAAAEAAAPpAAAAAAABAAAAAAKobWRpYQAAACBtZGhkAAAAAAAAAAAAAAAAAAB1MAAAdU5VxAAAAAAALWhkbHIAAAAAAAAAAHZpZGUAAAAAAAAAAAAAAABWaWRlb0hhbmRsZXIAAAACU21pbmYAAAAUdm1oZAAAAAEAAAAAAAAAAAAAACRkaW5mAAAAHGRyZWYAAAAAAAAAAQAAAAx1cmwgAAAAAQAAAhNzdGJsAAAAr3N0c2QAAAAAAAAAAQAAAJ9hdmMxAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAALAAkABIAAAASAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGP//AAAALWF2Y0MBQsAN/+EAFWdCwA3ZAsTsBEAAAPpAADqYA8UKkgEABWjLg8sgAAAAHHV1aWRraEDyXyRPxbo5pRvPAyPzAAAAAAAAABhzdHRzAAAAAAAAAAEAAAAeAAAD6QAAABRzdHNzAAAAAAAAAAEAAAABAAAAHHN0c2MAAAAAAAAAAQAAAAEAAAABAAAAAQAAAIxzdHN6AAAAAAAAAAAAAAAeAAADDwAAAAsAAAALAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAAiHN0Y28AAAAAAAAAHgAAAEYAAANnAAADewAAA5gAAAO0AAADxwAAA+MAAAP2AAAEEgAABCUAAARBAAAEXQAABHAAAASMAAAEnwAABLsAAATOAAAE6gAABQYAAAUZAAAFNQAABUgAAAVkAAAFdwAABZMAAAWmAAAFwgAABd4AAAXxAAAGDQAABGh0cmFrAAAAXHRraGQAAAADAAAAAAAAAAAAAAACAAAAAAAABDcAAAAAAAAAAAAAAAEBAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAkZWR0cwAAABxlbHN0AAAAAAAAAAEAAAQkAAADcAABAAAAAAPgbWRpYQAAACBtZGhkAAAAAAAAAAAAAAAAAAC7gAAAykBVxAAAAAAALWhkbHIAAAAAAAAAAHNvdW4AAAAAAAAAAAAAAABTb3VuZEhhbmRsZXIAAAADi21pbmYAAAAQc21oZAAAAAAAAAAAAAAAJGRpbmYAAAAcZHJlZgAAAAAAAAABAAAADHVybCAAAAABAAADT3N0YmwAAABnc3RzZAAAAAAAAAABAAAAV21wNGEAAAAAAAAAAQAAAAAAAAAAAAIAEAAAAAC7gAAAAAAAM2VzZHMAAAAAA4CAgCIAAgAEgICAFEAVBbjYAAu4AAAADcoFgICAAhGQBoCAgAECAAAAIHN0dHMAAAAAAAAAAgAAADIAAAQAAAAAAQAAAkAAAAFUc3RzYwAAAAAAAAAbAAAAAQAAAAEAAAABAAAAAgAAAAIAAAABAAAAAwAAAAEAAAABAAAABAAAAAIAAAABAAAABgAAAAEAAAABAAAABwAAAAIAAAABAAAACAAAAAEAAAABAAAACQAAAAIAAAABAAAACgAAAAEAAAABAAAACwAAAAIAAAABAAAADQAAAAEAAAABAAAADgAAAAIAAAABAAAADwAAAAEAAAABAAAAEAAAAAIAAAABAAAAEQAAAAEAAAABAAAAEgAAAAIAAAABAAAAFAAAAAEAAAABAAAAFQAAAAIAAAABAAAAFgAAAAEAAAABAAAAFwAAAAIAAAABAAAAGAAAAAEAAAABAAAAGQAAAAIAAAABAAAAGgAAAAEAAAABAAAAGwAAAAIAAAABAAAAHQAAAAEAAAABAAAAHgAAAAIAAAABAAAAHwAAAAQAAAABAAAA4HN0c3oAAAAAAAAAAAAAADMAAAAaAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAACMc3RjbwAAAAAAAAAfAAAALAAAA1UAAANyAAADhgAAA6IAAAO+AAAD0QAAA+0AAAQAAAAEHAAABC8AAARLAAAEZwAABHoAAASWAAAEqQAABMUAAATYAAAE9AAABRAAAAUjAAAFPwAABVIAAAVuAAAFgQAABZ0AAAWwAAAFzAAABegAAAX7AAAGFwAAAGJ1ZHRhAAAAWm1ldGEAAAAAAAAAIWhkbHIAAAAAAAAAAG1kaXJhcHBsAAAAAAAAAAAAAAAALWlsc3QAAAAlqXRvbwAAAB1kYXRhAAAAAQAAAABMYXZmNTUuMzMuMTAw")}catch(A){}return Reflect.apply(A,B,Q)}},B={apply:(B,Q,X)=>{try{const B=X[0]?.toString?.();B?.includes("this._getCacheKey")&&(X[0]=new Proxy(X[0],A))}catch(A){}return Reflect.apply(B,Q,X)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,B)})();': () => {
@@ -11879,39 +11895,38 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "7d835d508a44fa6f33710266eee3a2c3" due to: ' + e);
         }
     },
-    '(function(){try{var a=location.href.split("/#");if(a[1]){a=a[1];for(var b=0;10>b;b++){a=atob(a);try{new URL(decodeURIComponent(a));var c=!0}catch(d){c=!1}if(c)try{location.assign(decodeURIComponent(a));break}catch(d){}}}}catch(d){}})();': () => {
+    '(function(){try{var a=location.href.split("/#");if(a[1]){a=a[1];for(var b=0;10>b;b++){a=atob(a);try{var u=new URL(decodeURIComponent(a));var c=u.protocol==="http:"||u.protocol==="https:"}catch(d){c=!1}if(c)try{location.assign(u.href);break}catch(d){}}}}catch(d){}})();': () => {
         try {
-            const e = "done";
-            if (Window.prototype.toString["32d9aaa2320ef0aacd203039342dcf58"] === e) return;
+            const t = "done";
+            if (Window.prototype.toString["4528af6d44eb12a761326328f63d77f5"] === t) return;
             !function() {
                 try {
-                    var e = location.href.split("/#");
-                    if (e[1]) {
-                        e = e[1];
-                        for (var a = 0; 10 > a; a++) {
-                            e = atob(e);
+                    var t = location.href.split("/#");
+                    if (t[1]) {
+                        t = t[1];
+                        for (var o = 0; 10 > o; o++) {
+                            t = atob(t);
                             try {
-                                new URL(decodeURIComponent(e));
-                                var t = !0;
-                            } catch (e) {
-                                t = !1;
+                                var e = new URL(decodeURIComponent(t)), r = "http:" === e.protocol || "https:" === e.protocol;
+                            } catch (t) {
+                                r = !1;
                             }
-                            if (t) try {
-                                location.assign(decodeURIComponent(e));
+                            if (r) try {
+                                location.assign(e.href);
                                 break;
-                            } catch (e) {}
+                            } catch (t) {}
                         }
                     }
-                } catch (e) {}
+                } catch (t) {}
             }();
-            Object.defineProperty(Window.prototype.toString, "32d9aaa2320ef0aacd203039342dcf58", {
-                value: e,
+            Object.defineProperty(Window.prototype.toString, "4528af6d44eb12a761326328f63d77f5", {
+                value: t,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "32d9aaa2320ef0aacd203039342dcf58" due to: ' + e);
+        } catch (t) {
+            console.error('Error executing AG js rule with uniqueId "4528af6d44eb12a761326328f63d77f5" due to: ' + t);
         }
     },
     '(()=>{if(location.href.includes("?s=http")){const a=location.href.split("?s=").slice(1);try{location.assign(decodeURIComponent(a))}catch(a){}}})();': () => {
@@ -12011,26 +12026,27 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "11a8706f0dda4c1354a0f23ace755f3f" due to: ' + e);
         }
     },
-    '!function(){if(-1<window.location.href.indexOf("/?go=")){var a=location.href.split("?go=");if(a&&a[1])try{window.location=atob(a[1])}catch(b){}}}();': () => {
+    '!function(){if(-1<window.location.href.indexOf("/?go=")){var a=location.href.split("?go=");if(a&&a[1])try{var u=new URL(atob(a[1]),location.href);if(u.protocol==="http:"||u.protocol==="https:")window.location=u.href}catch(b){}}}();': () => {
         try {
             const o = "done";
-            if (Window.prototype.toString["74acd4f9bf691bd110a5d483c18ecd56"] === o) return;
+            if (Window.prototype.toString.b25487f32745e73481550624e26d6678 === o) return;
             !function() {
                 if (-1 < window.location.href.indexOf("/?go=")) {
                     var o = location.href.split("?go=");
                     if (o && o[1]) try {
-                        window.location = atob(o[1]);
+                        var e = new URL(atob(o[1]), location.href);
+                        "http:" !== e.protocol && "https:" !== e.protocol || (window.location = e.href);
                     } catch (o) {}
                 }
             }();
-            Object.defineProperty(Window.prototype.toString, "74acd4f9bf691bd110a5d483c18ecd56", {
+            Object.defineProperty(Window.prototype.toString, "b25487f32745e73481550624e26d6678", {
                 value: o,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (o) {
-            console.error('Error executing AG js rule with uniqueId "74acd4f9bf691bd110a5d483c18ecd56" due to: ' + o);
+            console.error('Error executing AG js rule with uniqueId "b25487f32745e73481550624e26d6678" due to: ' + o);
         }
     },
     '!function(){if(-1<window.location.href.indexOf("/?redirect=aHR0c")){var a=location.href.split("/?redirect=");if(a&&a[1])try{window.location=atob(a[1])}catch(b){}}}();': () => {
@@ -12304,26 +12320,27 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "fa04035c4b218bf538509b1f9bca93d9" due to: ' + o);
         }
     },
-    '!function(){if(-1<window.location.href.indexOf("/gotothedl.html?url=")){var a=location.href.split("/gotothedl.html?url=");if(a&&a[1])try{window.location=atob(a[1])}catch(b){}}}();': () => {
+    '!function(){if(-1<window.location.href.indexOf("/gotothedl.html?url=")){var a=location.href.split("/gotothedl.html?url=");if(a&&a[1])try{var u=new URL(atob(a[1]),location.href);if(u.protocol==="http:"||u.protocol==="https:")window.location=u.href}catch(b){}}}();': () => {
         try {
-            const e = "done";
-            if (Window.prototype.toString.fd6511a662b1e2713ee805351331ec88 === e) return;
+            const o = "done";
+            if (Window.prototype.toString.d940c4ce34742167d984732a231cf5d8 === o) return;
             !function() {
                 if (-1 < window.location.href.indexOf("/gotothedl.html?url=")) {
-                    var e = location.href.split("/gotothedl.html?url=");
-                    if (e && e[1]) try {
-                        window.location = atob(e[1]);
-                    } catch (e) {}
+                    var o = location.href.split("/gotothedl.html?url=");
+                    if (o && o[1]) try {
+                        var t = new URL(atob(o[1]), location.href);
+                        "http:" !== t.protocol && "https:" !== t.protocol || (window.location = t.href);
+                    } catch (o) {}
                 }
             }();
-            Object.defineProperty(Window.prototype.toString, "fd6511a662b1e2713ee805351331ec88", {
-                value: e,
+            Object.defineProperty(Window.prototype.toString, "d940c4ce34742167d984732a231cf5d8", {
+                value: o,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "fd6511a662b1e2713ee805351331ec88" due to: ' + e);
+        } catch (o) {
+            console.error('Error executing AG js rule with uniqueId "d940c4ce34742167d984732a231cf5d8" due to: ' + o);
         }
     },
     '!function(){if(-1<window.location.href.indexOf("/link/?link=aHR0c")){var a=location.href.split("/link/?link=");if(a&&a[1])try{window.location=atob(a[1])}catch(b){}}}();': () => {
@@ -12386,48 +12403,27 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "83200f16f2ddab39b258418b8f092a1e" due to: ' + e);
         }
     },
-    '!function(){if(-1<location.pathname.indexOf("/redirect")){var a=(new URL(window.location.href)).searchParams.get("to");if(a)try{window.location=atob(a)}catch(b){}}}();': () => {
+    '!function(){if(-1<location.pathname.indexOf("/redirect")){var a=(new URL(window.location.href)).searchParams.get("to");if(a)try{var u=new URL(atob(a));if(u.protocol==="http:"||u.protocol==="https:")window.location=u.href}catch(b){}}}();': () => {
         try {
-            const e = "done";
-            if (Window.prototype.toString.af354057b5f1999097c4f848b8100343 === e) return;
+            const t = "done";
+            if (Window.prototype.toString["7fa6c2260e554cdf31d093932639d80d"] === t) return;
             !function() {
                 if (-1 < location.pathname.indexOf("/redirect")) {
-                    var e = new URL(window.location.href).searchParams.get("to");
-                    if (e) try {
-                        window.location = atob(e);
-                    } catch (e) {}
+                    var t = new URL(window.location.href).searchParams.get("to");
+                    if (t) try {
+                        var e = new URL(atob(t));
+                        "http:" !== e.protocol && "https:" !== e.protocol || (window.location = e.href);
+                    } catch (t) {}
                 }
             }();
-            Object.defineProperty(Window.prototype.toString, "af354057b5f1999097c4f848b8100343", {
-                value: e,
+            Object.defineProperty(Window.prototype.toString, "7fa6c2260e554cdf31d093932639d80d", {
+                value: t,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "af354057b5f1999097c4f848b8100343" due to: ' + e);
-        }
-    },
-    '!function(){if(-1<window.location.href.indexOf("?url=")){var a=location.href.split("?url=");if(a&&a[1])try{window.location=atob(a[1])}catch(b){}}}();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["8015f163e0243425947c898a301100ae"] === e) return;
-            !function() {
-                if (-1 < window.location.href.indexOf("?url=")) {
-                    var e = location.href.split("?url=");
-                    if (e && e[1]) try {
-                        window.location = atob(e[1]);
-                    } catch (e) {}
-                }
-            }();
-            Object.defineProperty(Window.prototype.toString, "8015f163e0243425947c898a301100ae", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "8015f163e0243425947c898a301100ae" due to: ' + e);
+        } catch (t) {
+            console.error('Error executing AG js rule with uniqueId "7fa6c2260e554cdf31d093932639d80d" due to: ' + t);
         }
     },
     '(()=>{document.addEventListener(\'DOMContentLoaded\',()=>{if(-1<location.pathname.indexOf("/go/")){var b=new MutationObserver(function(){if(document.querySelector("#get_link_btn"))try{[].slice.call(document.getElementsByTagName("script")).some(function(a){a.text.match(/goToUrl \\("/)&&(a=a.text.split(/goToUrl \\("([\\s\\S]*?)"\\);/),location=a[1])})}catch(a){}});b.observe(document,{childList:!0,subtree:!0});setTimeout(function(){b.disconnect()},1E4)}})})();': () => {
@@ -12481,26 +12477,27 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "034a6d2e27669874997985e584d3fc8b" due to: ' + e);
         }
     },
-    '!function(){if(-1<window.location.href.indexOf("/?r=")){var a=location.href.split("?r=");if(a&&a[1])try{window.location=atob(a[1])}catch(b){}}}();': () => {
+    '!function(){if(-1<window.location.href.indexOf("/?r=")){var a=location.href.split("?r=");if(a&&a[1])try{var u=new URL(atob(a[1]),location.href);if(u.protocol==="http:"||u.protocol==="https:")window.location=u.href}catch(b){}}}();': () => {
         try {
-            const e = "done";
-            if (Window.prototype.toString["307379e4f228b3973b29e647d7b9d240"] === e) return;
+            const o = "done";
+            if (Window.prototype.toString["11dbba51fbcb61032a0f17cccf6ea34f"] === o) return;
             !function() {
                 if (-1 < window.location.href.indexOf("/?r=")) {
-                    var e = location.href.split("?r=");
-                    if (e && e[1]) try {
-                        window.location = atob(e[1]);
-                    } catch (e) {}
+                    var o = location.href.split("?r=");
+                    if (o && o[1]) try {
+                        var t = new URL(atob(o[1]), location.href);
+                        "http:" !== t.protocol && "https:" !== t.protocol || (window.location = t.href);
+                    } catch (o) {}
                 }
             }();
-            Object.defineProperty(Window.prototype.toString, "307379e4f228b3973b29e647d7b9d240", {
-                value: e,
+            Object.defineProperty(Window.prototype.toString, "11dbba51fbcb61032a0f17cccf6ea34f", {
+                value: o,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "307379e4f228b3973b29e647d7b9d240" due to: ' + e);
+        } catch (o) {
+            console.error('Error executing AG js rule with uniqueId "11dbba51fbcb61032a0f17cccf6ea34f" due to: ' + o);
         }
     },
     "(function(){var c=window.setInterval;window.setInterval=function(f,g){return g===1e3&&/removeAttr\\('disabled'\\)/.test(f.toString())&&(g*=0.01),c.apply(this,arguments)}.bind(window)})();": () => {
@@ -12689,26 +12686,27 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "6b5cea966014c82ed21c8c5706e0bee8" due to: ' + e);
         }
     },
-    '!function(){if(-1<window.location.href.indexOf("dynamic?r=")&&!/https?:\\/\\/(www\\.)?h-gen\\.xyz\\//.test(document.referrer)){var a=location.href.split("?r=");if(a&&a[1])try{window.location=atob(a[1])}catch(b){}}}();': () => {
+    '!function(){if(-1<window.location.href.indexOf("dynamic?r=")&&!/https?:\\/\\/(www\\.)?h-gen\\.xyz\\//.test(document.referrer)){var a=location.href.split("?r=");if(a&&a[1])try{var u=new URL(atob(a[1]),location.href);if(u.protocol==="http:"||u.protocol==="https:")window.location=u.href}catch(b){}}}();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.fefa615247862ad4c7b0ecd9355c39fd === e) return;
+            if (Window.prototype.toString["5dcba4c1fe1a394cc75f1d267244e495"] === e) return;
             !function() {
                 if (-1 < window.location.href.indexOf("dynamic?r=") && !/https?:\/\/(www\.)?h-gen\.xyz\//.test(document.referrer)) {
                     var e = location.href.split("?r=");
                     if (e && e[1]) try {
-                        window.location = atob(e[1]);
+                        var t = new URL(atob(e[1]), location.href);
+                        "http:" !== t.protocol && "https:" !== t.protocol || (window.location = t.href);
                     } catch (e) {}
                 }
             }();
-            Object.defineProperty(Window.prototype.toString, "fefa615247862ad4c7b0ecd9355c39fd", {
+            Object.defineProperty(Window.prototype.toString, "5dcba4c1fe1a394cc75f1d267244e495", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "fefa615247862ad4c7b0ecd9355c39fd" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "5dcba4c1fe1a394cc75f1d267244e495" due to: ' + e);
         }
     },
     "!function(){const t={apply:(t,e,n)=>{const a=Reflect.apply(t,e,n);return a?.data?.getDetailPageContent?.linkCustomAdOffers&&(a.data.getDetailPageContent.linkCustomAdOffers=[]),a}};window.JSON.parse=new Proxy(window.JSON.parse,t)}();": () => {
@@ -14459,190 +14457,186 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "96e43c3e77d12216cc72163eb5a036f3" due to: ' + e);
         }
     },
-    '!function(){if(window.location.href.includes(".php?")&&window.location.href.includes("=")){const o=location.href.split("=");if(o&&o[1]){let t=o[1];for(let o=0;o<10;o++)try{t=atob(t)}catch(o){const n=decodeURIComponent(t);let c=!1;try{new URL(n),c=!0}catch(o){c=!1}if(c){location.assign(n);break}}}}}();': () => {
+    '!function(){if(window.location.href.includes(".php?")&&window.location.href.includes("=")){const o=location.href.split("=");if(o&&o[1]){let t=o[1];for(let o=0;o<10;o++)try{t=atob(t)}catch(o){const n=decodeURIComponent(t);let c=!1,u;try{u=new URL(n),c=u.protocol==="http:"||u.protocol==="https:"}catch(o){c=!1}if(c){location.assign(u.href);break}}}}}();': () => {
         try {
-            const e = "done";
-            if (Window.prototype.toString.aed92a9e5fa43ee06d13ea0740f42251 === e) return;
+            const o = "done";
+            if (Window.prototype.toString["070a112c386821ba65e12429dc1c83a6"] === o) return;
             !function() {
                 if (window.location.href.includes(".php?") && window.location.href.includes("=")) {
-                    const e = location.href.split("=");
-                    if (e && e[1]) {
-                        let o = e[1];
-                        for (let e = 0; e < 10; e++) try {
-                            o = atob(o);
-                        } catch (e) {
-                            const t = decodeURIComponent(o);
-                            let n = !1;
+                    const o = location.href.split("=");
+                    if (o && o[1]) {
+                        let t = o[1];
+                        for (let o = 0; o < 10; o++) try {
+                            t = atob(t);
+                        } catch (o) {
+                            const e = decodeURIComponent(t);
+                            let c, n = !1;
                             try {
-                                new URL(t), n = !0;
-                            } catch (e) {
+                                c = new URL(e), n = "http:" === c.protocol || "https:" === c.protocol;
+                            } catch (o) {
                                 n = !1;
                             }
                             if (n) {
-                                location.assign(t);
+                                location.assign(c.href);
                                 break;
                             }
                         }
                     }
                 }
             }();
-            Object.defineProperty(Window.prototype.toString, "aed92a9e5fa43ee06d13ea0740f42251", {
-                value: e,
+            Object.defineProperty(Window.prototype.toString, "070a112c386821ba65e12429dc1c83a6", {
+                value: o,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "aed92a9e5fa43ee06d13ea0740f42251" due to: ' + e);
+        } catch (o) {
+            console.error('Error executing AG js rule with uniqueId "070a112c386821ba65e12429dc1c83a6" due to: ' + o);
         }
     },
-    '(function(){if(-1<window.location.href.indexOf("/#")){var b=location.href.split("/#");if(b&&b[1]){b=b[1];for(var f=0;10>f;f++)try{b=atob(b)}catch(a){var g=decodeURIComponent(b);g=g.split("&url=")[1];try{new URL(g);var h=!0}catch(a){h=!1}if(h){location.assign(g);break}}}}})();': () => {
+    '(function(){if(-1<window.location.href.indexOf("/#")){var b=location.href.split("/#");if(b&&b[1]){b=b[1];for(var f=0;10>f;f++)try{b=atob(b)}catch(a){var g=decodeURIComponent(b);g=g.split("&url=")[1];try{var u=new URL(g);var h=u.protocol==="http:"||u.protocol==="https:"}catch(a){h=!1}if(h){location.assign(u.href);break}}}}})();': () => {
         try {
-            const e = "done";
-            if (Window.prototype.toString.e461bea6c1765b5004b1bdf45a657484 === e) return;
+            const o = "done";
+            if (Window.prototype.toString["722da10457378478db82d4e5110adfc7"] === o) return;
             !function() {
                 if (-1 < window.location.href.indexOf("/#")) {
-                    var e = location.href.split("/#");
-                    if (e && e[1]) {
-                        e = e[1];
-                        for (var o = 0; 10 > o; o++) try {
-                            e = atob(e);
-                        } catch (o) {
-                            var r = decodeURIComponent(e);
-                            r = r.split("&url=")[1];
+                    var o = location.href.split("/#");
+                    if (o && o[1]) {
+                        o = o[1];
+                        for (var t = 0; 10 > t; t++) try {
+                            o = atob(o);
+                        } catch (t) {
+                            var e = decodeURIComponent(o);
+                            e = e.split("&url=")[1];
                             try {
-                                new URL(r);
-                                var t = !0;
-                            } catch (e) {
-                                t = !1;
+                                var r = new URL(e), n = "http:" === r.protocol || "https:" === r.protocol;
+                            } catch (o) {
+                                n = !1;
                             }
-                            if (t) {
-                                location.assign(r);
+                            if (n) {
+                                location.assign(r.href);
                                 break;
                             }
                         }
                     }
                 }
             }();
-            Object.defineProperty(Window.prototype.toString, "e461bea6c1765b5004b1bdf45a657484", {
-                value: e,
+            Object.defineProperty(Window.prototype.toString, "722da10457378478db82d4e5110adfc7", {
+                value: o,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "e461bea6c1765b5004b1bdf45a657484" due to: ' + e);
+        } catch (o) {
+            console.error('Error executing AG js rule with uniqueId "722da10457378478db82d4e5110adfc7" due to: ' + o);
         }
     },
-    '(function(){if(-1<window.location.href.indexOf("/#")){var b=location.href.split("/#");if(b&&b[1]){b=b[1];for(var f=0;10>f;f++)try{b=atob(b)}catch(a){var g=decodeURIComponent(b);try{new URL(g);var h=!0}catch(a){h=!1}if(h){location.assign(g);break}}}}})();': () => {
+    '(function(){if(-1<window.location.href.indexOf("/#")){var b=location.href.split("/#");if(b&&b[1]){b=b[1];for(var f=0;10>f;f++)try{b=atob(b)}catch(a){var g=decodeURIComponent(b);try{var u=new URL(g);var h=u.protocol==="http:"||u.protocol==="https:"}catch(a){h=!1}if(h){location.assign(u.href);break}}}}})();': () => {
         try {
-            const e = "done";
-            if (Window.prototype.toString["9b5e9479cf0e6f4ce35ed63d4353bab4"] === e) return;
+            const o = "done";
+            if (Window.prototype.toString.c2b25920a22df03742e997623a4df5ad === o) return;
             !function() {
                 if (-1 < window.location.href.indexOf("/#")) {
-                    var e = location.href.split("/#");
-                    if (e && e[1]) {
-                        e = e[1];
-                        for (var o = 0; 10 > o; o++) try {
-                            e = atob(e);
-                        } catch (o) {
-                            var r = decodeURIComponent(e);
+                    var o = location.href.split("/#");
+                    if (o && o[1]) {
+                        o = o[1];
+                        for (var t = 0; 10 > t; t++) try {
+                            o = atob(o);
+                        } catch (t) {
+                            var e = decodeURIComponent(o);
                             try {
-                                new URL(r);
-                                var t = !0;
-                            } catch (e) {
-                                t = !1;
+                                var r = new URL(e), a = "http:" === r.protocol || "https:" === r.protocol;
+                            } catch (o) {
+                                a = !1;
                             }
-                            if (t) {
-                                location.assign(r);
+                            if (a) {
+                                location.assign(r.href);
                                 break;
                             }
                         }
                     }
                 }
             }();
-            Object.defineProperty(Window.prototype.toString, "9b5e9479cf0e6f4ce35ed63d4353bab4", {
-                value: e,
+            Object.defineProperty(Window.prototype.toString, "c2b25920a22df03742e997623a4df5ad", {
+                value: o,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "9b5e9479cf0e6f4ce35ed63d4353bab4" due to: ' + e);
+        } catch (o) {
+            console.error('Error executing AG js rule with uniqueId "c2b25920a22df03742e997623a4df5ad" due to: ' + o);
         }
     },
-    '(function(){if(-1<window.location.href.indexOf("/#!")){var b=location.href.split("/#!");if(b&&b[1]){b=b[1];for(var f=0;10>f;f++)try{b=atob(b)}catch(a){var g=decodeURIComponent(b);try{new URL(g);var h=!0}catch(a){h=!1}if(h){location.assign(g);break}}}}})();': () => {
+    '(function(){if(-1<window.location.href.indexOf("/#!")){var b=location.href.split("/#!");if(b&&b[1]){b=b[1];for(var f=0;10>f;f++)try{b=atob(b)}catch(a){var g=decodeURIComponent(b);try{var u=new URL(g);var h=u.protocol==="http:"||u.protocol==="https:"}catch(a){h=!1}if(h){location.assign(u.href);break}}}}})();': () => {
         try {
-            const e = "done";
-            if (Window.prototype.toString["06564135eca95acc020e6910b740c355"] === e) return;
+            const o = "done";
+            if (Window.prototype.toString.eb047a349788662f96f28021d5c90fa7 === o) return;
             !function() {
                 if (-1 < window.location.href.indexOf("/#!")) {
-                    var e = location.href.split("/#!");
-                    if (e && e[1]) {
-                        e = e[1];
-                        for (var o = 0; 10 > o; o++) try {
-                            e = atob(e);
-                        } catch (o) {
-                            var r = decodeURIComponent(e);
+                    var o = location.href.split("/#!");
+                    if (o && o[1]) {
+                        o = o[1];
+                        for (var t = 0; 10 > t; t++) try {
+                            o = atob(o);
+                        } catch (t) {
+                            var e = decodeURIComponent(o);
                             try {
-                                new URL(r);
-                                var t = !0;
-                            } catch (e) {
-                                t = !1;
+                                var r = new URL(e), n = "http:" === r.protocol || "https:" === r.protocol;
+                            } catch (o) {
+                                n = !1;
                             }
-                            if (t) {
-                                location.assign(r);
+                            if (n) {
+                                location.assign(r.href);
                                 break;
                             }
                         }
                     }
                 }
             }();
-            Object.defineProperty(Window.prototype.toString, "06564135eca95acc020e6910b740c355", {
-                value: e,
+            Object.defineProperty(Window.prototype.toString, "eb047a349788662f96f28021d5c90fa7", {
+                value: o,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "06564135eca95acc020e6910b740c355" due to: ' + e);
+        } catch (o) {
+            console.error('Error executing AG js rule with uniqueId "eb047a349788662f96f28021d5c90fa7" due to: ' + o);
         }
     },
-    '(function(){if(-1<window.location.href.indexOf("o.php?l=")){var b=location.href.split("o.php?l=");if(b&&b[1]){b=b[1].replace(/\\|\\d/,\'\');for(var f=0;10>f;f++)try{b=atob(b)}catch(a){var g=decodeURIComponent(b);try{new URL(g);var h=!0}catch(a){h=!1}if(h){location.assign(g);break}}}}})();': () => {
+    '(function(){if(-1<window.location.href.indexOf("o.php?l=")){var b=location.href.split("o.php?l=");if(b&&b[1]){b=b[1].replace(/\\|\\d/,\'\');for(var f=0;10>f;f++)try{b=atob(b)}catch(a){var g=decodeURIComponent(b);try{var u=new URL(g);var h=u.protocol==="http:"||u.protocol==="https:"}catch(a){h=!1}if(h){location.assign(u.href);break}}}}})();': () => {
         try {
-            const e = "done";
-            if (Window.prototype.toString["7236b4fca7e3b34846de4af64f512064"] === e) return;
+            const o = "done";
+            if (Window.prototype.toString["51dd12770074518ab94887884ddded15"] === o) return;
             !function() {
                 if (-1 < window.location.href.indexOf("o.php?l=")) {
-                    var e = location.href.split("o.php?l=");
-                    if (e && e[1]) {
-                        e = e[1].replace(/\|\d/, "");
-                        for (var o = 0; 10 > o; o++) try {
-                            e = atob(e);
-                        } catch (o) {
-                            var r = decodeURIComponent(e);
+                    var o = location.href.split("o.php?l=");
+                    if (o && o[1]) {
+                        o = o[1].replace(/\|\d/, "");
+                        for (var e = 0; 10 > e; e++) try {
+                            o = atob(o);
+                        } catch (e) {
+                            var t = decodeURIComponent(o);
                             try {
-                                new URL(r);
-                                var t = !0;
-                            } catch (e) {
-                                t = !1;
+                                var r = new URL(t), d = "http:" === r.protocol || "https:" === r.protocol;
+                            } catch (o) {
+                                d = !1;
                             }
-                            if (t) {
-                                location.assign(r);
+                            if (d) {
+                                location.assign(r.href);
                                 break;
                             }
                         }
                     }
                 }
             }();
-            Object.defineProperty(Window.prototype.toString, "7236b4fca7e3b34846de4af64f512064", {
-                value: e,
+            Object.defineProperty(Window.prototype.toString, "51dd12770074518ab94887884ddded15", {
+                value: o,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "7236b4fca7e3b34846de4af64f512064" due to: ' + e);
+        } catch (o) {
+            console.error('Error executing AG js rule with uniqueId "51dd12770074518ab94887884ddded15" due to: ' + o);
         }
     },
     '(()=>{document.addEventListener("DOMContentLoaded",(()=>{try{"function"==typeof window.noobBypass&&noobBypass()}catch(b){}}));})();': () => {
@@ -14740,41 +14734,44 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "fd77edacac830e016dc4109bc637175a" due to: ' + e);
         }
     },
-    '(()=>{try{const o=location.href.split("/#");if(o[1]){let t=o[1];for(let o=0;o<10;o++)try{t=atob(t)}catch(o){break}const c=decodeURIComponent(t).split("&url=")[1];c&&location.assign(c)}}catch(o){console.error(o)}})();': () => {
+    '(()=>{try{const o=location.href.split("/#");if(o[1]){let t=o[1];for(let o=0;o<10;o++)try{t=atob(t)}catch(o){break}const c=decodeURIComponent(t).split("&url=")[1];if(c){const u=new URL(c);if(u.protocol==="http:"||u.protocol==="https:")location.assign(u.href)}}}catch(o){console.error(o)}})();': () => {
         try {
-            const c = "done";
-            if (Window.prototype.toString["665cc7cdf79cd8609ccd1c640a89ccd0"] === c) return;
+            const t = "done";
+            if (Window.prototype.toString["3ba3663b0b3d65a9a764d9fb1edae43b"] === t) return;
             (() => {
                 try {
-                    const c = location.href.split("/#");
-                    if (c[1]) {
-                        let t = c[1];
-                        for (let c = 0; c < 10; c++) try {
-                            t = atob(t);
-                        } catch (c) {
+                    const t = location.href.split("/#");
+                    if (t[1]) {
+                        let e = t[1];
+                        for (let t = 0; t < 10; t++) try {
+                            e = atob(e);
+                        } catch (t) {
                             break;
                         }
-                        const o = decodeURIComponent(t).split("&url=")[1];
-                        o && location.assign(o);
+                        const o = decodeURIComponent(e).split("&url=")[1];
+                        if (o) {
+                            const t = new URL(o);
+                            "http:" !== t.protocol && "https:" !== t.protocol || location.assign(t.href);
+                        }
                     }
-                } catch (c) {
-                    console.error(c);
+                } catch (t) {
+                    console.error(t);
                 }
             })();
-            Object.defineProperty(Window.prototype.toString, "665cc7cdf79cd8609ccd1c640a89ccd0", {
-                value: c,
+            Object.defineProperty(Window.prototype.toString, "3ba3663b0b3d65a9a764d9fb1edae43b", {
+                value: t,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
-        } catch (c) {
-            console.error('Error executing AG js rule with uniqueId "665cc7cdf79cd8609ccd1c640a89ccd0" due to: ' + c);
+        } catch (t) {
+            console.error('Error executing AG js rule with uniqueId "3ba3663b0b3d65a9a764d9fb1edae43b" due to: ' + t);
         }
     },
-    '(function(){try{var a=location.href.split("out#!");if(a[1]){a=a[1];for(var b=0;10>b;b++){a=atob(a);try{new URL(decodeURIComponent(a));var c=!0}catch(d){c=!1}if(c)try{location.assign(decodeURIComponent(a));break}catch(d){}}}}catch(d){}})();': () => {
+    '(function(){try{var a=location.href.split("out#!");if(a[1]){a=a[1];for(var b=0;10>b;b++){a=atob(a);try{var u=new URL(decodeURIComponent(a));var c=u.protocol==="http:"||u.protocol==="https:"}catch(d){c=!1}if(c)try{location.assign(u.href);break}catch(d){}}}}catch(d){}})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.a97c62453393267bb0f7c37f1de195be === e) return;
+            if (Window.prototype.toString["8b57812ece69ba6e60c3b85c34edeb8f"] === e) return;
             !function() {
                 try {
                     var e = location.href.split("out#!");
@@ -14783,27 +14780,26 @@ export const localScriptRules = {
                         for (var t = 0; 10 > t; t++) {
                             e = atob(e);
                             try {
-                                new URL(decodeURIComponent(e));
-                                var o = !0;
+                                var o = new URL(decodeURIComponent(e)), r = "http:" === o.protocol || "https:" === o.protocol;
                             } catch (e) {
-                                o = !1;
+                                r = !1;
                             }
-                            if (o) try {
-                                location.assign(decodeURIComponent(e));
+                            if (r) try {
+                                location.assign(o.href);
                                 break;
                             } catch (e) {}
                         }
                     }
                 } catch (e) {}
             }();
-            Object.defineProperty(Window.prototype.toString, "a97c62453393267bb0f7c37f1de195be", {
+            Object.defineProperty(Window.prototype.toString, "8b57812ece69ba6e60c3b85c34edeb8f", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "a97c62453393267bb0f7c37f1de195be" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "8b57812ece69ba6e60c3b85c34edeb8f" due to: ' + e);
         }
     },
     "(()=>{document.addEventListener('DOMContentLoaded',function(){if(window.deco_url_b64&&typeof deco_url_b64==='string'&&deco_url_b64.startsWith('http')){location.assign(deco_url_b64);}});})();": () => {
@@ -14823,39 +14819,38 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "370c2e67375d1730dbabcd4586b41c96" due to: ' + e);
         }
     },
-    '(function(){try{var a=location.href.split("#");if(a[1]){a=a[1];for(var b=0;10>b;b++){a=atob(a);try{new URL(decodeURIComponent(a));var c=!0}catch(d){c=!1}if(c)try{location.assign(decodeURIComponent(a));break}catch(d){}}}}catch(d){}})();': () => {
+    '(function(){try{var a=location.href.split("#");if(a[1]){a=a[1];for(var b=0;10>b;b++){a=atob(a);try{var u=new URL(decodeURIComponent(a));var c=u.protocol==="http:"||u.protocol==="https:"}catch(d){c=!1}if(c)try{location.assign(u.href);break}catch(d){}}}}catch(d){}})();': () => {
         try {
-            const e = "done";
-            if (Window.prototype.toString["5c24323e179726bab950bb8e6732b33b"] === e) return;
+            const t = "done";
+            if (Window.prototype.toString["94f86a3c4ab3a1ba890995a2bf5b795c"] === t) return;
             !function() {
                 try {
-                    var e = location.href.split("#");
-                    if (e[1]) {
-                        e = e[1];
-                        for (var t = 0; 10 > t; t++) {
-                            e = atob(e);
+                    var t = location.href.split("#");
+                    if (t[1]) {
+                        t = t[1];
+                        for (var o = 0; 10 > o; o++) {
+                            t = atob(t);
                             try {
-                                new URL(decodeURIComponent(e));
-                                var o = !0;
-                            } catch (e) {
-                                o = !1;
+                                var a = new URL(decodeURIComponent(t)), r = "http:" === a.protocol || "https:" === a.protocol;
+                            } catch (t) {
+                                r = !1;
                             }
-                            if (o) try {
-                                location.assign(decodeURIComponent(e));
+                            if (r) try {
+                                location.assign(a.href);
                                 break;
-                            } catch (e) {}
+                            } catch (t) {}
                         }
                     }
-                } catch (e) {}
+                } catch (t) {}
             }();
-            Object.defineProperty(Window.prototype.toString, "5c24323e179726bab950bb8e6732b33b", {
-                value: e,
+            Object.defineProperty(Window.prototype.toString, "94f86a3c4ab3a1ba890995a2bf5b795c", {
+                value: t,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "5c24323e179726bab950bb8e6732b33b" due to: ' + e);
+        } catch (t) {
+            console.error('Error executing AG js rule with uniqueId "94f86a3c4ab3a1ba890995a2bf5b795c" due to: ' + t);
         }
     },
     '(()=>{window.addEventListener("message",(e=>{e?.data?.includes("__done__")&&e?.data?.length<9&&Object.defineProperty(e,"source",{value:""})}),!0);const e=new MutationObserver((()=>{document.querySelector("a.button#contador")&&(e.disconnect(),setTimeout((()=>{postMessage("__done__")}),100))}));e.observe(document,{childList:!0,subtree:!0})})();': () => {
@@ -14888,43 +14883,42 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "340e5298fafdd8b74113e0fea4af6efa" due to: ' + e);
         }
     },
-    '(function(){if(-1<window.location.href.indexOf("s.php?i=")){var a=location.href.split("s.php?i=");if(a&&a[1]){a=a[1];for(var c=0;10>c;c++)try{a=atob(a)}catch(f){var d=a.replace(/[a-zA-Z]/g,function(b){return String.fromCharCode(("Z">=b?90:122)>=(b=b.charCodeAt(0)+13)?b:b-26)});try{new URL(d);var e=!0}catch(b){e=!1}if(e){window.location=d;break}}}}})();': () => {
+    '(function(){if(-1<window.location.href.indexOf("s.php?i=")){var a=location.href.split("s.php?i=");if(a&&a[1]){a=a[1];for(var c=0;10>c;c++)try{a=atob(a)}catch(f){var d=a.replace(/[a-zA-Z]/g,function(b){return String.fromCharCode(("Z">=b?90:122)>=(b=b.charCodeAt(0)+13)?b:b-26)});try{var u=new URL(d);var e=u.protocol==="http:"||u.protocol==="https:"}catch(b){e=!1}if(e){window.location=u.href;break}}}}})();': () => {
         try {
-            const r = "done";
-            if (Window.prototype.toString.c351c9c83ef852439382448ab0d1ad4a === r) return;
+            const e = "done";
+            if (Window.prototype.toString["7bff52e212dae1508801623c7ffc5e81"] === e) return;
             !function() {
                 if (-1 < window.location.href.indexOf("s.php?i=")) {
-                    var r = location.href.split("s.php?i=");
-                    if (r && r[1]) {
-                        r = r[1];
-                        for (var e = 0; 10 > e; e++) try {
-                            r = atob(r);
-                        } catch (e) {
-                            var o = r.replace(/[a-zA-Z]/g, (function(r) {
-                                return String.fromCharCode(("Z" >= r ? 90 : 122) >= (r = r.charCodeAt(0) + 13) ? r : r - 26);
+                    var e = location.href.split("s.php?i=");
+                    if (e && e[1]) {
+                        e = e[1];
+                        for (var r = 0; 10 > r; r++) try {
+                            e = atob(e);
+                        } catch (r) {
+                            var o = e.replace(/[a-zA-Z]/g, (function(e) {
+                                return String.fromCharCode(("Z" >= e ? 90 : 122) >= (e = e.charCodeAt(0) + 13) ? e : e - 26);
                             }));
                             try {
-                                new URL(o);
-                                var t = !0;
-                            } catch (r) {
-                                t = !1;
+                                var t = new URL(o), c = "http:" === t.protocol || "https:" === t.protocol;
+                            } catch (e) {
+                                c = !1;
                             }
-                            if (t) {
-                                window.location = o;
+                            if (c) {
+                                window.location = t.href;
                                 break;
                             }
                         }
                     }
                 }
             }();
-            Object.defineProperty(Window.prototype.toString, "c351c9c83ef852439382448ab0d1ad4a", {
-                value: r,
+            Object.defineProperty(Window.prototype.toString, "7bff52e212dae1508801623c7ffc5e81", {
+                value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
-        } catch (r) {
-            console.error('Error executing AG js rule with uniqueId "c351c9c83ef852439382448ab0d1ad4a" due to: ' + r);
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "7bff52e212dae1508801623c7ffc5e81" due to: ' + e);
         }
     },
     "(function(){var b=window.setTimeout;window.setTimeout=function(a,c){if(!/\\(\\)>0x0\\)\\{fA=setTimeout\\(/.test(a.toString()))return b(a,c)};})();": () => {
