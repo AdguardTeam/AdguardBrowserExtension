@@ -59,7 +59,6 @@ import {
     TEXT_ENCODING_POLYFILL_VENDOR_OUTPUT,
     DNR_CONVERTER_VENDOR_OUTPUT,
     BACKGROUND_OUTPUT,
-    MIN_SUPPORTED_VERSION,
     INDEX_HTML_FILE_NAME,
     SUBSCRIBE_OUTPUT,
     IMPORT_CONFIGURATION_OUTPUT,
@@ -84,6 +83,7 @@ import {
     THANKYOU_PATH,
 } from './common-constants';
 import { getEnvConf, isBrowserMv3 } from './helpers';
+import { getSwcTargets, OBJECT_CREATE_MODULE_REGEX } from './swc-config';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 const __filename = fileURLToPath(import.meta.url);
@@ -485,6 +485,16 @@ export const genCommonConfig = (
                     ],
                 },
                 {
+                    // All supported browsers have native `Object.create`. Replace
+                    // the core-js polyfill with the native function so its legacy
+                    // ActiveX/iframe fallback does not reach the bundle. The Chrome
+                    // Web Store readability check flags that fallback as obfuscated code.
+                    test: OBJECT_CREATE_MODULE_REGEX,
+                    use: [{
+                        loader: path.resolve(__dirname, 'loaders/object-create-shim.cjs'),
+                    }],
+                },
+                {
                     test: /\.(js|ts)x?$/,
                     exclude: [
                         // TODO: Check, maybe it can be removed. Added in AG-28996.
@@ -520,11 +530,7 @@ export const genCommonConfig = (
                                     },
                                 },
                                 env: {
-                                    targets: {
-                                        chrome: String(MIN_SUPPORTED_VERSION.CHROMIUM_MV2),
-                                        firefox: String(MIN_SUPPORTED_VERSION.FIREFOX),
-                                        opera: String(MIN_SUPPORTED_VERSION.OPERA),
-                                    },
+                                    targets: getSwcTargets(isMv3),
                                     mode: 'usage',
                                     coreJs: '3.32',
                                 },

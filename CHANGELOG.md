@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   no longer renumbers vendor chunks and the Chrome Web Store change-scope check
   stays green.
 
+### Fixed
+
+- Removed the core-js `Object.create` IE fallback from all bundles that the
+  Chrome Web Store review flagged as obfuscated code.
+
 ## [5.5.3.5] - 2026-10-13
 
 ## [5.5.3.4] - 2026-10-08
