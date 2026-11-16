@@ -46,7 +46,8 @@ Release flow:
    rollout: an integer from 1 to 100, 1 by default.
 2. Merge the `release-bump/*` PR. To change the rollout percentage, edit the
    `Chrome Web Store rollout: N%` line in the PR body before merging.
-3. `publish-release.yml` builds the main artifacts, creates the tag, and deploys:
+3. `publish-release.yml` builds the main artifacts, creates the tag, and,
+   after the two approvals described below, deploys:
    - beta: static.adtidy.org (chromium CRX/ZIP + Edge MV3 + Firefox
      XPI/update.json), Chrome Web Store MV3, Firefox AMO beta, Firefox
      standalone signing, GitHub Release draft (public repo, marked as
@@ -73,10 +74,21 @@ Release flow:
    manually. Both channels stay in draft until this step; attaching signed
    Firefox beta assets also preserves the draft state.
 
-Deploy gates are GitHub environments (approval rules); the complete list is in
-[Required repository configuration](#required-repository-configuration). Each
-browser's static deploy has its own environment, so static files of one browser
-are approved and deployed without approving the others.
+Deploy takes two decisions by two people. Both are made in the workflow run
+(`Review deployments`) and are backed by GitHub environments with approval
+rules:
+
+1. QA approves the built release in the `release-approval` environment. For
+   an urgent hotfix the team lead approves instead of QA. The person who
+   started the run cannot approve it. Nothing is deployed at this point.
+2. The release manager approves the deploy environments. Each approval starts
+   the deploy to that target, so the release manager chooses when to deploy
+   and to which targets. Each browser's static deploy has its own environment,
+   so static files of one browser are deployed without the others.
+
+The GitHub Release draft waits for neither step. The complete list of
+environments is in
+[Required repository configuration](#required-repository-configuration).
 
 Workflow files:
 
@@ -108,18 +120,23 @@ mid-release runtime failures, so configure them before the first run.
   `publisher-id` (CWS status + auto-publish)
 - `edge-addons-deployer` — `client-id`, `api-key` (Edge Add-ons publish)
 
-**Environments** with approval rules: `chrome-static-beta`,
-`chrome-static-release`, `edge-static-beta`, `edge-static-release`,
-`firefox-static-beta`, `firefox-static-release`, `chrome-webstore-beta`,
-`chrome-webstore-release`, `firefox-amo-beta`, `firefox-amo-release`,
-`edge-addons-release`. The auto-publish environments
+**Environments** with approval rules: `release-approval`,
+`chrome-static-beta`, `chrome-static-release`, `edge-static-beta`,
+`edge-static-release`, `firefox-static-beta`, `firefox-static-release`,
+`chrome-webstore-beta`, `chrome-webstore-release`, `firefox-amo-beta`,
+`firefox-amo-release`, `edge-addons-release`. The reviewers of
+`release-approval` are QA and the team lead. It must prevent self-review, so
+the person who started the run needs a second person. The other environments
+in this list are deploy environments: their reviewers are the team and they
+must allow self-review, so the release manager who started the run can start
+the deploy. The auto-publish environments
 `chrome-webstore-beta-auto` / `chrome-webstore-release-auto` /
 `edge-addons-auto` have no gates (full automation). All of them are declared
 for the `browser-extension` repository in
 `AdGuardSoftwareLimited/terraform-github` (`team_extensions.tf`).
 
-Apply the static environments before the first publish run that uses them; a
-missing environment is created by GitHub without protection rules. The previous
+Apply a new environment before the first publish run that uses it; a missing
+environment is created by GitHub without protection rules. The previous
 `beta-static` and `production-static` stay declared for now: `stable/v5.5` and
 the already published tags still run a workflow that references them, and
 removing them would let those runs recreate the environments without reviewers.
@@ -273,8 +290,14 @@ variants are noted.
    release-channel rollout (1 to 100, default `1`).
 
 7. **Merge the `release-bump/*` PR.** `publish-release.yml` takes over: it
-   builds the main artifacts, tags the merge commit, and deploys to the
-   destinations for the given channel.
+   builds the main artifacts, tags the merge commit, and waits for the release
+   approval.
+
+8. **Get the release approved, then start the deploy.** Ask QA to approve
+   `release-approval` in the workflow run (`Review deployments`); for an urgent
+   hotfix, ask the team lead. Then approve the deploy environments of the
+   targets to deploy; see
+   [Pipelines (GitHub Actions)](#pipelines-github-actions).
 
 ## Troubleshooting
 
