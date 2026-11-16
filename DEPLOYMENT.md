@@ -33,7 +33,8 @@ Release flow:
    It bumps `package.json` to `5.6.0+1.build.<dnrPatch>` and adds the
    `## [5.6.0.1-beta]` CHANGELOG heading.
 2. Merge the `release-bump/*` PR.
-3. `publish-release.yml` tags, builds, and deploys:
+3. `publish-release.yml` tags, builds, and, after the two approvals described
+   below, deploys:
    - beta: static.adtidy.org (chromium CRX/ZIP + Firefox XPI/update.json),
      Chrome Web Store MV3, Firefox AMO beta, Firefox standalone signing,
      GitHub Release draft (public repo, marked as prerelease)
@@ -47,12 +48,22 @@ Release flow:
    manually. Both channels stay in draft until this step; attaching signed
    Firefox beta assets also preserves the draft state.
 
-Deploy gates are GitHub environments (approval rules): `beta-static`,
-`production-static`, `chrome-webstore-beta`, `chrome-webstore-release`,
-`firefox-amo-beta`, `firefox-amo-release`, `edge-addons-release`. The
-auto-publish environments `chrome-webstore-beta-auto` /
-`chrome-webstore-release-auto` / `edge-addons-auto` have no gates (full
-automation).
+Deploy takes two decisions by two people. Both are made in the workflow run
+(`Review deployments`) and are backed by GitHub environments with approval
+rules:
+
+1. QA approves the built release in the `release-approval` environment. For
+   an urgent hotfix the team lead approves instead of QA. The person who
+   started the run cannot approve it. Nothing is deployed at this point.
+2. The release manager approves the deploy environments: `beta-static`,
+   `production-static`, `chrome-webstore-beta`, `chrome-webstore-release`,
+   `firefox-amo-beta`, `firefox-amo-release`, `edge-addons-release`. Each
+   approval starts the deploy to that target, so the release manager chooses
+   when to deploy and to which targets.
+
+The GitHub Release draft waits for neither step. The auto-publish environments
+`chrome-webstore-beta-auto` / `chrome-webstore-release-auto` /
+`edge-addons-auto` have no gates (full automation).
 
 Workflow files:
 
@@ -84,9 +95,14 @@ mid-release runtime failures, so configure them before the first run.
   `publisher-id` (CWS status + auto-publish)
 - `edge-addons-deployer` — `client-id`, `api-key` (Edge Add-ons publish)
 
-**Environments** with approval rules: `beta-static`, `production-static`,
-`chrome-webstore-beta`, `chrome-webstore-release`, `firefox-amo-beta`,
-`firefox-amo-release`, `edge-addons-release`.
+**Environments** with approval rules: `release-approval`, `beta-static`,
+`production-static`, `chrome-webstore-beta`, `chrome-webstore-release`,
+`firefox-amo-beta`, `firefox-amo-release`, `edge-addons-release`. The reviewers
+of `release-approval` are QA and the team lead. It must prevent self-review, so
+the person who started the run needs a second person. The other environments
+in this list are deploy environments: their reviewers are the team and they
+must allow self-review, so the release manager who started the run can start
+the deploy.
 
 ## Release flow
 
@@ -185,8 +201,13 @@ variants are noted.
    opens the `release-bump/*` PR.
 
 7. **Merge the `release-bump/*` PR.** `publish-release.yml` takes over: it
-   tags the merge commit, builds, and deploys to the destinations for the given
-   channel.
+   tags the merge commit, builds, and waits for the release approval.
+
+8. **Get the release approved, then start the deploy.** Ask QA to approve
+   `release-approval` in the workflow run (`Review deployments`); for an urgent
+   hotfix, ask the team lead. Then approve the deploy environments of the
+   targets to deploy; see
+   [Pipelines (GitHub Actions)](#pipelines-github-actions).
 
 ## Troubleshooting
 

@@ -37,6 +37,9 @@ import {
  * assets: `chrome.zip` on both channels, while the signed `chrome.crx` and
  * `update.xml` are shipped on the beta channel only. Those references are
  * intentionally not asserted here.
+ *
+ * `publish-release.yml` is also scanned for the release approval job every
+ * deploy job waits for (AG-62062).
  */
 const WORKFLOWS_DIR_PATH = path.resolve(__dirname, '../../../.github/workflows');
 const DEPLOYMENT_PATH = path.resolve(__dirname, '../../../DEPLOYMENT.md');
@@ -182,6 +185,30 @@ const parseJobNeeds = (workflow: string, jobId: string): string[] => {
     return [];
 };
 
+/**
+ * Job that waits for QA or the team lead to approve the built release. Deploy
+ * jobs reach their own environments, where the release manager starts them,
+ * only after it (AG-62062).
+ */
+const RELEASE_APPROVAL_JOB_ID = 'approve-release';
+
+/**
+ * Environment whose approval rules gate the release approval job.
+ */
+const RELEASE_APPROVAL_ENVIRONMENT = 'release-approval';
+
+/**
+ * Matches the `environment` input of a reusable deploy workflow call. A job
+ * with this input deploys behind the approval rules of that environment.
+ */
+const DEPLOY_ENVIRONMENT_INPUT_RE = /^ {6}environment: \S/;
+
+/**
+ * Matches an `environment` key at any level: the job's own environment or the
+ * input of a reusable workflow call.
+ */
+const ENVIRONMENT_KEY_RE = /^\s+environment: \S/;
+
 describe('Chrome Web Store deploy guards', () => {
     it('no workflow references the removed CWS MV2 target', () => {
         for (const [fileName, source] of WORKFLOWS) {
@@ -225,5 +252,56 @@ describe('Chrome Web Store deploy guards', () => {
         for (const jobId of parseJobNeeds(workflow, 'notify-failure')) {
             expect(failureMessage).toContain(`needs.${jobId}.`);
         }
+    });
+});
+
+describe('Release approval gate', () => {
+    it('the approval job waits for the build in its own environment', () => {
+        const workflow = getWorkflow('publish-release.yml');
+
+        expect(parseJobNeeds(workflow, RELEASE_APPROVAL_JOB_ID).sort()).toEqual([
+            'build',
+            'resolve-version',
+        ]);
+        expect(getJobBlock(workflow, RELEASE_APPROVAL_JOB_ID))
+            .toContain(`    environment: ${RELEASE_APPROVAL_ENVIRONMENT}`);
+    });
+
+    it('every job with a deploy environment waits for the approval job', () => {
+        const workflow = getWorkflow('publish-release.yml');
+        const deployJobIds = parseJobIds(workflow).filter((jobId) => (
+            getJobBlock(workflow, jobId).some((line) => DEPLOY_ENVIRONMENT_INPUT_RE.test(line))
+        ));
+
+        // An empty scan would pass the loop below without checking anything.
+        expect(deployJobIds).not.toHaveLength(0);
+
+        for (const jobId of deployJobIds) {
+            expect(parseJobNeeds(workflow, jobId), `${jobId} needs the release approval`)
+                .toContain(RELEASE_APPROVAL_JOB_ID);
+        }
+    });
+
+    it('no other job uses the release approval environment', () => {
+        const workflow = getWorkflow('publish-release.yml');
+
+        // A deploy job behind this environment would start on the QA
+        // approval, without the release manager.
+        for (const jobId of parseJobIds(workflow)) {
+            if (jobId === RELEASE_APPROVAL_JOB_ID) {
+                continue;
+            }
+
+            // Only the environment keys count: a comment may name the gate.
+            const environments = getJobBlock(workflow, jobId)
+                .filter((line) => ENVIRONMENT_KEY_RE.test(line));
+
+            expect(environments.join('\n'), `${jobId} environment`)
+                .not.toContain(RELEASE_APPROVAL_ENVIRONMENT);
+        }
+    });
+
+    it('DEPLOYMENT.md lists the release approval environment', () => {
+        expect(DEPLOYMENT).toContain(`\`${RELEASE_APPROVAL_ENVIRONMENT}\``);
     });
 });
