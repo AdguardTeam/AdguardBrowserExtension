@@ -72,4 +72,9 @@ export class PagesApi extends PagesApiCommon {
     protected getCookieStealthOptions(): CookieStealthOption[] {
         return [];
     }
+
+    /** @inheritdoc */
+    protected override isBlockFingerprintingActive(): boolean {
+        return super.isBlockFingerprintingActive() && isUserScriptsApiSupported();
+    }
 }

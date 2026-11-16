@@ -68,10 +68,16 @@ export const Notification = (props: NotificationProps) => {
         text,
         type,
         buttons,
+        closeManually,
+        onClose,
         onRemove,
     } = props;
 
     useEffect(() => {
+        if (closeManually) {
+            return undefined;
+        }
+
         const closeTimeout = setTimeout(() => {
             if (shouldCloseOnTimeout) {
                 setNotificationIsClosed(true);
@@ -88,7 +94,7 @@ export const Notification = (props: NotificationProps) => {
             clearTimeout(closeTimeout);
             clearTimeout(removeTimeout);
         };
-    }, [id, onRemove, shouldCloseOnTimeout]);
+    }, [id, onRemove, shouldCloseOnTimeout, closeManually]);
 
     const notificationClassnames = classnames(
         `notification notification--${type}`,
@@ -114,6 +120,15 @@ export const Notification = (props: NotificationProps) => {
         removeOnClickTimeoutRef.current = window.setTimeout(() => {
             onRemove(id);
         }, TIME_TO_REMOVE_NOTIFICATION_MS);
+    };
+
+    /**
+     * Handles close button click: closes the notification and notifies
+     * the owner that the user dismissed it.
+     */
+    const handleCloseButtonClick = () => {
+        handleCloseClick();
+        onClose?.();
     };
 
     /**
@@ -157,7 +172,7 @@ export const Notification = (props: NotificationProps) => {
             <button
                 type="button"
                 className="notification__btn-close"
-                onClick={handleCloseClick}
+                onClick={handleCloseButtonClick}
                 aria-label={translator.getMessage('close_button_title')}
             >
                 <CloseIcon />

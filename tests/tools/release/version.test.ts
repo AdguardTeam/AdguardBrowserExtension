@@ -28,6 +28,7 @@ import {
     allocateVersion,
     compareExtensionVersions,
     composePackageVersion,
+    formatHeadingVersion,
     formatManifestVersion,
     formatTag,
     getDnrPatchVersion,
@@ -35,18 +36,20 @@ import {
     parseExtensionVersion,
     parsePackageVersion,
     parseReleaseTag,
+    ReleaseChannel,
+    selectPreviousTag,
 } from '../../../tools/release/version';
 
 describe('parseReleaseTag', () => {
     test('parses a release tag', () => {
         expect(parseReleaseTag('v5.6.0')).toEqual({
-            major: 5, minor: 6, patch: 0, channel: 'release',
+            major: 5, minor: 6, patch: 0, channel: ReleaseChannel.Release,
         });
     });
 
     test('parses a beta tag', () => {
         expect(parseReleaseTag('v5.5.3-beta.7')).toEqual({
-            major: 5, minor: 5, patch: 3, channel: 'beta', betaNumber: 7,
+            major: 5, minor: 5, patch: 3, channel: ReleaseChannel.Beta, betaNumber: 7,
         });
     });
 
@@ -72,13 +75,13 @@ describe('parseReleaseTag', () => {
 describe('parseExtensionVersion', () => {
     test('parses a 4-component release version', () => {
         expect(parseExtensionVersion('5.6.0.7')).toEqual({
-            major: 5, minor: 6, patch: 0, build: 7, channel: 'release',
+            major: 5, minor: 6, patch: 0, build: 7, channel: ReleaseChannel.Release,
         });
     });
 
     test('parses a 4-component beta version', () => {
         expect(parseExtensionVersion('5.5.3.7-beta')).toEqual({
-            major: 5, minor: 5, patch: 3, build: 7, channel: 'beta',
+            major: 5, minor: 5, patch: 3, build: 7, channel: ReleaseChannel.Beta,
         });
     });
 
@@ -123,7 +126,7 @@ describe('allocateVersion', () => {
             parseReleaseTag('v5.5.3'),
             '5.5.3+6.build.20260817120135',
         )).toEqual({
-            major: 5, minor: 5, patch: 3, build: 7, channel: 'release',
+            major: 5, minor: 5, patch: 3, build: 7, channel: ReleaseChannel.Release,
         });
     });
 
@@ -132,7 +135,7 @@ describe('allocateVersion', () => {
             parseReleaseTag('v5.5.3-beta.7'),
             '5.5.3+6.build.20260817120135',
         )).toEqual({
-            major: 5, minor: 5, patch: 3, build: 7, channel: 'beta',
+            major: 5, minor: 5, patch: 3, build: 7, channel: ReleaseChannel.Beta,
         });
     });
 
@@ -149,14 +152,14 @@ describe('allocateVersion', () => {
             '5.5.3+6.build.20260817120135',
             29,
         )).toEqual({
-            major: 5, minor: 5, patch: 3, build: 29, channel: 'beta',
+            major: 5, minor: 5, patch: 3, build: 29, channel: ReleaseChannel.Beta,
         });
         expect(allocateVersion(
             parseReleaseTag('v5.5.3'),
             '5.5.3+28.build.20260817120135',
             29,
         )).toEqual({
-            major: 5, minor: 5, patch: 3, build: 29, channel: 'release',
+            major: 5, minor: 5, patch: 3, build: 29, channel: ReleaseChannel.Release,
         });
     });
 
@@ -177,7 +180,7 @@ describe('allocateVersion', () => {
     });
 });
 
-describe('formatManifestVersion and formatTag', () => {
+describe('formatManifestVersion, formatHeadingVersion, and formatTag', () => {
     test('formats the 4-component manifest version', () => {
         expect(formatManifestVersion(parseExtensionVersion('5.6.0.7'))).toBe('5.6.0.7');
         expect(formatManifestVersion(parseExtensionVersion('5.6.0.7-beta'))).toBe('5.6.0.7');
@@ -189,6 +192,11 @@ describe('formatManifestVersion and formatTag', () => {
 
     test('formats a beta tag with the build number as the beta number', () => {
         expect(formatTag(parseExtensionVersion('5.6.0.7-beta'))).toBe('v5.6.0-beta.7');
+    });
+
+    test('formats the changelog heading version for both channels', () => {
+        expect(formatHeadingVersion(parseExtensionVersion('v5.6.0.1'))).toBe('5.6.0.1');
+        expect(formatHeadingVersion(parseExtensionVersion('v5.6.0.1-beta'))).toBe('5.6.0.1-beta');
     });
 });
 
@@ -260,5 +268,73 @@ describe('compareExtensionVersions and isNewerVersion', () => {
 describe('getDnrPatchVersion', () => {
     test('returns the numeric dnr-rulesets patch', () => {
         expect(getDnrPatchVersion()).toMatch(/^\d+$/);
+    });
+});
+
+describe('selectPreviousTag', () => {
+    test('selects the previous beta of the same version line for a beta', () => {
+        const tags = ['v5.5.3-beta.6', 'v5.5.3-beta.7', 'v5.5.3'];
+
+        expect(selectPreviousTag(tags, parseReleaseTag('v5.5.3-beta.7')))
+            .toBe('v5.5.3-beta.6');
+    });
+
+    test('selects the previous release of the same line when legacy tags exist', () => {
+        const tags = ['v5.5.3.5', 'v5.5.3.6-beta'];
+
+        expect(selectPreviousTag(tags, parseReleaseTag('v5.5.3')))
+            .toBe('v5.5.3.5');
+    });
+
+    test('selects the previous beta of the same line when legacy tags exist', () => {
+        const tags = ['v5.5.3.5', 'v5.5.3.6-beta'];
+
+        expect(selectPreviousTag(tags, parseReleaseTag('v5.5.3-beta.7')))
+            .toBe('v5.5.3.6-beta');
+    });
+
+    test('falls back to the previous release for a release when the line has no release', () => {
+        const tags = ['v5.6.0-beta.7', 'v5.5.3.6-beta', 'v5.5.3.5'];
+
+        expect(selectPreviousTag(tags, parseReleaseTag('v5.6.0')))
+            .toBe('v5.5.3.5');
+    });
+
+    test('falls back to the previous tag of another line for the first beta of a line', () => {
+        const tags = ['v5.5.3.5', 'v5.5.3.6-beta'];
+
+        expect(selectPreviousTag(tags, parseReleaseTag('v5.6.0-beta.7')))
+            .toBe('v5.5.3.6-beta');
+    });
+
+    test('does not treat a beta from another line as the previous beta', () => {
+        const tags = ['v5.5.3-beta.40', 'v5.5.3'];
+
+        expect(selectPreviousTag(tags, parseReleaseTag('v5.6.0-beta.1')))
+            .toBe('v5.5.3');
+    });
+
+    test('selects the beta of the same version when a release has no previous release', () => {
+        expect(selectPreviousTag(['v5.6.0-beta.7'], parseReleaseTag('v5.6.0')))
+            .toBe('v5.6.0-beta.7');
+    });
+
+    test('ignores tags that are not older than the target', () => {
+        const tags = ['v5.5.3', 'v5.5.3-beta.7', 'v5.5.4-beta.8'];
+
+        expect(selectPreviousTag(tags, parseReleaseTag('v5.5.3-beta.7')))
+            .toBeUndefined();
+    });
+
+    test('ignores tags that are not release tags', () => {
+        const tags = ['autobuild-v5.5.0.8', 'nightly'];
+
+        expect(selectPreviousTag(tags, parseReleaseTag('v5.5.1')))
+            .toBeUndefined();
+    });
+
+    test('returns undefined when there are no tags', () => {
+        expect(selectPreviousTag([], parseReleaseTag('v5.6.0')))
+            .toBeUndefined();
     });
 });

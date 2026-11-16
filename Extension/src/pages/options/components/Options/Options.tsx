@@ -22,6 +22,7 @@ import React, {
     useContext,
     useEffect,
     useRef,
+    useState,
 } from 'react';
 import {
     createHashRouter,
@@ -71,6 +72,7 @@ export const createRouter = (
 export const Options = observer(() => {
     const { settingsStore, uiStore, telemetryStore } = useContext(rootStore);
     const pageIdRef = useRef<string | null>(null);
+    const [router] = useState(() => createRouter(getOptionRoute()));
 
     useAppearanceTheme(settingsStore.appearanceTheme);
 
@@ -89,10 +91,14 @@ export const Options = observer(() => {
             }
         };
 
-        window.addEventListener('beforeunload', onUnload);
+        // `pagehide` instead of `beforeunload`: the options page shows leave
+        // confirmations (inline editors, Allowlist, editor mode), and
+        // `beforeunload` fires before them, which would stop tracking the page
+        // even when the user chooses to stay.
+        window.addEventListener('pagehide', onUnload);
 
         return () => {
-            window.removeEventListener('beforeunload', onUnload);
+            window.removeEventListener('pagehide', onUnload);
             onUnload();
         };
     }, [telemetryStore]);
@@ -141,7 +147,7 @@ export const Options = observer(() => {
                         v7_relativeSplatPath: false,
                         v7_startTransition: false,
                     }}
-                    router={createRouter(getOptionRoute())}
+                    router={router}
                 />
             </div>
         </>

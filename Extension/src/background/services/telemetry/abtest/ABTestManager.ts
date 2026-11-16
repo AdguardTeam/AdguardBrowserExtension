@@ -24,11 +24,7 @@ import { logger } from '../../../../common/logger';
 import { browserStorage } from '../../../storages';
 import { experimentSlotSchema } from '../../../schema/telemetry/sessionStartResponse';
 
-import {
-    type ExperimentSlot,
-    type SessionStartResponse,
-    type VariantCache,
-} from './types';
+import { type SessionStartResponse, type VariantCache } from './types';
 import { EXPERIMENT_REGISTRY, VARIANTS_STORAGE_KEY } from './constants';
 
 /**
@@ -70,9 +66,13 @@ export class ABTestManager {
         }
 
         if (ABTestManager.variantCachePromise === null) {
-            ABTestManager.variantCachePromise = ABTestManager.loadFromStorage().then((cache) => {
+            const cachePromise = ABTestManager.loadFromStorage().then((cache) => {
                 ABTestManager.variantCache = cache;
                 return cache;
+            });
+            ABTestManager.variantCachePromise = cachePromise.catch((error: unknown) => {
+                ABTestManager.variantCachePromise = null;
+                throw error;
             });
         }
 
@@ -85,14 +85,16 @@ export class ABTestManager {
      *
      * @returns Partial record of slot → experimentId for unassigned slots.
      */
-    public static async getTestsPayload(): Promise<Partial<Record<ExperimentSlot, string>>> {
+    public static async getTestsPayload(): Promise<VariantCache> {
         const cache = await ABTestManager.getVariantsCache();
-        const tests: Partial<Record<ExperimentSlot, string>> = {};
+        const tests: VariantCache = {};
 
-        Object.entries(EXPERIMENT_REGISTRY).forEach(([slot, experimentId]) => {
-            if (!cache[slot as ExperimentSlot]) {
-                tests[slot as ExperimentSlot] = experimentId;
+        experimentSlotSchema.options.forEach((slot) => {
+            if (!(slot in EXPERIMENT_REGISTRY) || cache[slot]) {
+                return;
             }
+
+            tests[slot] = EXPERIMENT_REGISTRY[slot];
         });
 
         return tests;
@@ -108,15 +110,12 @@ export class ABTestManager {
         const cache = await ABTestManager.getVariantsCache();
         let hasChanges = false;
 
-        const entries = Object.entries(response.versions) as [
-            ExperimentSlot,
-            SessionStartResponse['versions'][ExperimentSlot],
-        ][];
-
-        entries.forEach(([slot, assignment]) => {
+        experimentSlotSchema.options.forEach((slot) => {
             if (!(slot in EXPERIMENT_REGISTRY)) {
                 return;
             }
+
+            const assignment = response.versions[slot];
 
             if (assignment?.version_name) {
                 cache[slot] = assignment.version_name;
@@ -131,16 +130,16 @@ export class ABTestManager {
 
     /**
      * Returns the current variant cache for injection into telemetry event props.
-     * Only slots with a cached variant are included.
      *
      * @returns Variant cache for assigned slots only.
      */
     public static async getVariantsForProps(): Promise<VariantCache> {
         const cache = await ABTestManager.getVariantsCache();
-        const result: Partial<Record<ExperimentSlot, string>> = {};
+        const result: VariantCache = {};
 
-        const entries = Object.entries(cache) as [ExperimentSlot, string | undefined][];
-        entries.forEach(([slot, versionName]) => {
+        experimentSlotSchema.options.forEach((slot) => {
+            const versionName = cache[slot];
+
             if (versionName) {
                 result[slot] = versionName;
             }
@@ -158,6 +157,7 @@ export class ABTestManager {
      */
     public static async hasVariant(versionName: string): Promise<boolean> {
         const cache = await ABTestManager.getVariantsCache();
+
         return Object.values(cache).includes(versionName);
     }
 
@@ -179,6 +179,52 @@ export class ABTestManager {
         } catch (e) {
             logger.error('[ext.ABTestManager.loadFromStorage]: Failed to parse variant cache from storage', e, 'using empty cache');
             return {};
+        }
+    }
+
+    /**
+     * Removes cached variants for retired experiments from local storage.
+     * A variant is retired when its slot is absent from the experiment registry,
+     * or when its version name no longer starts with the active experiment ID
+     * for that slot, such as after a slot is reused. Remaining variants are
+     * persisted, or the storage key is removed when no variants remain.
+     *
+     * @returns Promise that resolves when retired variants are removed.
+     */
+    public static async removeRetiredVariants(): Promise<void> {
+        const cache = await ABTestManager.getVariantsCache();
+        const retiredSlots = experimentSlotSchema.options.filter((slot) => {
+            const versionName = cache[slot];
+
+            if (!versionName) {
+                return false;
+            }
+
+            if (!(slot in EXPERIMENT_REGISTRY)) {
+                return true;
+            }
+
+            const experimentId = EXPERIMENT_REGISTRY[slot];
+
+            if (!experimentId) {
+                return true;
+            }
+
+            return !versionName.startsWith(experimentId);
+        });
+
+        if (retiredSlots.length === 0) {
+            return;
+        }
+
+        retiredSlots.forEach((slot) => {
+            delete cache[slot];
+        });
+
+        if (Object.keys(cache).length === 0) {
+            await browserStorage.remove(VARIANTS_STORAGE_KEY);
+        } else {
+            await ABTestManager.saveToStorage(cache);
         }
     }
 

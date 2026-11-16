@@ -100,10 +100,10 @@ Ensure that the following software is installed on your computer:
 4. Build the extension for a specific browser:
 
     ```shell
-    pnpm dev chrome
+    pnpm dev chrome-mv2
     ```
 
-5. Load the unpacked extension into your browser from `./build/dev/chrome`.
+5. Load the unpacked extension into your browser from `./build/dev/chrome-mv2`.
    See [How to install the unpacked extension](#how-to-install-the-unpacked-extension-in-the-browser)
    for step-by-step instructions.
 
@@ -131,15 +131,26 @@ Ensure that the following software is installed on your computer:
 | `pnpm lint:types:mv3` | TypeScript type checking for MV3 |
 | `pnpm resources` | Prepare MV2 filters and all MV3 resources from the installed rulesets package |
 | `pnpm resources:mv3` | Update the DNR rulesets package and prepare resources for all MV3 targets |
+| `pnpm resources:blocking-pages` | Update the blocking pages from the Artifact Keeper release |
 | `pnpm locales <command>` | Manage localizations (see [Update localizations](#update-localizations)) |
 | `pnpm check-bundle-size <env> [browser]` | Check bundle sizes against limits |
 | `pnpm update-bundle-size <env> [browser]` | Update bundle size reference values |
 
-Supported `<browser>` values: `chrome`, `chrome-mv3`, `edge`, `edge-mv3`, `opera`, `opera-mv3`, `firefox-amo`, `firefox-standalone`.
+Supported `<browser>` values: `chrome-mv2`, `chrome-mv3`, `edge-mv2`, `edge-mv3`, `opera-mv2`, `opera-mv3`, `firefox-amo`, `firefox-standalone`.
+
+`pnpm resources:blocking-pages` downloads the blocking-pages release archive
+from the internal Artifact Keeper (`ak.int.agrd.dev`), so the command requires
+access to the work network. It extracts the archive with the system `tar`
+command, which is available on macOS, Linux, and Windows 10+.
+
+The command pins the expected blocking pages build version and the archive
+SHA-256 in `tools/resources/download-blocking-pages.ts`, and it fails when the
+`release` channel serves different bytes. When updating the blocking pages,
+update both pins and the `CHANGELOG.md` entry.
 
 ### Edge MV3 resources
 
-The `edge` target builds MV2; `edge-mv3` builds MV3 with its own filter resources.
+The `edge-mv2` target builds MV2; `edge-mv3` builds MV3 with its own filter resources.
 Edge MV3 requires a version of `@adguard/dnr-rulesets` that exports
 `BrowserFilters.EdgeMv3` and includes the `edge-mv3` resource set.
 The package release is tracked in [AG-59361](https://jira.int.agrd.dev/browse/AG-59361),
@@ -217,11 +228,14 @@ pnpm test:integration <TARGET> [-d|--debug-test-id <TEST_ID>] [-u <USERSCRIPTS_M
 Browser E2E tests open popup, options, and filtering log pages for Chrome MV2,
 Chrome MV3, and Firefox MV2. They also include a background diagnostics check.
 They fail on page load failures, error-level console messages, and unhandled
-JavaScript exceptions from UI pages or the extension background context. Build
-required zip artifacts before running them:
+JavaScript exceptions from UI pages or the extension background context, except
+for known-benign transient errors matched by the patterns in
+`tools/browser-test/e2e/benign-errors.ts`. Most patterns are scoped to the
+background surfaces; only the page-scoped entries can also filter page errors.
+Build required zip artifacts before running them:
 
 ```shell
-pnpm dev chrome --zip
+pnpm dev chrome-mv2 --zip
 pnpm dev chrome-mv3 --zip
 pnpm dev firefox-standalone --zip
 pnpm test:e2e dev
@@ -234,8 +248,9 @@ pnpm test:e2e dev --matrix chrome-mv3
 ```
 
 Browser E2E runs through Vitest, so native Vitest filters work. Matrix `describe`
-titles are `chrome-mv2`, `chrome-mv3`, and `firefox-mv2`; current `it` titles
-are `popup`, `options`, `filtering-log`, and `background`:
+titles are `chrome-mv2`, `chrome-mv3`, and `firefox-mv2`; each surface also has
+its own nested `describe` title, such as `popup`, `options`, `filtering-log`, or
+`background`:
 
 ```shell
 pnpm test:e2e dev --matrix chrome-mv2 -t "chrome-mv2 filtering-log"
@@ -310,13 +325,13 @@ pnpm dev
 This will create a build directory with unpacked extensions for all browsers:
 
 ```shell
-build/dev/chrome
+build/dev/chrome-mv2
 build/dev/chrome-mv3
-build/dev/edge
+build/dev/edge-mv2
 build/dev/edge-mv3
 build/dev/firefox-amo
 build/dev/firefox-standalone
-build/dev/opera
+build/dev/opera-mv2
 build/dev/opera-mv3
 ```
 
@@ -326,12 +341,26 @@ Build for a specific browser:
 pnpm dev <browser>
 ```
 
-Where `<browser>` is one of: `chrome`, `chrome-mv3`, `edge`, `edge-mv3`, `opera`, `opera-mv3`, `firefox-amo`,
+Where `<browser>` is one of: `chrome-mv2`, `chrome-mv3`, `edge-mv2`, `edge-mv3`, `opera-mv2`, `opera-mv3`, `firefox-amo`,
 `firefox-standalone`. For example:
 
 ```shell
-pnpm dev chrome
+pnpm dev chrome-mv2
 ```
+
+The canonical MV2 targets are `chrome-mv2`, `edge-mv2`, and `opera-mv2` for
+`dev`, `beta`, and `release`. The old `chrome`, `edge`, and `opera` commands
+remain aliases, but write only to the new manifest-specific output paths.
+Bundle-size commands also use the canonical target names.
+
+Build a Chrome MV2 CRX with `pnpm dev chrome-mv2-crx` (or `pnpm beta chrome-mv2-crx`
+with the production signing certificate). The old `chrome-crx` command remains
+an alias. The output is `build/<env>/chrome-mv2.crx`.
+
+CI dev downloads use `chrome-mv2-dev.zip`, `edge-mv2-dev.zip`,
+`opera-mv2-dev.zip`, and `chrome-mv2-dev.crx`. MV3 and Firefox package names are
+unchanged. See [deployment artifact naming](DEPLOYMENT.md#artifact-naming-and-compatibility)
+for the stable filenames used by static downloads and store publishing.
 
 ### Watch Mode
 
@@ -445,13 +474,19 @@ to the internal Artifact Keeper npm registry on every push to the PR
 1. QA artifacts: run **Actions → tsurlfilter dev builds → Run workflow**
    (optionally passing a different PR number or an exact run number) and
    download the `dev-builds-tsurlfilter-pr<N>` zips and
-   `chrome-dev-crx-tsurlfilter-pr<N>` from the run. The workflow also
+   `chrome-mv2-dev-crx-tsurlfilter-pr<N>` from the run. The workflow also
    auto-triggers on pushes that change `tsurlfilter-dev-pr.txt`.
 
-1. **Remove `tsurlfilter-dev-pr.txt` before merging to master.** CI fails
-   loudly on master if the file is present (the pin is for feature branches
-   only — otherwise every future branch would silently build against a stale
-   tsurlfilter PR).
+1. **Remove `tsurlfilter-dev-pr.txt` before you merge the branch.** The pin
+   belongs to a feature branch only. CI fails loudly on master when the file
+   is present. On any other branch the pin lands silently, and every branch
+   and pull request based on it then builds against that tsurlfilter PR. The
+   pinned dev builds expire after the 7-day Artifact Keeper TTL, so every CI
+   job then fails at the pin step until the file is removed:
+
+    ```shell
+    git rm tsurlfilter-dev-pr.txt && git commit -m "Unpin tsurlfilter dev builds" && git push
+    ```
 
 > [!NOTE]
 > After a new push to the tsurlfilter PR, just re-run the failed/pending CI
@@ -653,7 +688,7 @@ pnpm cross-env ANALYZE=true pnpm <build command>
 So, for example, if you want to analyze the beta build for Chrome, run:
 
 ```shell
-pnpm cross-env ANALYZE=true pnpm beta chrome
+pnpm cross-env ANALYZE=true pnpm beta chrome-mv2
 ```
 
 Or if you want to analyze all beta builds, run:
@@ -1206,6 +1241,12 @@ The user rules and allowlist editors are built on [CodeMirror 6], wrapped by the
 
 - `UserRulesEditor` (`Extension/src/pages/common/components/UserRulesEditor/`)
 - `Allowlist` (`Extension/src/pages/options/components/Allowlist/`)
+- `InlineRuleEditor` (`Extension/src/pages/options/components/UserRules/`) —
+  frameless editor embedded into the user rules list rows; single-line for
+  rules, multi-line for comment blocks (plain text, without rule highlighting,
+  since `! example.com##.banner` is a comment there and not a cosmetic rule),
+  and multi-line with highlighting for the "Create rule" row so a multi-rule
+  paste creates one rule per line
 
 #### Dependencies
 
@@ -1265,14 +1306,24 @@ imperatively through an `editorRef` ref; they do **not** receive a CodeMirror
 | ---- | ---- | ----------- |
 | `name` | `string` | Unique editor name; used as part of the persisted size storage key. |
 | `editorRef` | `MutableRefObject<EditorHandle \| null>` | Ref that receives the imperative `EditorHandle` (see below). |
+| `initialValue?` | `string` | Initial document content, applied to the underlying textarea before CodeMirror initializes so it becomes the editor's starting document (not an undoable change, unlike `setValue`). **Captured once at mount, not reactive.** |
 | `onChange?` | `(value: string) => void` | Called with the full document content on every document change. |
 | `onSave?` | `() => void` | Called on the save hotkey (Ctrl/Cmd+S). |
 | `onExit?` | `() => void` | Called on Escape (unless the search panel is open). |
+| `onInitError?` | `() => void` | Called when the editor fails to initialize (e.g. the WASM grammar could not be loaded), so consumers can render a fallback instead of an empty editor shell. |
 | `fullscreen?` | `boolean` | Whether the editor renders in fullscreen mode. |
 | `highlightRules?` | `boolean` | Whether to enable full syntax highlighting. **Captured once at mount, not reactive** — to toggle at runtime, remount the editor (e.g. via `key`). |
 | `shouldResetSize?` | `boolean` | Resets the persisted editor size to the default. |
 | `readOnly?` | `boolean` | Whether the editor is read-only (default `false`). |
-| `wrapEnabled?` | `boolean` | Whether line wrapping is enabled (default `false`). |
+| `wrapEnabled?` | `boolean` | Whether line wrapping is enabled (default `false`). Multi-line mode enables it regardless. |
+| `inline?` | `boolean` | Renders a compact, frameless inline editor used inside list rows; size persistence and resizing are skipped. The shell styling is reactive, but the CodeMirror configuration is captured at mount — remount to fully toggle it. |
+| `mode?` | `EditorMode` | Editing mode. `EditorMode.SingleLine` accepts a single line only: Enter saves instead of inserting a newline, line terminators are stripped from insertions, and multi-line-only hotkeys are disabled. `EditorMode.Multiline` is a multi-line input (comment blocks and the create-rule row): Enter saves, Shift-Enter inserts a newline, line terminators are kept, line wrapping is enabled, and multi-line-only hotkeys are disabled. Omitted for the default multi-line rules editor. **Captured once at mount, not reactive**; the `editor--inline-multiline` shell class follows it on every render. |
+| `captureFindShortcut?` | `boolean` | Whether `Ctrl+F` / `Cmd+F` opens the editor search even when the focus is outside the editor. CodeMirror renders only the lines in view, so the browser's find would miss every match outside the viewport; the editor's own search covers the whole document. Meant for the single full-size editor of a page, not for inline editors. |
+
+> `highlightRules` and `mode` are captured once at mount for the CodeMirror
+> configuration; `inline` and the `editor--inline-multiline` class are read
+> reactively for the shell styling, class names and resize handling. Remount the
+> editor (e.g. via `key`) to change any of them at runtime.
 
 **`editorRef` expects an `EditorHandle`.**
 
@@ -1282,12 +1333,14 @@ imperatively through an `editorRef` ref; they do **not** receive a CodeMirror
 | Method | Description |
 | ------ | ----------- |
 | `getValue()` | Returns the entire document content as a string. |
-| `setValue(value)` | Replaces the document content and inserts a full history barrier. |
+| `setValue(value)` | Replaces the document content. The replacement is isolated into its own undo group but remains undoable: `Ctrl/Cmd+Z` can undo the replacement itself. Use `resetValue` for a seed that must not be undoable. |
+| `resetValue(value)` | Replaces the document content without adding the replacement to the undo history; use it to seed content fetched after mount, so the first `Ctrl/Cmd+Z` cannot clear it. |
 | `getCursor()` | Returns `{ line, ch }` (1-based line, 0-based char). |
 | `setCursor(cursor)` | Moves the cursor and scrolls it into view. |
 | `setWrap(enabled)` | Toggles line wrapping. |
 | `setReadOnly(enabled)` | Toggles read-only mode. |
 | `focus()` | Focuses the editor. |
+| `openSearch()` | Focuses the editor and opens its search panel, which searches the whole document (not only the rendered lines) and focuses the search field. |
 
 Because `initEditor` resolves only after the WASM grammar loads, the underlying
 `EditorView` is created asynchronously. `Editor` exposes a
@@ -1313,7 +1366,6 @@ Optional environment variables are configured via a `.env` file (copy from `.env
 
 | Variable | Description |
 | -------- | ----------- |
-| `ARTIFACTORY_DOMAIN` | Artifactory domain for downloading blocking pages |
 | `TOKENGUARD_API_KEY` | TokenGuard API key for detecting dangerous script rules during `pnpm resources` |
 | `TOKENGUARD_BASE_URL` | Optional TokenGuard endpoint override (default `https://tokenguard.int.agrd.dev/api/v1/`) |
 | `TOKENGUARD_MODEL` | Optional TokenGuard model override (default `deepseek-v4-flash`) |

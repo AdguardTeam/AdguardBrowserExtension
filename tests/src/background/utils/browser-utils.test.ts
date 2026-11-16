@@ -19,14 +19,31 @@
  */
 
 import {
+    afterEach,
     describe,
     it,
     expect,
+    vi,
 } from 'vitest';
 
 import { BrowserUtils } from '../../../../Extension/src/background/utils/browser-utils';
+import { UserAgent } from '../../../../Extension/src/common/user-agent';
+
+vi.mock('../../../../Extension/src/common/user-agent', () => ({
+    UserAgent: {
+        isOpera: false,
+        isEdge: false,
+    },
+}));
 
 describe('browserUtils', () => {
+    afterEach(() => {
+        Object.defineProperties(UserAgent, {
+            isOpera: { value: false, configurable: true },
+            isEdge: { value: false, configurable: true },
+        });
+    });
+
     it('isSemver', () => {
         expect(BrowserUtils.isSemver('4.0.1')).toBeTruthy();
         expect(BrowserUtils.isSemver('not.valid.semver')).toBeFalsy();
@@ -95,6 +112,54 @@ describe('browserUtils', () => {
             expect(keys).toContain('lang');
             expect(keys).toContain('id');
             expect(params).toHaveLength(3);
+        });
+    });
+
+    describe('getExtensionsSettingsUrl', () => {
+        it('returns chrome://extensions for Chrome', () => {
+            expect(BrowserUtils.getExtensionsSettingsUrl()).toBe('chrome://extensions');
+        });
+
+        it('returns edge://extensions for Edge', () => {
+            Object.defineProperties(UserAgent, {
+                isOpera: { value: false, configurable: true },
+                isEdge: { value: true, configurable: true },
+            });
+
+            expect(BrowserUtils.getExtensionsSettingsUrl()).toBe('edge://extensions');
+        });
+
+        it('returns opera://extensions for Opera', () => {
+            Object.defineProperties(UserAgent, {
+                isOpera: { value: true, configurable: true },
+                isEdge: { value: false, configurable: true },
+            });
+
+            expect(BrowserUtils.getExtensionsSettingsUrl()).toBe('opera://extensions');
+        });
+    });
+
+    describe('getExtensionDetailsUrl', () => {
+        it('returns chrome://extensions with extension id for Chrome', () => {
+            expect(BrowserUtils.getExtensionDetailsUrl()).toBe('chrome://extensions?id=test');
+        });
+
+        it('returns edge://extensions with extension id for Edge', () => {
+            Object.defineProperties(UserAgent, {
+                isOpera: { value: false, configurable: true },
+                isEdge: { value: true, configurable: true },
+            });
+
+            expect(BrowserUtils.getExtensionDetailsUrl()).toBe('edge://extensions?id=test');
+        });
+
+        it('returns opera://extensions with extension id for Opera', () => {
+            Object.defineProperties(UserAgent, {
+                isOpera: { value: true, configurable: true },
+                isEdge: { value: false, configurable: true },
+            });
+
+            expect(BrowserUtils.getExtensionDetailsUrl()).toBe('opera://extensions?id=test');
         });
     });
 

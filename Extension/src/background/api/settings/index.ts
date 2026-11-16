@@ -19,6 +19,7 @@
  */
 export { SettingsApi } from 'settings-api';
 export { type SettingsData } from './settings-common';
+export { CanvasProtectionApi, CanvasProtectionResultSource } from './canvas-protection';
 export {
     ConfigurationImportApi,
     type ImportConfiguration,

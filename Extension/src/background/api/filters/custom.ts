@@ -22,9 +22,13 @@ import MD5 from 'crypto-js/md5';
 import { type DownloadResult } from '@adguard/filters-downloader/browser';
 
 import { BrowserUtils } from '../../utils/browser-utils';
+import { createPromiseWithTimeout } from '../../utils/timeouts';
 import {
     AntibannerGroupsId,
     CUSTOM_FILTERS_START_ID,
+    CUSTOM_FILTER_DOWNLOAD_TIMEOUT_MS,
+    CUSTOM_FILTER_IN_FLIGHT_TTL_MS,
+    CUSTOM_FILTER_INFO_CACHE_TTL_MS,
     NEWLINE_CHAR_UNIX,
 } from '../../../common/constants';
 import { logger } from '../../../common/logger';
@@ -41,13 +45,11 @@ import { filterVersionStorage } from '../../storages/filter-version';
 import { FiltersStoragesAdapter } from '../../storages/filters-adapter';
 import { type Network } from '../network';
 import { CustomFilterUtils } from '../../../common/custom-filter-utils';
-import { createPromiseWithTimeout } from '../../utils/timeouts';
 import { getZodErrorMessage } from '../../../common/error';
 
 import { type FilterUpdateOptions } from './update';
 import { type FilterParsedData, FilterParser } from './parser';
 import { type FilterMetadata } from './main';
-import { CustomFilterLoader } from './custom/loader';
 import { type CategoriesFilterData } from './categories';
 import { isHtmlContent } from './content-validator';
 
@@ -115,8 +117,7 @@ type CustomFilterHtmlContentResponse = {
 export type GetCustomFilterInfoResult =
     | CreateCustomFilterResponse
     | CustomFilterAlreadyExistResponse
-    | CustomFilterHtmlContentResponse
-    | null;
+    | CustomFilterHtmlContentResponse;
 
 /**
  * Parsed custom filter data from remote source.
@@ -127,11 +128,35 @@ type GetRemoteCustomFilterResult = {
     rules: string[];
     checksum: string | null;
     parsed: FilterParsedData;
+    isFullUpdate: boolean;
 };
 
-const emptyDownloadResult: DownloadResult = {
-    filter: [],
-    rawFilter: '',
+/**
+ * Download mode selected for a custom filter update.
+ * - `patch` - a differential update on top of the stored raw base.
+ * - `full` - the whole filter is downloaded from the remote source.
+ */
+type CustomFilterUpdateMode = 'patch' | 'full';
+
+/**
+ * A recent custom filter download that can be reused by
+ * {@link CustomFilterApi.createFilter}.
+ */
+type CachedCustomFilterDownload = {
+    /**
+     * Custom filter subscription URL.
+     */
+    url: string;
+
+    /**
+     * Downloaded filter data.
+     */
+    downloadResult: DownloadResult;
+
+    /**
+     * Timestamp in milliseconds after which the cached entry must not be reused.
+     */
+    expiresAt: number;
 };
 
 /**
@@ -155,9 +180,28 @@ export class CustomFilterApi {
     private static network: Network;
 
     /**
-     * Custom filter rules downloading limit in ms.
+     * Ids of filters that are being created but are not yet saved in
+     * {@link customFilterMetadataStorage}.
+     *
+     * Rules are persisted before the metadata, so a concurrent creation would
+     * otherwise generate the same id. The method {@link genFilterId} skips these ids.
      */
-    private static readonly DOWNLOAD_LIMIT_MS = 10 * 1000;
+    private static pendingFilterIds = new Set<number>();
+
+    /**
+     * The most recent full custom filter download made by
+     * {@link CustomFilterApi.getFilterInfo}.
+     *
+     * The "Add custom filter" modal calls {@link CustomFilterApi.getFilterInfo}
+     * on the "Next" step and {@link CustomFilterApi.createFilter} on the "Add"
+     * step. Without this cache, the extension downloads the same list twice.
+     */
+    private static cachedFilterDownload: CachedCustomFilterDownload | undefined;
+
+    /**
+     * Identifier of the timer that evicts {@link CustomFilterApi.cachedFilterDownload}.
+     */
+    private static cachedFilterDownloadEvictionTimeoutId: number | undefined;
 
     /**
      * Reads stringified {@link CustomFilterMetadata} array from persisted storage
@@ -169,6 +213,7 @@ export class CustomFilterApi {
      */
     public static init(network: Network): void {
         CustomFilterApi.network = network;
+        CustomFilterApi.resetCachedFilterDownload();
 
         try {
             const storageData = customFilterMetadataStorage.read();
@@ -193,11 +238,12 @@ export class CustomFilterApi {
      * @param title User-defined filter title.
      *
      * @returns
-     * One of four options:
-     * - {@link CreateCustomFilterResponse} on new filter subscription,
-     * - {@link CustomFilterAlreadyExistResponse} if custom filter was added before
-     * - {@link CustomFilterHtmlContentResponse} if URL returned HTML content instead of filter rules
-     * - null, if filter rules are not downloaded.
+     * One of three options:
+     * - {@link CreateCustomFilterResponse} on new filter subscription.
+     * - {@link CustomFilterAlreadyExistResponse} if custom filter was added before.
+     * - {@link CustomFilterHtmlContentResponse} if URL returned HTML content instead of filter rules.
+     *
+     * @throws Error if filter rules could not be downloaded.
      */
     public static async getFilterInfo(url: string, title?: string): Promise<GetCustomFilterInfoResult> {
         // Check if filter from this url was added before
@@ -205,11 +251,7 @@ export class CustomFilterApi {
             return { errorAlreadyExists: true };
         }
 
-        const downloadResult = await CustomFilterApi.network.downloadFilterRulesBySubscriptionUrl(url);
-
-        if (!downloadResult) {
-            return null;
-        }
+        const downloadResult = await CustomFilterApi.downloadFilter(url);
 
         if (isHtmlContent(downloadResult.filter)) {
             logger.warn('[ext.CustomFilterApi.getFilterInfo]: URL returned HTML content instead of filter rules:', url);
@@ -224,10 +266,15 @@ export class CustomFilterApi {
         const filter = {
             ...parsedData,
             name: parsedData.name ? parsedData.name : title as string,
-            timeUpdated: parsedData.timeUpdated,
             customUrl: url,
-            rulesCount: downloadResult.filter.filter((rule) => rule.trim().indexOf('!') !== 0).length,
+            rulesCount: downloadResult.filter.filter((rule) => {
+                const trimmedRule = rule.trim();
+
+                return trimmedRule !== '' && !trimmedRule.startsWith('!');
+            }).length,
         };
+
+        CustomFilterApi.cacheFilterDownload(url, downloadResult);
 
         return { filter };
     }
@@ -236,18 +283,27 @@ export class CustomFilterApi {
      * Creates and save new custom filter data in linked storages from passed {@link CustomFilterDTO}.
      *
      * Downloads filter data by {@link CustomFilterDTO.customUrl} and parse it.
+     * If {@link CustomFilterApi.getFilterInfo} has just downloaded the same url,
+     * its download is reused instead of a new request.
      * Create new {@link CustomFilterMetadata} record and save it in {@link customFilterMetadataStorage},
      * Based on parsed data.
      * Creates new {@link FilterStateData} and save it in {@link filterStateStorage}.
      * Creates new {@link FilterVersionData} and save it in {@link filterVersionStorage}.
-     * Filters rules are saved in {@link FiltersStorage}.
-     * Raw filter rules (before applying directives) are saved in {@link RawFiltersStorage}.
+     *
+     * The rules are persisted before the metadata, version and state, so a storage failure
+     * cannot leave an installed filter without rules. If any persistence step fails, the
+     * method tries to remove everything that the call may have written and rethrows the
+     * original error. The cleanup is best-effort: a cleanup failure does not stop the
+     * remaining cleanup steps.
      *
      * If the custom filter group has never been enabled, turn it on.
      *
      * @param filterData Custom filter data transfer object, received from modal window.
      *
      * @returns Created filter metadata.
+     *
+     * @throws Error if the filter data cannot be persisted. The method tries to remove the
+     * data written by this call before it rethrows the error.
      */
     public static async createFilter(filterData: CustomFilterDTO): Promise<CategoriesFilterData> {
         const { customUrl, trusted, enabled } = filterData;
@@ -263,75 +319,122 @@ export class CustomFilterApi {
         // create new filter id
         const filterId = CustomFilterApi.genFilterId();
 
-        logger.info(`[ext.CustomFilterApi.createFilter]: create new custom filter with id ${filterId}`);
+        // Reserve the id until the filter is persisted, so concurrent creations
+        // cannot write to the same storage keys.
+        CustomFilterApi.pendingFilterIds.add(filterId);
 
-        const name = filterData.title ? filterData.title : parsed.name;
+        try {
+            logger.info(`[ext.CustomFilterApi.createFilter]: create new custom filter with id ${filterId}`);
 
-        const {
-            description,
-            homepage,
-            expires,
-            timeUpdated,
-            version,
-            diffPath,
-        } = parsed;
+            const name = filterData.title ? filterData.title : parsed.name;
 
-        const filterMetadata: CustomFilterMetadata = {
-            filterId,
-            displayNumber: 0,
-            groupId: AntibannerGroupsId.CustomFiltersGroupId,
-            name,
-            description,
-            homepage,
-            version,
-            checksum,
-            tags: [0],
-            customUrl,
-            trusted,
-            expires: Number(expires),
-            timeUpdated: new Date(timeUpdated).getTime(),
-        };
-        customFilterMetadataStorage.set(filterMetadata);
+            const {
+                description,
+                homepage,
+                expires,
+                timeUpdated,
+                version,
+                diffPath,
+            } = parsed;
 
-        const filterVersionData: FilterVersionData = {
-            version,
-            diffPath,
-            expires: filterMetadata.expires,
-            lastUpdateTime: filterMetadata.timeUpdated,
-            lastCheckTime: Date.now(),
-            lastScheduledCheckTime: Date.now(),
-        };
-        filterVersionStorage.set(filterId, filterVersionData);
+            const filterMetadata: CustomFilterMetadata = {
+                filterId,
+                displayNumber: 0,
+                groupId: AntibannerGroupsId.CustomFiltersGroupId,
+                name,
+                description,
+                homepage,
+                version,
+                checksum,
+                tags: [0],
+                customUrl,
+                trusted,
+                expires: Number(expires),
+                timeUpdated: new Date(timeUpdated).getTime(),
+            };
 
-        const filterStateData: FilterStateData = {
-            loaded: true,
-            installed: true,
-            enabled,
-        };
-        filterStateStorage.set(filterId, filterStateData);
+            const filterVersionData: FilterVersionData = {
+                version,
+                diffPath,
+                expires: filterMetadata.expires,
+                lastUpdateTime: filterMetadata.timeUpdated,
+                lastCheckTime: Date.now(),
+                lastScheduledCheckTime: Date.now(),
+            };
 
-        // Note: we should join array of rules here, because they contain
-        // preprocessed directives, e.g. including another filter via `!#include`
-        // directive.
-        await FiltersStoragesAdapter.set(filterId, rules.join(NEWLINE_CHAR_UNIX));
-        await FiltersStoragesAdapter.setRaw(filterId, rawRules);
+            const filterStateData: FilterStateData = {
+                loaded: true,
+                installed: true,
+                enabled,
+                disabledAsUnused: false,
+            };
 
-        const group = groupStateStorage.get(filterMetadata.groupId);
+            try {
+                // Note: we should join array of rules here, because they contain
+                // preprocessed directives, e.g. including another filter via `!#include`
+                // directive.
+                await FiltersStoragesAdapter.set(filterId, rules.join(NEWLINE_CHAR_UNIX));
+                await FiltersStoragesAdapter.setRaw(filterId, rawRules);
 
-        // If group has never been enabled - enables it.
-        if (group && !group.touched) {
-            groupStateStorage.enableGroups([filterMetadata.groupId]);
+                customFilterMetadataStorage.set(filterMetadata);
+                filterVersionStorage.set(filterId, filterVersionData);
+                filterStateStorage.set(filterId, filterStateData);
+            } catch (e) {
+                await CustomFilterApi.rollbackCreateFilter(filterId);
+                throw e;
+            }
+
+            const group = groupStateStorage.get(filterMetadata.groupId);
+
+            // If group has never been enabled - enables it.
+            if (group && !group.touched) {
+                groupStateStorage.enableGroups([filterMetadata.groupId]);
+            }
+
+            const resultCustomFilterData: CategoriesFilterData = {
+                ...filterMetadata,
+                ...filterVersionData,
+                ...filterStateData,
+            };
+
+            return resultCustomFilterData;
+        } finally {
+            CustomFilterApi.pendingFilterIds.delete(filterId);
+        }
+    }
+
+    /**
+     * Removes all data that a failed {@link createFilter} call may have written.
+     *
+     * Every cleanup step is best-effort: a step failure is logged and the remaining steps
+     * still run. This method never throws, so a rollback error cannot mask the original error.
+     *
+     * @param filterId Id of the filter that failed to persist.
+     */
+    private static async rollbackCreateFilter(filterId: number): Promise<void> {
+        try {
+            await FiltersStoragesAdapter.remove(filterId);
+        } catch (e) {
+            logger.error(`[ext.CustomFilterApi.rollbackCreateFilter]: cannot remove stored rules for filter ${filterId}:`, e);
         }
 
-        const resultCustomFilterData: CategoriesFilterData = {
-            ...filterMetadata,
-            ...filterVersionData,
-            loaded: true,
-            installed: true,
-            enabled,
-        };
+        try {
+            customFilterMetadataStorage.remove(filterId);
+        } catch (e) {
+            logger.error(`[ext.CustomFilterApi.rollbackCreateFilter]: cannot remove metadata for filter ${filterId}:`, e);
+        }
 
-        return resultCustomFilterData;
+        try {
+            filterVersionStorage.delete(filterId);
+        } catch (e) {
+            logger.error(`[ext.CustomFilterApi.rollbackCreateFilter]: cannot remove version for filter ${filterId}:`, e);
+        }
+
+        try {
+            filterStateStorage.delete(filterId);
+        } catch (e) {
+            logger.error(`[ext.CustomFilterApi.rollbackCreateFilter]: cannot remove state for filter ${filterId}:`, e);
+        }
     }
 
     /**
@@ -361,64 +464,29 @@ export class CustomFilterApi {
      *
      * @param filtersUpdateOptions Filters update detail.
      *
-     * @returns Updated filters metadata or null, if filters didn't exist
-     * or new version is not available.
+     * @returns Metadata of successfully updated filters.
      */
     public static async updateFilters(
         filtersUpdateOptions: FilterUpdateOptions[],
     ): Promise<FilterMetadata[]> {
         logger.info('[ext.CustomFilterApi.updateFilters]: Checking custom filters for updates');
 
-        const filterPromises = filtersUpdateOptions.map(async (filterUpdateOption) => {
-            const filterMetadata = customFilterMetadataStorage.getById(filterUpdateOption.filterId);
-            if (!filterMetadata) {
-                logger.error(`[ext.CustomFilterApi.updateFilters]: cannot find custom filter ${filterUpdateOption.filterId} metadata`);
-                return null;
-            }
-
-            const { customUrl } = filterMetadata;
-
-            const rawFilter = await FiltersStoragesAdapter.getOriginal(filterUpdateOption.filterId);
-            const filterRemoteData = await CustomFilterApi.getRemoteFilterData(
-                customUrl,
-                rawFilter,
-                filterUpdateOption.ignorePatches,
-            );
-            logger.info(`[ext.CustomFilterApi.updateFilters]: checking filter - ${filterUpdateOption.filterId} for updates`);
-            if (CustomFilterApi.isFilterNeedUpdate(filterMetadata, filterRemoteData)) {
-                return {
-                    metadata: filterMetadata,
-                    remoteData: filterRemoteData,
-                    updateOptions: filterUpdateOption,
-                };
-            }
-            return null;
-        });
-
-        const resolvedFilters = await Promise.all(filterPromises);
-        const filtersToUpdate = resolvedFilters.filter((v) => v !== null);
-
-        filtersToUpdate.forEach((filter) => {
-            logger.info(`[ext.CustomFilterApi.updateFilters]: Filter ${filter.updateOptions.filterId} needs to be updated [${filter.metadata.version}]`);
-        });
-
+        const results = await Promise.allSettled(
+            filtersUpdateOptions.map((options) => CustomFilterApi.updateFilter(options)),
+        );
         const updatedFiltersMetadata: FilterMetadata[] = [];
 
-        const updateTasks = filtersToUpdate.map(async (filter) => {
-            const updatedMetadata = await CustomFilterApi.updateFilter(filter.updateOptions);
-            if (updatedMetadata) {
-                logger.info(`[ext.CustomFilterApi.updateFilters]: Filter ${filter.updateOptions.filterId} updated [${updatedMetadata.version}]`);
-                updatedFiltersMetadata.push(updatedMetadata);
+        for (const [index, { filterId }] of filtersUpdateOptions.entries()) {
+            const result = results[index];
+            if (result?.status === 'rejected') {
+                logger.error(`[ext.CustomFilterApi.updateFilters]: failed to update custom filter ${filterId}:`, result.reason);
+            } else if (result?.status === 'fulfilled' && result.value) {
+                logger.info(`[ext.CustomFilterApi.updateFilters]: Filter ${filterId} updated [${result.value.version}]`);
+                updatedFiltersMetadata.push(result.value);
             }
-        });
-
-        await Promise.allSettled(updateTasks);
-
-        if (updatedFiltersMetadata.length > 0) {
-            logger.info('[ext.CustomFilterApi.updateFilters]: Finished custom filters update');
-        } else {
-            logger.info('[ext.CustomFilterApi.updateFilters]: Custom filters are already up-to-date');
         }
+
+        logger.info(`[ext.CustomFilterApi.updateFilters]: Finished checking custom filters, updated ${updatedFiltersMetadata.length} filters`);
 
         return updatedFiltersMetadata;
     }
@@ -433,8 +501,9 @@ export class CustomFilterApi {
      *
      * @param filterUpdateOptions Filter update detail.
      *
-     * @returns Updated filter metadata or null, if filter is not existed
-     * or new version is not available.
+     * @returns Updated filter metadata, or null if no update can be applied.
+     *
+     * @throws Error if the filter download fails.
      */
     public static async updateFilter(
         filterUpdateOptions: FilterUpdateOptions,
@@ -448,16 +517,21 @@ export class CustomFilterApi {
             return null;
         }
 
-        const { customUrl } = filterMetadata;
-
-        const rawFilter = await FiltersStoragesAdapter.getOriginal(filterUpdateOptions.filterId);
-        const filterRemoteData = await CustomFilterApi.getRemoteFilterData(
-            customUrl,
-            rawFilter,
-            filterUpdateOptions.ignorePatches,
-        );
+        const filterRemoteData = await CustomFilterApi.getFilterUpdateData(filterMetadata, filterUpdateOptions);
+        if (!filterRemoteData) {
+            return null;
+        }
 
         if (!CustomFilterApi.isFilterNeedUpdate(filterMetadata, filterRemoteData)) {
+            const filterVersion = filterVersionStorage.get(filterUpdateOptions.filterId);
+            if (filterRemoteData.isFullUpdate && filterVersion) {
+                await CustomFilterApi.persistUnchangedFullUpdate(
+                    filterUpdateOptions.filterId,
+                    filterMetadata,
+                    filterVersion,
+                    filterRemoteData,
+                );
+            }
             logger.info(`[ext.CustomFilterApi.updateFilter]: custom filter ${filterUpdateOptions.filterId} is already updated`);
             return null;
         }
@@ -550,39 +624,28 @@ export class CustomFilterApi {
      *
      * @param filterMetadata Current custom filter metadata.
      * @param downloadedData Downloaded filter data.
-     * @param downloadedData.rules New rules.
-     * @param downloadedData.checksum New checksum.
-     * @param downloadedData.parsed New parsed data.
-     * @param downloadedData.rawRules New raw rules.
      *
      * @returns Updated custom filter metadata.
      */
     private static async updateFilterData(
         filterMetadata: CustomFilterMetadata,
-        {
+        downloadedData: GetRemoteCustomFilterResult,
+    ): Promise<CustomFilterMetadata> {
+        const { filterId } = filterMetadata;
+        const {
             rules,
             rawRules,
             checksum,
-            parsed,
-        }: GetRemoteCustomFilterResult,
-    ): Promise<CustomFilterMetadata> {
-        const { filterId } = filterMetadata;
+            parsed: { version, timeUpdated },
+        } = downloadedData;
 
-        const {
-            version,
-            expires,
-            timeUpdated,
-            diffPath,
-        } = parsed;
-
-        filterVersionStorage.set(filterId, {
-            version,
-            diffPath,
-            expires: Number(expires),
-            lastUpdateTime: new Date(timeUpdated).getTime(),
-            lastCheckTime: Date.now(),
-            lastScheduledCheckTime: Date.now(),
-        });
+        filterVersionStorage.set(
+            filterId,
+            CustomFilterApi.buildUpdatedFilterVersion(
+                filterVersionStorage.get(filterId),
+                downloadedData,
+            ),
+        );
 
         const newFilterMetadata = {
             ...filterMetadata,
@@ -603,10 +666,171 @@ export class CustomFilterApi {
     }
 
     /**
+     * Builds version data after a successful download.
+     *
+     * Patch updates keep the previous expiry and last full check time, so they
+     * cannot postpone the next full sync. Full downloads instead advance the
+     * clock through {@link CustomFilterApi.advanceFullSyncClock}, which also
+     * clears the patch suspension.
+     *
+     * @param currentVersion Version data before the update, if any.
+     * @param downloadedData Downloaded filter data.
+     *
+     * @returns Updated filter version data.
+     */
+    private static buildUpdatedFilterVersion(
+        currentVersion: FilterVersionData | undefined,
+        downloadedData: GetRemoteCustomFilterResult,
+    ): FilterVersionData {
+        const { parsed, isFullUpdate } = downloadedData;
+        const {
+            version,
+            expires,
+            timeUpdated,
+            diffPath,
+        } = parsed;
+
+        const patchVersion: FilterVersionData = {
+            version,
+            diffPath,
+            expires: currentVersion?.expires ?? Number(expires),
+            lastUpdateTime: new Date(timeUpdated).getTime(),
+            lastCheckTime: currentVersion?.lastCheckTime ?? Date.now(),
+            lastScheduledCheckTime: Date.now(),
+            shouldWaitFullUpdate: false,
+        };
+
+        if (!isFullUpdate) {
+            return patchVersion;
+        }
+
+        return CustomFilterApi.advanceFullSyncClock(patchVersion, expires);
+    }
+
+    /**
+     * Advances the full-sync clock after a successful full download: refreshes
+     * `expires` and both check timestamps and clears the patch suspension.
+     *
+     * Patch updates must not use this helper, so they cannot postpone the next
+     * full sync.
+     *
+     * @param filterVersion Version data to update.
+     * @param expires Expires value of the downloaded filter, in seconds.
+     *
+     * @returns Version data with the advanced full-sync clock.
+     */
+    private static advanceFullSyncClock(
+        filterVersion: FilterVersionData,
+        expires: number,
+    ): FilterVersionData {
+        return {
+            ...filterVersion,
+            expires: Number(expires),
+            lastCheckTime: Date.now(),
+            lastScheduledCheckTime: Date.now(),
+            shouldWaitFullUpdate: false,
+        };
+    }
+
+    /**
+     * Persists the result of a full download that did not change the filter:
+     * advances the full-sync clock and, when the download really carries the
+     * stored version with a refreshed raw base, saves the fresh raw base.
+     *
+     * The fresh raw base carries the current `Diff-Path` header, which may
+     * differ from the stored one even when the filter version is unchanged,
+     * e.g. after the subscription URL was redirected. Without persisting it,
+     * the next patch update would keep resolving the stale `Diff-Path`
+     * against the old raw base and the broken patch chain would never
+     * recover, contradicting the fallback mechanism of the differential
+     * updates spec: a full sync must restore the filter to a state where
+     * differential updates work again.
+     *
+     * The base is not replaced when the download carries an older version
+     * (e.g. the remote list was rolled back), since then it would no longer
+     * match the stored rules, nor when it is already identical to the stored
+     * one, to avoid rewriting it on every manual update.
+     *
+     * @param filterId Custom filter id.
+     * @param filterMetadata Current custom filter metadata.
+     * @param filterVersion Version data before the update.
+     * @param downloadedData Downloaded filter data.
+     */
+    private static async persistUnchangedFullUpdate(
+        filterId: number,
+        filterMetadata: CustomFilterMetadata,
+        filterVersion: FilterVersionData,
+        downloadedData: GetRemoteCustomFilterResult,
+    ): Promise<void> {
+        const advancedVersion = CustomFilterApi.advanceFullSyncClock(
+            filterVersion,
+            downloadedData.parsed.expires,
+        );
+
+        const storedRaw = await FiltersStoragesAdapter.getOriginal(filterId);
+        if (
+            storedRaw === downloadedData.rawRules
+            || !CustomFilterApi.isDownloadedVersionSameAsStored(filterMetadata, downloadedData)
+        ) {
+            filterVersionStorage.set(filterId, advancedVersion);
+            return;
+        }
+
+        await FiltersStoragesAdapter.setRaw(filterId, downloadedData.rawRules);
+        filterVersionStorage.set(filterId, {
+            ...advancedVersion,
+            diffPath: downloadedData.parsed.diffPath,
+        });
+    }
+
+    /**
+     * Checks whether the downloaded data carries the same filter version as
+     * the stored metadata: versions are compared when both are comparable
+     * semver values, checksums otherwise (mirroring
+     * {@link CustomFilterApi.isFilterNeedUpdate}).
+     *
+     * @param filterMetadata Current custom filter metadata.
+     * @param downloadedData Downloaded filter data.
+     *
+     * @returns True if the download carries the stored filter version.
+     */
+    private static isDownloadedVersionSameAsStored(
+        filterMetadata: CustomFilterMetadata,
+        { checksum, parsed }: GetRemoteCustomFilterResult,
+    ): boolean {
+        if (CustomFilterApi.areVersionsComparable(filterMetadata.version, parsed.version)) {
+            return BrowserUtils.isGreaterOrEqualsVersion(filterMetadata.version, parsed.version)
+                && BrowserUtils.isGreaterOrEqualsVersion(parsed.version, filterMetadata.version);
+        }
+
+        return !!filterMetadata.checksum && checksum === filterMetadata.checksum;
+    }
+
+    /**
+     * Checks whether the stored and downloaded filter versions can be compared
+     * as semver values.
+     *
+     * @param storedVersion Version from the stored filter metadata.
+     * @param downloadedVersion Version from the downloaded filter data.
+     *
+     * @returns True if both versions are non-empty semver strings.
+     */
+    private static areVersionsComparable(
+        storedVersion: unknown,
+        downloadedVersion: unknown,
+    ): storedVersion is string {
+        return typeof storedVersion === 'string'
+            && storedVersion.length > 0
+            && BrowserUtils.isSemver(storedVersion)
+            && BrowserUtils.isSemver(downloadedVersion);
+    }
+
+    /**
      * Generates new filter id for new custom filter.
      *
      * Custom filters ids starts from {@link CUSTOM_FILTERS_START_ID}.
      * Every new custom filter id is incremented on 1 from last one.
+     * Ids that are reserved by concurrent creations are skipped.
      *
      * @returns Generated filter id.
      */
@@ -618,7 +842,13 @@ export class CustomFilterApi {
             }
         });
 
-        return max >= CUSTOM_FILTERS_START_ID ? max + 1 : CUSTOM_FILTERS_START_ID;
+        let filterId = max >= CUSTOM_FILTERS_START_ID ? max + 1 : CUSTOM_FILTERS_START_ID;
+
+        while (CustomFilterApi.pendingFilterIds.has(filterId)) {
+            filterId += 1;
+        }
+
+        return filterId;
     }
 
     /**
@@ -631,34 +861,6 @@ export class CustomFilterApi {
     private static getChecksum(rules: string[]): string {
         const rulesText = rules.join(NEWLINE_CHAR_UNIX);
         return MD5(rulesText).toString();
-    }
-
-    /**
-     * Checks if custom filter data need to update.
-     *
-     * @param filterUpdateOptions Filter update options.
-     *
-     * @returns True, if filter data need to update, else returns false.
-     */
-    public static async isFilterNeedUpdateByFilterUpdateOptions(
-        filterUpdateOptions: FilterUpdateOptions,
-    ): Promise<boolean> {
-        const filterMetadata = customFilterMetadataStorage.getById(filterUpdateOptions.filterId);
-
-        if (!filterMetadata) {
-            return false;
-        }
-
-        const { customUrl } = filterMetadata;
-
-        const rawFilter = await FiltersStoragesAdapter.getOriginal(filterUpdateOptions.filterId);
-        const filterRemoteData = await CustomFilterApi.getRemoteFilterData(
-            customUrl,
-            rawFilter,
-            filterUpdateOptions.ignorePatches,
-        );
-
-        return this.isFilterNeedUpdate(filterMetadata, filterRemoteData);
     }
 
     /**
@@ -681,13 +883,7 @@ export class CustomFilterApi {
         // Sometimes version field is not available (e.g. for some custom filters),
         // in this case, we should check only checksum.
         // If checksum is also not available, we should update filter anyway.
-        if (
-            // If version is not available or empty, we don't need to check it deeply
-            typeof filter.version === 'string'
-            && filter.version.length > 0
-            && BrowserUtils.isSemver(filter.version)
-            && BrowserUtils.isSemver(parsed.version)
-        ) {
+        if (CustomFilterApi.areVersionsComparable(filter.version, parsed.version)) {
             return !BrowserUtils.isGreaterOrEqualsVersion(filter.version, parsed.version);
         }
 
@@ -696,6 +892,135 @@ export class CustomFilterApi {
         }
 
         return checksum !== filter.checksum;
+    }
+
+    /**
+     * Downloads a custom filter update, suspending failed patch chains until a full sync.
+     *
+     * @param filterMetadata Current custom filter metadata.
+     * @param filterUpdateOptions Filter update options selected by the caller's update schedule.
+     *
+     * @returns Downloaded data, or null if patch updates are suspended or their stored base has changed.
+     *
+     * @throws Error if the download fails.
+     */
+    private static async getFilterUpdateData(
+        filterMetadata: CustomFilterMetadata,
+        filterUpdateOptions: FilterUpdateOptions,
+    ): Promise<GetRemoteCustomFilterResult | null> {
+        const { filterId, customUrl } = filterMetadata;
+        const rawFilter = await FiltersStoragesAdapter.getOriginal(filterId);
+        const updateMode = CustomFilterApi.selectUpdateMode(
+            rawFilter,
+            filterVersionStorage.get(filterId),
+            filterUpdateOptions,
+        );
+
+        if (updateMode === null) {
+            logger.info(`[ext.CustomFilterApi.getFilterUpdateData]: custom filter ${filterId} is waiting for a full update`);
+            return null;
+        }
+
+        const force = updateMode === 'full';
+
+        try {
+            const downloadedData = await CustomFilterApi.getRemoteFilterData(customUrl, rawFilter, force);
+
+            if (!force && !await CustomFilterApi.isStoredBaseUnchanged(filterId, rawFilter)) {
+                logger.info(`[ext.CustomFilterApi.getFilterUpdateData]: ignoring an outdated patch result for custom filter ${filterId}, its base has changed`);
+                return null;
+            }
+
+            return downloadedData;
+        } catch (e) {
+            if (!force && await CustomFilterApi.isStoredBaseUnchanged(filterId, rawFilter)) {
+                CustomFilterApi.suspendPatchUpdates(filterId);
+                logger.warn(`[ext.CustomFilterApi.getFilterUpdateData]: patch update failed for custom filter ${filterId} (${customUrl}), waiting for a full update:`, e);
+            }
+            throw e;
+        }
+    }
+
+    /**
+     * Selects the download mode for a custom filter update.
+     *
+     * Patch updates require a stored raw base with a `Diff-Path` header — the
+     * same condition the downloader checks itself — otherwise a full download
+     * is forced, so its result is not misreported as a patch update.
+     *
+     * @param rawFilter Stored raw base, if any.
+     * @param filterVersion Current filter version data, if any.
+     * @param filterUpdateOptions Filter update options selected by the caller's update schedule.
+     *
+     * @returns Selected download mode, or null if patch updates are suspended until a full sync.
+     */
+    private static selectUpdateMode(
+        rawFilter: string | undefined,
+        filterVersion: FilterVersionData | undefined,
+        filterUpdateOptions: FilterUpdateOptions,
+    ): CustomFilterUpdateMode | null {
+        const force = filterUpdateOptions.ignorePatches
+            || !rawFilter
+            || !CustomFilterApi.hasDiffPath(rawFilter);
+
+        if (!force && filterVersion?.shouldWaitFullUpdate) {
+            return null;
+        }
+
+        return force ? 'full' : 'patch';
+    }
+
+    /**
+     * Checks whether the stored raw base has a `Diff-Path` header, which is
+     * required for patch updates.
+     *
+     * @param rawFilter Stored raw filter content.
+     *
+     * @returns True if the raw base has a `Diff-Path` header.
+     */
+    private static hasDiffPath(rawFilter: string): boolean {
+        const { diffPath } = FilterParser.parseFilterDataFromRawHeader(rawFilter);
+        return !!diffPath;
+    }
+
+    /**
+     * Checks whether the stored raw base of a custom filter is still the same
+     * as the one the download was based on.
+     *
+     * @param filterId Custom filter id.
+     * @param rawFilter Raw base used for the download.
+     *
+     * @returns True if the stored base is unchanged; false if it has changed or cannot be read.
+     */
+    private static async isStoredBaseUnchanged(
+        filterId: number,
+        rawFilter: string | undefined,
+    ): Promise<boolean> {
+        try {
+            return rawFilter === await FiltersStoragesAdapter.getOriginal(filterId);
+        } catch (e) {
+            logger.warn(`[ext.CustomFilterApi.isStoredBaseUnchanged]: failed to re-read the stored base of custom filter ${filterId}:`, e);
+            return false;
+        }
+    }
+
+    /**
+     * Marks the filter as waiting for a full update, so patch updates are
+     * skipped until the next full sync.
+     *
+     * @param filterId Custom filter id.
+     */
+    private static suspendPatchUpdates(filterId: number): void {
+        const filterVersion = filterVersionStorage.get(filterId);
+
+        if (!filterVersion) {
+            return;
+        }
+
+        filterVersionStorage.set(filterId, {
+            ...filterVersion,
+            shouldWaitFullUpdate: true,
+        });
     }
 
     /**
@@ -710,6 +1035,9 @@ export class CustomFilterApi {
      * @param force If true filter data will be downloaded directly, not through patches.
      *
      * @returns Downloaded and parsed filter data.
+     *
+     * @throws Error if the download or patch update fails or exceeds
+     * {@link CUSTOM_FILTER_DOWNLOAD_TIMEOUT_MS}.
      */
     private static async getRemoteFilterData(
         url: string,
@@ -718,7 +1046,15 @@ export class CustomFilterApi {
     ): Promise<GetRemoteCustomFilterResult> {
         logger.info(`[ext.CustomFilterApi.getRemoteFilterData]: get custom filter data from ${url}`);
 
-        const downloadResult = await CustomFilterLoader.downloadRulesWithTimeout(url, rawFilter, force);
+        let downloadResult = CustomFilterApi.takeCachedFilterDownload(url, rawFilter, force);
+
+        if (!downloadResult) {
+            downloadResult = await CustomFilterApi.downloadFilter(url, rawFilter, force);
+        }
+
+        if (downloadResult.isPatchUpdateFailed) {
+            throw new Error(`Patch update failed for custom filter at ${url}`);
+        }
 
         const parsed = FilterParser.parseFilterDataFromHeader(
             downloadResult.filter,
@@ -736,30 +1072,110 @@ export class CustomFilterApi {
             rules: downloadResult.filter,
             parsed,
             checksum,
+            isFullUpdate: !!force || !rawFilter,
         };
     }
 
     /**
-     * Limits custom filter rules downloading with timeout.
+     * Downloads custom filter rules.
      *
-     * @param url Custom filter download url.
+     * Keeps the caller timeout and the longer in-flight TTL in one place, so a
+     * retry after {@link CUSTOM_FILTER_DOWNLOAD_TIMEOUT_MS} can join the
+     * download that is still in progress.
+     *
+     * @param url Custom filter subscription url.
      * @param rawFilter Optional raw filter rules.
-     * @param force Optional flag to choose download filter in whole or by patches.
+     * @param force If true filter data will be downloaded directly, not through patches.
      *
-     * @returns Downloaded custom filter rules.
+     * @returns Downloaded filter data.
      *
-     * @throws Error if filter was not downloaded in {@link DOWNLOAD_LIMIT_MS}.
+     * @throws Error if the download fails or exceeds
+     * {@link CUSTOM_FILTER_DOWNLOAD_TIMEOUT_MS}.
      */
-    public static async downloadRulesWithTimeout(
+    private static downloadFilter(
         url: string,
         rawFilter?: string,
         force?: boolean,
     ): Promise<DownloadResult> {
         return createPromiseWithTimeout(
-            CustomFilterApi.network.downloadFilterRulesBySubscriptionUrl(url, rawFilter, force)
-                .then((val) => val || emptyDownloadResult),
-            CustomFilterApi.DOWNLOAD_LIMIT_MS,
+            CustomFilterApi.network.downloadFilterRulesBySubscriptionUrl(
+                url,
+                rawFilter,
+                force,
+                CUSTOM_FILTER_IN_FLIGHT_TTL_MS,
+            ),
+            CUSTOM_FILTER_DOWNLOAD_TIMEOUT_MS,
             'Fetch timeout is over',
         );
+    }
+
+    /**
+     * Saves a full custom filter download for reuse by
+     * {@link CustomFilterApi.createFilter}.
+     *
+     * @param url Custom filter subscription url.
+     * @param downloadResult Downloaded filter data.
+     */
+    private static cacheFilterDownload(url: string, downloadResult: DownloadResult): void {
+        CustomFilterApi.resetCachedFilterDownload();
+
+        CustomFilterApi.cachedFilterDownload = {
+            url,
+            downloadResult,
+            expiresAt: Date.now() + CUSTOM_FILTER_INFO_CACHE_TTL_MS,
+        };
+
+        // eslint-disable-next-line no-restricted-globals
+        CustomFilterApi.cachedFilterDownloadEvictionTimeoutId = self.setTimeout(
+            () => CustomFilterApi.resetCachedFilterDownload(),
+            CUSTOM_FILTER_INFO_CACHE_TTL_MS,
+        );
+    }
+
+    /**
+     * Clears the cached custom filter download and its eviction timer.
+     */
+    private static resetCachedFilterDownload(): void {
+        if (CustomFilterApi.cachedFilterDownloadEvictionTimeoutId !== undefined) {
+            // eslint-disable-next-line no-restricted-globals
+            self.clearTimeout(CustomFilterApi.cachedFilterDownloadEvictionTimeoutId);
+            CustomFilterApi.cachedFilterDownloadEvictionTimeoutId = undefined;
+        }
+
+        CustomFilterApi.cachedFilterDownload = undefined;
+    }
+
+    /**
+     * Returns the recent download of the same custom filter, if it can be reused.
+     *
+     * Only a full download without a raw base is reusable, which is the case for
+     * {@link CustomFilterApi.createFilter}. Patch updates must always use their
+     * stored raw base, and forced downloads must always make a new request, so
+     * both ignore the cache.
+     *
+     * @param url Custom filter subscription url.
+     * @param rawFilter Raw filter rules passed to the download.
+     * @param force Whether a full download is forced.
+     *
+     * @returns Cached download result, or undefined if it cannot be reused.
+     */
+    private static takeCachedFilterDownload(
+        url: string,
+        rawFilter: string | undefined,
+        force: boolean | undefined,
+    ): DownloadResult | undefined {
+        const cached = CustomFilterApi.cachedFilterDownload;
+
+        if (!cached || cached.url !== url || rawFilter !== undefined || force) {
+            return undefined;
+        }
+
+        CustomFilterApi.resetCachedFilterDownload();
+
+        if (cached.expiresAt <= Date.now()) {
+            return undefined;
+        }
+
+        return cached.downloadResult;
     }
 }

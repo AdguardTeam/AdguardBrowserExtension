@@ -25,6 +25,7 @@ import {
 } from '../../../../common/forward';
 import { SettingOption } from '../../../schema';
 import { settingsStorage } from '../../../storages';
+import { PARAM_NAMES } from '../../settings/configuration-import/param-mapping';
 
 import { PagesApiCommon, type CookieStealthOption } from './pages-common';
 
@@ -60,7 +61,7 @@ export class PagesApi extends PagesApiCommon {
     // eslint-disable-next-line class-methods-use-this
     protected getBrowserSecurityParams(): { [key: string]: string } {
         const isEnabled = !settingsStorage.get(SettingOption.DisableSafebrowsing);
-        return { 'browsing_security.enabled': isEnabled ? '1' : '0' };
+        return { [PARAM_NAMES.BROWSING_SECURITY_ENABLED]: isEnabled ? '1' : '0' };
     }
 
     /** @inheritdoc */
@@ -68,12 +69,12 @@ export class PagesApi extends PagesApiCommon {
     protected getCookieStealthOptions(): CookieStealthOption[] {
         return [
             {
-                queryKey: 'stealth.third_party_cookies_min',
+                queryKey: PARAM_NAMES.STEALTH_THIRD_PARTY_COOKIES_MIN,
                 settingKey: SettingOption.SelfDestructThirdPartyCookies,
                 settingValueKey: SettingOption.SelfDestructThirdPartyCookiesTime,
             },
             {
-                queryKey: 'stealth.first_party_cookies_min',
+                queryKey: PARAM_NAMES.STEALTH_FIRST_PARTY_COOKIES_MIN,
                 settingKey: SettingOption.SelfDestructFirstPartyCookies,
                 settingValueKey: SettingOption.SelfDestructFirstPartyCookiesTime,
             },

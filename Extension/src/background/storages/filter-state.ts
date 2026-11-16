@@ -50,6 +50,7 @@ export class FilterStateStorage extends StringStorage<
         enabled: false,
         installed: false,
         loaded: false,
+        disabledAsUnused: false,
     };
 
     /**
@@ -174,13 +175,71 @@ export class FilterStateStorage extends StringStorage<
     }
 
     /**
-     * Enables specified filters.
+     * Enables specified filters and clears their previous 'disabled as unused' status.
      *
      * @param filterIds List of filter ids to enable.
      *
      * @throws Error if filter state data is not initialized.
      */
     public enableFilters(filterIds: number[]): void {
+        this.updateFilters(filterIds, (data) => {
+            data.enabled = true;
+            data.disabledAsUnused = false;
+        });
+    }
+
+    /**
+     * Disables specified filters and clears their previous 'disabled as unused' status.
+     *
+     * @param filtersIds List of filters to disable.
+     *
+     * @throws Error if filter state data is not initialized.
+     */
+    public disableFilters(filtersIds: number[]): void {
+        this.updateFilters(filtersIds, (data) => {
+            data.enabled = false;
+            data.disabledAsUnused = false;
+        });
+    }
+
+    /**
+     * Clears the 'disabled as unused' status of specified filters
+     * without changing their enabled state.
+     *
+     * @param filterIds List of filter ids to clear the status for.
+     *
+     * @throws Error if filter state data is not initialized.
+     */
+    public clearUnused(filterIds: number[]): void {
+        this.updateFilters(filterIds, (data) => {
+            data.disabledAsUnused = false;
+        });
+    }
+
+    /**
+     * Disables specified filters and marks them as unused in a single state update.
+     *
+     * @param filterIds List of filter ids to disable as unused.
+     *
+     * @throws Error if filter state data is not initialized.
+     */
+    public disableFiltersAsUnused(filterIds: number[]): void {
+        this.updateFilters(filterIds, (data) => {
+            data.enabled = false;
+            data.disabledAsUnused = true;
+        });
+    }
+
+    /**
+     * Applies an update to the state of each specified filter and saves the state once.
+     * Unknown filter ids are skipped.
+     *
+     * @param filterIds List of filter ids to update.
+     * @param update Mutation of a single filter state.
+     *
+     * @throws Error if filter state data is not initialized.
+     */
+    private updateFilters(filterIds: number[], update: (data: FilterStateData) => void): void {
         if (!this.data) {
             throw FilterStateStorage.createNotInitializedError();
         }
@@ -195,35 +254,7 @@ export class FilterStateStorage extends StringStorage<
             const data = this.data[filterId];
 
             if (data) {
-                data.enabled = true;
-            }
-        }
-
-        this.save();
-    }
-
-    /**
-     * Disables specified filters.
-     *
-     * @param filtersIds List of filters to disable.
-     *
-     * @throws Error if filter state data is not initialized.
-     */
-    public disableFilters(filtersIds: number[]): void {
-        if (!this.data) {
-            throw FilterStateStorage.createNotInitializedError();
-        }
-        for (let i = 0; i < filtersIds.length; i += 1) {
-            const filterId = filtersIds[i];
-
-            if (!filterId) {
-                continue;
-            }
-
-            const data = this.data[filterId];
-
-            if (data) {
-                data.enabled = false;
+                update(data);
             }
         }
 

@@ -66,3 +66,18 @@ export const shouldShowUserScriptsApiWarning = (): boolean => {
 
     return true;
 };
+
+/**
+ * Checks if the User scripts API warning should be shown for the Block
+ * fingerprinting setting.
+ *
+ * Unlike {@link shouldShowUserScriptsApiWarning}, it does not depend on the
+ * browser version: canvas protection only needs the User scripts API to be
+ * available, which every supported Chromium version provides once the user
+ * grants the permission.
+ *
+ * @returns True if the User scripts API is not available, false otherwise.
+ */
+export const shouldShowCanvasProtectionUserScriptsWarning = (): boolean => {
+    return !isUserScriptsApiSupported();
+};

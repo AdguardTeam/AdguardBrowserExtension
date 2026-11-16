@@ -36,6 +36,11 @@ export const FILE_WRONG_EXTENSION_CAUSE = 'fileWrongExtension';
 export const TIME_TO_REMOVE_NOTIFICATION_MS = 300;
 
 /**
+ * Deduplication key for the automatic language-filter disable notification.
+ */
+export const AUTO_DISABLE_NOTIFICATION_DEDUPE_KEY = 'auto-disable-filter-notification';
+
+/**
  * Mobile screen breakpoint in px.
  */
 export const MOBILE_BREAKPOINT_PX = 640;
@@ -44,3 +49,15 @@ export const MOBILE_BREAKPOINT_PX = 640;
  * Tablet screen breakpoint in px.
  */
 export const TABLET_BREAKPOINT_PX = 1024;
+
+/**
+ * Class react-modal puts on the overlay element it portals to the end of
+ * `<body>` when `overlayClassName` is a string, i.e. for every modal in this
+ * app. Code that must keep a modal's own controls interactive — e.g. the user
+ * rules list, which swallows pointer events outside the row being edited — uses
+ * it to tell the modal subtree from the page behind it.
+ *
+ * Note: with the object form of `overlayClassName` react-modal would drop the
+ * class, so this check only holds for string values.
+ */
+export const REACT_MODAL_OVERLAY_CLASS = 'ReactModal__Overlay';

@@ -22,17 +22,22 @@ import { isString } from 'lodash-es';
 
 import { type ConversionData, FilterList } from 'tswebextension';
 
+import {
+    FILTER_CONTENT_STORAGE_KEY,
+    FILTER_CONVERSION_DATA_STORAGE_KEY,
+    FILTER_STORAGE_KEY_COMBINER,
+} from './constants';
 import { hybridStorage } from './shared-instances';
 
 /**
  * Encapsulates interaction with stored filter rules.
  */
 export class FiltersStorage {
-    public static readonly KEY_COMBINER = '_';
+    public static readonly KEY_COMBINER = FILTER_STORAGE_KEY_COMBINER;
 
-    public static readonly KEY_FILTER_CONTENT = 'filterContent';
+    public static readonly KEY_FILTER_CONTENT = FILTER_CONTENT_STORAGE_KEY;
 
-    public static readonly KEY_CONVERSION_DATA = 'conversionData';
+    public static readonly KEY_CONVERSION_DATA = FILTER_CONVERSION_DATA_STORAGE_KEY;
 
     /**
      * Returns key with prefix.

@@ -102,6 +102,7 @@ const createPageHandle = (overrides: Partial<E2EPageHandle> = {}): E2EPageHandle
     getBackgroundErrors: vi.fn(async () => []),
     clickSelector: vi.fn(async () => {}),
     typeText: vi.fn(async () => {}),
+    pressKey: vi.fn(async () => {}),
     evaluate: vi.fn(async () => '') as unknown as E2EPageHandle['evaluate'],
     getTextContents: vi.fn(async () => []),
     reload: vi.fn(async () => {}),

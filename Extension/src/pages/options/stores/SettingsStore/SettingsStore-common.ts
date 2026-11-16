@@ -238,12 +238,6 @@ export abstract class SettingsStoreCommon {
     @observable
     userRulesViewMode: ViewModeValue = readViewMode();
 
-    /**
-     * Whether the Rule Limits A/B test B-variant is active (AG-54586).
-     */
-    @observable
-    showRuleLimitsVariantB = false;
-
     @observable
     allowlistSizeReset = false;
 
@@ -366,7 +360,6 @@ export abstract class SettingsStoreCommon {
         this.setStripTrackingParameters(data.filtersMetadata.filters);
         this.isChrome = data.environmentOptions.isChrome;
         this.fullscreenUserRulesEditorIsOpen = data.fullscreenUserRulesEditorIsOpen;
-        this.showRuleLimitsVariantB = data.showRuleLimitsVariantB;
         this.optionsReadyToRender = true;
     }
 
@@ -430,8 +423,10 @@ export abstract class SettingsStoreCommon {
                 await messenger.disableFilter(filterId);
             }
 
-            relatedFilter.enabled = enabled;
-            this.refreshFilter(relatedFilter);
+            runInAction(() => {
+                relatedFilter.enabled = enabled;
+                this.refreshFilter(relatedFilter);
+            });
         } catch (e) {
             runInAction(() => {
                 this[optionKey] = prevValue;
@@ -660,24 +655,26 @@ export abstract class SettingsStoreCommon {
                 ? await messenger.enableFilter(filterId)
                 : await messenger.disableFilter(filterId);
 
-            // update allow acceptable ads setting
-            if (filterId === AntiBannerFiltersId.SearchAndSelfPromoFilterId) {
-                this.allowAcceptableAds = enabled;
-            } else if (filterId === AntiBannerFiltersId.TrackingFilterId) {
-                this.blockKnownTrackers = enabled;
-            } else if (filterId === AntiBannerFiltersId.UrlTrackingFilterId) {
-                this.stripTrackingParameters = enabled;
-            }
-
-            if (groupId) {
-                const group = this.categories.find((group) => group.groupId === groupId);
-
-                if (group) {
-                    group.enabled = true;
-                    // if any filter in group is enabled, the group is considered as touched
-                    group.touched = true;
+            runInAction(() => {
+                // update allow acceptable ads setting
+                if (filterId === AntiBannerFiltersId.SearchAndSelfPromoFilterId) {
+                    this.allowAcceptableAds = enabled;
+                } else if (filterId === AntiBannerFiltersId.TrackingFilterId) {
+                    this.blockKnownTrackers = enabled;
+                } else if (filterId === AntiBannerFiltersId.UrlTrackingFilterId) {
+                    this.stripTrackingParameters = enabled;
                 }
-            }
+
+                if (groupId) {
+                    const group = this.categories.find((group) => group.groupId === groupId);
+
+                    if (group) {
+                        group.enabled = true;
+                        // if any filter in group is enabled, the group is considered as touched
+                        group.touched = true;
+                    }
+                }
+            });
 
             return true;
         } catch (e) {
@@ -701,7 +698,8 @@ export abstract class SettingsStoreCommon {
      *
      * @param {CustomFilterSubscriptionData} filter Custom filter data.
      *
-     * @returns {Promise<number>} Custom filter id.
+     * @returns {Promise<number | undefined>} Custom filter id, or `undefined` if
+     * the background page returned no filter data and the filter was not added.
      */
     @action
     async addCustomFilter(filter: CustomFilterSubscriptionData): Promise<number | undefined> {
@@ -1058,7 +1056,9 @@ export abstract class SettingsStoreCommon {
         if (this.filterIdSelectedForConsent) {
             await this.updateFilterSetting(this.filterIdSelectedForConsent, true);
             await messenger.setConsentedFilters([this.filterIdSelectedForConsent]);
-            this.filterIdSelectedForConsent = null;
+            runInAction(() => {
+                this.filterIdSelectedForConsent = null;
+            });
             return;
         }
         // handle consent modal for group

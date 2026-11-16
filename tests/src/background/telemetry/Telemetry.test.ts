@@ -35,7 +35,7 @@ import {
 import { SettingOption } from '../../../../Extension/src/background/schema';
 import { messageHandler } from '../../../../Extension/src/background/message-handler';
 import { SettingsApi, TelemetryApi } from '../../../../Extension/src/background/api';
-import { MessageType } from '../../../../Extension/src/common/messages';
+import { MessageType, type SendTelemetryCustomEventMessage } from '../../../../Extension/src/common/messages';
 import { ABTestManager } from '../../../../Extension/src/background/services/telemetry';
 import { NotifierType } from '../../../../Extension/src/common/constants';
 
@@ -59,11 +59,13 @@ vi.mock('../../../../Extension/src/common/logger', () => ({
     logger: {
         debug: vi.fn(),
         error: vi.fn(),
+        warn: vi.fn(),
     },
 }));
 
 vi.mock('../../../../Extension/src/background/services/telemetry/abtest/ABTestManager', () => ({
     ABTestManager: {
+        removeRetiredVariants: vi.fn().mockResolvedValue(undefined),
         getVariantsForProps: vi.fn().mockResolvedValue({}),
         getTestsPayload: vi.fn().mockResolvedValue({}),
         processResponse: vi.fn().mockResolvedValue(undefined),
@@ -180,6 +182,20 @@ describe('Telemetry', () => {
             });
         });
 
+        test('sends custom event without ref_name when it is not tied to a screen', async () => {
+            await Telemetry.init();
+
+            await Telemetry.sendCustomEvent(
+                undefined,
+                TelemetryEventName.UnusedFilterCloseClick,
+            );
+
+            const [data] = vi.mocked(TelemetryApi.sendEvent).mock.calls[0]!;
+            expect(JSON.stringify(data.event)).toBe(JSON.stringify({
+                name: TelemetryEventName.UnusedFilterCloseClick,
+            }));
+        });
+
         test('does not send custom event when telemetry is disabled', async () => {
             vi.mocked(SettingsApi.getSetting).mockImplementation((key) => {
                 if (key === SettingOption.AllowAnonymizedUsageData) {
@@ -197,6 +213,122 @@ describe('Telemetry', () => {
         });
     });
 
+    describe('custom event ordering', () => {
+        /**
+         * Returns the custom event listener registered by {@link Telemetry.init}.
+         *
+         * @returns The registered message handler.
+         */
+        const getCustomEventHandler = (): ((message: SendTelemetryCustomEventMessage) => void) => {
+            const call = vi.mocked(messageHandler.addListener).mock.calls.find(
+                ([type]) => type === MessageType.SendTelemetryCustomEvent,
+            );
+
+            return call![1] as (message: SendTelemetryCustomEventMessage) => void;
+        };
+
+        /**
+         * Builds a custom event message for the user rules screen.
+         *
+         * @param eventName Event name to report.
+         *
+         * @returns Message accepted by the registered handler.
+         */
+        const createMessage = (eventName: TelemetryEventName): SendTelemetryCustomEventMessage => ({
+            type: MessageType.SendTelemetryCustomEvent,
+            data: {
+                screenName: TelemetryScreenName.UserRulesScreen,
+                eventName,
+            },
+        });
+
+        beforeEach(() => {
+            // The chain lives on the class, so reset it between tests.
+            // @ts-ignore - accessing private field for testing
+            Telemetry.customEventsChain = Promise.resolve();
+        });
+
+        test('sends every event fired in quick succession, in firing order', async () => {
+            const handleCustomEvent = getCustomEventHandler();
+
+            // A quick pencil -> cross sends two distinct events. A debounced
+            // handler kept only the last one, silently dropping the edit click.
+            handleCustomEvent(createMessage(TelemetryEventName.UserRuleEditClick));
+            handleCustomEvent(createMessage(TelemetryEventName.UserRuleInlineCancelClick));
+
+            await vi.waitFor(() => expect(TelemetryApi.sendEvent).toHaveBeenCalledTimes(2));
+
+            expect(TelemetryApi.sendEvent).toHaveBeenNthCalledWith(
+                1,
+                expect.objectContaining({
+                    event: {
+                        name: TelemetryEventName.UserRuleEditClick,
+                        ref_name: TelemetryScreenName.UserRulesScreen,
+                    },
+                }),
+            );
+            expect(TelemetryApi.sendEvent).toHaveBeenNthCalledWith(
+                2,
+                expect.objectContaining({
+                    event: {
+                        name: TelemetryEventName.UserRuleInlineCancelClick,
+                        ref_name: TelemetryScreenName.UserRulesScreen,
+                    },
+                }),
+            );
+        });
+
+        test('does not start the next event until the previous send settles', async () => {
+            const handleCustomEvent = getCustomEventHandler();
+            // Longer than the old custom-event batching timeout (300 ms).
+            const STALLED_SEND_MS = 350;
+            let releaseFirstSend: () => void = () => {};
+
+            // Hold the first request open longer than the old batching timeout.
+            // The old queue started the next batch in parallel after the
+            // timeout, so cancel could overtake the still-running save.
+            vi.mocked(TelemetryApi.sendEvent).mockImplementationOnce(async () => {
+                await new Promise<void>((resolve) => {
+                    releaseFirstSend = resolve;
+                });
+            });
+
+            handleCustomEvent(createMessage(TelemetryEventName.UserRuleInlineSaveClick));
+            await vi.waitFor(() => expect(TelemetryApi.sendEvent).toHaveBeenCalledTimes(1));
+
+            // Fire the second event after the old batching timeout, so the old
+            // queue would already have started its batch in parallel.
+            await new Promise((resolve) => {
+                setTimeout(resolve, STALLED_SEND_MS);
+            });
+            handleCustomEvent(createMessage(TelemetryEventName.UserRuleInlineCancelClick));
+
+            // Wait past the old timeout again: the chain is still waiting for
+            // the first send, so the second event must not have started yet.
+            await new Promise((resolve) => {
+                setTimeout(resolve, STALLED_SEND_MS);
+            });
+            expect(TelemetryApi.sendEvent).toHaveBeenCalledTimes(1);
+
+            releaseFirstSend();
+
+            await vi.waitFor(() => expect(TelemetryApi.sendEvent).toHaveBeenCalledTimes(2));
+
+            expect(TelemetryApi.sendEvent).toHaveBeenNthCalledWith(
+                1,
+                expect.objectContaining({
+                    event: expect.objectContaining({ name: TelemetryEventName.UserRuleInlineSaveClick }),
+                }),
+            );
+            expect(TelemetryApi.sendEvent).toHaveBeenNthCalledWith(
+                2,
+                expect.objectContaining({
+                    event: expect.objectContaining({ name: TelemetryEventName.UserRuleInlineCancelClick }),
+                }),
+            );
+        });
+    });
+
     describe('telemetry flow', () => {
         test('handles complete flow with page views and custom events', async () => {
             await Telemetry.init();
@@ -210,6 +342,23 @@ describe('Telemetry', () => {
     });
 
     describe('session_start', () => {
+        test('continues initialization when retired experiment cleanup fails', async () => {
+            // @ts-ignore - accessing private field for testing
+            Telemetry.isSessionStartSent = false;
+            // @ts-ignore - accessing private field for testing
+            Telemetry.isSessionStartInProgress = false;
+            vi.clearAllMocks();
+            vi.mocked(ABTestManager.removeRetiredVariants).mockRejectedValueOnce(new Error('Storage error'));
+
+            await expect(Telemetry.init()).resolves.toBeUndefined();
+
+            expect(TelemetryApi.sendSessionStart).toHaveBeenCalledTimes(1);
+            expect(messageHandler.addListener).toHaveBeenCalledWith(
+                MessageType.SendTelemetryPageViewEvent,
+                expect.any(Function),
+            );
+        });
+
         test('sends session_start during init when telemetry is enabled', async () => {
             // beforeEach calls init() with telemetry enabled
             expect(TelemetryApi.sendSessionStart).toHaveBeenCalledTimes(1);

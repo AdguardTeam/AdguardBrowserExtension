@@ -132,6 +132,7 @@ export const getImportedSettingsFromV1Fixture = () => {
         configV1[RootOption.Stealth],
         {
             [StealthOption.DisableStealthMode]: configV1[RootOption.Stealth]['stealth_disable_stealth_mode'],
+            [StealthOption.BlockFingerprinting]: false,
             ...configV1[RootOption.Stealth],
         },
     );
@@ -223,6 +224,7 @@ export const getExportedSettingsProtocolV2Fixture = (): Config => ({
         [StealthOption.SendDoNotTrack]: true,
         [StealthOption.BlockWebRTC]: true,
         [StealthOption.RemoveXClientData]: true,
+        [StealthOption.BlockFingerprinting]: true,
         [StealthOption.SelfDestructThirdPartyCookies]: true,
         [StealthOption.SelfDestructThirdPartyCookiesTime]: 3333,
         [StealthOption.SelfDestructFirstPartyCookies]: true,

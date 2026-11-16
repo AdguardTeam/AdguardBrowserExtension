@@ -40,6 +40,7 @@ const V3_EXPORT_PARAMS = {
     STEALTH_HIDE_SEARCH_QUERIES: 'stealth.hide_search_queries',
     STEALTH_SEND_DNT: 'stealth.DNT',
     STEALTH_BLOCK_WEBRTC: 'stealth.webrtc',
+    STEALTH_BLOCK_FINGERPRINTING: 'stealth.block_fingerprinting',
     STEALTH_STRIP_URL: 'stealth.strip_url',
     STEALTH_BLOCK_TRACKERS: 'stealth.block_trackers',
     STEALTH_X_CLIENT: 'stealth.x_client',
@@ -133,6 +134,10 @@ export class ConfigurationExportApi {
 
         params[V3_EXPORT_PARAMS.STEALTH_BLOCK_WEBRTC] = ConfigurationExportApi.boolToParam(
             settingsStorage.get(SettingOption.BlockWebRTC),
+        );
+
+        params[V3_EXPORT_PARAMS.STEALTH_BLOCK_FINGERPRINTING] = ConfigurationExportApi.boolToParam(
+            settingsStorage.get(SettingOption.BlockFingerprinting),
         );
 
         params[V3_EXPORT_PARAMS.STEALTH_STRIP_URL] = ConfigurationExportApi.boolToParam(

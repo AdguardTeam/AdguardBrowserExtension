@@ -73,6 +73,111 @@
     &--with-margin {
         margin-top: 16px;
     }
+
+    /*
+     * Inline variant used by the user rules list: a frameless, single-line
+     * editor that fits into the row's 20px text line (`LINE_HEIGHT_PX` in
+     * `UserRules/rule-row-constants.ts` — keep both in sync) and does not
+     * persist a size.
+     */
+    &--inline {
+        flex: 1;
+        min-width: 0;
+        width: 100%;
+        height: 20px;
+        min-height: 20px;
+        max-height: 20px;
+        padding: 0;
+        box-shadow: none;
+        overflow: hidden;
+        resize: none;
+
+        &:after {
+            display: none;
+        }
+
+        @media (max-width: 640px) {
+            width: 100% !important;
+            border: none;
+            border-radius: 0;
+            margin-left: 0;
+            padding: 0;
+        }
+
+        .cm-editor {
+            height: 20px;
+
+            .cm-scroller {
+                overflow-x: auto;
+                overflow-y: hidden;
+                font-family: inherit;
+            }
+
+            .cm-content {
+                padding: 0;
+                font-family: inherit;
+                font-size: 14px;
+                line-height: 20px;
+            }
+
+            .cm-line {
+                padding: 0;
+            }
+
+            /*
+             * CodeMirror draws the caret itself and centres it on its
+             * position with a negative left margin. This editor has no
+             * padding and clips its content, so at the start of a line the
+             * caret would fall outside the clipped area and not be painted:
+             * an empty field would look unfocused.
+             */
+            .cm-cursor {
+                margin-left: 0;
+            }
+
+            .cm-gutters {
+                display: none;
+            }
+        }
+    }
+}
+
+/*
+ * Multi-line variant of the inline editor, used for comment blocks and the
+ * create row: the field grows with the content up to five lines
+ * (5 × 20px = 100px, see
+ * LINE_HEIGHT_PX in `UserRules/rule-row-constants.ts`) and then scrolls
+ * internally. Line wrapping is enabled for multi-line mode (see `Editor`), so
+ * long lines wrap instead of being cut off. The base `.editor--inline` keeps
+ * the 20px single-line height.
+ */
+.editor--inline.editor--inline-multiline {
+    height: auto;
+    min-height: 20px;
+    max-height: 100px;
+
+    .cm-editor {
+        height: auto;
+        max-height: 100px;
+
+        .cm-scroller {
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+    }
+}
+
+/*
+ * The single-line inline editor scrolls horizontally without a scrollbar, like
+ * a text input. A scrollbar that takes space (Windows, Linux) would cover most
+ * of the 20px line and hide the rule being edited.
+ */
+.editor--inline:not(.editor--inline-multiline) .cm-editor .cm-scroller {
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
 }
 
 /* ── CodeMirror 6 overrides ── */
@@ -129,6 +234,79 @@
 
     .cm-searchMatch {
         background-color: var(--editor-highlight);
+    }
+
+    /* The active (focused) search match, e.g. the one the panel jumped to,
+     * must be visually different from the remaining matches. Placed after
+     * `.cm-searchMatch` so it wins for elements carrying both classes.
+     */
+    .cm-searchMatch-selected {
+        background-color: var(--editor-highlight-selected);
+    }
+
+    /*
+     * The match highlight is drawn behind the text, and the syntax colors are
+     * not readable on it: the comment green drops to about 1.1:1 on the dark
+     * highlight, and every token color is below 4.5:1 on the light active
+     * match. The matched text therefore uses the main text color, which is
+     * readable on both highlights. The rule also covers the token spans,
+     * because CodeMirror nests them inside the match mark.
+     */
+    .cm-searchMatch,
+    .cm-searchMatch span {
+        color: var(--text-main-text-main-default);
+    }
+
+    /*
+     * Search panel (Ctrl+F / Ctrl+H) and the go-to-line dialog
+     * (Ctrl/Cmd+L, Ctrl+Alt+G / Cmd+Alt+G), which CodeMirror renders as a
+     * `.cm-dialog` panel. CodeMirror's built-in panel styles are light-only
+     * (the editor theme does not set the dark flag), so the panels are
+     * themed with the app variables instead — otherwise they stay bright
+     * white in dark mode.
+     */
+    .cm-panels {
+        background-color: var(--fills-backgrounds-page-background-additional-default);
+        color: var(--text-main-text-main-default);
+    }
+
+    .cm-panels-bottom {
+        border-top: 1px solid var(--stroke-dividers-item-divider-default);
+    }
+
+    .cm-panel.cm-search,
+    .cm-panel.cm-dialog {
+        input.cm-textfield {
+            color: var(--text-main-text-main-default);
+            background-color: var(--fills-inputs-input-background-default);
+            border: 1px solid var(--stroke-inputs-inactive-input-stroke-default);
+            border-radius: 4px;
+
+            &::placeholder {
+                color: var(--text-placeholder-placeholder-default);
+                opacity: 1;
+            }
+        }
+
+        .cm-button {
+            color: var(--text-main-text-main-default);
+            background-image: none;
+            background-color: transparent;
+            border: 1px solid var(--stroke-buttons-secondary-default);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--t3) color, var(--t3) border-color;
+
+            &:hover {
+                color: var(--gray-50);
+                border-color: var(--gray-50);
+            }
+
+            &:active {
+                color: var(--gray-40);
+                border-color: var(--gray-40);
+            }
+        }
     }
 }
 

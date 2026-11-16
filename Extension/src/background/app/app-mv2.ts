@@ -22,6 +22,8 @@ import browser from 'webextension-polyfill';
 
 import { SafebrowsingService } from '../services/safebrowsing';
 import { localeDetect } from '../services/locale-detect-mv2';
+import { AutoDisableFiltersService } from '../services/auto-disable-filters-mv2';
+import { AutoDisableNotificationService } from '../services/auto-disable-notification-mv2';
 import { FiltersApi } from '../api';
 
 import { AppCommon } from './app-common';
@@ -89,6 +91,8 @@ export class App extends AppCommon {
      * @inheritdoc
      */
     protected static override async manifestSpecificInit(): Promise<void> {
+        AutoDisableNotificationService.init();
+
         // Initializes language detector for auto-enabling relevant filters
         localeDetect.init();
 
@@ -100,6 +104,14 @@ export class App extends AppCommon {
          * - Adds listener for "add trusted domain" message.
          */
         await SafebrowsingService.init();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected static override async initAutoDisableFiltersService(): Promise<void> {
+        // Initializes auto-disabling of unused language-specific filters
+        AutoDisableFiltersService.init();
     }
 
     /**

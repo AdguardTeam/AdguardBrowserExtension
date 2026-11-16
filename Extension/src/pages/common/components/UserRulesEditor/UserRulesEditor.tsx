@@ -120,6 +120,12 @@ export const UserRulesEditor = observer(({
     const inputRef = useRef<HTMLInputElement | null>(null);
     const actionsRef = useRef<HTMLDivElement | null>(null);
 
+    /**
+     * Generation counter for asynchronous content updates (initial load and
+     * event-driven updates).
+     */
+    const contentGenerationRef = useRef(0);
+
     const getEditor = (): EditorHandle => {
         if (!editorRef.current) {
             throw new Error('User rules editor is not initialized.');
@@ -128,7 +134,7 @@ export const UserRulesEditor = observer(({
         return editorRef.current;
     };
 
-    const switchId = store.userFilterEnabledSettingId;
+    const switchId = store.userFilterEnabledSettingId ?? '';
     const switchTitleId = `${switchId}-title`;
 
     let shouldResetSize = false;
@@ -174,6 +180,9 @@ export const UserRulesEditor = observer(({
     // Get initial storage content and set to the editor
     useEffect(() => {
         (async () => {
+            contentGenerationRef.current += 1;
+            const generation = contentGenerationRef.current;
+
             let editorContent = await messenger.getEditorStorageContent();
             // clear editor content from storage after reading it
             await messenger.setEditorStorageContent('');
@@ -185,30 +194,30 @@ export const UserRulesEditor = observer(({
                 resetInfoThatContentChanged = true;
             }
 
+            // Stale backend reads are discarded, but the unsaved storage handoff is always applied.
+            if (resetInfoThatContentChanged && generation !== contentGenerationRef.current) {
+                logger.debug('[ext.UserRulesEditor]: discarding stale initial content load');
+                return;
+            }
+
             if (editorRef.current) {
-                editorRef.current.setValue(editorContent);
-
-                // Apply a cursor position requested by the list view (Create /
-                // Edit) and focus the editor so the user can type immediately.
-                const cursorPosition = store.getCursorPosition();
-                if (cursorPosition) {
-                    editorRef.current.setCursor(cursorPosition);
-                    editorRef.current.focus();
-                    store.setCursorPosition(null);
-                }
+                // Seed without adding the replacement to the undo history: the
+                // content is fetched after mount, so the `initialValue` prop
+                // cannot be used, and a plain `setValue` would let Ctrl/Cmd+Z
+                // right after opening clear the whole filter (and Ctrl+S then
+                // save it empty).
+                editorRef.current.resetValue(editorContent);
             }
 
-            if (resetInfoThatContentChanged) {
-                store.setUserRulesEditorContentChangedState(false);
-            }
+            store.setUserRulesEditorContentChangedState(!resetInfoThatContentChanged);
 
             // initial export button state
             const { userRules } = await messenger.getUserRulesEditorData();
-            if (userRules.trim().length > 0) {
-                store.setUserRulesExportAvailableState(true);
-            } else {
-                store.setUserRulesExportAvailableState(false);
+            if (generation !== contentGenerationRef.current) {
+                logger.debug('[ext.UserRulesEditor]: discarding stale initial export state');
+                return;
             }
+            store.setUserRulesExportAvailableState(userRules.trim().length > 0);
         })();
     }, [store]);
 
@@ -219,28 +228,48 @@ export const UserRulesEditor = observer(({
      * @returns {Promise<void>}
      */
     const handleUserFilterUpdated = useCallback(async () => {
+        contentGenerationRef.current += 1;
+        const generation = contentGenerationRef.current;
+
         const { userRules } = await messenger.getUserRulesEditorData();
 
-        if (!store.userRulesEditorContentChanged) {
-            if (editorRef.current) {
-                editorRef.current.setValue(userRules);
-
-                const cursorPosition = store.getCursorPosition();
-                if (cursorPosition) {
-                    editorRef.current.setCursor(cursorPosition);
-                    store.setCursorPosition(null);
-                }
-            }
-            store.setUserRulesEditorContentChangedState(false);
-            await messenger.setEditorStorageContent('');
+        // A newer content update has started while this read was in flight —
+        // this snapshot is stale and must be discarded entirely, content and
+        // export state alike.
+        if (generation !== contentGenerationRef.current) {
+            logger.debug('[ext.UserRulesEditor]: discarding stale content update');
+            return;
         }
 
         // disable or enable export button
-        if (userRules.trim().length > 0) {
-            store.setUserRulesExportAvailableState(true);
-        } else {
-            store.setUserRulesExportAvailableState(false);
+        store.setUserRulesExportAvailableState(userRules.trim().length > 0);
+
+        // Unsaved user edits are left untouched.
+        if (store.userRulesEditorContentChanged) {
+            return;
         }
+
+        const editor = editorRef.current;
+        if (editor) {
+            // Saving the rules triggers this notification as well, and in that
+            // case the content is already up to date. Replacing the document
+            // with an identical value would move the caret to the end of the
+            // editor and reset the undo history, so only replace it when the
+            // content really differs.
+            if (editor.getValue() !== userRules) {
+                editor.setValue(userRules);
+            }
+
+            // The selection remembered by the save flow is restored: it belongs
+            // to the content that was just replaced.
+            const selectionPosition = store.getSelectionPosition();
+            if (selectionPosition) {
+                editor.setSelection(selectionPosition);
+                store.setSelectionPosition(null);
+            }
+        }
+        store.setUserRulesEditorContentChangedState(false);
+        await messenger.setEditorStorageContent('');
     }, [store]);
 
     // Append listeners
@@ -324,7 +353,15 @@ export const UserRulesEditor = observer(({
         if (isSaving) {
             return;
         }
-        store.setCursorPosition(editorRef.current?.getCursor() ?? null);
+
+        const editor = editorRef.current;
+        // Saving locks the editor (see the `readOnly` prop below), which blurs
+        // it, and the `UserFilterUpdated` notification may replace the document
+        // while the saving is in progress. The whole selection is remembered
+        // here to be restored afterwards, so that the caret, the selection and
+        // any additional cursors do not jump to the end of the editor.
+        const selection = editor?.getSelection() ?? null;
+        store.setSelectionPosition(selection);
 
         setShowLoader(true);
         try {
@@ -335,7 +372,11 @@ export const UserRulesEditor = observer(({
         }
 
         store.setUserRulesEditorContentChangedState(false);
-        store.setCursorPosition(null);
+
+        if (selection) {
+            editor?.setSelection(selection);
+        }
+        store.setSelectionPosition(null);
     };
 
     const inputChangeHandler = async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
@@ -404,9 +445,15 @@ export const UserRulesEditor = observer(({
         await saveUserRules(value);
     };
 
-    const editorChangeHandler = async (value: string): Promise<void> => {
+    const editorChangeHandler = async (): Promise<void> => {
         const { content } = await messenger.getUserRules();
-        store.setUserRulesEditorContentChangedState(content !== value);
+
+        const current = editorRef.current?.getValue();
+        if (current === undefined) {
+            return;
+        }
+
+        store.setUserRulesEditorContentChangedState(content !== current);
     };
 
     const focusFirstEnabledAction = () => {
@@ -505,6 +552,7 @@ export const UserRulesEditor = observer(({
                 onExit={focusFirstEnabledAction}
                 highlightRules
                 readOnly={isSaving}
+                captureFindShortcut
             />
             {/* We are using UserRulesEditor component in 2 pages: Options and FullscreenUserRules */}
             {/* We are hiding it because only Options page has router, and there is no point of using it */}

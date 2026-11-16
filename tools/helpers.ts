@@ -291,8 +291,8 @@ const capitalize = (str: string) => {
  * @returns The name suffix string.
  */
 const getNameSuffix = (buildEnv: BuildTargetEnv, browser: Browser) => {
-    if (buildEnv === BuildTargetEnv.Dev && (browser === Browser.Edge || browser === Browser.EdgeMv3)) {
-        return browser === Browser.Edge ? ' (MV2 Dev)' : ' (MV3 Dev)';
+    if (buildEnv === BuildTargetEnv.Dev && (browser === Browser.EdgeMv2 || browser === Browser.EdgeMv3)) {
+        return browser === Browser.EdgeMv2 ? ' (MV2 Dev)' : ' (MV3 Dev)';
     }
 
     switch (browser) {
@@ -323,8 +323,8 @@ const getNameSuffix = (buildEnv: BuildTargetEnv, browser: Browser) => {
             }
             break;
         }
-        case Browser.Chrome:
-        case Browser.Opera: {
+        case Browser.ChromeMv2:
+        case Browser.OperaMv2: {
             if (buildEnv === BuildTargetEnv.Release) {
                 return ' MV2';
             }

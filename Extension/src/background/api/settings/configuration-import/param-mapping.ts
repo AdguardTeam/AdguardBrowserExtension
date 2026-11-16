@@ -19,16 +19,19 @@
  */
 
 /**
- * URL parameter name constants for v4 import configuration format.
+ * URL parameter names of the v4 scheme, shared by the issue report link
+ * and the import of settings from a link.
  */
 export const PARAM_NAMES = {
     SCHEME_VERSION: 'scheme_version',
+    EXT_MANIFEST_VERSION: 'ext.manifest_version',
     REGULAR_FILTERS: 'regular_filters',
     CUSTOM_FILTERS: 'custom_filters',
     STEALTH_ENABLED: 'stealth.enabled',
     STEALTH_HIDE_SEARCH_QUERIES: 'stealth.hide_search_queries',
     STEALTH_SEND_DNT: 'stealth.send_dnt',
     STEALTH_BLOCK_WEBRTC: 'stealth.block_webrtc',
+    STEALTH_BLOCK_FINGERPRINTING: 'stealth.block_fingerprinting',
     STEALTH_STRIP_URL: 'stealth.strip_url',
     STEALTH_BLOCK_TRACKERS: 'stealth.block_trackers',
     STEALTH_THIRD_PARTY_COOKIES_MIN: 'stealth.third_party_cookies_min',
@@ -69,7 +72,7 @@ export const INFORMATIONAL_PARAM_NAMES = new Set([
     'app',
     'filters_last_update',
     'license_type',
-    'ext.manifest_version',
+    PARAM_NAMES.EXT_MANIFEST_VERSION,
 ]);
 
 /**

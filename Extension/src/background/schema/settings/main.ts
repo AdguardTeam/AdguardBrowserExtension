@@ -133,6 +133,10 @@ export const settingsValidator = zod.object({
      */
     [SettingOption.RemoveXClientData]: SchemaPreprocessor.booleanValidator,
     /**
+     * See {@link StealthConfig[StealthOption.BlockFingerprinting]}.
+     */
+    [SettingOption.BlockFingerprinting]: SchemaPreprocessor.booleanValidator,
+    /**
      * See {@link StealthConfig[StealthOption.SelfDestructThirdPartyCookies]}.
      */
     [SettingOption.SelfDestructThirdPartyCookies]: SchemaPreprocessor.booleanValidator,

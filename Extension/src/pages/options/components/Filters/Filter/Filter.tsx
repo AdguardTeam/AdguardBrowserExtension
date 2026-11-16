@@ -73,10 +73,9 @@ const removePrefix = (extendedFilterId: string): string => {
 type FilterParams = {
     filter: CategoriesFilterData;
     groupEnabled: boolean;
-    disabled?: boolean;
 };
 
-const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParams) => {
+const Filter = observer(({ filter, groupEnabled }: FilterParams) => {
     const { settingsStore, uiStore } = useContext(rootStore);
 
     const [isOpenRemoveFilterModal, setIsOpenRemoveFilterModal] = useState(false);
@@ -106,6 +105,7 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
         optimistic,
         getDisplayTimestamp,
         checkLimitations,
+        showUnusedStatus,
     } = useFilterActions(filter, groupEnabled);
 
     // Trusted tag can be only on custom filters,
@@ -147,10 +147,6 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
     };
 
     const handleRemoveFilterClick = async (e: React.MouseEvent) => {
-        if (disabled) {
-            return;
-        }
-
         e.preventDefault();
         setIsOpenRemoveFilterModal(true);
     };
@@ -187,7 +183,6 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
                     className="button filter__remove"
                     onClick={handleRemoveFilterClick}
                     title={translator.getMessage('options_remove_filter_confirm_modal_ok_button')}
-                    disabled={disabled}
                 >
                     <Icon
                         id="#trash"
@@ -223,7 +218,7 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
                                         labelId={prefixedFilterTitleId}
                                         value={!!enabled}
                                         optimistic={optimistic}
-                                        disabled={disabled}
+                                        className={cn({ 'checkbox__label--inactive': !groupEnabled })}
                                         handler={handleFilterSwitch}
                                     />
                                 </div>
@@ -259,16 +254,18 @@ const Filter = observer(({ filter, groupEnabled, disabled = false }: FilterParam
                                     href={homepage || customUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    tabIndex={disabled ? -1 : 0}
-                                    aria-hidden={disabled}
                                 >
                                     {translator.getMessage('options_filters_filter_link')}
                                 </a>
                                 <FilterTags
                                     filterId={filterId}
                                     tags={tags}
-                                    disabled={disabled}
                                 />
+                                {showUnusedStatus && (
+                                    <div className="filter__unused-status">
+                                        {translator.getMessage('options_filters_filter_disabled_as_unused')}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>

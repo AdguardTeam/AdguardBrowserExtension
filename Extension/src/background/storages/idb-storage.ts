@@ -22,6 +22,11 @@ import { type IDBPDatabase, openDB } from 'idb';
 
 import { logger } from '../../common/logger';
 
+import {
+    IDB_STORAGE_NAME,
+    IDB_STORAGE_VERSION,
+    IDB_STORE_NAME,
+} from './constants';
 import { type ExtendedStorageInterface } from './storage-interface';
 
 /**
@@ -34,17 +39,17 @@ export class IDBStorage<Data = unknown> implements ExtendedStorageInterface<stri
     /**
      * The default name of the store within the database.
      */
-    public static readonly DEFAULT_STORE_NAME = 'defaultStore';
+    public static readonly DEFAULT_STORE_NAME = IDB_STORE_NAME;
 
     /**
      * The default version of the database.
      */
-    public static readonly DEFAULT_IDB_VERSION = 1;
+    public static readonly DEFAULT_IDB_VERSION = IDB_STORAGE_VERSION;
 
     /**
      * The default name of the database.
      */
-    public static readonly DEFAULT_IDB_NAME = 'adguardIDB';
+    public static readonly DEFAULT_IDB_NAME = IDB_STORAGE_NAME;
 
     /**
      * Holds the instance of the IndexedDB database.

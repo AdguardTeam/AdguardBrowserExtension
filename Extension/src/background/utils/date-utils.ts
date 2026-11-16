@@ -18,6 +18,9 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { format } from 'date-fns';
+import { UTCDate } from '@date-fns/utc';
+
 import { logger } from '../../common/logger';
 
 /**
@@ -26,6 +29,17 @@ import { logger } from '../../common/logger';
  * Used to tolerate minor time differences between client and server.
  */
 const MAX_CLOCK_SKEW_MS = 5 * 60 * 1000;
+
+/**
+ * Returns the UTC date of the specified moment as `YYYY-MM-DD`.
+ *
+ * @param timestamp Timestamp in milliseconds.
+ *
+ * @returns UTC date string.
+ */
+export const getUtcDate = (timestamp: number): string => {
+    return format(new UTCDate(timestamp), 'yyyy-MM-dd');
+};
 
 /**
  * Parses an RFC 7231 HTTP-date string (Last-Modified header format) to milliseconds since UNIX epoch.

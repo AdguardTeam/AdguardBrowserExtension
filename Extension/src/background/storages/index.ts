@@ -47,3 +47,4 @@ export { hitStatsStorage } from './hit-stats';
 export { annoyancesConsentStorage } from './annoyances-consent';
 export { browserStorage, hybridStorage } from './shared-instances';
 export { searchPageAccessStorage, type SearchPageAccessState } from './search-page-access';
+export { AutoDisableFiltersStorage, autoDisableFiltersStorage } from './auto-disable-filters';

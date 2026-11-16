@@ -17626,6 +17626,362 @@
 				"description": "此過濾器用於封鎖郵件客戶端中的追蹤像素"
 			}
 		},
+		"26": {
+			"ar": {
+				"name": "فلتر AdGuard الإيطالي",
+				"description": "EasyList Italy + فلتر AdGuard الإيطالي. قائمة التصفية التي تزيل الإعلانات تحديدًا على مواقع الويب باللغة الإيطالية."
+			},
+			"be": {
+				"name": "Італьянскі фільтр AdGuard",
+				"description": "EasyList Italy + Італьянскі фільтр AdGuard. Спіс фільтраў, які спецыяльна выдаляе рэкламу на вэб-сайтах на італьянскай мове."
+			},
+			"bg": {
+				"name": "Италиански филтър AdGuard",
+				"description": "EasyList Italy + Италиански филтър AdGuard. Списък с филтри, който специално премахва реклами на уебсайтове на италиански език."
+			},
+			"ca": {
+				"name": "Filtre AdGuard italià",
+				"description": "EasyList Italy + filtre AdGuard italià. Llista de filtres que elimina específicament els anuncis en llocs web en llengua italiana."
+			},
+			"cs": {
+				"name": "Italský filtr AdGuard",
+				"description": "EasyList Italy + AdGuard Italský filtr. Seznam filtrů, které specificky odstraňují reklamy na webových stránkách v italském jazyce."
+			},
+			"da": {
+				"name": "AdGuard Italiensk filter",
+				"description": "EasyList Italy + AdGuard Italiensk filter. Filterliste, der specifikt fjerner reklamer på italiensksprogede websteder."
+			},
+			"de": {
+				"name": "AdGuard Italienischer Filter",
+				"description": "EasyList Italy + AdGuard Italienischer Filter. Eine Filterliste, die gezielt Werbung auf italienischsprachigen Websites entfernt."
+			},
+			"el": {
+				"name": "AdGuard Ιταλικό φίλτρο",
+				"description": "EasyList Italy + AdGuard Ιταλικό φίλτρο. Φίλτρο λίστας που καταργεί συγκεκριμένα διαφημίσεις σε ιστοσελίδες στην ιταλική γλώσσα."
+			},
+			"en": {
+				"name": "AdGuard Italian filter",
+				"description": "EasyList Italy + AdGuard Italian filter. Filter list that specifically removes ads on websites in the Italian language."
+			},
+			"es": {
+				"name": "Filtro italiano AdGuard",
+				"description": "EasyList Italy + Filtro AdGuard para Italia. Lista de filtros que elimina específicamente los anuncios en sitios web en idioma italiano."
+			},
+			"es_ES": {
+				"name": "Filtro italiano AdGuard",
+				"description": "EasyList Italy + Filtro AdGuard para Italia. Lista de filtros que elimina específicamente los anuncios en sitios web en idioma italiano."
+			},
+			"fa": {
+				"name": "فیلتر ایتالیایی AdGuard",
+				"description": "EasyList Italy + فیلتر ایتالیایی AdGuard. فهرست فیلتری که به‌طور خاص تبلیغات را در تارنماهای زبان ایتالیایی حذف می‌کند."
+			},
+			"fi": {
+				"name": "AdGuardin italiankielinen suodatin",
+				"description": "EasyList Italy + AdGuardin italiankielinen suodatin. Suodatinluettelo, joka poistaa nimenomaan italiankielisten verkkosivustojen mainoksia."
+			},
+			"fr": {
+				"name": "Filtre AdGuard italien",
+				"description": "EasyList Italy + filtre AdGuard italien. Une liste de filtres qui supprime spécifiquement les publicités sur les sites web en italien."
+			},
+			"he": {
+				"name": "מסנן איטלקי של AdGuard",
+				"description": "EasyList Italy + מסנן איטלקי של AdGuard. רשימת מסננים שמסירה במפורש פרסומות באתרים בשפה האיטלקית."
+			},
+			"hi": {
+				"name": "AdGuard इतालवी फ़िल्टर",
+				"description": "ईज़ीलिस्ट इटली + AdGuard इतालवी फ़िल्टर। फ़िल्टर सूची जो विशेष रूप से इतालवी भाषा में वेबसाइटों पर विज्ञापनों को हटा देती है।"
+			},
+			"hr": {
+				"name": "AdGuard Talijanski filtar",
+				"description": "EasyList Italija + AdGuard Talijanski filtar. Popis filtara posebno dizajniranih za blokiranje oglasa na web stranicama na talijanskom jeziku."
+			},
+			"hu": {
+				"name": "AdGuard olasz szűrő",
+				"description": "EasyList Italy + AdGuard olasz szűrő. Szűrőlista, amely kifejezetten eltávolítja a hirdetéseket az olasz nyelvű weboldalakon."
+			},
+			"hy": {
+				"name": "AdGuard իտալական ֆիլտր",
+				"description": "EasyList Italy + AdGuard իտալերեն ֆիլտր։ Ֆիլտրերի ցանկ, որը հատուկ հեռացնում է իտալերեն լեզվով կայքերի գովազդները։"
+			},
+			"id": {
+				"name": "Penyaring AdGuard Italia",
+				"description": "EasyList Italy + Penyaring AdGuard Italia. Daftar penyaring yang secara khusus menghapus iklan di situs web dalam bahasa Italia."
+			},
+			"it": {
+				"name": "Filtro AdGuard italiano",
+				"description": "EasyList Italy + Filtro AdGuard italiano. Elenco di filtri che rimuove specificatamente gli annunci sui siti web in lingua italiana."
+			},
+			"ja": {
+				"name": "AdGuard イタリア語フィルター",
+				"description": "EasyList Italy + AdGuardイタリア語フィルター。イタリア語のウェブサイト上の広告を特化して削除するフィルターリスト。"
+			},
+			"ko": {
+				"name": "AdGuard 이탈리아어 필터",
+				"description": "EasyList Italy + AdGuard 이탈리아어 필터. 특히 이탈리아어 웹사이트에서 광고를 제거하기 위한 필터 목록입니다."
+			},
+			"lt": {
+				"name": "AdGuard itališkas filtras",
+				"description": "EasyList Italy + AdGuard itališkas filtras. Filtrų sąrašas, kuris specialiai pašalina reklamas iš svetainių italų kalba."
+			},
+			"mk": {
+				"name": "Италијански филтер",
+				"description": "EasyList Italy + Италијански филтер на AdGuard. Список со филтри што конкретно ги отстранува рекламите на веб-страниците на италијански јазик."
+			},
+			"ms": {
+				"name": "Penapis Itali AdGuard",
+				"description": "EasyList Italy + Penapis Itali AdGuard. Senarai penapis yang secara khusus menghapus iklan di laman web dalam bahasa Itali."
+			},
+			"nl": {
+				"name": "AdGuard Italiaans filter",
+				"description": "EasyList Italië + AdGuard Italiaanse filter. Filterlijst die specifiek advertenties verwijdert op websites in de Italiaanse taal."
+			},
+			"no": {
+				"name": "AdGuards italienske filter",
+				"description": "EasyList Italy + AdGuards italienske filter. Filterliste som spesifikt fjerner annonser på italienske nettsider."
+			},
+			"pl": {
+				"name": "Włoski filtr AdGuard",
+				"description": "EasyList Italy + włoski filtr AdGuard. Lista filtrów, która umożliwia usuwanie reklam ze stron internetowych zawierających treść po włosku."
+			},
+			"pt": {
+				"name": "Filtro italiano do AdGuard",
+				"description": "EasyList Italy + Filtro AdGuard para italiano. Lista de filtros que remove especificamente anúncios em sites em italiano."
+			},
+			"pt_BR": {
+				"name": "Filtro AdGuard para o italiano",
+				"description": "EasyList Italy + Filtro AdGuard para italiano. Lista de filtros que remove especificamente anúncios em sites em italiano."
+			},
+			"pt_PT": {
+				"name": "Filtro italiano do AdGuard",
+				"description": "EasyList Italy + Filtro AdGuard para italiano. Lista de filtros que remove especificamente anúncios em sites em italiano."
+			},
+			"ro": {
+				"name": "Filtru italian AdGuard",
+				"description": "EasyList Italy + filtru italian AdGuard. Lista de filtre care elimină specific reclame de pe site-urile web în italiană."
+			},
+			"ru": {
+				"name": "Итальянский фильтр",
+				"description": "EasyList Italy + Итальянский фильтр. Фильтр, позволяющий блокировать рекламу на сайтах на итальянском языке."
+			},
+			"sk": {
+				"name": "AdGuard taliansky filter",
+				"description": "EasyList Italy + taliansky filter AdGuard. Zoznam filtrov, ktorý špecificky odstraňuje reklamy na webových stránkach v taliančine."
+			},
+			"sl": {
+				"name": "AdGuard Italijanski filter",
+				"description": "EasyList Italy + AdGuard Italijanski filter. Seznam filtrov, ki posebej odstrani oglase na spletnih straneh v italijanščini."
+			},
+			"sr": {
+				"name": "AdGuard italijanski filter",
+				"description": "EasyList Italija + AdGuard italijanski filter. Lista filtera koja posebno uklanja reklame na sajtovima na italijanskom jeziku."
+			},
+			"sv": {
+				"name": "AdGuard italienskt filter",
+				"description": "EasyList Italy + AdGuard italienskt filter. Filterlista som specifikt tar bort annonser på webbplatser på italienska."
+			},
+			"th": {
+				"name": "AdGuard ตัวกรองภาษาอิตาลี",
+				"description": "ตัวกรอง EasyList Italy + AdGuard ภาษาอิตาลี รายการตัวกรองที่ลบโฆษนาบนเว็บไซต์ในภาษาอิตาลีโดยเฉพาะ"
+			},
+			"tr": {
+				"name": "AdGuard İtalyanca filtresi",
+				"description": "EasyList Italy + AdGuard İtalyanca filtresi. İtalyanca dilindeki sitelerde reklamları kaldıran filtre listesi."
+			},
+			"uk": {
+				"name": "Італійський фільтр AdGuard",
+				"description": "EasyList Italy + Італійський фільтр AdGuard. Список фільтрів, який спеціально видаляє рекламу на сайтах італійською мовою."
+			},
+			"vi": {
+				"name": "Bộ lọc tiếng Ý",
+				"description": "Bộ lọc EasyList Ý + AdGuard tiếng Ý. Danh sách bộ lọc chuyên xoá quảng cáo trên các trang bằng tiếng Ý."
+			},
+			"zh": {
+				"name": "AdGuard 意大利语过滤器",
+				"description": "EasyList Italy + AdGuard 意大利语过滤器。此过滤器专门移除意大利语网站上的广告。"
+			},
+			"zh_TW": {
+				"name": "AdGuard 義大利文過濾器",
+				"description": "EasyList Italy + AdGuard 義大利語過濾器。專門移除義大利語網站廣告的過濾器清單。"
+			}
+		},
+		"27": {
+			"ar": {
+				"name": "فلتر AdGuard البولندي",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + مرشح AdGuard البولندي. قائمة مرشحات تُزيل الإعلانات على وجه التحديد من المواقع الإلكترونية باللغة البولندية."
+			},
+			"be": {
+				"name": "Польскі фільтр AdGuard",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + Польскі фільтр AdGuard. Спіс фільтраў, які спецыяльна выдаляе рэкламу на сайтах на польскай мове."
+			},
+			"bg": {
+				"name": "Полски филтър AdGuard",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + Полски филтър на AdGuard. Списък с филтри, който премахва специално реклами на уебсайтове на полски език."
+			},
+			"ca": {
+				"name": "Filtre AdGuard polonès",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + Filtre polonès d'AdGuard. Llista de filtres que elimina específicament els anuncis en llocs web en polonès."
+			},
+			"cs": {
+				"name": "Polský filtr AdGuard",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + Polský filtr AdGuard. Seznam filtrů, který cíleně odstraňuje reklamy na webových stránkách v polském jazyce."
+			},
+			"da": {
+				"name": "AdGuard Polsk filter",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + AdGuard Polsk filter. Filterliste, der specifikt fjerner annoncer på polsksprogede websteder."
+			},
+			"de": {
+				"name": "AdGuard Polnischer Filter",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + AdGuard Polnischer Filter. Filterliste, die gezielt Werbung auf polnischsprachigen Websites entfernt."
+			},
+			"el": {
+				"name": "AdGuard Πολωνικό φίλτρο",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + Πολωνικό φίλτρο AdGuard. Λίστα φίλτρων που αφαιρεί ειδικά τις διαφημίσεις σε ιστότοπους στην πολωνική γλώσσα."
+			},
+			"en": {
+				"name": "AdGuard Polish filter",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + AdGuard Polish filter. Filter list that specifically removes ads on websites in the Polish language."
+			},
+			"es": {
+				"name": "Filtro de AdGuard para el idioma polaco",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + Filtro AdGuard en polaco. Lista de filtros que eliminan específicamente los anuncios en sitios web en idioma polaco."
+			},
+			"es_ES": {
+				"name": "Filtro de AdGuard para el idioma polaco",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + Filtro AdGuard en polaco. Lista de filtros que eliminan específicamente los anuncios en sitios web en idioma polaco."
+			},
+			"fa": {
+				"name": "فیلتر لهستانی AdGuard",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + فیلتر لهستانی AdGuard. فهرست فیلتری که به‌طور خاص تبلیغات را از وب‌سایت‌های لهستانی‌زبان حذف می‌کند."
+			},
+			"fi": {
+				"name": "AdGuardin puolankielinen suodatin",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + AdGuard Polish -suodatin. Suodatinlista, joka poistaa mainokset puolankielisiltä verkkosivuilta."
+			},
+			"fr": {
+				"name": "Filtre AdGuard polonais",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + filtre AdGuard polonais. Une liste de filtres qui supprime spécifiquement les publicités sur les sites web en polonais."
+			},
+			"he": {
+				"name": "מסנן פולני של AdGuard",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + מסנן פולני של AdGuard. רשימת מסננים שמסירה באופן ספציפי מודעות באתרים בשפה הפולנית."
+			},
+			"hi": {
+				"name": "AdGuard पोलिश फ़िल्टर",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + AdGuard पोलिश फ़िल्टर। एक फ़िल्टर सूची जो विशेष रूप से पोलिश भाषा की वेबसाइटों पर विज्ञापन हटाती है।"
+			},
+			"hr": {
+				"name": "AdGuard Poljski filtar",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + Poljski filtar za AdGuard. Popis filtara koji posebno uklanja reklame na web-mjestima na poljskom jeziku."
+			},
+			"hu": {
+				"name": "AdGuard lengyel szűrő",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + AdGuard lengyel szűrő. Szűrőlista, amely kifejezetten a lengyel nyelvű weboldalakon távolítja el a hirdetéseket."
+			},
+			"hy": {
+				"name": "AdGuard լեհական ֆիլտր",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + AdGuard-ի լեհական զտիչ: Զտիչների ցուցակ, որը հատուկ հեռացնում է գովազդները լեհալեզու կայքերում:"
+			},
+			"id": {
+				"name": "Penyaring AdGuard Polandia",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + Filter Polandia AdGuard. Daftar filter yang secara khusus menghapus iklan di situs web berbahasa Polandia."
+			},
+			"it": {
+				"name": "Filtro AdGuard polacco",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + filtro AdGuard polacco. Elenco di filtri che rimuove specificamente gli annunci sui siti web in polacco."
+			},
+			"ja": {
+				"name": "AdGuard ポーランド語フィルター",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard＋AdGuardポーランド語フィルター。ポーランド語のウェブサイト上の広告を削除することに特化したフィルターリスト。"
+			},
+			"ko": {
+				"name": "AdGuard 폴란드어 필터",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + AdGuard 폴란드어 필터. 특히 폴란드어 웹사이트에서 광고를 제거하기 위한 필터 목록입니다."
+			},
+			"lt": {
+				"name": "AdGuard lenkiškas filtras",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + AdGuard lenkų filtras. Filtrų sąrašas, kuris specialiai pašalina reklamas lenkų kalba parašytose svetainėse."
+			},
+			"mk": {
+				"name": "Полски филтер",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + Полски филтер за AdGuard. Листа на филтри која конкретно ги отстранува рекламите на веб-страници на полски јазик."
+			},
+			"ms": {
+				"name": "Penapis Poland AdGuard",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + Penapis Poland AdGuard. Senarai penapis yang khusus mengalih keluar iklan pada laman web dalam bahasa Poland."
+			},
+			"nl": {
+				"name": "AdGuard Pools filter",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + AdGuard Poolse filter. Een filterlijst die specifiek advertenties verwijdert op websites in de Poolse taal."
+			},
+			"no": {
+				"name": "AdGuards polske filter",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + AdGuards polske filter. Filterliste som spesifikt fjerner annonser på nettsteder på polsk."
+			},
+			"pl": {
+				"name": "Polski filtr AdGuard",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + Filtr polski AdGuard. Lista filtrów, która usuwa reklamy specjalnie na stronach w języku polskim."
+			},
+			"pt": {
+				"name": "Filtro AdGuard para o idioma polaco",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + filtro AdGuard para o idioma polaco. Lista de filtros que remove especificamente anúncios em sites em língua polaca."
+			},
+			"pt_BR": {
+				"name": "Filtro AdGuard para o idioma polonês",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + filtro AdGuard para o idioma polonês. Lista de filtros que remove especificamente anúncios em sites em língua polonesa."
+			},
+			"pt_PT": {
+				"name": "Filtro AdGuard para o idioma polaco",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + filtro AdGuard para o idioma polaco. Lista de filtros que remove especificamente anúncios em sites em língua polaca."
+			},
+			"ro": {
+				"name": "Filtru polonez AdGuard",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + Filtrul polonez AdGuard. Listă de filtre care elimină special reclamele de pe site-urile în limba polonă."
+			},
+			"ru": {
+				"name": "Польский фильтр AdGuard",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + Польский фильтр AdGuard. Эти фильтры удаляют рекламу на сайтах на польском языке."
+			},
+			"sk": {
+				"name": "Poľský filter AdGuard",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + Poľský filter AdGuard. Zoznam filtrov, ktoré konkrétne odstraňujú reklamy na webových stránkach v poľskom jazyku."
+			},
+			"sl": {
+				"name": "AdGuard Poljski filter",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + Poljski filter za AdGuard. Seznam filtrov, ki posebej odstranjuje oglase na spletnih mestih v poljskem jeziku."
+			},
+			"sr": {
+				"name": "AdGuard poljski filter",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + Poljski filter za AdGuard. Lista filtera koja posebno uklanja reklame na sajtovima na poljskom jeziku."
+			},
+			"sv": {
+				"name": "AdGuards polska filter",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + AdGuards polska filter. Filterlista som specifikt tar bort annonser på webbplatser på polska."
+			},
+			"th": {
+				"name": "AdGuard ตัวกรองภาษาโปแลนด์",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + ตัวกรองภาษาโปแลนด์ของ AdGuard รายการตัวกรองที่ลบโฆษณาบนเว็บไซต์ภาษาโปแลนด์โดยเฉพาะ"
+			},
+			"tr": {
+				"name": "AdGuard Lehçe filtresi",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + AdGuard Lehçe filtresi. Özellikle Lehçe web sitelerindeki reklamları kaldıran filtre listesi."
+			},
+			"uk": {
+				"name": "Польський фільтр AdGuard",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + Польський фільтр AdGuard. Список фільтрів, який спеціально видаляє рекламу на сайтах польською мовою."
+			},
+			"vi": {
+				"name": "Bộ lọc tiếng Ba Lan",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + Bộ lọc tiếng Ba Lan của AdGuard. Danh sách bộ lọc chuyên loại bỏ quảng cáo trên các trang web bằng tiếng Ba Lan."
+			},
+			"zh": {
+				"name": "AdGuard 波兰语过滤器",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + AdGuard 波兰语过滤器。此过滤器专门移除波兰语网站上的广告。"
+			},
+			"zh_TW": {
+				"name": "AdGuard 波蘭文過濾器",
+				"description": "Official Polish filters for AdBlock, uBlock Origin & AdGuard + AdGuard 波蘭語過濾器。專門移除波蘭語網站上廣告的過濾器清單。"
+			}
+		},
 		"103": {
 			"ar": {
 				"name": "قائمة بلغاريا",

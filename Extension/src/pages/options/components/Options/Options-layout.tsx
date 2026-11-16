@@ -22,6 +22,8 @@ import React, { useContext, useRef } from 'react';
 import { Outlet } from 'react-router-dom';
 import { observer } from 'mobx-react';
 
+import { AutoDisableNotification } from 'auto-disable-notification';
+
 import { rootStore } from '../../stores/RootStore';
 import { SkipToContentButton } from '../SkipToContentButton';
 import { Sidebar } from '../Sidebar';
@@ -41,6 +43,7 @@ export const OptionsLayout = observer(() => {
                     className="content"
                     inert={uiStore.isSidebarOpen ? '' : undefined}
                 >
+                    <AutoDisableNotification />
                     <Notifications />
                     <Outlet />
                 </main>

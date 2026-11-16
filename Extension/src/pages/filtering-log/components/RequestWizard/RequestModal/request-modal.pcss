@@ -7,8 +7,10 @@
 
     &__controls {
         margin-top: auto;
-        padding: 0 16px 16px;
-        justify-content: space-between;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 24px 16px;
 
         &_fixed {
             z-index: var(--z-idx-filtering-log-base);
@@ -16,18 +18,9 @@
     }
 
     &__button {
-        min-width: 182px;
-        max-width: 42%;
-
-        @media (--from-tablet) {
-            margin: 16px;
-        }
-
-        @media (--to-mobile) {
-            max-width: 100%;
-            width: 100%;
-            margin: 8px 0;
-        }
+        width: 100%;
+        max-width: 100%;
+        padding: 12px 16px;
     }
 
     &__url-button {
@@ -57,7 +50,8 @@
         margin: 0 16px;
         border: 1px solid var(--stroke-inputs-active-input-stroke-default);
         border-radius: 4px;
-        height: calc(100vh - 225px);
+        flex: 1;
+        min-height: 0;
         overflow-y: scroll;
 
         @media (--to-mobile) {

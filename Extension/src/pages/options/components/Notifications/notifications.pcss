@@ -63,6 +63,25 @@
         color: var(--stroke-icons-product-icon-default);
     }
 
+    &--warning > svg {
+        flex-shrink: 0;
+        color: var(--stroke-icons-attention-icon-default);
+    }
+
+    &--warning {
+        width: 344px;
+        max-width: 100%;
+    }
+
+    &--warning &__content {
+        min-width: 0;
+        flex: 1;
+    }
+
+    &--warning &__btn-close {
+        flex-shrink: 0;
+    }
+
     &--close {
         animation: notify-hide 1s ease-out;
     }

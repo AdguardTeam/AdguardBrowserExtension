@@ -26,3 +26,12 @@
 export const shouldShowUserScriptsApiWarning = (): boolean => {
     return false;
 };
+
+/**
+ * MV2 version does not need User Scripts API for canvas protection.
+ *
+ * @returns Always false since MV2 doesn't use User Scripts API.
+ */
+export const shouldShowCanvasProtectionUserScriptsWarning = (): boolean => {
+    return false;
+};

@@ -19,9 +19,7 @@
  */
 import { type SettingsConfig } from 'tswebextension';
 
-import { logger } from '../../../common/logger';
 import { type StealthConfig } from '../../schema';
-import { CommonFilterApi } from '../filters';
 import { GPC_SCRIPT_OUTPUT, HIDE_DOCUMENT_REFERRER_OUTPUT } from '../../../../../constants';
 
 import { SettingsApiCommon } from './settings-common';
@@ -58,25 +56,12 @@ export class SettingsApi extends SettingsApiCommon {
     }
 
     /**
-     * Loads built-in filters and enables them.
-     *
-     * Checks whether the filter is supported by MV3.
-     * Tries to load them from the storage only.
+     * Loads built-in filters from storage and enables them.
      *
      * @param builtInFilters Array of built-in filters ids.
      */
     protected static override async loadBuiltInFilters(builtInFilters: number[]): Promise<void> {
-        const filtersToLoad: number[] = [];
-
-        builtInFilters.forEach((filterId) => {
-            if (CommonFilterApi.isFilterSupported(filterId)) {
-                filtersToLoad.push(filterId);
-            } else {
-                logger.debug(`[ext.SettingsApi.loadBuiltInFilters]: MV3 extension does not support filter with id ${filterId}`);
-            }
-        });
-
-        await SettingsApi.loadBuiltInFiltersLocal(filtersToLoad);
+        await SettingsApi.loadBuiltInFiltersLocal(builtInFilters);
     }
 
     /**

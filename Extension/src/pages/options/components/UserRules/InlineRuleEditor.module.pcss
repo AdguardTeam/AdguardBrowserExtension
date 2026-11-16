@@ -1,0 +1,23 @@
+/*
+ * Fallback rendered when the editor cannot initialize (e.g. the WASM grammar
+ * failed to load): keeps the row text visible instead of showing an empty
+ * editor shell. Sizing mirrors `.ruleText` in RuleRow.module.pcss.
+ */
+.fallback {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+/*
+ * Fallback for a comment block: the editor can hold several lines, so the
+ * text wraps instead of being truncated to a single line.
+ */
+.fallbackComment {
+    white-space: pre-wrap;
+    word-break: break-word;
+}

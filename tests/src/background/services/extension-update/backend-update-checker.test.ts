@@ -26,16 +26,21 @@ import {
     beforeEach,
     afterEach,
 } from 'vitest';
+import browser from 'webextension-polyfill';
 
+import { mockExtensionStoreEnvironment } from '../../../../helpers/mocks/extension-store';
 import {
     BackendUpdateChecker,
 } from '../../../../../Extension/src/background/services/extension-update/backend-update-checker';
 import { UpdateCheckStatus } from '../../../../../Extension/src/background/services/extension-update/types';
 import { appContext, AppContextKey } from '../../../../../Extension/src/background/storages/app';
+import { UserAgent } from '../../../../../Extension/src/common/user-agent';
 
 // The global fetch is mocked in vitest.setup.ts via mockGlobalFetch().
 // We override it per-test with vi.fn() for precise control.
 let fetchMock: ReturnType<typeof vi.fn<typeof fetch>>;
+
+let restoreEnvironment: () => void;
 
 beforeEach(() => {
     fetchMock = vi.fn<typeof fetch>();
@@ -43,9 +48,12 @@ beforeEach(() => {
 
     // Default: clientId is available
     appContext.set(AppContextKey.ClientId, 'test-client-id');
+
+    restoreEnvironment = mockExtensionStoreEnvironment();
 });
 
 afterEach(() => {
+    restoreEnvironment();
     vi.restoreAllMocks();
 });
 
@@ -171,6 +179,111 @@ describe('BackendUpdateChecker', () => {
             expect(url.searchParams.get('ex_id')).toBe('test'); // from vitest.setup.ts chrome.runtime.id
             expect(url.searchParams.get('version')).toBe('0.0.0'); // from vitest.setup.ts manifest
             expect(url.searchParams.has('browser_version')).toBe(true);
+        });
+
+        it('routes the update check to Edge Add-ons for an Edge package installed into Chrome', async () => {
+            vi.mocked(browser.management.getSelf).mockResolvedValue({
+                homepageUrl: (
+                    'https://microsoftedge.microsoft.com/addons/detail/pdffkfellgipmhklpdmokmckkkfcopbh'
+                ),
+            } as browser.Management.ExtensionInfo);
+            fetchMock.mockResolvedValue(createMockResponse(204));
+
+            await BackendUpdateChecker.checkUpdate();
+
+            const calledUrl = fetchMock.mock.calls[0]![0] as string;
+            expect(new URL(calledUrl).pathname).toBe('/api/v1/edge/check_update');
+        });
+
+        it('routes the update check to Chrome Web Store for a CWS package installed into Edge', async () => {
+            Object.defineProperty(UserAgent, 'isEdge', { value: true, configurable: true });
+            vi.mocked(browser.management.getSelf).mockResolvedValue({
+                homepageUrl: (
+                    'https://chromewebstore.google.com/detail/bgnkhhnnamicmpeenaelnjfhikgbkllg'
+                ),
+            } as browser.Management.ExtensionInfo);
+            fetchMock.mockResolvedValue(createMockResponse(204));
+
+            await BackendUpdateChecker.checkUpdate();
+
+            const calledUrl = fetchMock.mock.calls[0]![0] as string;
+            expect(new URL(calledUrl).pathname).toBe('/api/v1/chrome/check_update');
+        });
+
+        it.each([
+            {
+                browserFlag: 'isOpera',
+                homepageUrl: '',
+                updateUrl: 'https://clients2.google.com/service/update2/crx',
+            },
+            {
+                browserFlag: 'isOpera',
+                homepageUrl: 'https://chrome.google.com/webstore/detail/adguard/test',
+            },
+            {
+                browserFlag: 'isEdge',
+                homepageUrl: 'https://chrome.google.com/webstore/detail/adguard/test',
+            },
+        ])('routes CWS to Chrome for $browserFlag with homepage "$homepageUrl"', async ({
+            browserFlag,
+            homepageUrl,
+            updateUrl,
+        }) => {
+            Object.defineProperty(UserAgent, browserFlag, { value: true, configurable: true });
+            vi.mocked(browser.management.getSelf).mockResolvedValue({
+                id: 'bgnkhhnnamicmpeenaelnjfhikgbkllg',
+                version: '5.5.2.23',
+                installType: 'normal',
+                homepageUrl,
+                updateUrl,
+            } as browser.Management.ExtensionInfo);
+            fetchMock.mockResolvedValue(createMockResponse(204));
+
+            await BackendUpdateChecker.checkUpdate();
+
+            const calledUrl = fetchMock.mock.calls[0]![0] as string;
+            expect(new URL(calledUrl).pathname).toBe('/api/v1/chrome/check_update');
+        });
+
+        it.each([
+            { homepageUrl: 'https://addons.opera.com/extensions/details/adguard/' },
+            { updateUrl: 'https://extension-updates.opera.com/api/omaha/update' },
+        ])('routes an Opera package to Opera Add-ons using metadata %j', async (metadata) => {
+            vi.mocked(browser.management.getSelf).mockResolvedValue(metadata as browser.Management.ExtensionInfo);
+            fetchMock.mockResolvedValue(createMockResponse(204));
+
+            await BackendUpdateChecker.checkUpdate();
+            await BackendUpdateChecker.checkUpdate();
+
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+            fetchMock.mock.calls.forEach(([url]) => {
+                expect(new URL(url as string).pathname).toBe('/api/v1/opera/check_update');
+            });
+            expect(browser.management.getSelf).toHaveBeenCalledOnce();
+        });
+
+        it('routes the update check to Opera Add-ons when metadata is unavailable in Opera', async () => {
+            Object.defineProperty(UserAgent, 'isOpera', { value: true, configurable: true });
+            vi.mocked(browser.management.getSelf).mockRejectedValue(new Error('Management API unavailable'));
+            fetchMock.mockResolvedValue(createMockResponse(204));
+
+            await BackendUpdateChecker.checkUpdate();
+
+            const calledUrl = fetchMock.mock.calls[0]![0] as string;
+            expect(new URL(calledUrl).pathname).toBe('/api/v1/opera/check_update');
+        });
+
+        it('routes the update check to Firefox Add-ons for an AMO package', async () => {
+            Object.defineProperty(UserAgent, 'isFirefox', { value: true, configurable: true });
+            vi.mocked(browser.management.getSelf).mockResolvedValue({
+                homepageUrl: 'https://addons.mozilla.org/firefox/addon/adguard-adblocker/',
+            } as browser.Management.ExtensionInfo);
+            fetchMock.mockResolvedValue(createMockResponse(204));
+
+            await BackendUpdateChecker.checkUpdate();
+
+            const calledUrl = fetchMock.mock.calls[0]![0] as string;
+            expect(new URL(calledUrl).pathname).toBe('/api/v1/firefox/check_update');
         });
     });
 });

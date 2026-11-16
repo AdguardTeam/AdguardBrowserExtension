@@ -25,6 +25,7 @@ import { Prefs } from '../../prefs';
 import { appContext, AppContextKey } from '../../storages/app';
 import { getRunInfo } from '../../utils/run-info';
 import { Version } from '../../utils/version';
+import { ExtensionStoreResolver } from '../extension-store/extension-store-resolver';
 
 import {
     BackendUpdateResponseValidator,
@@ -36,16 +37,6 @@ import {
  * Backend API route used for extension update checks.
  */
 const CHECK_UPDATE_ROUTE = 'check_update';
-
-/**
- * Backend API browser path values.
- */
-const enum BackendBrowserType {
-    Chrome = 'chrome',
-    Firefox = 'firefox',
-    Edge = 'edge',
-    Opera = 'opera',
-}
 
 /**
  * Backend API query parameter names.
@@ -76,7 +67,7 @@ const enum BackendQueryParam {
  * Callers interpret the result differently depending on the phase
  * (pre-download vs post-download) and trigger (manual vs automatic).
  *
- * @see {@link https://chrome.adtidy.org/api/v1/{browser}/check_update}
+ * @see {@link https://chrome.adtidy.org/api/v1/{store}/check_update}
  */
 export class BackendUpdateChecker {
     /**
@@ -117,7 +108,7 @@ export class BackendUpdateChecker {
                 };
             }
 
-            const url = BackendUpdateChecker.buildUrl();
+            const url = await BackendUpdateChecker.buildUrl();
 
             logger.debug(`[ext.BackendUpdateChecker.checkUpdate]: Checking for updates at ${url}...`);
 
@@ -191,40 +182,21 @@ export class BackendUpdateChecker {
      *
      * @throws Error if clientId is not available.
      */
-    private static buildUrl(): string {
-        const browserType = BackendUpdateChecker.getBrowserType();
+    private static async buildUrl(): Promise<string> {
+        const store = await ExtensionStoreResolver.resolve();
 
         const clientId = appContext.get(AppContextKey.ClientId);
         if (typeof clientId !== 'string') {
             throw new Error('Client ID is not available yet');
         }
 
-        const url = new URL(`${BackendUpdateChecker.BACKEND_BASE_URL}/${browserType}/${CHECK_UPDATE_ROUTE}`);
+        const url = new URL(`${BackendUpdateChecker.BACKEND_BASE_URL}/${store}/${CHECK_UPDATE_ROUTE}`);
         url.searchParams.set(BackendQueryParam.AppId, clientId);
         url.searchParams.set(BackendQueryParam.ExtensionId, Prefs.id);
         url.searchParams.set(BackendQueryParam.Version, Prefs.version);
         url.searchParams.set(BackendQueryParam.BrowserVersion, UserAgent.parser.getBrowser().version || '');
 
         return url.href;
-    }
-
-    /**
-     * Determines the browser type for the API path variable
-     * based on runtime user agent detection.
-     *
-     * @returns Browser type string: chrome, firefox, edge, or opera.
-     */
-    private static getBrowserType(): BackendBrowserType {
-        if (UserAgent.isEdge) {
-            return BackendBrowserType.Edge;
-        }
-        if (UserAgent.isOpera) {
-            return BackendBrowserType.Opera;
-        }
-        if (UserAgent.isFirefox) {
-            return BackendBrowserType.Firefox;
-        }
-        return BackendBrowserType.Chrome;
     }
 
     /**

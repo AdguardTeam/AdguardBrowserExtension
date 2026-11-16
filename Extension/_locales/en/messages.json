@@ -45,7 +45,8 @@
         "message": "How to enhance protection"
     },
     "popup_get_system_wide_protection": {
-        "message": "Get system-wide protection"
+        "message": "Get system-wide protection",
+        "description": "TEXT MAX LENGTH: 27"
     },
     "popup_header_update_filters": {
         "message": "Check for filter updates"
@@ -73,6 +74,10 @@
     },
     "options_filters_filter_tags": {
         "message": "Filter tags"
+    },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Turned off as unused",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
     },
     "options_filters_back_button": {
         "message": "Go back"
@@ -798,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Detects the language of the website and activates appropriate filters"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% was turned off as unused. This frees up room for filters you use more often",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% language filter was turned off as unused. This frees up room for filters you use more often | %count% language filters were turned off as unused. This frees up room for filters you use more often",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Review",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Theme"
     },
@@ -876,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Failed to import user rules. Please try again"
     },
+    "options_user_rules_load_error": {
+        "message": "Failed to load user rules. Please try again"
+    },
     "options_user_rules_menu": {
         "message": "User rules actions"
     },
@@ -908,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Delete rule"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Save rule"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Cancel rule editing"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Cancel rule creation"
     },
     "options_user_rules_deleted_notification": {
         "message": "User rule deleted:"
@@ -1006,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% of %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "The browser has modified the list of active filters"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "What happened?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "The limit of active built-in rules was exceeded after an update or adding a new extension. As per Manifest V3, your Chrome browser reacted by disabling all the extension's built-in filters except the default ones."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Filters enabled before the update"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Filters enabled now"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "Your possible actions"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "Option 1. Delete unnecessary ad-blocking extensions from your browser. To reactivate the filters mentioned in the \"Filters enabled before the update\" section, click <a>reactivate filters.<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "Option 2. Install the AdGuard Ad Blocker app: it has no restrictions on filtering rules. <a>Get the AdGuard app<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "Option 3. If you're satisfied with the currently enabled default filter, <a>close this warning.<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "Option 3. If you're satisfied with the currently enabled default filters, <a>close this warning.<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Limit reached — some filters were disabled"
@@ -1221,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Removes tracking parameters from page URLs using AdGuard URL Tracking filter"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Block fingerprinting"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Prevents websites from identifying your browser and device by slightly changing hidden images"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Blocking fingerprinting needs a browser permission. Enable <b>Developer mode</b> in your browser’s <settings-link>extension settings</settings-link>",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Blocking fingerprinting needs a browser permission. Enable <b>Allow user scripts</b> in your browser’s <settings-link>extension settings</settings-link>",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Block trackers"
     },
@@ -1325,6 +1338,9 @@
     },
     "options_about": {
         "message": "About"
+    },
+    "options_adguard_products": {
+        "message": "AdGuard products"
     },
     "options_privacy_policy": {
         "message": "Privacy policy"

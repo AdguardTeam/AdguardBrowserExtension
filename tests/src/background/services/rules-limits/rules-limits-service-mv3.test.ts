@@ -27,7 +27,11 @@ import {
 } from 'vitest';
 import browser from 'webextension-polyfill';
 
-import { type ConfigurationResult } from '@adguard/tswebextension/mv3';
+import {
+    type ConfigurationResult,
+    TooManyRegexpRulesError,
+    TooManyUnsafeRulesError,
+} from '@adguard/tswebextension/mv3';
 
 import { MessageType } from '../../../../../Extension/src/common/messages/constants';
 
@@ -36,6 +40,7 @@ const {
     mockSettingsStorageGet,
     mockRulesLimitsStorageGetData,
     mockGetEnabledFiltersWithMetadata,
+    mockGetFiltersMetadata,
     mockGetEnabledRulesets,
     mockAddListener,
     mockGetGroupState,
@@ -46,6 +51,7 @@ const {
     mockSettingsStorageGet: vi.fn(),
     mockRulesLimitsStorageGetData: vi.fn(),
     mockGetEnabledFiltersWithMetadata: vi.fn(),
+    mockGetFiltersMetadata: vi.fn((): { filterId: number }[] => []),
     mockGetEnabledRulesets: vi.fn(),
     mockAddListener: vi.fn(),
     mockGetGroupState: vi.fn(),
@@ -84,6 +90,7 @@ vi.mock(
     () => ({
         FiltersApi: {
             getEnabledFiltersWithMetadata: () => mockGetEnabledFiltersWithMetadata(),
+            getFiltersMetadata: () => mockGetFiltersMetadata(),
         },
         Categories: {
             getGroupState: (...args: unknown[]) => mockGetGroupState(...args),
@@ -355,22 +362,69 @@ const FILTER_5_REGEXP_HEAVY: StaticRulesetCounts = {
 };
 
 /**
- * Creates a configuration result whose static filters report the given counts.
+ * Creates static ruleset stubs that report the given counts.
  *
  * @param rulesets Counts per static ruleset.
  *
- * @returns Configuration result stub.
+ * @returns Static rulesets stub.
  */
-function createConfigurationResult(rulesets: StaticRulesetCounts[]): ConfigurationResult {
-    const staticFilters = rulesets.map((counts) => ({
+function createStaticRulesets(rulesets: StaticRulesetCounts[]): ConfigurationResult['staticFilters'] {
+    return rulesets.map((counts) => ({
         getId: () => rulesetName(counts.filterId),
         getSafeRulesCount: () => counts.safeRulesCount,
         getUnsafeRulesCount: () => counts.unsafeRulesCount,
         getRegexpRulesCount: () => counts.regexpRulesCount,
         getMetadataRulesCount: () => counts.metadataRulesCount,
-    }));
+    })) as unknown as ConfigurationResult['staticFilters'];
+}
 
-    return { staticFilters } as unknown as ConfigurationResult;
+/**
+ * Creates a configuration result whose static filters report the given counts.
+ *
+ * @param rulesets Counts per static ruleset.
+ * @param loadDisabledStaticFilters Loader of the rulesets of disabled filters.
+ * @param loadDisabledStaticFilter Loader of a single disabled ruleset.
+ *
+ * @returns Configuration result stub.
+ */
+function createConfigurationResult(
+    rulesets: StaticRulesetCounts[],
+    loadDisabledStaticFilters: ConfigurationResult['loadDisabledStaticFilters'] = async () => [],
+    loadDisabledStaticFilter: ConfigurationResult['loadDisabledStaticFilter'] = async (filterId) => {
+        const loadedRulesets = await loadDisabledStaticFilters();
+
+        return loadedRulesets.find((ruleset) => ruleset.getId() === rulesetName(filterId));
+    },
+): ConfigurationResult {
+    return {
+        staticFilters: createStaticRulesets(rulesets),
+        loadDisabledStaticFilters,
+        loadDisabledStaticFilter,
+    } as unknown as ConfigurationResult;
+}
+
+/**
+ * Loader of disabled rulesets that is settled by the test.
+ */
+type PendingLoader = {
+    load: ConfigurationResult['loadDisabledStaticFilters'];
+    resolve: (rulesets: StaticRulesetCounts[]) => void;
+    reject: (error: Error) => void;
+};
+
+/**
+ * Creates a loader of disabled rulesets that resolves only when asked to.
+ *
+ * @returns The loader and functions to settle it.
+ */
+function createPendingLoader(): PendingLoader {
+    const { promise, resolve, reject } = Promise.withResolvers<ConfigurationResult['staticFilters']>();
+
+    return {
+        load: () => promise,
+        resolve: (rulesets) => resolve(createStaticRulesets(rulesets)),
+        reject,
+    };
 }
 
 /**
@@ -510,6 +564,560 @@ describe.skipIf(!__IS_MV3__)('RulesLimitsService static quota with service rules
             data: {
                 type: 'static',
                 rulesCount: { current: 1257, maximum: 1256 },
+            },
+        });
+    });
+
+    it('rejects a filter without a ruleset counter instead of throwing', async () => {
+        mockGetEnabledFiltersWithMetadata.mockReturnValue([2].map(createCommonFilterMetadata));
+        mockGetAvailableStaticRuleCount.mockResolvedValue(100_000);
+        await initService([FILTER_2, FILTER_3]);
+
+        const result = await getListener(MessageType.CanEnableStaticFilterMv3)({
+            type: MessageType.CanEnableStaticFilterMv3,
+            data: { filterId: 26 },
+        });
+
+        // The check fails, so the UI reverts the toggle without a message.
+        expect(result).toEqual({ ok: false, data: { type: 'static' } });
+    });
+
+    it('ignores a filter without a ruleset counter when checking a group', async () => {
+        mockGetEnabledFiltersWithMetadata.mockReturnValue([2].map(createCommonFilterMetadata));
+        mockGetGroupState.mockReturnValue({ touched: true });
+        mockGetEnabledFiltersIdsByGroupId.mockReturnValue([3, 26]);
+        mockGetAvailableStaticRuleCount.mockResolvedValue(207);
+        await initService([FILTER_2, FILTER_3]);
+
+        const result = await getListener(MessageType.CanEnableStaticGroupMv3)({
+            type: MessageType.CanEnableStaticGroupMv3,
+            data: { groupId: 1 },
+        });
+
+        // Filter 3 needs 200 + 7 rules; filter 26 has no ruleset and is skipped.
+        expect(result).toEqual({ ok: true });
+    });
+});
+
+describe.skipIf(!__IS_MV3__)('RulesLimitsService rulesets of disabled filters', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+        mockSettingsStorageGet.mockReturnValue(false);
+        mockRulesLimitsStorageGetData.mockReturnValue([]);
+        mockGetEnabledRulesets.mockResolvedValue([]);
+        mockGetSessionRules.mockResolvedValue([]);
+        mockGetEnabledFiltersWithMetadata.mockReturnValue([2, 3].map(createCommonFilterMetadata));
+        mockGetFiltersMetadata.mockReturnValue([2, 3, 4].map(createCommonFilterMetadata));
+        mockGetAvailableStaticRuleCount.mockResolvedValue(1050);
+    });
+
+    /**
+     * Initializes a service with enabled rulesets and a pending loader of the
+     * disabled ones.
+     *
+     * @param loader Loader of the rulesets of disabled filters.
+     *
+     * @returns The initialized service.
+     */
+    const initServiceWithLoader = async (
+        loader: ConfigurationResult['loadDisabledStaticFilters'],
+    ): Promise<InstanceType<typeof RulesLimitsService>> => {
+        const service = new RulesLimitsService();
+        await service.init();
+        service.updateConfigurationResult(createConfigurationResult([FILTER_2, FILTER_3], loader), true);
+
+        return service;
+    };
+
+    it('loads the rulesets of disabled filters with the configuration result', async () => {
+        const load = vi.fn(async () => createStaticRulesets([FILTER_4]));
+
+        await initServiceWithLoader(load);
+
+        expect(load).toHaveBeenCalledOnce();
+
+        const check = await getListener(MessageType.CanEnableStaticFilterMv3)({
+            type: MessageType.CanEnableStaticFilterMv3,
+            data: { filterId: 4 },
+        });
+
+        // The loaded counter is available for the check.
+        expect(check).toEqual({ ok: true });
+    });
+
+    it('waits for the counter of a disabled filter before checking it', async () => {
+        const loader = createPendingLoader();
+        await initServiceWithLoader(loader.load);
+
+        const check = getListener(MessageType.CanEnableStaticFilterMv3)({
+            type: MessageType.CanEnableStaticFilterMv3,
+            data: { filterId: 4 },
+        });
+
+        loader.resolve([FILTER_4]);
+
+        // Without the wait, the missing counter would reject the filter.
+        expect(await check).toEqual({ ok: true });
+    });
+
+    it('keeps waiting while the needed counter is still loading', async () => {
+        const loader = createPendingLoader();
+        await initServiceWithLoader(loader.load);
+
+        let resolved = false;
+        const check = getListener(MessageType.CanEnableStaticFilterMv3)({
+            type: MessageType.CanEnableStaticFilterMv3,
+            data: { filterId: 4 },
+        }).then((result) => {
+            resolved = true;
+            return result;
+        });
+
+        // Let the check run up to its wait.
+        await Promise.resolve();
+
+        expect(resolved).toBe(false);
+
+        loader.resolve([FILTER_4]);
+
+        expect(await check).toEqual({ ok: true });
+    });
+
+    it('loads only the requested counter instead of waiting for the batch', async () => {
+        const batchLoader = createPendingLoader();
+        const service = new RulesLimitsService();
+        await service.init();
+        service.updateConfigurationResult(
+            createConfigurationResult(
+                [FILTER_2, FILTER_3],
+                batchLoader.load,
+                async () => {
+                    const [ruleset] = createStaticRulesets([FILTER_4]);
+
+                    return ruleset;
+                },
+            ),
+            true,
+        );
+
+        // The batch is still pending, but the per-filter loader resolves the
+        // requested counter.
+        await expect(getListener(MessageType.CanEnableStaticFilterMv3)({
+            type: MessageType.CanEnableStaticFilterMv3,
+            data: { filterId: 4 },
+        })).resolves.toEqual({ ok: true });
+
+        // Settle the batch.
+        batchLoader.resolve([]);
+    });
+
+    it('does not wait for a loading when the needed counter is already cached', async () => {
+        const loader = createPendingLoader();
+        const service = new RulesLimitsService();
+        await service.init();
+        service.updateConfigurationResult(
+            createConfigurationResult([FILTER_2, FILTER_3, FILTER_4], loader.load),
+            true,
+        );
+
+        // Filter 4 is in the result, so its counter is cached while the
+        // loading of the other disabled rulesets is still pending.
+        await expect(getListener(MessageType.CanEnableStaticFilterMv3)({
+            type: MessageType.CanEnableStaticFilterMv3,
+            data: { filterId: 4 },
+        })).resolves.toEqual({ ok: true });
+
+        loader.resolve([]);
+    });
+
+    it('waits for the counters of disabled filters before checking a group', async () => {
+        mockGetEnabledFiltersWithMetadata.mockReturnValue([2].map(createCommonFilterMetadata));
+        mockGetGroupState.mockReturnValue({ touched: true });
+        mockGetEnabledFiltersIdsByGroupId.mockReturnValue([3, 4]);
+        mockGetAvailableStaticRuleCount.mockResolvedValue(1256);
+        const loader = createPendingLoader();
+        await initServiceWithLoader(loader.load);
+
+        const check = getListener(MessageType.CanEnableStaticGroupMv3)({
+            type: MessageType.CanEnableStaticGroupMv3,
+            data: { groupId: 1 },
+        });
+
+        loader.resolve([FILTER_4]);
+
+        // Without the wait, filter 4 would be skipped and the group admitted.
+        expect(await check).toEqual({
+            ok: false,
+            data: {
+                type: 'static',
+                rulesCount: { current: 1257, maximum: 1256 },
+            },
+        });
+    });
+
+    it('does not load the rulesets of disabled filters again for a new configuration result', async () => {
+        const service = await initServiceWithLoader(async () => createStaticRulesets([FILTER_4]));
+
+        // The first check waits for the loading and caches filter 4 counter.
+        expect(await getListener(MessageType.CanEnableStaticFilterMv3)({
+            type: MessageType.CanEnableStaticFilterMv3,
+            data: { filterId: 4 },
+        })).toEqual({ ok: true });
+
+        const loadAgain = vi.fn(async () => createStaticRulesets([FILTER_4]));
+        service.updateConfigurationResult(createConfigurationResult([FILTER_2, FILTER_3], loadAgain), true);
+
+        // Counters do not depend on the configuration, so they are reused.
+        expect(loadAgain).not.toHaveBeenCalled();
+        expect(await getListener(MessageType.CanEnableStaticFilterMv3)({
+            type: MessageType.CanEnableStaticFilterMv3,
+            data: { filterId: 4 },
+        })).toEqual({ ok: true });
+    });
+
+    it('does not start a second loading while one is pending', async () => {
+        const firstLoader = createPendingLoader();
+        const service = await initServiceWithLoader(firstLoader.load);
+
+        const secondLoader = vi.fn(async () => createStaticRulesets([FILTER_4]));
+        service.updateConfigurationResult(createConfigurationResult([FILTER_2, FILTER_3], secondLoader), true);
+
+        expect(secondLoader).not.toHaveBeenCalled();
+
+        firstLoader.resolve([FILTER_4]);
+
+        expect(await getListener(MessageType.CanEnableStaticFilterMv3)({
+            type: MessageType.CanEnableStaticFilterMv3,
+            data: { filterId: 4 },
+        })).toEqual({ ok: true });
+    });
+
+    it('uses the counters of a superseded loading for the current result', async () => {
+        const outdatedLoader = createPendingLoader();
+        const service = await initServiceWithLoader(outdatedLoader.load);
+        const outdatedResult = service.configurationResult;
+        const currentResult = createConfigurationResult([FILTER_2]);
+        service.updateConfigurationResult(currentResult, true);
+
+        outdatedLoader.resolve([FILTER_4]);
+
+        const check = await getListener(MessageType.CanEnableStaticFilterMv3)({
+            type: MessageType.CanEnableStaticFilterMv3,
+            data: { filterId: 4 },
+        });
+
+        // The loaded counter is valid for the new result too.
+        expect(check).toEqual({ ok: true });
+        // The deferred rulesets are kept in the service, not pushed into the
+        // library's configuration results.
+        expect(outdatedResult?.staticFilters).toHaveLength(2);
+        expect(currentResult.staticFilters).toHaveLength(1);
+    });
+
+    it('stops waiting when the new configuration result disables filtering', async () => {
+        const loader = createPendingLoader();
+        const service = await initServiceWithLoader(loader.load);
+
+        const check = getListener(MessageType.CanEnableStaticFilterMv3)({
+            type: MessageType.CanEnableStaticFilterMv3,
+            data: { filterId: 4 },
+        });
+
+        service.updateConfigurationResult(createConfigurationResult([]), false);
+
+        // The check does not wait for the previous loading, because the new
+        // result turns the limits checks off.
+        expect(await check).toEqual({ ok: true });
+
+        // Settle the superseded loading.
+        loader.resolve([FILTER_4]);
+    });
+
+    it('starts a loading when filtering is enabled after a result with filtering off', async () => {
+        const service = new RulesLimitsService();
+        await service.init();
+        service.updateConfigurationResult(createConfigurationResult([]), false);
+
+        const load = vi.fn(async () => createStaticRulesets([FILTER_4]));
+        service.updateConfigurationResult(createConfigurationResult([FILTER_2, FILTER_3], load), true);
+
+        expect(load).toHaveBeenCalledOnce();
+        expect(await getListener(MessageType.CanEnableStaticFilterMv3)({
+            type: MessageType.CanEnableStaticFilterMv3,
+            data: { filterId: 4 },
+        })).toEqual({ ok: true });
+    });
+
+    it('retries loading the rulesets of disabled filters after a failure', async () => {
+        const failedLoader = createPendingLoader();
+        const service = await initServiceWithLoader(failedLoader.load);
+
+        failedLoader.reject(new Error('loading failed'));
+        // Let the rejection handlers clear the pending loading.
+        await new Promise<void>((resolve) => {
+            setTimeout(resolve, 0);
+        });
+
+        const loadAgain = vi.fn(async () => createStaticRulesets([FILTER_4]));
+        service.updateConfigurationResult(createConfigurationResult([FILTER_2, FILTER_3], loadAgain), true);
+
+        expect(loadAgain).toHaveBeenCalledOnce();
+        expect(await getListener(MessageType.CanEnableStaticFilterMv3)({
+            type: MessageType.CanEnableStaticFilterMv3,
+            data: { filterId: 4 },
+        })).toEqual({ ok: true });
+    });
+
+    it('retries loading the rulesets of disabled filters when the loading is partial', async () => {
+        const partialLoader = createPendingLoader();
+        const service = await initServiceWithLoader(partialLoader.load);
+
+        // The library skips a ruleset that fails to be created and still
+        // resolves, so filter 4 is missing but the loading is not rejected.
+        partialLoader.resolve([]);
+        await new Promise<void>((resolve) => {
+            setTimeout(resolve, 0);
+        });
+
+        const loadAgain = vi.fn(async () => createStaticRulesets([FILTER_4]));
+        service.updateConfigurationResult(createConfigurationResult([FILTER_2, FILTER_3], loadAgain), true);
+
+        expect(loadAgain).toHaveBeenCalledOnce();
+        expect(await getListener(MessageType.CanEnableStaticFilterMv3)({
+            type: MessageType.CanEnableStaticFilterMv3,
+            data: { filterId: 4 },
+        })).toEqual({ ok: true });
+    });
+
+    it('checks with the available counters if loading fails', async () => {
+        const loader = createPendingLoader();
+        await initServiceWithLoader(loader.load);
+
+        const check = getListener(MessageType.CanEnableStaticFilterMv3)({
+            type: MessageType.CanEnableStaticFilterMv3,
+            data: { filterId: 4 },
+        });
+
+        loader.reject(new Error('loading failed'));
+
+        expect(await check).toEqual({ ok: false, data: { type: 'static' } });
+    });
+});
+
+/**
+ * Dynamic counters reported by the configuration result.
+ */
+type DynamicCounts = NonNullable<ConfigurationResult['dynamicRules']>['counts'];
+
+/**
+ * Builds a configuration result with the given limitations and counters.
+ *
+ * @param overrides Limitations and counters to put into the result.
+ *
+ * @returns Configuration result stub.
+ */
+function createResultWithLimitations(overrides: {
+    limitations?: NonNullable<ConfigurationResult['dynamicRules']>['limitations'];
+    sessionLimitations?: ConfigurationResult['sessionRules'];
+    counts?: DynamicCounts;
+}): ConfigurationResult {
+    return {
+        staticFilters: [],
+        loadDisabledStaticFilters: async () => [],
+        loadDisabledStaticFilter: async () => undefined,
+        sessionRules: overrides.sessionLimitations,
+        dynamicRules: {
+            counts: overrides.counts ?? { total: 0, unsafe: 0, regexp: 0 },
+            ...(overrides.limitations ? { limitations: overrides.limitations } : {}),
+        },
+    } as unknown as ConfigurationResult;
+}
+
+/**
+ * Counters returned by the rules limits counters message.
+ */
+type RulesLimitsCounters = {
+    dynamicRulesEnabledCount: number;
+    dynamicRulesUnsafeEnabledCount: number;
+    dynamicRulesRegexpsEnabledCount: number;
+};
+
+describe.skipIf(!__IS_MV3__)('RulesLimitsService configuration result limitations', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+        mockSettingsStorageGet.mockReturnValue(false);
+        mockRulesLimitsStorageGetData.mockReturnValue([]);
+        mockGetEnabledFiltersWithMetadata.mockReturnValue([]);
+        mockGetEnabledRulesets.mockResolvedValue([]);
+        mockGetSessionRules.mockResolvedValue([]);
+        mockGetAvailableStaticRuleCount.mockResolvedValue(1000);
+    });
+
+    /**
+     * Creates a service with the given configuration result.
+     *
+     * @param result Configuration result.
+     */
+    async function initServiceWithResult(result: ConfigurationResult): Promise<void> {
+        const service = new RulesLimitsService();
+        await service.init();
+        service.updateConfigurationResult(result, true);
+    }
+
+    it('reports a session unsafe overflow as a built-in rules limit', async () => {
+        // The payload reports the count of unsafe session rules which can be
+        // applied, not the raw quota: ids 1..6 are reserved for stealth rules.
+        await initServiceWithResult(createResultWithLimitations({
+            sessionLimitations: {
+                limitations: [new TooManyUnsafeRulesError('session', [1, 2], 4994, 2)],
+            },
+        }));
+
+        const result = await getListener(MessageType.CurrentLimitsMv3)();
+
+        expect(result).toEqual({
+            ok: false,
+            staticFiltersData: {
+                type: 'static',
+                rulesSessionCount: { current: 4996, maximum: 4994 },
+            },
+        });
+    });
+
+    it('reports a session regexp overflow with the regexp warning', async () => {
+        await initServiceWithResult(createResultWithLimitations({
+            sessionLimitations: {
+                limitations: [new TooManyRegexpRulesError('session', [3], 1000, 1)],
+            },
+        }));
+
+        const result = await getListener(MessageType.CurrentLimitsMv3)();
+
+        expect(result).toEqual({
+            ok: false,
+            staticFiltersData: {
+                type: 'static',
+                rulesRegexpsCount: { current: 1001, maximum: 1000 },
+            },
+        });
+    });
+
+    it('reports the final dynamic counters from the configuration result', async () => {
+        await initServiceWithResult(createResultWithLimitations({
+            counts: { total: 10, unsafe: 4, regexp: 2 },
+        }));
+
+        const counters = await getListener(MessageType.GetRulesLimitsCountersMv3)() as RulesLimitsCounters;
+
+        expect(counters.dynamicRulesEnabledCount).toBe(10);
+        expect(counters.dynamicRulesUnsafeEnabledCount).toBe(4);
+        expect(counters.dynamicRulesRegexpsEnabledCount).toBe(2);
+    });
+
+    it('adds the excluded dynamic rules to the unsafe counter', async () => {
+        // One source rule id can stand for several declarative rules
+        // (`$removeheader` groups them), so the counter must use the
+        // declarative count instead of the id count.
+        await initServiceWithResult(createResultWithLimitations({
+            counts: { total: 10, unsafe: 4999, regexp: 0 },
+            limitations: [new TooManyUnsafeRulesError('dynamic', [1], 5000, 2)],
+        }));
+
+        const counters = await getListener(MessageType.GetRulesLimitsCountersMv3)() as RulesLimitsCounters;
+
+        expect(counters.dynamicRulesUnsafeEnabledCount).toBe(5001);
+    });
+
+    it('adds the excluded dynamic rules to the regexp counter', async () => {
+        await initServiceWithResult(createResultWithLimitations({
+            counts: { total: 10, unsafe: 0, regexp: 998 },
+            limitations: [new TooManyRegexpRulesError('dynamic', [5], 1000, 2)],
+        }));
+
+        const counters = await getListener(MessageType.GetRulesLimitsCountersMv3)() as RulesLimitsCounters;
+
+        expect(counters.dynamicRulesRegexpsEnabledCount).toBe(1000);
+    });
+
+    it('keeps session limitations out of the dynamic counters', async () => {
+        await initServiceWithResult(createResultWithLimitations({
+            counts: { total: 10, unsafe: 4, regexp: 2 },
+            sessionLimitations: {
+                limitations: [new TooManyUnsafeRulesError('session', [1, 2], 4994, 2)],
+            },
+        }));
+
+        const counters = await getListener(MessageType.GetRulesLimitsCountersMv3)() as RulesLimitsCounters;
+
+        expect(counters.dynamicRulesEnabledCount).toBe(10);
+        expect(counters.dynamicRulesUnsafeEnabledCount).toBe(4);
+        expect(counters.dynamicRulesRegexpsEnabledCount).toBe(2);
+    });
+
+    it('reports a dynamic unsafe overflow only in the dynamic scope', async () => {
+        // Rebuilt `$csp` rules of user rules land in `dynamicRules.limitations`,
+        // so such an overflow must not produce a static warning.
+        await initServiceWithResult(createResultWithLimitations({
+            counts: { total: 10, unsafe: 4999, regexp: 0 },
+            limitations: [new TooManyUnsafeRulesError('dynamic', [7, 8], 5000, 2)],
+        }));
+
+        const result = await getListener(MessageType.CurrentLimitsMv3)();
+
+        expect(result).toEqual({
+            ok: false,
+            dynamicRulesData: {
+                type: 'dynamic',
+                rulesUnsafeCount: { current: 5001, maximum: 5000 },
+            },
+        });
+    });
+
+    it('reports each scope once when the same error class overflows both', async () => {
+        // The two lists come from different quotas, so both warnings are
+        // expected, but neither scope may leak its excluded rules into the other.
+        await initServiceWithResult(createResultWithLimitations({
+            counts: { total: 10, unsafe: 4999, regexp: 0 },
+            limitations: [new TooManyUnsafeRulesError('dynamic', [7, 8], 5000, 2)],
+            sessionLimitations: {
+                limitations: [new TooManyUnsafeRulesError('session', [1, 2, 3], 4994, 3)],
+            },
+        }));
+
+        const result = await getListener(MessageType.CurrentLimitsMv3)();
+
+        expect(result).toEqual({
+            ok: false,
+            staticFiltersData: {
+                type: 'static',
+                rulesSessionCount: { current: 4997, maximum: 4994 },
+            },
+            dynamicRulesData: {
+                type: 'dynamic',
+                rulesUnsafeCount: { current: 5001, maximum: 5000 },
+            },
+        });
+    });
+
+    it('sums the rules dropped by both session quotas', async () => {
+        // A rule dropped by the regexp quota never takes an id, so the unsafe
+        // error alone would undercount the requested rules.
+        await initServiceWithResult(createResultWithLimitations({
+            sessionLimitations: {
+                limitations: [
+                    new TooManyUnsafeRulesError('session', [1, 2], 4994, 2),
+                    new TooManyRegexpRulesError('session', [3], 1000, 5),
+                ],
+            },
+        }));
+
+        const result = await getListener(MessageType.CurrentLimitsMv3)();
+
+        expect(result).toEqual({
+            ok: false,
+            staticFiltersData: {
+                type: 'static',
+                rulesSessionCount: { current: 5001, maximum: 4994 },
             },
         });
     });

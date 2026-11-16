@@ -22,7 +22,7 @@ import { useEffect } from 'react';
 
 /**
  * The main use case for this hook is to trigger a browser-generated confirmation
- * dialog depending on `blockCondition` flag that asks users to confirm if they really
+ * dialog depending on `shouldPreventUnload` flag that asks users to confirm if they really
  * want to leave the page when they try to close or reload it,
  * or navigate somewhere else (by manually typing url in search bar).
  * This is intended to help prevent loss of unsaved data.
@@ -39,7 +39,6 @@ export const usePreventUnload = (shouldPreventUnload: boolean, browserDialogMess
 
             e.preventDefault();
             e.returnValue = browserDialogMessage;
-            return browserDialogMessage;
         };
 
         window.addEventListener('beforeunload', onBeforeUnload);

@@ -28,6 +28,7 @@ export const enum StealthOption {
     SendDoNotTrack = 'stealth-send-do-not-track',
     BlockWebRTC = 'stealth-block-webrtc',
     RemoveXClientData = 'stealth-remove-x-client',
+    BlockFingerprinting = 'stealth-block-fingerprinting',
     SelfDestructThirdPartyCookies = 'stealth-block-third-party-cookies',
     SelfDestructThirdPartyCookiesTime = 'stealth-block-third-party-cookies-time',
     SelfDestructFirstPartyCookies = 'stealth-block-first-party-cookies',
@@ -70,6 +71,11 @@ export const stealthConfigValidator = zod.object({
      * and modifications.
      */
     [StealthOption.RemoveXClientData]: zod.boolean(),
+    /**
+     * If true, the application protects canvas readouts from being used
+     * for fingerprinting.
+     */
+    [StealthOption.BlockFingerprinting]: zod.boolean().optional(),
     /**
      * Whether or not the application should set a fixed lifetime from
      * `StealthOption.SelfDestructThirdPartyCookiesTime` for third-party

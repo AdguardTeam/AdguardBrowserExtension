@@ -117,6 +117,13 @@ export const Notification = ({
                 aria-hidden="true"
             />
         ),
+        [NotificationType.Warning]: (
+            <Icon
+                id="#info"
+                className="icon--24 icon--orange-default"
+                aria-hidden="true"
+            />
+        ),
     };
 
     return (

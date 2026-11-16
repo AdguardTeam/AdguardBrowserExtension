@@ -25,7 +25,10 @@ import { getVersion } from '@adguard/dnr-rulesets/utils';
 /**
  * Release channel derived from the release tag.
  */
-export type ReleaseChannel = 'beta' | 'release';
+export enum ReleaseChannel {
+    Release = 'release',
+    Beta = 'beta',
+}
 
 /**
  * Parsed 4-component extension version: the store-facing manifest/build version.
@@ -105,7 +108,7 @@ export const parseReleaseTag = (input: string): ReleaseTag => {
             major: parsed.major,
             minor: parsed.minor,
             patch: parsed.patch,
-            channel: 'release',
+            channel: ReleaseChannel.Release,
         };
     }
 
@@ -121,7 +124,7 @@ export const parseReleaseTag = (input: string): ReleaseTag => {
         major: parsed.major,
         minor: parsed.minor,
         patch: parsed.patch,
-        channel: 'beta',
+        channel: ReleaseChannel.Beta,
         betaNumber: prereleaseNumber,
     };
 };
@@ -146,7 +149,7 @@ export const parseExtensionVersion = (input: string): ExtensionVersion => {
         minor: Number(minor),
         patch: Number(patch),
         build: Number(build),
-        channel: beta ? 'beta' : 'release',
+        channel: beta ? ReleaseChannel.Beta : ReleaseChannel.Release,
     };
 };
 
@@ -200,6 +203,19 @@ export const formatManifestVersion = (version: ExtensionVersion): string => {
 };
 
 /**
+ * Formats the version as it appears in the CHANGELOG heading: the 4-component
+ * version with the `-beta` suffix for the beta channel (e.g. `5.6.0.1-beta`).
+ *
+ * @param version Parsed version.
+ *
+ * @returns Heading-formatted version string.
+ */
+export const formatHeadingVersion = (version: ExtensionVersion): string => {
+    const manifestVersion = formatManifestVersion(version);
+    return version.channel === ReleaseChannel.Beta ? `${manifestVersion}-beta` : manifestVersion;
+};
+
+/**
  * Formats the semver git tag for the version: `v5.6.0` for a release or
  * `v5.6.0-beta.7` for a beta. The build number is part of the manifest only
  * and is not included in the tag, except as the beta pre-release number.
@@ -210,7 +226,7 @@ export const formatManifestVersion = (version: ExtensionVersion): string => {
  */
 export const formatTag = (version: ExtensionVersion): string => {
     const base = `v${version.major}.${version.minor}.${version.patch}`;
-    return version.channel === 'beta' ? `${base}-beta.${version.build}` : base;
+    return version.channel === ReleaseChannel.Beta ? `${base}-beta.${version.build}` : base;
 };
 
 /**
@@ -252,7 +268,7 @@ export const allocateVersion = (
         channel: tag.channel,
     };
 
-    if (tag.channel === 'beta' && tag.betaNumber !== version.build) {
+    if (tag.channel === ReleaseChannel.Beta && tag.betaNumber !== version.build) {
         const buildSource = buildOverride === undefined
             ? `package.json build ${current.build} + 1`
             : `explicit build override ${buildOverride}`;
@@ -319,9 +335,158 @@ export const compareExtensionVersions = (a: ExtensionVersion, b: ExtensionVersio
         return a.patch - b.patch;
     }
     if (a.channel !== b.channel) {
-        return a.channel === 'release' ? 1 : -1;
+        return a.channel === ReleaseChannel.Release ? 1 : -1;
     }
     return a.build - b.build;
+};
+
+/**
+ * Parsed tag used for ordering: the original tag name and a 4-component
+ * version shape. Semver tags are marked so their channel ordering (release
+ * after beta of the same version) is preserved, while legacy 4-component tags
+ * keep the pre-migration ordering by build number.
+ */
+type ComparableTag = {
+    tag: string;
+    major: number;
+    minor: number;
+    patch: number;
+    build: number;
+    channel: ReleaseChannel;
+    semver: boolean;
+};
+
+/**
+ * Parses a tag as a semver release tag or, when it is a legacy 4-component
+ * tag, into the 4-component shape.
+ *
+ * @param tag Tag name.
+ *
+ * @returns Comparable tag, or `undefined` when the tag is not a release tag.
+ */
+const parseComparableTag = (tag: string): ComparableTag | undefined => {
+    try {
+        const release = parseReleaseTag(tag);
+        return {
+            tag,
+            major: release.major,
+            minor: release.minor,
+            patch: release.patch,
+            build: release.betaNumber ?? 0,
+            channel: release.channel,
+            semver: true,
+        };
+    } catch {
+        try {
+            const legacy = parseExtensionVersion(tag);
+            return {
+                tag,
+                major: legacy.major,
+                minor: legacy.minor,
+                patch: legacy.patch,
+                build: legacy.build,
+                channel: legacy.channel,
+                semver: false,
+            };
+        } catch {
+            return undefined;
+        }
+    }
+};
+
+/**
+ * Compares two comparable tags.
+ *
+ * Semver tags use the same channel-first order as `compareExtensionVersions`.
+ * Legacy 4-component tags keep their pre-migration order, where the build
+ * number decides before the channel. For the same major.minor.patch a semver
+ * tag is newer than a legacy tag, so the migration order is total and
+ * transitive.
+ *
+ * @param a First tag.
+ * @param b Second tag.
+ *
+ * @returns Negative when a < b, zero when equal, positive when a > b.
+ */
+const compareComparableTags = (a: ComparableTag, b: ComparableTag): number => {
+    if (a.major !== b.major) {
+        return a.major - b.major;
+    }
+    if (a.minor !== b.minor) {
+        return a.minor - b.minor;
+    }
+    if (a.patch !== b.patch) {
+        return a.patch - b.patch;
+    }
+    if (a.semver !== b.semver) {
+        return a.semver ? 1 : -1;
+    }
+    if (a.semver) {
+        return compareExtensionVersions(a, b);
+    }
+    if (a.build !== b.build) {
+        return a.build - b.build;
+    }
+    if (a.channel !== b.channel) {
+        return a.channel === ReleaseChannel.Release ? 1 : -1;
+    }
+    return 0;
+};
+
+/**
+ * Selects the tag to compare the given release with in the CHANGELOG link.
+ *
+ * The tag must be older than the target. A release compares with the highest
+ * older release tag; a beta compares with the highest older beta on the same
+ * major.minor.patch line. When no such tag exists, the highest older tag of
+ * any channel is used. Legacy 4-component tags participate in the ordering and
+ * are returned unchanged.
+ *
+ * @param tags Tag names to search, e.g. the output of `git ls-remote`.
+ * @param target Release tag that is being prepared.
+ *
+ * @returns Tag name to use as the compare base, or `undefined` when no tag is
+ * older than the target.
+ */
+export const selectPreviousTag = (tags: string[], target: ReleaseTag): string | undefined => {
+    const targetComparable: ComparableTag = {
+        tag: '',
+        major: target.major,
+        minor: target.minor,
+        patch: target.patch,
+        build: target.betaNumber ?? 0,
+        channel: target.channel,
+        semver: true,
+    };
+
+    const candidates = tags
+        .map(parseComparableTag)
+        .filter((candidate): candidate is ComparableTag => candidate !== undefined)
+        .filter((candidate) => compareComparableTags(candidate, targetComparable) < 0);
+
+    if (candidates.length === 0) {
+        return undefined;
+    }
+
+    const previousBeta = candidates.filter((candidate) => (
+        candidate.channel === ReleaseChannel.Beta
+        && candidate.major === target.major
+        && candidate.minor === target.minor
+        && candidate.patch === target.patch
+    ));
+
+    const previousRelease = candidates.filter((candidate) => candidate.channel === ReleaseChannel.Release);
+
+    let pool = candidates;
+    if (target.channel === ReleaseChannel.Beta && previousBeta.length > 0) {
+        pool = previousBeta;
+    } else if (target.channel === ReleaseChannel.Release && previousRelease.length > 0) {
+        pool = previousRelease;
+    }
+
+    return pool.reduce((latest, candidate) => (
+        compareComparableTags(candidate, latest) > 0 ? candidate : latest
+    )).tag;
 };
 
 /**

@@ -36,7 +36,6 @@ const renderFilters = (matchedFilters: CategoriesFilterData[], groupEnabled: boo
             key={filter.filterId}
             filter={filter}
             groupEnabled={groupEnabled}
-            disabled={!groupEnabled}
         />
     ));
 };
@@ -88,9 +87,6 @@ const SearchGroup = ({
     checkboxHandler,
 }: SearchGroupParams) => {
     const groupClassName = cn(styles.group, !groupEnabled && styles.disabled);
-    const filtersClassName = cn('filters', {
-        'filters--disabled': !groupEnabled,
-    });
 
     const titleId = `setting-title-${groupId}`;
 
@@ -129,7 +125,7 @@ const SearchGroup = ({
                 </div>
             </div>
             <ul
-                className={filtersClassName}
+                className="filters"
                 aria-label={translator.getMessage('options_filters_of_group', { groupName })}
             >
                 {renderFilters(filtersToShow, groupEnabled)}

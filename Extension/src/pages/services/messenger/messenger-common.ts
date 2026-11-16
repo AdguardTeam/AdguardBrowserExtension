@@ -207,7 +207,10 @@ export abstract class MessengerCommon {
             }
         };
 
-        window.addEventListener('beforeunload', onUnload);
+        // `pagehide` instead of `beforeunload`: `beforeunload` fires before the
+        // browser's leave confirmation, so tearing the connection down there
+        // would disconnect the page even when the user chooses to stay.
+        window.addEventListener('pagehide', onUnload);
         window.addEventListener('unload', onUnload);
 
         return { onUnload, portId };
@@ -276,7 +279,7 @@ export abstract class MessengerCommon {
             }
 
             browser.runtime.onMessage.removeListener(messageHandler);
-            window.removeEventListener('beforeunload', onUnload);
+            window.removeEventListener('pagehide', onUnload);
             window.removeEventListener('unload', onUnload);
 
             this.sendMessage(
@@ -292,7 +295,10 @@ export abstract class MessengerCommon {
         };
 
         browser.runtime.onMessage.addListener(messageHandler);
-        window.addEventListener('beforeunload', onUnload);
+        // `pagehide` instead of `beforeunload`: `beforeunload` fires before the
+        // browser's leave confirmation, so unsubscribing there would drop the
+        // page's listeners even when the user chooses to stay.
+        window.addEventListener('pagehide', onUnload);
         window.addEventListener('unload', onUnload);
 
         return onUnload;
@@ -361,13 +367,13 @@ export abstract class MessengerCommon {
     };
 
     /**
-     * Sends a message to the background page to open the Chrome extensions settings page.
+     * Sends a message to the background page to open the extensions settings page.
      *
      * @returns Promise that resolves after the message is sent.
      */
-    openChromeExtensionsPage = async ()
-    : Promise<ExtractMessageResponse<MessageType.OpenChromeExtensionsSettingsPage>> => {
-        return this.sendMessage(MessageType.OpenChromeExtensionsSettingsPage);
+    openExtensionsSettingsPage = async ()
+    : Promise<ExtractMessageResponse<MessageType.OpenExtensionsSettingsPage>> => {
+        return this.sendMessage(MessageType.OpenExtensionsSettingsPage);
     };
 
     /**
@@ -1005,15 +1011,6 @@ export abstract class MessengerCommon {
     };
 
     /**
-     * Sends a message to the background page to restore filters in MV3.
-     *
-     * @returns Promise that resolves after the message is sent.
-     */
-    restoreFiltersMv3 = async (): Promise<ExtractMessageResponse<MessageType.RestoreFiltersMv3>> => {
-        return this.sendMessage(MessageType.RestoreFiltersMv3);
-    };
-
-    /**
      * Sends a message to the background page to clear the rules limits warning in MV3.
      *
      * @returns Promise that resolves after the message is sent.
@@ -1047,6 +1044,16 @@ export abstract class MessengerCommon {
      */
     generateShareUrl = async (): Promise<ExtractMessageResponse<MessageType.GenerateShareUrl>> => {
         return this.sendMessage(MessageType.GenerateShareUrl);
+    };
+
+    /**
+     * Sends a message to the background to re-apply the stored canvas
+     * protection setting.
+     *
+     * @returns Promise that resolves after the message is handled.
+     */
+    reapplyCanvasProtection = async (): Promise<ExtractMessageResponse<MessageType.ReapplyCanvasProtection>> => {
+        return this.sendMessage(MessageType.ReapplyCanvasProtection);
     };
 
     /**

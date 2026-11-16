@@ -24,16 +24,21 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { patchChangelog } from './changelog';
+import { appendCwsRolloutMarker, parseCwsRolloutPercentage } from './cws-rollout';
+import { listTags } from './tags';
 import {
     allocateVersion,
     composePackageVersion,
+    formatHeadingVersion,
     formatManifestVersion,
     formatTag,
     getDnrPatchVersion,
     isNewerVersion,
     parseReleaseTag,
+    ReleaseChannel,
+    selectPreviousTag,
 } from './version';
-import { patchChangelog } from './changelog';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 const __filename = fileURLToPath(import.meta.url);
@@ -97,6 +102,8 @@ const main = (): void => {
         throw new Error('Usage: pnpm tsx tools/release/prepare-release.ts <vX.Y.Z[-beta.N]> [build]');
     }
 
+    const rollout = parseCwsRolloutPercentage(process.env.ROLLOUT);
+
     const tag = parseReleaseTag(tagInput);
     const buildOverrideInput = process.argv[3]?.trim();
     const buildOverride = buildOverrideInput ? Number(buildOverrideInput) : undefined;
@@ -104,7 +111,7 @@ const main = (): void => {
     const packageJson = JSON.parse(fs.readFileSync(PACKAGE_JSON_PATH, 'utf-8'));
     const version = allocateVersion(tag, packageJson.version, buildOverride);
     const manifestVersion = formatManifestVersion(version);
-    const headingVersion = version.channel === 'beta' ? `${manifestVersion}-beta` : manifestVersion;
+    const headingVersion = formatHeadingVersion(version);
 
     if (!isNewerVersion(version, packageJson.version)) {
         throw new Error(
@@ -114,8 +121,8 @@ const main = (): void => {
 
     const candidateTag = formatTag(version);
     const requiredRemoteTags = [candidateTag];
-    if (version.channel === 'beta') {
-        requiredRemoteTags.push(formatTag({ ...version, channel: 'release' }));
+    if (version.channel === ReleaseChannel.Beta) {
+        requiredRemoteTags.push(formatTag({ ...version, channel: ReleaseChannel.Release }));
     }
     const existingRemoteTag = requiredRemoteTags.find((remoteTag) => remoteTagExists(remoteTag));
     if (existingRemoteTag) {
@@ -125,17 +132,28 @@ const main = (): void => {
         );
     }
 
-    packageJson.version = composePackageVersion(version, getDnrPatchVersion());
-    fs.writeFileSync(PACKAGE_JSON_PATH, `${JSON.stringify(packageJson, null, 4)}\n`);
-
     const changelog = fs.readFileSync(CHANGELOG_PATH, 'utf-8');
     const today = new Date().toISOString().slice(0, 10);
-    fs.writeFileSync(CHANGELOG_PATH, patchChangelog(changelog, headingVersion, today));
+    const tags = listTags(REPO_ROOT);
+    const previousTag = selectPreviousTag(tags, tag);
+    const patchedChangelog = patchChangelog(changelog, version, today, previousTag);
 
-    console.log(`Prepared release ${formatTag(version)}:`);
+    packageJson.version = composePackageVersion(version, getDnrPatchVersion());
+    fs.writeFileSync(PACKAGE_JSON_PATH, `${JSON.stringify(packageJson, null, 4)}\n`);
+    fs.writeFileSync(CHANGELOG_PATH, patchedChangelog);
+
+    appendCwsRolloutMarker(process.env.GITHUB_OUTPUT, rollout);
+
+    console.log(`Prepared release ${candidateTag}:`);
     console.log(`  manifest version -> ${manifestVersion}`);
     console.log(`  package.json version -> ${packageJson.version}`);
     console.log(`  CHANGELOG.md heading -> [${headingVersion}] - ${today}`);
+    console.log(`  CWS rollout -> ${rollout}%`);
+    if (previousTag) {
+        console.log(`  CHANGELOG.md compare link -> ${previousTag}...${candidateTag}`);
+    } else {
+        console.log('  CHANGELOG.md compare link -> not added, no previous tag found');
+    }
 };
 
 try {

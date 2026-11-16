@@ -22,9 +22,11 @@
 import { expect } from 'vitest';
 
 import { BuildTargetEnv } from '../../../constants';
-import { logError } from '../../../tools/browser-test/logger';
+import { logError, logWarning } from '../../../tools/browser-test/logger';
+import { BENIGN_ERROR_PATTERNS, partitionBenignErrors } from '../../../tools/browser-test/e2e/benign-errors';
 import { E2E_MATRIX, E2E_SURFACES } from '../../../tools/browser-test/e2e/matrix';
 import {
+    type E2EError,
     type E2EMatrixEntry,
     type E2ESurface,
     type E2ESurfaceId,
@@ -33,18 +35,28 @@ import type { E2ESession } from '../../../tools/browser-test/e2e/session';
 import { E2E_VITEST_ENV_KEY, E2E_VITEST_MATRIX_IDS_KEY } from '../../../tools/browser-test/e2e/vitest-runner';
 
 /**
- * Asserts that errors array is empty. When errors are present, logs them via
- * the test logger before failing — this ensures CI output contains the full
- * error details for diagnostics even though Vitest truncates assertion diffs.
+ * Asserts that errors array is empty after dropping known-benign transient
+ * errors (e.g. network failures in CI, the ResizeObserver layout warning).
+ * Benign errors that were dropped are logged so they stay visible in the test
+ * output; unexpected errors are logged before failing — this ensures CI output
+ * contains the full error details for diagnostics even though Vitest truncates
+ * assertion diffs.
  *
  * @param errors Collected errors to check.
  * @param context Human-readable label identifying the source (e.g. "chrome/popup page errors").
  */
-export const expectNoErrors = (errors: unknown[], context: string): void => {
-    if (errors.length > 0) {
-        logError(`[e2e] ${context}:\n${JSON.stringify(errors, null, 2)}`);
+export const expectNoErrors = (errors: E2EError[], context: string): void => {
+    const { benign, unexpected } = partitionBenignErrors(errors, BENIGN_ERROR_PATTERNS);
+
+    if (benign.length > 0) {
+        logWarning(`[e2e] ${context}: filtered ${benign.length} known-benign error(s):\n${JSON.stringify(benign, null, 2)}`);
     }
-    expect(errors).toHaveLength(0);
+
+    if (unexpected.length > 0) {
+        logError(`[e2e] ${context}:\n${JSON.stringify(unexpected, null, 2)}`);
+    }
+
+    expect(unexpected).toHaveLength(0);
 };
 
 /**

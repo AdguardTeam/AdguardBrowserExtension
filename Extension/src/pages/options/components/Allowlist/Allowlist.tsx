@@ -45,10 +45,14 @@ import { translator } from '../../../../common/translators/translator';
 import { OptionsPageSections } from '../../../../common/nav';
 import { exportData, ExportTypes } from '../../../common/utils/export';
 import { getFirstNonDisabledElement } from '../../../common/utils/dom';
-import { validateAllowlistEntries } from '../../../../common/utils/allowlist-domains';
+import { normalizeAllowlistEntry, validateAllowlistEntries } from '../../../../common/utils/allowlist-domains';
 import { DynamicRulesLimitsWarning, ClipboardPermissionWarning } from '../Warnings';
 import { SavingFSMState } from '../../../common/components/Editor/savingFSM';
-import { type EditorHandle } from '../../../common/components/Editor/editor-handle';
+import {
+    type EditorCursor,
+    type EditorHandle,
+    type EditorSelectionState,
+} from '../../../common/components/Editor/editor-handle';
 import { SavingErrorMessage } from '../../../common/components/SavingButton';
 import { usePreventUnload } from '../../../common/hooks/usePreventUnload';
 import { UserAgent } from '../../../../common/user-agent';
@@ -57,6 +61,162 @@ import { Icon } from '../../../common/components/ui/Icon';
 import { AllowlistMenu } from './AllowlistMenu';
 import { AllowlistSavingButton } from './AllowlistSavingButton';
 import { AllowlistSwitcher } from './AllowlistSwitcher';
+
+/**
+ * Maps a character position from an old line to a new line.
+ *
+ * When normalization removes a prefix, the position is shifted by the offset
+ * of the new line in the old line. If the new line is not found, the position
+ * moves to the end of the new line.
+ *
+ * @param ch Character offset in the old line.
+ * @param oldLine Old line content.
+ * @param newLine New line content.
+ *
+ * @returns Character offset in the new line.
+ */
+const mapCh = (ch: number, oldLine: string, newLine: string): number => {
+    if (oldLine === newLine) {
+        return Math.min(Math.max(ch, 0), newLine.length);
+    }
+
+    const offset = oldLine.toLowerCase().indexOf(newLine.toLowerCase());
+
+    if (offset === -1) {
+        return newLine.length;
+    }
+
+    return Math.min(Math.max(ch - offset, 0), newLine.length);
+};
+
+/**
+ * Maps each old line to its normalized line in the fetched content. Blank and
+ * duplicate lines map to `null`. Invalid lines also map to `null`; a
+ * successful save rejects them, so this is a defensive case.
+ *
+ * @param oldLines Old document lines.
+ * @param newLines Fetched document lines.
+ *
+ * @returns Index of the fetched line for each old line, or `null`.
+ */
+const getNewLineIndexes = (oldLines: string[], newLines: string[]): Array<number | null> => {
+    const fetchedIndexes = new Map<string, number>();
+
+    newLines.forEach((line, index) => {
+        if (!fetchedIndexes.has(line)) {
+            fetchedIndexes.set(line, index);
+        }
+    });
+
+    const seen = new Set<string>();
+    const indexes: Array<number | null> = [];
+
+    for (const line of oldLines) {
+        const normalized = normalizeAllowlistEntry(line);
+
+        if (normalized === null || normalized.length === 0 || seen.has(normalized)) {
+            indexes.push(null);
+            continue;
+        }
+
+        seen.add(normalized);
+
+        // The fetched list is not guaranteed to be normalized: the settings
+        // import keeps entries as they are, and a stored `www.example.com`
+        // normalizes to `example.com` on the next pass. The raw line covers
+        // those cases, so the caret stays on the entry.
+        indexes.push(fetchedIndexes.get(line) ?? fetchedIndexes.get(normalized) ?? null);
+    }
+
+    return indexes;
+};
+
+/**
+ * Maps a cursor from old content to new content.
+ *
+ * Normalization works line by line: it changes domains inside lines and drops
+ * blank and duplicate lines. Invalid lines are also treated as dropped
+ * defensively; a successful save rejects them before storing. The cursor is
+ * mapped to the matching fetched line, and its character position is shifted
+ * by removed prefixes. When lines are dropped, the cursor moves to the
+ * corresponding remaining line. A cursor after the last saved line moves to
+ * the document end.
+ *
+ * @param cursor Cursor in the old content.
+ * @param oldLines Old document lines.
+ * @param newLines New document lines.
+ * @param newLineIndexes Fetched line index for each old line.
+ *
+ * @returns Cursor in the new content.
+ */
+const mapCursor = (
+    cursor: EditorCursor,
+    oldLines: string[],
+    newLines: string[],
+    newLineIndexes: Array<number | null>,
+): EditorCursor => {
+    const oldLineIndex = Math.min(Math.max(cursor.line, 1), oldLines.length) - 1;
+    const newLineIndex = newLineIndexes[oldLineIndex] ?? null;
+
+    if (newLineIndex !== null && newLineIndex < newLines.length) {
+        const oldLine = oldLines[oldLineIndex] ?? '';
+        const newLine = newLines[newLineIndex] ?? '';
+
+        return {
+            line: newLineIndex + 1,
+            ch: mapCh(cursor.ch, oldLine, newLine),
+        };
+    }
+
+    let nextLineIndex: number | null = null;
+
+    for (let index = oldLineIndex + 1; index < newLineIndexes.length; index += 1) {
+        const targetIndex = newLineIndexes[index];
+
+        if (targetIndex !== null && targetIndex !== undefined && targetIndex < newLines.length) {
+            nextLineIndex = targetIndex;
+            break;
+        }
+    }
+
+    if (nextLineIndex !== null) {
+        return { line: nextLineIndex + 1, ch: 0 };
+    }
+
+    const lastLineIndex = newLines.length - 1;
+
+    return {
+        line: newLines.length,
+        ch: newLines[lastLineIndex]?.length ?? 0,
+    };
+};
+
+/**
+ * Maps a selection from old content to new content line by line.
+ *
+ * @param selection Selection in the old content.
+ * @param oldContent Old document content.
+ * @param newContent New document content.
+ *
+ * @returns Selection for the new content.
+ */
+const mapSelection = (
+    selection: EditorSelectionState,
+    oldContent: string,
+    newContent: string,
+): EditorSelectionState => {
+    const oldLines = oldContent.split('\n');
+    const newLines = newContent.split('\n');
+    const newLineIndexes = getNewLineIndexes(oldLines, newLines);
+
+    return {
+        ranges: selection.ranges.map(({ anchor, head }) => ({
+            anchor: mapCursor(anchor, oldLines, newLines, newLineIndexes),
+            head: mapCursor(head, oldLines, newLines, newLineIndexes),
+        })),
+        mainIndex: selection.mainIndex,
+    };
+};
 
 const Allowlist = observer(() => {
     const { settingsStore, uiStore, telemetryStore } = useContext(rootStore);
@@ -70,6 +230,14 @@ const Allowlist = observer(() => {
     const editorRef = useRef<EditorHandle | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
     const actionsRef = useRef<HTMLDivElement>(null);
+    // The first load seeds the editor through `resetValue`, which keeps the
+    // seed out of the undo history. Later content syncs (external changes and
+    // imports) must stay undoable and use `setValue` instead.
+    const hasSeededEditorRef = useRef(false);
+    // Prevents the sync effect below from seeding the editor with the store's
+    // initial value before `getAllowlist()` resolves: that would make the first
+    // load look up to date and skip the non-undoable `resetValue`.
+    const initialLoadFinishedRef = useRef(false);
 
     const importClickHandler = useCallback((e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -90,34 +258,100 @@ const Allowlist = observer(() => {
         exportData(ExportTypes.Allowlist);
     };
 
+    /**
+     * Replaces the editor content with the given allowlist and restores the
+     * selection.
+     *
+     * The background normalizes the allowlist on saving, so the content fetched
+     * after a save can differ from the text the user has typed. {@link EditorHandle.setValue}
+     * moves the caret to the end of the document, so the selection is remembered
+     * before the replacement and restored afterwards. The selection is mapped
+     * line by line, and character positions are shifted by removed prefixes, so
+     * the caret stays on the same text. Dropped trailing lines do not move it to
+     * the document start. An empty editor keeps the caret at the end after the
+     * initial load.
+     *
+     * @param allowlist Allowlist content to set.
+     */
+    const setEditorValue = useCallback((allowlist: string) => {
+        const editor = editorRef.current;
+        if (!editor) {
+            return;
+        }
+
+        const currentValue = editor.getValue();
+        if (currentValue === allowlist) {
+            return;
+        }
+
+        const selection = currentValue.length > 0
+            ? mapSelection(editor.getSelection(), currentValue, allowlist)
+            : null;
+
+        editor.setValue(allowlist);
+
+        if (selection) {
+            editor.setSelection(selection);
+        }
+    }, []);
+
     useEffect(() => {
+        let cancelled = false;
+
         (async () => {
             await settingsStore.getAllowlist();
+            if (cancelled) {
+                return;
+            }
+
             setAllowlistRerender(false);
 
             if (editorRef.current) {
-                // Get initial store content and set to the editor
-                editorRef.current.setValue(settingsStore.allowlist);
+                if (!hasSeededEditorRef.current && editorRef.current.getValue().length === 0) {
+                    // The allowlist is loaded after mount, so the `initialValue`
+                    // prop cannot be used. Seed an empty editor through
+                    // `resetValue` instead of `setValue`: a plain replacement
+                    // would let Ctrl/Cmd+Z right after opening clear the whole
+                    // list (and Ctrl+S then save it empty).
+                    if (settingsStore.allowlist.length > 0) {
+                        editorRef.current.resetValue(settingsStore.allowlist);
+                    }
+                } else {
+                    // The editor already has content (e.g. the user started
+                    // typing before the fetch resolved, or a later reload after
+                    // an import). Sync it through `setEditorValue`: the change
+                    // stays undoable, the selection is preserved and the old
+                    // undo entries do not point at text that is no longer shown.
+                    setEditorValue(settingsStore.allowlist);
+                }
             }
 
+            hasSeededEditorRef.current = true;
+            initialLoadFinishedRef.current = true;
             settingsStore.setAllowlistEditorContentChangedState(false);
         })();
-    }, [settingsStore, shouldAllowlistRerender]);
+
+        return () => {
+            cancelled = true;
+        };
+    }, [settingsStore, shouldAllowlistRerender, setEditorValue]);
 
     /**
      * One of the reasons for allowlist to update may be
      * adding domains from other places like popup, etc.
      */
     useEffect(() => {
-        if (settingsStore.allowlistEditorContentChanged) {
+        // The initial load is seeded by the effect above; this effect only
+        // mirrors changes made after it (another tab, the popup, an import).
+        if (!initialLoadFinishedRef.current || settingsStore.allowlistEditorContentChanged) {
             return;
         }
 
         if (editorRef.current) {
-            editorRef.current.setValue(settingsStore.allowlist);
+            setEditorValue(settingsStore.allowlist);
         }
         settingsStore.setAllowlistEditorContentChangedState(false);
-    }, [settingsStore.allowlist, settingsStore]);
+    }, [settingsStore.allowlist, settingsStore, setEditorValue]);
 
     const isSaving = settingsStore.savingAllowlistState === SavingFSMState.Saving;
     const hasUnsavedChanges = !isSaving && settingsStore.allowlistEditorContentChanged;

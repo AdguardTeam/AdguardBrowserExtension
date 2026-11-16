@@ -21,7 +21,7 @@ import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
 import { useTelemetryPageViewEvent } from '../../../common/telemetry';
-import { TelemetryScreenName } from '../../../../common/telemetry';
+import { TelemetryEventName, TelemetryScreenName } from '../../../../common/telemetry';
 import { SettingsSection } from '../Settings/SettingsSection';
 import { SettingsSetCheckbox } from '../Settings/SettingsSetCheckbox';
 import { Setting, SETTINGS_TYPES } from '../Settings/Setting';
@@ -39,6 +39,7 @@ import { type SettingHandler } from '../../types';
 import { ensurePermission } from '../../ensure-permission';
 
 import { DescriptionWithWarning } from './DescriptionWithWarning';
+import { BlockFingerprintingWarning } from './BlockFingerprintingWarning';
 
 import './stealth.pcss';
 
@@ -104,6 +105,15 @@ const Stealth = observer(() => {
         await updateSettingWrapper(id, value, ignoreBackground);
     };
 
+    const blockFingerprintingChangeHandler: SettingHandler = async (payload) => {
+        telemetryStore.sendCustomEvent(
+            TelemetryEventName.BlockFingerprintingClick,
+            TelemetryScreenName.TrackingProtectionScreen,
+        );
+
+        await settingChangeHandler(payload);
+    };
+
     const privacySettingChangeHandler: SettingHandler = async (payload) => {
         const { id, data } = payload;
 
@@ -149,6 +159,7 @@ const Stealth = observer(() => {
     );
 
     const {
+        BlockFingerprinting,
         DisableStealthMode,
         SelfDestructThirdPartyCookies,
         SelfDestructThirdPartyCookiesTime,
@@ -164,6 +175,7 @@ const Stealth = observer(() => {
     const isStealthModeDisabled = settings.values[DisableStealthMode];
     const isThirdPartyCookiesEnabled = settings.values[SelfDestructThirdPartyCookies];
     const isFirstPartyCookiesEnabled = settings.values[SelfDestructFirstPartyCookies];
+    const isBlockFingerprintingEnabled = settings.values[BlockFingerprinting];
 
     const switchId = DisableStealthMode;
     const switchTitleId = `${switchId}-title`;
@@ -214,6 +226,21 @@ const Stealth = observer(() => {
                     label={translator.getMessage('options_strip_tracking_params_title')}
                     value={stripTrackingParameters}
                     handler={stripTrackingParametersChangeHandlerWrapper}
+                />
+                <SettingsSetCheckbox
+                    title={translator.getMessage('options_block_fingerprinting_title')}
+                    description={(
+                        <>
+                            {translator.getMessage('options_block_fingerprinting_desc')}
+                            {isBlockFingerprintingEnabled && <BlockFingerprintingWarning />}
+                        </>
+                    )}
+                    disabled={!isBlockFingerprintingEnabled}
+                    sectionDisabled={isStealthModeDisabled}
+                    id={BlockFingerprinting}
+                    label={translator.getMessage('options_block_fingerprinting_title')}
+                    value={isBlockFingerprintingEnabled}
+                    handler={blockFingerprintingChangeHandler}
                 />
                 <SettingsSetCheckbox
                     title={translator.getMessage('options_hide_search_queries_title')}

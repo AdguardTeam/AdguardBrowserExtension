@@ -18,32 +18,17 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { type z } from 'zod';
+
+import { type importConfigurationSchema, type stealthImportConfigSchema } from './url-param-schema';
+
 /**
  * Stealth settings to import.
- * All fields are optional — only URL-provided values are applied.
+ * A setting missing from the URL stays undefined and is turned off on import.
  */
-export type StealthImportConfig = {
-    enabled: boolean | undefined;
-    hideSearchQueries: boolean | undefined;
-    sendDnt: boolean | undefined;
-    blockWebrtc: boolean | undefined;
-    stripUrl: boolean | undefined;
-    blockTrackers: boolean | undefined;
-    thirdPartyCookiesMin: number | undefined;
-    firstPartyCookiesMin: number | undefined;
-    xClient: boolean | undefined;
-    hideReferrer: boolean | undefined;
-};
+export type StealthImportConfig = z.infer<typeof stealthImportConfigSchema>;
 
 /**
  * Parsed and validated import configuration derived from a configuration URL.
  */
-export type ImportConfiguration = {
-    // v3 is kept for backward compatibility with existing import links.
-    schemeVersion: 3 | 4;
-    regularFilters: number[];
-    customFilters: Array<{ title: string; url: string }>;
-    stealth: Partial<StealthImportConfig>;
-    browsingSecurity?: { enabled: boolean };
-    informational: Record<string, string>;
-};
+export type ImportConfiguration = z.infer<typeof importConfigurationSchema>;

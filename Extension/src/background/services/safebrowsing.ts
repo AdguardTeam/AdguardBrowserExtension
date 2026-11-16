@@ -18,6 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 import browser, { type WebRequest } from 'webextension-polyfill';
+import { LRUCache } from 'lru-cache';
 
 import { RequestType } from '@adguard/tsurlfilter/es/request-type';
 // Note: we don't use alias here, because we don't use safebrowsing service in MV3.
@@ -44,6 +45,25 @@ import { logger } from '../../common/logger';
  */
 export class SafebrowsingService {
     /**
+     * Maximum number of blocked navigation request ids stored in
+     * {@link SafebrowsingService.blockedRequestIds}.
+     */
+    private static readonly BLOCKED_REQUEST_IDS_LIMIT = 100;
+
+    /**
+     * Promises of opening the safebrowsing warning page per navigation request
+     * id. All requests of a redirect chain share the same request id, so this
+     * prevents opening several warning pages for a single navigation and
+     * allows the next response of the chain to await the pending attempt and
+     * retry it if it failed.
+     *
+     * @see {@link https://github.com/AdguardTeam/AdguardBrowserExtension/issues/995}
+     */
+    private static readonly blockedRequestIds = new LRUCache<string, Promise<boolean>>({
+        max: SafebrowsingService.BLOCKED_REQUEST_IDS_LIMIT,
+    });
+
+    /**
      * Initializes the cache in {@link SafebrowsingApi} and registers listeners:
      * - for disabling secure browsing in settings;
      * - for {@link RequestEvents.onHeadersReceived};
@@ -60,12 +80,29 @@ export class SafebrowsingService {
     }
 
     /**
+     * Clears {@link SafebrowsingService.blockedRequestIds}.
+     *
+     * Public for test purposes.
+     */
+    public static clearBlockedRequestIds(): void {
+        SafebrowsingService.blockedRequestIds.clear();
+    }
+
+    /**
      * Called with every web request when the headers are received.
      *
+     * The URL of the received response is checked, including intermediate
+     * responses of a redirect chain, so that a phishing domain is detected
+     * anywhere in the chain.
+     *
      * @param event Item of {@link RequestData<WebRequest.OnHeadersReceivedDetailsType>}.
-     * @param event.context Context of the request: status code, request url, tab id, etc.
+     * @param event.details Details of the received response.
+     * @param event.context Context of the request: request type, referrer, tab id, etc.
      */
-    private static onHeadersReceived({ context }: RequestData<WebRequest.OnHeadersReceivedDetailsType>): void {
+    private static onHeadersReceived({
+        details,
+        context,
+    }: RequestData<WebRequest.OnHeadersReceivedDetailsType>): void {
         const isSafebrowsingDisabled = SettingsApi.getSetting(SettingOption.DisableSafebrowsing);
         const isFilteringDisabled = SettingsApi.getSetting(SettingOption.DisableFiltering);
 
@@ -77,38 +114,93 @@ export class SafebrowsingService {
 
         const {
             requestType,
-            statusCode,
-            requestUrl,
             referrerUrl,
             tabId,
         } = context;
 
-        const isDocumentRequestAndNotRedirect = requestType === RequestType.Document
-            && statusCode !== 301
-            && statusCode !== 302;
-
-        if (!isDocumentRequestAndNotRedirect) {
+        if (requestType !== RequestType.Document) {
             return;
         }
 
-        const onOk = (safebrowsingUrl: string | undefined): void => {
+        // Use the URL from the event details instead of the request context
+        // URL, because `details.url` always points to the response being
+        // processed, including intermediate responses of a redirect chain.
+        const { url: requestUrl, requestId } = details;
+
+        const onOk = async (safebrowsingUrl: string | undefined): Promise<void> => {
             if (!safebrowsingUrl) {
                 return;
             }
 
-            // Chromium does not allow to open extension url in incognito mode
-            if (tsWebExtTabsApi.isIncognitoTab(tabId) && UserAgent.isChromium) {
-                // Closing tab before opening a new one may lead to browser crash (Chromium)
-                browser.tabs.create({ url: safebrowsingUrl })
-                    .then(() => browser.tabs.remove(tabId))
-                    .catch((e) => {
+            // Opens the warning page. Resolves with `true` if the page was
+            // opened successfully, `false` otherwise.
+            const openWarningPage = async (): Promise<boolean> => {
+                // Chromium does not allow to open extension url in incognito mode
+                if (tsWebExtTabsApi.isIncognitoTab(tabId) && UserAgent.isChromium) {
+                    try {
+                        // Closing tab before opening a new one may lead to browser crash (Chromium)
+                        await browser.tabs.create({ url: safebrowsingUrl });
+                    } catch (e) {
                         logger.warn(`[ext.SafebrowsingService.onHeadersReceived]: cannot open info page about blocked domain in tab with id ${tabId}, original error:`, e);
-                    });
-            } else {
-                browser.tabs.update(tabId, { url: safebrowsingUrl })
-                    .catch((e) => {
-                        logger.warn(`[ext.SafebrowsingService.onHeadersReceived]: cannot update tab with id ${tabId} to show info page about blocked domain, original error:`, e);
-                    });
+                        return false;
+                    }
+
+                    try {
+                        await browser.tabs.remove(tabId);
+                    } catch (e) {
+                        // The warning page is already opened, so the navigation
+                        // stays blocked even if the original tab was not closed.
+                        logger.warn(`[ext.SafebrowsingService.onHeadersReceived]: cannot close tab with id ${tabId} after opening info page about blocked domain, original error:`, e);
+                    }
+
+                    return true;
+                }
+
+                try {
+                    await browser.tabs.update(tabId, { url: safebrowsingUrl });
+                } catch (e) {
+                    logger.warn(`[ext.SafebrowsingService.onHeadersReceived]: cannot update tab with id ${tabId} to show info page about blocked domain, original error:`, e);
+                    return false;
+                }
+
+                return true;
+            };
+
+            // A redirect chain shares a single request id, so the warning page
+            // should be opened only once per navigation.
+            // @see {@link https://github.com/AdguardTeam/AdguardBrowserExtension/issues/995}
+            let pendingOpen = SafebrowsingService.blockedRequestIds.get(requestId);
+
+            // Wait for a pending attempt: if it succeeded, the warning page is
+            // already opened; if it failed, this response can try to open the
+            // warning page again.
+            while (pendingOpen) {
+                const isOpened = await pendingOpen;
+
+                if (isOpened) {
+                    return;
+                }
+
+                // Another response could have already started a new attempt
+                // while this one was awaiting the failed attempt.
+                const currentOpen = SafebrowsingService.blockedRequestIds.get(requestId);
+
+                if (currentOpen === pendingOpen) {
+                    break;
+                }
+
+                pendingOpen = currentOpen;
+            }
+
+            const openAttempt = openWarningPage();
+            SafebrowsingService.blockedRequestIds.set(requestId, openAttempt);
+
+            const isOpened = await openAttempt;
+
+            // If the warning page could not be opened, unmark the navigation,
+            // so that the next response of the redirect chain can try again.
+            if (!isOpened && SafebrowsingService.blockedRequestIds.get(requestId) === openAttempt) {
+                SafebrowsingService.blockedRequestIds.delete(requestId);
             }
         };
 

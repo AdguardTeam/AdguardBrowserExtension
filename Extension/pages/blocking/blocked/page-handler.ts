@@ -27,6 +27,7 @@ import {
     getElementById,
     getParams,
     updatePlaceholder,
+    updateTheme,
 } from '../helpers';
 
 import { toggleLoader } from './loader';
@@ -65,16 +66,6 @@ const PLACEHOLDER_FILTER_ID = 'adgAccessBlockingFilterName';
  * Id of the "Rule" placeholder.
  */
 const PLACEHOLDER_RULE_ID = 'adgAccessBlockingRule';
-
-/**
- * Updates the theme of the page.
- *
- * @param theme The theme to set.
- */
-const updateTheme = (theme: string): void => {
-    // @ts-ignore
-    window.themeManager.switchTheme(theme);
-};
 
 /**
  * Data to set in the placeholders on the page.

@@ -1,9 +1,9 @@
-! Checksum: EK9rH5vAyZ2VosqGmAV/lA
-! Diff-Path: ../patches/1/1-s-1794226545-3600.patch
+! Checksum: KH0RIXYWoAsyMMnj3b9Jdg
+! Diff-Path: ../patches/1/1-s-1794575480-3600.patch
 ! Title: AdGuard Russian filter
 ! Description: Filter that enables ad blocking on websites in Russian language.
-! Version: 2.1.9.52
-! TimeUpdated: 2026-11-09T12:10:57+00:00
+! Version: 2.1.9.62
+! TimeUpdated: 2026-11-13T13:07:38+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1467,6 +1467,7 @@ ucoz.ru/informer/
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||allroll.biz^
 ||antonshipanov.org^
 ||poi.kinzazaza.org^
 ||beloboka.link^
@@ -4659,7 +4660,7 @@ $cookie=/blcrm|bltsr|zmFQeXtI|JPIqApiY|computer/,domain=dzen.ru|baby.ru|business
 dzen.ru#%#//scriptlet('remove-cookie', '/blcrm|bltsr|zmFQeXtI|JPIqApiY|computer/')
 !
 ! Dzen main page
-dzen.ru#%#//scriptlet('abort-on-property-read', 'Object.prototype.findSsrAd')
+dzen.ru#%#//scriptlet('abort-on-property-read', 'yaads')
 dzen.ru##div[class^="dzen-desktop--desktop-skeleton__"]
 dzen.ru##div[class^="dzen-desktop--horizontal-article-skeleton__"]
 dzen.ru##div[class^="dzen-desktop--feed-one-column-right-skeleton__"]
@@ -5234,7 +5235,6 @@ docviewer.yandex.*##div[class^="pages_"] > div[class][id]:has(> div[class] + div
 !
 ! Yandex.Mail
 ||mail.yandex.$replace=/"(RIGHT_COLUMN_SCROLLER|DIRECT_LINE_CLASS|SYSTEM_CONTEXT_LINK|YANDEX_CONTEXT_ASYNC_CALLBACKS|JS_MAIN_RTB|BANNERS_CONTAINER_CLASS|JS_MESSAGES_DIRECT)":"((?:[^"\\]|\\.)*)"\,//
-||mail.yandex.*/*/*/*/*$replace=/.*"adIds":.*"imptrackers":.*//,xmlhttprequest,domain=mail.yandex.*
 mail.yandex.*##div[data-testid="content-header_container"] > div[class]:has(> div:only-child:empty)
 mail.yandex.*###js-layout-inner ~ div[class^="Loading-m__root--"]
 mail.yandex.*##.ComposeDoneScreen-Ads
@@ -6844,12 +6844,13 @@ tribuna.com##div[class*="common_layout__right_column"]:has(> div[class^="Banner-
 tribuna.com##div[class^="Banner-module_"]
 tribuna.com##div[class^="_ideal-media_"]
 itc.ua##.post-txt > div.hidden-sm
+||ya.ru/adfox/
 ||yandex.*/ads/adfox/
 ||yandex.*/adfox/
 ||kinogomy.net/uploads/kgi/intro.
 ||yandex.ru./ads/system/adsdk.js
 kinobase.org##div[id^="ad"]
-fakty.ua##.nts-ad
+hromadske.ua,fakty.ua##.nts-ad
 liga.net##.remp-banner
 epravda.com.ua##div[style="height:290px; clear: both; margin-top: 10px; margin-bottom: 20px; display: flex; justify-content: center; align-items: center;"]
 legalbet.by,legalbet.*##.top-three-block > div
@@ -7185,8 +7186,8 @@ rezka-tv.org,hdrezka.la,rezka-ag.net,hdrezka.fans,rezka-ua.co,rezka-ua.pub,hdrez
 ! Hdrezka, Kinogo, etc.
 .bid^$xmlhttprequest,domain=mentalist-hdrezka.net|glee-hdrezka.net|kinozo.cam
 .link^$xmlhttprequest,third-party,domain=mentalist-hdrezka.net|glee-hdrezka.net|kinovod.pro|kinozo.cam
-kinozo.cam,hdreskaz.top,kinovod.pro,glee-hdrezka.net,mentalist-hdrezka.net,hdrezka-ted-lasso.net,kinob.net,kinobase.org#%#//scriptlet('trusted-json-set', 'JSON.parse', 'vast', '0', 'vast')
-kinozo.cam,hdreskaz.top,kinovod.pro,glee-hdrezka.net,mentalist-hdrezka.net,hdrezka-ted-lasso.net,kinob.net,kinobase.org#%#//scriptlet('trusted-json-set', 'JSON.parse', 'prerolls', '0', 'prerolls')
+lordseriala.fan,kinozo.cam,hdreskaz.top,kinovod.pro,glee-hdrezka.net,mentalist-hdrezka.net,hdrezka-ted-lasso.net,kinob.net,kinobase.org#%#//scriptlet('trusted-json-set', 'JSON.parse', 'vast', '0', 'vast')
+lordseriala.fan,kinozo.cam,hdreskaz.top,kinovod.pro,glee-hdrezka.net,mentalist-hdrezka.net,hdrezka-ted-lasso.net,kinob.net,kinobase.org#%#//scriptlet('trusted-json-set', 'JSON.parse', 'prerolls', '0', 'prerolls')
 [$domain=/hdreska|rezka|lostfilm/]#%#//scriptlet('trusted-json-set', 'JSON.parse', 'vast', '0', 'vast')
 [$domain=/hdreska|rezka|lostfilm/]#%#//scriptlet('trusted-json-set', 'JSON.parse', 'prerolls', '0', 'prerolls')
 !
@@ -7221,6 +7222,12 @@ sport-express.ru,gorod24.online,vedomosti.ru,kommersant.ru,rg.ru,glavbukh.ru,che
 !
 ! NOTE: Specific rules
 !
+androidinsider.ru##p > a.post-action-accent[href^="https://fas.st/"]
+androidinsider.ru#%#//scriptlet('remove-attr', 'href', 'p > a[href^="https://fas.st/"]:not(.post-action-accent)')
+androidinsider.ru#$#p > a[rel*="sponsored"]:not(.post-action-accent) { color: inherit !important; border-bottom: 0 !important; cursor: auto !important; }
+||gc.onliner.by/js/growthbook-
+marvel-online.ru,kadikama.com#%#//scriptlet('json-prune', 'ads.vast.prerolls.* ads.vast.pauserolls.* vast.prerolls.* vast.pauserolls.*')
+||ya.ru/adfox/
 allsoft.ru##div[class^="b-banner_fluid"]
 ||byrutgame.org/templates/byrut_upd/modules/game-window/
 freetp.org##.ftp-dl-page > noindex
@@ -18278,18 +18285,13 @@ vk.com,vk.ru##div[role="feed"] > article:has(> div[style] div._mk_vkFeed_iconWra
 vk.com,vk.ru###l_invite_menu_promo
 vk.com,vk.ru##.ConvoList__scrollbar-content > section.ConversationsBar--default
 vk.com,vk.ru###l_invite_promo
-vk.com,vk.ru##.vkuiBanner__host
-vk.com,vk.ru##section[class^="ImageBanner-module_"]
-! vk.com,vk.ru#?#body > div.vkuiRootComponent__host:has(> div[aria-describedby="onboarding_tooltip_content"]):contains(Яндекс Браузер)
-! vk.com,vk.ru##div[role="feed"] > article:has(> div[data-testid^="post"] div[id^="subtitle-"] > div.vkuiFlex__host > div.vkuiRootComponent__host > div.vkuiFlex__host > div.vkuiRootComponent__host > span:not([aria-label]):not([data-testid="post-header-subtitle-geo"]))
-! vk.com,vk.ru##div[role="feed"] > article:has(span[aria-label="Реклама"])
-! vk.com,vk.ru##div[role="feed"] > article:has(span[class^="AdBlockProtector__noVisible--"])
-! vk.com,vk.ru##div[role="feed"] > article:has(div.vkuiRootComponent__host > span.vkuiCaption__sizeYCompact > span)
 vk.com,vk.ru###ads_left
 vk.com,vk.ru###apps_ads_wrap
 vk.com,vk.ru###system_msg
 vk.com,vk.ru##div#left_ads
 vk.com,vk.ru##div[data-ad]
+! YB above the feed
+vk.com,vk.ru##div[data-testid="feed_main_container"] > div > section[data-feed-fpc-exclude]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/198603#issuecomment-2683352478
 vk.com,vk.ru##.post_marked_as_ads
 vk.com,vk.ru##._ads_promoted_post

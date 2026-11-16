@@ -176,6 +176,7 @@ export abstract class ConfigurationImportApi {
                 [StealthOption.HideSearchQueries]: stealth.hideSearchQueries ?? false,
                 [StealthOption.SendDoNotTrack]: stealth.sendDnt ?? false,
                 [StealthOption.BlockWebRTC]: stealth.blockWebrtc ?? false,
+                [StealthOption.BlockFingerprinting]: stealth.blockFingerprinting ?? false,
                 [StealthOption.RemoveXClientData]: stealth.xClient ?? false,
                 [StealthOption.SelfDestructThirdPartyCookies]: thirdPartyEnabled,
                 [StealthOption.SelfDestructThirdPartyCookiesTime]: thirdPartyEnabled
@@ -251,6 +252,7 @@ export abstract class ConfigurationImportApi {
                 [StealthOption.HideSearchQueries]: defaultSettings[SettingOption.HideSearchQueries],
                 [StealthOption.SendDoNotTrack]: defaultSettings[SettingOption.SendDoNotTrack],
                 [StealthOption.BlockWebRTC]: defaultSettings[SettingOption.BlockWebRTC],
+                [StealthOption.BlockFingerprinting]: defaultSettings[SettingOption.BlockFingerprinting],
                 [StealthOption.RemoveXClientData]: defaultSettings[SettingOption.RemoveXClientData],
                 [StealthOption.SelfDestructThirdPartyCookies]: (
                     defaultSettings[SettingOption.SelfDestructThirdPartyCookies]

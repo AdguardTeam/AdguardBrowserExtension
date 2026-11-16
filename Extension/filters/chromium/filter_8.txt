@@ -1,9 +1,9 @@
-! Checksum: X8MD2KLVH7ot60NJMKAYYA
-! Diff-Path: ../patches/8/8-s-1793636011-3600.patch
+! Checksum: PZXJj2SCb4nRgYwgQA6JPQ
+! Diff-Path: ../patches/8/8-s-1794597116-3600.patch
 ! Title: AdGuard Dutch filter
 ! Description: EasyList Dutch + AdGuard Dutch filter. Filter list that specifically removes ads on websites in Dutch language.
-! Version: 2.0.9.51
-! TimeUpdated: 2026-11-02T16:09:36+00:00
+! Version: 2.0.9.52
+! TimeUpdated: 2026-11-13T19:07:53+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -1321,6 +1321,7 @@ bright.nl##[class^="Ad_ad_"]
 at5.nl##[class^="Advertisement_"]
 sporza.be##[class^="_adBanner_"]
 androidplanet.nl##[data-name="featured-header"]
+mediamarkt.be,mediamarkt.nl##[data-test="mms-search-main"] > aside[aria-label*="spons"]
 mediamarkt.nl##[data-test="mms-search-main"] aside[aria-label="Gesponsorde inhoud"]
 9292.nl##[data-testid^="gpt-ad"]
 indeleiderstrui.nl##[data-ub-carousel]
@@ -1479,6 +1480,9 @@ indebuurt.nl##.list-item.list-item--aagje:has(.list-item__sponsor)
 welingelichtekringen.nl##.post:has(a[href*="/partnerposting/"])
 ah.nl##.product-card-portrait_root__ZiRpZ:has(.promotion_root__pAAlu)
 tvgids.nl##.square-item:has( > .banner)
+mediamarkt.be,mediamarkt.nl##[data-test="mms-search-srp-productlist"] li:has(> aside[aria-label*="spons"])
+mediamarkt.be,mediamarkt.nl##[data-test="mms-search-srp-productlist"] li:has(> div:only-child:empty)
+mediamarkt.be,mediamarkt.nl##[data-test="mms-search-srp-productlist"] li:has(article[data-test="mms-cofr-product-card"] button[aria-label*="spons"])
 plus.nl##a[data-link]:has(.sponsored-product)
 agconnect.nl#?#.c-teaser:has(.c-pill--partner)
 mediamarkt.*##aside[class="sc-3e143820-0 erAlUN"]:has(button[aria-label="Lees meer over productsponsoring"])

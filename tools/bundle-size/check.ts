@@ -442,7 +442,7 @@ async function checkBundleSizes({ buildEnv, targetBrowser, threshold }: CheckBun
     });
     const targets = targetBrowser
         ? [targetBrowser]
-        // filter out chrome-crx and firefox-standalone for release
+        // filter out chrome-mv2-crx and firefox-standalone for release
         : filteredTargets;
     const sizesData = await readSizesFile();
     let hasSizeIssues = false;

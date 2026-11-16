@@ -1,9 +1,9 @@
-! Checksum: NetEn1vyvJv/cCMKFzCTNg
-! Diff-Path: ../patches/11_optimized/11_optimized-s-1794229999-3600.patch
+! Checksum: +qiZCN0DOOaTmhm8ygtrdQ
+! Diff-Path: ../patches/11_optimized/11_optimized-s-1794579150-3600.patch
 ! Title: AdGuard Mobile Ads filter (Optimized)
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.73.32
-! TimeUpdated: 2026-11-09T13:09:09+00:00
+! Version: 2.0.73.45
+! TimeUpdated: 2026-11-13T14:09:07+00:00
 ! Expires: 10 days (update frequency)
 ||adx-open-service.youku.com^
 ||ad.youku.com^
@@ -92,6 +92,7 @@
 ||startup.mobile.yandex.net^
 ||startup.mobile.webvisor.com^
 ||startup-mobile.ap.yandex-net.ru^
+||advertising.amazon.dev^
 ||asttoxa.ru^
 ||inapps.af-sdk.com^
 ||cdn-settings.af-sdk.com^
@@ -1002,6 +1003,7 @@
 ||zedo.com^
 ||n152adserv.com^
 ||smilered.com^
+filmymeet.cc###mobileAdblockModal
 pornhex.com#%#//scriptlet('prevent-setTimeout', '/AdBlock/i')
 sht-link.com#%#//scriptlet('prevent-fetch', 'adsbygoogle')
 planetf1.com#%#//scriptlet('abort-on-property-read', 'freeProConfig.btnRefresh')
@@ -1690,6 +1692,21 @@ hotosena.com,kurukura.jp,nobico.php.co.jp,healthyplace.com,qlife.jp,wiki.yjsnpi.
 chip.de,gamesworld.de,fnn.jp##.Ad
 medipalette.lotte.co.jp,genxy-net.com,m.price.com.hk,otakuma.net,nikkan-gendai.com,m.hellporno.com,topics.smt.docomo.ne.jp,rank-king.jp,kun.uz,m.lenta.ru,m.aydin24haber.com,m.xcum.com,m.alphaporno.com,m.yourlust.com,m.3movs.com,m.sexu.com##body .banner
 sp.manga.nicovideo.jp##div[style^="--ads-width:"]
+cat-press.com##.widget_custom_html:has(> div.textwidget > div > ins.adsbygoogle)
+cars.tvbs.com.tw##.h-\[250px\].w-\[970px\]
+cars.tvbs.com.tw##.h-\[100px\].w-\[320px\]
+cars.tvbs.com.tw##.max-h-\[280px\].min-h-\[250px\]
+||luxuretv.com/includes/pop-mobile/
+full-porn.com##div[class^="ad-container"]
+full-porn.com##.come-gauge-gent
+elgranonan.com##.tnv-sticky
+fujinkoron.jp##.ad-instream-google
+biz.nv.ua##.main-wrapper > .container:has(> div.row > a[target="_blank"] picture)
+biz.nv.ua##section[data-type="advertising"]
+linkvertise.com##lv-ad-sense
+jprime.jp#$#body > .l-main { margin-top: -160px !important; }
+jprime.jp#$#body > .l-header { margin-top: -160px !important; }
+jprime.jp#$#body { padding-bottom: 0px !important; }
 remontka.pro##article > div[id^="rem_"]
 allsoft.ru##.main-mobile-banner
 winfuture.de###ab_google_336x280_35_35
@@ -1810,7 +1827,7 @@ pinterest.*##div[role="listitem"]:has(div[data-test-id="related-pins-name"] > di
 japanmetal.com##.sp-kohwa-banner
 wallpapers.com##.cd-mobile-creator-ad
 wikiwiki.jp##.caption-flybox:has(> div[id*="ad-container"])
-bluebirdbanter.com##div[class]:has(> div[data-concert*="frontpage_hero_mobile"])
+prideofdetroit.com,silverandblackpride.com,bigblueview.com,boltsfromtheblue.com,turfshowtimes.com,acmepackingcompany.com,fieldgulls.com,bluebirdbanter.com##div[class]:has(> div[data-concert*="frontpage_hero_mobile"])
 alba.co.jp##li[class^="RelationPostItem_postItemStyle_"]:has(> div[id][style="height: 102px;"])
 wineverygame.com##.weg-mobile-campaign
 telugutimes.net##.tt-sticky-footer-ad
@@ -7942,6 +7959,8 @@ vfokuse.mail.ru##div[data-logger="PortalMenuPromo"]
 vfokuse.mail.ru#?#header > div[class]:has(> div[class*="rb-slot_plug"])
 livejournal.com##data-banner-place-id
 livejournal.com##div[id^="billboard_mobile_"]
+!+ NOT_OPTIMIZED
+dot.asahi.com##.article-inarticle-guide
 !+ NOT_OPTIMIZED
 heise.de##.ad-mobile-group-3
 !+ NOT_OPTIMIZED

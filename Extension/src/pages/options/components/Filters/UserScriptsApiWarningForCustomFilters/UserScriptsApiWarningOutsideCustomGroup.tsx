@@ -25,10 +25,7 @@ import { USER_SCRIPTS_API_REQUIRED_URL } from '../../../constants';
 import { messenger } from '../../../../services/messenger';
 import { rootStore } from '../../../stores/RootStore';
 import { reactTranslator } from '../../../../../common/translators/reactTranslator';
-import {
-    CHROME_EXTENSIONS_SETTINGS_URL,
-    USER_SCRIPTS_API_MIN_CHROME_VERSION_REQUIRED,
-} from '../../../../../common/constants';
+import { USER_SCRIPTS_API_MIN_CHROME_VERSION_REQUIRED } from '../../../../../common/constants';
 import { BrowserUtils } from '../../../../../background/utils/browser-utils';
 import { TelemetryEventName, TelemetryScreenName } from '../../../../../common/telemetry';
 
@@ -39,9 +36,9 @@ export const UserScriptsApiWarningOutsideCustomGroup = observer(() => {
         return null;
     }
 
-    const openChromeExtensionsSettings = async (e: React.MouseEvent) => {
+    const openExtensionsSettings = async (e: React.MouseEvent) => {
         e.preventDefault();
-        await messenger.openChromeExtensionsPage();
+        await messenger.openExtensionsSettingsPage();
     };
 
     const openExtensionDetails = async (e: React.MouseEvent) => {
@@ -99,8 +96,8 @@ export const UserScriptsApiWarningOutsideCustomGroup = observer(() => {
             b: (text: string) => <b>{text}</b>,
             'settings-link': (text: string) => getSettingsLink(
                 text,
-                CHROME_EXTENSIONS_SETTINGS_URL,
-                openChromeExtensionsSettings,
+                BrowserUtils.getExtensionsSettingsUrl(),
+                openExtensionsSettings,
             ),
         });
     };

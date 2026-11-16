@@ -53,6 +53,7 @@ import {
     getStorageFixturesV13,
     getStorageFixturesV14,
     getStorageFixturesV15,
+    getStorageFixturesV16,
     type StorageData,
 } from '../../../helpers';
 import { getRunInfo } from '../../../../Extension/src/background/utils';
@@ -191,6 +192,7 @@ describe('Update Api (without indexedDB)', () => {
             v13: getStorageFixturesV13(expires),
             v14: getStorageFixturesV14(expires),
             v15: getStorageFixturesV15(expires),
+            v16: getStorageFixturesV16(expires),
         };
 
         const targetVersion = Object.keys(migrationCasesData).pop() as keyof typeof migrationCasesData;
@@ -291,7 +293,37 @@ describe('Update Api (without indexedDB)', () => {
             expect((adguardSettings as any)['preserve-log-enabled']).toBe(false);
 
             // Verify schema version
-            expect(settings['schema-version']).toBe(15);
+            expect(settings['schema-version']).toBe(16);
+        });
+
+        // Test for migration from V15 to V16: block fingerprinting setting
+        it('should add the disabled block fingerprinting setting (v15 to v16)', async () => {
+            const [data] = getStorageFixturesV15(expires);
+
+            if (!data) {
+                throw new Error('fixture is not defined');
+            }
+
+            const v15AdguardSettings = structuredClone(data['adguard-settings']);
+
+            const storage = mockLocalStorage(data);
+
+            const runInfo = await getRunInfo();
+
+            await UpdateApi.update(runInfo);
+
+            const settings = await storage.get(null);
+
+            expect(settings['schema-version']).toBe(16);
+
+            const adguardSettings = settings['adguard-settings'] as Record<string, unknown>;
+            const {
+                'stealth-block-fingerprinting': blockFingerprinting,
+                ...otherAdguardSettings
+            } = adguardSettings;
+
+            expect(blockFingerprinting).toBe(false);
+            expect(otherAdguardSettings).toStrictEqual(v15AdguardSettings);
         });
 
         describe.skipIf(!__IS_MV3__)('migrateFromV14toV15 (MV3)', () => {

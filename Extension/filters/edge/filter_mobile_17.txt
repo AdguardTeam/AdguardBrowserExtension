@@ -1,9 +1,9 @@
-! Checksum: 3GdLz8vT/vZBt6Kt+Iec5Q
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1794233582-3600.patch
+! Checksum: R0z3qKp7InxmZDsl4Xq2xQ
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1794568332-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.14.81
-! TimeUpdated: 2026-11-09T14:09:13+00:00
+! Version: 2.0.14.84
+! TimeUpdated: 2026-11-13T11:08:24+00:00
 ! Expires: 10 days (update frequency)
 $removeparam=pjclid
 $removeparam=/^weekend-reading-link-\d{6}$/
@@ -340,6 +340,9 @@ $removeparam=erid
 $removeparam=oly_enc_id
 $removeparam=_ga
 $removeparam=tduid
+||speedtest.ru^$removeparam=from
+||zhihu.com^$removeparam=share_code
+||zhihu.com^$removeparam=utm_psn
 ||check24.de/suche/?q$removeparam=source
 ||euronews.com^$removeparam=webPushId
 ||trck.norisbank.de/click.php$removeparam=s_id
@@ -416,7 +419,6 @@ $removeparam=tduid
 ||maps.app.goo.gl^$removeparam=g_st
 ||oita-press.co.jp^$removeparam=yh
 ||eiga.com^$removeparam=cid
-||instagram.com^$removeparam=click_source
 ||yahoo.com^$removeparam=src
 ||fukuishimbun.co.jp^$removeparam=f
 ||natalie.mu^$removeparam=ref
@@ -1429,6 +1431,7 @@ $removeparam=from,domain=doujinnomori.com|shinshi-manga.net|echiman.com|dojin-na
 ||slickdeals.net/*&sdfid=$removeparam=sdfid
 ||slickdeals.net/*&sdtrk=$removeparam=sdtrk
 ||beacon-recommend.tower.jp^$removeparam=tracking_id
+||kinopoisk.ru^$removeparam=socialAlias
 ||kinopoisk.ru^$removeparam=from_block
 ||bizhint.jp^$removeparam=trcd
 ||teknosa.com^$removeparam=adj_adgroup
@@ -2295,10 +2298,23 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com|wook.pt|affiliate.privatevp
 ||wired.com^$removeparam=mbid
 ||wikihow.com^$removeparam=?utm_source
 ||kohls.com^$removeparam=CID
+||instagram.com^$removeparam=igsi
+||instagram.com^$removeparam=ndid
+||instagram.com^$removeparam=dlrf
+||instagram.com^$removeparam=psln
+||instagram.com^$removeparam=cplk
+||instagram.com^$removeparam=rpxt
+||instagram.com^$removeparam=srtk
+||instagram.com^$removeparam=obrf
+||instagram.com^$removeparam=xtok
+||instagram.com^$removeparam=mdxt
+||instagram.com^$removeparam=exln
+||instagram.com^$removeparam=vrfl
 ||instagram.com^$removeparam=stkn
 ||instagram.com^$removeparam=ig_rid
 ||instagram.com^$removeparam=igsh
 $removeparam=igshid,domain=instagram.com|threads.com|threads.net
+||instagram.com^$removeparam=click_source
 ||mediamarkt.com.tr^$removeparam=rbtc
 ||t.myvisualiq.net^$removeparam=~red
 ||uspoloassn.com^$removeparam=ref

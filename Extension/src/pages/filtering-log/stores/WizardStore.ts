@@ -38,6 +38,7 @@ import {
     createExceptionCspRules,
     createExceptionScriptRule,
     createBlockingCookieRule,
+    isDocumentLevelExceptionRule,
     splitToPatterns,
     getRuleText,
 } from '../components/RequestWizard/ruleCreators';
@@ -115,7 +116,7 @@ class WizardStore {
 
         const isImportant = !!(requestRule
             && (requestRule.allowlistRule || requestRule.isImportant)
-            && !requestRule.documentLevelRule);
+            && !isDocumentLevelExceptionRule(requestRule, selectedEvent.requestType));
 
         this.ruleOptions = {
             [RULE_CREATION_OPTION.DOMAIN]: { checked: false },
@@ -300,7 +301,8 @@ class WizardStore {
             patterns = createBlockingCookieRule(selectedEvent);
         }
 
-        if (selectedEvent.requestRule && selectedEvent.requestRule.documentLevelRule) {
+        if (selectedEvent.requestRule
+            && isDocumentLevelExceptionRule(selectedEvent.requestRule, selectedEvent.requestType)) {
             patterns = [createDocumentLevelBlockRule(selectedEvent.requestRule)];
         }
 

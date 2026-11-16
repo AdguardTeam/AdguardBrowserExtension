@@ -478,6 +478,51 @@ describe('Chrome Web Store deploy guards', () => {
         expect(workflow).toMatch(/^ {2}publish-cws-mv3-release:$/m);
     });
 
+    it('resolves the rollout from the workflow env only', () => {
+        const workflow = getWorkflow('publish-release.yml');
+        const block = getJobBlock(workflow, 'resolve-version').join('\n');
+
+        expect(block).toMatch(/CHANNEL: \$\{\{ steps\.resolve\.outputs\.channel \}\}/);
+        expect(block).toMatch(/PR_BODY: \$\{\{ github\.event\.pull_request\.body \}\}/);
+        expect(block).toMatch(/ROLLOUT_INPUT: \$\{\{ inputs\.rollout-percentage \}\}/);
+        expect(block).toContain('[ -f tools/release/resolve-rollout.ts ]');
+        expect(block).toContain('tools/release/resolve-rollout.ts is missing at the checked-out ref');
+
+        const bodyLines = getJobBlock(workflow, 'resolve-version')
+            .map((line) => line.trim())
+            .filter((line) => line.includes('github.event.pull_request.body'));
+
+        expect(bodyLines.length).toBeGreaterThan(0);
+        for (const line of bodyLines) {
+            expect(line.startsWith('PR_BODY:')).toBe(true);
+        }
+    });
+
+    it('publish-cws-mv3-release stays staged with the resolved rollout', () => {
+        const workflow = getWorkflow('publish-release.yml');
+
+        expect(getWithInput(workflow, 'publish-cws-mv3-release', 'staged')).toBe('true');
+        expect(getWithInput(workflow, 'publish-cws-mv3-release', 'rollout-percentage'))
+            .toMatch(/^\$\{\{ needs\.resolve-version\.outputs\.cws-rollout-percentage \}\}$/);
+    });
+
+    it('publish-cws-mv3-beta stays staged without a rollout', () => {
+        const workflow = getWorkflow('publish-release.yml');
+
+        expect(getWithInput(workflow, 'publish-cws-mv3-beta', 'staged')).toBe('true');
+        expect(() => getWithInput(workflow, 'publish-cws-mv3-beta', 'rollout-percentage')).toThrow();
+    });
+
+    it('notify-success reports the resolved rollout', () => {
+        const workflow = getWorkflow('publish-release.yml');
+        const message = getJobBlock(workflow, 'notify-success').find((line) => line.includes('message:'));
+
+        expect(message).toBeDefined();
+        expect(message).toContain('CWS beta waits for a manual publish');
+        expect(message).toContain('CWS release waits for a manual publish at {0}%');
+        expect(message).toMatch(/outputs\.cws-rollout-percentage/);
+    });
+
     it('publish-release.yml tags after the main build and before deploy jobs', () => {
         const workflow = getWorkflow('publish-release.yml');
 

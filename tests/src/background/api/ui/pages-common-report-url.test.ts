@@ -41,6 +41,15 @@ import { FilterUpdateService } from '../../../../../Extension/src/background/ser
 vi.mock('../../../../../Extension/src/background/storages/metadata');
 vi.mock('../../../../../Extension/src/common/user-agent');
 
+const { mockIsUserScriptsApiSupported } = vi.hoisted(() => ({
+    mockIsUserScriptsApiSupported: vi.fn(() => true),
+}));
+
+vi.mock('../../../../../Extension/src/common/user-scripts-api/user-scripts-api-mv3', async (importOriginal) => ({
+    ...await importOriginal<object>(),
+    isUserScriptsApiSupported: mockIsUserScriptsApiSupported,
+}));
+
 const WEBSITE_URL = 'https://example.com';
 
 /**
@@ -174,6 +183,7 @@ describe('Report URL v4 migration — getIssueReportUrl()', () => {
         it('does not include stealth sub-options when stealth is disabled', async () => {
             await SettingsApi.setSetting(SettingOption.DisableStealthMode, true);
             await SettingsApi.setSetting(SettingOption.SendDoNotTrack, true);
+            await SettingsApi.setSetting(SettingOption.BlockFingerprinting, true);
 
             const url = await pagesApi.getIssueReportUrl(WEBSITE_URL, ForwardFrom.Popup);
             const params = getReportParams(url);
@@ -181,6 +191,59 @@ describe('Report URL v4 migration — getIssueReportUrl()', () => {
             // When stealth is disabled, only stealth.enabled=0 is expected
             expect(params.get('stealth.enabled')).toBe('0');
             expect(params.get('stealth.send_dnt')).toBeNull();
+            expect(params.get('stealth.block_fingerprinting')).toBeNull();
+        });
+
+        describe('stealth.block_fingerprinting', () => {
+            beforeEach(async () => {
+                await SettingsApi.setSetting(SettingOption.DisableStealthMode, false);
+                await SettingsApi.setSetting(SettingOption.BlockFingerprinting, false);
+            });
+
+            afterEach(async () => {
+                mockIsUserScriptsApiSupported.mockReturnValue(true);
+                await SettingsApi.setSetting(SettingOption.BlockFingerprinting, false);
+            });
+
+            it('emits stealth.block_fingerprinting=1 when protection is active', async () => {
+                mockIsUserScriptsApiSupported.mockReturnValue(true);
+                await SettingsApi.setSetting(SettingOption.BlockFingerprinting, true);
+
+                const url = await pagesApi.getIssueReportUrl(WEBSITE_URL, ForwardFrom.Popup);
+                const params = getReportParams(url);
+
+                expect(params.get('stealth.block_fingerprinting')).toBe('1');
+            });
+
+            it('omits stealth.block_fingerprinting when the setting is off', async () => {
+                mockIsUserScriptsApiSupported.mockReturnValue(true);
+                await SettingsApi.setSetting(SettingOption.BlockFingerprinting, false);
+
+                const url = await pagesApi.getIssueReportUrl(WEBSITE_URL, ForwardFrom.Popup);
+                const params = getReportParams(url);
+
+                expect(params.get('stealth.block_fingerprinting')).toBeNull();
+            });
+
+            it.skipIf(!__IS_MV3__)('omits stealth.block_fingerprinting on MV3 without user scripts API', async () => {
+                mockIsUserScriptsApiSupported.mockReturnValue(false);
+                await SettingsApi.setSetting(SettingOption.BlockFingerprinting, true);
+
+                const url = await pagesApi.getIssueReportUrl(WEBSITE_URL, ForwardFrom.Popup);
+                const params = getReportParams(url);
+
+                expect(params.get('stealth.block_fingerprinting')).toBeNull();
+            });
+
+            it.skipIf(__IS_MV3__)('emits stealth.block_fingerprinting=1 on MV2 without user scripts API', async () => {
+                mockIsUserScriptsApiSupported.mockReturnValue(false);
+                await SettingsApi.setSetting(SettingOption.BlockFingerprinting, true);
+
+                const url = await pagesApi.getIssueReportUrl(WEBSITE_URL, ForwardFrom.Popup);
+                const params = getReportParams(url);
+
+                expect(params.get('stealth.block_fingerprinting')).toBe('1');
+            });
         });
 
         it('emits stealth.referrer with empty string when hide referrer is enabled', async () => {

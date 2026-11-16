@@ -24,6 +24,7 @@ import {
     render,
     act,
     cleanup,
+    waitFor,
 } from '@testing-library/react';
 import {
     afterEach,
@@ -38,10 +39,13 @@ import {
     type Extension,
     type TransactionSpec,
 } from '@codemirror/state';
+import { EditorView, keymap } from '@codemirror/view';
+import { searchPanelOpen } from '@codemirror/search';
 
 import { initEditor as initRulesEditor } from '@adguard/rules-editor';
 
-import { Editor } from '../../../../../../Extension/src/pages/common/components/Editor/Editor';
+import { Editor, EditorMode } from '../../../../../../Extension/src/pages/common/components/Editor/Editor';
+import { UserAgent } from '../../../../../../Extension/src/common/user-agent';
 
 const mockDestroy = vi.fn();
 const mockFocus = vi.fn();
@@ -63,7 +67,8 @@ vi.mock('../../../../../../Extension/src/common/logger', () => ({
 }));
 
 vi.mock('../../../../../../Extension/src/common/user-agent', () => ({
-    UserAgent: { isOculus: false },
+    // Matches the macOS user agent set in `vitest.config.ts`.
+    UserAgent: { isOculus: false, isMacOs: true },
 }));
 
 describe('Editor component', () => {
@@ -81,7 +86,7 @@ describe('Editor component', () => {
         localStorage.clear();
     });
 
-    const createFakeView = () => {
+    const createFakeView = ({ hasFocus = false } = {}) => {
         const config = vi.mocked(initRulesEditor).mock.lastCall?.[2] as { extensions?: Extension[] };
         let state = EditorState.create({
             doc: 'fake content',
@@ -98,6 +103,7 @@ describe('Editor component', () => {
             },
             destroy: mockDestroy,
             focus: mockFocus,
+            hasFocus,
             lineWrapping: false,
         };
     };
@@ -126,6 +132,24 @@ describe('Editor component', () => {
         await act(async () => {
             resolveInit(createFakeView());
         });
+        rendered!.unmount();
+    });
+
+    it('calls onInitError when the editor fails to initialize', async () => {
+        const initEditor = vi.mocked((await import('@adguard/rules-editor')).initEditor);
+        initEditor.mockClear();
+        initEditor.mockRejectedValueOnce(new Error('wasm failed'));
+
+        const onInitError = vi.fn();
+        let rendered: ReturnType<typeof render> | undefined;
+        await act(async () => {
+            rendered = renderEditor({ onInitError });
+        });
+
+        await waitFor(() => {
+            expect(onInitError).toHaveBeenCalledTimes(1);
+        });
+
         rendered!.unmount();
     });
 
@@ -166,6 +190,8 @@ describe('Editor component', () => {
         expect(typeof editorRef.current.focus).toBe('function');
         expect(typeof editorRef.current.getCursor).toBe('function');
         expect(typeof editorRef.current.setCursor).toBe('function');
+        expect(typeof editorRef.current.getSelection).toBe('function');
+        expect(typeof editorRef.current.setSelection).toBe('function');
         expect(typeof editorRef.current.setWrap).toBe('function');
         expect(typeof editorRef.current.setReadOnly).toBe('function');
 
@@ -302,6 +328,60 @@ describe('Editor component', () => {
         expect(onChange).toHaveBeenCalledWith('edited content');
     });
 
+    /**
+     * Builds the platform's find shortcut: Cmd+F on macOS, Ctrl+F elsewhere.
+     *
+     * @returns Keydown event.
+     */
+    const findShortcutEvent = () => new KeyboardEvent('keydown', {
+        key: 'f',
+        code: 'KeyF',
+        ctrlKey: !UserAgent.isMacOs,
+        metaKey: UserAgent.isMacOs,
+        bubbles: true,
+        cancelable: true,
+    });
+
+    it('opens the editor search on the find shortcut outside the editor when captureFindShortcut is set', async () => {
+        const fakeViewRef: { current: ReturnType<typeof createFakeView> | null } = { current: null };
+        let rendered: ReturnType<typeof render> | undefined;
+        await act(async () => {
+            rendered = renderEditor({ captureFindShortcut: true });
+        });
+        await act(async () => {
+            fakeViewRef.current = createFakeView();
+            resolveInit(fakeViewRef.current);
+        });
+
+        const outside = document.createElement('button');
+        document.body.appendChild(outside);
+        const event = findShortcutEvent();
+        outside.dispatchEvent(event);
+
+        expect(event.defaultPrevented).toBe(true);
+        expect(mockFocus).toHaveBeenCalled();
+        expect(searchPanelOpen(fakeViewRef.current!.state)).toBe(true);
+
+        outside.remove();
+        rendered!.unmount();
+    });
+
+    it('leaves the find shortcut to the browser without captureFindShortcut', async () => {
+        let rendered: ReturnType<typeof render> | undefined;
+        await act(async () => {
+            rendered = renderEditor();
+        });
+        await act(async () => {
+            resolveInit(createFakeView());
+        });
+
+        const event = findShortcutEvent();
+        document.body.dispatchEvent(event);
+
+        expect(event.defaultPrevented).toBe(false);
+        rendered!.unmount();
+    });
+
     it('reconfigures the view when the readOnly prop changes after mount', async () => {
         const initEditor = vi.mocked((await import('@adguard/rules-editor')).initEditor);
         initEditor.mockClear();
@@ -334,6 +414,116 @@ describe('Editor component', () => {
         expect(mockDispatch).toHaveBeenCalledTimes(1);
         expect(mockDispatch.mock.calls[0]?.[0]).toHaveProperty('effects');
 
+        rendered!.unmount();
+    });
+
+    it('restores focus when the editor is unlocked after being read-only', async () => {
+        const initEditor = vi.mocked((await import('@adguard/rules-editor')).initEditor);
+        initEditor.mockClear();
+
+        let rendered: ReturnType<typeof render> | undefined;
+        await act(async () => {
+            rendered = renderEditor({ highlightRules: false, readOnly: false });
+        });
+        // The editor is focused, e.g. the user has pressed Ctrl+S in it.
+        await act(async () => {
+            resolveInit(createFakeView({ hasFocus: true }));
+        });
+        mockFocus.mockClear();
+
+        const editorProps = {
+            name: 'test-editor',
+            editorRef,
+            onChange: vi.fn(),
+            highlightRules: false,
+        };
+
+        // Locking the editor makes its content DOM non-editable, which blurs it.
+        await act(async () => {
+            rendered!.rerender(React.createElement(Editor as any, { ...editorProps, readOnly: true }));
+        });
+        expect(mockFocus).not.toHaveBeenCalled();
+
+        // Once unlocked, the focus — and so the caret — must be restored.
+        await act(async () => {
+            rendered!.rerender(React.createElement(Editor as any, { ...editorProps, readOnly: false }));
+        });
+        expect(mockFocus).toHaveBeenCalledTimes(1);
+
+        rendered!.unmount();
+    });
+
+    it('does not focus the editor on unlocking if it was not focused before locking', async () => {
+        const initEditor = vi.mocked((await import('@adguard/rules-editor')).initEditor);
+        initEditor.mockClear();
+
+        let rendered: ReturnType<typeof render> | undefined;
+        await act(async () => {
+            rendered = renderEditor({ highlightRules: false, readOnly: false });
+        });
+        await act(async () => {
+            resolveInit(createFakeView({ hasFocus: false }));
+        });
+        mockFocus.mockClear();
+
+        const editorProps = {
+            name: 'test-editor',
+            editorRef,
+            onChange: vi.fn(),
+            highlightRules: false,
+        };
+
+        await act(async () => {
+            rendered!.rerender(React.createElement(Editor as any, { ...editorProps, readOnly: true }));
+        });
+        await act(async () => {
+            rendered!.rerender(React.createElement(Editor as any, { ...editorProps, readOnly: false }));
+        });
+
+        expect(mockFocus).not.toHaveBeenCalled();
+
+        rendered!.unmount();
+    });
+
+    it('does not steal focus back on unlocking if another element owns it', async () => {
+        const initEditor = vi.mocked((await import('@adguard/rules-editor')).initEditor);
+        initEditor.mockClear();
+
+        let rendered: ReturnType<typeof render> | undefined;
+        await act(async () => {
+            rendered = renderEditor({ highlightRules: false, readOnly: false });
+        });
+        await act(async () => {
+            resolveInit(createFakeView({ hasFocus: true }));
+        });
+
+        const editorProps = {
+            name: 'test-editor',
+            editorRef,
+            onChange: vi.fn(),
+            highlightRules: false,
+        };
+
+        await act(async () => {
+            rendered!.rerender(React.createElement(Editor as any, { ...editorProps, readOnly: true }));
+        });
+
+        // The user has focused another control while the editor was locked.
+        const button = document.createElement('button');
+        // jsdom treats only elements with a tabindex as focusable.
+        button.setAttribute('tabindex', '0');
+        document.body.appendChild(button);
+        button.focus();
+        expect(document.activeElement).toBe(button);
+        mockFocus.mockClear();
+
+        await act(async () => {
+            rendered!.rerender(React.createElement(Editor as any, { ...editorProps, readOnly: false }));
+        });
+
+        expect(mockFocus).not.toHaveBeenCalled();
+
+        button.remove();
         rendered!.unmount();
     });
 
@@ -466,6 +656,140 @@ describe('Editor component', () => {
         await act(async () => {
             resolveInit(createFakeView());
         });
+        rendered!.unmount();
+    });
+
+    it('renders inline mode without a persisted size or page margins', async () => {
+        const initEditor = vi.mocked((await import('@adguard/rules-editor')).initEditor);
+        initEditor.mockClear();
+
+        // Even if a size was persisted for the same name, inline mode ignores it.
+        localStorage.setItem('inline-user-rule_editor-size', JSON.stringify({ width: 800, height: 500 }));
+
+        let rendered: ReturnType<typeof render> | undefined;
+        await act(async () => {
+            rendered = renderEditor({ name: 'inline-user-rule', inline: true, mode: EditorMode.SingleLine });
+        });
+        await act(async () => {
+            resolveInit(createFakeView());
+        });
+
+        const container = rendered!.container.querySelector('.editor') as HTMLElement;
+        expect(container.classList.contains('editor--inline')).toBe(true);
+        expect(container.classList.contains('editor--with-margin')).toBe(false);
+        expect(container.classList.contains('editor--full-screen')).toBe(false);
+        expect(container.style.width).toBe('');
+        expect(container.style.height).toBe('');
+
+        rendered!.unmount();
+    });
+
+    it('strips newlines in single-line mode', async () => {
+        const initEditor = vi.mocked((await import('@adguard/rules-editor')).initEditor);
+        initEditor.mockClear();
+
+        let rendered: ReturnType<typeof render> | undefined;
+        await act(async () => {
+            rendered = renderEditor({ highlightRules: false, mode: EditorMode.SingleLine });
+        });
+        // The fake view is built from the extensions passed to the last
+        // `initEditor` call, so it must be created after rendering.
+        const view = createFakeView();
+        await act(async () => {
+            resolveInit(view);
+        });
+
+        const transaction = view.state.update({ changes: { from: 0, insert: 'a\nb' } });
+        expect(transaction.state.doc.toString()).toBe('abfake content');
+
+        rendered!.unmount();
+    });
+
+    it('saves on Enter in single-line mode', async () => {
+        const initEditor = vi.mocked((await import('@adguard/rules-editor')).initEditor);
+        initEditor.mockClear();
+
+        const onSave = vi.fn();
+        let rendered: ReturnType<typeof render> | undefined;
+        await act(async () => {
+            rendered = renderEditor({ highlightRules: false, mode: EditorMode.SingleLine, onSave });
+        });
+        // The fake view is built from the extensions passed to the last
+        // `initEditor` call, so it must be created after rendering.
+        const view = createFakeView();
+        await act(async () => {
+            resolveInit(view);
+        });
+
+        const bindings = view.state.facet(keymap).flat();
+        const enter = bindings.find((binding) => binding.key === 'Enter');
+        expect(enter?.run).toBeTypeOf('function');
+        expect(enter!.run!(view as unknown as EditorView)).toBe(true);
+        expect(onSave).toHaveBeenCalledTimes(1);
+
+        rendered!.unmount();
+    });
+
+    it('keeps newlines and saves on Enter in multi-line mode', async () => {
+        const initEditor = vi.mocked((await import('@adguard/rules-editor')).initEditor);
+        initEditor.mockClear();
+
+        const onSave = vi.fn();
+        let rendered: ReturnType<typeof render> | undefined;
+        await act(async () => {
+            rendered = renderEditor({ highlightRules: false, mode: EditorMode.Multiline, onSave });
+        });
+        // The fake view is built from the extensions passed to the last
+        // `initEditor` call, so it must be created after rendering.
+        const view = createFakeView();
+        await act(async () => {
+            resolveInit(view);
+        });
+
+        // Multi-line mode must not strip line terminators (only single-line mode does).
+        const transaction = view.state.update({ changes: { from: 0, insert: 'a\nb' } });
+        expect(transaction.state.doc.toString()).toBe('a\nbfake content');
+
+        const bindings = view.state.facet(keymap).flat();
+        const enter = bindings.find((binding) => binding.key === 'Enter');
+        expect(enter?.run).toBeTypeOf('function');
+        expect(enter!.run!(view as unknown as EditorView)).toBe(true);
+        expect(onSave).toHaveBeenCalledTimes(1);
+
+        rendered!.unmount();
+    });
+
+    it('adds the inline multi-line modifier class in multi-line mode', async () => {
+        let rendered: ReturnType<typeof render> | undefined;
+        await act(async () => {
+            rendered = renderEditor({ name: 'inline-user-rule', inline: true, mode: EditorMode.Multiline });
+        });
+        await act(async () => {
+            resolveInit(createFakeView());
+        });
+
+        const container = rendered!.container.querySelector('.editor') as HTMLElement;
+        expect(container.classList.contains('editor--inline')).toBe(true);
+        expect(container.classList.contains('editor--inline-multiline')).toBe(true);
+
+        rendered!.unmount();
+    });
+
+    it('enables line wrapping in multi-line mode', async () => {
+        let rendered: ReturnType<typeof render> | undefined;
+        await act(async () => {
+            rendered = renderEditor({ highlightRules: false, mode: EditorMode.Multiline });
+        });
+        // The fake view is built from the extensions passed to the last
+        // `initEditor` call, so it must be created after rendering.
+        const view = createFakeView();
+        await act(async () => {
+            resolveInit(view);
+        });
+
+        // Long comment lines must wrap instead of being cut off.
+        expect(view.state.facet(EditorView.contentAttributes)).toContainEqual({ class: 'cm-lineWrapping' });
+
         rendered!.unmount();
     });
 });

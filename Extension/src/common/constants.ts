@@ -27,7 +27,7 @@ import { type ForwardFrom } from './forward';
  *
  * Note: Do not to be confused with the protocol version of the imported config.
  */
-export const APP_SCHEMA_VERSION = 15;
+export const APP_SCHEMA_VERSION = 16;
 
 /**
  * Number of days in the week statistics window shown in the popup "Week" tab.
@@ -100,6 +100,13 @@ export const TELEMETRY_SYNTHETIC_ID_KEY = 'telemetry-synthetic-id';
  * Storage key for search page access state.
  */
 export const SEARCH_PAGE_ACCESS_KEY = 'search-page-access-state';
+
+/**
+ * Storage key for the language filters auto-disable state: active day counter,
+ * last active day per language, active day of each filter's latest enable and
+ * pending notification filter IDs. Used only in MV2.
+ */
+export const AUTO_DISABLE_FILTERS_KEY = 'auto-disable-filters-state';
 
 /**
  * Filter ids used in the code on the background page and filtering log page.
@@ -222,6 +229,29 @@ export const CUSTOM_FILTERS_GROUP_DISPLAY_NUMBER = 99 as const;
  */
 export const CUSTOM_FILTERS_START_ID = 1000 as const;
 
+/**
+ * Custom filter download timeout, in milliseconds.
+ *
+ * Large custom filters, e.g. lists with more than 100,000 rules, can take longer
+ * than three seconds to download on a slow connection.
+ */
+export const CUSTOM_FILTER_DOWNLOAD_TIMEOUT_MS = 15 * 1000;
+
+/**
+ * Time during which an in-flight custom filter download can be reused, in milliseconds.
+ *
+ * Must stay greater than {@link CUSTOM_FILTER_DOWNLOAD_TIMEOUT_MS}: after the
+ * caller-side timeout rejects, a retry must be able to join the download that is
+ * still in progress instead of starting it from scratch.
+ */
+export const CUSTOM_FILTER_IN_FLIGHT_TTL_MS = 60 * 1000;
+
+/**
+ * Time during which a custom filter downloaded by `getFilterInfo` can be reused
+ * by `createFilter` without a second request, in milliseconds.
+ */
+export const CUSTOM_FILTER_INFO_CACHE_TTL_MS = 60 * 1000;
+
 // Unnecessary characters that will be replaced
 export const WASTE_CHARACTERS = /[.*+?^${}()|[\]\\]/g;
 
@@ -262,6 +292,11 @@ export const EXTENSION_INITIALIZED_EVENT = 'initialized';
  * Chrome's extensions settings page url.
  */
 export const CHROME_EXTENSIONS_SETTINGS_URL = 'chrome://extensions';
+
+/**
+ * Edge's extensions settings page url.
+ */
+export const EDGE_EXTENSIONS_SETTINGS_URL = 'edge://extensions';
 
 /**
  * Opera's extensions settings page url.

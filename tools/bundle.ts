@@ -65,7 +65,7 @@ const getBuildOptions = (options: CommanderOptions): BuildOptions => ({
 });
 
 const bundleChrome = (options: CommanderOptions) => {
-    const rspackConfig = getRspackConfig(Browser.Chrome, getBuildOptions(options));
+    const rspackConfig = getRspackConfig(Browser.ChromeMv2, getBuildOptions(options));
     return bundleRunner(rspackConfig, options);
 };
 
@@ -80,7 +80,7 @@ const bundleFirefoxAmo = (options: CommanderOptions) => {
 };
 
 const bundleEdge = (options: CommanderOptions) => {
-    const rspackConfig = getRspackConfig(Browser.Edge, getBuildOptions(options));
+    const rspackConfig = getRspackConfig(Browser.EdgeMv2, getBuildOptions(options));
     return bundleRunner(rspackConfig, options);
 };
 
@@ -90,7 +90,7 @@ const bundleEdgeMv3 = (options: CommanderOptions) => {
 };
 
 const bundleOpera = (options: CommanderOptions) => {
-    const rspackConfig = getRspackConfig(Browser.Opera, getBuildOptions(options));
+    const rspackConfig = getRspackConfig(Browser.OperaMv2, getBuildOptions(options));
     return bundleRunner(rspackConfig, options);
 };
 
@@ -103,7 +103,7 @@ const bundleChromeCrx = async () => {
     const key = 'Building CRX for Chrome';
     console.log(`${key}...`);
     console.time(key);
-    await crx(Browser.Chrome);
+    await crx(Browser.ChromeMv2);
     console.timeEnd(key);
 };
 
@@ -326,15 +326,19 @@ program
     )
     .option('--zip', 'Create zip archives after build');
 
+// Legacy command aliases keep existing scripts working; all commands emit the
+// canonical manifest-specific output paths, without duplicate legacy packages.
 program
-    .command(Browser.Chrome)
-    .description('Builds extension for chrome browser')
+    .command(Browser.ChromeMv2)
+    .alias('chrome')
+    .description('Builds extension for chrome MV2 browser')
     .action(() => {
         chrome(program.opts());
     });
 
 program
-    .command(Browser.ChromeCrx)
+    .command(Browser.ChromeMv2Crx)
+    .alias('chrome-crx')
     .description('Builds CRX build of Chrome MV2 for mobile testing')
     .action(() => {
         chromeCrx(program.opts());
@@ -348,8 +352,9 @@ program
     });
 
 program
-    .command(Browser.Edge)
-    .description('Builds extension for edge browser')
+    .command(Browser.EdgeMv2)
+    .alias('edge')
+    .description('Builds extension for edge MV2 browser')
     .action(() => {
         edge(program.opts());
     });
@@ -362,8 +367,9 @@ program
     });
 
 program
-    .command(Browser.Opera)
-    .description('Builds extension for opera browser')
+    .command(Browser.OperaMv2)
+    .alias('opera')
+    .description('Builds extension for opera MV2 browser')
     .action(() => {
         opera(program.opts());
     });

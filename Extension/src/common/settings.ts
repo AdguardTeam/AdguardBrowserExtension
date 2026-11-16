@@ -54,6 +54,7 @@ export const defaultSettings: Settings = {
     [SettingOption.HideSearchQueries]: true,
     [SettingOption.SendDoNotTrack]: true,
     [SettingOption.RemoveXClientData]: UserAgent.isChrome,
+    [SettingOption.BlockFingerprinting]: false,
     [SettingOption.BlockWebRTC]: false,
     [SettingOption.SelfDestructThirdPartyCookies]: true,
     [SettingOption.SelfDestructThirdPartyCookiesTime]: DEFAULT_THIRD_PARTY_COOKIES_SELF_DESTRUCT_MIN,

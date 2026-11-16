@@ -134,6 +134,7 @@ export const getExportedSettingsV2 = () => ({
         'stealth-send-do-not-track': true,
         'stealth-block-webrtc': true,
         'stealth-remove-x-client': true,
+        'stealth-block-fingerprinting': false,
         'stealth-block-third-party-cookies': true,
         'stealth-block-third-party-cookies-time': 1080,
         'stealth-block-first-party-cookies': true,

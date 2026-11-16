@@ -86,10 +86,12 @@ const FilteringLog = observer(() => {
             }
         };
 
-        window.addEventListener('beforeunload', onUnload);
+        // `pagehide` instead of `beforeunload` so the page stops being tracked
+        // only when it actually unloads, matching the messenger teardown.
+        window.addEventListener('pagehide', onUnload);
 
         return () => {
-            window.removeEventListener('beforeunload', onUnload);
+            window.removeEventListener('pagehide', onUnload);
             onUnload();
         };
     }, [telemetryStore, logStore]);

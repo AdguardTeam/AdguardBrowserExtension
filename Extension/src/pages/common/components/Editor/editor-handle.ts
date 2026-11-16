@@ -18,9 +18,15 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { type Compartment, EditorState } from '@codemirror/state';
+import {
+    type Compartment,
+    EditorSelection,
+    EditorState,
+    Transaction,
+} from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { isolateHistory } from '@codemirror/commands';
+import { openSearchPanel } from '@codemirror/search';
 
 /**
  * CodeMirror compartments owned by the {@link Editor} component and toggled by
@@ -54,6 +60,45 @@ export interface EditorCursor {
 }
 
 /**
+ * Character offset that puts the cursor at the end of the line. The handle
+ * clamps offsets to the line length, so the maximum safe integer is an explicit
+ * end-of-line sentinel.
+ */
+export const END_OF_LINE_CH = Number.MAX_SAFE_INTEGER;
+
+/**
+ * One selection range, with 1-based line numbers and 0-based character offsets.
+ */
+export interface EditorSelectionRange {
+    /**
+     * Anchor of the range, i.e. the end where the selection started.
+     */
+    anchor: EditorCursor;
+
+    /**
+     * Head of the range, i.e. the end the selection currently reaches.
+     */
+    head: EditorCursor;
+}
+
+/**
+ * Editor selection, including the additional cursors. Captured with
+ * {@link EditorHandle.getSelection} and restored with
+ * {@link EditorHandle.setSelection}.
+ */
+export interface EditorSelectionState {
+    /**
+     * Selection ranges in document order.
+     */
+    ranges: EditorSelectionRange[];
+
+    /**
+     * Index of the main range in {@link EditorSelectionState.ranges}.
+     */
+    mainIndex: number;
+}
+
+/**
  * Imperative facade exposed via `editorRef.current`, replacing the former Ace
  * editor object.
  */
@@ -73,6 +118,19 @@ export interface EditorHandle {
     setValue(value: string): void;
 
     /**
+     * Replaces the entire document content without adding the replacement to
+     * the undo history, so the first Ctrl/Cmd+Z cannot undo the seeding and
+     * leave the editor empty.
+     *
+     * Use this to seed an editor whose initial content is fetched after mount;
+     * for content known at mount, prefer the `initialValue` prop of the `Editor`
+     * component.
+     *
+     * @param value The new content to set.
+     */
+    resetValue(value: string): void;
+
+    /**
      * Returns the current cursor position.
      *
      * @returns Cursor position with 1-based line and 0-based character offset.
@@ -86,6 +144,22 @@ export interface EditorHandle {
      * and 0-based character offset.
      */
     setCursor(cursor: EditorCursor): void;
+
+    /**
+     * Returns the current selection, including the additional cursors.
+     *
+     * @returns Selection ranges and the index of the main range.
+     */
+    getSelection(): EditorSelectionState;
+
+    /**
+     * Replaces the selection. Line and character offsets are clamped to the
+     * valid document bounds, so a selection captured before the document was
+     * replaced can be restored afterwards.
+     *
+     * @param selection Selection to restore.
+     */
+    setSelection(selection: EditorSelectionState): void;
 
     /**
      * Toggles line wrapping mode.
@@ -105,6 +179,12 @@ export interface EditorHandle {
      * Focuses the editor, moving keyboard input to it.
      */
     focus(): void;
+
+    /**
+     * Focuses the editor and opens its search panel, which searches the whole
+     * document (not only the rendered lines) and focuses the search field.
+     */
+    openSearch(): void;
 }
 
 /**
@@ -133,8 +213,15 @@ export const createEditorHandle = (
     },
 
     /**
-     * Replaces the entire document content with the given value and inserts
-     * a full history barrier so the user cannot undo past this replacement.
+     * Replaces the entire document content with the given value.
+     *
+     * The replacement is annotated with `isolateHistory('full')`, which keeps
+     * it out of neighbouring undo groups but does not make it non-undoable:
+     * the user can still undo the replacement itself (e.g. Ctrl/Cmd+Z right
+     * after opening an editor would clear the seeded content). Callers that
+     * need a hard history boundary must seed the content as the editor's
+     * initial document instead (see the `initialValue` prop of the `Editor`
+     * component).
      *
      * @param value The new content to set.
      */
@@ -149,6 +236,26 @@ export const createEditorHandle = (
             changes,
             selection: { anchor: changes.newLength },
             annotations: isolateHistory.of('full'),
+        });
+    },
+
+    /**
+     * Replaces the entire document content without adding the replacement to
+     * the undo history.
+     *
+     * @param value The new content to set.
+     */
+    resetValue(value: string) {
+        const changes = view.state.changes({
+            from: 0,
+            to: view.state.doc.length,
+            insert: value,
+        });
+
+        view.dispatch({
+            changes,
+            selection: { anchor: changes.newLength },
+            annotations: [isolateHistory.of('full'), Transaction.addToHistory.of(false)],
         });
     },
 
@@ -178,6 +285,49 @@ export const createEditorHandle = (
             selection: {
                 anchor,
             },
+            scrollIntoView: true,
+        });
+    },
+
+    /**
+     * Returns the current selection, including the additional cursors.
+     *
+     * @returns Selection ranges and the index of the main range.
+     */
+    getSelection() {
+        const { doc, selection } = view.state;
+        const toCursor = (pos: number): EditorCursor => {
+            const line = doc.lineAt(pos);
+            return { line: line.number, ch: pos - line.from };
+        };
+
+        return {
+            ranges: selection.ranges.map(({ anchor, head }) => ({
+                anchor: toCursor(anchor),
+                head: toCursor(head),
+            })),
+            mainIndex: selection.mainIndex,
+        };
+    },
+
+    /**
+     * Replaces the selection and scrolls the main range into view. Line and
+     * character offsets are clamped to valid document bounds.
+     *
+     * @param selection Selection to restore.
+     */
+    setSelection({ ranges, mainIndex }: EditorSelectionState) {
+        const { doc } = view.state;
+        const toPos = ({ line, ch }: EditorCursor): number => {
+            const targetLine = doc.line(Math.min(Math.max(line, 1), doc.lines));
+            return targetLine.from + Math.min(Math.max(ch, 0), targetLine.length);
+        };
+
+        view.dispatch({
+            selection: EditorSelection.create(
+                ranges.map(({ anchor, head }) => EditorSelection.range(toPos(anchor), toPos(head))),
+                mainIndex,
+            ),
             scrollIntoView: true,
         });
     },
@@ -215,6 +365,15 @@ export const createEditorHandle = (
     focus() {
         view.focus();
     },
+
+    /**
+     * Focuses the editor and opens its search panel. The panel's search field
+     * takes the focus; when the panel is already open, it is focused again.
+     */
+    openSearch() {
+        view.focus();
+        openSearchPanel(view);
+    },
 });
 
 /**
@@ -246,6 +405,28 @@ export interface DeferredEditorHandle {
 }
 
 /**
+ * Names of the {@link EditorHandle} write methods, i.e. the ones buffered by
+ * {@link createDeferredEditorHandle} until the view is attached.
+ */
+enum WriteMethodName {
+    SetValue = 'setValue',
+    ResetValue = 'resetValue',
+    SetCursor = 'setCursor',
+    SetSelection = 'setSelection',
+    SetWrap = 'setWrap',
+    SetReadOnly = 'setReadOnly',
+    Focus = 'focus',
+    OpenSearch = 'openSearch',
+}
+
+type WriteArg<M extends WriteMethodName> = Parameters<EditorHandle[M]>[0];
+
+type WriteOp<M extends WriteMethodName> = {
+    method: M;
+    value: WriteArg<M>;
+};
+
+/**
  * Builds a stable {@link EditorHandle} that can be exposed synchronously,
  * before the asynchronous {@link EditorView} is ready.
  *
@@ -262,22 +443,6 @@ export interface DeferredEditorHandle {
  *
  * @returns The deferred handle together with `attach`/`detach` controls.
  */
-type WriteMethodName = (
-    | 'setValue'
-    | 'setCursor'
-    | 'setWrap'
-    | 'setReadOnly'
-    | 'focus'
-);
-
-type WriteArg<M extends WriteMethodName> =
-    Parameters<EditorHandle[M]>[0];
-
-type WriteOp<M extends WriteMethodName> = {
-    method: M;
-    value: WriteArg<M>;
-};
-
 export const createDeferredEditorHandle = (): DeferredEditorHandle => {
     let real: EditorHandle | null = null;
 
@@ -287,9 +452,10 @@ export const createDeferredEditorHandle = (): DeferredEditorHandle => {
     let detached = false;
 
     // Buffered state captured before the underlying view exists, replayed in
-    // call order on attach. Only the setters (`setValue`, `setCursor`,
-    // `setWrap`, `setReadOnly`, `focus`) are buffered; the readers
-    // (`getValue`, `getCursor`) return a sync default instead.
+    // call order on attach. Only the setters (`setValue`, `resetValue`,
+    // `setCursor`, `setSelection`, `setWrap`, `setReadOnly`, `focus`,
+    // `openSearch`) are buffered; the readers (`getValue`, `getCursor`,
+    // `getSelection`) return a sync default instead.
     const pending: WriteOp<WriteMethodName>[] = [];
 
     // Last buffered value per reader, used before the view exists. Readers are
@@ -298,9 +464,17 @@ export const createDeferredEditorHandle = (): DeferredEditorHandle => {
     const pendingReads: {
         value: string;
         cursor: EditorCursor;
+        selection: EditorSelectionState;
     } = {
         value: '',
         cursor: { line: 1, ch: 0 },
+        selection: {
+            ranges: [{
+                anchor: { line: 1, ch: 0 },
+                head: { line: 1, ch: 0 },
+            }],
+            mainIndex: 0,
+        },
     };
 
     const dispatch = <M extends WriteMethodName>(
@@ -311,7 +485,7 @@ export const createDeferredEditorHandle = (): DeferredEditorHandle => {
             (real[method] as (...a: Parameters<EditorHandle[M]>) => void)(...args);
         } else if (!detached) {
             // Only the first positional arg matters for every setter on
-            // EditorHandle; focus carries no arg.
+            // EditorHandle; focus and openSearch carry no arg.
             pending.push({
                 method,
                 value: args[0] as WriteArg<M>,
@@ -327,7 +501,13 @@ export const createDeferredEditorHandle = (): DeferredEditorHandle => {
             if (!real) {
                 pendingReads.value = value;
             }
-            dispatch('setValue', value);
+            dispatch(WriteMethodName.SetValue, value);
+        },
+        resetValue(value: string) {
+            if (!real) {
+                pendingReads.value = value;
+            }
+            dispatch(WriteMethodName.ResetValue, value);
         },
         getCursor() {
             return real ? real.getCursor() : pendingReads.cursor;
@@ -336,16 +516,28 @@ export const createDeferredEditorHandle = (): DeferredEditorHandle => {
             if (!real) {
                 pendingReads.cursor = cursor;
             }
-            dispatch('setCursor', cursor);
+            dispatch(WriteMethodName.SetCursor, cursor);
+        },
+        getSelection() {
+            return real ? real.getSelection() : pendingReads.selection;
+        },
+        setSelection(selection: EditorSelectionState) {
+            if (!real) {
+                pendingReads.selection = selection;
+            }
+            dispatch(WriteMethodName.SetSelection, selection);
         },
         setWrap(enabled: boolean) {
-            dispatch('setWrap', enabled);
+            dispatch(WriteMethodName.SetWrap, enabled);
         },
         setReadOnly(enabled: boolean) {
-            dispatch('setReadOnly', enabled);
+            dispatch(WriteMethodName.SetReadOnly, enabled);
         },
         focus() {
-            dispatch('focus');
+            dispatch(WriteMethodName.Focus);
+        },
+        openSearch() {
+            dispatch(WriteMethodName.OpenSearch);
         },
     };
 

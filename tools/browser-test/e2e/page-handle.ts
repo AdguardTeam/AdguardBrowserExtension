@@ -21,6 +21,57 @@
 import type { E2EError } from './types';
 
 /**
+ * Key or key chord supported by {@link E2EPageHandle.pressKey}. Kept small and
+ * engine-agnostic so both Playwright and Selenium can map it.
+ */
+export enum E2EKey {
+    /**
+     * Enter key: saves in the inline editors.
+     */
+    Enter = 'Enter',
+
+    /**
+     * Escape key: cancels inline editing.
+     */
+    Escape = 'Escape',
+
+    /**
+     * Shift+Enter: inserts a newline in a comment block.
+     */
+    ShiftEnter = 'Shift+Enter',
+
+    /**
+     * End key: moves the caret to the end of the line.
+     */
+    End = 'End',
+
+    /**
+     * Control+A (select all).
+     */
+    ControlA = 'Control+a',
+
+    /**
+     * Meta+A (select all on macOS).
+     */
+    MetaA = 'Meta+a',
+
+    /**
+     * Backspace key.
+     */
+    Backspace = 'Backspace',
+
+    /**
+     * Control+S (save).
+     */
+    ControlS = 'Control+s',
+
+    /**
+     * Meta+S (save on macOS).
+     */
+    MetaS = 'Meta+s',
+}
+
+/**
  * Engine-agnostic handle to a navigated E2E surface page.
  * Exposes query methods for test assertions.
  */
@@ -73,6 +124,17 @@ export type E2EPageHandle = {
      * @param text Text to type.
      */
     typeText(selector: string, text: string): Promise<void>;
+
+    /**
+     * Focuses the first element matching a CSS selector and presses a key or
+     * key chord using real key events, so rich-text widgets (e.g. CodeMirror)
+     * handle it. Unlike `typeText`, this can send non-printable keys and
+     * modifier chords.
+     *
+     * @param selector CSS selector of the element to focus.
+     * @param key Key or key chord to press.
+     */
+    pressKey(selector: string, key: E2EKey): Promise<void>;
 
     /**
      * Evaluates a function in the browser page context and returns its result.

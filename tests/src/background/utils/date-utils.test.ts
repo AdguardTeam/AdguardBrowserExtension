@@ -19,6 +19,8 @@
  */
 
 import {
+    afterAll,
+    beforeAll,
     describe,
     it,
     expect,
@@ -28,9 +30,43 @@ import {
     parseLastModifiedHeader,
     isValidTimestamp,
     convertToISOString,
+    getUtcDate,
 } from '../../../../Extension/src/background/utils/date-utils';
 
 describe('date-utils', () => {
+    describe('getUtcDate', () => {
+        // CI runs in UTC, where formatting a plain Date would pass these checks too.
+        const originalTz = process.env.TZ;
+
+        beforeAll(() => {
+            process.env.TZ = 'Asia/Tokyo';
+        });
+
+        afterAll(() => {
+            if (originalTz === undefined) {
+                delete process.env.TZ;
+            } else {
+                process.env.TZ = originalTz;
+            }
+        });
+
+        it('uses the previous UTC date for an early time east of UTC', () => {
+            expect(getUtcDate(Date.parse('2026-09-14T00:30:00+03:00'))).toBe('2026-09-13');
+        });
+
+        it('uses the next UTC date for a late time west of UTC', () => {
+            expect(getUtcDate(Date.parse('2026-09-14T23:30:00-04:00'))).toBe('2026-09-15');
+        });
+
+        it('keeps the date for the last millisecond of a UTC day', () => {
+            expect(getUtcDate(Date.parse('2026-09-14T23:59:59.999Z'))).toBe('2026-09-14');
+        });
+
+        it('switches the date at UTC midnight', () => {
+            expect(getUtcDate(Date.parse('2026-09-15T00:00:00.000Z'))).toBe('2026-09-15');
+        });
+    });
+
     describe('parseLastModifiedHeader', () => {
         it('should parse valid RFC 7231 date', () => {
             const header = 'Wed, 21 Oct 2015 07:28:00 GMT';

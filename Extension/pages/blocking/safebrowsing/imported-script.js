@@ -163,7 +163,8 @@ const getConfig = () => {
   config = {
     appName: window.APP_NAME,
     pageType: window.PAGE_TYPE,
-    host: window.location.host
+    host: window.location.host,
+    pageUrl: window.location.href
   };
   return config;
 };
@@ -206,6 +207,7 @@ const getPlaceholders = () => {
   const config2 = getConfig();
   placeholders = {
     host: config2.host,
+    page_url: config2.pageUrl,
     reports_url: `https://link.adtidy.org/forward.html?action=site_report_page&domain=${config2.host}&from=${config2.pageType}&app=${config2.appName}`,
     dns_reports_new_issue_url: `https://link.adtidy.org/forward.html?action=report_issue&from=${config2.pageType}&app=${config2.appName}`,
     support_url: `mailto:support@adguard.com`,
@@ -216,7 +218,8 @@ const getPlaceholders = () => {
     user_rules_url: `https://link.adtidy.org/forward.html?action=dns_site_user_rules&from=${config2.pageType}&app=${config2.appName}`,
     locations_count: 65,
     users_count: "100",
-    vpn_product_name: "AdGuard VPN"
+    vpn_product_name: "AdGuard VPN",
+    core_libs_certificate_kb_url: "https://link.adtidy.org/forward.html?action=how_to_install_cert&from=certificate&app=corelibs"
   };
   return placeholders;
 };
@@ -230,7 +233,7 @@ const replacePlaceholders = (text) => {
   }
   const placeholders2 = getPlaceholders();
   return Object.entries(placeholders2).reduce((acc, [key, value]) => {
-    return acc.replace(new RegExp(`%${key}%`, "g"), value);
+    return acc.replaceAll(`%${key}%`, () => value);
   }, text);
 };
 const translateNode = (node) => {

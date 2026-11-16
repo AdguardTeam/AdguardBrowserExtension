@@ -43,12 +43,12 @@ import { BrowserUtils } from '../../../utils/browser-utils';
 import {
     AntiBannerFiltersId,
     AntibannerGroupsId,
-    CHROME_EXTENSIONS_SETTINGS_URL,
     FILTERING_LOG_WINDOW_STATE_KEY,
 } from '../../../../common/constants';
 import { WindowsApi, TabsApi } from '../../../../common/api/extension';
 import { Prefs } from '../../../prefs';
 import { CustomFilterApi, FiltersApi } from '../../filters';
+import { PARAM_NAMES } from '../../settings/configuration-import/param-mapping';
 import {
     FILTERING_LOG_OUTPUT,
     POST_INSTALL_OUTPUT,
@@ -56,8 +56,9 @@ import {
     OPTIONS_OUTPUT,
 } from '../../../../../../constants';
 import { logger } from '../../../../common/logger';
-import { OptionsPageSections } from '../../../../common/nav';
+import { OptionsPageSections, getFiltersGroupPath } from '../../../../common/nav';
 import { FilterUpdateService } from '../../../services/filter-update';
+import { ExtensionStore, ExtensionStoreResolver } from '../../../services/extension-store/extension-store-resolver';
 import { CustomFilterUtils } from '../../../../common/custom-filter-utils';
 import { browserStorage } from '../../../storages/shared-instances';
 import { browserAction } from '../browser-action';
@@ -100,11 +101,6 @@ export abstract class PagesApiCommon {
      * @see {@link https://github.com/AdguardTeam/ReportsWebApp#pre-filling-the-app-with-query-parameters}
      */
     private static readonly PRODUCT_TYPE = 'ext';
-
-    /**
-     * Chrome Web Store listing URL prefix returned in extension metadata.
-     */
-    private static readonly CHROME_WEB_STORE_HOMEPAGE_URL_PREFIX = 'https://chromewebstore.google.com/';
 
     /**
      * Settings page url.
@@ -166,11 +162,6 @@ export abstract class PagesApiCommon {
      */
     protected abstract get chromeExtensionStoreForwardAction():
         ForwardAction.ChromeMv3Store | ForwardAction.ChromeMv2Store | ForwardAction.ChromeMv3BetaStore;
-
-    /**
-     * Lazily calculated extension store URL.
-     */
-    private extensionStoreUrlPromise?: Promise<string>;
 
     /**
      * Opens the settings tab and focuses on it if there is no open setting tab.
@@ -368,9 +359,9 @@ export abstract class PagesApiCommon {
         const params: ForwardParams = {
             action: ForwardAction.IssueReport,
             from,
-            scheme_version: '4',
+            [PARAM_NAMES.SCHEME_VERSION]: '4',
             product_type: PagesApiCommon.PRODUCT_TYPE,
-            'ext.manifest_version': encodeURIComponent(manifestDetails.manifest_version),
+            [PARAM_NAMES.EXT_MANIFEST_VERSION]: encodeURIComponent(manifestDetails.manifest_version),
             product_version: encodeURIComponent(productVersion),
             url: encodeURIComponent(siteUrl),
         };
@@ -389,7 +380,7 @@ export abstract class PagesApiCommon {
         }
 
         if (commonFilterIds.length > 0) {
-            params.regular_filters = encodeURIComponent(commonFilterIds.join(','));
+            params[PARAM_NAMES.REGULAR_FILTERS] = encodeURIComponent(commonFilterIds.join(','));
         }
 
         const isCustomFiltersEnabled = groupStateStorage.get(AntibannerGroupsId.CustomFiltersGroupId)?.enabled;
@@ -399,7 +390,7 @@ export abstract class PagesApiCommon {
                 .map(({ title, customUrl }) => `${title} (url: ${UrlUtils.trimFilterFilepath(customUrl)})`);
 
             if (customFilterEntries.length > 0) {
-                params.custom_filters = encodeURIComponent(customFilterEntries.join(','));
+                params[PARAM_NAMES.CUSTOM_FILTERS] = encodeURIComponent(customFilterEntries.join(','));
             }
         }
 
@@ -521,12 +512,12 @@ export abstract class PagesApiCommon {
     };
 
     /**
-     * Opens Chrome's extensions settings page.
+     * Opens browser's extensions settings page.
      */
-    public static async openChromeExtensionsSettingsPage(): Promise<void> {
+    public static async openExtensionsSettingsPage(): Promise<void> {
         // if a tab with the same url is already opened, create new tab even
-        // because `chrome://extensions` cannot be queried with browser.tabs.query (via TabsApi.findOne)
-        await browser.tabs.create({ url: CHROME_EXTENSIONS_SETTINGS_URL });
+        // because the extensions settings page cannot be queried with browser.tabs.query (via TabsApi.findOne)
+        await browser.tabs.create({ url: BrowserUtils.getExtensionsSettingsUrl() });
     }
 
     /**
@@ -534,7 +525,7 @@ export abstract class PagesApiCommon {
      */
     public static async openExtensionDetailsPage(): Promise<void> {
         // if a tab with the same url is already opened, create new tab even
-        // because `chrome://extensions` cannot be queried with browser.tabs.query (via TabsApi.findOne)
+        // because the extensions settings page cannot be queried with browser.tabs.query (via TabsApi.findOne)
         // IMPORTANT: extension details url helper is used in options page as well,
         // so it should not be a PagesApi method, otherwise options page bundle size increase
         await browser.tabs.create({ url: BrowserUtils.getExtensionDetailsUrl() });
@@ -582,8 +573,8 @@ export abstract class PagesApiCommon {
 
         const { url, title } = message.data;
 
-        // TODO: Use shared constants for query parameters
-        let optionalPart = '#filters?group=0';
+        // TODO: Use shared constants for the remaining query parameters
+        let optionalPart = `#${getFiltersGroupPath(AntibannerGroupsId.CustomFiltersGroupId)}`;
         if (title) {
             optionalPart += `&title=${title}`;
         }
@@ -692,55 +683,23 @@ export abstract class PagesApiCommon {
     }
 
     /**
-     * Checks whether the extension was installed from Chrome Web Store.
-     *
-     * @returns True if extension metadata points to Chrome Web Store; otherwise, false.
-     */
-    private static async isInstalledFromChromeWebStore(): Promise<boolean> {
-        try {
-            const { homepageUrl } = await browser.management.getSelf();
-            return homepageUrl?.startsWith(PagesApiCommon.CHROME_WEB_STORE_HOMEPAGE_URL_PREFIX) ?? false;
-        } catch (error) {
-            const message = getErrorMessage(error);
-            logger.warn(
-                `[ext.PagesApiCommon.isInstalledFromChromeWebStore]: Failed to get extension info: ${message}`,
-            );
-            return false;
-        }
-    }
-
-    /**
-     * Returns the cached extension store URL, calculating it on first use.
+     * Calculates the store URL from the store the extension was installed from,
+     * defaulting to Chrome Web Store for other cases.
      *
      * @returns Extension store url.
      */
-    private getExtensionStoreUrl(): Promise<string> {
-        this.extensionStoreUrlPromise ??= this.calculateExtensionStoreUrl();
-        return this.extensionStoreUrlPromise;
-    }
+    private async getExtensionStoreUrl(): Promise<string> {
+        const store = await ExtensionStoreResolver.resolve();
 
-    /**
-     * Calculates store URL by browser and installation source,
-     * defaulting to Chrome Web Store for other Chromium browsers.
-     *
-     * @returns Extension store url.
-     */
-    private async calculateExtensionStoreUrl(): Promise<string> {
-        let action: ForwardAction = this.chromeExtensionStoreForwardAction;
-
-        if (UserAgent.isFirefox) {
-            action = ForwardAction.FirefoxStore;
-        } else if (UserAgent.isOpera || UserAgent.isEdge) {
-            const isInstalledFromChromeWebStore = await PagesApiCommon.isInstalledFromChromeWebStore();
-            if (!isInstalledFromChromeWebStore) {
-                action = UserAgent.isOpera
-                    ? ForwardAction.OperaStore
-                    : ForwardAction.EdgeStore;
-            }
-        }
+        const storeActions = {
+            [ExtensionStore.Firefox]: ForwardAction.FirefoxStore,
+            [ExtensionStore.Edge]: ForwardAction.EdgeStore,
+            [ExtensionStore.Opera]: ForwardAction.OperaStore,
+            [ExtensionStore.Chrome]: this.chromeExtensionStoreForwardAction,
+        } satisfies Record<ExtensionStore, ForwardAction>;
 
         return Forward.get({
-            action,
+            action: storeActions[store],
             from: ForwardFrom.Options,
         });
     }
@@ -762,6 +721,18 @@ export abstract class PagesApiCommon {
     protected abstract getCookieStealthOptions(): CookieStealthOption[];
 
     /**
+     * Determines whether the issue report shows Block fingerprinting as on:
+     * the setting is enabled and, on MV3, the user scripts API that the
+     * protection depends on is available.
+     *
+     * @returns True if Block fingerprinting is reported as on, false otherwise.
+     */
+    // eslint-disable-next-line class-methods-use-this
+    protected isBlockFingerprintingActive(): boolean {
+        return settingsStorage.get(SettingOption.BlockFingerprinting);
+    }
+
+    /**
      * Returns stealth url params.
      *
      * @param filterIds List of filter id.
@@ -772,30 +743,30 @@ export abstract class PagesApiCommon {
         const stealthEnabled = !settingsStorage.get(SettingOption.DisableStealthMode);
 
         if (!stealthEnabled) {
-            return { 'stealth.enabled': '0' };
+            return { [PARAM_NAMES.STEALTH_ENABLED]: '0' };
         }
 
         const stealthOptions = [
             {
-                queryKey: 'stealth.hide_search_queries',
+                queryKey: PARAM_NAMES.STEALTH_HIDE_SEARCH_QUERIES,
                 settingKey: SettingOption.HideSearchQueries,
             },
             {
-                queryKey: 'stealth.send_dnt',
+                queryKey: PARAM_NAMES.STEALTH_SEND_DNT,
                 settingKey: SettingOption.SendDoNotTrack,
             },
             {
-                queryKey: 'stealth.x_client',
+                queryKey: PARAM_NAMES.STEALTH_X_CLIENT,
                 settingKey: SettingOption.RemoveXClientData,
             },
             {
-                queryKey: 'stealth.block_webrtc',
+                queryKey: PARAM_NAMES.STEALTH_BLOCK_WEBRTC,
                 settingKey: SettingOption.BlockWebRTC,
             },
             ...this.getCookieStealthOptions(),
         ];
 
-        const stealthOptionsEntries = [['stealth.enabled', '1']];
+        const stealthOptionsEntries = [[PARAM_NAMES.STEALTH_ENABLED, '1']];
 
         stealthOptions.forEach((stealthOption) => {
             const { queryKey, settingKey, settingValueKey } = stealthOption;
@@ -817,19 +788,23 @@ export abstract class PagesApiCommon {
             stealthOptionsEntries.push([queryKey, option]);
         });
 
+        if (this.isBlockFingerprintingActive()) {
+            stealthOptionsEntries.push([PARAM_NAMES.STEALTH_BLOCK_FINGERPRINTING, '1']);
+        }
+
         if (settingsStorage.get(SettingOption.HideReferrer)) {
-            stealthOptionsEntries.push(['stealth.referrer', '']);
+            stealthOptionsEntries.push([PARAM_NAMES.STEALTH_REFERRER, '']);
         }
 
         // https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2721
         const isBlockTrackersEnabled = filterIds.includes(AntiBannerFiltersId.TrackingFilterId);
         if (isBlockTrackersEnabled) {
-            stealthOptionsEntries.push(['stealth.block_trackers', '1']);
+            stealthOptionsEntries.push([PARAM_NAMES.STEALTH_BLOCK_TRACKERS, '1']);
         }
 
         const isRemoveUrlParamsEnabled = filterIds.includes(AntiBannerFiltersId.UrlTrackingFilterId);
         if (isRemoveUrlParamsEnabled) {
-            stealthOptionsEntries.push(['stealth.strip_url', '1']);
+            stealthOptionsEntries.push([PARAM_NAMES.STEALTH_STRIP_URL, '1']);
         }
 
         return Object.fromEntries(stealthOptionsEntries);

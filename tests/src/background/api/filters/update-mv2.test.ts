@@ -33,6 +33,7 @@ import { FiltersDownloader } from '@adguard/filters-downloader/browser';
 
 import {
     Categories,
+    CustomFilterApi,
     FiltersApi,
     FilterUpdateApi,
     SettingsApi,
@@ -53,6 +54,7 @@ import {
     CLIENT_ID_KEY,
 } from '../../../../../Extension/src/common/constants';
 import { SettingOption } from '../../../../../Extension/src/background/schema';
+import { DEFAULT_FILTERS_UPDATE_PERIOD } from '../../../../../Extension/src/common/settings';
 import { FiltersStoragesAdapter } from '../../../../../Extension/src/background/storages/filters-adapter';
 import { fakeFilterWithVersion } from '../../../../helpers/fixtures/fake-filter-with-version';
 import { fakeFilterV4WithDiffPath } from '../../../../helpers/fixtures/fake_filter_v4_with_diff_path';
@@ -495,6 +497,135 @@ describe.skipIf(__IS_MV3__)('Filter Update API should', () => {
             lastCheckTime = filterVersionData[1]!.lastCheckTime;
             lastScheduledCheckTime = filterVersionData[1]!.lastScheduledCheckTime;
             expect(lastScheduledCheckTime).toBeGreaterThanOrEqual(lastCheckTime);
+        });
+    });
+
+    describe('custom filter full-sync scheduling', () => {
+        const customUrl = 'https://example.com/scheduled-custom-filter.txt';
+        const initialFilter = fakeFilterV4WithDiffPath.replace('/some.patch', '/filter-s-1-1.patch');
+        let filterId: number;
+
+        beforeEach(async () => {
+            storage = mockLocalStorage({ [APP_VERSION_KEY]: '5.2.0.0' });
+            await App.init();
+            await SettingsApi.setSetting(SettingOption.FiltersUpdatePeriod, DEFAULT_FILTERS_UPDATE_PERIOD);
+
+            vi.spyOn(FiltersDownloader, 'downloadWithRaw').mockResolvedValue({
+                filter: initialFilter.split('\n'),
+                rawFilter: initialFilter,
+            });
+            const created = await CustomFilterApi.createFilter({
+                customUrl,
+                trusted: false,
+                enabled: true,
+            });
+            filterId = created.filterId;
+            vi.spyOn(FiltersApi, 'getInstalledAndEnabledFiltersIds').mockReturnValue([filterId]);
+            vi.mocked(FiltersDownloader.downloadWithRaw).mockClear();
+        });
+
+        afterEach(async () => {
+            await storage.clear();
+            vi.restoreAllMocks();
+        });
+
+        it.each(['unchanged', 'failed', 'updated'])(
+            'performs the scheduled full sync after an %s patch result',
+            async (outcome) => {
+                const filterVersion = filterVersionStorage.get(filterId)!;
+                const { lastCheckTime, expires } = filterVersion;
+                const patchResult = outcome === 'updated'
+                    ? initialFilter.replace('1.0.0.0', '2.0.0.0').replace('4 days', '8 days')
+                    : initialFilter;
+                const downloadSpy = vi.mocked(FiltersDownloader.downloadWithRaw);
+                downloadSpy.mockResolvedValue({
+                    filter: patchResult.split('\n'),
+                    rawFilter: patchResult,
+                    isPatchUpdateFailed: outcome === 'failed',
+                });
+
+                vi.spyOn(Date, 'now').mockReturnValue(lastCheckTime + 60 * 60 * 1000);
+                await FilterUpdateApi.autoUpdateFilters();
+
+                expect(downloadSpy).toHaveBeenCalledTimes(1);
+                expect(downloadSpy.mock.calls[0]?.[1]).toMatchObject({ force: false });
+                expect(filterVersionStorage.get(filterId)).toMatchObject({ lastCheckTime, expires });
+
+                if (outcome === 'failed') {
+                    await FilterUpdateApi.autoUpdateFilters();
+                    expect(downloadSpy).toHaveBeenCalledTimes(1);
+                }
+
+                vi.spyOn(Date, 'now').mockReturnValue(lastCheckTime + expires * 1000);
+                const fullFilter = initialFilter.replace('1.0.0.0', '3.0.0.0');
+                downloadSpy.mockResolvedValue({
+                    filter: fullFilter.split('\n'),
+                    rawFilter: fullFilter,
+                });
+
+                const updated = await FilterUpdateApi.autoUpdateFilters();
+
+                expect(downloadSpy).toHaveBeenCalledTimes(2);
+                expect(downloadSpy.mock.calls[1]?.[1]).toMatchObject({ force: true });
+                expect(updated.map((filter) => filter.filterId)).toEqual([filterId]);
+                expect(filterVersionStorage.get(filterId)).toMatchObject({
+                    version: '3.0.0.0',
+                    lastCheckTime: Date.now(),
+                    shouldWaitFullUpdate: false,
+                });
+                expect(await FiltersStoragesAdapter.getOriginal(filterId)).toBe(fullFilter);
+            },
+        );
+
+        it('preserves the user-selected full-sync interval', async () => {
+            const { lastCheckTime, expires } = filterVersionStorage.get(filterId)!;
+            const updatePeriod = expires * 1000 * 2;
+            await SettingsApi.setSetting(SettingOption.FiltersUpdatePeriod, updatePeriod);
+            vi.spyOn(Date, 'now').mockReturnValue(lastCheckTime + expires * 1000);
+
+            await FilterUpdateApi.autoUpdateFilters();
+
+            const downloadSpy = vi.mocked(FiltersDownloader.downloadWithRaw);
+            expect(downloadSpy.mock.calls[0]?.[1]).toMatchObject({ force: false });
+
+            vi.spyOn(Date, 'now').mockReturnValue(lastCheckTime + updatePeriod);
+            await FilterUpdateApi.autoUpdateFilters();
+
+            expect(downloadSpy.mock.calls[1]?.[1]).toMatchObject({ force: true });
+        });
+
+        it('repairs a broken patch chain on a manual update with a single full download', async () => {
+            const downloadSpy = vi.mocked(FiltersDownloader.downloadWithRaw);
+
+            // A patch-mode download fails, e.g. when the patch file fails to
+            // apply after the filter URL was moved or redirected.
+            downloadSpy.mockResolvedValue({
+                filter: initialFilter.split('\n'),
+                rawFilter: initialFilter,
+                isPatchUpdateFailed: true,
+            });
+            await FilterUpdateApi.autoUpdateFilters(false);
+
+            expect(downloadSpy.mock.calls[0]?.[1]).toMatchObject({ force: false });
+            expect(filterVersionStorage.get(filterId)?.shouldWaitFullUpdate).toBe(true);
+
+            const repairedFilter = initialFilter.replace('1.0.0.0', '2.0.0.0');
+            downloadSpy.mockResolvedValue({
+                filter: repairedFilter.split('\n'),
+                rawFilter: repairedFilter,
+            });
+            downloadSpy.mockClear();
+
+            const updated = await FilterUpdateApi.autoUpdateFilters(true);
+
+            expect(downloadSpy).toHaveBeenCalledTimes(1);
+            expect(downloadSpy.mock.calls[0]?.[1]).toMatchObject({ force: true });
+            expect(updated.map((filter) => filter.filterId)).toEqual([filterId]);
+            expect(await FiltersStoragesAdapter.getOriginal(filterId)).toBe(repairedFilter);
+            expect(filterVersionStorage.get(filterId)).toMatchObject({
+                version: '2.0.0.0',
+                shouldWaitFullUpdate: false,
+            });
         });
     });
 

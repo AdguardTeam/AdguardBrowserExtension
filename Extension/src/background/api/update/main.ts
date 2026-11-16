@@ -97,6 +97,7 @@ export class UpdateApi {
         '12': UpdateApi.migrateFromV12toV13,
         '13': UpdateApi.migrateFromV13toV14,
         '14': UpdateApi.migrateFromV14toV15,
+        '15': UpdateApi.migrateFromV15toV16,
     };
 
     /**
@@ -217,6 +218,24 @@ export class UpdateApi {
 
         return value;
     };
+
+    /**
+     * Run data migration from schema v15 to schema v16.
+     *
+     * Adds the new {SettingOption.BlockFingerprinting} setting with default value false.
+     *
+     * For the extension update to v5.6.0.
+     */
+    private static async migrateFromV15toV16(): Promise<void> {
+        const settings = await browserStorage.get(ADGUARD_SETTINGS_KEY);
+
+        if (!UpdateApi.isObject(settings)) {
+            throw new Error('Settings is not an object');
+        }
+        settings[SettingOption.BlockFingerprinting] = false;
+
+        await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
+    }
 
     /**
      * Run data migration from schema v14 to schema v15.

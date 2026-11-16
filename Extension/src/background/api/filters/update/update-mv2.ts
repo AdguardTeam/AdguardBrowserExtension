@@ -20,7 +20,6 @@
 
 import { filterVersionStorage, settingsStorage } from '../../../storages';
 import { SettingOption } from '../../../schema';
-import { DEFAULT_FILTERS_UPDATE_PERIOD } from '../../../../common/settings';
 import { logger } from '../../../../common/logger';
 import { FiltersUpdateTime } from '../../../../common/constants';
 import { engine } from '../../../engine';
@@ -33,6 +32,7 @@ import { type FilterMetadata, FiltersApi } from '../main';
 import { CustomFilterApi } from '../custom';
 
 import { type FilterUpdateOptions, type FilterUpdateOptionsList } from './types';
+import { isFullUpdateDue } from './selectors';
 
 /**
  * API for manual and automatic (by period) filter rules updates.
@@ -306,26 +306,9 @@ export class FilterUpdateApi {
     ): FilterUpdateOptionsList {
         const filterVersions = filterVersionStorage.getData();
 
-        return filterUpdateOptionsList.filter((data) => {
-            const filterVersion = filterVersions[data.filterId];
-
-            if (!filterVersion) {
-                return true;
-            }
-
-            const { lastCheckTime, expires } = filterVersion;
-
-            // By default, checks the "expires" field for each filter.
-            if (updatePeriod === DEFAULT_FILTERS_UPDATE_PERIOD) {
-                // If it is time to check the update, adds it to the array.
-                // IMPORTANT: "expires" in filter is specified in SECONDS.
-                return lastCheckTime + expires * 1000 <= Date.now();
-            }
-
-            // Check, if the renewal period of each filter has passed.
-            // If it is time to check the renewal, add to the array.
-            return lastCheckTime + updatePeriod <= Date.now();
-        });
+        return filterUpdateOptionsList.filter(
+            (data) => isFullUpdateDue(filterVersions[data.filterId], updatePeriod),
+        );
     }
 }
 

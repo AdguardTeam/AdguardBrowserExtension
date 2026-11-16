@@ -76,7 +76,6 @@ export const enum ForwardAction {
     EdgeStore = 'edge_store',
     IOS = 'ios_about',
     Android = 'android_about',
-    GetTheApp = 'get_the_app',
     GithubVersion = 'github_version_popup',
     GithubVersionBeta = 'github_version_popup_beta',
     LearnAboutAdGuard = 'learn_about_adguard',
@@ -93,6 +92,7 @@ export const enum ForwardAction {
     DesktopAppPromoMac = 'desktop_app_promo_mac',
     DesktopAppPromoLinux = 'desktop_app_promo_linux',
     ShareLink = 'share_link',
+    AdguardProducts = 'other_products',
 }
 
 /**

@@ -29,6 +29,16 @@ import { MIN_SUPPORTED_VERSION } from '../../constants';
 export const OBJECT_CREATE_MODULE_REGEX = /[\\/]core-js[\\/]internals[\\/]object-create\.js$/;
 
 /**
+ * Matches modules inside node_modules that SWC must not transpile, except
+ * `@adguard/tswebextension`. Added in AG-28996.
+ *
+ * Accepts both path separators: with `/` only it never matched on Windows,
+ * SWC re-transpiled core-js and the build failed.
+ * Regression test: tests/tools/bundle/swc-config.test.ts.
+ */
+export const NODE_MODULES_EXCLUDE_REGEX = /node_modules[\\/](?!@adguard[\\/]tswebextension)/;
+
+/**
  * Returns the SWC `env.targets` for the current build.
  *
  * MV3 builds use the Chromium MV3 minimum from `MIN_SUPPORTED_VERSION`.

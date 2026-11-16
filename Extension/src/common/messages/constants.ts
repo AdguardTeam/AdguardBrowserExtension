@@ -26,6 +26,7 @@
  * other that types.
  */
 
+import { type AutoDisabledFilter } from '../auto-disable-notification';
 import { type ForwardFrom } from '../forward';
 import { type SettingOption, type Settings } from '../../background/schema/settings';
 import { type CategoriesFilterData } from '../../background/api/filters/categories';
@@ -87,6 +88,7 @@ export enum MessageType {
     UpdateExtensionMv3 = 'updateExtensionMv3',
     DisableFiltersGroup = 'disableFiltersGroup',
     DisableFilter = 'disableFilter',
+    ClearUnusedFiltersStatus = 'clearUnusedFiltersStatus',
     LoadCustomFilterInfo = 'loadCustomFilterInfo',
     SubscribeToCustomFilter = 'subscribeToCustomFilter',
     RemoveAntiBannerFilter = 'removeAntiBannerFilter',
@@ -98,7 +100,7 @@ export enum MessageType {
     OpenAssistant = 'openAssistant',
     OpenAbuseTab = 'openAbuseTab',
     OpenSiteReportTab = 'openSiteReportTab',
-    OpenChromeExtensionsSettingsPage = 'openChromeExtensionsSettingsPage',
+    OpenExtensionsSettingsPage = 'openExtensionsSettingsPage',
     OpenExtensionDetailsPage = 'openExtensionDetailsPage',
     ResetUserRulesForPage = 'resetUserRulesForPage',
     RemoveAllowlistDomain = 'removeAllowlistDomain',
@@ -119,6 +121,8 @@ export enum MessageType {
     NotifyListeners = 'notifyListeners',
     AddLongLivedConnection = 'addLongLivedConnection',
     GetOptionsData = 'getOptionsData',
+    GetAutoDisableNotifications = 'getAutoDisableNotifications',
+    AcknowledgeAutoDisableNotifications = 'acknowledgeAutoDisableNotifications',
     ChangeUserSettings = 'changeUserSetting',
     CheckRequestFilterReady = 'checkRequestFilterReady',
     OpenThankYouPage = 'openThankYouPage',
@@ -158,7 +162,6 @@ export enum MessageType {
     CanEnableStaticFilterMv3 = 'canEnableStaticFilterMv3',
     CanEnableStaticGroupMv3 = 'canEnableStaticGroupMv3',
     ClearRulesLimitsWarningMv3 = 'clearRulesLimitsWarningMv3',
-    RestoreFiltersMv3 = 'restoreFiltersMv3',
     CurrentLimitsMv3 = 'currentLimitsMv3',
     GetExtensionStatusForPopupMV3 = 'getExtensionStatusForPopupMV3',
     ImportConfiguration = 'importConfiguration',
@@ -167,6 +170,7 @@ export enum MessageType {
     ApplyImportConfiguration = 'applyImportConfiguration',
     CancelImportConfiguration = 'cancelImportConfiguration',
     GenerateShareUrl = 'generateShareUrl',
+    ReapplyCanvasProtection = 'reapplyCanvasProtection',
 }
 
 export type ApplySettingsJsonMessage = {
@@ -289,8 +293,8 @@ export type ResetBlockedAdsCountMessage = {
     type: MessageType.ResetBlockedAdsCount;
 };
 
-export type OpenChromeExtensionsSettingsPageMessage = {
-    type: MessageType.OpenChromeExtensionsSettingsPage;
+export type OpenExtensionsSettingsPageMessage = {
+    type: MessageType.OpenExtensionsSettingsPage;
 };
 
 export type OpenExtensionDetailsPageMessage = {
@@ -344,6 +348,15 @@ export type OpenThankYouPageMessage = {
     type: MessageType.OpenThankYouPage;
 };
 
+export type GetAutoDisableNotificationsMessage = {
+    type: MessageType.GetAutoDisableNotifications;
+};
+
+export type AcknowledgeAutoDisableNotificationsMessage = {
+    type: MessageType.AcknowledgeAutoDisableNotifications;
+    data: { filterIds: number[] };
+};
+
 export type GetOptionsDataMessage = {
     type: MessageType.GetOptionsData;
 };
@@ -371,6 +384,13 @@ export type DisableFilterMessage = {
     type: MessageType.DisableFilter;
     data: {
         filterId: number;
+    };
+};
+
+export type ClearUnusedFiltersStatusMessage = {
+    type: MessageType.ClearUnusedFiltersStatus;
+    data: {
+        filterIds: number[];
     };
 };
 
@@ -722,10 +742,6 @@ export type CurrentLimitsMv3Message = {
     type: MessageType.CurrentLimitsMv3;
 };
 
-export type RestoreFiltersMv3Message = {
-    type: MessageType.RestoreFiltersMv3;
-};
-
 export type ClearRulesLimitsWarningMv3Message = {
     type: MessageType.ClearRulesLimitsWarningMv3;
 };
@@ -763,6 +779,10 @@ export type CancelImportConfigurationMessage = {
 
 export type GenerateShareUrlMessage = {
     type: MessageType.GenerateShareUrl;
+};
+
+export type ReapplyCanvasProtectionMessage = {
+    type: MessageType.ReapplyCanvasProtection;
 };
 
 // Unified message map that includes both message structure and response types
@@ -843,8 +863,8 @@ export type MessageMap = {
         message: OpenExtensionStoreMessage;
         response: void;
     };
-    [MessageType.OpenChromeExtensionsSettingsPage]: {
-        message: OpenChromeExtensionsSettingsPageMessage;
+    [MessageType.OpenExtensionsSettingsPage]: {
+        message: OpenExtensionsSettingsPageMessage;
         response: void;
     };
     [MessageType.OpenExtensionDetailsPage]: {
@@ -879,6 +899,14 @@ export type MessageMap = {
         message: OpenThankYouPageMessage;
         response: void;
     };
+    [MessageType.GetAutoDisableNotifications]: {
+        message: GetAutoDisableNotificationsMessage;
+        response: AutoDisabledFilter[];
+    };
+    [MessageType.AcknowledgeAutoDisableNotifications]: {
+        message: AcknowledgeAutoDisableNotificationsMessage;
+        response: void;
+    };
     [MessageType.GetOptionsData]: {
         message: GetOptionsDataMessage;
         response: GetOptionsDataResponse;
@@ -897,6 +925,10 @@ export type MessageMap = {
     };
     [MessageType.DisableFilter]: {
         message: DisableFilterMessage;
+        response: void;
+    };
+    [MessageType.ClearUnusedFiltersStatus]: {
+        message: ClearUnusedFiltersStatusMessage;
         response: void;
     };
     [MessageType.RemoveAntiBannerFilter]: {
@@ -1103,10 +1135,6 @@ export type MessageMap = {
         message: CanEnableStaticGroupMv3Message;
         response: StaticLimitsCheckResult;
     };
-    [MessageType.RestoreFiltersMv3]: {
-        message: RestoreFiltersMv3Message;
-        response: void;
-    };
     [MessageType.ClearRulesLimitsWarningMv3]: {
         message: ClearRulesLimitsWarningMv3Message;
         response: void;
@@ -1146,6 +1174,10 @@ export type MessageMap = {
     [MessageType.GenerateShareUrl]: {
         message: GenerateShareUrlMessage;
         response: string;
+    };
+    [MessageType.ReapplyCanvasProtection]: {
+        message: ReapplyCanvasProtectionMessage;
+        response: void;
     };
 };
 

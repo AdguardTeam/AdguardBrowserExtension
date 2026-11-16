@@ -46,6 +46,8 @@ import {
     iconsApi,
     DocumentBlockApi,
     CustomFilterApi,
+    CanvasProtectionApi,
+    CanvasProtectionResultSource,
 } from '../api';
 import { RulesLimitsService, rulesLimitsService } from '../services/rules-limits/rules-limits-service-mv3';
 import { UserRulesService } from '../services/userrules';
@@ -168,6 +170,7 @@ export class Engine implements TsWebExtensionEngine {
         UserRulesService.checkUserRulesErrors(result);
 
         await Engine.checkAppliedStealthSettings(configuration.settings, result.stealthResult);
+        CanvasProtectionApi.logResult(CanvasProtectionResultSource.Start, result.canvasProtection);
 
         const rulesCount = this.api.getRulesCount();
         logger.info(`[ext.Engine.start]: tswebextension is started. Rules count: ${rulesCount}`);
@@ -216,6 +219,7 @@ export class Engine implements TsWebExtensionEngine {
         UserRulesService.checkUserRulesErrors(result);
 
         await Engine.checkAppliedStealthSettings(configuration.settings, result.stealthResult);
+        CanvasProtectionApi.logResult(CanvasProtectionResultSource.Configure, result.canvasProtection);
 
         const rulesCount = this.api.getRulesCount();
         logger.info(`[ext.Engine.update]: tswebextension configuration is updated. Rules count: ${rulesCount}`);

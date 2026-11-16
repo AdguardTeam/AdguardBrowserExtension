@@ -24,6 +24,7 @@ import {
     render,
     screen,
     cleanup,
+    fireEvent,
 } from '@testing-library/react';
 import {
     afterEach,
@@ -34,6 +35,9 @@ import {
 } from 'vitest';
 
 import { RuleRow } from '../../../../../../Extension/src/pages/options/components/UserRules/RuleRow';
+import {
+    InlineActionSource,
+} from '../../../../../../Extension/src/pages/options/components/UserRules/inline-action-source';
 
 vi.mock(
     '../../../../../../Extension/src/pages/options/components/UserRules/RuleRow.module.pcss',
@@ -47,6 +51,25 @@ vi.mock('../../../../../../Extension/src/common/translators/translator', () => (
 vi.mock('../../../../../../Extension/src/pages/common/components/ui/Icon', () => ({
     Icon: ({ id }: { id: string }) => React.createElement('svg', { 'data-testid': `icon-${id}` }),
 }));
+
+vi.mock(
+    '../../../../../../Extension/src/pages/options/components/UserRules/InlineRuleEditor',
+    () => import('../../../../../helpers/mocks/inline-rule-editor'),
+);
+
+vi.mock(
+    '../../../../../../Extension/src/pages/options/components/UserRules/CommentBlockLines',
+    () => ({
+        CommentBlockLines: ({ lines, viewportDocumentTop }: {
+            lines: { displayText: string }[];
+            viewportDocumentTop: number;
+        }) => React.createElement('div', {
+            'data-testid': 'comment-block-lines',
+            'data-line-count': String(lines.length),
+            'data-viewport-top': String(viewportDocumentTop),
+        }),
+    }),
+);
 
 const makeLine = (
     text: string,
@@ -79,6 +102,11 @@ const makeGroup = (
     isComment,
     lineIndex,
 });
+
+const makeCommentBlock = (lineCount: number, lineIndex = 0) => makeGroup(
+    Array.from({ length: lineCount }, (_, i) => `! comment ${i}`),
+    { isComment: true, lineIndex },
+);
 
 type SearchOptions = { searchTerm?: string; searchClassName?: string };
 
@@ -466,24 +494,400 @@ describe('RuleRow', () => {
             expect(onDelete).toHaveBeenCalledWith(group);
         });
 
-        it('disables the action buttons when disabled', () => {
-            const line = makeLine('||a.com^');
-            const group = {
-                lines: [line],
-                isComment: false,
-                lineIndex: line.lineIndex,
-            };
+        it('renders the edit action for a multi-line comment block and forwards the group', () => {
+            const onEdit = vi.fn();
+            const group = makeGroup(['! first', '! second'], { isComment: true });
+            render(<RuleRow group={group} onEdit={onEdit} onDelete={vi.fn()} />);
+
+            const editButton = screen.getByLabelText('options_user_rules_edit_rule');
+            expect(editButton).toBeTruthy();
+            expect(screen.getByLabelText('options_user_rules_delete_rule')).toBeTruthy();
+
+            editButton.click();
+            expect(onEdit).toHaveBeenCalledWith(group);
+        });
+
+        it('keeps the action buttons and the checkbox enabled while user rules are off', () => {
+            const onEdit = vi.fn();
+            const onDelete = vi.fn();
+            const onToggle = vi.fn();
+            const group = makeGroup(['||a.com^']);
             render(
-                <RuleRow group={group} onEdit={vi.fn()} onDelete={vi.fn()} disabled />,
+                <RuleRow
+                    group={group}
+                    onEdit={onEdit}
+                    onDelete={onDelete}
+                    onToggle={onToggle}
+                    filterOff
+                />,
             );
+
+            const editButton = screen.getByLabelText('options_user_rules_edit_rule');
+            const deleteButton = screen.getByLabelText('options_user_rules_delete_rule');
+            const checkbox = screen.getByRole('checkbox');
+            expect(editButton).toHaveProperty('disabled', false);
+            expect(deleteButton).toHaveProperty('disabled', false);
+            expect(checkbox).toHaveProperty('disabled', false);
+
+            fireEvent.click(checkbox);
+            editButton.click();
+            deleteButton.click();
+            expect(onToggle).toHaveBeenCalledWith(group.lineIndex, true);
+            expect(onEdit).toHaveBeenCalledWith(group);
+            expect(onDelete).toHaveBeenCalledWith(group);
+        });
+
+        it('marks rule and comment rows as off while user rules are off', () => {
+            const { container, rerender } = render(<RuleRow group={makeGroup(['||a.com^'])} filterOff />);
+            expect((container.firstElementChild as HTMLElement).className).toContain('rowFilterOff');
+
+            rerender(<RuleRow group={makeGroup(['! comment'], { isComment: true })} filterOff />);
+            expect((container.firstElementChild as HTMLElement).className).toContain('rowFilterOff');
+
+            rerender(<RuleRow group={makeGroup(['||a.com^'])} />);
+            expect((container.firstElementChild as HTMLElement).className).not.toContain('rowFilterOff');
+        });
+
+        it('disables the mutation actions while a save is in flight', () => {
+            render(
+                <RuleRow
+                    group={makeGroup(['||a.com^'])}
+                    onEdit={vi.fn()}
+                    onDelete={vi.fn()}
+                    onToggle={vi.fn()}
+                    saving
+                />,
+            );
+
             expect(screen.getByLabelText('options_user_rules_edit_rule')).toHaveProperty('disabled', true);
             expect(screen.getByLabelText('options_user_rules_delete_rule')).toHaveProperty('disabled', true);
-        });
-
-        it('disables the checkbox when disabled', () => {
-            render(<RuleRow group={makeGroup(['||a.com^'])} onToggle={vi.fn()} disabled />);
-
             expect(screen.getByRole('checkbox')).toHaveProperty('disabled', true);
         });
+    });
+
+    describe('RuleRow inline editing', () => {
+        it('swaps the text for the inline editor and edit/delete for save/cancel', () => {
+            const group = makeGroup(['||example.org^'], { lineIndex: 2 });
+            render(
+                <RuleRow
+                    group={group}
+                    editing
+                    onInlineSave={vi.fn()}
+                    onInlineCancel={vi.fn()}
+                />,
+            );
+
+            // The editor replaces the highlighted text and is seeded with the
+            // marker-stripped displayed text.
+            expect(screen.getByTestId('inline-editor').dataset.value).toBe('||example.org^');
+            // Pencil and trash are replaced by save and cancel.
+            expect(screen.queryByTestId('icon-#switch-to-editor')).toBeNull();
+            expect(screen.queryByTestId('icon-#trash')).toBeNull();
+            expect(screen.getByTestId('icon-#tick')).toBeTruthy();
+            expect(screen.getByTestId('icon-#cross')).toBeTruthy();
+            expect(screen.getByLabelText('options_user_rules_save_rule')).toBeTruthy();
+            expect(screen.getByLabelText('options_user_rules_cancel_rule_editing')).toBeTruthy();
+        });
+
+        it('forwards save and cancel button clicks with the group', () => {
+            const onInlineSave = vi.fn();
+            const onInlineCancel = vi.fn();
+            const group = makeGroup(['||example.org^'], { lineIndex: 4 });
+            render(
+                <RuleRow
+                    group={group}
+                    editing
+                    onInlineSave={onInlineSave}
+                    onInlineCancel={onInlineCancel}
+                />,
+            );
+
+            // `detail` distinguishes a pointer click from keyboard activation:
+            // `MouseEvent.detail` is 0 for keyboard/programmatic activation.
+            fireEvent.click(screen.getByLabelText('options_user_rules_save_rule'), { detail: 1 });
+            fireEvent.click(screen.getByLabelText('options_user_rules_cancel_rule_editing'), { detail: 1 });
+
+            expect(onInlineSave).toHaveBeenCalledTimes(1);
+            expect(onInlineSave).toHaveBeenCalledWith(group, InlineActionSource.Click);
+            expect(onInlineCancel).toHaveBeenCalledTimes(1);
+            expect(onInlineCancel).toHaveBeenCalledWith(InlineActionSource.Click);
+        });
+
+        it('reports keyboard activation of the action buttons as a keyboard source', () => {
+            const onInlineSave = vi.fn();
+            const onInlineCancel = vi.fn();
+            const group = makeGroup(['||example.org^']);
+            render(
+                <RuleRow
+                    group={group}
+                    editing
+                    onInlineSave={onInlineSave}
+                    onInlineCancel={onInlineCancel}
+                />,
+            );
+
+            // Enter / Space on a focused button fires `click` with detail 0, so
+            // it must not be counted as a pointer click.
+            fireEvent.click(screen.getByLabelText('options_user_rules_save_rule'), { detail: 0 });
+            fireEvent.click(screen.getByLabelText('options_user_rules_cancel_rule_editing'), { detail: 0 });
+
+            expect(onInlineSave).toHaveBeenCalledTimes(1);
+            expect(onInlineSave).toHaveBeenCalledWith(group, InlineActionSource.Keyboard);
+            expect(onInlineCancel).toHaveBeenCalledTimes(1);
+            expect(onInlineCancel).toHaveBeenCalledWith(InlineActionSource.Keyboard);
+        });
+
+        it('wires the editor keyboard actions to the row callbacks', () => {
+            const onInlineSave = vi.fn();
+            const onInlineCancel = vi.fn();
+            const group = makeGroup(['||example.org^']);
+            render(
+                <RuleRow
+                    group={group}
+                    editing
+                    onInlineSave={onInlineSave}
+                    onInlineCancel={onInlineCancel}
+                />,
+            );
+
+            screen.getByTestId('inline-editor-save').click();
+            screen.getByTestId('inline-editor-cancel').click();
+
+            expect(onInlineSave).toHaveBeenCalledTimes(1);
+            expect(onInlineSave).toHaveBeenCalledWith(group, InlineActionSource.Keyboard);
+            expect(onInlineCancel).toHaveBeenCalledTimes(1);
+            expect(onInlineCancel).toHaveBeenCalledWith(InlineActionSource.Keyboard);
+        });
+
+        it('seeds the editor with the in-progress draft when provided', () => {
+            render(
+                <RuleRow
+                    group={makeGroup(['||example.org^'])}
+                    editing
+                    inlineDraft="typed text"
+                    onInlineSave={vi.fn()}
+                    onInlineCancel={vi.fn()}
+                />,
+            );
+
+            expect(screen.getByTestId('inline-editor').dataset.value).toBe('typed text');
+        });
+
+        it('forwards inline editor draft changes', () => {
+            const onInlineDraftChange = vi.fn();
+            render(
+                <RuleRow
+                    group={makeGroup(['||example.org^'])}
+                    editing
+                    onInlineDraftChange={onInlineDraftChange}
+                    onInlineSave={vi.fn()}
+                    onInlineCancel={vi.fn()}
+                />,
+            );
+
+            screen.getByTestId('inline-editor-draft').click();
+
+            expect(onInlineDraftChange).toHaveBeenCalledWith('edited text');
+        });
+
+        it('seeds the editor with the comment text without its marker', () => {
+            const group = makeGroup(['! my comment'], { isComment: true });
+            render(
+                <RuleRow
+                    group={group}
+                    editing
+                    onInlineSave={vi.fn()}
+                    onInlineCancel={vi.fn()}
+                />,
+            );
+
+            // The marker is fixed context, so only the comment text is editable.
+            expect(screen.getByTestId('inline-editor').dataset.value).toBe('my comment');
+            expect(screen.queryByRole('checkbox')).toBeNull();
+            expect(screen.getByTestId('icon-#comment')).toBeTruthy();
+        });
+
+        it('seeds the editor with every line of a multi-line comment block', () => {
+            const group = makeGroup(['! first', '! second'], { isComment: true });
+            render(
+                <RuleRow
+                    group={group}
+                    editing
+                    onInlineSave={vi.fn()}
+                    onInlineCancel={vi.fn()}
+                />,
+            );
+
+            const editor = screen.getByTestId('inline-editor');
+            expect(editor.dataset.value).toBe('first\nsecond');
+            expect(editor.dataset.comment).toBe('true');
+        });
+
+        it('renders the rule editor without multi-line mode', () => {
+            render(
+                <RuleRow
+                    group={makeGroup(['||example.org^'])}
+                    editing
+                    onInlineSave={vi.fn()}
+                    onInlineCancel={vi.fn()}
+                />,
+            );
+
+            expect(screen.getByTestId('inline-editor').dataset.comment).toBe('false');
+        });
+
+        it('does not render the inline editor when editing is false', () => {
+            render(<RuleRow group={makeGroup(['||example.org^'])} onEdit={vi.fn()} onDelete={vi.fn()} />);
+
+            expect(screen.queryByTestId('inline-editor')).toBeNull();
+            expect(screen.getByLabelText('options_user_rules_edit_rule')).toBeTruthy();
+            expect(screen.getByLabelText('options_user_rules_delete_rule')).toBeTruthy();
+        });
+
+        it('keeps save and cancel enabled while user rules are off', () => {
+            render(
+                <RuleRow
+                    group={makeGroup(['||example.org^'])}
+                    editing
+                    filterOff
+                    onInlineSave={vi.fn()}
+                    onInlineCancel={vi.fn()}
+                />,
+            );
+
+            // Turning user rules off does not block inline editing.
+            expect(screen.getByLabelText('options_user_rules_save_rule')).toHaveProperty('disabled', false);
+            expect(screen.getByLabelText('options_user_rules_cancel_rule_editing')).toHaveProperty('disabled', false);
+        });
+
+        it('locks the editor while the row save is in flight', () => {
+            const group = makeGroup(['||example.org^']);
+            const { rerender } = render(
+                <RuleRow group={group} editing onInlineSave={vi.fn()} onInlineCancel={vi.fn()} />,
+            );
+            expect(screen.getByTestId('inline-editor').dataset.readonly).toBe('false');
+
+            rerender(
+                <RuleRow
+                    group={group}
+                    editing
+                    inlineSaving
+                    onInlineSave={vi.fn()}
+                    onInlineCancel={vi.fn()}
+                />,
+            );
+            expect(screen.getByTestId('inline-editor').dataset.readonly).toBe('true');
+        });
+
+        it('returns focus to the edit button when editing ends', () => {
+            const group = makeGroup(['||example.org^']);
+            const { rerender } = render(
+                <RuleRow group={group} editing onInlineSave={vi.fn()} onInlineCancel={vi.fn()} />,
+            );
+
+            rerender(<RuleRow group={group} editing={false} onEdit={vi.fn()} onDelete={vi.fn()} />);
+
+            expect(document.activeElement).toBe(screen.getByLabelText('options_user_rules_edit_rule'));
+        });
+
+        it('restores focus once a save in flight finishes after editing ends', () => {
+            const group = makeGroup(['||example.org^']);
+            const { rerender } = render(
+                <RuleRow group={group} editing saving onInlineSave={vi.fn()} onInlineCancel={vi.fn()} />,
+            );
+
+            // Editing ends while the mutation is in flight: the button is
+            // disabled, so the restore must be deferred, not dropped.
+            rerender(
+                <RuleRow group={group} editing={false} saving onEdit={vi.fn()} onDelete={vi.fn()} />,
+            );
+            expect(document.activeElement).not.toBe(screen.getByLabelText('options_user_rules_edit_rule'));
+
+            // Once the save settles, focus lands on the row's edit button.
+            rerender(
+                <RuleRow group={group} editing={false} onEdit={vi.fn()} onDelete={vi.fn()} />,
+            );
+            expect(document.activeElement).toBe(screen.getByLabelText('options_user_rules_edit_rule'));
+        });
+
+        it('does not steal focus back when another element has claimed it', () => {
+            const group = makeGroup(['||example.org^']);
+            const { rerender } = render(
+                <RuleRow group={group} editing saving onInlineSave={vi.fn()} onInlineCancel={vi.fn()} />,
+            );
+            rerender(
+                <RuleRow group={group} editing={false} saving onEdit={vi.fn()} onDelete={vi.fn()} />,
+            );
+
+            // Another element (e.g. another row's editor) takes focus while the
+            // save is still in flight.
+            const other = document.createElement('input');
+            document.body.appendChild(other);
+            other.focus();
+
+            rerender(
+                <RuleRow group={group} editing={false} onEdit={vi.fn()} onDelete={vi.fn()} />,
+            );
+
+            expect(document.activeElement).toBe(other);
+            other.remove();
+        });
+
+        it('keeps save and cancel enabled while a save is in flight', () => {
+            render(
+                <RuleRow
+                    group={makeGroup(['||example.org^'])}
+                    editing
+                    saving
+                    onInlineSave={vi.fn()}
+                    onInlineCancel={vi.fn()}
+                />,
+            );
+
+            // Leaving editing mode stays allowed during a save, matching the
+            // Enter/Escape/Ctrl+S keyboard shortcuts.
+            expect(screen.getByLabelText('options_user_rules_save_rule')).toHaveProperty('disabled', false);
+            expect(screen.getByLabelText('options_user_rules_cancel_rule_editing')).toHaveProperty('disabled', false);
+        });
+    });
+});
+
+describe('RuleRow comment block virtualization', () => {
+    afterEach(() => {
+        cleanup();
+    });
+
+    it('renders large comment blocks through the nested virtualizer', () => {
+        render(<RuleRow group={makeCommentBlock(101)} rowDocumentTop={1000} />);
+
+        const virtualized = screen.getByTestId('comment-block-lines');
+        expect(virtualized.getAttribute('data-line-count')).toBe('101');
+        // The row's document top plus its top padding (8px) and the text's
+        // offset inside the row (1px) is the nested viewport's scroll margin.
+        expect(virtualized.getAttribute('data-viewport-top')).toBe('1009');
+        // The plain per-line rendering is not used for large blocks.
+        expect(document.querySelector('span.commentLine')).toBeNull();
+    });
+
+    it('renders blocks at the virtualization threshold as plain lines', () => {
+        render(<RuleRow group={makeCommentBlock(100)} rowDocumentTop={1000} />);
+
+        expect(screen.queryByTestId('comment-block-lines')).toBeNull();
+        expect(screen.getByText('comment 0')).toBeDefined();
+        expect(screen.getByText('comment 99')).toBeDefined();
+    });
+
+    it('falls back to plain lines when the row document top is unknown', () => {
+        render(<RuleRow group={makeCommentBlock(101)} />);
+
+        expect(screen.queryByTestId('comment-block-lines')).toBeNull();
+        expect(screen.getByText('comment 100')).toBeDefined();
+    });
+
+    it('renders the inline editor instead of the nested virtualizer while editing', () => {
+        render(<RuleRow group={makeCommentBlock(101)} rowDocumentTop={1000} editing />);
+
+        expect(screen.queryByTestId('comment-block-lines')).toBeNull();
+        expect(screen.getByTestId('inline-editor')).toBeDefined();
     });
 });

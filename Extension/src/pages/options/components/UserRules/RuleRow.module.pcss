@@ -92,6 +92,34 @@
     word-break: break-word;
 }
 
+/* Large comment blocks are rendered through a nested window virtualizer
+   (CommentBlockLines): the viewport reserves the block's full height inline
+   and positions the rendered lines absolutely, so only the lines
+   intersecting the document viewport are mounted while the block stays one
+   row of the outer list virtualizer. */
+.commentLinesViewport {
+    position: relative;
+    width: 100%;
+}
+
+.commentLineVirtualized {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+/* Take the free space left by the actions and allow the text to shrink. */
+.rule,
+.ruleText,
+.commentEditing,
+.commentVirtualized,
+.commentTextEditing,
+.commentTextVirtualized {
+    flex: 1;
+    min-width: 0;
+}
+
 .rule {
     display: flex;
     align-items: flex-start;
@@ -101,7 +129,26 @@
 .ruleText {
     font-size: 14px;
     line-height: 20px;
-    word-break: break-all;
+    /* Rule rows are single-line per the mockup; the full text is available in
+       the inline editor, which scrolls horizontally. Comment blocks keep
+       wrapping so every line stays visible. */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/*
+ * The mockup puts the checkbox, the icon and the text on the middle of the
+ * row. A 20px text line at the top of the row's content has its baseline 1px
+ * higher than the mockup, so the text (and the editor that replaces it) is
+ * moved down by `TEXT_OFFSET_TOP_PX`. The negative bottom margin keeps the
+ * height of the row unchanged.
+ */
+.ruleText,
+.commentText,
+.rule > :global(.editor--inline) {
+    margin-top: 1px;
+    margin-bottom: -1px;
 }
 
 .icon {
@@ -118,7 +165,8 @@
     align-self: flex-start;
     width: 20px;
     height: 20px;
-    margin: 0;
+    /* Centres the 20px checkbox on the 24px icon next to it. */
+    margin: 2px 0;
     border: 1.5px solid var(--stroke-icons-product-icon-default);
     border-radius: 0;
     cursor: pointer;
@@ -155,4 +203,31 @@
 
 .disabledRule .ruleText {
     opacity: 0.5;
+}
+
+/* Actions stay visible while the row is being edited, even if the editor
+   temporarily loses focus. */
+.rowEditing .actions {
+    opacity: 1;
+}
+
+/* User rules are turned off: every action stays available, only the look
+   changes. The rule and comment text is dimmed and the checkbox turns gray.
+   In a comment row the inline editor is rendered inside `.commentText`, so the
+   text is dimmed only while the comment is not being edited. */
+.rowFilterOff .ruleText,
+.rowFilterOff .commentText:not(.commentTextEditing) {
+    opacity: 0.5;
+}
+
+.rowFilterOff .checkbox {
+    border-color: var(--text-user-rules-gray-default);
+}
+
+/* The checked fill is a fixed mid gray instead of the dimmed text color: the
+   white tick keeps a 4:1 contrast in both themes, while the lighter gray of
+   the dark theme would leave it at about 1.8:1. */
+.rowFilterOff .checkbox:checked {
+    border-color: var(--gray-60);
+    background-color: var(--gray-60);
 }

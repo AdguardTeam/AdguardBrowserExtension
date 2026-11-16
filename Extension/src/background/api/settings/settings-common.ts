@@ -179,6 +179,7 @@ export class SettingsApiCommon {
                 blockChromeClientData: settingsStorage.get(SettingOption.RemoveXClientData),
                 sendDoNotTrack: settingsStorage.get(SettingOption.SendDoNotTrack),
                 blockWebRTC: settingsStorage.get(SettingOption.BlockWebRTC),
+                protectCanvas: settingsStorage.get(SettingOption.BlockFingerprinting),
                 selfDestructThirdPartyCookies: settingsStorage.get(SettingOption.SelfDestructThirdPartyCookies),
                 selfDestructThirdPartyCookiesTime: settingsStorage.get(SettingOption.SelfDestructThirdPartyCookiesTime),
                 selfDestructFirstPartyCookies: settingsStorage.get(SettingOption.SelfDestructFirstPartyCookies),
@@ -249,7 +250,7 @@ export class SettingsApiCommon {
              *
              * @see {@link https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3136}
              */
-            await SettingsApiCommon.reset(false, false);
+            await this.reset(false, false);
 
             SettingsApiCommon.importExtensionSpecificSettings(
                 validConfig[RootOption.ExtensionSpecificSettings],
@@ -321,7 +322,7 @@ export class SettingsApiCommon {
                     `[ext.SettingsApiCommon.importGeneralSettings]: Failed to load filter with id ${AntiBannerFiltersId.SearchAndSelfPromoFilterId} due to ${e}`,
                 );
             }
-            filterStateStorage.enableFilters([AntiBannerFiltersId.SearchAndSelfPromoFilterId]);
+            await FiltersApi.enableFilters([AntiBannerFiltersId.SearchAndSelfPromoFilterId]);
         } else {
             filterStateStorage.disableFilters([AntiBannerFiltersId.SearchAndSelfPromoFilterId]);
         }
@@ -429,7 +430,7 @@ export class SettingsApiCommon {
 
         await Promise.allSettled(tasks);
 
-        filterStateStorage.enableFilters(filtersToEnable);
+        await FiltersApi.enableFilters(filtersToEnable);
     }
 
     /**
@@ -467,6 +468,7 @@ export class SettingsApiCommon {
 
     /**
      * Gets enabled filters to return only common filters.
+     * Skips deprecated filters and filters without metadata.
      * Also handles deprecated combined Annoyances filter by replacing it with separate filter IDs.
      *
      * @param enabledFilters Array of enabled filter ids.
@@ -480,16 +482,37 @@ export class SettingsApiCommon {
 
         // special handling for large AdGuard Annoyances filter,
         // all other deprecated filters shall be skipped;
-        // in MV3, unsupported filters will be filtered out in loadBuiltInFilters
+        // filters without metadata are also skipped below.
         if (filtersToEnable.includes(AntiBannerFiltersId.AnnoyancesCombinedFilterId)) {
             filtersToEnable.push(...SEPARATE_ANNOYANCE_FILTER_IDS);
         }
 
-        // Remove deprecated filters — they have been replaced above
-        // or should simply be skipped (e.g. DNS filter).
-        return filtersToEnable.filter((id) => {
-            return !CommonFilterApi.getFilterMetadata(id)?.deprecated;
+        // Skip deprecated filters — they have been replaced above
+        // or should simply be skipped (e.g. DNS filter) — and filters
+        // without metadata, because the extension cannot load them.
+        const filtersWithoutMetadata: number[] = [];
+
+        const loadableFilters = filtersToEnable.filter((id) => {
+            const metadata = CommonFilterApi.getFilterMetadata(id);
+
+            if (!metadata) {
+                filtersWithoutMetadata.push(id);
+                return false;
+            }
+
+            if (metadata.deprecated) {
+                logger.debug(`[ext.SettingsApiCommon.getFiltersToEnable]: filter with id ${id} is deprecated, skipping it`);
+                return false;
+            }
+
+            return true;
         });
+
+        if (filtersWithoutMetadata.length > 0) {
+            logger.warn(`[ext.SettingsApiCommon.getFiltersToEnable]: skipping unknown or unsupported filters with ids ${filtersWithoutMetadata.join(', ')}`);
+        }
+
+        return loadableFilters;
     }
 
     /**
@@ -601,6 +624,7 @@ export class SettingsApiCommon {
             [StealthOption.SendDoNotTrack]: sendDoNotTrack,
             [StealthOption.BlockWebRTC]: blockWebRTC,
             [StealthOption.RemoveXClientData]: removeXClientData,
+            [StealthOption.BlockFingerprinting]: blockFingerprinting,
             [StealthOption.SelfDestructThirdPartyCookies]: selfDestructThirdPartyCookies,
             [StealthOption.SelfDestructThirdPartyCookiesTime]: selfDestructThirdPartyCookiesTime,
             [StealthOption.SelfDestructFirstPartyCookies]: selfDestructFirstPartyCookies,
@@ -623,6 +647,7 @@ export class SettingsApiCommon {
         settingsStorage.set(SettingOption.HideSearchQueries, hideSearchQueries);
         settingsStorage.set(SettingOption.SendDoNotTrack, sendDoNotTrack);
         settingsStorage.set(SettingOption.RemoveXClientData, removeXClientData);
+        settingsStorage.set(SettingOption.BlockFingerprinting, blockFingerprinting ?? false);
 
         settingsStorage.set(SettingOption.SelfDestructThirdPartyCookies, selfDestructThirdPartyCookies);
         if (selfDestructThirdPartyCookiesTime) {
@@ -660,6 +685,7 @@ export class SettingsApiCommon {
             [StealthOption.SendDoNotTrack]: settingsStorage.get(SettingOption.SendDoNotTrack),
             [StealthOption.BlockWebRTC]: settingsStorage.get(SettingOption.BlockWebRTC),
             [StealthOption.RemoveXClientData]: settingsStorage.get(SettingOption.RemoveXClientData),
+            [StealthOption.BlockFingerprinting]: settingsStorage.get(SettingOption.BlockFingerprinting),
             [StealthOption.SelfDestructThirdPartyCookies]: (
                 settingsStorage.get(SettingOption.SelfDestructThirdPartyCookies)
             ),

@@ -56,12 +56,25 @@ export const SavingButton = ({ onClick, savingState, contentChanged }: SavingBut
     const isSaving = savingState === SavingFSMState.Saving;
     const indicatorText = indicatorTextMap[savingState];
 
+    /**
+     * Keeps the focus where it was when the button is clicked with the mouse,
+     * so that saving does not blur the editor and the caret is not lost.
+     * Keyboard users are not affected: the button is still focused by `Tab`
+     * and activated by `Enter` or `Space`.
+     *
+     * @param event Mouse down event.
+     */
+    const mouseDownHandler = (event: React.MouseEvent<HTMLButtonElement>): void => {
+        event.preventDefault();
+    };
+
     return (
         <div className="actions__saving">
             <button
                 type="button"
                 className="button button--l button--green-bg actions__btn actions__btn--saving"
                 onClick={onClick}
+                onMouseDown={mouseDownHandler}
                 title={translator.getMessage('options_editor_save')}
                 disabled={!contentChanged || isSaving}
                 aria-keyshortcuts={UserAgent.isMacOs ? 'Meta+S' : 'Ctrl+S'}

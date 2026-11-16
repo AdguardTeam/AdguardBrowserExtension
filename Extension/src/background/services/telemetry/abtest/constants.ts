@@ -35,12 +35,9 @@ export type ExperimentRegistry = Readonly<VariantCache>;
  *
  * Maps Plausible Analytics custom property slots to experiment IDs.
  * Maximum 3 slots (experiment_1, experiment_2, experiment_3).
- * Add new experiments here when needed.
+ * Add new experiments here when needed and remove ended ones. Cleanup accepts
+ * a variant whose name equals or starts with the experiment ID.
  *
  * Example: { experiment_1: 'AG-47804-trial-a_def' }.
  */
-export const EXPERIMENT_REGISTRY: ExperimentRegistry = {
-    experiment_1: 'AG-52740-rule-limits',
-};
-
-export const AG_52740_RULE_LIMITS_B = 'AG-52740-rule-limits-b';
+export const EXPERIMENT_REGISTRY: ExperimentRegistry = {};

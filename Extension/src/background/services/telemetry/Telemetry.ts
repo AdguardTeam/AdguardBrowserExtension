@@ -51,7 +51,8 @@ import { TelemetryPageTracker } from './TelemetryPageTracker';
  * Telemetry service for tracking user interactions and sending analytics events.
  *
  * Handles page view events, custom events, and manages telemetry state.
- * Events are debounced and sent to the telemetry API.
+ * Page view events are debounced and custom events are chained, then both are
+ * sent to the telemetry API.
  */
 export class Telemetry {
     /**
@@ -60,7 +61,8 @@ export class Telemetry {
     public static pageTracker: TelemetryPageTracker = new TelemetryPageTracker();
 
     /**
-     * Debounce timeout for sending events.
+     * Debounce timeout for sending page view events. Custom events are not
+     * delayed: they are appended to {@link customEventsChain} instead.
      */
     public static readonly SEND_EVENT_TIMEOUT_MS = 300;
 
@@ -79,7 +81,8 @@ export class Telemetry {
      * Initializes telemetry service.
      *
      * Generates or retrieves synthetic ID, collects user agent and props,
-     * and sets up message listeners for telemetry events.
+     * removes retired A/B test variants before starting the session, and sets
+     * up message listeners for telemetry events.
      */
     public static async init(): Promise<void> {
         await TelemetryDataCollector.init();
@@ -87,10 +90,16 @@ export class Telemetry {
         this.pageTracker = new TelemetryPageTracker();
         this.pageTracker.init();
 
+        try {
+            await ABTestManager.removeRetiredVariants();
+        } catch (e) {
+            logger.warn('[ext.Telemetry.init]: Failed to remove retired variants', e);
+        }
+
         await Telemetry.runSessionStart();
 
         messageHandler.addListener(MessageType.SendTelemetryPageViewEvent, Telemetry.handlePageViewEventDebounced);
-        messageHandler.addListener(MessageType.SendTelemetryCustomEvent, Telemetry.handleCustomEventDebounced);
+        messageHandler.addListener(MessageType.SendTelemetryCustomEvent, Telemetry.handleCustomEventQueued);
 
         // Listen for setting updates to trigger session_start when user enables telemetry
         notifier.addSpecifiedListener(
@@ -103,7 +112,7 @@ export class Telemetry {
      * Debounced handler for page view events from UI pages.
      *
      * @see {@link handlePageViewEvent} - For implementation.
-     * @see {@link SEND_EVENT_TIMEOUT} - For debounce timeout.
+     * @see {@link SEND_EVENT_TIMEOUT_MS} - For debounce timeout.
      */
     private static handlePageViewEventDebounced = debounce(
         Telemetry.handlePageViewEvent,
@@ -150,15 +159,35 @@ export class Telemetry {
     }
 
     /**
-     * Debounced handler for custom events from UI pages.
+     * Tail of the custom event chain: every event from a UI page is appended
+     * to it, so the events are sent one after another, in the order they were
+     * fired.
      *
-     * @see {@link handleCustomEvent} - For implementation.
-     * @see {@link SEND_EVENT_TIMEOUT} - For debounce timeout.
+     * A debounce (or a batch queue flushed by a timer) cannot guarantee that:
+     * a debounced handler keeps only the arguments of its last call, so a
+     * second event fired within the timeout would silently drop the first one
+     * — e.g. an edit click immediately followed by a cancel click — and a
+     * timer cleared before its flush finishes lets the next batch overtake a
+     * slow one, sending cancel before save.
      */
-    private static handleCustomEventDebounced = debounce(
-        Telemetry.handleCustomEvent,
-        Telemetry.SEND_EVENT_TIMEOUT_MS,
-    );
+    private static customEventsChain: Promise<void> = Promise.resolve();
+
+    /**
+     * Appends a custom event from a UI page to {@link customEventsChain}, so
+     * every event fired in quick succession is sent, in firing order.
+     *
+     * @param message Message with custom event data from UI.
+     */
+    private static handleCustomEventQueued(message: SendTelemetryCustomEventMessage): void {
+        Telemetry.customEventsChain = Telemetry.customEventsChain
+            .then(() => Telemetry.handleCustomEvent(message))
+            // A rejected chain link would drop every event queued after it, so
+            // the failure is logged and the chain continues from a resolved
+            // promise.
+            .catch((e) => {
+                logger.error('[ext.Telemetry.handleCustomEventQueued]: Failed to send a custom event:', e);
+            });
+    }
 
     /**
      * Handles custom telemetry event message from UI pages.

@@ -43,8 +43,7 @@ import { type ViewModeValue, ViewMode } from '../../../common/components/UserRul
 
 import { UserRulesSwitcher } from './UserRulesSwitcher';
 import { UserScriptsApiWarningForUserRules } from './UserScriptsApiWarningForUserRules';
-import { UserRulesList } from './UserRulesList';
-import { LINE_TERMINATOR_RE, ensureTrailingEmptyLine } from './rule-parser';
+import { USER_RULES_VIEW_MODE_TOGGLE_CLASS, UserRulesList } from './UserRulesList';
 import { UserRulesMenu } from './UserRulesMenu';
 
 import './styles.pcss';
@@ -58,10 +57,16 @@ const UserRules = observer(() => {
     const viewMode = settingsStore.userRulesViewMode;
 
     /**
-     * Controls the "leave without saving?" confirmation modal shown when the
-     * user tries to switch from Edit to View with unsaved changes.
+     * Which switch the user asked for while there were unsaved changes, or
+     * `null` when the "leave without saving?" confirmation is hidden.
+     *
+     * The List view reports its inline draft through
+     * {@link UserRulesList}'s `onUnsavedDraftChange`: switching to the Edit view
+     * unmounts the list and discards that draft without a route change, so
+     * neither `beforeunload` nor the list's route blocker would catch it.
      */
-    const [showLeaveModal, setShowLeaveModal] = useState(false);
+    const [pendingLeave, setPendingLeave] = useState<ViewModeValue | null>(null);
+    const [hasUnsavedListDraft, setHasUnsavedListDraft] = useState(false);
 
     const isSaving = editorStore.savingUserRulesState === SavingFSMState.Saving;
     const isFullscreenOpen = settingsStore.isFullscreenUserRulesEditorOpen;
@@ -87,6 +92,8 @@ const UserRules = observer(() => {
      * listener saved dirty content) from leaking into the options editor.
      * By the time the user switches to Edit, the fullscreen window is already
      * closed, so beforeunload has already run and can't re-save over the clear.
+     * An unsaved inline draft in the list asks for confirmation first, since
+     * the switch unmounts the list.
      *
      * Edit → View switches immediately when the editor content is clean. When
      * there are unsaved changes, it shows the "leave without saving?"
@@ -102,6 +109,10 @@ const UserRules = observer(() => {
         );
 
         if (viewMode === ViewMode.List) {
+            if (hasUnsavedListDraft) {
+                setPendingLeave(ViewMode.Editor);
+                return;
+            }
             messenger.setEditorStorageContent('');
             setViewMode(ViewMode.Editor);
             return;
@@ -109,14 +120,23 @@ const UserRules = observer(() => {
 
         // Edit -> View.
         if (isFullscreenOpen || editorStore.userRulesEditorContentChanged) {
-            setShowLeaveModal(true);
+            setPendingLeave(ViewMode.List);
             return;
         }
 
         setViewMode(ViewMode.List);
-    }, [viewMode, setViewMode, editorStore, isFullscreenOpen, telemetryStore]);
+    }, [viewMode, setViewMode, editorStore, isFullscreenOpen, hasUnsavedListDraft, telemetryStore]);
 
     const handleLeaveConfirm = useCallback(() => {
+        if (pendingLeave === ViewMode.Editor) {
+            // Discard the inline draft by unmounting the list and open the
+            // editor, exactly like the clean path in `handleToggleViewMode`.
+            messenger.setEditorStorageContent('');
+            setPendingLeave(null);
+            setViewMode(ViewMode.Editor);
+            return;
+        }
+
         // Discard unsaved changes and switch to the list.
         // Note: we do NOT clear editor storage here because the fullscreen
         // editor's beforeunload listener would re-save dirty content after
@@ -131,63 +151,13 @@ const UserRules = observer(() => {
             messenger.closeFullscreenUserRules();
         }
         editorStore.setUserRulesEditorContentChangedState(false);
-        setShowLeaveModal(false);
+        setPendingLeave(null);
         setViewMode(ViewMode.List);
-    }, [editorStore, setViewMode, isFullscreenOpen]);
+    }, [editorStore, setViewMode, isFullscreenOpen, pendingLeave]);
 
     const handleLeaveCancel = useCallback(() => {
-        setShowLeaveModal(false);
+        setPendingLeave(null);
     }, []);
-
-    /**
-     * Opens the editor ready to add a new rule: ensures the document ends with a
-     * single empty line and places the cursor there, focused.
-     */
-    const handleCreateRule = useCallback(async () => {
-        telemetryStore.sendCustomEvent(
-            TelemetryEventName.CreateRuleClick,
-            TelemetryScreenName.UserRulesScreen,
-        );
-
-        // Discard any stale dirty editor state — same semantics as
-        // handleToggleViewMode when switching List → Editor.
-        editorStore.setUserRulesEditorContentChangedState(false);
-        await messenger.setEditorStorageContent('');
-
-        const { content } = await messenger.getUserRules();
-
-        // Guarantee a trailing empty line to type into, regardless of whether
-        // the stored rules end with zero, one, or several line terminators.
-        // `ensureTrailingEmptyLine` normalises them to a single trailing
-        // newline; the editor then treats that as one blank line at the bottom.
-        const seeded = ensureTrailingEmptyLine(content);
-        // Editor lines are 1-based; `split` on the seeded text yields one entry
-        // per line plus a trailing empty string, so its length is the 1-based
-        // number of the blank line at the bottom.
-        const lastLine = seeded.split(LINE_TERMINATOR_RE).length;
-
-        await messenger.setEditorStorageContent(seeded);
-        editorStore.setCursorPosition({ line: lastLine, ch: 0 });
-        setViewMode(ViewMode.Editor);
-    }, [editorStore, setViewMode, telemetryStore]);
-
-    /**
-     * Opens the editor with the cursor on the given rule's line.
-     *
-     * @param lineIndex 0-based source line index of the rule to edit.
-     */
-    const handleEditRule = useCallback(async (lineIndex: number) => {
-        // Discard any stale dirty editor state — same semantics as
-        // handleToggleViewMode when switching List → Editor.
-        editorStore.setUserRulesEditorContentChangedState(false);
-
-        // Clear any stale editor storage so the editor loads the current rules,
-        // then position the cursor at the end of the rule's line (editor lines
-        // are 1-based; ch is clamped to the line length by setCursor).
-        await messenger.setEditorStorageContent('');
-        editorStore.setCursorPosition({ line: lineIndex + 1, ch: Number.MAX_SAFE_INTEGER });
-        setViewMode(ViewMode.Editor);
-    }, [editorStore, setViewMode]);
 
     const switchId = settingsStore.userFilterEnabledSettingId;
     const switchTitleId = `${switchId}-title`;
@@ -210,7 +180,7 @@ const UserRules = observer(() => {
     const switchToEditorButton = (
         <button
             type="button"
-            className="user-rules__switch-editor"
+            className={USER_RULES_VIEW_MODE_TOGGLE_CLASS}
             onClick={handleToggleViewMode}
             disabled={isSaving}
             title={switchLabel}
@@ -252,13 +222,12 @@ const UserRules = observer(() => {
     } else if (isListView) {
         mainContent = (
             <UserRulesList
-                disabled={!settingsStore.userFilterEnabled}
+                filterOff={!settingsStore.userFilterEnabled}
                 telemetryStore={telemetryStore}
-                onCreateRule={handleCreateRule}
-                onEditRule={handleEditRule}
                 addNotification={uiStore.addNotification}
                 removeNotification={uiStore.removeNotification}
                 checkLimitations={settingsStore.checkLimitations}
+                onUnsavedDraftChange={setHasUnsavedListDraft}
             />
         );
     } else {
@@ -301,7 +270,7 @@ const UserRules = observer(() => {
             <EditorLeaveModal
                 title={translator.getMessage('options_editor_leave_title')}
                 subtitle={translator.getMessage('options_userfilter_leave_subtitle')}
-                isOpen={showLeaveModal}
+                isOpen={pendingLeave !== null}
                 onConfirm={handleLeaveConfirm}
                 onCancel={handleLeaveCancel}
             />

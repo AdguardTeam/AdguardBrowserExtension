@@ -30,19 +30,35 @@ import {
 } from 'vitest';
 import browser from 'sinon-chrome';
 
+import { type ManualUpdateMetadata } from '../../../../../Extension/src/background/services/extension-update/types';
 import {
     AUTO_UPDATE_STATE_KEY_MV3,
     ExtensionUpdateFSMEvent,
     ExtensionUpdateFSMState,
 } from '../../../../../Extension/src/common/constants';
+import { ForwardFrom } from '../../../../../Extension/src/common/forward';
 
 // --- Hoisted mocks ---
 
-const { mockActorSend, mockActorStart, mockActorGetSnapshot } = vi.hoisted(() => ({
-    mockActorSend: vi.fn(),
-    mockActorStart: vi.fn(),
-    mockActorGetSnapshot: vi.fn(() => ({ value: ExtensionUpdateFSMState.Idle })),
-}));
+const {
+    mockActorSend,
+    mockActorStart,
+    mockActorGetSnapshot,
+    mockActorSubscribe,
+    getFsmSubscriber,
+} = vi.hoisted(() => {
+    let subscriber: ((state: { value: string }) => void) | undefined;
+
+    return {
+        mockActorSend: vi.fn(),
+        mockActorStart: vi.fn(),
+        mockActorGetSnapshot: vi.fn(() => ({ value: ExtensionUpdateFSMState.Idle })),
+        mockActorSubscribe: vi.fn((callback: (state: { value: string }) => void) => {
+            subscriber = callback;
+        }),
+        getFsmSubscriber: (): ((state: { value: string }) => void) | undefined => subscriber,
+    };
+});
 
 // Mock extensionUpdateActor
 vi.mock(
@@ -52,7 +68,7 @@ vi.mock(
             send: mockActorSend,
             start: mockActorStart,
             getSnapshot: mockActorGetSnapshot,
-            subscribe: vi.fn(),
+            subscribe: mockActorSubscribe,
         },
     }),
 );
@@ -78,13 +94,11 @@ vi.mock(
 
             onUpdateAvailable = vi.fn().mockResolvedValue(undefined);
 
-            static handleReload = vi.fn().mockResolvedValue(undefined);
+            static handleReload = vi.fn().mockResolvedValue(null);
 
             static getUpdateData = vi.fn().mockResolvedValue(null);
 
             static peekUpdateData = vi.fn().mockResolvedValue(null);
-
-            static hasUpdateData = vi.fn().mockResolvedValue(false);
         }
         return { ManualUpdateHandler: MockManualUpdateHandler };
     },
@@ -149,6 +163,18 @@ if (globalChrome && typeof globalChrome === 'object') {
 const { ExtensionUpdateService } = await import(
     '../../../../../Extension/src/background/services/extension-update/extension-update-service-mv3'
 );
+const { ManualUpdateHandler } = await import(
+    '../../../../../Extension/src/background/services/extension-update/manual-update-handler-mv3'
+);
+
+/**
+ * Base manual update metadata fixture; tests derive copies with overrides.
+ */
+const baseManualUpdateMetadata: ManualUpdateMetadata = {
+    initVersion: '5.2.0.0',
+    pageToOpenAfterReload: ForwardFrom.Options,
+    isOk: true,
+};
 
 /**
  * Seeds auto-update state in mocked browser storage.
@@ -164,6 +190,9 @@ async function seedAutoUpdateState(state: Record<string, unknown>): Promise<void
 describe.skipIf(!__IS_MV3__)('ExtensionUpdateService.init — stale state handling', () => {
     beforeEach(async () => {
         vi.clearAllMocks();
+        vi.mocked(ManualUpdateHandler.peekUpdateData).mockResolvedValue(null);
+        vi.mocked(ManualUpdateHandler.handleReload).mockResolvedValue(null);
+        vi.mocked(ManualUpdateHandler.getUpdateData).mockResolvedValue(null);
         // Reset storage
         await browser.storage.local.clear();
         // Default Prefs.version
@@ -327,74 +356,215 @@ describe.skipIf(!__IS_MV3__)('ExtensionUpdateService.init — stale state handli
         );
     });
 
-    it('sends Init event with isReloadedOnUpdate true when manual update data exists', async () => {
-        // Need to import the mocked module to override hasUpdateData for this test
-        const { ManualUpdateHandler } = await import(
-            '../../../../../Extension/src/background/services/extension-update/manual-update-handler-mv3'
-        );
-        (ManualUpdateHandler.hasUpdateData as ReturnType<typeof vi.fn>).mockResolvedValue(true);
+    it.each([true, false])('defers the manual reload result until refresh completes (isOk=%s)', async (isOk) => {
+        const metadata: ManualUpdateMetadata = { ...baseManualUpdateMetadata, isOk };
+        vi.mocked(ManualUpdateHandler.peekUpdateData).mockResolvedValue(metadata);
+        vi.mocked(ManualUpdateHandler.handleReload).mockResolvedValue(metadata);
 
         await ExtensionUpdateService.init();
 
-        expect(mockActorSend).toHaveBeenCalledWith(
-            expect.objectContaining({
-                type: ExtensionUpdateFSMEvent.Init,
-                isUpdateAvailable: false,
-                isReloadedOnUpdate: true,
-            }),
-        );
-
-        // Restore the default mock behavior
-        (ManualUpdateHandler.hasUpdateData as ReturnType<typeof vi.fn>).mockResolvedValue(false);
-    });
-
-    it('uses non-destructive peekUpdateData instead of getUpdateData during init', async () => {
-        const { ManualUpdateHandler } = await import(
-            '../../../../../Extension/src/background/services/extension-update/manual-update-handler-mv3'
-        );
-
-        (ManualUpdateHandler.hasUpdateData as ReturnType<typeof vi.fn>).mockResolvedValue(true);
-        (ManualUpdateHandler.peekUpdateData as ReturnType<typeof vi.fn>).mockResolvedValue({
-            initVersion: '5.2.0.0',
-            pageToOpenAfterReload: 'options_screen',
-            isOk: true,
+        // Init is sent immediately without the reload flags; the manual result
+        // is deferred until the post-reload refresh completes.
+        expect(mockActorSend).toHaveBeenCalledExactlyOnceWith({
+            type: ExtensionUpdateFSMEvent.Init,
+            isUpdateAvailable: false,
+            isReloadedOnUpdate: false,
+            isUpdateFailedAfterReload: false,
         });
 
-        await ExtensionUpdateService.init();
+        await ExtensionUpdateService.handleExtensionReloadOnUpdate(true);
 
-        // init() should use peekUpdateData (non-destructive), not getUpdateData (destructive)
-        expect(ManualUpdateHandler.peekUpdateData).toHaveBeenCalled();
+        expect(ManualUpdateHandler.handleReload).toHaveBeenCalledExactlyOnceWith(true, true);
+        expect(mockActorSend).toHaveBeenCalledTimes(2);
+        expect(mockActorSend).toHaveBeenLastCalledWith({
+            type: ExtensionUpdateFSMEvent.Init,
+            isUpdateAvailable: false,
+            isReloadedOnUpdate: true,
+            isUpdateFailedAfterReload: !isOk,
+        });
         expect(ManualUpdateHandler.getUpdateData).not.toHaveBeenCalled();
-
-        // Restore defaults
-        (ManualUpdateHandler.hasUpdateData as ReturnType<typeof vi.fn>).mockResolvedValue(false);
-        (ManualUpdateHandler.peekUpdateData as ReturnType<typeof vi.fn>).mockResolvedValue(null);
     });
 
-    it('sends Init with isUpdateFailedAfterReload true when peeked data has isOk false', async () => {
-        const { ManualUpdateHandler } = await import(
-            '../../../../../Extension/src/background/services/extension-update/manual-update-handler-mv3'
-        );
+    it('reports the persisted result when reload handling rejects after a successful cycle', async () => {
+        // handleReload persists the update result before opening pages, so a
+        // rejection means a storage failure and the peeked value is the most
+        // trustworthy result available.
+        vi.mocked(ManualUpdateHandler.peekUpdateData).mockResolvedValue({ ...baseManualUpdateMetadata });
+        vi.mocked(ManualUpdateHandler.handleReload).mockRejectedValue(new Error('storage error'));
 
-        (ManualUpdateHandler.hasUpdateData as ReturnType<typeof vi.fn>).mockResolvedValue(true);
-        (ManualUpdateHandler.peekUpdateData as ReturnType<typeof vi.fn>).mockResolvedValue({
-            initVersion: '5.2.0.0',
-            pageToOpenAfterReload: 'options_screen',
+        await ExtensionUpdateService.handleExtensionReloadOnUpdate(true, true);
+
+        expect(mockActorSend).toHaveBeenCalledExactlyOnceWith({
+            type: ExtensionUpdateFSMEvent.Init,
+            isUpdateAvailable: false,
+            isReloadedOnUpdate: true,
+            isUpdateFailedAfterReload: false,
+        });
+
+        // The post-reload gate must be released even on failure, so the UI can
+        // consume the persisted result.
+        await ExtensionUpdateService.getManualExtensionUpdateData();
+        expect(ManualUpdateHandler.getUpdateData).toHaveBeenCalledOnce();
+    });
+
+    it('reports a failure when reload handling rejects after a failed cycle', async () => {
+        // The peeked value can still hold the provisional success because the
+        // rejected handleReload may have failed to persist the failure.
+        vi.mocked(ManualUpdateHandler.peekUpdateData).mockResolvedValue({ ...baseManualUpdateMetadata });
+        vi.mocked(ManualUpdateHandler.handleReload).mockRejectedValue(new Error('storage error'));
+
+        await ExtensionUpdateService.handleExtensionReloadOnUpdate(true, false);
+
+        expect(mockActorSend).toHaveBeenCalledExactlyOnceWith({
+            type: ExtensionUpdateFSMEvent.Init,
+            isUpdateAvailable: false,
+            isReloadedOnUpdate: true,
+            isUpdateFailedAfterReload: true,
+        });
+    });
+
+    it('keeps the preserved success when reload handling rejects after the version changed', async () => {
+        // The version changed since the manual update was initiated, so a
+        // rejected handleReload on a later start must not force a failure.
+        vi.mocked(ManualUpdateHandler.peekUpdateData).mockResolvedValue({ ...baseManualUpdateMetadata });
+        vi.mocked(ManualUpdateHandler.handleReload).mockRejectedValue(new Error('storage error'));
+
+        await ExtensionUpdateService.handleExtensionReloadOnUpdate(false, true);
+
+        expect(mockActorSend).toHaveBeenCalledExactlyOnceWith({
+            type: ExtensionUpdateFSMEvent.Init,
+            isUpdateAvailable: false,
+            isReloadedOnUpdate: true,
+            isUpdateFailedAfterReload: false,
+        });
+    });
+
+    it('queues the reload result while the FSM is not Idle and flushes it on Idle', async () => {
+        const metadata: ManualUpdateMetadata = { ...baseManualUpdateMetadata };
+        vi.mocked(ManualUpdateHandler.handleReload).mockResolvedValue(metadata);
+
+        await ExtensionUpdateService.init();
+        mockActorSend.mockClear();
+
+        // The FSM left Idle while the refresh was pending, e.g. a manual check
+        // started or onUpdateAvailable fired.
+        mockActorGetSnapshot.mockReturnValue({ value: ExtensionUpdateFSMState.Checking });
+
+        await ExtensionUpdateService.handleExtensionReloadOnUpdate(false, true);
+
+        // The machine handles Init only in Idle, so the result must be queued.
+        expect(mockActorSend).not.toHaveBeenCalled();
+
+        // Simulate the FSM returning to Idle.
+        mockActorGetSnapshot.mockReturnValue({ value: ExtensionUpdateFSMState.Idle });
+        getFsmSubscriber()?.({ value: ExtensionUpdateFSMState.Idle });
+
+        expect(mockActorSend).toHaveBeenCalledExactlyOnceWith({
+            type: ExtensionUpdateFSMEvent.Init,
+            isUpdateAvailable: false,
+            isReloadedOnUpdate: true,
+            isUpdateFailedAfterReload: false,
+        });
+    });
+
+    it('releases the gate without an Init event when reload handling and the fallback both fail', async () => {
+        vi.mocked(ManualUpdateHandler.peekUpdateData).mockRejectedValue(new Error('storage error'));
+        vi.mocked(ManualUpdateHandler.handleReload).mockRejectedValue(new Error('storage error'));
+
+        await ExtensionUpdateService.handleExtensionReloadOnUpdate(true, true);
+
+        expect(mockActorSend).not.toHaveBeenCalled();
+
+        await ExtensionUpdateService.getManualExtensionUpdateData();
+        expect(ManualUpdateHandler.getUpdateData).toHaveBeenCalledOnce();
+    });
+
+    it('initializes a failed result, never success, when the deferred custom refresh fails', async () => {
+        const metadata: ManualUpdateMetadata = { ...baseManualUpdateMetadata };
+        vi.mocked(ManualUpdateHandler.peekUpdateData).mockResolvedValue(metadata);
+        vi.mocked(ManualUpdateHandler.handleReload).mockResolvedValue({
+            ...metadata,
             isOk: false,
         });
 
         await ExtensionUpdateService.init();
 
-        expect(mockActorSend).toHaveBeenCalledWith(
-            expect.objectContaining({
-                type: ExtensionUpdateFSMEvent.Init,
-                isReloadedOnUpdate: true,
-                isUpdateFailedAfterReload: true,
+        await ExtensionUpdateService.handleExtensionReloadOnUpdate(true, false);
+
+        expect(ManualUpdateHandler.handleReload).toHaveBeenCalledExactlyOnceWith(true, false);
+        expect(mockActorSend).toHaveBeenLastCalledWith({
+            type: ExtensionUpdateFSMEvent.Init,
+            isUpdateAvailable: false,
+            isReloadedOnUpdate: true,
+            isUpdateFailedAfterReload: true,
+        });
+        expect(ManualUpdateHandler.getUpdateData).not.toHaveBeenCalled();
+    });
+
+    it('preserves manual intent when the UI requests metadata before the post-reload refresh finishes', async () => {
+        const metadata: ManualUpdateMetadata = { ...baseManualUpdateMetadata };
+        const completedMetadata = { ...metadata, isOk: false };
+        vi.mocked(ManualUpdateHandler.peekUpdateData).mockResolvedValue(metadata);
+        vi.mocked(ManualUpdateHandler.getUpdateData).mockResolvedValue(completedMetadata);
+        let completeReload!: (data: ManualUpdateMetadata) => void;
+        vi.mocked(ManualUpdateHandler.handleReload).mockImplementationOnce(
+            () => new Promise((resolve) => {
+                completeReload = resolve;
             }),
         );
 
-        // Restore defaults
-        (ManualUpdateHandler.hasUpdateData as ReturnType<typeof vi.fn>).mockResolvedValue(false);
-        (ManualUpdateHandler.peekUpdateData as ReturnType<typeof vi.fn>).mockResolvedValue(null);
+        await ExtensionUpdateService.init();
+        await expect(ExtensionUpdateService.getManualExtensionUpdateData()).resolves.toBeNull();
+        expect(ManualUpdateHandler.getUpdateData).not.toHaveBeenCalled();
+        await expect(ExtensionUpdateService.peekManualExtensionUpdateData()).resolves.toEqual(metadata);
+
+        const reload = ExtensionUpdateService.handleExtensionReloadOnUpdate(true, false);
+        await expect(ExtensionUpdateService.getManualExtensionUpdateData()).resolves.toBeNull();
+        expect(ManualUpdateHandler.getUpdateData).not.toHaveBeenCalled();
+
+        completeReload(completedMetadata);
+        await reload;
+
+        await expect(ExtensionUpdateService.getManualExtensionUpdateData()).resolves.toEqual(completedMetadata);
+        expect(ManualUpdateHandler.getUpdateData).toHaveBeenCalledOnce();
+    });
+
+    it('uses the preserved result on a service-worker restart after the page was opened', async () => {
+        const metadata: ManualUpdateMetadata = { ...baseManualUpdateMetadata };
+        vi.mocked(ManualUpdateHandler.peekUpdateData).mockResolvedValue(metadata);
+        vi.mocked(ManualUpdateHandler.handleReload).mockResolvedValue(metadata);
+
+        await ExtensionUpdateService.init();
+        await ExtensionUpdateService.handleExtensionReloadOnUpdate(false);
+
+        expect(mockActorSend).toHaveBeenLastCalledWith({
+            type: ExtensionUpdateFSMEvent.Init,
+            isUpdateAvailable: false,
+            isReloadedOnUpdate: true,
+            isUpdateFailedAfterReload: false,
+        });
+    });
+
+    it('does not emit a manual reload result when no metadata remains', async () => {
+        await ExtensionUpdateService.handleExtensionReloadOnUpdate(true, false);
+
+        expect(mockActorSend).not.toHaveBeenCalled();
+    });
+
+    it('still prioritizes a pending extension update when manual metadata exists', async () => {
+        vi.mocked(ManualUpdateHandler.peekUpdateData).mockResolvedValue({ ...baseManualUpdateMetadata });
+        await seedAutoUpdateState({
+            nextVersion: '5.4.0.0',
+            updateAvailableTimestamp: Date.now() - 100000,
+        });
+
+        await ExtensionUpdateService.init();
+
+        expect(mockActorSend).toHaveBeenCalledWith({
+            type: ExtensionUpdateFSMEvent.Init,
+            isUpdateAvailable: true,
+            isReloadedOnUpdate: false,
+            isUpdateFailedAfterReload: false,
+        });
     });
 });

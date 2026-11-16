@@ -1,9 +1,9 @@
-! Checksum: 2k76b2x7CLMJLMy6yWU9sg
-! Diff-Path: ../patches/17/17-s-1794233582-3600.patch
+! Checksum: 10sFpaG2Ek5VbCfYmfQ/ew
+! Diff-Path: ../patches/17/17-s-1794568332-3600.patch
 ! Title: AdGuard URL Tracking filter
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.14.81
-! TimeUpdated: 2026-11-09T14:09:13+00:00
+! Version: 2.0.14.84
+! TimeUpdated: 2026-11-13T11:08:24+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -538,6 +538,11 @@ $removeparam=tduid
 ! Good: ||example.org^$removeparam=cx
 ! Bad: ||example.org^$xmlhttprequest,redirect=noopvast-3.0 (for instance, should be in specific.txt)
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/246953
+||speedtest.ru^$removeparam=from
+! zhihu.com
+||zhihu.com^$removeparam=share_code
+||zhihu.com^$removeparam=utm_psn
 ! check24.de searching for article
 ||check24.de/suche/?q$removeparam=source
 ! https://github.com/AdguardTeam/AdguardFilters/issues/246385
@@ -644,8 +649,6 @@ $removeparam=tduid
 ||oita-press.co.jp^$removeparam=yh
 ! https://github.com/AdguardTeam/AdguardFilters/issues/241759
 ||eiga.com^$removeparam=cid
-! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-18457419
-||instagram.com^$removeparam=click_source
 ! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-18440787
 ||yahoo.com^$removeparam=src
 ! https://github.com/AdguardTeam/AdguardFilters/issues/241634
@@ -2145,8 +2148,12 @@ $removeparam=from,domain=doujinnomori.com|shinshi-manga.net|echiman.com|dojin-na
 ||slickdeals.net/*&sdtrk=$removeparam=sdtrk
 ! https://github.com/AdguardTeam/AdguardFilters/issues/167158
 ||beacon-recommend.tower.jp^$removeparam=tracking_id
+!
+! https://github.com/AdguardTeam/AdguardFilters/issues/246147
+||kinopoisk.ru^$removeparam=socialAlias
 ! https://github.com/AdguardTeam/AdguardFilters/issues/166502
 ||kinopoisk.ru^$removeparam=from_block
+!
 ! https://github.com/AdguardTeam/AdguardFilters/issues/166917
 ||bizhint.jp^$removeparam=trcd
 ! https://github.com/AdguardTeam/AdguardFilters/issues/166582
@@ -3401,10 +3408,25 @@ $removeparam=a_aid,domain=expressvpn.com|vpnarea.com|wook.pt|affiliate.privatevp
 ! kohls.com - counter
 ||kohls.com^$removeparam=CID
 ! instagram.com - share tracking
+||instagram.com^$removeparam=igsi
+||instagram.com^$removeparam=ndid
+||instagram.com^$removeparam=dlrf
+||instagram.com^$removeparam=psln
+||instagram.com^$removeparam=cplk
+||instagram.com^$removeparam=rpxt
+||instagram.com^$removeparam=srtk
+||instagram.com^$removeparam=obrf
+||instagram.com^$removeparam=xtok
+||instagram.com^$removeparam=mdxt
+||instagram.com^$removeparam=exln
+||instagram.com^$removeparam=vrfl
 ||instagram.com^$removeparam=stkn
 ||instagram.com^$removeparam=ig_rid
 ||instagram.com^$removeparam=igsh
 $removeparam=igshid,domain=instagram.com|threads.com|threads.net
+! https://github.com/DandelionSprout/adfilt/discussions/163#discussioncomment-18457419
+||instagram.com^$removeparam=click_source
+!
 ! https://github.com/AdguardTeam/AdguardFilters/issues/89768
 ||mediamarkt.com.tr^$removeparam=rbtc
 ! https://github.com/AdguardTeam/AdguardFilters/issues/90055

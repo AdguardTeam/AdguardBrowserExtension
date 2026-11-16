@@ -6,6 +6,7 @@ Firefox beta variants), plus the manual steps for preparing a new release.
 
 - [Pipelines (GitHub Actions)](#pipelines-github-actions)
 - [Release flow](#release-flow)
+- [Artifact naming and compatibility](#artifact-naming-and-compatibility)
 - [Firefox beta pipelines](#firefox-beta-pipelines)
   - [Why two Firefox beta pipelines](#why-two-firefox-beta-pipelines)
   - [Standalone Firefox beta](#standalone-firefox-beta)
@@ -23,7 +24,7 @@ runner. Release/deploy flows:
 | --- | --- | --- |
 | PR checks + QA builds | `ci.yml` | pull_request / push to master |
 | E2E tests | `e2e.yml` | pull_request |
-| Release prep | `prepare-release.yml` | manual, semver tag `vX.Y.Z[-beta.N]` + optional build override |
+| Release prep | `prepare-release.yml` | manual, semver tag `vX.Y.Z[-beta.N]` + optional build override and CWS rollout percentage |
 | Publish (beta + release) | `publish-release.yml` | merged `release-bump/*` PR / manual |
 | Filters auto-update + CWS/Edge auto-publish | `auto-build.yml` | schedule 12:00/17:00 UTC + manual |
 
@@ -31,15 +32,20 @@ Release flow:
 
 1. Run `prepare-release.yml` with the target semver tag (e.g. `v5.6.0-beta.7`).
    By default, it consumes the next build number, bumps `package.json` to
-   `5.6.0+7.build.<dnrPatch>` and adds the `## [5.6.0.7-beta]` CHANGELOG heading.
+   `5.6.0+7.build.<dnrPatch>` and adds the `## [5.6.0.7-beta]` CHANGELOG heading
+   with a compare link (the base tag is selected by `selectPreviousTag`; see
+   `tools/release/version.ts`).
    If a stable branch has a higher counter, enter a build override greater
-   than the highest counter on both branches and use it as the beta suffix. The workflow rejects requested tags that
-   already exist on origin. For a beta, it also rejects an existing plain
-   release tag with the same `X.Y.Z`. A release tag has no build suffix (e.g.
-   `v5.6.0`). Without an override, its manifest build is the next counter
-   value, so a release prepared after `v5.6.0-beta.7` gets the `5.6.0.8`
-   manifest.
-2. Merge the `release-bump/*` PR.
+   than the highest counter on both branches and use it as the beta suffix.
+   The workflow rejects requested tags that already exist on origin. For a
+   beta, it also rejects an existing plain release tag with the same `X.Y.Z`.
+   A release tag has no build suffix (e.g. `v5.6.0`). Without an override, its
+   manifest build is the next counter value, so a release prepared after
+   `v5.6.0-beta.7` gets the `5.6.0.8` manifest.
+   The `rollout-percentage` input sets the Chrome Web Store release-channel
+   rollout: an integer from 1 to 100, 1 by default.
+2. Merge the `release-bump/*` PR. To change the rollout percentage, edit the
+   `Chrome Web Store rollout: N%` line in the PR body before merging.
 3. `publish-release.yml` builds the main artifacts, creates the tag, and deploys:
    - beta: static.adtidy.org (chromium CRX/ZIP + Edge MV3 + Firefox
      XPI/update.json), Chrome Web Store MV3, Firefox AMO beta, Firefox
@@ -49,8 +55,18 @@ Release flow:
      Store MV3, Firefox AMO, Edge Add-ons (draft upload; submission is manual),
      GitHub Release draft (public repo)
    - Opera zips ship as GitHub Release assets only (store submission is manual).
-   - Chrome Web Store versions are staged: after review, publish them manually
-     from the Developer Dashboard and set the rollout percentage there.
+   - Chrome Web Store versions are staged on both channels: after review,
+     publish them manually from the Developer Dashboard.
+   - Chrome Web Store release channel: the version is submitted with the
+     rollout percentage from the `release-bump` PR body and starts at that
+     percentage once published. The store fixes the percentage at submission;
+     it cannot be chosen at publish time. A PR without the rollout line gets
+     1%. A manual `publish-release.yml` dispatch can set `rollout-percentage`,
+     which overrides the PR body; an empty value on a dispatch gives 1%.
+     Before publishing, check the percentage of the version in review in the
+     Developer Dashboard. If it is not the expected one, cancel the review and
+     submit the version again from the dashboard. Raise a published
+     percentage toward 100 in the Developer Dashboard.
 4. Slack notifications go to `#adguard-extension-vcs`.
 5. After the workflow completes, review the notes and assets in the
    `AdguardTeam/AdguardBrowserExtension` GitHub Release draft and publish it
@@ -117,18 +133,60 @@ matches `package.json`. It builds the main channel artifacts through the
 existing Docker stages before it creates the semver tag. The tag is never moved:
 a re-run whose tag already points to the release commit keeps it, while a tag at
 another commit fails the run. For a manual retry, dispatch on the existing tag
-or its release commit. Otherwise bump the patch instead of re-releasing.
+or its release commit and repeat the rollout percentage in the
+`rollout-percentage` input: a dispatch has no release PR body, so an empty
+input gives the default 1%. A ref that predates
+`tools/release/resolve-rollout.ts` cannot read the input: such a dispatch
+warns and submits the release at 1%. Otherwise bump the patch instead of
+re-releasing.
 
 - Beta tags (`v5.6.0-beta.7`) build the signed CRX (cert delivered as the
   `CHROME_CERT` BuildKit secret from Vault, never written to the workspace or an
   image layer) plus the Firefox standalone and AMO beta packages; only
   beta-channel jobs run.
-- Release tags (`v5.6.0`) build all browser bundles; only release-channel
-  jobs run.
+- Release tags (`v5.6.0`) build all browser bundles; only release-channel jobs
+  run. Their GitHub release notes link to the signed standalone builds on the
+  beta static directory (`chrome.crx`, `firefox.xpi`) so users who cannot
+  install from the stores (Chromium MV2 forks, AMO geo-blocking) can install
+  and auto-update directly (AG-58823).
 - Artifacts are laid out per consumer and consumed by the shared org workflows:
   `deploy-to-static.yml`, `deploy-to-chrome-web-store.yml`,
   `deploy-to-firefox-addons.yml`, `deploy-to-edge-addons.yml`,
   `create-gh-release.yml`.
+
+## Artifact naming and compatibility
+
+Internal build targets, output directories, CI downloads, and new GitHub
+Release assets explicitly distinguish Chromium MV2 and MV3. The set of
+packages published per channel is unchanged; existing releases are not renamed.
+
+| Internal / GitHub package | Static filename | Store workflow filename |
+| --- | --- | --- |
+| `chrome-mv2.zip` | `chrome.zip` | `chrome.zip` (MV2 listing) |
+| `chrome-mv3.zip` | `chrome-mv3.zip` | `chrome.zip` (MV3 listing) |
+| `chrome-mv2.crx` (beta) | `chrome.crx` | Not submitted |
+| `edge-mv2.zip` | Not published | Not submitted (GitHub Release asset only) |
+| `edge-mv3.zip` | `edge-mv3.zip` | `edge.zip` |
+| `opera-mv2.zip`, `opera-mv3.zip` (release) | Not published | Manual submission |
+| `firefox.zip`, `firefox.xpi` | Unchanged | Existing AMO package layout |
+
+`tools/ci/stage-deploy-artifacts.sh` copies the Docker outputs into separate
+deployment directories without repacking them. Static filenames are permanent
+public download URLs: notably, existing standalone Chrome installations rely
+on `update.xml` pointing to `chrome.crx`. The local CRX filename is deliberately
+independent of that URL. Firefox's `update.json` and `firefox.xpi` URLs also stay
+unchanged.
+
+The shared `deploy-to-chrome-web-store.yml` explicitly invokes `go-webext` with
+`-f chrome.zip`; that filename is a workflow contract, not a Chrome Web Store
+requirement. The Edge workflow similarly expects `edge.zip`, and the AMO
+workflow expects `firefox.zip` and `source.zip`. Preserve these names at the
+deployment boundary when changing internal package names. The automatic MV3
+publishing workflow follows the same Chrome filename contract.
+
+Firefox retains the separate `firefox-amo` and `firefox-standalone` build
+targets, with no manifest suffix. Their existing conversion to published
+Firefox filenames and signing flow remain unchanged.
 
 ## Firefox beta pipelines
 
@@ -207,10 +265,12 @@ variants are noted.
 6. **Run `prepare-release.yml`** with the target semver tag
    (e.g. `v5.6.0-beta.7` for beta, `v5.6.0` for release). It validates the
    format and monotonicity, allocates the next build number, checks remote
-   tags, sets `package.json`, patches `CHANGELOG.md`, and opens the
-   `release-bump/*` PR. If a stable branch has a higher counter, enter a build
-   override greater than the highest counter on both branches and use it as the
-   beta suffix.
+   tags, sets `package.json`, patches `CHANGELOG.md` (adds the version heading
+   and its compare link; the base tag follows `selectPreviousTag`), and opens
+   the `release-bump/*` PR. If a stable branch has a higher counter, enter a
+   build override greater than the highest counter on both branches and use it
+   as the beta suffix. Set `rollout-percentage` to the Chrome Web Store
+   release-channel rollout (1 to 100, default `1`).
 
 7. **Merge the `release-bump/*` PR.** `publish-release.yml` takes over: it
    builds the main artifacts, tags the merge commit, and deploys to the
@@ -310,3 +370,16 @@ variants are noted.
   shared workflow skips its notify job for `slack-channel: ''`, and the
   auto-build failure notification fires on a failed run only. Check the Edge
   Partner Center only when the skip repeats for several days.
+- **Chrome auto-publish pauses while the release rollout is below 100%.**
+  `tools/ci/check-extension-status.sh` returns `1` by design when the published
+  revision is not at 100% rollout, so `auto-build.yml` skips the Chrome release
+  publish until the percentage reaches 100%. The run still builds and commits
+  the filter updates and publishes Edge. Raise the percentage in the Developer
+  Dashboard; the next scheduled run resumes automatically.
+- **The Chrome release was submitted at 1% instead of the percentage in the
+  PR.** A line in the release-bump PR body starts with
+  `Chrome Web Store rollout:` but does not end with an integer from 1 to 100
+  and `%`. `publish-release` logs a warning, the release still runs, and the
+  Chrome version is submitted at the default 1%. The PR body is read only when
+  the PR closes, so editing it after the merge has no effect. Publish the
+  staged version and raise the percentage in the Developer Dashboard.

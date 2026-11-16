@@ -17,11 +17,54 @@
  * You should have received a copy of the GNU General Public License
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
-import { type ExtractMessageResponse, MessageType } from '../../../common/messages';
+import {
+    type AcknowledgeAutoDisableNotificationsMessage,
+    type ClearUnusedFiltersStatusMessage,
+    type ExtractMessageResponse,
+    MessageType,
+} from '../../../common/messages';
+import { type AutoDisabledFilter } from '../../../common/auto-disable-notification';
 
 import { MessengerCommon } from './messenger-common';
 
 export class Messenger extends MessengerCommon {
+    /**
+     * Reads pending automatic disables of language filters without consuming them.
+     *
+     * @returns Pending filters with their display names.
+     */
+    getAutoDisableNotifications = async (): Promise<AutoDisabledFilter[]> => {
+        return this.sendMessage(MessageType.GetAutoDisableNotifications);
+    };
+
+    /**
+     * Removes displayed filters from the pending notification.
+     *
+     * @param filterIds Displayed filter IDs.
+     *
+     * @returns Promise resolved after the background applies the removal.
+     */
+    acknowledgeAutoDisableNotifications = async (
+        filterIds: AcknowledgeAutoDisableNotificationsMessage['data']['filterIds'],
+    ): Promise<ExtractMessageResponse<MessageType.AcknowledgeAutoDisableNotifications>> => {
+        return this.sendMessage(MessageType.AcknowledgeAutoDisableNotifications, { filterIds });
+    };
+
+    /**
+     * Sends a message to the background page to clear the 'disabled as unused'
+     * statuses captured when the whole Language-specific group is opened.
+     * The UI keeps them visible for the remainder of that opening.
+     *
+     * @param filterIds Filter identifiers whose status should be cleared.
+     *
+     * @returns Promise resolved after the background clears the statuses; rejected if clearing fails.
+     */
+    clearUnusedFiltersStatus = async (
+        filterIds: ClearUnusedFiltersStatusMessage['data']['filterIds'],
+    ): Promise<ExtractMessageResponse<MessageType.ClearUnusedFiltersStatus>> => {
+        return this.sendMessage(MessageType.ClearUnusedFiltersStatus, { filterIds });
+    };
+
     /**
      * Sends a message to the background page to update filters.
      *

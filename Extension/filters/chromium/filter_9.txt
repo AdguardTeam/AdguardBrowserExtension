@@ -1,9 +1,9 @@
-! Checksum: zWNH9X6Jfs6CEUVVc7yXtw
-! Diff-Path: ../patches/9/9-s-1794067946-3600.patch
+! Checksum: JJabxdG9J5J6Fm1+ekuR9w
+! Diff-Path: ../patches/9/9-s-1794586371-3600.patch
 ! Title: AdGuard Spanish/Portuguese filter
 ! Description: Filter list that specifically removes ads on websites in Spanish, Portuguese, and Brazilian Portuguese languages.
-! Version: 2.0.36.41
-! TimeUpdated: 2026-11-07T16:08:30+00:00
+! Version: 2.0.36.47
+! TimeUpdated: 2026-11-13T16:08:47+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -207,6 +207,12 @@
 !
 !
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/246806
+linkliberado.xyz,planetadosfilmes.com,planetafilmes1.com###adblock-wall
+linkliberado.xyz,planetadosfilmes.com,planetafilmes1.com#%#//scriptlet('abort-current-inline-script', 'document.getElementById', '/pagead2\.googlesyndication\.com|adsbygoogle/')
+! https://github.com/AdguardTeam/AdguardFilters/issues/246981
+blayvia.com#%#//scriptlet('prevent-fetch', 'doubleclick.net')
+blayvia.com#%#//scriptlet('trusted-replace-node-text', 'script', 'showPages', '/(,\s*?)start(\))|start(\(\);)/g', '$1showPages$2$3')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/246517
 obutecodanet.ig.com.br#%#//scriptlet('prevent-setTimeout', 'magnificPopup')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/245829
@@ -2221,7 +2227,7 @@ http://adw.
 *$script,third-party,denyallow=mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.li|bytecdntp.com|doodcdn.io|intensedebate.com|vixcloud.co|cdn.plyr.io|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|wordpress.com|fastcomments.com|plyr.io|imgsmail.ru|cloudflare.net|rabbitstream.net|x.com|alicdn.com|jkdesa.com|jkdesu.com|tailwindcss.com|cloudflareinsights.com,_____,domain=anroll.net|monoschinos2.com|animeyt.es|leercapitulo.com|pelisflix2.green|darkmahou.org|comandotorrents.to|comandoplay.com|pelismax.one|seriesgod.cc|anime-jl.net|ferromotor.com|motoratrium.com|loveteching.com|animefire.plus|gratistorrent.com|readhunters.xyz|animefire.io|mangalivre.tv|jkanime.net|novelaplay.com|3xyaoi.com
 !
 ! ##body .ad
-guardianocturna.mx,3djuegos.com.mx,cine.com,3djuegospc.com,directoalpaladar.com,winsports.co,meupc.net,xataka.com.br,solowrestling.com,europapress.es,trendencias.com,futuro.cl,solowrestling.mundodeportivo.com,meneame.net,3djuegos.com,meteoconsult.es,meuguia.tv,territoriosamsung.com,conjur.com.br,meups.com.br,elcorreogallego.es,3djuegos.lat,xatakandroid.com,nsctotal.com.br,noticiasdenavarra.com,informacion.es,applesfera.com,xatakamovil.com,espinof.com,mundoxiaomi.com,vidaextra.com,mediotiempo.com,elpais.com,olhardigital.com.br,atribuna.com.br,jovemnerd.com.br,laopiniondemurcia.es,larazon.es,dicio.com.br,band.uol.com.br,xataka.com,onyxplay.com,genbeta.com,vagalume.com.br,xatakandroid.com,abril.com.br##body .ad
+linkliberado.xyz,guardianocturna.mx,3djuegos.com.mx,cine.com,3djuegospc.com,directoalpaladar.com,winsports.co,meupc.net,xataka.com.br,solowrestling.com,europapress.es,trendencias.com,futuro.cl,solowrestling.mundodeportivo.com,meneame.net,3djuegos.com,meteoconsult.es,meuguia.tv,territoriosamsung.com,conjur.com.br,meups.com.br,elcorreogallego.es,3djuegos.lat,xatakandroid.com,nsctotal.com.br,noticiasdenavarra.com,informacion.es,applesfera.com,xatakamovil.com,espinof.com,mundoxiaomi.com,vidaextra.com,mediotiempo.com,elpais.com,olhardigital.com.br,atribuna.com.br,jovemnerd.com.br,laopiniondemurcia.es,larazon.es,dicio.com.br,band.uol.com.br,xataka.com,onyxplay.com,genbeta.com,vagalume.com.br,xatakandroid.com,abril.com.br##body .ad
 ! ##.ads
 rapirecetas.com,tiohentai.com,maistocadas.mus.br,serviporno.com,solvetic.com,gamesfull.app,agazeta.com.br,lasexta.com,extra.ec,globo.com,amomeupet.org,cifras.com.br,gaz.com.br,placar.com.br,futebolinterior.com.br,tvhistoria.com.br,tribunapr.uol.com.br,diariodonordeste.verdesmares.com.br,sbt.com.br,link.estadao.com.br,atomixhq.*,jc.ne10.uol.com.br,internetpasoapaso.com,acidadeon.com,leouve.com.br,larazon.es,infoescola.com,cbn.globoradio.globo.com,abril.com.br,odia.ig.com.br,especiais.g1.globo.com,tribunapr.com.br,anime-tube.tv##.ads
 ! ##body .banner
@@ -2231,6 +2237,21 @@ mundoisosgratis.com,actualidadiphone.com,lucrandoideias.com,proandroid.com,lusom
 !
 ! NOTE: Specific rules
 !
+viciados.net##.vgdb-home-ad
+viciados.net###vp-fundo
+viciados.net###vp-card
+viciados.net##.vicia-entity-placement
+honeysanime.com###ad-sticky-anchor
+olx.com.br##div[data-testid="anchor-container"]
+olx.com.br##div.flex[class*="_"]:has(> div[data-testid="advertising-placeholder"])
+elgranonan.com#%#//scriptlet('json-prune', 'codes')
+||lacocinita.pro/wp-json/lc/v*/promo^
+bibliatodo.com##.bt-ad-group
+bibliatodo.com##.off-canvas-wrapper-inner > br
+elgranonan.com##.tnv-ad
+elgranonan.com##.tnt-ad-col
+elgranonan.com##.video-description
+elgranonan.com##.tnv-vipbar
 seriesmp4.club#%#//scriptlet('href-sanitizer', 'a[href^="https://seriesmp4.club/dl/?go=aHR0c"]', '?go', 'base64decode')
 dbsullca.com#$##special-overlay { display: none !important; }
 dbsullca.com#$#body { overflow: auto !important; }
@@ -3043,7 +3064,7 @@ portaldohost.com.br##.ipsResponsive_inlineBlock > a[target="_blank"] > img
 teknofilo.com##.it-ad-wrapper
 kippel01.com##.topBillboard
 kippel01.com##.aside-ad-container
-elboletin.com,ricoysuave.com,hartico.tv###ad-container
+blayvia.com,elboletin.com,ricoysuave.com,hartico.tv###ad-container
 viapais.com.ar##.int-banner
 nationalgeographic.com.es##.ad-item:not(.add990x90)
 nationalgeographic.com.es#$#.add990x90 { min-height: 0 !important; }

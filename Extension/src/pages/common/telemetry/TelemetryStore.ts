@@ -143,11 +143,12 @@ export class TelemetryStore {
      * NOTE: Do not await this function, as it is not necessary to wait for the response.
      *
      * @param eventName Name of the custom telemetry event.
-     * @param screenName Name of the screen where the event occurred.
+     * @param screenName Name of the screen where the event occurred,
+     * `undefined` for events not tied to a specific screen.
      */
-    sendCustomEvent = async (
-        eventName: TelemetryEventName,
-        screenName: TelemetryActionToScreenMap[TelemetryEventName],
+    sendCustomEvent = async <T extends TelemetryEventName>(
+        eventName: T,
+        screenName: TelemetryActionToScreenMap[T],
     ): Promise<void> => {
         try {
             if (!this.isAnonymizedUsageDataAllowed) {

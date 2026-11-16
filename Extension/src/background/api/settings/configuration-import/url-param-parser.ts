@@ -31,6 +31,20 @@ import {
 } from './param-mapping';
 
 /**
+ * Boolean stealth URL params and the {@link StealthImportConfig} fields they fill.
+ */
+const STEALTH_BOOL_PARAMS = [
+    [PARAM_NAMES.STEALTH_ENABLED, 'enabled'],
+    [PARAM_NAMES.STEALTH_HIDE_SEARCH_QUERIES, 'hideSearchQueries'],
+    [PARAM_NAMES.STEALTH_SEND_DNT, 'sendDnt'],
+    [PARAM_NAMES.STEALTH_BLOCK_WEBRTC, 'blockWebrtc'],
+    [PARAM_NAMES.STEALTH_BLOCK_FINGERPRINTING, 'blockFingerprinting'],
+    [PARAM_NAMES.STEALTH_STRIP_URL, 'stripUrl'],
+    [PARAM_NAMES.STEALTH_BLOCK_TRACKERS, 'blockTrackers'],
+    [PARAM_NAMES.STEALTH_X_CLIENT, 'xClient'],
+] as const;
+
+/**
  * Parses `adguard:import_user_configuration` URL query parameters and converts
  * them into a typed {@link ImportConfiguration} object.
  *
@@ -258,36 +272,13 @@ export class UrlParamParser {
             ? UrlParamParser.parseCustomFilters(customFiltersParam)
             : [];
 
-        const stealth: Partial<StealthImportConfig> = {};
+        const stealth: StealthImportConfig = {};
 
-        const stealthEnabledParam = params[PARAM_NAMES.STEALTH_ENABLED];
-        if (stealthEnabledParam !== undefined) {
-            stealth.enabled = UrlParamParser.parseBool(stealthEnabledParam);
-        }
-
-        const hideSearchQueriesParam = params[PARAM_NAMES.STEALTH_HIDE_SEARCH_QUERIES];
-        if (hideSearchQueriesParam !== undefined) {
-            stealth.hideSearchQueries = UrlParamParser.parseBool(hideSearchQueriesParam);
-        }
-
-        const sendDntParam = params[PARAM_NAMES.STEALTH_SEND_DNT];
-        if (sendDntParam !== undefined) {
-            stealth.sendDnt = UrlParamParser.parseBool(sendDntParam);
-        }
-
-        const blockWebrtcParam = params[PARAM_NAMES.STEALTH_BLOCK_WEBRTC];
-        if (blockWebrtcParam !== undefined) {
-            stealth.blockWebrtc = UrlParamParser.parseBool(blockWebrtcParam);
-        }
-
-        const stripUrlParam = params[PARAM_NAMES.STEALTH_STRIP_URL];
-        if (stripUrlParam !== undefined) {
-            stealth.stripUrl = UrlParamParser.parseBool(stripUrlParam);
-        }
-
-        const blockTrackersParam = params[PARAM_NAMES.STEALTH_BLOCK_TRACKERS];
-        if (blockTrackersParam !== undefined) {
-            stealth.blockTrackers = UrlParamParser.parseBool(blockTrackersParam);
+        for (const [paramName, configKey] of STEALTH_BOOL_PARAMS) {
+            const param = params[paramName];
+            if (param !== undefined) {
+                stealth[configKey] = UrlParamParser.parseBool(param);
+            }
         }
 
         const thirdPartyCookiesMinParam = params[PARAM_NAMES.STEALTH_THIRD_PARTY_COOKIES_MIN];
@@ -298,11 +289,6 @@ export class UrlParamParser {
         const firstPartyCookiesMinParam = params[PARAM_NAMES.STEALTH_FIRST_PARTY_COOKIES_MIN];
         if (firstPartyCookiesMinParam !== undefined) {
             stealth.firstPartyCookiesMin = UrlParamParser.parseNonNegativeInt(firstPartyCookiesMinParam);
-        }
-
-        const xClientParam = params[PARAM_NAMES.STEALTH_X_CLIENT];
-        if (xClientParam !== undefined) {
-            stealth.xClient = UrlParamParser.parseBool(xClientParam);
         }
 
         // v4: stealth.referrer is a presence-only flag — the extension always exports it as an

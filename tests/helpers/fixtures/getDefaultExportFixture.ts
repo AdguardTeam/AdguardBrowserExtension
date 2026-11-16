@@ -76,6 +76,7 @@ export const getDefaultExportFixture = (isMv3: boolean): Config => ({
         [StealthOption.SendDoNotTrack]: true,
         [StealthOption.BlockWebRTC]: false,
         [StealthOption.RemoveXClientData]: UserAgent.isChrome,
+        [StealthOption.BlockFingerprinting]: false,
         [StealthOption.SelfDestructThirdPartyCookies]: true,
         [StealthOption.SelfDestructThirdPartyCookiesTime]: 2880,
         [StealthOption.SelfDestructFirstPartyCookies]: false,

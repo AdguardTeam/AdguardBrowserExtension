@@ -18,8 +18,14 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { SimpleRegex } from '@adguard/tsurlfilter';
-import { NetworkRule } from '@adguard/tswebextension';
+import {
+    NetworkRule,
+    NetworkRuleOption,
+    RuleFactory,
+    SimpleRegex,
+} from '@adguard/tsurlfilter';
+
+import { ContentType } from 'tswebextension';
 
 import { type FilteringEventRuleData, type FilteringLogEvent } from '../../../../background/api';
 import { strings } from '../../../../common/strings';
@@ -121,6 +127,144 @@ export const createDocumentLevelBlockRule = (rule: FilteringEventRuleData) => {
         return `${appliedRuleText},${NetworkRule.OPTIONS.BADFILTER}`;
     }
     return appliedRuleText + NetworkRule.OPTIONS_DELIMITER + NetworkRule.OPTIONS.BADFILTER;
+};
+
+/**
+ * Parses the applied rule as an allowlist network rule.
+ *
+ * Only allowlist rules are parsed: the caller is interested in exception rules,
+ * and a blocking rule is never one. Rule data without the rule text is skipped
+ * as well, because there is nothing to parse.
+ *
+ * @param rule Applied rule data.
+ *
+ * @returns Parsed allowlist rule, or null when the rule data is incomplete, the
+ * rule is not an allowlist rule, or the text is not a network rule.
+ */
+const parseAppliedAllowlistRule = (rule: FilteringEventRuleData): NetworkRule | null => {
+    if (!rule.allowlistRule || !rule.appliedRuleText) {
+        return null;
+    }
+
+    const networkRule = RuleFactory.createRule(rule.appliedRuleText, rule.filterId, rule.ruleIndex);
+
+    if (!(networkRule instanceof NetworkRule) || !networkRule.isAllowlist()) {
+        return null;
+    }
+
+    return networkRule;
+};
+
+/**
+ * Checks whether the rule disables filtering on the whole page.
+ *
+ * The engine marks rules with `$document`, `$urlblock`, `$genericblock` and
+ * `$content` as document level, so `isDocumentLevelAllowlistRule()` also serves
+ * as a fallback for the events without the engine flag. Cosmetic exceptions
+ * (`$elemhide`, `$generichide`, `$specifichide`, `$jsinject`) are page-wide as
+ * well, but the engine does not mark them, so they are detected by their
+ * cosmetic options.
+ *
+ * @param rule Parsed allowlist rule.
+ *
+ * @returns True if the rule disables filtering on the whole page.
+ */
+const isPageWideException = (rule: NetworkRule): boolean => (
+    rule.hasCosmeticOption() || rule.isDocumentLevelAllowlistRule()
+);
+
+/**
+ * Checks whether the exception outranks any blocking rule.
+ *
+ * An allowlist rule with `$important` has the highest priority, so no blocking
+ * rule can counter it and `$badfilter` is the only way to disable it.
+ *
+ * @param rule Parsed allowlist rule.
+ *
+ * @returns True if the rule is an important exception.
+ */
+const isImportantException = (rule: NetworkRule): boolean => (
+    rule.isOptionEnabled(NetworkRuleOption.Important)
+);
+
+/**
+ * Checks whether a blocking rule can still counter the applied exception.
+ *
+ * A page-wide exception matches subdocument requests as well, but there a
+ * blocking rule with `$important` still blocks the frame. A document request
+ * can be blocked only by a `$document` rule, and the wizard does not suggest
+ * one, so `$badfilter` is the only working suggestion for it. An unknown
+ * request type is treated as a document request.
+ *
+ * @param requestType Request type of the event, if known.
+ *
+ * @returns True if the exception can be countered by a blocking rule.
+ */
+const isCounterableByBlockingRule = (requestType?: ContentType): boolean => (
+    requestType !== undefined && requestType !== ContentType.Document
+);
+
+/**
+ * Checks whether the rule is a cookie exception.
+ *
+ * A cookie exception applies to the cookie requests matching the rule rather
+ * than to a single request, so it is a document level exclusion as well. It is
+ * reported on cookie events, which are not document requests.
+ *
+ * @param rule Parsed allowlist rule.
+ *
+ * @returns True if the rule is a cookie exception.
+ */
+const isCookieException = (rule: NetworkRule): boolean => rule.isOptionEnabled(NetworkRuleOption.Cookie);
+
+/**
+ * Checks whether the applied rule is a document level exception rule.
+ *
+ * Such rules disable filtering features on the whole page, so a blocking rule
+ * cannot counter them and the wizard has to suggest `$badfilter`. The rule is
+ * recognized either by the engine flag, which covers `$document`, `$urlblock`,
+ * `$genericblock` and `$content`, or by the rule text, which additionally
+ * covers the cosmetic exceptions and the cookie exceptions.
+ *
+ * An exception with `$important` outranks any blocking rule, so it is always
+ * treated as document level.
+ *
+ * The engine compares modifier values when negating rules (`AG-59794`,
+ * tsurlfilter PR #72), so the suggested `$badfilter` rule disables exactly the
+ * applied exception and not its siblings.
+ *
+ * @param rule Applied rule data.
+ * @param requestType Request type of the event, if known.
+ *
+ * @returns True if the applied rule is a document level exception rule.
+ */
+export const isDocumentLevelExceptionRule = (
+    rule: FilteringEventRuleData | undefined,
+    requestType?: ContentType,
+): boolean => {
+    if (!rule) {
+        return false;
+    }
+
+    const networkRule = parseAppliedAllowlistRule(rule);
+
+    if (networkRule !== null && isImportantException(networkRule)) {
+        return true;
+    }
+
+    if (rule.documentLevelRule) {
+        return !isCounterableByBlockingRule(requestType);
+    }
+
+    if (networkRule === null) {
+        return false;
+    }
+
+    if (isPageWideException(networkRule)) {
+        return !isCounterableByBlockingRule(requestType);
+    }
+
+    return isCookieException(networkRule);
 };
 
 /**
@@ -459,16 +603,21 @@ export const getRuleText = (
 
     const domain = permitDomain ? selectedEvent.frameDomain : null;
 
+    const isDocumentLevel = isDocumentLevelExceptionRule(
+        selectedEvent.requestRule,
+        selectedEvent.requestType,
+    );
+
     let appliedRuleText;
     if (selectedEvent.element) {
         appliedRuleText = createCssRuleFromParams(rulePattern, permitDomain);
-    } else if (selectedEvent.cookieName) {
+    } else if (selectedEvent.cookieName && !isDocumentLevel) {
         appliedRuleText = createCookieRuleFromParams({
             rulePattern,
             thirdParty,
             important,
         });
-    } else if (selectedEvent.script || selectedEvent?.requestRule?.documentLevelRule) {
+    } else if (selectedEvent.script || isDocumentLevel) {
         appliedRuleText = createRuleFromParams({ urlPattern: rulePattern });
     } else {
         appliedRuleText = createRuleFromParams({

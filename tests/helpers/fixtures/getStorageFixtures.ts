@@ -873,3 +873,26 @@ export const getStorageFixturesV15 = (expires: number): StorageData[] => {
         return settings;
     });
 };
+
+/**
+ * Generates storage fixtures for V16.
+ *
+ * V15→V16 migration adds the disabled block fingerprinting setting.
+ *
+ * @param expires Expiration timestamp.
+ *
+ * @returns Storage data fixtures for V16.
+ */
+export const getStorageFixturesV16 = (expires: number): StorageData[] => {
+    const storageSettingsFixturesV15 = getStorageFixturesV15(expires);
+
+    return storageSettingsFixturesV15.map((settings) => {
+        const adgSettings = settings['adguard-settings'] as Record<string, unknown>;
+
+        adgSettings['stealth-block-fingerprinting'] = false;
+
+        settings['schema-version'] = 16;
+
+        return settings;
+    });
+};

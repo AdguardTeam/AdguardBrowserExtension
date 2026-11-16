@@ -24,6 +24,14 @@ on:
         description: Ref to publish manually (defaults to the merged PR commit)
         required: false
         type: string
+      rollout-percentage:
+        description: >-
+          Chrome Web Store release-channel rollout percentage (1-100) for the
+          staged version. Empty falls back to the merged release-bump PR body
+          when the run comes from a merged PR, then to 1. A dispatch has no
+          PR body, so pass the value again to retry a release.
+        required: false
+        type: string
 
 # Serialize all publishes for this repo: two release-bump PRs merged close
 # together (or a merged PR racing a manual dispatch) would otherwise run in
@@ -35,7 +43,7 @@ concurrency:
 
 env:
   PNPM_VERSION: 10.33.4
-  NODE_VERSION: 22.17.0
+  NODE_VERSION: 22.22.2
 
 jobs:
   resolve-version:
@@ -55,6 +63,7 @@ jobs:
       tag: ${{ steps.resolve.outputs.tag }}
       channel: ${{ steps.resolve.outputs.channel }}
       notes: ${{ steps.resolve.outputs.notes }}
+      cws-rollout-percentage: ${{ steps.rollout.outputs.rollout-percentage }}
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -86,6 +95,30 @@ jobs:
         run: |
           set -euo pipefail
           pnpm tsx tools/release/resolve-version.ts >> "$GITHUB_OUTPUT"
+
+      # Reads the rollout from the merged release-bump PR body or the manual
+      # dispatch input, appends rollout-percentage= to $GITHUB_OUTPUT, and
+      # reports a malformed PR-body line as a warning. The release publish job
+      # and the success notification consume this output; the beta channel
+      # resolves to an empty percentage.
+      - name: Resolve CWS rollout
+        id: rollout
+        env:
+          CHANNEL: ${{ steps.resolve.outputs.channel }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          ROLLOUT_INPUT: ${{ inputs.rollout-percentage }}
+        run: |
+          set -euo pipefail
+          # A manual dispatch can pin an older ref that has no rollout tool.
+          # Such a ref cannot read the input, so a release gets the default 1%.
+          if [ -f tools/release/resolve-rollout.ts ]; then
+            pnpm tsx tools/release/resolve-rollout.ts
+          elif [ "$CHANNEL" = 'release' ]; then
+            echo "::warning::tools/release/resolve-rollout.ts is missing at the checked-out ref; submitting the Chrome Web Store release at the default 1% rollout"
+            echo 'rollout-percentage=1' >> "$GITHUB_OUTPUT"
+          else
+            echo 'rollout-percentage=' >> "$GITHUB_OUTPUT"
+          fi
 
   # Restores the Bamboo "Size and locales check": bundle-size and translation
   # validation gate every release before any build/upload happens. An oversize
@@ -185,44 +218,12 @@ jobs:
             --target release-build-output \
             --output type=local,dest=output/build .
 
-      # Lay out one artifact directory per deploy target. Names must match
-      # exactly what each consumer expects:
-      #   deploy-to-static.yml uploads every non-empty file in the artifact;
-      #   deploy-to-chrome-web-store.yml expects chrome.zip;
-      #   deploy-to-firefox-addons.yml expects firefox.zip + source.zip;
-      #   deploy-to-edge-addons.yml expects edge.zip.
-      - name: Stage deploy artifacts (beta)
-        if: needs.resolve-version.outputs.channel == 'beta'
-        run: |
-          set -euo pipefail
-          mkdir -p staged/static-chrome staged/static-edge staged/cws-mv3 staged/gh-assets
-          cp output/build/artifacts/chrome.zip output/build/artifacts/chrome-mv3.zip \
-             output/build/artifacts/build.txt staged/static-chrome/
-          cp output/build/artifacts/edge-mv3.zip staged/static-edge/
-          cp output/crx/artifacts/chrome.crx output/crx/artifacts/update.xml staged/static-chrome/
-          cp output/build/artifacts/chrome-mv3.zip staged/cws-mv3/chrome.zip
-          cp output/build/artifacts/chrome.zip output/build/artifacts/chrome-mv3.zip \
-             output/build/artifacts/edge.zip output/build/artifacts/edge-mv3.zip output/build/artifacts/build.txt \
-             output/crx/artifacts/chrome.crx staged/gh-assets/
-
-      - name: Stage deploy artifacts (release)
-        if: needs.resolve-version.outputs.channel == 'release'
-        run: |
-          set -euo pipefail
-          mkdir -p staged/static-chrome staged/static-edge staged/static-firefox staged/cws-mv3 \
-                   staged/amo staged/edge staged/gh-assets
-          cp output/build/artifacts/chrome.zip output/build/artifacts/chrome-mv3.zip \
-             output/build/artifacts/build.txt staged/static-chrome/
-          cp output/build/artifacts/edge-mv3.zip staged/static-edge/
-          cp output/build/artifacts/firefox.zip output/build/artifacts/build.txt staged/static-firefox/
-          cp output/build/artifacts/chrome-mv3.zip staged/cws-mv3/chrome.zip
-          cp output/build/artifacts/firefox.zip output/build/artifacts/source.zip \
-             output/build/artifacts/approval-notes.txt staged/amo/
-          cp output/build/artifacts/edge-mv3.zip staged/edge/edge.zip
-          cp output/build/artifacts/chrome.zip output/build/artifacts/chrome-mv3.zip \
-             output/build/artifacts/edge.zip output/build/artifacts/edge-mv3.zip output/build/artifacts/opera.zip \
-             output/build/artifacts/opera-mv3.zip output/build/artifacts/firefox.zip \
-             output/build/artifacts/build.txt staged/gh-assets/
+      # Staging preserves static URLs and shared store workflow input filenames,
+      # while GitHub assets retain the manifest-specific package names.
+      - name: Stage deploy artifacts
+        env:
+          BUILD_CHANNEL: ${{ needs.resolve-version.outputs.channel }}
+        run: bash tools/ci/stage-deploy-artifacts.sh "$BUILD_CHANNEL"
 
       - name: Expose AMO approval notes (release)
         if: needs.resolve-version.outputs.channel == 'release'
@@ -544,8 +545,7 @@ jobs:
       artifact-name: cws-mv3-beta
       item-id: ${{ vars.CHROME_WEBSTORE_MV3_BETA_ITEM_ID || 'apjcbfpjihpedihablmalmbbhjpklbdf' }}
       api-version: v2
-      # Wait for a manual publish in the CWS dashboard after review, so the
-      # rollout percentage is set by hand instead of going live at 100%.
+      # Wait for a manual publish in the CWS dashboard after review.
       staged: true
       slack-channel: ''
       product: AdGuard Browser Extension MV3 Beta
@@ -565,9 +565,11 @@ jobs:
       artifact-name: cws-mv3-release
       item-id: ${{ vars.CHROME_WEBSTORE_MV3_ITEM_ID || 'bgnkhhnnamicmpeenaelnjfhikgbkllg' }}
       api-version: v2
-      # Wait for a manual publish in the CWS dashboard after review, so the
-      # rollout percentage is set by hand instead of going live at 100%.
+      # Wait for a manual publish in the CWS dashboard after review. The
+      # store fixes the rollout percentage at submission and offers no way to
+      # set it at publish time, so it goes with the staged submission.
       staged: true
+      rollout-percentage: ${{ needs.resolve-version.outputs.cws-rollout-percentage }}
       slack-channel: ''
       product: AdGuard Browser Extension MV3
       version-title: ${{ needs.resolve-version.outputs.tag }}
@@ -692,7 +694,7 @@ jobs:
         uses: AdGuardSoftwareLimited/actions/actions/slack@master
         with:
           channel: '#adguard-extension-vcs'
-          message: ':white_check_mark: *browser-extension* *${{ needs.resolve-version.outputs.tag }}* (${{ needs.resolve-version.outputs.channel }}) deployed to static.adtidy.org + stores; CWS version waits for a manual publish after review; GitHub Release draft ready for manual publication — <${{ needs.create-release.outputs.release-url }}|draft> | <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>'
+          message: ":white_check_mark: *browser-extension* *${{ needs.resolve-version.outputs.tag }}* (${{ needs.resolve-version.outputs.channel }}) deployed to static.adtidy.org + stores; ${{ needs.resolve-version.outputs.channel == 'beta' && 'CWS beta waits for a manual publish' || format('CWS release waits for a manual publish at {0}%', needs.resolve-version.outputs.cws-rollout-percentage) }}; GitHub Release draft ready for manual publication — <${{ needs.create-release.outputs.release-url }}|draft> | <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|run>"
           color: good
 
   notify-failure:

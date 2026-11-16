@@ -37,6 +37,13 @@ export class TelemetryApi {
     private static readonly SESSION_START_PATH = 'api/v1/session_start';
 
     /**
+     * Timeout for a single event request in milliseconds. Custom events are
+     * sent strictly one after another, so a request that never settles would
+     * otherwise hold back every later event.
+     */
+    private static readonly SEND_EVENT_TIMEOUT_MS = 10_000;
+
+    /**
      * Sends a telemetry event to the telemetry service.
      *
      * @param data Telemetry event data to send.
@@ -44,12 +51,22 @@ export class TelemetryApi {
     static async sendEvent(data: TelemetryApiEventData): Promise<void> {
         const url = TelemetryApi.requestUrl;
 
+        // `AbortSignal.timeout()` is not available on the oldest Firefox
+        // versions we support, and an exception there would skip `fetch`
+        // entirely and drop every event. Use a controller with a timer instead,
+        // and clear it once the request settles.
+        const controller = new AbortController();
+        const timeoutId = setTimeout(
+            () => controller.abort(),
+            TelemetryApi.SEND_EVENT_TIMEOUT_MS,
+        );
         const config: RequestInit = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(data),
+            signal: controller.signal,
         };
 
         try {
@@ -59,7 +76,9 @@ export class TelemetryApi {
                 logger.error(`[ext.TelemetryApi.sendEvent]: Failed to send event: ${response.status}`);
             }
         } catch (error) {
-            logger.error('[ext.TelemetryApi.sendEvent]: Failed to send event');
+            logger.error('[ext.TelemetryApi.sendEvent]: Failed to send event:', error);
+        } finally {
+            clearTimeout(timeoutId);
         }
     }
 

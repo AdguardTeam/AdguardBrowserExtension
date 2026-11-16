@@ -18,8 +18,14 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { EditorState, Compartment } from '@codemirror/state';
+import {
+    Compartment,
+    EditorSelection,
+    EditorState,
+} from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
+import { history, undo } from '@codemirror/commands';
+import { searchPanelOpen } from '@codemirror/search';
 import {
     describe,
     it,
@@ -48,7 +54,13 @@ describe('createEditorHandle', () => {
             parent,
             state: EditorState.create({
                 doc: 'line1\nline2',
-                extensions: [wrap.of([]), readOnly.of([])],
+                extensions: [
+                    wrap.of([]),
+                    readOnly.of([]),
+                    history(),
+                    // The rules editor enables multiple selections by default.
+                    EditorState.allowMultipleSelections.of(true),
+                ],
             }),
         });
     });
@@ -63,11 +75,43 @@ describe('createEditorHandle', () => {
         expect(handle.getValue()).toBe('line1\nline2');
     });
 
+    it('opens the search panel', () => {
+        const handle = createEditorHandle(view, { wrap, readOnly });
+        expect(searchPanelOpen(view.state)).toBe(false);
+
+        handle.openSearch();
+
+        expect(searchPanelOpen(view.state)).toBe(true);
+        expect(view.dom.querySelector('.cm-panel.cm-search input[name="search"]')).not.toBeNull();
+    });
+
     it('replaces the document and clamps cursor to end', () => {
         const handle = createEditorHandle(view, { wrap, readOnly });
         handle.setValue('new content');
         expect(handle.getValue()).toBe('new content');
         expect(handle.getCursor()).toEqual({ line: 1, ch: 'new content'.length });
+    });
+
+    it('does not let undo clear a resetValue seed', () => {
+        const handle = createEditorHandle(view, { wrap, readOnly });
+
+        // This is the seed path for content fetched after mount: undo must not
+        // be able to clear the document, otherwise Ctrl/Cmd+Z right after
+        // opening an editor sends an empty value to save.
+        handle.resetValue('x');
+        undo(view);
+
+        expect(handle.getValue()).toBe('x');
+    });
+
+    it('keeps setValue undoable', () => {
+        const handle = createEditorHandle(view, { wrap, readOnly });
+
+        handle.setValue('x');
+        undo(view);
+
+        // Unlike resetValue, setValue is a normal history entry.
+        expect(handle.getValue()).toBe('line1\nline2');
     });
 
     it('loads CRLF content and places the cursor at the normalized document end', () => {
@@ -90,6 +134,55 @@ describe('createEditorHandle', () => {
         const cur = handle.getCursor();
         expect(cur.line).toBe(2);
         expect(cur.ch).toBe('line2'.length);
+    });
+
+    it('reads every range of a multi-range selection', () => {
+        const handle = createEditorHandle(view, { wrap, readOnly });
+
+        // 'line1' on the first line and 'ine' on the second one, with the
+        // second range as the main one.
+        view.dispatch({
+            selection: EditorSelection.create([
+                EditorSelection.range(0, 5),
+                EditorSelection.range(7, 10),
+            ], 1),
+        });
+
+        expect(handle.getSelection()).toEqual({
+            ranges: [
+                { anchor: { line: 1, ch: 0 }, head: { line: 1, ch: 5 } },
+                { anchor: { line: 2, ch: 1 }, head: { line: 2, ch: 4 } },
+            ],
+            mainIndex: 1,
+        });
+    });
+
+    it('restores a multi-range selection after the document was replaced', () => {
+        const handle = createEditorHandle(view, { wrap, readOnly });
+        const selection = {
+            ranges: [
+                { anchor: { line: 1, ch: 0 }, head: { line: 1, ch: 3 } },
+                { anchor: { line: 2, ch: 2 }, head: { line: 2, ch: 7 } },
+            ],
+            mainIndex: 1,
+        };
+
+        // The whole document is replaced while saving, which drops the
+        // selection, so it is restored afterwards.
+        handle.setValue('new\ncontent');
+        handle.setSelection(selection);
+
+        expect(handle.getSelection()).toEqual(selection);
+    });
+
+    it('clamps an out-of-range selection', () => {
+        const handle = createEditorHandle(view, { wrap, readOnly });
+        handle.setSelection({
+            ranges: [{ anchor: { line: 99, ch: 99 }, head: { line: 99, ch: 99 } }],
+            mainIndex: 0,
+        });
+
+        expect(handle.getCursor()).toEqual({ line: 2, ch: 'line2'.length });
     });
 
     it('toggles line wrapping via the compartment without throwing', () => {
@@ -117,7 +210,12 @@ describe('createDeferredEditorHandle', () => {
         parent,
         state: EditorState.create({
             doc,
-            extensions: [wrap.of([]), readOnly.of([])],
+            extensions: [
+                wrap.of([]),
+                readOnly.of([]),
+                // The rules editor enables multiple selections by default.
+                EditorState.allowMultipleSelections.of(true),
+            ],
         }),
     });
 
@@ -137,6 +235,18 @@ describe('createDeferredEditorHandle', () => {
         expect(handle.getValue()).toBe('');
         expect(handle.getCursor()).toEqual({ line: 1, ch: 0 });
         expect(() => handle.setValue('buffered')).not.toThrow();
+    });
+
+    it('replays a buffered openSearch once attached', () => {
+        const deferred = createDeferredEditorHandle();
+        deferred.handle.openSearch();
+
+        const view = createView();
+        expect(searchPanelOpen(view.state)).toBe(false);
+        deferred.attach(view, { wrap, readOnly });
+
+        expect(searchPanelOpen(view.state)).toBe(true);
+        view.destroy();
     });
 
     it('replays a buffered setValue once attached', () => {
@@ -175,6 +285,37 @@ describe('createDeferredEditorHandle', () => {
         view.destroy();
     });
 
+    it('buffers a selection before the view is attached', () => {
+        const deferred = createDeferredEditorHandle();
+
+        // Before the view exists, the readers return a sync default.
+        expect(deferred.handle.getSelection()).toEqual({
+            ranges: [{ anchor: { line: 1, ch: 0 }, head: { line: 1, ch: 0 } }],
+            mainIndex: 0,
+        });
+
+        deferred.handle.setValue('alpha\nbeta');
+        deferred.handle.setSelection({
+            ranges: [
+                { anchor: { line: 1, ch: 0 }, head: { line: 1, ch: 2 } },
+                { anchor: { line: 2, ch: 1 }, head: { line: 2, ch: 3 } },
+            ],
+            mainIndex: 1,
+        });
+
+        const view = createView();
+        deferred.attach(view, { wrap, readOnly });
+
+        expect(deferred.handle.getSelection()).toEqual({
+            ranges: [
+                { anchor: { line: 1, ch: 0 }, head: { line: 1, ch: 2 } },
+                { anchor: { line: 2, ch: 1 }, head: { line: 2, ch: 3 } },
+            ],
+            mainIndex: 1,
+        });
+        view.destroy();
+    });
+
     it('replays buffered wrap and read-only state', () => {
         const deferred = createDeferredEditorHandle();
         deferred.handle.setReadOnly(true);
@@ -184,6 +325,7 @@ describe('createDeferredEditorHandle', () => {
         deferred.attach(view, { wrap, readOnly });
 
         expect(view.state.readOnly).toBe(true);
+        expect(wrap.get(view.state)).toBe(EditorView.lineWrapping);
         view.destroy();
     });
 

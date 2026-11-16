@@ -54,6 +54,7 @@ export enum SettingOption {
     HideSearchQueries = 'stealth-hide-search-queries',
     SendDoNotTrack = 'stealth-send-do-not-track',
     RemoveXClientData = 'stealth-remove-x-client',
+    BlockFingerprinting = 'stealth-block-fingerprinting',
     BlockWebRTC = 'stealth-block-webrtc',
     SelfDestructThirdPartyCookies = 'stealth-block-third-party-cookies',
     SelfDestructThirdPartyCookiesTime = 'stealth-block-third-party-cookies-time',

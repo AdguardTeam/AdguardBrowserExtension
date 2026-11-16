@@ -19,6 +19,7 @@
  */
 import { type FilterUpdateOptions } from '../update';
 import { type RegularFilterMetadata } from '../../../schema';
+import { FiltersStoragesAdapter } from '../../../storages/filters-adapter';
 
 import { CommonFilterApiCommon } from './common-common';
 
@@ -38,15 +39,70 @@ export class CommonFilterApi extends CommonFilterApiCommon {
     }
 
     /**
-     * Checks whether the filter is supported (exists in filters metadata).
+     * Checks whether the filter is supported: the extension bundle must contain
+     * the filter ruleset.
      *
      * @param filterId Filter id.
      *
      * @returns True if filter is supported, false otherwise.
      */
     public static isFilterSupported(filterId: number): boolean {
-        const supportedFilterIds = CommonFilterApiCommon.getFiltersMetadata().map((filter) => filter.filterId);
+        // The manifest does not declare rulesets, so the check is not possible;
+        // fall back to the presence of the filter in the metadata.
+        if (!FiltersStoragesAdapter.hasStaticFilterIds()) {
+            return super.getFilterMetadata(filterId) !== undefined;
+        }
 
-        return supportedFilterIds.includes(filterId);
+        return CommonFilterApi.hasRuleset(filterId);
+    }
+
+    /**
+     * Returns common filters metadata without filters that have no ruleset in
+     * the extension bundle.
+     *
+     * The MV3 engine can enable only filters with a bundled ruleset, while the
+     * metadata can be downloaded from the remote source and list such filters.
+     *
+     * @returns Common filters metadata array.
+     */
+    public static override getFiltersMetadata(): RegularFilterMetadata[] {
+        const filters = super.getFiltersMetadata();
+
+        // The manifest does not declare rulesets, so the check is not possible.
+        if (!FiltersStoragesAdapter.hasStaticFilterIds()) {
+            return filters;
+        }
+
+        return filters.filter((filter) => CommonFilterApi.hasRuleset(filter.filterId));
+    }
+
+    /**
+     * Returns common filter metadata without filters that have no ruleset in
+     * the extension bundle.
+     *
+     * @param filterId Filter id.
+     *
+     * @returns Common filter metadata or `undefined` if the filter has no
+     * ruleset in the extension bundle.
+     */
+    public static override getFilterMetadata(filterId: number): RegularFilterMetadata | undefined {
+        // The manifest does not declare rulesets, so the check is not possible.
+        if (FiltersStoragesAdapter.hasStaticFilterIds() && !CommonFilterApi.hasRuleset(filterId)) {
+            return undefined;
+        }
+
+        return super.getFilterMetadata(filterId);
+    }
+
+    /**
+     * Checks whether the extension bundle contains a ruleset for the filter.
+     *
+     * @param filterId Filter id.
+     *
+     * @returns True if the manifest declares a ruleset for the filter, false
+     * otherwise, including the case when the manifest declares no rulesets.
+     */
+    private static hasRuleset(filterId: number): boolean {
+        return FiltersStoragesAdapter.isStaticFilterId(filterId);
     }
 }

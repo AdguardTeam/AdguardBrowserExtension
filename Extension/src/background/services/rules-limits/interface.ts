@@ -153,6 +153,15 @@ export type InvalidStaticResultData = InvalidResultData & {
          */
         expected?: number;
     };
+
+    /**
+     * Session rules count data.
+     *
+     * A regexp overflow of session rules is reported through
+     * {@link InvalidResultData.rulesRegexpsCount}, because the remedy is the
+     * same as for the built-in regexp rules limit.
+     */
+    rulesSessionCount?: CountData;
 };
 
 /**

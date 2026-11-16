@@ -327,7 +327,9 @@ describe('UpdateCheckService', () => {
             const firstCheck = updateCheckService.checkUpdate();
             await updateCheckService.checkUpdate();
 
-            expect(fetchMock).toHaveBeenCalledTimes(1);
+            // The first check resolves the extension store asynchronously
+            // before fetching, so wait until the fetch actually happens.
+            await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
 
             resolveFetch(createMockResponse(204));
             await firstCheck;

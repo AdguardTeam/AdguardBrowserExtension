@@ -93,6 +93,8 @@ export class MockedTsWebExtension {
 
     public setBlockWebRTC: Mock = vi.fn();
 
+    public setCanvasProtectionEnabled: Mock = vi.fn();
+
     public initStorage = vi.fn(() => Promise.resolve());
 
     public retrieveRuleText: Mock = vi.fn();

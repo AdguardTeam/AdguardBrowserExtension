@@ -40,9 +40,12 @@ import { initEditor } from '@adguard/rules-editor';
 import { logger } from '../../../../common/logger';
 import { UserAgent } from '../../../../common/user-agent';
 import { MOBILE_BREAKPOINT_PX } from '../../constants';
+import { useFindShortcut } from '../../hooks/useFindShortcut';
 
 import { createDeferredEditorHandle, type EditorHandle } from './editor-handle';
 import { adguardHighlightStyle, adguardTheme } from './adguard-theme';
+import { createSingleLineExtensions } from './single-line';
+import { createMultilineModeExtensions } from './multiline-mode';
 
 import './editor.pcss';
 
@@ -53,6 +56,23 @@ import './editor.pcss';
  */
 const getOculusClass = () => {
     return UserAgent.isOculus ? 'oculus-browser' : '';
+};
+
+/**
+ * Checks whether an element other than the editor itself currently owns the
+ * focus.
+ *
+ * @param container Container to check the focused element against.
+ *
+ * @returns `true` when the focus is owned by an element outside of the container.
+ */
+const isFocusOutside = (container: HTMLElement | null): boolean => {
+    const { activeElement, body, documentElement } = document;
+    if (!activeElement || activeElement === body || activeElement === documentElement) {
+        return false;
+    }
+
+    return !container?.contains(activeElement);
 };
 
 /**
@@ -84,6 +104,26 @@ const EDITOR_PADDING = 26;
 const EDITOR_PLACEHOLDER = 'example.com';
 
 /**
+ * Editing mode of the shared editor, which selects the extra CodeMirror
+ * configuration appended to the default one. Omitted for the default
+ * multi-line rules editor.
+ */
+export const enum EditorMode {
+    /**
+     * Single-line input: Enter triggers the save callback instead of inserting
+     * a newline, and line terminators are stripped from insertions.
+     */
+    SingleLine = 'single-line',
+
+    /**
+     * Multi-line input (comment blocks and the create-rule row): Enter triggers
+     * the save callback, Shift-Enter inserts a newline, line terminators are
+     * kept, and line wrapping is enabled so long lines are not cut off.
+     */
+    Multiline = 'multiline',
+}
+
+/**
  * Props for the {@link Editor} component.
  */
 type EditorProps = {
@@ -96,6 +136,14 @@ type EditorProps = {
      * Ref that receives the imperative {@link EditorHandle}.
      */
     editorRef: MutableRefObject<EditorHandle | null>;
+
+    /**
+     * Initial document content, applied to the underlying textarea before
+     * CodeMirror initializes so it becomes the editor's starting document.
+     * Unlike a `setValue` replacement, the initial document is not an undoable
+     * change. Captured once at mount, not reactive.
+     */
+    initialValue?: string;
 
     /**
      * Called with the whole document content on every document change.
@@ -129,30 +177,72 @@ type EditorProps = {
     onExit?: () => void;
 
     /**
+     * Called when the editor fails to initialize (e.g. the WASM grammar could
+     * not be loaded). Consumers can render a fallback instead of leaving an
+     * empty editor shell.
+     */
+    onInitError?: () => void;
+
+    /**
      * Whether the editor is read-only.
      */
     readOnly?: boolean;
 
     /**
-     * Whether line wrapping is enabled.
+     * Whether line wrapping is enabled. Multi-line mode enables it regardless,
+     * so long lines wrap instead of being cut off.
      */
     wrapEnabled?: boolean;
+
+    /**
+     * Whether the editor is rendered in a compact, frameless inline mode used
+     * inside list rows. Inline editors do not persist or restore their size and
+     * are not resizable. The shell styling reacts to this prop, but the
+     * CodeMirror configuration is captured at mount, so toggling it at runtime
+     * requires a remount (e.g. via `key`).
+     */
+    inline?: boolean;
+
+    /**
+     * Editing mode, which selects the extra CodeMirror configuration: see
+     * {@link EditorMode}. Omitted for the default multi-line rules editor.
+     * Captured once at mount, not reactive; the `editor--inline-multiline` shell
+     * class follows it on every render.
+     */
+    mode?: EditorMode;
+
+    /**
+     * Whether `Ctrl+F` / `Cmd+F` opens the editor search even when the focus
+     * is outside the editor. CodeMirror renders only the lines in view, so the
+     * browser's find would miss every match outside the viewport; the editor
+     * search covers the whole document. Meant for the single full-size editor
+     * of a page, not for inline editors.
+     */
+    captureFindShortcut?: boolean;
 };
 
 const Editor = ({
     name,
     editorRef,
+    initialValue,
     onChange,
     fullscreen,
     highlightRules,
     shouldResetSize,
     onSave,
     onExit,
+    onInitError,
     readOnly = false,
     wrapEnabled = false,
+    inline = false,
+    mode,
+    captureFindShortcut = false,
 }: EditorProps) => {
     const SIZE_STORAGE_KEY = `${name}_editor-size`;
     const [size, setSize] = useState<EditorSize>(() => {
+        if (inline) {
+            return DEFAULT_EDITOR_SIZE;
+        }
         const stored = localStorage.getItem(SIZE_STORAGE_KEY);
         if (!stored) {
             return DEFAULT_EDITOR_SIZE;
@@ -168,31 +258,49 @@ const Editor = ({
     const containerRef = useRef<HTMLDivElement>(null);
     const viewRef = useRef<EditorView | null>(null);
 
+    // Whether the editor had focus before it was locked via the `readOnly`
+    // prop. Switching the content DOM to non-editable blurs it, so the flag is
+    // used to give the focus (and with it the caret) back once the editor
+    // becomes editable again — e.g. when the saving is finished.
+    const wasFocusedBeforeReadOnlyRef = useRef(false);
+
     const isUserResizingRef = useRef(false);
 
     // Keep the latest callback props in a ref so the mount-once effect's
     // keymap and initEditor callbacks never close over stale values. This is
     // needed because the effect runs with `[]` deps (CodeMirror can't be
     // recreated on every render).
-    const handlersRef = useRef({ onChange, onSave, onExit });
-    handlersRef.current = { onChange, onSave, onExit };
+    const handlersRef = useRef({
+        onChange,
+        onSave,
+        onExit,
+        onInitError,
+    });
+    handlersRef.current = {
+        onChange,
+        onSave,
+        onExit,
+        onInitError,
+    };
 
     useEffect(() => {
-        if (shouldResetSize) {
+        if (shouldResetSize && !inline) {
             localStorage.removeItem(SIZE_STORAGE_KEY);
             setSize(DEFAULT_EDITOR_SIZE);
         }
-    }, [shouldResetSize, SIZE_STORAGE_KEY]);
+    }, [shouldResetSize, inline, SIZE_STORAGE_KEY]);
 
-    const editorStyles = {
-        width: size.width,
-        height: size.height,
-    };
+    const editorStyles = inline
+        ? undefined
+        : {
+            width: size.width,
+            height: size.height,
+        };
 
     // Persist size changes via ResizeObserver
     useEffect(() => {
         const container = containerRef.current;
-        if (!container || fullscreen) {
+        if (!container || fullscreen || inline) {
             return;
         }
         const observer = new ResizeObserver((entries) => {
@@ -224,24 +332,33 @@ const Editor = ({
             container.removeEventListener('pointerdown', onPointerDown);
             window.removeEventListener('pointerup', onPointerUp);
         };
-    }, [fullscreen, SIZE_STORAGE_KEY]);
+    }, [fullscreen, inline, SIZE_STORAGE_KEY]);
+
+    // Multi-line mode always wraps: long lines would otherwise be cut off in
+    // the narrow inline editor.
+    const shouldWrap = wrapEnabled || mode === EditorMode.Multiline;
 
     const editorClassName = cn(
         'editor',
-        { 'editor--full-screen': fullscreen },
-        { 'editor--with-margin': !fullscreen },
+        { 'editor--full-screen': fullscreen && !inline },
+        { 'editor--with-margin': !fullscreen && !inline },
+        { 'editor--inline': inline },
+        { 'editor--inline-multiline': mode === EditorMode.Multiline },
         getOculusClass(),
     );
 
     // Mount CodeMirror 6 editor
     //
-    // NOTE: `highlightRules` is intentionally captured once at mount (used
-    // below for the WASM grammar URL and the `highlight` mode) and is NOT
-    // reactive. CodeMirror is created a single time via the `[]`-deps effect,
-    // so changing this prop after mount has no effect. All current callers
-    // (`UserRulesEditor`, `Allowlist`) pass a constant value for the
-    // component's lifetime; a future caller needing to toggle highlighting at
-    // runtime must remount the editor (e.g. via `key`) instead.
+    // NOTE: `highlightRules`, `mode` and the extension-list usage of `inline`
+    // are intentionally captured once at mount (they are used below for the
+    // WASM grammar URL, the `highlight` mode and the extension list) and are
+    // NOT reactive. CodeMirror is created a single time via the `[]`-deps
+    // effect, so changing them after mount has no effect on the editor
+    // configuration. The `inline` flag and the `editor--inline-multiline` class
+    // are additionally read reactively for the size persistence, resize
+    // observer and class names; a future caller needing to fully switch modes
+    // must remount the editor (e.g. via `key`) instead. All current callers
+    // pass constant values for the component's lifetime.
     useEffect(() => {
         const node = nodeRef.current;
         if (!node) {
@@ -261,7 +378,7 @@ const Editor = ({
             : undefined;
 
         const extensions = [
-            wrap.of(wrapEnabled ? EditorView.lineWrapping : []),
+            wrap.of(shouldWrap ? EditorView.lineWrapping : []),
             readOnlyCompartment.of(readOnly ? [EditorState.readOnly.of(true), EditorView.editable.of(false)] : []),
             syntaxHighlighting(adguardHighlightStyle),
             adguardTheme,
@@ -278,8 +395,18 @@ const Editor = ({
                 },
             }]),
         ];
-        if (mobile) {
+        if (mobile && !inline) {
             extensions.push(cmPlaceholder(EDITOR_PLACEHOLDER));
+        }
+
+        if (mode === EditorMode.SingleLine) {
+            extensions.push(...createSingleLineExtensions(() => {
+                handlersRef.current.onSave?.();
+            }));
+        } else if (mode === EditorMode.Multiline) {
+            extensions.push(...createMultilineModeExtensions(() => {
+                handlersRef.current.onSave?.();
+            }));
         }
 
         // Expose a stable handle synchronously so async consumers (which fetch
@@ -318,6 +445,9 @@ const Editor = ({
             deferred.attach(view, { wrap, readOnly: readOnlyCompartment });
         }).catch((e) => {
             logger.error('[ext.Editor]: failed to initialize editor:', e);
+            if (mounted) {
+                handlersRef.current.onInitError?.();
+            }
         });
 
         return () => {
@@ -332,13 +462,42 @@ const Editor = ({
 
     // Keep readOnly prop in sync after mount
     useEffect(() => {
-        editorRef.current?.setReadOnly(readOnly);
+        const handle = editorRef.current;
+        if (!handle) {
+            return;
+        }
+
+        if (readOnly) {
+            // Read the focus state before the editor is locked: the browser
+            // blurs an element which stops being editable.
+            wasFocusedBeforeReadOnlyRef.current = viewRef.current?.hasFocus ?? false;
+        }
+
+        handle.setReadOnly(readOnly);
+
+        // Unlocking the editor must restore the focus it had before, otherwise
+        // the caret is lost until the user clicks the editor again. The focus
+        // is not stolen back if it has been moved to another element meanwhile.
+        if (!readOnly && wasFocusedBeforeReadOnlyRef.current) {
+            wasFocusedBeforeReadOnlyRef.current = false;
+            if (!isFocusOutside(containerRef.current)) {
+                handle.focus();
+            }
+        }
     }, [readOnly, editorRef]);
 
-    // Keep wrapEnabled prop in sync after mount
+    // Inside the editor, CodeMirror's own search keymap handles the shortcut.
+    useFindShortcut({
+        enabled: captureFindShortcut,
+        onFind: () => editorRef.current?.openSearch(),
+        ignoreWithinRef: containerRef,
+    });
+
+    // Keep the effective wrap state in sync after mount (multi-line mode forces
+    // wrapping regardless of the `wrapEnabled` prop).
     useEffect(() => {
-        editorRef.current?.setWrap(wrapEnabled);
-    }, [wrapEnabled, editorRef]);
+        editorRef.current?.setWrap(shouldWrap);
+    }, [shouldWrap, editorRef]);
 
     return (
         <div
@@ -346,7 +505,7 @@ const Editor = ({
             style={editorStyles}
             className={editorClassName}
         >
-            <textarea ref={nodeRef} />
+            <textarea ref={nodeRef} defaultValue={initialValue} />
         </div>
     );
 };

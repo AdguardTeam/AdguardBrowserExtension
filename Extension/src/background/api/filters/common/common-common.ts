@@ -59,12 +59,32 @@ export class CommonFilterApiCommon {
     }
 
     /**
+     * Returns common filters metadata without filtering out filters that have
+     * no ruleset in the extension bundle.
+     *
+     * Unlike {@link getFiltersMetadata}, this method returns metadata for all
+     * common filters, including the ones which cannot be enabled in the current
+     * extension build. Use it for the internal storages maintenance, e.g. for
+     * the removal of obsolete filters or the migration of deprecated filters,
+     * because such filters still require handling.
+     *
+     * @returns Common filters metadata array.
+     */
+    public static getUnfilteredFiltersMetadata(): RegularFilterMetadata[] {
+        return metadataStorage.getFilters();
+    }
+
+    /**
      * Returns common filters metadata.
+     *
+     * Note: in MV3, the `CommonFilterApi` override of this method filters out
+     * filters that have no ruleset in the extension bundle. Use
+     * {@link getUnfilteredFiltersMetadata} where such filters must be handled.
      *
      * @returns Common filters metadata array.
      */
     public static getFiltersMetadata(): RegularFilterMetadata[] {
-        return metadataStorage.getFilters();
+        return CommonFilterApiCommon.getUnfilteredFiltersMetadata();
     }
 
     /**
@@ -110,6 +130,7 @@ export class CommonFilterApiCommon {
             installed: true,
             loaded: true,
             enabled: !!currentFilterState?.enabled,
+            disabledAsUnused: !!currentFilterState?.disabledAsUnused,
         });
 
         const parsedMetadata = FilterParser.parseFilterDataFromHeader(filter);

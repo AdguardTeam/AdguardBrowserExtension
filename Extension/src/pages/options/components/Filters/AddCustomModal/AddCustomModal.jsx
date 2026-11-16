@@ -23,6 +23,7 @@ import React, {
     useContext,
     useEffect,
     useCallback,
+    useRef,
 } from 'react';
 import Modal from 'react-modal';
 import { observer } from 'mobx-react';
@@ -72,7 +73,22 @@ const AddCustomModal = observer(({
     const [filterToAddName, setFilterToAddName] = useState(initialTitle);
     const customUrlToAddIsEmpty = customUrlToAdd.trim() === '';
 
+    /**
+     * Monotonic id of the current modal session. `closeModal()` increments it,
+     * so a response of a request that outlived its modal session cannot change
+     * the state of the next session.
+     */
+    const requestIdRef = useRef(0);
+
+    // Invalidate in-flight requests on unmount, so a late response cannot
+    // update the state of an unmounted component.
+    useEffect(() => () => {
+        requestIdRef.current += 1;
+    }, []);
+
     const closeModal = useCallback(() => {
+        // Invalidate in-flight requests before the state is reset.
+        requestIdRef.current += 1;
         closeModalHandler();
         setLoading(false);
         setCustomUrlToAdd('');
@@ -105,6 +121,38 @@ const AddCustomModal = observer(({
 
     const { settingsStore, uiStore } = useContext(rootStore);
 
+    /**
+     * Checks whether a response still belongs to the current modal session.
+     *
+     * @param requestId Request id captured before the asynchronous call.
+     *
+     * @returns `true` if the modal was not closed after the call started.
+     */
+    const isRequestActual = (requestId) => requestId === requestIdRef.current;
+
+    /**
+     * Logs a failure and switches the modal to the error step.
+     *
+     * The error text is cleared so that `renderErrorStep()` falls back to
+     * `options_add_custom_filter_modal_error_subtitle` instead of showing a
+     * message left over from a previous attempt.
+     *
+     * A failure of a request that outlived its modal session is only logged:
+     * it must not change the state of the next session.
+     *
+     * @param reason Failure reason to log.
+     * @param requestId Request id captured before the asynchronous call.
+     */
+    const showErrorStep = (reason, requestId) => {
+        logger.error('[ext.AddCustomModal]: error: ', reason);
+        if (!isRequestActual(requestId)) {
+            return;
+        }
+        setError('');
+        setStepToRender(STEPS.ERROR);
+        setLoading(false);
+    };
+
     const handleChangeFilterName = (value) => {
         setFilterToAddName(value);
         filterToAdd.name = value;
@@ -119,19 +167,19 @@ const AddCustomModal = observer(({
             return;
         }
 
+        const requestId = requestIdRef.current;
         setStepToRender(STEPS.CHECKING);
 
         try {
             const result = await messenger.checkCustomUrl(customUrlToAdd);
-            if (result === null) {
-                setStepToRender(STEPS.ERROR);
-            } else if (result.errorAlreadyExists) {
+            if (!isRequestActual(requestId)) {
+                return;
+            }
+            if (result.errorAlreadyExists) {
                 setError(translator.getMessage('options_antibanner_custom_filter_already_exists'));
                 setStepToRender(STEPS.ERROR);
             } else if (result.errorHtmlContent) {
                 setError(translator.getMessage('options_add_custom_filter_modal_error_html_content'));
-                setStepToRender(STEPS.ERROR);
-            } else if (!result.filter) {
                 setStepToRender(STEPS.ERROR);
             } else {
                 setFilterToAdd(result.filter);
@@ -139,8 +187,7 @@ const AddCustomModal = observer(({
                 setStepToRender(STEPS.APPROVE);
             }
         } catch (e) {
-            logger.error('[ext.AddCustomModal]: error: ', e);
-            setStepToRender(STEPS.ERROR);
+            showErrorStep(e, requestId);
         }
     };
 
@@ -175,6 +222,7 @@ const AddCustomModal = observer(({
     };
 
     const handleApprove = async () => {
+        const requestId = requestIdRef.current;
         setLoading(true);
         try {
             if (!filterToAdd.name) {
@@ -185,15 +233,33 @@ const AddCustomModal = observer(({
                 filterToAdd.trusted = false;
             }
 
-            await settingsStore.addCustomFilter(filterToAdd);
-            if (__IS_MV3__) {
-                await settingsStore.checkLimitations();
+            const addedFilterId = await settingsStore.addCustomFilter(filterToAdd);
+            if (addedFilterId === undefined) {
+                // The background page returned no filter data, so the filter
+                // was not added.
+                showErrorStep('custom filter was not added: no filter data received', requestId);
+                return;
             }
         } catch (e) {
-            setStepToRender(STEPS.ERROR);
-            logger.error('[ext.AddCustomModal]: error: ', e);
+            showErrorStep(e, requestId);
+            return;
         }
-        closeModal();
+
+        if (__IS_MV3__) {
+            try {
+                await settingsStore.checkLimitations();
+            } catch (e) {
+                // The filter has already been added, so a failure to refresh
+                // the rules limits must not be reported as an add failure.
+                logger.error('[ext.AddCustomModal]: failed to check limitations: ', e);
+            }
+        }
+
+        // Do not close a modal that the user reopened while the add was in
+        // flight. The filter was added in both cases.
+        if (isRequestActual(requestId)) {
+            closeModal();
+        }
     };
 
     const handleApproveWrapper = addMinDelayLoader(
@@ -341,6 +407,7 @@ const AddCustomModal = observer(({
     const tryAgainHandler = () => {
         setStepToRender(STEPS.INPUT);
         setError('');
+        setLoading(false);
     };
 
     const renderErrorStep = () => {

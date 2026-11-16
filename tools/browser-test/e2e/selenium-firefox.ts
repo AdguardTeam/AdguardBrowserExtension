@@ -23,6 +23,7 @@ import path from 'node:path';
 
 import {
     Builder,
+    Key,
     LogInspector,
     type WebDriver,
 } from 'selenium-webdriver';
@@ -38,8 +39,7 @@ import {
     createUnknownError,
     isErrorConsoleType,
 } from './error-collector';
-import { BENIGN_ERROR_PATTERNS, filterBenignErrors } from './benign-errors';
-import { type E2EPageHandle } from './page-handle';
+import { E2EKey, type E2EPageHandle } from './page-handle';
 import { createExtensionPageUrl } from './surfaces';
 import {
     E2EExtensionScheme,
@@ -59,6 +59,49 @@ const FIREFOX_PAGE_LOAD_TIMEOUT_MS = 20_000;
 const FIREFOX_BIDI_SETUP_TIMEOUT_MS = 10_000;
 
 const FIREFOX_APP_INIT_TIMEOUT_MS = 30_000;
+
+/**
+ * Modifier chords that must be dispatched with an explicit keyDown/keyUp
+ * sequence. Selenium's `Actions#sendKeys` sends a keyDown/keyUp pair per
+ * character, so the modifier from `Key.chord` is released before the character
+ * (e.g. `Ctrl+A` types a literal `a`); `Key.chord` only works through
+ * `WebElement#sendKeys`, which does not reach CodeMirror. Chords are therefore
+ * sent as low-level actions instead.
+ */
+const SELENIUM_CHORD_MAP = {
+    [E2EKey.ShiftEnter]: [Key.SHIFT, Key.ENTER],
+    [E2EKey.ControlA]: [Key.CONTROL, 'a'],
+    [E2EKey.MetaA]: [Key.META, 'a'],
+    [E2EKey.ControlS]: [Key.CONTROL, 's'],
+    [E2EKey.MetaS]: [Key.META, 's'],
+} as const satisfies Partial<Record<E2EKey, readonly [string, string]>>;
+
+/**
+ * {@link E2EKey} values handled by {@link SELENIUM_CHORD_MAP}.
+ */
+type SeleniumChordKey = keyof typeof SELENIUM_CHORD_MAP;
+
+/**
+ * Maps the remaining single (non-chord) {@link E2EKey} values to Selenium key
+ * strings. Typed as a complete record of the non-chord subset, so adding a new
+ * key to {@link E2EKey} fails to compile until it is mapped either here or in
+ * {@link SELENIUM_CHORD_MAP}.
+ */
+const SELENIUM_KEY_MAP: Record<Exclude<E2EKey, SeleniumChordKey>, string> = {
+    [E2EKey.Enter]: Key.ENTER,
+    [E2EKey.Escape]: Key.ESCAPE,
+    [E2EKey.End]: Key.END,
+    [E2EKey.Backspace]: Key.BACK_SPACE,
+};
+
+/**
+ * Checks whether the given key is a modifier chord.
+ *
+ * @param key Engine-agnostic key value.
+ *
+ * @returns True if the key is handled by {@link SELENIUM_CHORD_MAP}.
+ */
+const isSeleniumChordKey = (key: E2EKey): key is SeleniumChordKey => key in SELENIUM_CHORD_MAP;
 
 /**
  * Pinned Firefox version for E2E runs.
@@ -551,8 +594,7 @@ export const openFirefoxE2ESurface = async (
             return collectPageErrors(session.driver, entry.id, surface.id);
         },
         async getBackgroundErrors(): Promise<E2EError[]> {
-            const rawErrors = session.backgroundErrors.sliceFrom(backgroundCursor);
-            return filterBenignErrors(rawErrors, BENIGN_ERROR_PATTERNS);
+            return session.backgroundErrors.sliceFrom(backgroundCursor);
         },
         async clickSelector(selector: string): Promise<void> {
             const el = await session.driver.findElement({ css: selector });
@@ -567,6 +609,25 @@ export const openFirefoxE2ESurface = async (
             const el = await session.driver.findElement({ css: selector });
             await session.driver.executeScript('arguments[0].focus();', el);
             await session.driver.actions().sendKeys(text).perform();
+        },
+        async pressKey(selector: string, key: E2EKey): Promise<void> {
+            // Focus via JS (preserves an existing selection), then deliver the
+            // key/chord to the focused element via the Actions API, mirroring
+            // `typeText`.
+            const el = await session.driver.findElement({ css: selector });
+            await session.driver.executeScript('arguments[0].focus();', el);
+
+            if (isSeleniumChordKey(key)) {
+                const [modifier, character] = SELENIUM_CHORD_MAP[key];
+                await session.driver.actions()
+                    .keyDown(modifier)
+                    .sendKeys(character)
+                    .keyUp(modifier)
+                    .perform();
+                return;
+            }
+
+            await session.driver.actions().sendKeys(SELENIUM_KEY_MAP[key]).perform();
         },
         async evaluate<T>(fn: (arg: unknown) => Promise<T> | T, arg?: unknown): Promise<T> {
             // Selenium's executeScript does not await Promises returned by the

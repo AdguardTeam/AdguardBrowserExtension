@@ -83,7 +83,11 @@ import {
     THANKYOU_PATH,
 } from './common-constants';
 import { getEnvConf, isBrowserMv3 } from './helpers';
-import { getSwcTargets, OBJECT_CREATE_MODULE_REGEX } from './swc-config';
+import {
+    getSwcTargets,
+    NODE_MODULES_EXCLUDE_REGEX,
+    OBJECT_CREATE_MODULE_REGEX,
+} from './swc-config';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 const __filename = fileURLToPath(import.meta.url);
@@ -238,6 +242,7 @@ export const genCommonConfig = (
         'prefs': path.resolve(__dirname, `../../Extension/src/background/prefs/prefs-mv${manifestVersion}.ts`),
         'settings-types': path.resolve(__dirname, `../../Extension/src/background/services/settings/types/types-mv${manifestVersion}.ts`),
         'options': path.resolve(__dirname, `../../Extension/src/pages/options/components/Options/Options-mv${manifestVersion}.tsx`),
+        'auto-disable-notification': path.resolve(__dirname, `../../Extension/src/pages/options/components/AutoDisableNotification/AutoDisableNotification-mv${manifestVersion}.tsx`),
         'settings-store': path.resolve(__dirname, `../../Extension/src/pages/options/stores/SettingsStore/SettingsStore-mv${manifestVersion}.ts`),
         'update-button': path.resolve(__dirname, `../../Extension/src/pages/popup/components/Header/Buttons/UpdateButton/UpdateButton-mv${manifestVersion}.tsx`),
         'update-button-mobile': path.resolve(__dirname, `../../Extension/src/pages/options/components/Sidebar/UpdateButtonMobile/UpdateButtonMobile-mv${manifestVersion}.tsx`),
@@ -498,7 +503,7 @@ export const genCommonConfig = (
                     test: /\.(js|ts)x?$/,
                     exclude: [
                         // TODO: Check, maybe it can be removed. Added in AG-28996.
-                        /node_modules\/(?!@adguard\/tswebextension)/,
+                        NODE_MODULES_EXCLUDE_REGEX,
                         // When @adguard/rules-editor is linked from a sibling
                         // checkout (CI/local pnpm link), `symlinks: true`
                         // resolves it to a path outside node_modules, so the
@@ -508,7 +513,9 @@ export const genCommonConfig = (
                         // `import "core-js/..."` statements relative to the
                         // linked location. This mirrors how the published npm
                         // package (inside node_modules) is already excluded.
-                        /[/\\]rules-editor[/\\]dist[/\\]/,
+                        // Matches both `rules-editor` and `ext-rules-editor`
+                        // checkout directory names.
+                        /[/\\](?:ext-)?rules-editor[/\\]dist[/\\]/,
                     ],
                     use: [
                         {

@@ -265,6 +265,17 @@ export abstract class FiltersApiCommon {
     }
 
     /**
+     * Enables loaded filters, allowing manifest-specific tracking before the state change.
+     *
+     * @param filterIds Loaded filter IDs.
+     *
+     * @returns Promise resolved when filters are enabled.
+     */
+    public static async enableFilters(filterIds: number[]): Promise<void> {
+        filterStateStorage.enableFilters(filterIds);
+    }
+
+    /**
      * Loads and enables specified filters. Once the filters are enabled,
      * the untouched groups belonging to those filters will be enabled too.
      *
@@ -296,7 +307,7 @@ export abstract class FiltersApiCommon {
         // Concatenate filters loaded just now with already loaded filters
         loadedFilters.push(...alreadyLoadedFilterIds);
 
-        filterStateStorage.enableFilters(loadedFilters);
+        await this.enableFilters(loadedFilters);
         const loadedFiltersToLog = loadedFilters.map((id) => {
             const filterName = FiltersApiCommon.getFilterName(id);
             return `id='${id}', name='${filterName}'`;
@@ -363,7 +374,7 @@ export abstract class FiltersApiCommon {
         // Enable only loaded filters, because click on "use optimized filters"
         // can happen in offline mode and not every filter can be loaded, only
         // built-in filters from local extension's resources.
-        filterStateStorage.enableFilters(loadedFiltersIds);
+        await this.enableFilters(loadedFiltersIds);
     }
 
     /**
@@ -419,11 +430,27 @@ export abstract class FiltersApiCommon {
      * @returns Filters ids array.
      */
     public static getEnabledFilters(): number[] {
+        return FiltersApiCommon.getEnabledFiltersByMetadata(
+            (filterId) => FiltersApiCommon.getFilterMetadata(filterId),
+        );
+    }
+
+    /**
+     * Returns enabled filters resolved against the given metadata resolver.
+     *
+     * @param resolveFilterMetadata Resolver of the filter metadata, used to
+     * determine the filter group.
+     *
+     * @returns Filters ids array.
+     */
+    private static getEnabledFiltersByMetadata(
+        resolveFilterMetadata: (filterId: number) => FilterMetadata | undefined,
+    ): number[] {
         const enabledFilters = filterStateStorage.getEnabledFilters();
         const enabledGroups = groupStateStorage.getEnabledGroups();
 
         return enabledFilters.filter((id) => {
-            const filterMetadata = FiltersApiCommon.getFilterMetadata(id);
+            const filterMetadata = resolveFilterMetadata(id);
 
             return enabledGroups.some((groupId) => groupId === filterMetadata?.groupId);
         });
@@ -694,10 +721,20 @@ export abstract class FiltersApiCommon {
      * @returns Array of deprecated filters ids.
      */
     private static async migrateDeprecatedFilters(): Promise<number[]> {
-        const commonFiltersMetadata = CommonFilterApi.getFiltersMetadata();
+        // The unfiltered metadata is used here: a deprecated filter that has no
+        // ruleset in the extension bundle is not returned by
+        // `CommonFilterApi.getFiltersMetadata()`, but it still must be migrated.
+        const commonFiltersMetadata = CommonFilterApi.getUnfilteredFiltersMetadata();
 
         const installedFiltersIds = filterStateStorage.getInstalledFilters();
-        const enabledFilters = FiltersApiCommon.getEnabledFilters();
+
+        // The enabled state is resolved against the unfiltered metadata as well:
+        // `FiltersApiCommon.getEnabledFilters()` drops filters that have no ruleset
+        // in the extension bundle, but an enabled deprecated filter still must be
+        // migrated instead of being silently removed.
+        const enabledFilters = FiltersApiCommon.getEnabledFiltersByMetadata(
+            (filterId) => commonFiltersMetadata.find((filter) => filter.filterId === filterId),
+        );
 
         const deprecatedFilterIds: number[] = [];
 
@@ -764,7 +801,14 @@ export abstract class FiltersApiCommon {
      */
     protected static async removeObsoleteFilters(): Promise<void> {
         const installedFiltersIds = filterStateStorage.getInstalledFilters();
-        const metadataFiltersIds = FiltersApiCommon.getFiltersMetadata().map(({ filterId }) => filterId);
+
+        // The unfiltered metadata is used here: a filter that has no ruleset in
+        // the extension bundle is not obsolete, it is just not supported by the
+        // current extension build, so its state must be kept.
+        const metadataFiltersIds = [
+            ...CommonFilterApi.getUnfilteredFiltersMetadata(),
+            ...CustomFilterApi.getFiltersMetadata(),
+        ].map(({ filterId }) => filterId);
 
         const tasks = installedFiltersIds
             .filter((id) => !metadataFiltersIds.includes(id))

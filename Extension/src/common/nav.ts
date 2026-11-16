@@ -28,3 +28,19 @@ export enum OptionsPageSections {
     ruleLimits = 'rule-limits',
     about = 'about',
 }
+
+/**
+ * Query parameter of the Filters section which selects a filter group.
+ */
+export const FILTERS_GROUP_QUERY_PARAM = 'group';
+
+/**
+ * Returns the options page route of a filter group.
+ *
+ * @param groupId Filter group id.
+ *
+ * @returns Route without a leading slash or hash, e.g. `filters?group=0`.
+ */
+export const getFiltersGroupPath = (groupId: number): string => {
+    return `${OptionsPageSections.filters}?${FILTERS_GROUP_QUERY_PARAM}=${groupId}`;
+};

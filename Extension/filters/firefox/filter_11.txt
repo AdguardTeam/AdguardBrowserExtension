@@ -1,9 +1,9 @@
-! Checksum: 4SCaw0N2mBTb7VhIc28CSA
-! Diff-Path: ../patches/11/11-s-1794229992-3600.patch
+! Checksum: lR/q9yAXra+CfLIqHDRWdA
+! Diff-Path: ../patches/11/11-s-1794579146-3600.patch
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.73.32
-! TimeUpdated: 2026-11-09T13:09:09+00:00
+! Version: 2.0.73.45
+! TimeUpdated: 2026-11-13T14:09:07+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -166,6 +166,7 @@
 !
 !NOTE: Regular rules
 !
+||advertising.amazon.dev^
 ||asttoxa.ru^
 ||inapps.af-sdk.com^
 ||cdn-settings.af-sdk.com^
@@ -1091,6 +1092,8 @@
 ! Bad: ||ad.doubleclick.net^ (should be in adservers.txt)
 !
 !
+! filmymeet.cc antiadblock
+filmymeet.cc###mobileAdblockModal
 ! https://github.com/AdguardTeam/AdguardFilters/issues/233611
 pornhex.com#%#//scriptlet('prevent-setTimeout', '/AdBlock/i')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/231354
@@ -2509,6 +2512,21 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+cat-press.com##.widget_custom_html:has(> div.textwidget > div > ins.adsbygoogle)
+cars.tvbs.com.tw##.h-\[250px\].w-\[970px\]
+cars.tvbs.com.tw##.h-\[100px\].w-\[320px\]
+cars.tvbs.com.tw##.max-h-\[280px\].min-h-\[250px\]
+||luxuretv.com/includes/pop-mobile/
+full-porn.com##div[class^="ad-container"]
+full-porn.com##.come-gauge-gent
+elgranonan.com##.tnv-sticky
+fujinkoron.jp##.ad-instream-google
+biz.nv.ua##.main-wrapper > .container:has(> div.row > a[target="_blank"] picture)
+biz.nv.ua##section[data-type="advertising"]
+linkvertise.com##lv-ad-sense
+jprime.jp#$#body > .l-main { margin-top: -160px !important; }
+jprime.jp#$#body > .l-header { margin-top: -160px !important; }
+jprime.jp#$#body { padding-bottom: 0px !important; }
 remontka.pro##article > div[id^="rem_"]
 allsoft.ru##.main-mobile-banner
 winfuture.de###ab_google_336x280_35_35
@@ -2629,7 +2647,7 @@ pinterest.*##div[role="listitem"]:has(div[data-test-id="related-pins-name"] > di
 japanmetal.com##.sp-kohwa-banner
 wallpapers.com##.cd-mobile-creator-ad
 wikiwiki.jp##.caption-flybox:has(> div[id*="ad-container"])
-bluebirdbanter.com##div[class]:has(> div[data-concert*="frontpage_hero_mobile"])
+prideofdetroit.com,silverandblackpride.com,bigblueview.com,boltsfromtheblue.com,turfshowtimes.com,acmepackingcompany.com,fieldgulls.com,bluebirdbanter.com##div[class]:has(> div[data-concert*="frontpage_hero_mobile"])
 alba.co.jp##li[class^="RelationPostItem_postItemStyle_"]:has(> div[id][style="height: 102px;"])
 wineverygame.com##.weg-mobile-campaign
 telugutimes.net##.tt-sticky-footer-ad
@@ -8847,6 +8865,8 @@ livejournal.com##div[id^="billboard_mobile_"]
 ! END: Livejournal.com
 !
 !
+!+ NOT_OPTIMIZED
+dot.asahi.com##.article-inarticle-guide
 !+ NOT_OPTIMIZED
 heise.de##.ad-mobile-group-3
 !+ NOT_OPTIMIZED

@@ -5,7 +5,131 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## Unreleased 5.6
+
+### Added
+
+- Inline editing for user rules: rules and comment blocks can now be edited
+  directly in the User rules list, without switching to the editor view.
+  "Create rule" now adds the rule inline as well, and pasting several rules
+  creates one rule per line.
+- Added an AdGuard products link to the settings menu.
+- Disable unused language-specific filters in MV2 [#2122].
+- Added the *Block fingerprinting* option to Tracking protection. It protects
+  canvas readouts from being used for fingerprinting. Exception rules with the
+  new `$stealth=fingerprinting` value turn it off on a site.
+- Added support for uBlock Origin `:remove-attr()` and `:remove-class()`
+  pseudo-classes [#3538].
+- Added partial support for `$csp` exception rules in MV3 [#2965].
+
+### Changed
+
+- Updated [@adguard/agtree] to v4.4.0.
+- Updated [@adguard/dnr-converter] to v2.1.0.
+- Updated [@adguard/dnr-rulesets] to v6.1.0.
+- Updated [@adguard/filters-downloader] to v3.0.1.
+- Updated [@adguard/rules-editor] to v2.0.4.
+- Updated [@adguard/scriptlets] to v2.6.0.
+- Updated [@adguard/tsurlfilter] to v6.1.0.
+- Updated [@adguard/tswebextension] to v7.0.0.
+- Updated blocking pages to v2.1.0.
+
+### Fixed
+
+- The user rules list froze while rendering a very large comment block (e.g.
+  imported or pasted); only the visible lines of a block are rendered now,
+  while the block stays one list item and one editing unit.
+- The User rules list is usable again while user rules are turned off: search,
+  rule checkboxes, "Create rule", editing and deleting work as when they are
+  on, and only the look changes (dimmed rule text and gray checkboxes).
+- A user rule enable/disable toggle followed by a quick page reload or a switch
+  to the editor view was lost; the pending change is now saved.
+- Fixed cosmetic rules with multiple domains in the `$domain` modifier not
+  applying on permitted domains [#3605].
+- Fixed duplicate cosmetic rule matches for overlapping domain restrictions
+  [#3605].
+- Fixed named `$removeparam` rules failing to remove the first query parameter before MV3 requests [#3615].
+- Fixed MobX warnings when changing filters and confirming filter consent in
+  settings or clearing an update notification in the popup.
+- In MV3, the first start after installation or after an update took over a
+  second longer than in v5.4, because the rulesets of all bundled filters were
+  prepared before filtering started. Now only the rulesets of enabled filters
+  are prepared at startup, and the rest in the background. Every later start
+  is also faster, because the enabled filters are no longer prepared again.
+- In MV3, filters that the extension has no ruleset for no longer appear in the
+  options page, where earlier they could not be enabled and reverted the toggle
+  without a message.
+- In MV3, a custom filter whose patch files became unavailable (e.g. after the filter URL was moved or redirected) could stay outdated after a manual update; such filters are now downloaded fully [#3560].
+- Custom filters with large lists could not be added when the download took
+  longer than three seconds; the extension now waits up to 15 seconds and
+  reuses the list downloaded for the preview [#2937].
+- Month labels on the yearly statistics chart now use names only for the first and last months, with numbers for intermediate months in all languages.
+- Redo via `Ctrl+Shift+Z` (`Cmd+Shift+Z` on macOS) did not work in the rule editor.
+- Extension update checks could use the browser's store instead of the store the extension was installed from.
+- Rules added from the filtering log sometimes did not appear in the already open User rules editor until refresh [#1410].
+- "Manage extensions" flow opened `chrome://extensions` in Edge and Opera instead of the browser-specific extensions settings page.
+- Caret jumps to the end of the editor when saving [#3067].
+- Allowlist editor did not show the normalized list after saving.
+- Domain-scoped cosmetic and JavaScript rules were not applied on hosts with
+  labels ending in an underscore (e.g. `lorenne_.wehype.app`).
+- Fixed the rules editor search panel theme and made the active search match
+  more distinct from the other matches.
+- Rules editor search panel buttons and labels no longer select their text on
+  double-click or drag, while the search and replace fields remain selectable.
+- Restored rules editor shortcuts for search (`Ctrl+F` / `Cmd+F`) and replace
+  (`Ctrl+H` on Windows/Linux, `Cmd+Alt+F` on macOS).
+- `Ctrl+F` / `Cmd+F` in the User rules editor opened the browser's find, which
+  missed rules outside the visible part of the editor; it now opens the editor
+  search, which covers all rules, even when the focus is outside the editor. In
+  the User rules list it moves to the list search.
+- Restored go-to-line (`Ctrl+L` / `Cmd+L`), delete-line (`Ctrl+D` / `Cmd+D`),
+  and find-next/previous (`Ctrl+K` / `Ctrl+Shift+K` on Windows/Linux) shortcuts.
+- Restored line-copy shortcuts (`Cmd+Option+Up` / `Cmd+Option+Down`) on macOS
+  and multi-cursor shortcuts (`Ctrl+Alt+Arrow`) on all platforms.
+- Fixed save (`Ctrl+S` / `Cmd+S`) and comment (`Ctrl+/` / `Cmd+/`) shortcuts
+  while the rules editor search panel has focus.
+- The rules editor comment toggle (`Ctrl+/` / `Cmd+/`) no longer comments an
+  extra line when the selection ends at the start of a line.
+- The rules editor comment toggle (`Ctrl+/` / `Cmd+/`) no longer changes the
+  text while the editor is read-only, for example during saving.
+- Browsing session from incognito window sometimes leaks to normal window when "delete third-party cookies" option is enabled [#3553].
+- In MV3, the warning about a reached limit of active built-in rules used the
+  built-in filters message instead of the rules message.
+- `$badfilter` rules cancelled other rules regardless of the modifiers' values
+  (`$removeparam`, `$csp`, `$header`, `$method`, `$to` and others), so a rule
+  with a different value silently stopped applying. Spellings that only look
+  equal after parsing no longer cancel each other either, and `$domain` regexps
+  keep their case, so `$domain=/A/` no longer cancels `$domain=/a/`.
+- A single `$badfilter` rule with `$permissions` no longer disables every
+  `$permissions` rule [#2961].
+- The filtering log suggested a blocking rule instead of a `$badfilter` rule for
+  document level exclusions with `$elemhide`, `$generichide`, `$specifichide`,
+  `$jsinject` and `$cookie` modifiers [#2759].
+- Fixed settings import on MV2 failing when an imported configuration enables
+  a filter that cannot be loaded.
+- The "Add custom filter" modal closed silently when adding a filter failed
+  (for example, after a network error or an MV3 service worker restart); it
+  now stays open and shows the error with a "Try again" option [#2937].
+- Saving the rules of a new custom filter could fail after the extension had
+  already marked the filter as installed, which left the filter without rules
+  and blocked adding it again.
+- Fixed the width of the blocking page on narrow mobile screens: the message
+  and buttons no longer go outside the screen.
+- In MV3, the rule limits warning did not appear when session rules exceeded
+  the browser quota.
+
+[#1410]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/1410
+[#2122]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2122
+[#2759]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2759
+[#2937]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2937
+[#2961]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2961
+[#2965]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/2965
+[#3067]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3067
+[#3538]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3538
+[#3553]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3553
+[#3560]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3560
+[#3605]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3605
+[#3615]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3615
 
 ## [5.5.4.55] - 2026-11-09
 

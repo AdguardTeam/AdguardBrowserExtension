@@ -7,6 +7,8 @@ name: Prepare release
 # The 4-component build number (e.g. 5.6.0.7) is allocated from package.json
 # unless an explicit higher override is supplied. It stays in the manifest and
 # the CHANGELOG heading only.
+# The rollout percentage is written into the PR body and read by
+# publish-release.yml when the PR is merged.
 
 on:
   workflow_dispatch:
@@ -27,6 +29,14 @@ on:
           For a beta, it must equal N in the tag.
         required: false
         type: string
+      rollout-percentage:
+        description: >-
+          Chrome Web Store release-channel rollout percentage (1-100).
+          The version waits for a manual publish and starts at this
+          percentage.
+        required: false
+        type: string
+        default: '1'
 
 # `contents: write` — push the release-bump branch
 # `id-token: write` — Octopass OIDC for PR creation and protected-push
@@ -36,7 +46,7 @@ permissions:
 
 env:
   PNPM_VERSION: 10.33.4
-  NODE_VERSION: 22.17.0
+  NODE_VERSION: 22.22.2
 
 # The force-with-lease push of the release-bump branch (via protected-push)
 # must not interleave with a concurrent run for the same tag.
@@ -80,14 +90,18 @@ jobs:
 
       # Checks that the requested tag and, for a beta, its plain release tag do
       # not exist on origin. Allocates the build number, sets package.json to
-      # M.m.p+BUILD.build.<dnrPatch>, and patches CHANGELOG.md.
+      # M.m.p+BUILD.build.<dnrPatch>, and patches CHANGELOG.md (moves Unreleased
+      # content under the new heading and adds the compare link; the base tag is
+      # selected by `selectPreviousTag`).
       # The inputs are passed via env to avoid interpolating them into the
       # shell command. The temporary git configuration authenticates the
-      # remote-tag checks because checkout does not persist credentials.
+      # remote git calls because checkout does not persist credentials.
       - name: Bump version and changelog
+        id: bump
         env:
           TAG: ${{ inputs.tag }}
           BUILD: ${{ inputs.build }}
+          ROLLOUT: ${{ inputs.rollout-percentage }}
           GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
@@ -138,10 +152,19 @@ jobs:
           commit-message: Release ${{ inputs.tag }}
           files: package.json CHANGELOG.md
 
+      # A re-run for a tag whose release-bump PR is still open fails in
+      # create-pr (a pull request for the branch already exists). To change the
+      # rollout percentage, edit the marker line in the open PR body instead.
       - name: Create pull request
         uses: AdGuardSoftwareLimited/actions/actions/create-pr@master
         with:
           title: 'Release ${{ inputs.tag }}'
-          body: "Release ${{ inputs.tag }}\n\nMerging this PR triggers the publish-release workflow."
+          body: |
+            Release ${{ inputs.tag }}
+
+            Merging this PR triggers the publish-release workflow.
+
+            ${{ steps.bump.outputs.rollout-marker }}
+            (release channel only. The version waits for a manual publish after review and starts at this percentage. Edit the line above before merge to change it)
           head: 'release-bump/${{ inputs.tag }}'
           base: master

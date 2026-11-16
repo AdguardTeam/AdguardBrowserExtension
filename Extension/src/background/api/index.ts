@@ -53,6 +53,8 @@ export {
 export {
     SettingsApi,
     type SettingsData,
+    CanvasProtectionApi,
+    CanvasProtectionResultSource,
     ConfigurationImportApi,
     type ImportConfiguration,
 } from './settings';

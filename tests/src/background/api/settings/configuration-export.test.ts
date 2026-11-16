@@ -195,7 +195,6 @@ describe('ConfigurationExportApi', () => {
         expect(params['stealth.hide_search_queries']).toBe('true');
         expect(params['stealth.DNT']).toBe('true');
         expect(params['stealth.webrtc']).toBe('false');
-        expect(params['stealth.webrtc']).toBe('false');
         expect(params['stealth.strip_url']).toBe('true');
         expect(params['stealth.block_trackers']).toBe('false');
         expect(params['stealth.x_client']).toBe('true');
@@ -237,6 +236,18 @@ describe('ConfigurationExportApi', () => {
         // v4 names should NOT be present
         expect(params['stealth.send_dnt']).toBeUndefined();
         expect(params['stealth.block_webrtc']).toBeUndefined();
+    });
+
+    it('includes stealth.block_fingerprinting=true when Block fingerprinting is on', () => {
+        mockSettingsStorageGet.mockImplementation((key: string) => key === 'stealth-block-fingerprinting');
+
+        const params = exportApi.collectShareParams();
+        expect(params['stealth.block_fingerprinting']).toBe('true');
+    });
+
+    it('includes stealth.block_fingerprinting=false when Block fingerprinting is off', () => {
+        const params = exportApi.collectShareParams();
+        expect(params['stealth.block_fingerprinting']).toBe('false');
     });
 
     it('does NOT include user rules or allowlist', () => {

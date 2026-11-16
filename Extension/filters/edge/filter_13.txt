@@ -1,9 +1,9 @@
-! Checksum: QhP1ChLzuPMrUU5kaxB1kw
-! Diff-Path: ../patches/13/13-s-1794233581-3600.patch
+! Checksum: s4ocV+qqngu/OEiB0CtC6A
+! Diff-Path: ../patches/13/13-s-1794597116-3600.patch
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.69.66
-! TimeUpdated: 2026-11-09T14:08:59+00:00
+! Version: 2.0.69.88
+! TimeUpdated: 2026-11-13T19:07:57+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -20,6 +20,7 @@
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
 !
+||certainlywhen.com^
 ||apk-2.online^$third-party
 ||geniusclickad.cc^
 ||remotedesk.life^
@@ -275,6 +276,15 @@
 ankarakampkafasi.com,zamaninvarken.com,kriptoradar.com,bakimlikadin.net,korsanedebiyat.com,genelpara.com,azbuz.org,mustafabukulmez.com#%#//scriptlet("prevent-setTimeout", "0===o.offsetLeft&&0===o.offsetTop")
 teknop.net,ozgunbilgi.com#%#//scriptlet("set-constant", "adblock.check", "noopFunc")
 !
+! https://github.com/AdguardTeam/AdguardFilters/issues/246975
+dramadizilerim1.com#%#//scriptlet('remove-attr', 'inert')
+dramadizilerim1.com#$#.access-screen { display: none !important; }
+! https://github.com/AdguardTeam/AdguardFilters/issues/246957
+bilgisayarbilisim.net#%#//scriptlet('abort-current-inline-script', 'document.getElementById', '/adblock/i')
+bilgisayarbilisim.net#@#ins.adsbygoogle[data-ad-client]
+bilgisayarbilisim.net#@#[id^="google_ads_iframe_"]
+bilgisayarbilisim.net#@#.AdContainer
+bilgisayarbilisim.net#@#.ad-slot
 ! https://github.com/AdguardTeam/AdguardFilters/issues/244639
 dramadunyam.com##.engel-duvar
 ! https://github.com/AdguardTeam/AdguardFilters/issues/243039
@@ -289,13 +299,13 @@ ortacizgi.com#@#.ad_unit
 ! https://github.com/uBlockOrigin/uAssets/issues/33867
 summertoons.net#%#//scriptlet('prevent-addEventListener', 'load', 'checkAdblock')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/234427
-dramadizilerim.com#@#.ad-slot
-dramadizilerim.com#$#body { overflow: auto !important; }
-dramadizilerim.com#$##sysOverlay99 { display: none !important; }
-dramadizilerim.com#%#//scriptlet('abort-current-inline-script', 'EventTarget.prototype.addEventListener', '/\.offsetHeight[\s]*?===[\s]*?0|pagead2\.googlesyndication\.com/')
-dramadizilerim.com#%#//scriptlet('prevent-fetch', 'llvpn.com/tag.min.js')
+dramadizilerim1.com#@#.ad-slot
+dramadizilerim1.com#$#body { overflow: auto !important; }
+dramadizilerim1.com#$##sysOverlay99 { display: none !important; }
+dramadizilerim1.com#%#//scriptlet('abort-current-inline-script', 'EventTarget.prototype.addEventListener', '/\.offsetHeight[\s]*?===[\s]*?0|pagead2\.googlesyndication\.com/')
+dramadizilerim1.com#%#//scriptlet('prevent-fetch', 'llvpn.com/tag.min.js')
 @@||dramadizilerim.com/assets/js/admanager.js$~third-party
-@@||dramadizilerim.com^$generichide
+@@||dramadizilerim1.com^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/233080
 paradoxscans.com#%#//scriptlet('abort-on-property-write', 'detectAdBlock')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/233068
@@ -667,6 +677,7 @@ r10.net#%#//scriptlet('abort-on-property-write', 'rInt')
 ! START: Yandex
 !
 ! Yandex.Mail
+!
 ! END: Yandex
 !
 !
@@ -1553,7 +1564,7 @@ tarsusakdeniz.com,havaturkiye.com,mersinhaber.com,merhabahaber.com##div[class^="
 ! ##div[class^="advert_"]
 larende.com,sonses.tv,anamurekspres.com,sakinca.com,gazetebanka.com,habereko.com,aktifhabergazetesi.com,elazighaberkent.com,haberetanik.com,kemergozcu.com,agazete.com.tr,olayrize.com,elazigharputgazetesi.com,samsunhaberhatti.com,yurtspor.com,hayat.ro##div[class^="advert_"]
 ! ##.ads:not(#style_important)
-turkiyegazetesi.com.tr,ahbmedya.com,worldofturkiye.com,eksisozluk.com,filmizlekral.com,ogznet.com,ajanstekirdag.com,enyenimedya.com,yenisafak.com,kocatepegazetesi.com,dinimizislam.com,tarihiyolculuk.com,geziforumu.com,kadinloji.com,donghuatr.com,havadurumu15gunluk.xyz,sonhaber16.com,bifikir.com,nowtv.com.tr,haber228.com,diyarbakirhaber.com.tr,diyarbakirgazete.com,konupara.com,cumrapostasi.com,yeniakit.com.tr,sinemafilmizle.net,degisimgazetesi.com.tr,esporlab.com,havadurumu15gunluk.org,voleybolmagazin.com,londragazete.com,bursahayat.com.tr,trt1.com.tr,noktabursa.com.tr,anlikaltinfiyatlari.com,pasada.com.tr,memoryhackers.org,yenidonem.com.tr,slideplayer.biz.tr,sakarya360.com,bigunhaber.com,son32.com,emlaknews.com.tr,cagingazetesi.com.tr,sabahhaberi.com,sonsaat.com.tr,medyaankara.com,erotikfilmtube.com,anadolugunluk.com,kesinkarar.com,bursverenkurumlar.com,mengen.gen.tr,capital.com.tr,canlimobeseizle.com,nallihanhaber.com,muhabir26.com,gundembursa.com,uyan32.com,selcukhaber.com,webhakim.com,ibrala.com,ulakci.com,haberyum.com,yozgatses.com,forumotomobil.com,bodrumolay.com,akvaryum.com,uyumhaber.com,yenimeram.com.tr,gzt.com,thebrandage.com,gamer.com.tr,medyafaresi.com,indir.com,bjk.com.tr,bursadabugun.com,gercekgundem.com,haber7.com,internethaber.com,webtekno.com##.ads:not(#style_important)
+tgrthaber.com,turkiyegazetesi.com.tr,ahbmedya.com,worldofturkiye.com,eksisozluk.com,filmizlekral.com,ogznet.com,ajanstekirdag.com,enyenimedya.com,yenisafak.com,kocatepegazetesi.com,dinimizislam.com,tarihiyolculuk.com,geziforumu.com,kadinloji.com,donghuatr.com,havadurumu15gunluk.xyz,sonhaber16.com,bifikir.com,nowtv.com.tr,haber228.com,diyarbakirhaber.com.tr,diyarbakirgazete.com,konupara.com,cumrapostasi.com,yeniakit.com.tr,sinemafilmizle.net,degisimgazetesi.com.tr,esporlab.com,havadurumu15gunluk.org,voleybolmagazin.com,londragazete.com,bursahayat.com.tr,trt1.com.tr,noktabursa.com.tr,anlikaltinfiyatlari.com,pasada.com.tr,memoryhackers.org,yenidonem.com.tr,slideplayer.biz.tr,sakarya360.com,bigunhaber.com,son32.com,emlaknews.com.tr,cagingazetesi.com.tr,sabahhaberi.com,sonsaat.com.tr,medyaankara.com,erotikfilmtube.com,anadolugunluk.com,kesinkarar.com,bursverenkurumlar.com,mengen.gen.tr,capital.com.tr,canlimobeseizle.com,nallihanhaber.com,muhabir26.com,gundembursa.com,uyan32.com,selcukhaber.com,webhakim.com,ibrala.com,ulakci.com,haberyum.com,yozgatses.com,forumotomobil.com,bodrumolay.com,akvaryum.com,uyumhaber.com,yenimeram.com.tr,gzt.com,thebrandage.com,gamer.com.tr,medyafaresi.com,indir.com,bjk.com.tr,bursadabugun.com,gercekgundem.com,haber7.com,internethaber.com,webtekno.com##.ads:not(#style_important)
 ! ##.footer-sticky
 hdizlebox.cc,4kizletv.cc,fullhdizlet.cc,720pizleme.*,yabancidizivip.com,fullfilmcibabaizlet.com,fullfilmcibaba.nl,fullhdabifilmizlet.com,royalfilmizle.com,fulltimehdfilmizle.*,jetfilmizletv.net,evrenselfilm1.com,altyazilifilmizle3.com,fullfilmizle.*,1080pizle.net,fullhdizle.*##.footer-sticky
 ! ##.rek
@@ -1590,6 +1601,13 @@ dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdas
 !
 ! NOTE: Specific rules
 !
+tureng.com##div[class*="tureng-searchresults-ad"]
+||tongucvideo.com/kamp/reklam/
+||apkindir.com/yonver7777.js
+ceptemod.com#%#//scriptlet('remove-attr', 'href', 'div.flex > a.inline-flex[target="_blank"][href]')
+||yenisafak.com/_astro/AdsRuntime.*.js
+emlakjet.com##section[aria-label="Sponsorlu"]
+emlakjet.com##div[data-listing-ad-host]
 yenisafak.com##aside[aria-label="Reklam"]
 tribuntv.online##div[style^="position: fixed; top: 0px; left: 0px; width: 100vw; height: 100vh; z-index: 2147483647; background-color:"]
 tribuntv.online##.tenant-player-poster-loading
@@ -6147,6 +6165,21 @@ lovefilmizle.net,elzemfilm.org,dizicaps.*,erotikfilmtube.com,sexfilmleriizle.com
 ! except some sites that use non-template domain names of mirror sites
 !
 !
+! Frequently changed domains: *macvartv.live
+! Source: 39macvartv.live
+[$domain=/\d+macvartv\.live/]##.footer-links
+!
+! Frequently changed domains: betmarinotv*.site
+! Source: betmarinotv1101.site
+[$domain=/betmarinotv\d+\.site$/]##.footer-links
+!
+! Frequently changed domains: macizle*.com
+! Source: macizle1.com
+||macizle*.com/uploads/1792408626_30490276835e43b5d732.png
+||macizle*.com/uploads/1780998716_1141d42cc53bd7f19bdb.png
+[$domain=/macizle\d+\.com$/]##.site-banner
+[$domain=/macizle\d+\.com$/]##.announcement-bar
+!
 ! Frequently changed domains: kazansanatv*.com
 ! Source: kazansanatv3.com
 ||kazansanatv*.com/view/theme/ultimate/img/NEWgif*.webp
@@ -6163,6 +6196,7 @@ lovefilmizle.net,elzemfilm.org,dizicaps.*,erotikfilmtube.com,sexfilmleriizle.com
 !
 ! Frequently changed domains: inagamingtv*.com
 ! Source: inagamingtv293.com
+[$domain=/inagamingtv\d+\.com$/]##.footer-links
 [$domain=/inagamingtv\d+\.com$/]#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', '/prerollEnabled\s*:\s*true/g', 'prerollEnabled: false')
 !
 ! Frequently changed domains: pasgoliptv*.site
@@ -6213,6 +6247,7 @@ videoplays.cfd#%#//scriptlet('abort-on-stack-trace', 'document.createElement', '
 !
 ! Frequently changed domains: golbettv*.com
 ! Source: golbettv6.com
+[$domain=/golbettv\d+\.com$/]###score-board
 [$domain=/golbettv\d+\.com$/]##body > a[target="_blank"]
 [$domain=/golbettv\d+\.com$/]##.bnr
 [$domain=/golbettv\d+\.com$/]##.popup-overlay
@@ -6240,9 +6275,9 @@ videoplays.cfd#%#//scriptlet('abort-on-stack-trace', 'document.createElement', '
 [$domain=/macboxtv\d+\.xyz$/]##.be-pageskin
 [$domain=/macboxtv\d+\.xyz$/]###gif-banner
 !
-! Frequently changed domains: sampiyontv*.xyz
-! Source: sampiyontv2.xyz
-[$domain=/sampiyontv\d+\.xyz$/]##a[rel="nofollow sponsored noopener"]
+! Frequently changed domains: sampiyontv*.xyz; sampiyon*.tv
+! Source: sampiyontv2.xyz; sampiyon.tv
+[$domain=/sampiyon(tv)?\d*\.(xyz\|tv)$/]##a[rel="nofollow sponsored noopener"]
 !
 ! Frequently changed domains: betanotv*.site
 [$domain=/betanotv\d+\.site$/]##div[class^="reklam-"]
@@ -6987,11 +7022,11 @@ justintvizle736.top,justintvizle737.top,justintvizle738.top,justintvizle739.top,
 ! aglint-enable no-invalid-modifiers
 [$domain=/selcuksports\d+\.com/]##img[id^="top-ads-"]
 ! CASE 3 - probably fake
-||video.bsky.app/watch/*/playlist.m3u8$domain=taraftarium24bjk27.com
-||blogger.googleusercontent.com/img/$domain=taraftarium24bjk27.com
-taraftarium24bjk27.com,taraftarium24tvizle.com#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', '/prerollEnabled\s*:\s*true/g', 'prerollEnabled: false')
-taraftarium24bjk27.com,taraftarium24tvizle.com###ad-pageskin
-taraftarium24bjk27.com,taraftarium24tvizle.com##.playerStrip
+||video.bsky.app/watch/*/playlist.m3u8$domain=taraftarium24bjk28.com
+||blogger.googleusercontent.com/img/$domain=taraftarium24bjk28.com
+taraftarium24bjk28.com,taraftarium24tvizle.com#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', '/prerollEnabled\s*:\s*true/g', 'prerollEnabled: false')
+taraftarium24bjk28.com,taraftarium24tvizle.com###ad-pageskin
+taraftarium24bjk28.com,taraftarium24tvizle.com##.playerStrip
 taraftarium24tvizle.com##.listAd
 24taraftarium12.xyz##.betcio-banner
 24taraftarium12.xyz##.modal-overlay
@@ -7061,7 +7096,7 @@ hdfilmizleamk.net,birasyadizi.com,seyredeger.com#%#//scriptlet('abort-on-propert
 ! Frequently changed domains: royaltv*.com
 ||royaltv*.com/reklam*.gif
 [$domain=/royaltv\d+\.com/]##a[href^="https://t2ly.io/"]
-royaltv39.com##a[href^="https://t2ly.io/"]
+royaltv40.com##a[href^="https://t2ly.io/"]
 !
 ! Frequently changed domains: diziyou*.com
 ! Source: https://t.me/diziyoucom
@@ -7317,13 +7352,6 @@ avrupabettv1.com,avrupabettv2.com,avrupabettv3.com,avrupabettv4.com,avrupabettv5
 ||rekortv*.com/wp-content/uploads/
 [$domain=/^rekortv\d+\.com/]##.pageskin
 rekortv39.com,rekortv40.com,rekortv41.com,rekortv42.com,rekortv43.com,rekortv44.com,rekortv45.com,rekortv46.com,rekortv47.com,rekortv48.com,rekortv49.com,rekortv50.com,rekortv51.com,rekortv52.com,rekortv53.com,rekortv54.com,rekortv55.com,rekortv56.com,rekortv57.com,rekortv58.com,rekortv59.com,rekortv60.com,rekortv61.com,rekortv62.com,rekortv63.com##.pageskin
-!
-! Frequently changed domains: macvar*.live
-! Source: https://18macvartv.live/
-||*macvartv.live/wp-content/uploads/*.gif
-||*macvartv.live/wp-content/uploads/2024/08/pageskin-mrhavayollari2.png
-[$domain=/\d+macvartv\.live/]##.pageskin
-08macvartv.live##.pageskin
 !
 ! Frequently changed domains: sezonlukdizi*.com
 ! Source: https://sezonlukdizi8.com/

@@ -31,6 +31,7 @@ import { Icon } from '../../../../common/components/ui/Icon';
 import { useOverflowed } from '../../../../common/hooks/useOverflowed';
 import { AddedRuleState, WizardRequestState } from '../../../constants';
 import { logger } from '../../../../../common/logger';
+import { isDocumentLevelExceptionRule } from '../ruleCreators';
 
 import theme from '../../../styles/theme';
 import './request-create-rule.pcss';
@@ -212,11 +213,12 @@ const RequestCreateRule = observer(() => {
     const options = renderOptions();
 
     const isElementOrScript = element || script;
+    const isDocumentLevel = isDocumentLevelExceptionRule(requestRule, selectedEvent.requestType);
     const showPatterns = !isElementOrScript
-        && !requestRule?.documentLevelRule
+        && !isDocumentLevel
         && wizardStore.rulePatterns
         && wizardStore.rulePatterns.length > 1;
-    const showOptions = !isElementOrScript && !requestRule?.documentLevelRule;
+    const showOptions = !isElementOrScript && !isDocumentLevel;
 
     const title = wizardStore.requestModalState === WizardRequestState.Unblock
         ? translator.getMessage('filtering_modal_allow_title')

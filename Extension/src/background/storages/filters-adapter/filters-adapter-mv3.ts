@@ -153,10 +153,19 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
      *
      * @returns True if the given ID represents a static filter, otherwise false.
      */
-    protected static override isStaticFilterId(filterId: number): boolean {
+    public static override isStaticFilterId(filterId: number): boolean {
         const staticFilterIds = FiltersStoragesAdapter.getStaticFilterIds();
 
         return staticFilterIds !== null && staticFilterIds.has(filterId);
+    }
+
+    /**
+     * Checks whether the manifest declares static filter rulesets.
+     *
+     * @returns True if the manifest has `declarative_net_request`, false otherwise.
+     */
+    public static hasStaticFilterIds(): boolean {
+        return FiltersStoragesAdapter.getStaticFilterIds() !== null;
     }
 
     /**

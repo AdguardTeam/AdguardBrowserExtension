@@ -174,4 +174,41 @@ describe('FilterParser with Last-Modified header support', () => {
             expect(result.timeUpdated).toBe('2015-10-21T07:28:00.000Z');
         });
     });
+
+    describe('parseFilterDataFromRawHeader', () => {
+        it('should parse header metadata from raw filter text', () => {
+            const rawFilter = [
+                '! Title: Custom Filter',
+                '! Description: Test description',
+                '! Homepage: https://example.com',
+                '! Version: 1.0.0',
+                '! Expires: 2 days',
+                '! TimeUpdated: 2024-01-01T12:00:00.000Z',
+                '! Diff-Path: /diff',
+                '||example.com^',
+            ].join('\n');
+
+            const result = FilterParser.parseFilterDataFromRawHeader(rawFilter);
+
+            expect(result).toStrictEqual(FilterParser.parseFilterDataFromHeader(rawFilter.split('\n')));
+            expect(result.name).toBe('Custom Filter');
+            expect(result.version).toBe('1.0.0');
+            expect(result.expires).toBe(172800);
+            expect(result.diffPath).toBe('/diff');
+        });
+
+        it('should ignore header tags beyond the parsed header lines', () => {
+            const fillerRules = Array.from({ length: 60 }, (_, index) => `||example${index}.com^`);
+            const rawFilter = [
+                '! Title: Test Filter',
+                ...fillerRules,
+                '! Diff-Path: /late-diff',
+            ].join('\n');
+
+            const result = FilterParser.parseFilterDataFromRawHeader(rawFilter);
+
+            expect(result.name).toBe('Test Filter');
+            expect(result.diffPath).toBe('');
+        });
+    });
 });

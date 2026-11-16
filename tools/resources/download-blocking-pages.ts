@@ -23,43 +23,46 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import axios from 'axios';
-import dotenv from 'dotenv';
-import { ensureDir } from 'fs-extra';
 
 import { cliLog } from '../cli-log';
+
 import {
-    BLOCKING_BLOCKED_OUTPUT,
-    BLOCKING_SAFEBROWSING_OUTPUT,
-    INDEX_HTML_FILE_NAME,
-} from '../../constants';
-
-// Retrieves config from .env file and assigns it to the process.env
-dotenv.config();
-
-/**
- * Web page for request blocked by the rules.
- */
-const REMOTE_BLOCKED_PAGE_NAME = 'adblocker_blocked.html';
+    copyBlockingPages,
+    extractBlockingPagesArchive,
+    getBlockingPagesFiles,
+    readBlockingPagesVersionFromArchive,
+    verifyBlockingPagesRelease,
+    withTempDir,
+} from './blocking-pages-archive';
 
 /**
- * Script for {@link REMOTE_BLOCKED_PAGE_NAME}.
+ * Expected build version of the blocking pages release.
  */
-const REMOTE_BLOCKED_SCRIPT_NAME = 'adblocker_blocked.js';
+const BLOCKING_PAGES_VERSION = '2.1.0.184557088';
 
 /**
- * Web page for request blocked by Safebrowsing.
+ * SHA-256 digest of the blocking pages release archive.
  */
-const REMOTE_SAFEBROWSING_PAGE_NAME = 'adblocker_safebrowsing.html';
+const BLOCKING_PAGES_ARCHIVE_SHA256 = '7f1480870f10414fe492255050dd423bcf548cdc196524c3077fabba6026d960';
 
 /**
- * Script for {@link REMOTE_SAFEBROWSING_PAGE_NAME}.
+ * URL of the blocking-pages release archive.
+ *
+ * Artifact Keeper exposes only the moving `release` and `preview` channels,
+ * so the exact build is pinned by `BLOCKING_PAGES_VERSION` and the archive
+ * digest.
  */
-const REMOTE_SAFEBROWSING_SCRIPT_NAME = 'adblocker_safebrowsing.js';
+const BLOCKING_PAGES_ARCHIVE_URL = 'https://ak.int.agrd.dev/api/v1/repositories/misc-general/download/blocking-pages-v2/release/blocking-pages.tar.gz';
 
 /**
- * Local script name for imported scripts.
+ * HTTP request timeout in milliseconds.
  */
-const LOCAL_IMPORTED_SCRIPT_NAME = 'imported-script.js';
+const REQUEST_TIMEOUT_MS = 30_000;
+
+/**
+ * Name of the downloaded archive.
+ */
+const ARCHIVE_FILE_NAME = 'blocking-pages.tar.gz';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 const __filename = fileURLToPath(import.meta.url);
@@ -68,60 +71,40 @@ const __dirname = path.dirname(__filename);
 
 const outputDirPath = path.join(__dirname, '../../Extension');
 
-const blockedPageOutputPath = path.join(outputDirPath, BLOCKING_BLOCKED_OUTPUT, INDEX_HTML_FILE_NAME);
-const blockedScriptOutputPath = path.join(outputDirPath, BLOCKING_BLOCKED_OUTPUT, LOCAL_IMPORTED_SCRIPT_NAME);
-const safebrowsingPageOutputPath = path.join(outputDirPath, BLOCKING_SAFEBROWSING_OUTPUT, INDEX_HTML_FILE_NAME);
-const safebrowsingScriptOutputPath = path.join(outputDirPath, BLOCKING_SAFEBROWSING_OUTPUT, LOCAL_IMPORTED_SCRIPT_NAME);
-
-/**
- * Returns the path to the remote source directory with blocking pages for the extension.
- *
- * @param remoteDomain Remote domain.
- *
- * @returns Path to the remote source directory.
- */
-const getRemoteSrcDirPath = (remoteDomain: string): string => {
-    return `https://${remoteDomain}/artifactory/generic-local/blocking-pages/latest/blocking-pages.tar.gz!/dist/extension/`;
-};
-
-/**
- * Downloads remote file placed in {@link REMOTE_BLOCKING_PAGES_SOURCE_URL}.
- *
- * @param sourceDirPath Path to the remote directory.
- * @param sourceFileName Name of the source file.
- * @param outputPath Path to the output file.
- */
-const downloadFile = async (sourceDirPath: string, sourceFileName: string, outputPath: string): Promise<void> => {
-    cliLog.info(`Downloading ${sourceFileName}...`);
-
-    const url = `${sourceDirPath}${sourceFileName}`;
-
-    const response = await axios.get(url, { responseType: 'arraybuffer' });
-    const content = response.data.toString();
-
-    const outputDir = path.dirname(outputPath);
-    await ensureDir(outputDir);
-
-    await fsPromises.writeFile(outputPath, content);
-    cliLog.info(`Downloaded ${sourceFileName} to ${outputPath}`);
-};
+const filesToCopy = getBlockingPagesFiles(outputDirPath);
 
 /**
  * Updates blocking pages.
  */
 const updateBlockingPages = async (): Promise<void> => {
-    const remoteSrcDomain = process.env.ARTIFACTORY_DOMAIN;
+    await withTempDir(async (tempDir) => {
+        const archivePath = path.join(tempDir, ARCHIVE_FILE_NAME);
+        const extractDir = path.join(tempDir, 'extracted');
 
-    if (!remoteSrcDomain) {
-        throw new Error('ARTIFACTORY_DOMAIN is not set');
-    }
+        cliLog.info(`Downloading ${BLOCKING_PAGES_ARCHIVE_URL}...`);
+        const response = await axios.get(BLOCKING_PAGES_ARCHIVE_URL, {
+            responseType: 'arraybuffer',
+            timeout: REQUEST_TIMEOUT_MS,
+        });
+        const archive = Buffer.from(response.data as ArrayBuffer);
+        await fsPromises.writeFile(archivePath, archive);
 
-    const remoteSrcDirPath = getRemoteSrcDirPath(remoteSrcDomain);
+        const version = await readBlockingPagesVersionFromArchive(archivePath);
+        verifyBlockingPagesRelease(
+            archive,
+            version,
+            BLOCKING_PAGES_VERSION,
+            BLOCKING_PAGES_ARCHIVE_SHA256,
+        );
 
-    await downloadFile(remoteSrcDirPath, REMOTE_BLOCKED_PAGE_NAME, blockedPageOutputPath);
-    await downloadFile(remoteSrcDirPath, REMOTE_BLOCKED_SCRIPT_NAME, blockedScriptOutputPath);
-    await downloadFile(remoteSrcDirPath, REMOTE_SAFEBROWSING_PAGE_NAME, safebrowsingPageOutputPath);
-    await downloadFile(remoteSrcDirPath, REMOTE_SAFEBROWSING_SCRIPT_NAME, safebrowsingScriptOutputPath);
+        await extractBlockingPagesArchive(archivePath, extractDir);
+        await copyBlockingPages(extractDir, filesToCopy);
+
+        cliLog.info(`Blocking pages updated in ${outputDirPath}`);
+    });
 };
 
-updateBlockingPages();
+updateBlockingPages().catch((error) => {
+    cliLog.warningRed(String(error));
+    process.exit(1);
+});

@@ -76,17 +76,17 @@ export const ENV_CONF: Record<BuildTargetEnv, EnvConfig> = {
 };
 
 export enum Browser {
-    Chrome = 'chrome',
+    ChromeMv2 = 'chrome-mv2',
     ChromeMv3 = 'chrome-mv3',
     /**
      * CRX build of Chrome MV2 for mobile testing.
      */
-    ChromeCrx = 'chrome-crx',
+    ChromeMv2Crx = 'chrome-mv2-crx',
     FirefoxAmo = 'firefox-amo',
     FirefoxStandalone = 'firefox-standalone',
-    Opera = 'opera',
+    OperaMv2 = 'opera-mv2',
     OperaMv3 = 'opera-mv3',
-    Edge = 'edge',
+    EdgeMv2 = 'edge-mv2',
     EdgeMv3 = 'edge-mv3',
 }
 
@@ -239,9 +239,20 @@ export const CHROME_UPDATE_URL = `${UPDATE_BASE_URL}/${CHROME_UPDATE_FILE_NAME}`
 export const CHROME_CERT = path.resolve(__dirname, '../private/AdguardBrowserExtension/certificate.pem');
 export const CHROME_CERT_DEV = path.resolve(__dirname, '../tests/test-certificate.pem');
 
+// Local and GitHub packages identify the manifest version explicitly.
+export const CHROME_CRX_FILE_NAME = `${Browser.ChromeMv2}.crx`;
+
+// Installed standalone extensions fetch this stable URL from update.xml.
+// Keep the public filename independent of the local CRX package name.
 export const CHROME_CODEBASE_FILE_NAME = 'chrome.crx';
 export const CHROME_CODEBASE_URL = `${UPDATE_BASE_URL}/${CHROME_CODEBASE_FILE_NAME}`;
 
 export const FIREFOX_UPDATE_TEMPLATE = path.resolve(__dirname, './bundle/firefox/update_template.json');
 export const FIREFOX_WEBEXT_UPDATE_FILE_NAME = 'update.json';
 export const FIREFOX_WEBEXT_UPDATE_URL = `${UPDATE_BASE_URL}/${FIREFOX_WEBEXT_UPDATE_FILE_NAME}`;
+
+// Signed standalone XPI shipped on the beta static directory. The GitHub
+// release notes link to it so users without store access can install and
+// auto-update the Firefox build.
+export const FIREFOX_XPI_FILE_NAME = 'firefox.xpi';
+export const FIREFOX_XPI_URL = `${UPDATE_BASE_URL}/${FIREFOX_XPI_FILE_NAME}`;

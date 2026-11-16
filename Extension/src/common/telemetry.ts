@@ -87,6 +87,9 @@ export enum TelemetryEventName {
     UserRulesSearchClick = 'user_rules_search_click',
     UserRulesMenuClick = 'user_rules_menu_click',
     SwitchToEditorClick = 'switch_to_editor_click',
+    UserRuleEditClick = 'user_rule_edit_click',
+    UserRuleInlineSaveClick = 'user_rule_inline_save_click',
+    UserRuleInlineCancelClick = 'user_rule_inline_cancel_click',
     CompareClick = 'compare_click',
     CloseCompareClick = 'close_compare_click',
     RateUsClick = 'rate_us_click',
@@ -105,8 +108,17 @@ export enum TelemetryEventName {
     GetTheAppClick = 'get_the_app_click',
     CloseWarningClick = 'close_warning_click',
     ManageExtensionsClick = 'manage_extensions_click',
+    AdguardProductsClick = 'adguard_products_click',
+    UnusedFilterNotificationDisplayed = 'unused_filter_notification_displayed',
+    UnusedFilterReviewClick = 'unused_filter_review_click',
+    UnusedFilterCloseClick = 'unused_filter_close_click',
+    BlockFingerprintingClick = 'block_fingerprinting_click',
 }
 
+/**
+ * Screen of each custom event. Events mapped to `undefined` are not tied to
+ * a specific screen and are sent without `ref_name`.
+ */
 export type TelemetryActionToScreenMap = {
     [TelemetryEventName.CheckUpdatesClick]: TelemetryScreenName.MainPage;
     [TelemetryEventName.PauseClick]: TelemetryScreenName.MainPage;
@@ -136,6 +148,9 @@ export type TelemetryActionToScreenMap = {
     [TelemetryEventName.UserRulesSearchClick]: TelemetryScreenName.UserRulesScreen;
     [TelemetryEventName.UserRulesMenuClick]: TelemetryScreenName.UserRulesScreen;
     [TelemetryEventName.SwitchToEditorClick]: TelemetryScreenName.UserRulesScreen;
+    [TelemetryEventName.UserRuleEditClick]: TelemetryScreenName.UserRulesScreen;
+    [TelemetryEventName.UserRuleInlineSaveClick]: TelemetryScreenName.UserRulesScreen;
+    [TelemetryEventName.UserRuleInlineCancelClick]: TelemetryScreenName.UserRulesScreen;
     [TelemetryEventName.CompareClick]: TelemetryScreenName.MainPage;
     [TelemetryEventName.CloseCompareClick]: TelemetryScreenName.MainPage;
     [TelemetryEventName.RateUsClick]: TelemetryScreenName.MainPage;
@@ -154,4 +169,9 @@ export type TelemetryActionToScreenMap = {
     [TelemetryEventName.GetTheAppClick]: TelemetryScreenName.RulesLimitsError;
     [TelemetryEventName.CloseWarningClick]: TelemetryScreenName.RulesLimitsError;
     [TelemetryEventName.ManageExtensionsClick]: TelemetryScreenName.RulesLimitsError;
+    [TelemetryEventName.AdguardProductsClick]: TelemetryScreenName.MainPage;
+    [TelemetryEventName.UnusedFilterNotificationDisplayed]: undefined;
+    [TelemetryEventName.UnusedFilterReviewClick]: undefined;
+    [TelemetryEventName.UnusedFilterCloseClick]: undefined;
+    [TelemetryEventName.BlockFingerprintingClick]: TelemetryScreenName.TrackingProtectionScreen;
 };

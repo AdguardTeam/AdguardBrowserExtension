@@ -26,6 +26,7 @@ import {
     TooManyRulesError,
     RULESET_NAME_PREFIX,
     type ConfigurationResult,
+    type LimitationError,
 } from '@adguard/tswebextension/mv3';
 
 import {
@@ -84,13 +85,6 @@ interface RulesetCounter {
 }
 
 /**
- * Map of ruleset counters.
- */
-interface RulesetCountersMap {
-    [key: number]: RulesetCounter;
-}
-
-/**
  * Service to work with configuration result.
  */
 export class RulesLimitsService {
@@ -101,6 +95,51 @@ export class RulesLimitsService {
      * checks for limitations.
      */
     isFilteringEnabled: boolean = true;
+
+    /**
+     * Counters of the static rulesets by filter id.
+     *
+     * The counters of a bundled ruleset do not depend on the configuration,
+     * so they are kept across configuration results. This lets the service
+     * load the rulesets of disabled filters only once and reuse their
+     * counters for the later checks.
+     */
+    private staticRulesetCounters = new Map<number, RulesetCounter>();
+
+    /**
+     * Pending loading of the static rulesets of disabled filters, or `null`
+     * if there is none.
+     *
+     * Their counters are needed only to check whether a disabled filter can be
+     * enabled, so these checks wait for it, see
+     * {@link RulesLimitsService.waitForStaticRulesetCounters}.
+     */
+    private disabledStaticRulesetsLoading: Promise<void> | null = null;
+
+    /**
+     * Whether the static rulesets of disabled filters have been loaded.
+     *
+     * They are loaded once per service worker lifetime: the counters do not
+     * depend on the configuration, and loading them on every configuration
+     * result would create all disabled rulesets again.
+     */
+    private disabledStaticRulesetsLoaded: boolean = false;
+
+    /**
+     * Resolver of {@link RulesLimitsService.configurationResultChanged}.
+     */
+    private resolveConfigurationResultChanged: (() => void) | null = null;
+
+    /**
+     * Promise that resolves when the configuration result is replaced.
+     *
+     * A check waiting for the counters of disabled filters races this promise
+     * with the loading, so it can stop waiting when the new result makes the
+     * wait unnecessary, e.g. when filtering is disabled.
+     */
+    private configurationResultChanged: Promise<void> = new Promise<void>((resolve) => {
+        this.resolveConfigurationResultChanged = resolve;
+    });
 
     /**
      * Subscribes to messages from the options' page.
@@ -150,28 +189,49 @@ export class RulesLimitsService {
     }
 
     /**
-     * Returns a map of ruleset counters.
+     * Creates a ruleset counter from a static ruleset.
+     *
+     * @param ruleset Static ruleset.
+     *
+     * @returns Ruleset counter.
+     */
+    private static createRulesetCounter(ruleset: ConfigurationResult['staticFilters'][number]): RulesetCounter {
+        const filterId = Number(ruleset.getId().slice(RULESET_NAME_PREFIX.length));
+
+        return {
+            filterId,
+            rulesCount: ruleset.getSafeRulesCount() + ruleset.getUnsafeRulesCount(),
+            regexpRulesCount: ruleset.getRegexpRulesCount(),
+            metadataRulesCount: ruleset.getMetadataRulesCount(),
+        };
+    }
+
+    /**
+     * Returns a map of counters of the rulesets in the configuration result.
      *
      * @param result Configuration result.
      *
-     * @returns A map of ruleset counters.
+     * @returns A map of ruleset counters by filter id.
      */
-    private static getRulesetsCountersMap = (result: ConfigurationResult): RulesetCountersMap => {
-        const counters = result.staticFilters.reduce((acc: { [key: number]: RulesetCounter }, ruleset) => {
-            const filterId = Number(ruleset.getId().slice(RULESET_NAME_PREFIX.length));
+    private static getRulesetsCountersMap(result: ConfigurationResult): Map<number, RulesetCounter> {
+        return new Map(result.staticFilters.map((ruleset) => {
+            const counter = RulesLimitsService.createRulesetCounter(ruleset);
 
-            acc[filterId] = {
-                filterId,
-                rulesCount: ruleset.getSafeRulesCount() + ruleset.getUnsafeRulesCount(),
-                regexpRulesCount: ruleset.getRegexpRulesCount(),
-                metadataRulesCount: ruleset.getMetadataRulesCount(),
-            };
+            return [counter.filterId, counter] as const;
+        }));
+    }
 
-            return acc;
-        }, {});
-
-        return counters;
-    };
+    /**
+     * Returns the ids of the common static filters that have a bundled
+     * ruleset.
+     *
+     * @returns Filter ids.
+     */
+    private static getBundledStaticFilterIds(): number[] {
+        return FiltersApi.getFiltersMetadata()
+            .filter((filter) => CommonFilterUtils.isCommonFilter(filter.filterId))
+            .map((filter) => filter.filterId);
+    }
 
     /**
      * Returns an array of ruleset counters.
@@ -183,31 +243,24 @@ export class RulesLimitsService {
      */
     private static getRulesetCounters(
         filters: FilterMetadata[],
-        rulesetsCounters: RulesetCountersMap,
+        rulesetsCounters: Map<number, RulesetCounter>,
     ): RulesetCounter[] {
         return filters
             .filter((f) => !CustomFilterUtils.isCustomFilter(f.filterId))
-            .map((filter) => rulesetsCounters[filter.filterId])
+            .map((filter) => rulesetsCounters.get(filter.filterId))
             .filter((ruleset): ruleset is RulesetCounter => ruleset !== undefined);
     }
 
     /**
      * Gets the static ruleset counter by filter id.
      *
-     * @param result Configuration result.
      * @param filterId Filter id.
      *
-     * @returns The static ruleset counter.
-     *
-     * @throws Error if the ruleset counter is not found.
+     * @returns The static ruleset counter or `undefined` if there is no
+     * counter for the filter.
      */
-    private static getStaticRulesetCounter(result: ConfigurationResult, filterId: number): RulesetCounter {
-        const rulesetsCounters = RulesLimitsService.getRulesetsCountersMap(result);
-        const rulesetsCounter = rulesetsCounters[filterId];
-        if (!rulesetsCounter) {
-            throw new Error(`RulesetCounter for filterId ${filterId} not found`);
-        }
-        return rulesetsCounter;
+    private getStaticRulesetCounter(filterId: number): RulesetCounter | undefined {
+        return this.staticRulesetCounters.get(filterId);
     }
 
     /**
@@ -253,6 +306,54 @@ export class RulesLimitsService {
     }
 
     /**
+     * Collects limitation errors of the dynamic scope: the dynamic rules
+     * (allowlist, user rules, custom filters) and the `$csp` rules rebuilt into
+     * the dynamic ruleset.
+     *
+     * Session rule overflow is never here: session rules have their own quota
+     * and their errors live only in `sessionRules.limitations`, so they must not
+     * be mixed into the dynamic counters.
+     *
+     * @param result Configuration result.
+     *
+     * @returns Limitation errors of the dynamic scope.
+     */
+    private static getDynamicLimitations = (result: ConfigurationResult): LimitationError[] => (
+        result.dynamicRules?.limitations ?? []
+    );
+
+    /**
+     * Checks whether a limitation error describes a session quota overflow.
+     *
+     * @param error Limitation error.
+     *
+     * @returns `true` if the error comes from a session quota.
+     */
+    private static isSessionLimitExceedErr = (
+        error: LimitationError,
+    ): error is TooManyUnsafeRulesError | TooManyRegexpRulesError => (
+        error instanceof TooManyUnsafeRulesError || error instanceof TooManyRegexpRulesError
+    );
+
+    /**
+     * Finds the first limitation error of session rules.
+     *
+     * Session rules hold the unsafe rules of built-in filters and the `$csp`
+     * rules rebuilt into session rules, so their overflow is a built-in rules
+     * limit. Such errors never appear in `dynamicRules.limitations`, which
+     * covers the dynamic scope only.
+     *
+     * @param result Configuration result.
+     *
+     * @returns Limitation error or `undefined` if session rules fit the quota.
+     */
+    private static getSessionLimitExceedErr = (
+        result: ConfigurationResult | null,
+    ): TooManyUnsafeRulesError | TooManyRegexpRulesError | undefined => (
+        result?.sessionRules?.limitations.find(RulesLimitsService.isSessionLimitExceedErr)
+    );
+
+    /**
      * Finds first found limitation error about unsafe rules limit.
      *
      * @param result Configuration result.
@@ -262,8 +363,8 @@ export class RulesLimitsService {
     private static getUnsafeRulesLimitExceedErr = (
         result: ConfigurationResult,
     ): TooManyUnsafeRulesError | undefined => {
-        return result.dynamicRules?.limitations
-            .find((e: unknown) => e instanceof TooManyUnsafeRulesError);
+        return RulesLimitsService.getDynamicLimitations(result)
+            .find((e): e is TooManyUnsafeRulesError => e instanceof TooManyUnsafeRulesError);
     };
 
     /**
@@ -276,8 +377,8 @@ export class RulesLimitsService {
     private static getRegexpRulesLimitExceedErr = (
         result: ConfigurationResult,
     ): TooManyRegexpRulesError | undefined => {
-        return result.dynamicRules?.limitations
-            .find((e: unknown) => e instanceof TooManyRegexpRulesError);
+        return RulesLimitsService.getDynamicLimitations(result)
+            .find((e): e is TooManyRegexpRulesError => e instanceof TooManyRegexpRulesError);
     };
 
     /**
@@ -290,8 +391,8 @@ export class RulesLimitsService {
     private static getRulesLimitExceedErr = (
         result: ConfigurationResult,
     ): TooManyRulesError | undefined => {
-        return result.dynamicRules?.limitations
-            .find((e: unknown) => e instanceof TooManyRulesError);
+        return RulesLimitsService.getDynamicLimitations(result)
+            .find((e): e is TooManyRulesError => e instanceof TooManyRulesError);
     };
 
     /**
@@ -303,10 +404,7 @@ export class RulesLimitsService {
      */
     private static getDynamicRulesEnabledCount(result: ConfigurationResult): number {
         const rulesLimitExceedErr = RulesLimitsService.getRulesLimitExceedErr(result);
-        const ruleset = result.dynamicRules?.ruleset;
-        const declarativeRulesCount = ruleset
-            ? ruleset.getSafeRulesCount() + ruleset.getUnsafeRulesCount()
-            : 0;
+        const declarativeRulesCount = result.dynamicRules?.counts.total ?? 0;
         return rulesLimitExceedErr?.numberOfMaximumRules || declarativeRulesCount;
     }
 
@@ -342,11 +440,13 @@ export class RulesLimitsService {
      * @returns Number rules.
      */
     private static getDynamicRegexpRulesEnabledCount(result: ConfigurationResult): number {
-        const ruleset = result.dynamicRules?.ruleset;
-        const regexpsCount = ruleset ? ruleset.getRegexpRulesCount() : 0;
+        const regexpsCount = result.dynamicRules?.counts.regexp ?? 0;
 
         const regexpRulesLimitExceedErr = RulesLimitsService.getRegexpRulesLimitExceedErr(result);
-        const excludedRulesCount = regexpRulesLimitExceedErr?.excludedRulesIds.length || 0;
+        // `excludedRulesIds` holds source rule ids, while the counter and the
+        // quota count declarative rules, and the converter may group several
+        // source rules into one.
+        const excludedRulesCount = regexpRulesLimitExceedErr?.numberOfExcludedDeclarativeRules ?? 0;
 
         return regexpsCount + excludedRulesCount;
     }
@@ -371,11 +471,13 @@ export class RulesLimitsService {
      * @returns Count of enabled dynamic unsafe rules.
      */
     private static getDynamicUnsafeRulesEnabledCount(result: ConfigurationResult): number {
-        const ruleset = result.dynamicRules?.ruleset;
-        const unsafeRulesCount = ruleset ? ruleset.getUnsafeRulesCount() : 0;
+        const unsafeRulesCount = result.dynamicRules?.counts.unsafe ?? 0;
 
         const unsafeRulesLimitExceedErr = RulesLimitsService.getUnsafeRulesLimitExceedErr(result);
-        const excludedRulesCount = unsafeRulesLimitExceedErr?.excludedRulesIds.length || 0;
+        // `excludedRulesIds` holds source rule ids, while the counter and the
+        // quota count declarative rules, and the converter may group several
+        // source rules into one ($removeheader, rebuilt $csp rules).
+        const excludedRulesCount = unsafeRulesLimitExceedErr?.numberOfExcludedDeclarativeRules ?? 0;
 
         return unsafeRulesCount + excludedRulesCount;
     }
@@ -524,6 +626,140 @@ export class RulesLimitsService {
     public updateConfigurationResult(result: ConfigurationResult, isFilteringEnabled: boolean): void {
         this.configurationResult = result;
         this.isFilteringEnabled = isFilteringEnabled;
+
+        // The counters of the rulesets in the result are valid for any later
+        // configuration, so keep them.
+        this.cacheStaticRulesetCounters(result.staticFilters);
+
+        // Wake up the checks waiting for the previous result: the new result
+        // may make their wait unnecessary, e.g. if filtering is disabled or
+        // its rulesets are already loaded.
+        this.notifyConfigurationResultChanged();
+
+        // Load the rulesets of disabled filters only once. After that all
+        // bundled counters are cached, so later results do not need them.
+        if (isFilteringEnabled && !this.disabledStaticRulesetsLoaded && !this.disabledStaticRulesetsLoading) {
+            this.loadDisabledStaticRulesets(result);
+        }
+    }
+
+    /**
+     * Saves the counters of the given static rulesets, so they can be reused
+     * across configuration results.
+     *
+     * @param rulesets Static rulesets.
+     */
+    private cacheStaticRulesetCounters(rulesets: ConfigurationResult['staticFilters']): void {
+        rulesets.forEach((ruleset) => {
+            const counter = RulesLimitsService.createRulesetCounter(ruleset);
+
+            this.staticRulesetCounters.set(counter.filterId, counter);
+        });
+    }
+
+    /**
+     * Loads the static rulesets of disabled filters in the background, so
+     * their counters become available for the checks whether these filters
+     * can be enabled.
+     *
+     * Tswebextension creates only the rulesets of enabled filters during the
+     * configuration, because creating a ruleset for the first time prepares
+     * its filter list, which is too slow for the startup path.
+     *
+     * @param result Configuration result to load the disabled rulesets for.
+     */
+    private loadDisabledStaticRulesets(result: ConfigurationResult): void {
+        const loading = result.loadDisabledStaticFilters()
+            .then((rulesets) => {
+                // Counters of a bundled ruleset do not depend on the
+                // configuration, so the result of a superseded loading is
+                // still valid.
+                this.cacheStaticRulesetCounters(rulesets);
+                this.updateDisabledStaticRulesetsLoaded();
+            })
+            .catch((e) => {
+                logger.error('[ext.RulesLimitsService.loadDisabledStaticRulesets]: failed to load static rulesets of disabled filters:', e);
+            })
+            .finally(() => {
+                this.disabledStaticRulesetsLoading = null;
+            });
+
+        this.disabledStaticRulesetsLoading = loading;
+    }
+
+    /**
+     * Updates whether the counters of all bundled static rulesets are
+     * available.
+     *
+     * The library skips a ruleset that fails to be created and still
+     * resolves, so a resolved batch is complete only when every bundled
+     * filter has a counter. Otherwise the next configuration result retries
+     * the loading.
+     */
+    private updateDisabledStaticRulesetsLoaded(): void {
+        this.disabledStaticRulesetsLoaded = RulesLimitsService.getBundledStaticFilterIds()
+            .every((filterId) => this.staticRulesetCounters.has(filterId));
+    }
+
+    /**
+     * Resolves the promise of the previous configuration result and creates a
+     * new one for the current result.
+     */
+    private notifyConfigurationResultChanged(): void {
+        this.resolveConfigurationResultChanged?.();
+        this.configurationResultChanged = new Promise<void>((resolve) => {
+            this.resolveConfigurationResultChanged = resolve;
+        });
+    }
+
+    /**
+     * Waits until the counters of the given static rulesets are available.
+     *
+     * Only the requested rulesets are loaded on demand, so a single-filter
+     * check does not wait for the whole batch. The wait re-checks when the
+     * configuration result is replaced and stops when the new result does not
+     * need the counters, e.g. when filtering is disabled.
+     *
+     * @param filterIds Ids of filters whose counters are needed.
+     */
+    private async waitForStaticRulesetCounters(filterIds: number[]): Promise<void> {
+        while (this.isFilteringEnabled) {
+            const result = this.configurationResult;
+            if (!result) {
+                return;
+            }
+
+            const missingIds = filterIds.filter((filterId) => !this.staticRulesetCounters.has(filterId));
+            if (missingIds.length === 0) {
+                return;
+            }
+
+            // Load only the counters the check needs, so a single-filter
+            // check does not wait for the whole background batch.
+            const loading = Promise.all(missingIds.map(async (filterId) => {
+                const ruleset = await result.loadDisabledStaticFilter(filterId);
+
+                if (ruleset) {
+                    this.cacheStaticRulesetCounters([ruleset]);
+                }
+            })).catch((e) => {
+                logger.error('[ext.RulesLimitsService.waitForStaticRulesetCounters]: failed to load a static ruleset:', e);
+            });
+
+            // Re-check when the configuration result is replaced: the new
+            // result may not need the counters, e.g. when filtering is
+            // disabled.
+            // eslint-disable-next-line no-await-in-loop
+            await Promise.race([loading, this.configurationResultChanged]);
+
+            // If the result did not change, the requested rulesets have been
+            // attempted. Do not loop forever on a counter that cannot be
+            // loaded.
+            if (this.configurationResult === result) {
+                this.updateDisabledStaticRulesetsLoaded();
+                return;
+            }
+        }
     }
 
     /**
@@ -651,6 +887,44 @@ export class RulesLimitsService {
             };
         }
 
+        const sessionLimitExceedErr = RulesLimitsService.getSessionLimitExceedErr(this.configurationResult);
+        if (sessionLimitExceedErr) {
+            /**
+             * The counters are exact: `numberOfMaximumRules` is the count of
+             * unsafe session rules which can be applied at all — the quota
+             * minus the ids reserved for stealth rules — and the overflow means
+             * every one of them is taken, so the applied count is the maximum
+             * itself and `current` is it plus the omitted rules.
+             *
+             * Both quotas can overflow at once, and a rule dropped by the
+             * regexp quota never takes an id, so the count is summed over all
+             * session limitations instead of the first error.
+             */
+            const excludedCount = (this.configurationResult?.sessionRules?.limitations ?? [])
+                .filter(RulesLimitsService.isSessionLimitExceedErr)
+                .reduce((sum, limitation) => sum + limitation.numberOfExcludedDeclarativeRules, 0);
+            const current = sessionLimitExceedErr.numberOfMaximumRules + excludedCount;
+            const maximum = sessionLimitExceedErr.numberOfMaximumRules;
+
+            if (sessionLimitExceedErr instanceof TooManyRegexpRulesError) {
+                return {
+                    ok: false,
+                    data: {
+                        type: 'static',
+                        rulesRegexpsCount: { current, maximum },
+                    },
+                };
+            }
+
+            return {
+                ok: false,
+                data: {
+                    type: 'static',
+                    rulesSessionCount: { current, maximum },
+                },
+            };
+        }
+
         return { ok: true };
     }
 
@@ -734,6 +1008,9 @@ export class RulesLimitsService {
      * @returns Promise that resolves with the result of the check.
      */
     private async doesStaticFilterFitsInLimits(filterId: number): Promise<StaticLimitsCheckResult> {
+        // The filter is usually disabled, so its counter may still be loading.
+        await this.waitForStaticRulesetCounters([filterId]);
+
         const result = this.configurationResult;
 
         /**
@@ -765,7 +1042,16 @@ export class RulesLimitsService {
         }
 
         const availableStaticRulesCount = await browser.declarativeNetRequest.getAvailableStaticRuleCount();
-        const filterStaticRulesCount = RulesLimitsService.getStaticRulesetCounter(result, filterId);
+        const filterStaticRulesCount = this.getStaticRulesetCounter(filterId);
+
+        // The filter can have no ruleset counter if the extension bundle has
+        // no ruleset for it, or if its ruleset failed to be loaded. Such a
+        // filter cannot be enabled, so the check must fail instead of throwing.
+        if (!filterStaticRulesCount) {
+            logger.error(`[ext.RulesLimitsService.doesStaticFilterFitsInLimits]: ruleset counter for filterId ${filterId} not found`);
+            return { ok: false, data: { type: 'static' } };
+        }
+
         // Chrome also counts the metadata rules at the start of each static
         // ruleset (see `getStaticRulesEnabledCount`). Without them the check
         // undercounts and can admit a ruleset Chrome will reject near the
@@ -829,6 +1115,9 @@ export class RulesLimitsService {
      * @returns Promise that resolves with the result of the check.
      */
     private async doStaticFiltersFitInLimits(filterIds: number[]): Promise<StaticLimitsCheckResult> {
+        // The filters are usually disabled, so their counters may still be loading.
+        await this.waitForStaticRulesetCounters(filterIds);
+
         const result = this.configurationResult;
 
         /**
@@ -864,7 +1153,17 @@ export class RulesLimitsService {
 
         const { totalStaticRulesCount, totalRegexpRulesCount } = filterIds.reduce(
             (acc, filterId) => {
-                const filterStaticRulesCount = RulesLimitsService.getStaticRulesetCounter(result, filterId);
+                const filterStaticRulesCount = this.getStaticRulesetCounter(filterId);
+
+                // Skip filters without a ruleset counter: the extension bundle
+                // may have no ruleset for them, or their ruleset failed to be
+                // loaded, so they cannot be enabled and must not block the
+                // whole group.
+                if (!filterStaticRulesCount) {
+                    logger.error(`[ext.RulesLimitsService.doStaticFiltersFitInLimits]: ruleset counter for filterId ${filterId} not found`);
+                    return acc;
+                }
+
                 // Chrome also counts the metadata rules of each ruleset (see
                 // `getStaticRulesEnabledCount`), so the admission check
                 // matches Chrome's actual static-rule consumption.

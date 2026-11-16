@@ -158,8 +158,8 @@ export class UiService {
         messageHandler.addListener(MessageType.OpenThankYouPage, pagesApi.openThankYouPage);
         messageHandler.addListener(MessageType.OpenExtensionStore, pagesApi.openExtensionStorePage);
         messageHandler.addListener(
-            MessageType.OpenChromeExtensionsSettingsPage,
-            PagesApi.openChromeExtensionsSettingsPage,
+            MessageType.OpenExtensionsSettingsPage,
+            PagesApi.openExtensionsSettingsPage,
         );
         messageHandler.addListener(MessageType.OpenExtensionDetailsPage, PagesApi.openExtensionDetailsPage);
         messageHandler.addListener(MessageType.OpenFullscreenUserRules, PagesApi.openFullscreenUserRulesPage);
@@ -272,13 +272,21 @@ export class UiService {
 
         const success = await configurationImportApi.applyConfig(config);
 
-        await engine.update();
+        if (success) {
+            await engine.update();
+        }
 
         const limitsExceeded = success && await RulesLimitsService.areFilterLimitsExceeded();
 
         if (!success || limitsExceeded) {
             logger.error('[ext.UiService.handleApplyImportConfiguration]: import failed — rolling back');
-            await SettingsApi.import(snapshot);
+
+            const rollbackResult = await SettingsApi.import(snapshot);
+
+            if (!rollbackResult) {
+                logger.error('[ext.UiService.handleApplyImportConfiguration]: cannot restore settings after failed import');
+            }
+
             await RulesLimitsService.clearRulesLimitsWarning();
             await engine.update();
             UiService.pendingImportConfig = null;

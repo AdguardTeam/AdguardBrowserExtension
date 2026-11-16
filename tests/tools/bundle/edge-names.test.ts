@@ -30,11 +30,11 @@ import { updateLocalesMSGName } from '../../../tools/helpers';
 
 describe('Edge extension names', () => {
     it.each([
-        [Browser.Edge, BuildTargetEnv.Dev, 'AdGuard (MV2 Dev)'],
+        [Browser.EdgeMv2, BuildTargetEnv.Dev, 'AdGuard (MV2 Dev)'],
         [Browser.EdgeMv3, BuildTargetEnv.Dev, 'AdGuard (MV3 Dev)'],
-        [Browser.Edge, BuildTargetEnv.Beta, 'AdGuard (Beta)'],
+        [Browser.EdgeMv2, BuildTargetEnv.Beta, 'AdGuard (Beta)'],
         [Browser.EdgeMv3, BuildTargetEnv.Beta, 'AdGuard (Beta)'],
-        [Browser.Edge, BuildTargetEnv.Release, 'AdGuard'],
+        [Browser.EdgeMv2, BuildTargetEnv.Release, 'AdGuard'],
         [Browser.EdgeMv3, BuildTargetEnv.Release, 'AdGuard'],
     ] as const)('%s in %s is named %s', (browser, env, expected) => {
         const messages = Buffer.from(JSON.stringify({ name: { message: 'AdGuard' } }));

@@ -382,15 +382,22 @@ export abstract class CategoriesCommon {
      * @returns List of filters ids.
      */
     public static getEnabledFiltersIdsByGroupId(groupId: number): number[] {
+        return CategoriesCommon.getFiltersIdsByGroupId(groupId)
+            .filter((filterId) => filterStateStorage.get(filterId)?.enabled);
+    }
+
+    /**
+     * Returns ids of filters for specified group id.
+     *
+     * @param groupId Group id.
+     *
+     * @returns List of filters ids.
+     */
+    public static getFiltersIdsByGroupId(groupId: number): number[] {
         const filtersMetadata = FiltersApi.getFiltersMetadata();
 
         return filtersMetadata
             .filter((filter: FilterMetadata) => filter.groupId === groupId)
-            .filter(({ filterId }) => {
-                const filterState = filterStateStorage.get(filterId);
-
-                return filterState?.enabled;
-            })
             .map(({ filterId }) => filterId);
     }
 

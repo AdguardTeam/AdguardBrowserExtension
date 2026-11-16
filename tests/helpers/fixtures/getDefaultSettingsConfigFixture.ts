@@ -43,6 +43,7 @@ export const getDefaultSettingsConfigFixtureMV2 = (
         hideSearchQueries: defaultSettings[SettingOption.HideSearchQueries],
         sendDoNotTrack: defaultSettings[SettingOption.SendDoNotTrack],
         blockWebRTC: defaultSettings[SettingOption.BlockWebRTC],
+        protectCanvas: defaultSettings[SettingOption.BlockFingerprinting],
         selfDestructThirdPartyCookies: defaultSettings[SettingOption.SelfDestructThirdPartyCookies],
         selfDestructThirdPartyCookiesTime: (
             defaultSettings[SettingOption.SelfDestructThirdPartyCookiesTime]
@@ -80,6 +81,7 @@ export const getDefaultSettingsConfigFixtureMV3 = (
         hideSearchQueries: false,
         sendDoNotTrack: defaultSettings[SettingOption.SendDoNotTrack],
         blockWebRTC: defaultSettings[SettingOption.BlockWebRTC],
+        protectCanvas: defaultSettings[SettingOption.BlockFingerprinting],
         selfDestructThirdPartyCookies: defaultSettings[SettingOption.SelfDestructThirdPartyCookies],
         selfDestructThirdPartyCookiesTime: (
             defaultSettings[SettingOption.SelfDestructThirdPartyCookiesTime]

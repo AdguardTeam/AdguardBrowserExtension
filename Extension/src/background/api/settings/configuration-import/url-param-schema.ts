@@ -21,13 +21,15 @@
 import { z } from 'zod';
 
 /**
- * Zod schema for a parsed stealth import config (all fields optional).
+ * Zod schema for a parsed stealth import config. All fields are optional:
+ * a setting missing from the URL is turned off on import.
  */
 export const stealthImportConfigSchema = z.object({
     enabled: z.boolean().optional(),
     hideSearchQueries: z.boolean().optional(),
     sendDnt: z.boolean().optional(),
     blockWebrtc: z.boolean().optional(),
+    blockFingerprinting: z.boolean().optional(),
     stripUrl: z.boolean().optional(),
     blockTrackers: z.boolean().optional(),
     thirdPartyCookiesMin: z.number().min(0).optional(),
@@ -40,13 +42,14 @@ export const stealthImportConfigSchema = z.object({
  * Zod schema for the full import configuration object.
  */
 export const importConfigurationSchema = z.object({
+    // v3 is kept for backward compatibility with existing import links.
     schemeVersion: z.union([z.literal(3), z.literal(4)]),
     regularFilters: z.array(z.number().int().positive()),
     customFilters: z.array(z.object({
         title: z.string(),
         url: z.string().url(),
     })),
-    stealth: stealthImportConfigSchema.partial(),
+    stealth: stealthImportConfigSchema,
     browsingSecurity: z.object({ enabled: z.boolean() }).optional(),
     informational: z.record(z.string()),
 });

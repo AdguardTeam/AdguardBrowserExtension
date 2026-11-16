@@ -111,9 +111,4 @@ export type GetOptionsDataResponseCommon = {
      * Whether the user filter editor is open in the fullscreen mode.
      */
     fullscreenUserRulesEditorIsOpen: boolean;
-
-    /**
-     * Whether the Rule Limits A/B test B-variant is active (AG-54586).
-     */
-    showRuleLimitsVariantB: boolean;
 };

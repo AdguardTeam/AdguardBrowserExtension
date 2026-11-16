@@ -103,6 +103,15 @@ export interface DownloadFilterRulesOptions {
 }
 
 /**
+ * An in-flight subscription download and the raw base used for its patches.
+ */
+type LoadingSubscription = {
+    promise: Promise<DownloadResult>;
+    rawFilter: string | undefined;
+    expiresAt: number;
+};
+
+/**
  * Api for working with our backend server.
  * All requests sent by this class are covered in the privacy policy:
  * http://adguard.com/en/privacy.html#browsers.
@@ -123,9 +132,14 @@ export abstract class NetworkCommon {
     };
 
     /**
-     * Loading subscriptions map.
+     * Map of the filter downloads which are currently in progress.
+     *
+     * Downloads share results only for the same mode and raw base, except
+     * forced downloads, which ignore the raw base. Entries expire after the
+     * in-flight TTL passed by the caller, so hanging requests do not occupy
+     * their slot forever.
      */
-    private loadingSubscriptions: Record<string, boolean> = {};
+    private loadingSubscriptions = new Map<string, LoadingSubscription>();
 
     /**
      * Initializes the network settings.
@@ -150,23 +164,80 @@ export abstract class NetworkCommon {
     /**
      * Downloads filter rules by url. Needed for custom filter lists.
      *
+     * Equivalent downloads share their result until the entry expires.
+     * Expiry does not cancel the underlying download.
+     *
+     * @param url Subscription url.
+     * @param rawFilter Raw filter rules.
+     * @param force Boolean flag to download filter fully or by patches.
+     * @param inFlightTtlMs Time in milliseconds during which the in-flight entry
+     * can be reused, after which it is evicted so later calls start a new request.
+     * It should exceed the caller's own timeout so a retry can join a download
+     * that is still in progress.
+     *
+     * @returns Downloaded filter rules.
+     *
+     * @throws Error if filter download fails.
+     */
+    public async downloadFilterRulesBySubscriptionUrl(
+        url: string,
+        rawFilter: string | undefined,
+        force: boolean | undefined,
+        inFlightTtlMs: number,
+    ): Promise<DownloadResult> {
+        const subscriptionKey = `${force ? 'force' : 'patch'}:${url}`;
+
+        const loadingSubscription = this.loadingSubscriptions.get(subscriptionKey);
+        if (
+            loadingSubscription
+            && loadingSubscription.expiresAt > Date.now()
+            && (force || loadingSubscription.rawFilter === rawFilter)
+        ) {
+            logger.info(`[ext.NetworkCommon.downloadFilterRulesBySubscriptionUrl]: filter ${url} is already loading, reusing the request`);
+            return loadingSubscription.promise;
+        }
+
+        const downloadingSubscription: LoadingSubscription = {
+            promise: this.downloadSubscriptionData(url, rawFilter, force),
+            rawFilter,
+            expiresAt: Date.now() + inFlightTtlMs,
+        };
+        this.loadingSubscriptions.set(subscriptionKey, downloadingSubscription);
+
+        const removeSubscription = (): void => {
+            // An older request must not evict its replacement.
+            if (this.loadingSubscriptions.get(subscriptionKey) === downloadingSubscription) {
+                this.loadingSubscriptions.delete(subscriptionKey);
+            }
+        };
+        // eslint-disable-next-line no-restricted-globals
+        const timeoutId = self.setTimeout(removeSubscription, inFlightTtlMs);
+
+        try {
+            return await downloadingSubscription.promise;
+        } finally {
+            // eslint-disable-next-line no-restricted-globals
+            self.clearTimeout(timeoutId);
+            removeSubscription();
+        }
+    }
+
+    /**
+     * Performs the download of filter rules by the subscription url.
+     *
      * @param url Subscription url.
      * @param rawFilter Raw filter rules.
      * @param force Boolean flag to download filter fully or by patches.
      *
      * @returns Downloaded filter rules.
+     *
+     * @throws Error if filter download fails.
      */
-    public async downloadFilterRulesBySubscriptionUrl(
+    private async downloadSubscriptionData(
         url: string,
         rawFilter?: string,
         force?: boolean,
-    ): Promise<DownloadResult | undefined> {
-        if (url in this.loadingSubscriptions) {
-            return;
-        }
-
-        this.loadingSubscriptions[url] = true;
-
+    ): Promise<DownloadResult> {
         try {
             // TODO: runtime validation
             const downloadData = await FiltersDownloader.downloadWithRaw(
@@ -182,8 +253,6 @@ export abstract class NetworkCommon {
                 },
             );
 
-            delete this.loadingSubscriptions[url];
-
             // Get the first rule to check if it is an adblock agent (like [Adblock Plus 2.0]). If so, ignore it.
             const firstRule = downloadData.filter[0]?.trim();
 
@@ -193,7 +262,6 @@ export abstract class NetworkCommon {
 
             return downloadData;
         } catch (e: unknown) {
-            delete this.loadingSubscriptions[url];
             const message = e instanceof Error
                 ? e.message
                 : 'Unknown error while filter downloading by subscription url';

@@ -43,7 +43,7 @@ import {
     createUnknownError,
     isErrorConsoleType,
 } from './error-collector';
-import { type E2EPageHandle } from './page-handle';
+import { type E2EKey, type E2EPageHandle } from './page-handle';
 import { createExtensionPageUrl } from './surfaces';
 import {
     E2EExtensionScheme,
@@ -277,6 +277,11 @@ export const openChromiumE2ESurface = async (
             // existing selection — e.g. a CodeMirror cursor position — is
             // preserved) and dispatches real key events per character.
             await page.locator(selector).first().pressSequentially(text);
+        },
+        async pressKey(selector: string, key: E2EKey): Promise<void> {
+            // `press` focuses the element and dispatches real key events without
+            // clicking, so an existing CodeMirror selection is preserved.
+            await page.locator(selector).first().press(key);
         },
         async evaluate<T>(fn: (arg: unknown) => Promise<T> | T, arg?: unknown): Promise<T> {
             return page.evaluate(fn, arg);

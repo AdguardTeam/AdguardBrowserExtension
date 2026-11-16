@@ -52,6 +52,8 @@ export class MockedTsWebExtensionMV3 {
                 errors: [],
             },
             staticFilters: [],
+            loadDisabledStaticFilter: async () => undefined,
+            loadDisabledStaticFilters: async () => [],
             stealthResult: {
                 hideReferrer: false,
                 hideSearchQueries: false,
@@ -74,6 +76,8 @@ export class MockedTsWebExtensionMV3 {
                 errors: [],
             },
             staticFilters: [],
+            loadDisabledStaticFilter: async () => undefined,
+            loadDisabledStaticFilters: async () => [],
             stealthResult: {
                 hideReferrer: false,
                 hideSearchQueries: false,
@@ -96,6 +100,8 @@ export class MockedTsWebExtensionMV3 {
     public getRulesCount = vi.fn(() => 0);
 
     public getMessageHandler: Mock = vi.fn(() => vi.fn());
+
+    public setCanvasProtectionEnabled: Mock = vi.fn();
 
     public initStorage = vi.fn(async () => Promise.resolve());
 

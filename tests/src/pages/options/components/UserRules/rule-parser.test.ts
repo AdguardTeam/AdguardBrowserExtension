@@ -26,6 +26,7 @@ import {
 
 import {
     parseRuleLines,
+    parseLine,
     setRuleDisabled,
     classifyRule,
     RuleIconType,
@@ -33,7 +34,16 @@ import {
     filterGroups,
     deleteLinesFromRules,
     insertLinesIntoRules,
-    ensureTrailingEmptyLine,
+    getInlineEditorPrefix,
+    getInlineEditorGroupSeed,
+    serializeCommentDraft,
+    serializeRuleDraft,
+    replaceGroupLinesInRules,
+    captureDeletedBlock,
+    createPendingDeletedBlock,
+    restoreDeletedBlockWithAnchor,
+    restorePendingDeletedBlock,
+    isInlineDraftUnchanged,
 } from '../../../../../../Extension/src/pages/options/components/UserRules/rule-parser';
 
 /**
@@ -339,6 +349,21 @@ describe('filterGroups', () => {
         expect(filterGroups(groups, 'example')).toHaveLength(1);
     });
 
+    it('keeps the groups accepted by alwaysKeep in document order', () => {
+        const groups = [
+            makeGroup(['||kept.org^'], false, 0),
+            makeGroup(['||example.com^'], false, 1),
+            makeGroup(['||other.org^'], false, 2),
+        ];
+        const result = filterGroups(groups, 'example', (group) => group.lineIndex === 0);
+        expect(result.map((group) => group.lineIndex)).toEqual([0, 1]);
+    });
+
+    it('ignores alwaysKeep when the search term is empty', () => {
+        const groups = [makeGroup(['||a.com^'], false), makeGroup(['||b.com^'], false, 1)];
+        expect(filterGroups(groups, '  ', () => false)).toHaveLength(2);
+    });
+
     it('does not match the stripped `!off` marker of a disabled rule', () => {
         // The `!off` marker is hidden in the row, so a search for `off` must not
         // match a disabled rule (otherwise the row shows no visible highlight).
@@ -503,77 +528,6 @@ describe('toggle preserves list structure (virtualizer cache stays valid)', () =
     });
 });
 
-describe('ensureTrailingEmptyLine', () => {
-    it('returns the empty string unchanged (one blank line to type on)', () => {
-        expect(ensureTrailingEmptyLine('')).toBe('');
-    });
-
-    it('appends a line terminator when there is none', () => {
-        expect(ensureTrailingEmptyLine('||example.org^')).toBe('||example.org^\n');
-    });
-
-    it('does not add a second terminator when one already exists', () => {
-        // A single trailing newline already starts an empty line below.
-        expect(ensureTrailingEmptyLine('||a.com^\n||b.com^\n'))
-            .toBe('||a.com^\n||b.com^\n');
-    });
-
-    it('collapses several trailing line terminators into one', () => {
-        // Regression: previously only the presence of a terminator was checked,
-        // leaving extra blank lines and placing the cursor on the wrong line.
-        expect(ensureTrailingEmptyLine('||a.com^\n||b.com^\n\n\n'))
-            .toBe('||a.com^\n||b.com^\n');
-    });
-
-    it('normalises CRLF-only trailing terminators too', () => {
-        expect(ensureTrailingEmptyLine('||a.com^\r\n||b.com^\r\n'))
-            .toBe('||a.com^\r\n||b.com^\n');
-    });
-
-    it('never strips internal line terminators', () => {
-        // Regression guard for the regex: without a non-capturing group the
-        // alternation `\\r\\n|\\r|\\n+$` matches internal terminators too.
-        expect(ensureTrailingEmptyLine('! header\n\n||example.org^\n'))
-            .toBe('! header\n\n||example.org^\n');
-    });
-
-    it('yields a trailing empty line for every input shape', () => {
-        const cases = [
-            '',
-            'rule1',
-            'rule1\nrule2',
-            'rule1\nrule2\n',
-            'rule1\nrule2\n\n',
-            'rule1\r\nrule2\r\n',
-        ];
-        for (const input of cases) {
-            const result = ensureTrailingEmptyLine(input);
-            // Either empty (the editor's single blank line) or ends with a
-            // line terminator whose following line is empty.
-            const endsWithEmptyLine = result.length === 0
-                || /(?:\r\n|\r|\n)$/.test(result);
-            expect(endsWithEmptyLine, `for input ${JSON.stringify(input)}`).toBe(true);
-        }
-    });
-
-    it('produced text has exactly one trailing line after splitting', () => {
-        const cases = ['||a.com^', '||a.com^\n||b.com^\n\n', '||a.com^\r\n||b.com^\r\n'];
-        const LINE_TERMINATOR_RE = /\r\n|\r|\n/;
-        for (const input of cases) {
-            const result = ensureTrailingEmptyLine(input);
-            const parts = result.split(LINE_TERMINATOR_RE);
-            // Exactly one trailing empty string entry => one blank line at bottom.
-            expect(parts[parts.length - 1], `for input ${JSON.stringify(input)}`).toBe('');
-            // And at most one trailing empty entry: the second-to-last must be
-            // non-empty (a real rule), proving no extra blank lines remain.
-            if (parts.length > 1) {
-                expect(parts[parts.length - 2], `for input ${JSON.stringify(input)}`)
-                    .not.toBe('');
-            }
-        }
-    });
-});
-
 describe('insertLinesIntoRules', () => {
     it('re-inserts a single deleted line at its original position', () => {
         // After deleting line 1 from [a, b, c], current text is [a, c].
@@ -595,6 +549,13 @@ describe('insertLinesIntoRules', () => {
     it('re-inserts into empty rules text', () => {
         expect(insertLinesIntoRules('', [{ lineIndex: 0, text: '||a.com^' }]))
             .toBe('||a.com^');
+    });
+
+    it('preserves gaps when re-inserting into empty rules text', () => {
+        expect(insertLinesIntoRules('', [
+            { lineIndex: 0, text: '! p' },
+            { lineIndex: 2, text: '! q' },
+        ])).toBe('! p\n\n! q');
     });
 
     it('re-inserts a multi-line comment block as a unit', () => {
@@ -645,5 +606,493 @@ describe('insertLinesIntoRules', () => {
             { lineIndex: 1, text: '! c2' },
         ]);
         expect(restored).toBe(original);
+    });
+
+    it('preserves CRLF terminators when inserting in the middle', () => {
+        expect(insertLinesIntoRules('||a.com^\r\n||c.com^', [{ lineIndex: 1, text: '||b.com^' }]))
+            .toBe('||a.com^\r\n||b.com^\r\n||c.com^');
+    });
+
+    it('preserves CRLF terminators when appending', () => {
+        expect(insertLinesIntoRules('||a.com^\r\n||b.com^', [{ lineIndex: 2, text: '||c.com^' }]))
+            .toBe('||a.com^\r\n||b.com^\r\n||c.com^');
+    });
+
+    it('preserves CRLF terminators when prepending', () => {
+        expect(insertLinesIntoRules('||b.com^\r\n||c.com^', [{ lineIndex: 0, text: '||a.com^' }]))
+            .toBe('||a.com^\r\n||b.com^\r\n||c.com^');
+    });
+
+    it('does not rewrite other lines\' terminators when growing a block', () => {
+        expect(insertLinesIntoRules('! first\r\n||a.com^', [{ lineIndex: 1, text: '! second' }]))
+            .toBe('! first\r\n! second\r\n||a.com^');
+    });
+});
+
+describe('pending delete restoration', () => {
+    /**
+     * Models the list's delete/undo bookkeeping: deletes a parsed group from
+     * the visible text and keeps the pending block, then restores it the same
+     * way the Undo snackbar does.
+     *
+     * @param original Original rules text.
+     * @param steps Delete (by group index) and undo (by deletion id) steps.
+     *
+     * @returns Rules text after all steps.
+     *
+     * @throws If a step references a missing group or pending block.
+     */
+    const applySteps = (
+        original: string,
+        steps: ({ deleteGroup: number } | { undo: number })[],
+    ): string => {
+        let rules = original;
+        let nextId = 0;
+        const pendingBlocks: (ReturnType<typeof createPendingDeletedBlock> & { id: number })[] = [];
+
+        for (const step of steps) {
+            if ('deleteGroup' in step) {
+                const group = groupLines(parseRuleLines(rules))[step.deleteGroup];
+                if (!group) {
+                    throw new Error(`No group at index ${step.deleteGroup}`);
+                }
+                const block = createPendingDeletedBlock(rules, group, pendingBlocks);
+                pendingBlocks.push({ ...block, id: nextId });
+                nextId += 1;
+                rules = deleteLinesFromRules(rules, group.lines.map((line) => line.lineIndex));
+            } else {
+                const block = pendingBlocks.find((candidate) => candidate.id === step.undo);
+                if (!block) {
+                    throw new Error(`No pending block ${step.undo}`);
+                }
+                rules = restorePendingDeletedBlock(rules, pendingBlocks, block);
+                pendingBlocks.splice(pendingBlocks.indexOf(block), 1);
+            }
+        }
+
+        return rules;
+    };
+
+    it.each([
+        {
+            title: 'restores deletes undone in delete order',
+            original: '||a.com^\n||b.com^\n||c.com^',
+            steps: [{ deleteGroup: 1 }, { deleteGroup: 1 }, { undo: 0 }, { undo: 1 }],
+        },
+        {
+            title: 'restores deletes undone in reverse order',
+            original: '||a.com^\n||b.com^\n||c.com^',
+            steps: [{ deleteGroup: 2 }, { deleteGroup: 1 }, { undo: 0 }, { undo: 1 }],
+        },
+        {
+            title: 'restores a deleted first rule before a deleted second one',
+            original: '||a.com^\n||b.com^\n||c.com^',
+            steps: [{ deleteGroup: 0 }, { deleteGroup: 0 }, { undo: 0 }, { undo: 1 }],
+        },
+        {
+            title: 'restores three stacked deletes in delete order',
+            original: '||a.com^\n||b.com^\n||c.com^\n||d.com^',
+            steps: [
+                { deleteGroup: 1 },
+                { deleteGroup: 1 },
+                { deleteGroup: 1 },
+                { undo: 0 },
+                { undo: 1 },
+                { undo: 2 },
+            ],
+        },
+        {
+            title: 'restores three stacked deletes out of order',
+            original: '||a.com^\n||b.com^\n||c.com^\n||d.com^',
+            steps: [
+                { deleteGroup: 1 },
+                { deleteGroup: 1 },
+                { deleteGroup: 1 },
+                { undo: 1 },
+                { undo: 0 },
+                { undo: 2 },
+            ],
+        },
+        {
+            title: 'restores a block that was not last before a surviving rule',
+            original: '||a.com^\n||b.com^\n||c.com^\n||d.com^',
+            steps: [
+                { deleteGroup: 1 },
+                { deleteGroup: 1 },
+                { undo: 1 },
+                { undo: 0 },
+            ],
+        },
+        {
+            title: 'maps each comment line when a deleted rule merged the block',
+            original: '! a\n||r.com^\n! b\n||z.com^',
+            steps: [
+                { deleteGroup: 1 },
+                { deleteGroup: 0 },
+                { undo: 1 },
+                { undo: 0 },
+            ],
+        },
+        {
+            title: 'keeps a trailing newline',
+            original: '||a.com^\n||b.com^\n',
+            steps: [{ deleteGroup: 1 }, { undo: 0 }],
+        },
+        {
+            title: 'restores a sole comment block with a blank line from empty text',
+            original: '! p\n\n! q',
+            steps: [{ deleteGroup: 0 }, { undo: 0 }],
+        },
+        {
+            title: 'restores stacked deletes with lines after them from empty text',
+            original: '||r1.com^\n\n||r3.com^\n||r4.com^',
+            steps: [
+                { deleteGroup: 2 },
+                { deleteGroup: 0 },
+                { deleteGroup: 0 },
+                { undo: 0 },
+                { undo: 1 },
+                { undo: 2 },
+            ],
+        },
+        {
+            title: 'restores blank lines inside a comment block',
+            original: 'x.com\n! p\n\n! q',
+            steps: [{ deleteGroup: 1 }, { undo: 0 }],
+        },
+        {
+            title: 'restores a deleted first rule after its blank line',
+            original: '||a.com^\n\n||b.com^',
+            steps: [{ deleteGroup: 0 }, { undo: 0 }],
+        },
+        {
+            title: 'restores a deleted last rule before its blank line',
+            original: '||a.com^\n\n||b.com^',
+            steps: [{ deleteGroup: 1 }, { undo: 0 }],
+        },
+        {
+            title: 'preserves CRLF terminators',
+            original: '||a.com^\r\n||b.com^\r\n||c.com^',
+            steps: [{ deleteGroup: 1 }, { undo: 0 }],
+        },
+    ])('$title', ({ original, steps }) => {
+        expect(applySteps(original, steps)).toBe(original);
+    });
+});
+
+describe('deleted block anchor fallback', () => {
+    /**
+     * Deletes the group at the given index and restores it with the text-based
+     * anchor, used after the list unmounted.
+     *
+     * @param original Original rules text.
+     * @param groupIndex Index of the group to delete.
+     *
+     * @returns Restored rules text.
+     */
+    const deleteAndRestoreWithAnchor = (original: string, groupIndex: number): string => {
+        const group = groupLines(parseRuleLines(original))[groupIndex]!;
+        const captured = captureDeletedBlock(original, group);
+        const deleted = deleteLinesFromRules(
+            original,
+            group.lines.map((line) => line.lineIndex),
+        );
+
+        return restoreDeletedBlockWithAnchor(deleted, captured);
+    };
+
+    it.each([
+        {
+            title: 'restores a trailing newline',
+            original: '||a.com^\n||b.com^\n',
+            groupIndex: 1,
+        },
+        {
+            title: 'restores blank lines inside a comment block',
+            original: 'x.com\n! p\n\n! q',
+            groupIndex: 1,
+        },
+        {
+            title: 'restores a deleted first rule after its blank line',
+            original: '||a.com^\n\n||b.com^',
+            groupIndex: 0,
+        },
+        {
+            title: 'restores a deleted last rule before its blank line',
+            original: '||a.com^\n\n||b.com^',
+            groupIndex: 1,
+        },
+        {
+            title: 'preserves CRLF terminators',
+            original: '||a.com^\r\n||b.com^\r\n||c.com^',
+            groupIndex: 1,
+        },
+    ])('$title', ({ original, groupIndex }) => {
+        expect(deleteAndRestoreWithAnchor(original, groupIndex)).toBe(original);
+    });
+
+    it('restores at the top when no rules remain instead of padding blanks', () => {
+        const original = '||a.com^\n||b.com^\n||c.com^\n||d.com^';
+        const group = groupLines(parseRuleLines(original))[3]!;
+        const captured = captureDeletedBlock(original, group);
+
+        // Delete all left the text empty, so the stale raw index of d must not
+        // become three leading blank lines.
+        expect(restoreDeletedBlockWithAnchor('', captured)).toBe('||d.com^');
+    });
+});
+
+describe('isInlineDraftUnchanged', () => {
+    it.each([
+        ['rule', '||a.com^', '||a.com^', false],
+        ['rule with surrounding whitespace', '  ||a.com^  ', '||a.com^', false],
+        ['comment with surrounding whitespace', '  comment  ', 'comment', true],
+        ['multi-line comment with indented lines', 'first\n  second  ', 'first\nsecond', true],
+    ])('treats an untouched %s draft as unchanged', (_title, draft, seed, isComment) => {
+        expect(isInlineDraftUnchanged(draft, seed, isComment)).toBe(true);
+    });
+
+    it.each([
+        ['rule', '||b.com^', '||a.com^', false],
+        ['comment', 'edited', 'comment', true],
+    ])('detects a real %s edit', (_title, draft, seed, isComment) => {
+        expect(isInlineDraftUnchanged(draft, seed, isComment)).toBe(false);
+    });
+});
+
+describe('getInlineEditorPrefix', () => {
+    it('keeps the comment marker and its whitespace', () => {
+        const line = parseRuleLines('!   my comment')[0]!;
+
+        expect(getInlineEditorPrefix(line)).toBe('!   ');
+    });
+
+    it('keeps a hashmark comment marker', () => {
+        const line = parseRuleLines('# my comment')[0]!;
+
+        expect(getInlineEditorPrefix(line)).toBe('# ');
+    });
+
+    it('keeps the !off marker for a disabled rule', () => {
+        const line = parseRuleLines('!off ||example.com^')[0]!;
+
+        expect(getInlineEditorPrefix(line)).toBe('!off ');
+    });
+
+    it('returns an empty prefix for an enabled rule', () => {
+        const line = parseRuleLines('||example.com^')[0]!;
+
+        expect(getInlineEditorPrefix(line)).toBe('');
+    });
+});
+
+describe('getInlineEditorGroupSeed', () => {
+    it('joins a comment block\'s displayed lines with newlines', () => {
+        const group = groupLines(parseRuleLines('! first\n! second'))[0]!;
+
+        expect(getInlineEditorGroupSeed(group)).toBe('first\nsecond');
+    });
+
+    it('returns the displayed text for a rule group', () => {
+        const group = groupLines(parseRuleLines('||example.com^'))[0]!;
+
+        expect(getInlineEditorGroupSeed(group)).toBe('||example.com^');
+    });
+
+    it('drops the !off marker for a disabled rule group', () => {
+        const group = groupLines(parseRuleLines('!off ||example.com^'))[0]!;
+
+        expect(getInlineEditorGroupSeed(group)).toBe('||example.com^');
+    });
+});
+
+describe('serializeCommentDraft', () => {
+    it('keeps each existing line\'s marker and whitespace', () => {
+        const group = groupLines(parseRuleLines('! first\n#   second'))[0]!;
+
+        expect(serializeCommentDraft(group, 'one\ntwo')).toEqual(['! one', '#   two']);
+    });
+
+    it('prefixes added lines with a hashmark for a hashmark block', () => {
+        const group = groupLines(parseRuleLines('# first\n# second'))[0]!;
+
+        expect(serializeCommentDraft(group, 'one\ntwo\nthree')).toEqual(['# one', '# two', '# three']);
+    });
+
+    it('prefixes added lines with ! for a regular block', () => {
+        const group = groupLines(parseRuleLines('! first'))[0]!;
+
+        expect(serializeCommentDraft(group, 'one\ntwo')).toEqual(['! one', '! two']);
+    });
+
+    it('prefixes added lines with the last line marker for a mixed block', () => {
+        const group = groupLines(parseRuleLines('! first\n# second'))[0]!;
+
+        expect(serializeCommentDraft(group, 'one\ntwo\nthree')).toEqual(['! one', '# two', '# three']);
+    });
+
+    it('prefixes added lines with the block marker without forcing a space', () => {
+        const group = groupLines(parseRuleLines('!aaa\n!bbb'))[0]!;
+
+        expect(serializeCommentDraft(group, 'one\ntwo\nthree')).toEqual(['!one', '!two', '!three']);
+    });
+
+    it('prefixes added lines of a hashmark block without forcing a space', () => {
+        const group = groupLines(parseRuleLines('#aaa\n#bbb'))[0]!;
+
+        expect(serializeCommentDraft(group, 'one\ntwo\nthree')).toEqual(['#one', '#two', '#three']);
+    });
+
+    it('keeps the block spacing when adding a line to a spaced block', () => {
+        const group = groupLines(parseRuleLines('!   first'))[0]!;
+
+        expect(serializeCommentDraft(group, 'one\ntwo')).toEqual(['!   one', '!   two']);
+    });
+
+    it('prefixes added lines with the last line spacing when the last line has no space', () => {
+        const group = groupLines(parseRuleLines('! d\n!dd'))[0]!;
+
+        expect(serializeCommentDraft(group, 'd\ndd\nx')).toEqual(['! d', '!dd', '!x']);
+    });
+
+    it('prefixes added lines with the last line spacing when the last line is spaced', () => {
+        const group = groupLines(parseRuleLines('!dd\n! d'))[0]!;
+
+        expect(serializeCommentDraft(group, 'dd\nd\nx')).toEqual(['!dd', '! d', '! x']);
+    });
+
+    it('turns empty draft lines into bare comments', () => {
+        const group = groupLines(parseRuleLines('! first'))[0]!;
+
+        expect(serializeCommentDraft(group, 'one\n')).toEqual(['! one', '!']);
+    });
+
+    it('keeps each original marker when a line is inserted above others', () => {
+        // Markers must follow their lines, not their positions: inserting a
+        // line above `! first` / `# second` must not turn `first` into a
+        // hashmark comment.
+        const group = groupLines(parseRuleLines('! first\n# second'))[0]!;
+
+        expect(serializeCommentDraft(group, 'new\nfirst\nsecond'))
+            .toEqual(['# new', '! first', '# second']);
+    });
+
+    it('keeps the marker of a line that moves up after a deletion', () => {
+        const group = groupLines(parseRuleLines('! first\n# second'))[0]!;
+
+        expect(serializeCommentDraft(group, 'second')).toEqual(['# second']);
+    });
+
+    it('keeps markers attached to their lines when lines are reordered', () => {
+        const group = groupLines(parseRuleLines('! first\n# second'))[0]!;
+
+        expect(serializeCommentDraft(group, 'second\nfirst'))
+            .toEqual(['# second', '! first']);
+    });
+
+    it('gives a reworded line the first unclaimed original marker', () => {
+        // `second` claims its own marker in the first pass; the reworded line
+        // then takes the first marker left unclaimed.
+        const group = groupLines(parseRuleLines('! first\n# second'))[0]!;
+
+        expect(serializeCommentDraft(group, 'first edited\nsecond'))
+            .toEqual(['! first edited', '# second']);
+    });
+
+    it('takes the first unclaimed marker when the line it replaced is gone', () => {
+        // `a` is deleted and `b` is reworded: the only draft line takes the
+        // marker that belonged to `a`, not the marker of `b`.
+        const group = groupLines(parseRuleLines('! a\n# b'))[0]!;
+
+        expect(serializeCommentDraft(group, 'B')).toEqual(['! B']);
+    });
+
+    it('matches duplicate texts to their own occurrences in order', () => {
+        const group = groupLines(parseRuleLines('! same\n# same'))[0]!;
+
+        expect(serializeCommentDraft(group, 'same\nsame')).toEqual(['! same', '# same']);
+    });
+
+    it('falls back to the ! marker when a hashmark line would become a cosmetic rule', () => {
+        const group = groupLines(parseRuleLines('# note'))[0]!;
+
+        expect(serializeCommentDraft(group, 'see example.org##.banner'))
+            .toEqual(['! see example.org##.banner']);
+    });
+
+    it('falls back to a spaced ! marker when a line would become a disabled rule', () => {
+        const group = groupLines(parseRuleLines('!aaa\n!bbb'))[0]!;
+
+        expect(serializeCommentDraft(group, 'aaa\noff topic'))
+            .toEqual(['!aaa', '! off topic']);
+    });
+
+    it('never serializes a line that parses as a rule', () => {
+        const group = groupLines(parseRuleLines('# note'))[0]!;
+        const lines = serializeCommentDraft(group, 'see example.org##.banner\noff topic');
+
+        for (const line of lines) {
+            expect(parseLine(line, 0).isComment).toBe(true);
+        }
+    });
+});
+
+describe('serializeRuleDraft', () => {
+    it('keeps the !off marker for a disabled rule', () => {
+        const line = parseRuleLines('!off ||example.com^')[0]!;
+
+        expect(serializeRuleDraft(line, '||other.com^')).toBe('!off ||other.com^');
+    });
+
+    it('keeps an empty prefix for a regular rule', () => {
+        const line = parseRuleLines('||example.com^')[0]!;
+
+        expect(serializeRuleDraft(line, '  ||other.com^  ')).toBe('||other.com^');
+    });
+});
+
+describe('replaceGroupLinesInRules', () => {
+    it('replaces every line of a block when the count is unchanged', () => {
+        const group = groupLines(parseRuleLines('! first\n! second'))[0]!;
+
+        expect(replaceGroupLinesInRules('! first\n! second\n||a.com^', group, ['! one', '! two']))
+            .toBe('! one\n! two\n||a.com^');
+    });
+
+    it('adds lines when the draft is longer than the block', () => {
+        const group = groupLines(parseRuleLines('! first'))[0]!;
+
+        expect(replaceGroupLinesInRules('! first\n||a.com^', group, ['! one', '! two']))
+            .toBe('! one\n! two\n||a.com^');
+    });
+
+    it('removes lines when the draft is shorter than the block', () => {
+        const group = groupLines(parseRuleLines('! first\n! second'))[0]!;
+
+        expect(replaceGroupLinesInRules('! first\n! second\n||a.com^', group, ['! one']))
+            .toBe('! one\n||a.com^');
+    });
+
+    it('preserves blank lines between the block\'s comment lines', () => {
+        // parseRuleLines drops blank lines, so the group indices are [0, 2].
+        const group = groupLines(parseRuleLines('! first\n\n! second'))[0]!;
+        expect(group.lines.map((line) => line.lineIndex)).toEqual([0, 2]);
+
+        expect(replaceGroupLinesInRules('! first\n\n! second\n||a.com^', group, ['! one', '! two']))
+            .toBe('! one\n\n! two\n||a.com^');
+    });
+
+    it('appends added lines at the end of a block that is the last line', () => {
+        const group = groupLines(parseRuleLines('! first'))[0]!;
+
+        expect(replaceGroupLinesInRules('! first', group, ['! one', '! two']))
+            .toBe('! one\n! two');
+    });
+
+    it('preserves CRLF terminators when a block grows', () => {
+        const group = groupLines(parseRuleLines('! first\r\n||a.com^'))[0]!;
+
+        expect(replaceGroupLinesInRules('! first\r\n||a.com^', group, ['! one', '! two']))
+            .toBe('! one\r\n! two\r\n||a.com^');
     });
 });

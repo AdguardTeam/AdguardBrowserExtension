@@ -29,7 +29,12 @@ import { translator } from '../../../common/translators/translator';
  * @returns Warning message or null if the data is invalid.
  */
 export const getStaticWarningMessage = (data: InvalidStaticResultData): string | null => {
-    const { filtersCount, rulesCount, rulesRegexpsCount } = data;
+    const {
+        filtersCount,
+        rulesCount,
+        rulesRegexpsCount,
+        rulesSessionCount,
+    } = data;
 
     if (filtersCount) {
         if (filtersCount.expected !== undefined && filtersCount.current !== undefined) {
@@ -48,9 +53,13 @@ export const getStaticWarningMessage = (data: InvalidStaticResultData): string |
     }
 
     if (rulesCount) {
-        return translator.getMessage('options_limits_warning_static_filters_browser', {
-            current: rulesCount.current,
-            maximum: rulesCount.maximum,
+        return translator.getMessage('options_limits_warning_static_rules_browser');
+    }
+
+    if (rulesSessionCount) {
+        return translator.getMessage('options_limits_warning_static_rules', {
+            current: rulesSessionCount.current,
+            maximum: rulesSessionCount.maximum,
         });
     }
 

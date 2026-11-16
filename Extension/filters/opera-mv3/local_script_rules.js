@@ -2813,6 +2813,35 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "22514194ad8441cc56e68716b1f75f69" due to: ' + e);
         }
     },
+    '(()=>{const t=Function.prototype.toString,e=["ad_banner","adsbygoogle","google_ads_iframe","getComputedStyle","offsetHeight","offsetWidth","clientHeight"],o=t=>t(!1);window.Promise=new Proxy(window.Promise,{construct(n,c,i){try{const n=c[0];if("function"==typeof n){const i=Reflect.apply(t,n,[]);e.every((t=>i.includes(t)))&&(c[0]=o)}}catch{}return Reflect.construct(n,c,i)}})})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.d55459792623ca17f26424eed846112a === e) return;
+            (() => {
+                const e = Function.prototype.toString, t = [ "ad_banner", "adsbygoogle", "google_ads_iframe", "getComputedStyle", "offsetHeight", "offsetWidth", "clientHeight" ], o = e => e(!1);
+                window.Promise = new Proxy(window.Promise, {
+                    construct(r, n, c) {
+                        try {
+                            const r = n[0];
+                            if ("function" == typeof r) {
+                                const c = Reflect.apply(e, r, []);
+                                t.every((e => c.includes(e))) && (n[0] = o);
+                            }
+                        } catch {}
+                        return Reflect.construct(r, n, c);
+                    }
+                });
+            })();
+            Object.defineProperty(Window.prototype.toString, "d55459792623ca17f26424eed846112a", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "d55459792623ca17f26424eed846112a" due to: ' + e);
+        }
+    },
     'Object.defineProperty(window,"BlockCheck",{get:()=>({check:()=>Promise.resolve("")}),set:e=>{}});': () => {
         try {
             const e = "done";
@@ -2902,6 +2931,28 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "7c9163f3f64075c9fd06dab1efcc47f3" due to: ' + e);
+        }
+    },
+    "(()=>{try{const g=Object.getOwnPropertyDescriptor;Object.getOwnPropertyDescriptor=function(o,p){return o===navigator&&p==='webdriver'?undefined:g(o,p)}}catch(e){}})();": () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.e2bbd70e558c49ac653ce617a5e4b326 === e) return;
+            (() => {
+                try {
+                    const e = Object.getOwnPropertyDescriptor;
+                    Object.getOwnPropertyDescriptor = function(r, t) {
+                        return r === navigator && "webdriver" === t ? void 0 : e(r, t);
+                    };
+                } catch (e) {}
+            })();
+            Object.defineProperty(Window.prototype.toString, "e2bbd70e558c49ac653ce617a5e4b326", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "e2bbd70e558c49ac653ce617a5e4b326" due to: ' + e);
         }
     },
     '(()=>{const e=()=>({}),r=[{requiredProperties:["reason","verdict","url"],modify:e},{requiredProperties:["baitCount","blocked"],modify:e},{requiredProperties:["blockedCount","results"],modify:e},{requiredProperties:["baits","conclusive"],modify:e},{requiredProperties:["blocked","hosts"],modify:e}],t=e=>{try{const t=r.find(({requiredProperties:r})=>((e,r)=>null!==e&&("object"==typeof e||"function"==typeof e)&&r.length>0&&r.every(r=>Object.hasOwn(e,r)))(e,r));return t?t.modify(e):e}catch(r){return e}},o=e=>e.map(t),i={apply:(e,r,t)=>{let i=!1;try{const e=t[0],r=Array.isArray(e)?e.length:0;i=r>5&&r<10}catch(e){}const n=Reflect.apply(e,r,t);if(!i)return n;try{return n.then(o)}catch(e){return n}}};window.Promise.all=new Proxy(window.Promise.all,i)})();': () => {
@@ -7818,47 +7869,47 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "642c5e10be75a4087f7ce1326ec9a7ee" due to: ' + e);
         }
     },
-    '(()=>{const t=new MutationObserver((t=>{for(let e of t){const t=e.target;if(t?.querySelector?.("div:not([class], [id]):first-child + div:not([class], [id]):not([class], [id]):last-child")){const e=t.querySelector("div:not([class], [id]):last-child"),o=e?.shadowRoot?.querySelector?.("div:not([class], [id]) > div:not([class], [id])")?.textContent?.trim?.()?.toLowerCase?.();if(o&&o.length<20&&o.includes?.("advertisement"))try{e.remove()}catch(t){console.trace(t)}}}})),e={apply:(e,o,s)=>{try{s[0].mode="open"}catch(t){console.error(t)}const c=Reflect.apply(e,o,s);return t.observe(c,{subtree:!0,childList:!0}),c}};window.Element.prototype.attachShadow=new Proxy(window.Element.prototype.attachShadow,e)})();': () => {
+    '(()=>{const t="div:not([class], [id])",e=new MutationObserver((e=>{const o=new Set;for(const{target:n}of e){const e=n.getRootNode();if(o.has(e))continue;if(o.add(e),!(e instanceof ShadowRoot&&e.host.matches(t)))continue;const a=e.firstElementChild,c=a?.firstElementChild;if(!a?.matches(t)||!c?.matches(t))continue;const s=c.textContent.trim().toLowerCase();if(s&&s.length<20&&s.includes("advertisement"))try{e.host.remove()}catch(t){}}})),o={apply:(t,o,n)=>{const a=Reflect.apply(t,o,n);try{"div"===o.localName&&e.observe(a,{subtree:!0,childList:!0,characterData:!0})}catch(t){}return a}};window.Element.prototype.attachShadow=new Proxy(window.Element.prototype.attachShadow,o)})();': () => {
         try {
             const t = "done";
-            if (Window.prototype.toString.ad28df58aaf20377983494d5153f190f === t) return;
+            if (Window.prototype.toString["565e17954b4a030f74f55f6d26d55632"] === t) return;
             (() => {
-                const t = new MutationObserver((t => {
-                    for (let e of t) {
-                        const o = e.target;
-                        if (o?.querySelector?.("div:not([class], [id]):first-child + div:not([class], [id]):not([class], [id]):last-child")) {
-                            const e = o.querySelector("div:not([class], [id]):last-child"), r = e?.shadowRoot?.querySelector?.("div:not([class], [id]) > div:not([class], [id])")?.textContent?.trim?.()?.toLowerCase?.();
-                            if (r && r.length < 20 && r.includes?.("advertisement")) try {
-                                e.remove();
-                            } catch (t) {
-                                console.trace(t);
-                            }
-                        }
+                const t = "div:not([class], [id])", e = new MutationObserver((e => {
+                    const o = new Set;
+                    for (const {target: n} of e) {
+                        const e = n.getRootNode();
+                        if (o.has(e)) continue;
+                        if (o.add(e), !(e instanceof ShadowRoot && e.host.matches(t))) continue;
+                        const r = e.firstElementChild, a = r?.firstElementChild;
+                        if (!r?.matches(t) || !a?.matches(t)) continue;
+                        const c = a.textContent.trim().toLowerCase();
+                        if (c && c.length < 20 && c.includes("advertisement")) try {
+                            e.host.remove();
+                        } catch (t) {}
                     }
-                })), e = {
-                    apply: (e, o, r) => {
+                })), o = {
+                    apply: (t, o, n) => {
+                        const r = Reflect.apply(t, o, n);
                         try {
-                            r[0].mode = "open";
-                        } catch (t) {
-                            console.error(t);
-                        }
-                        const n = Reflect.apply(e, o, r);
-                        return t.observe(n, {
-                            subtree: !0,
-                            childList: !0
-                        }), n;
+                            "div" === o.localName && e.observe(r, {
+                                subtree: !0,
+                                childList: !0,
+                                characterData: !0
+                            });
+                        } catch (t) {}
+                        return r;
                     }
                 };
-                window.Element.prototype.attachShadow = new Proxy(window.Element.prototype.attachShadow, e);
+                window.Element.prototype.attachShadow = new Proxy(window.Element.prototype.attachShadow, o);
             })();
-            Object.defineProperty(Window.prototype.toString, "ad28df58aaf20377983494d5153f190f", {
+            Object.defineProperty(Window.prototype.toString, "565e17954b4a030f74f55f6d26d55632", {
                 value: t,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (t) {
-            console.error('Error executing AG js rule with uniqueId "ad28df58aaf20377983494d5153f190f" due to: ' + t);
+            console.error('Error executing AG js rule with uniqueId "565e17954b4a030f74f55f6d26d55632" due to: ' + t);
         }
     },
     'document.cookie="vpn=1; path=/;";': () => {
@@ -8231,10 +8282,10 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "f108a248579190d52136e6e135a4d6c9" due to: ' + e);
         }
     },
-    '(()=>{const e="SPONSORED",t="SponsoredData",r="AdsSideFeedUnit",n=["sponsored_data","th_dat_spo","qrz_ctx_seg","pso_tad_rens"],o="MarketplaceFeedAdStory",a=new WeakMap,i=[e,t,r,...n],s=[t,o,...n],p=window.String.prototype.split,l=window.String.prototype.trim,d=new WeakMap,c=new WeakMap,y=new WeakSet,f=(e,t,r=Proxy)=>{const n=c.get(e)??Reflect.apply(window.Function.prototype.toString,e,[]),o=new r(e,t);return d.set(o,d.get(e)??e),c.set(o,n),o},w=(e,t)=>e?.length>300&&t.some(t=>e?.includes?.(t)),u=e=>w(e,i),h=e=>Boolean(e?.startsWith?.("{")&&e?.endsWith?.("}")||e?.startsWith?.("[")&&e?.endsWith?.("]")),g=e=>h(e)&&u(e),_=e=>{try{e.JSON.parse=f(e.JSON.parse,J,e.Proxy),e.String.prototype.split=f(e.String.prototype.split,V,e.Proxy),e.String=f(e.String,Y,e.Proxy),e.String.prototype.constructor=e.String,e.Function.prototype.call=f(e.Function.prototype.call,ce,e.Proxy),e.Function.prototype.toString=f(e.Function.prototype.toString,fe,e.Proxy)}catch(e){}},m=e=>Boolean(e instanceof HTMLIFrameElement&&(""===e.src||e?.src?.startsWith("about:blank"))&&e.contentWindow),S=new Set(["append","prepend","before","after","insertNode","replaceWith","replaceChild","replaceChildren"]),{apply:b}={apply(e,t,r){const n=Reflect.apply(e,t,r);try{m(n)?_(n.contentWindow):S.has(e.name)&&r.forEach(e=>{m(e)&&_(e.contentWindow)})}catch(e){}return n}},A={apply:b};window.Node.prototype.appendChild=f(window.Node.prototype.appendChild,A),window.Node.prototype.insertBefore=f(window.Node.prototype.insertBefore,A),window.Node.prototype.replaceChild=f(window.Node.prototype.replaceChild,A),window.Element.prototype.append=f(window.Element.prototype.append,A),window.Element.prototype.prepend=f(window.Element.prototype.prepend,A),window.Element.prototype.replaceChildren=f(window.Element.prototype.replaceChildren,A),window.Element.prototype.replaceWith=f(window.Element.prototype.replaceWith,A),window.Element.prototype.before=f(window.Element.prototype.before,A),window.Element.prototype.after=f(window.Element.prototype.after,A),window.Element.prototype.insertAdjacentElement=f(window.Element.prototype.insertAdjacentElement,A),window.Range.prototype.insertNode=f(window.Range.prototype.insertNode,A),window.CharacterData.prototype.replaceWith=f(window.CharacterData.prototype.replaceWith,A);const x=["item_collection","ads"],E=["auxColumnUnits","sdieFede","sideFeed"],v=e=>Boolean(e)&&(Object.values(e).some(e=>e?.__typename===t)||n.some(t=>{const r=e[t];return r&&"object"==typeof r&&!Array.isArray(r)&&[r.ad_id,r.lbl_adv_iden].some(e=>"string"==typeof e&&e.length>0)})),O=(e,t)=>{if(!e||"object"!=typeof e||Array.isArray(e))return!1;const r=Object.keys(e);return r.length===t.length&&t.every(e=>r.includes(e))},N=e=>O(e,["node"])&&O(e.node,["s"])&&O(e.node.s,["__typename"])&&e.node.s.__typename===t,j=["p","z9","k4","w7","q8","n3","v6","j5","t8","m6","h4","r2","b3"],B=new Set(["h4","r2","b3"]),P=e=>{const t=Array.isArray(e)&&1===e.length?e[0]:e;if(!t||"object"!=typeof t||Array.isArray(t))return!1;const r=j.find(e=>"string"==typeof t[e]);if(void 0===r)return!1;const n=["data","edges","require",r];if(Object.hasOwn(t,"extensions")){if(!(O(t.extensions,[])||O(t.extensions,["is_final"])&&!0===t.extensions.is_final))return!1;n.push("extensions")}if(Object.hasOwn(t,"__bbox")){if(!(B.has(r)&&O(t.extensions,["is_final"])&&!0===t.extensions.is_final&&(o=t.__bbox,O(o,["result"])&&O(o.result,["data"])&&O(o.result.data,["node"])&&O(o.result.data.node,["s","th_dat_spo"])&&O(o.result.data.node.s,["__typename"])&&"CometStorySponsoredLabelStrategy"===o.result.data.node.s.__typename&&O(o.result.data.node.th_dat_spo,["s"])&&1===o.result.data.node.th_dat_spo.s)))return!1;n.push("__bbox")}var o;return O(t,n)&&N(t.data)&&Array.isArray(t.edges)&&1===t.edges.length&&N(t.edges[0])&&Array.isArray(t.require)&&1===t.require.length&&N(t.require[0])},W=(e,t,n,o)=>{if(!e||"object"!=typeof e||n<0)return!1;let a=!1;if(Array.isArray(e.nodes)){const t=e.nodes.filter(e=>!(e=>e?.__typename===r||x.some(t=>{const r=e?.[t]?.nodes;return Array.isArray(r)&&r.some(e=>e?.sponsored_data?.ad_id)}))(e));e.nodes.length-t.length>0&&(e.nodes=t,a=!0)}return Object.entries(e).forEach(([e,r])=>{a=W(r,`${t}.${e}`,n-1,o)||a}),a},k=(e,t=10)=>{const r=e?.data?.viewer,n=r??e?.[3]?.[1]?.__bbox?.result?.data?.viewer;if(!n)return!1;return W(n,r?"data.viewer":"item[3][1].__bbox.result.data.viewer",t,e)},F=(t,r=10,n=new WeakMap)=>{if(!t||"object"!=typeof t||r<0)return!1;const o=n.get(t);if(void 0!==o&&o>=r)return!1;if(n.set(t,r),P(t))return!1;let a=((t,r)=>{if(!t||"object"!=typeof t)return!1;let n=!1;try{if(r){if(Array.isArray(t.require?.[0]?.[3]?.[0]?.__bbox?.require)&&t.require[0][3][0].__bbox.require.forEach(t=>{t[3]?.[1]?.__bbox?.result?.data?.category===e&&(delete t[3][1].__bbox.result.data.node,n=!0),v(t[3]?.[1]?.__bbox?.result?.data?.node)&&(delete t[3][1].__bbox.result.data.node,n=!0),n=k(t)||n}),E.some(e=>Array.isArray(t.data?.viewer?.[e]?.nodes))&&(n=k(t)||n),Array.isArray(t.data?.viewer?.news_feed?.edges)){const r=t.data.viewer.news_feed.edges.length;t.data.viewer.news_feed.edges=t.data.viewer.news_feed.edges.filter(t=>!v(t.node)&&t.category!==e),n=n||t.data.viewer.news_feed.edges.length!==r}v(t.data?.node)&&(delete t.data.node,n=!0),t.data?.category===e&&(delete t.data.node,n=!0)}}catch(e){}return n})(t,!0);return 0===r||Object.values(t).forEach(e=>{a=F(e,r-1,n)||a}),a},R=(e,t)=>{try{const r="string"==typeof t;if(r&&!u(t))return e;if(P(e))return e;if(!r&&!u(JSON.stringify(e)))return e;F(e)&&e&&"object"==typeof e&&y.add(e)}catch(e){}return e},{apply:q}={apply(e,t,r){K();const n=Reflect.apply(e,t,r);return R(n,r[0])}},J={apply:q};window.JSON.parse=f(window.JSON.parse,J);const C=(e,t,r)=>{if(!e||"object"!=typeof e&&"function"!=typeof e)return;let n=a.get(e);if(!t.some(t=>"function"==typeof e[t]&&!d.has(e[t])&&(n?.get(t)??0)<10))return;n||(n=new Map,a.set(e,n));const o=new Map;t.forEach(t=>{const r=e[t];"function"==typeof r&&d.has(r)&&o.set(d.get(r),r)}),t.forEach(t=>{const a=e[t],i=n.get(t)??0;if("function"!=typeof a||d.has(a)||i>=10)return;n.set(t,i+1);let s=o.get(a);if(!s){const{apply:e}={apply(e,t,n){const o=Reflect.apply(e,t,n);return r?R(o,n[0]):R(o)}};s=f(a,{apply:e}),o.set(a,s)}e[t]=s})},M=["parse","parseText","readText","fromText","fromSource","fromChunk","fromBlock","fromSlice","fromPiece","fromSection","fromSegment","fromExcerpt","fromFragment"],$=["ghlParseServerJSPayload","readBootPayload","decodeBootScript","hydrateBootData","inflateBootPayload","expandBootPayload","unpackBootPayload","openBootPayload","loadBootPayload","readBootState","readBootRecord","readBootEntry","takeBootFrame"],z=[[["json5"],e=>C(e,M,!0)],[["GHLServerJSParse"],e=>C(e,$,!1)]],D=e=>{Array.isArray(e)&&z.forEach(t=>{e.some(e=>e?.[1]===t[1])||e.push(t)})};let L=null,T=!1,H=!1;const U=new Map,G=z.map(([[e],t])=>r=>{U.set(e,r),t(r)}),I=()=>{if(!T&&"function"==typeof window.require){T=!0;const e=window.require("ifRequired");"function"==typeof e&&(L=e)}return L},K=()=>{if(!H)try{for(let e=0;e<z.length;e+=1){const[[t],r]=z[e],n=U.get(t);if(void 0===n){if(null===I())return;L(t,G[e])}else r(n)}}catch(e){H=!0}},{apply:Q}={apply(e,t,r){let n;K();try{if(h(t),g(t)){const e=JSON.parse(t);y.has(e)&&(n=JSON.stringify(e))}}catch(e){}return Reflect.apply(e,n??t,r)}},V={apply:Q};window.String.prototype.split=f(window.String.prototype.split,V),window.String.prototype.substring=f(window.String.prototype.substring,V);const{apply:X}={apply(e,t,r){K();const n=Reflect.apply(e,t,r);try{if(g(n)){const e=JSON.parse(n);if(y.has(e)){return JSON.stringify(e)}}}catch(e){}return n}},Y={apply:X};window.String=f(window.String,Y),window.String.prototype.constructor=window.String;const Z=new Map,ee=/^[\\t\\r\\n \\u00a0\\ufeff]*[\\u00a0\\ufeff][\\t\\r\\n ]*/,te=/^(?:[\\t\\r\\n ]*(?:\\/\\/[^\\r\\n]*(?:\\r\\n?|\\n)|\\/\\*[\\s\\S]*?\\*\\/))+/,re=/"(?:[^"\\\\]|\\\\[\\s\\S])*"|((?:(?:\\/\\*[\\s\\S]*?\\*\\/|\\/\\/[^\\r\\n]*(?:\\r\\n?|\\n|$))[\\t\\r\\n ]*)+)/g,ne=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:/,oe=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"|[[{]|true|false|null|-?[\\d.eE+-]+)/,ae=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"|[[{]|true|false|null|-?[\\d.eE+-]+)[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:|[,[{\\]}])/,ie=e=>{const t=Z.get(e);if(void 0!==t)return t;let r=e;try{const t=u(e),n=e.match(ee)?.[0]??"",o=e.slice(n.length),a=o.match(te)?.[0]??"",i=o.slice(a.length);let s=i,p="";if(t&&(/\\*\\/[\\t\\r\\n ]*$/.test(i)||/(?:\\r\\n?|\\n)[\\t ]*\\/\\/[^\\r\\n]*(?:[\\r\\n][\\t ]*)*$/.test(i)))for(const e of i.matchAll(re))if(e[1]&&e.index+e[0].length===i.length){const t=i.slice(0,e.index).search(/[\\t\\r\\n ]*$/);s=i.slice(0,t),p=i.slice(t);break}const d=Reflect.apply(l,s,[]);if(h(d)&&t){const e=d.slice(1).match(te)?.[0]??"";let t=""===e?s:s.replace(e,"");const o=t.match(ne)?.[0]??"",i=""===o?"":t.slice(o.length).match(te)?.[0]??"";""!==i&&(t=o+t.slice(o.length+i.length));const l=t.match(oe)?.[0]??"",c=""===l?"":t.slice(l.length).match(te)?.[0]??"";""!==c&&(t=l+" "+t.slice(l.length+c.length));const f=t.match(ae)?.[0]??"",w=""===f?"":t.slice(f.length).match(te)?.[0]??"";""!==w&&(t=f+" "+t.slice(f.length+w.length));let u="";if(t.includes("/*")||t.includes("//"))for(const e of t.matchAll(re))if(e[1]&&/^[\\]}][\\t\\r\\n ]*$/.test(t.slice(e.index+e[0].length))){u=e[1],t=t.slice(0,e.index)+" "+t.slice(e.index+u.length);break}const h=JSON.parse(t);if(y.has(h)){let t=JSON.stringify(h);""!==w&&(t=t.replace(ae,e=>e+w)),""!==c&&(t=t.replace(oe,e=>e+c)),""!==i&&(t=t.replace(ne,e=>e+i)),""!==u&&(t=t.slice(0,-1)+u+t.slice(-1)),r=n+a+t[0]+e+t.slice(1)+p}}}catch(e){}return((e,t)=>{if(Z.size>=2){const e=Z.keys().next().value;Z.delete(e)}return Z.set(e,t),t})(e,r)},{apply:se}={apply(e,t,r){let n=t;try{"string"==typeof t&&t.length>300&&(n=ie(t))}catch(e){}return Reflect.apply(e,n,r)}},pe={apply:se};window.String.prototype.charAt=f(window.String.prototype.charAt,pe);const le=e=>{const t=e?.data?.viewer?.marketplace_feed_stories;if(!Array.isArray(t?.edges))return!1;const r=t.edges.filter(e=>!(e=>{const t=e?.__typename;return"string"==typeof t&&t.includes(o)})(e?.node));return r.length!==t.edges.length&&(t.edges=r,!0)},{apply:de}={apply(e,t,r){const n=r[2]?.[0];if(w(n,s))try{const e=(e=>{let t=!1;const r=Reflect.apply(p,e,[/\\r?\\n|\\r/]).map(e=>{if(""===e.trim())return e;let r;try{r=JSON.parse(e)}catch{return e}const n=y.has(r),o=le(r);return n||o?(t=!0,JSON.stringify(r)):e});return t?r.join("\\r\\n"):e})(n);if(e!==n){const t=r[2].slice();t[0]=e,r[2]=t}}catch(e){}return Reflect.apply(e,t,r)}},ce={apply:de};window.Function.prototype.call=f(window.Function.prototype.call,ce);const{apply:ye}={apply:(e,t,r)=>c.has(t)?c.get(t):Reflect.apply(e,t,r)},fe={apply:ye};window.Function.prototype.toString=f(window.Function.prototype.toString,fe),(()=>{const e=window.__rl_stub;if("function"==typeof window.requireLazy&&!Array.isArray(e))return void z.forEach(([e,t])=>{window.requireLazy(e,t)});let t=Array.isArray(e)?e:[];D(t);try{Object.defineProperty(window,"__rl_stub",{configurable:!0,enumerable:!0,get:()=>t,set(e){t=e,D(e)}})}catch(e){window.__rl_stub=t}})()})();': () => {
+    '(()=>{const e="SPONSORED",t="SponsoredData",r="AdsSideFeedUnit",n=["sponsored_data","th_dat_spo","qrz_ctx_seg","pso_tad_rens"],o="MarketplaceFeedAdStory",a=new WeakMap,i=[e,t,r,...n],s=[t,o,...n],p=window.String.prototype.split,l=window.String.prototype.trim,d=new WeakMap,c=new WeakMap,y=new WeakSet,f=(e,t,r=Proxy)=>{const n=c.get(e)??Reflect.apply(window.Function.prototype.toString,e,[]),o=new r(e,t);return d.set(o,d.get(e)??e),c.set(o,n),o},w=(e,t)=>e?.length>300&&t.some(t=>e?.includes?.(t)),u=e=>w(e,i),h=e=>Boolean(e?.startsWith?.("{")&&e?.endsWith?.("}")||e?.startsWith?.("[")&&e?.endsWith?.("]")),g=e=>h(e)&&u(e),_=e=>{try{e.JSON.parse=f(e.JSON.parse,J,e.Proxy),e.String.prototype.split=f(e.String.prototype.split,V,e.Proxy),e.String=f(e.String,Y,e.Proxy),e.String.prototype.constructor=e.String,e.Function.prototype.call=f(e.Function.prototype.call,ce,e.Proxy),e.Function.prototype.toString=f(e.Function.prototype.toString,fe,e.Proxy)}catch(e){}},m=e=>Boolean(e instanceof HTMLIFrameElement&&(""===e.src||e?.src?.startsWith("about:blank"))&&e.contentWindow),S=new Set(["append","prepend","before","after","insertNode","replaceWith","replaceChild","replaceChildren"]),{apply:b}={apply(e,t,r){const n=Reflect.apply(e,t,r);try{m(n)?_(n.contentWindow):S.has(e.name)&&r.forEach(e=>{m(e)&&_(e.contentWindow)})}catch(e){}return n}},A={apply:b};window.Node.prototype.appendChild=f(window.Node.prototype.appendChild,A),window.Node.prototype.insertBefore=f(window.Node.prototype.insertBefore,A),window.Node.prototype.replaceChild=f(window.Node.prototype.replaceChild,A),window.Element.prototype.append=f(window.Element.prototype.append,A),window.Element.prototype.prepend=f(window.Element.prototype.prepend,A),window.Element.prototype.replaceChildren=f(window.Element.prototype.replaceChildren,A),window.Element.prototype.replaceWith=f(window.Element.prototype.replaceWith,A),window.Element.prototype.before=f(window.Element.prototype.before,A),window.Element.prototype.after=f(window.Element.prototype.after,A),window.Element.prototype.insertAdjacentElement=f(window.Element.prototype.insertAdjacentElement,A),window.Range.prototype.insertNode=f(window.Range.prototype.insertNode,A),window.CharacterData.prototype.replaceWith=f(window.CharacterData.prototype.replaceWith,A);const x=["item_collection","ads"],E=["auxColumnUnits","sdieFede","sideFeed"],v=e=>Boolean(e)&&(Object.values(e).some(e=>e?.__typename===t)||n.some(t=>{const r=e[t];return r&&"object"==typeof r&&!Array.isArray(r)&&[r.ad_id,r.lbl_adv_iden].some(e=>"string"==typeof e&&e.length>0)})),O=(e,t)=>{if(!e||"object"!=typeof e||Array.isArray(e))return!1;const r=Object.keys(e);return r.length===t.length&&t.every(e=>r.includes(e))},N=e=>O(e,["node"])&&O(e.node,["s"])&&O(e.node.s,["__typename"])&&e.node.s.__typename===t,j=["p","z9","k4","w7","q8","n3","v6","j5","t8","m6","h4","r2","b3","d2"],B=new Set(["h4","r2","b3","d2"]),P=e=>{const t=Array.isArray(e)&&1===e.length?e[0]:e;if(!t||"object"!=typeof t||Array.isArray(t))return!1;const r=j.find(e=>"string"==typeof t[e]);if(void 0===r)return!1;const n=["data","edges","require",r];if(Object.hasOwn(t,"extensions")){if(!(O(t.extensions,[])||O(t.extensions,["is_final"])&&!0===t.extensions.is_final))return!1;n.push("extensions")}if(Object.hasOwn(t,"__bbox")){if(!(B.has(r)&&O(t.extensions,["is_final"])&&!0===t.extensions.is_final&&(o=t.__bbox,O(o,["result"])&&O(o.result,["data"])&&O(o.result.data,["node"])&&O(o.result.data.node,["s","th_dat_spo"])&&O(o.result.data.node.s,["__typename"])&&"CometStorySponsoredLabelStrategy"===o.result.data.node.s.__typename&&O(o.result.data.node.th_dat_spo,["s"])&&1===o.result.data.node.th_dat_spo.s)))return!1;n.push("__bbox")}var o;return O(t,n)&&N(t.data)&&Array.isArray(t.edges)&&1===t.edges.length&&N(t.edges[0])&&Array.isArray(t.require)&&1===t.require.length&&N(t.require[0])},W=(e,t,n,o)=>{if(!e||"object"!=typeof e||n<0)return!1;let a=!1;if(Array.isArray(e.nodes)){const t=e.nodes.filter(e=>!(e=>e?.__typename===r||x.some(t=>{const r=e?.[t]?.nodes;return Array.isArray(r)&&r.some(e=>e?.sponsored_data?.ad_id)}))(e));e.nodes.length-t.length>0&&(e.nodes=t,a=!0)}return Object.entries(e).forEach(([e,r])=>{a=W(r,`${t}.${e}`,n-1,o)||a}),a},k=(e,t=10)=>{const r=e?.data?.viewer,n=r??e?.[3]?.[1]?.__bbox?.result?.data?.viewer;if(!n)return!1;return W(n,r?"data.viewer":"item[3][1].__bbox.result.data.viewer",t,e)},F=(t,r=10,n=new WeakMap)=>{if(!t||"object"!=typeof t||r<0)return!1;const o=n.get(t);if(void 0!==o&&o>=r)return!1;if(n.set(t,r),P(t))return!1;let a=((t,r)=>{if(!t||"object"!=typeof t)return!1;let n=!1;try{if(r){if(Array.isArray(t.require?.[0]?.[3]?.[0]?.__bbox?.require)&&t.require[0][3][0].__bbox.require.forEach(t=>{t[3]?.[1]?.__bbox?.result?.data?.category===e&&(delete t[3][1].__bbox.result.data.node,n=!0),v(t[3]?.[1]?.__bbox?.result?.data?.node)&&(delete t[3][1].__bbox.result.data.node,n=!0),n=k(t)||n}),E.some(e=>Array.isArray(t.data?.viewer?.[e]?.nodes))&&(n=k(t)||n),Array.isArray(t.data?.viewer?.news_feed?.edges)){const r=t.data.viewer.news_feed.edges.length;t.data.viewer.news_feed.edges=t.data.viewer.news_feed.edges.filter(t=>!v(t.node)&&t.category!==e),n=n||t.data.viewer.news_feed.edges.length!==r}v(t.data?.node)&&(delete t.data.node,n=!0),t.data?.category===e&&(delete t.data.node,n=!0)}}catch(e){}return n})(t,!0);return 0===r||Object.values(t).forEach(e=>{a=F(e,r-1,n)||a}),a},R=(e,t)=>{try{const r="string"==typeof t;if(r&&!u(t))return e;if(P(e))return e;if(!r&&!u(JSON.stringify(e)))return e;F(e)&&e&&"object"==typeof e&&y.add(e)}catch(e){}return e},{apply:q}={apply(e,t,r){K();const n=Reflect.apply(e,t,r);return R(n,r[0])}},J={apply:q};window.JSON.parse=f(window.JSON.parse,J);const C=(e,t,r)=>{if(!e||"object"!=typeof e&&"function"!=typeof e)return;let n=a.get(e);if(!t.some(t=>"function"==typeof e[t]&&!d.has(e[t])&&(n?.get(t)??0)<10))return;n||(n=new Map,a.set(e,n));const o=new Map;t.forEach(t=>{const r=e[t];"function"==typeof r&&d.has(r)&&o.set(d.get(r),r)}),t.forEach(t=>{const a=e[t],i=n.get(t)??0;if("function"!=typeof a||d.has(a)||i>=10)return;n.set(t,i+1);let s=o.get(a);if(!s){const{apply:e}={apply(e,t,n){const o=Reflect.apply(e,t,n);return r?R(o,n[0]):R(o)}};s=f(a,{apply:e}),o.set(a,s)}e[t]=s})},M=["parse","parseText","readText","fromText","fromSource","fromChunk","fromBlock","fromSlice","fromPiece","fromSection","fromSegment","fromExcerpt","fromFragment","fromScrap"],$=["ghlParseServerJSPayload","readBootPayload","decodeBootScript","hydrateBootData","inflateBootPayload","expandBootPayload","unpackBootPayload","openBootPayload","loadBootPayload","readBootState","readBootRecord","readBootEntry","takeBootFrame","grabBootSlice"],z=[[["json5"],e=>C(e,M,!0)],[["GHLServerJSParse"],e=>C(e,$,!1)]],D=e=>{Array.isArray(e)&&z.forEach(t=>{e.some(e=>e?.[1]===t[1])||e.push(t)})};let L=null,T=!1,H=!1;const U=new Map,G=z.map(([[e],t])=>r=>{U.set(e,r),t(r)}),I=()=>{if(!T&&"function"==typeof window.require){T=!0;const e=window.require("ifRequired");"function"==typeof e&&(L=e)}return L},K=()=>{if(!H)try{for(let e=0;e<z.length;e+=1){const[[t],r]=z[e],n=U.get(t);if(void 0===n){if(null===I())return;L(t,G[e])}else r(n)}}catch(e){H=!0}},{apply:Q}={apply(e,t,r){let n;K();try{if(h(t),g(t)){const e=JSON.parse(t);y.has(e)&&(n=JSON.stringify(e))}}catch(e){}return Reflect.apply(e,n??t,r)}},V={apply:Q};window.String.prototype.split=f(window.String.prototype.split,V),window.String.prototype.substring=f(window.String.prototype.substring,V);const{apply:X}={apply(e,t,r){K();const n=Reflect.apply(e,t,r);try{if(g(n)){const e=JSON.parse(n);if(y.has(e)){return JSON.stringify(e)}}}catch(e){}return n}},Y={apply:X};window.String=f(window.String,Y),window.String.prototype.constructor=window.String;const Z=new Map,ee=/^[\\t\\r\\n \\v\\u00a0\\ufeff]*[\\v\\u00a0\\ufeff][\\t\\r\\n ]*/,te=/^(?:[\\t\\r\\n ]*(?:\\/\\/[^\\r\\n]*(?:\\r\\n?|\\n)|\\/\\*[\\s\\S]*?\\*\\/))+/,re=/"(?:[^"\\\\]|\\\\[\\s\\S])*"|((?:(?:\\/\\*[\\s\\S]*?\\*\\/|\\/\\/[^\\r\\n]*(?:\\r\\n?|\\n|$))[\\t\\r\\n ]*)+)/g,ne=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:/,oe=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"|[[{]|true|false|null|-?[\\d.eE+-]+)/,ae=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"|[[{]|true|false|null|-?[\\d.eE+-]+)[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:|[,[{\\]}])/,ie=e=>{const t=Z.get(e);if(void 0!==t)return t;let r=e;try{const t=u(e),n=e.match(ee)?.[0]??"",o=e.slice(n.length),a=o.match(te)?.[0]??"",i=o.slice(a.length);let s=i,p="";if(t&&(/\\*\\/[\\t\\r\\n ]*$/.test(i)||/(?:\\r\\n?|\\n)[\\t ]*\\/\\/[^\\r\\n]*(?:[\\r\\n][\\t ]*)*$/.test(i)))for(const e of i.matchAll(re))if(e[1]&&e.index+e[0].length===i.length){const t=i.slice(0,e.index).search(/[\\t\\r\\n ]*$/);s=i.slice(0,t),p=i.slice(t);break}const d=Reflect.apply(l,s,[]);if(h(d)&&t){const e=d.slice(1).match(te)?.[0]??"";let t=""===e?s:s.replace(e,"");const o=t.match(ne)?.[0]??"",i=""===o?"":t.slice(o.length).match(te)?.[0]??"";""!==i&&(t=o+t.slice(o.length+i.length));const l=t.match(oe)?.[0]??"",c=""===l?"":t.slice(l.length).match(te)?.[0]??"";""!==c&&(t=l+" "+t.slice(l.length+c.length));const f=t.match(ae)?.[0]??"",w=""===f?"":t.slice(f.length).match(te)?.[0]??"";""!==w&&(t=f+" "+t.slice(f.length+w.length));let u="";if(t.includes("/*")||t.includes("//"))for(const e of t.matchAll(re))if(e[1]&&/^[\\]}][\\t\\r\\n ]*$/.test(t.slice(e.index+e[0].length))){u=e[1],t=t.slice(0,e.index)+" "+t.slice(e.index+u.length);break}const h=JSON.parse(t);if(y.has(h)){let t=JSON.stringify(h);""!==w&&(t=t.replace(ae,e=>e+w)),""!==c&&(t=t.replace(oe,e=>e+c)),""!==i&&(t=t.replace(ne,e=>e+i)),""!==u&&(t=t.slice(0,-1)+u+t.slice(-1)),r=n+a+t[0]+e+t.slice(1)+p}}}catch(e){}return((e,t)=>{if(Z.size>=2){const e=Z.keys().next().value;Z.delete(e)}return Z.set(e,t),t})(e,r)},{apply:se}={apply(e,t,r){let n=t;try{"string"==typeof t&&t.length>300&&(n=ie(t))}catch(e){}return Reflect.apply(e,n,r)}},pe={apply:se};window.String.prototype.charAt=f(window.String.prototype.charAt,pe);const le=e=>{const t=e?.data?.viewer?.marketplace_feed_stories;if(!Array.isArray(t?.edges))return!1;const r=t.edges.filter(e=>!(e=>{const t=e?.__typename;return"string"==typeof t&&t.includes(o)})(e?.node));return r.length!==t.edges.length&&(t.edges=r,!0)},{apply:de}={apply(e,t,r){const n=r[2]?.[0];if(w(n,s))try{const e=(e=>{let t=!1;const r=Reflect.apply(p,e,[/\\r?\\n|\\r/]).map(e=>{if(""===e.trim())return e;let r;try{r=JSON.parse(e)}catch{return e}const n=y.has(r),o=le(r);return n||o?(t=!0,JSON.stringify(r)):e});return t?r.join("\\r\\n"):e})(n);if(e!==n){const t=r[2].slice();t[0]=e,r[2]=t}}catch(e){}return Reflect.apply(e,t,r)}},ce={apply:de};window.Function.prototype.call=f(window.Function.prototype.call,ce);const{apply:ye}={apply:(e,t,r)=>c.has(t)?c.get(t):Reflect.apply(e,t,r)},fe={apply:ye};window.Function.prototype.toString=f(window.Function.prototype.toString,fe),(()=>{const e=window.__rl_stub;if("function"==typeof window.requireLazy&&!Array.isArray(e))return void z.forEach(([e,t])=>{window.requireLazy(e,t)});let t=Array.isArray(e)?e:[];D(t);try{Object.defineProperty(window,"__rl_stub",{configurable:!0,enumerable:!0,get:()=>t,set(e){t=e,D(e)}})}catch(e){window.__rl_stub=t}})()})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["6d2ebc751db65375064cae4192609eda"] === e) return;
+            if (Window.prototype.toString["9088d5c32f1674c33e89d23b0bf2b144"] === e) return;
             (() => {
                 const e = "SPONSORED", t = "SponsoredData", r = "AdsSideFeedUnit", n = [ "sponsored_data", "th_dat_spo", "qrz_ctx_seg", "pso_tad_rens" ], o = "MarketplaceFeedAdStory", a = new WeakMap, i = [ e, t, r, ...n ], s = [ t, o, ...n ], p = window.String.prototype.split, l = window.String.prototype.trim, d = new WeakMap, c = new WeakMap, y = new WeakSet, f = (e, t, r = Proxy) => {
                     const n = c.get(e) ?? Reflect.apply(window.Function.prototype.toString, e, []), o = new r(e, t);
@@ -8272,7 +8323,7 @@ export const localScriptRules = {
                     if (!e || "object" != typeof e || Array.isArray(e)) return !1;
                     const r = Object.keys(e);
                     return r.length === t.length && t.every((e => r.includes(e)));
-                }, N = e => O(e, [ "node" ]) && O(e.node, [ "s" ]) && O(e.node.s, [ "__typename" ]) && e.node.s.__typename === t, j = [ "p", "z9", "k4", "w7", "q8", "n3", "v6", "j5", "t8", "m6", "h4", "r2", "b3" ], W = new Set([ "h4", "r2", "b3" ]), P = e => {
+                }, N = e => O(e, [ "node" ]) && O(e.node, [ "s" ]) && O(e.node.s, [ "__typename" ]) && e.node.s.__typename === t, j = [ "p", "z9", "k4", "w7", "q8", "n3", "v6", "j5", "t8", "m6", "h4", "r2", "b3", "d2" ], W = new Set([ "h4", "r2", "b3", "d2" ]), B = e => {
                     const t = Array.isArray(e) && 1 === e.length ? e[0] : e;
                     if (!t || "object" != typeof t || Array.isArray(t)) return !1;
                     const r = j.find((e => "string" == typeof t[e]));
@@ -8289,7 +8340,7 @@ export const localScriptRules = {
                     }
                     var o;
                     return O(t, n) && N(t.data) && Array.isArray(t.edges) && 1 === t.edges.length && N(t.edges[0]) && Array.isArray(t.require) && 1 === t.require.length && N(t.require[0]);
-                }, B = (e, t, n, o) => {
+                }, P = (e, t, n, o) => {
                     if (!e || "object" != typeof e || n < 0) return !1;
                     let a = !1;
                     if (Array.isArray(e.nodes)) {
@@ -8300,16 +8351,16 @@ export const localScriptRules = {
                         e.nodes.length - t.length > 0 && (e.nodes = t, a = !0);
                     }
                     return Object.entries(e).forEach((([e, r]) => {
-                        a = B(r, `${t}.${e}`, n - 1, o) || a;
+                        a = P(r, `${t}.${e}`, n - 1, o) || a;
                     })), a;
                 }, k = (e, t = 10) => {
                     const r = e?.data?.viewer, n = r ?? e?.[3]?.[1]?.__bbox?.result?.data?.viewer;
-                    return !!n && B(n, r ? "data.viewer" : "item[3][1].__bbox.result.data.viewer", t, e);
+                    return !!n && P(n, r ? "data.viewer" : "item[3][1].__bbox.result.data.viewer", t, e);
                 }, q = (t, r = 10, n = new WeakMap) => {
                     if (!t || "object" != typeof t || r < 0) return !1;
                     const o = n.get(t);
                     if (void 0 !== o && o >= r) return !1;
-                    if (n.set(t, r), P(t)) return !1;
+                    if (n.set(t, r), B(t)) return !1;
                     let a = (t => {
                         if (!t || "object" != typeof t) return !1;
                         let r = !1;
@@ -8336,7 +8387,7 @@ export const localScriptRules = {
                     try {
                         const r = "string" == typeof t;
                         if (r && !u(t)) return e;
-                        if (P(e)) return e;
+                        if (B(e)) return e;
                         if (!r && !u(JSON.stringify(e))) return e;
                         q(e) && e && "object" == typeof e && y.add(e);
                     } catch (e) {}
@@ -8378,7 +8429,7 @@ export const localScriptRules = {
                         }
                         e[t] = s;
                     }));
-                }, M = [ "parse", "parseText", "readText", "fromText", "fromSource", "fromChunk", "fromBlock", "fromSlice", "fromPiece", "fromSection", "fromSegment", "fromExcerpt", "fromFragment" ], $ = [ "ghlParseServerJSPayload", "readBootPayload", "decodeBootScript", "hydrateBootData", "inflateBootPayload", "expandBootPayload", "unpackBootPayload", "openBootPayload", "loadBootPayload", "readBootState", "readBootRecord", "readBootEntry", "takeBootFrame" ], z = [ [ [ "json5" ], e => C(e, M, !0) ], [ [ "GHLServerJSParse" ], e => C(e, $, !1) ] ], D = e => {
+                }, M = [ "parse", "parseText", "readText", "fromText", "fromSource", "fromChunk", "fromBlock", "fromSlice", "fromPiece", "fromSection", "fromSegment", "fromExcerpt", "fromFragment", "fromScrap" ], $ = [ "ghlParseServerJSPayload", "readBootPayload", "decodeBootScript", "hydrateBootData", "inflateBootPayload", "expandBootPayload", "unpackBootPayload", "openBootPayload", "loadBootPayload", "readBootState", "readBootRecord", "readBootEntry", "takeBootFrame", "grabBootSlice" ], z = [ [ [ "json5" ], e => C(e, M, !0) ], [ [ "GHLServerJSParse" ], e => C(e, $, !1) ] ], D = e => {
                     Array.isArray(e) && z.forEach((t => {
                         e.some((e => e?.[1] === t[1])) || e.push(t);
                     }));
@@ -8437,7 +8488,7 @@ export const localScriptRules = {
                     apply: X
                 };
                 window.String = f(window.String, Y), window.String.prototype.constructor = window.String;
-                const Z = new Map, ee = /^[\t\r\n \u00a0\ufeff]*[\u00a0\ufeff][\t\r\n ]*/, te = /^(?:[\t\r\n ]*(?:\/\/[^\r\n]*(?:\r\n?|\n)|\/\*[\s\S]*?\*\/))+/, re = /"(?:[^"\\]|\\[\s\S])*"|((?:(?:\/\*[\s\S]*?\*\/|\/\/[^\r\n]*(?:\r\n?|\n|$))[\t\r\n ]*)+)/g, ne = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:/, oe = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"|[[{]|true|false|null|-?[\d.eE+-]+)/, ae = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"|[[{]|true|false|null|-?[\d.eE+-]+)[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"[\t\r\n ]*:|[,[{\]}])/, {apply: ie} = {
+                const Z = new Map, ee = /^[\t\r\n \v\u00a0\ufeff]*[\v\u00a0\ufeff][\t\r\n ]*/, te = /^(?:[\t\r\n ]*(?:\/\/[^\r\n]*(?:\r\n?|\n)|\/\*[\s\S]*?\*\/))+/, re = /"(?:[^"\\]|\\[\s\S])*"|((?:(?:\/\*[\s\S]*?\*\/|\/\/[^\r\n]*(?:\r\n?|\n|$))[\t\r\n ]*)+)/g, ne = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:/, oe = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"|[[{]|true|false|null|-?[\d.eE+-]+)/, ae = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"|[[{]|true|false|null|-?[\d.eE+-]+)[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"[\t\r\n ]*:|[,[{\]}])/, {apply: ie} = {
                     apply(e, t, r) {
                         let n = t;
                         try {
@@ -8557,389 +8608,14 @@ export const localScriptRules = {
                     }
                 })();
             })();
-            Object.defineProperty(Window.prototype.toString, "6d2ebc751db65375064cae4192609eda", {
+            Object.defineProperty(Window.prototype.toString, "9088d5c32f1674c33e89d23b0bf2b144", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "6d2ebc751db65375064cae4192609eda" due to: ' + e);
-        }
-    },
-    '!function(){var e=new MutationObserver(function(){var m=document.querySelectorAll("div[id^=\'mount_\']");{var e;e=0<m.length?document.querySelectorAll(\'div[role="feed"] > div[data-pagelet^="FeedUnit"] > div[class]:not([style*="height"])\'):document.querySelectorAll(\'[id^="substream"] > div:not(.hidden_elem) div[id^="hyperfeed_story_id"]\')}e.forEach(function(e){function n(e,n){for(0<m.length?"0"==(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span > span > span[data-content]\')).length&&(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span[aria-label]\')):h=e.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [class] [class]"),socheck=0;socheck<h.length;socheck++)h[socheck].innerText.contains(n)&&(p=["1"],d=["1"],u=["1"],i=r=l=1,socheck=h.length)}function t(e,n,t,c,a){for(0<m.length?"0"==(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span > span > span[data-content]\')).length&&(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] div[role="button"][tabindex]\')):h=e.querySelectorAll(".userContentWrapper h5 + div[data-testid] > span a > [class] [class]"),"0"==h.length&&(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span[aria-label]\')),socheck=0;socheck<h.length;socheck++){spancheck=0,1<h.length?(spancheck=h[socheck].querySelectorAll("span")[0],0==spancheck&&(spancheck=h[socheck].querySelectorAll("b")[0])):(spancheck=h[0].querySelectorAll("span")[socheck],0==spancheck&&(spancheck=h[0].querySelectorAll("b")[socheck]));var o=h[0];if(0!=spancheck&&spancheck){if(2==spancheck.children.length&&0<m.length)for(spancheck=spancheck.querySelectorAll("span:not([style])"),spcheck=0;spcheck<spancheck.length;spcheck++)spancheck[spcheck].innerText.contains(n)?s=1:!spancheck[spcheck].innerText.contains(t)||0!=spancheck[spcheck].offsetTop||spancheck[spcheck].innerText.contains(n)||spancheck[spcheck].innerText.contains(c)||spancheck[spcheck].innerText.contains(a)?!spancheck[spcheck].innerText.contains(c)||0!=spancheck[spcheck].offsetTop||spancheck[spcheck].innerText.contains(t)||spancheck[spcheck].innerText.contains(n)||spancheck[spcheck].innerText.contains(a)?!spancheck[spcheck].innerText.contains(a)||0!=spancheck[spcheck].offsetTop||spancheck[spcheck].innerText.contains(t)||spancheck[spcheck].innerText.contains(c)||spancheck[spcheck].innerText.contains(n)||(u=["1"],i=1):(d=["1"],r=1):(p=["1"],l=1);0==m.length&&((!(spancheck.innerText.contains(n)&&0==spancheck.offsetTop||h[0].innerText.contains(n)&&0==h[0].offsetTop)||spancheck.innerText.contains(t)&&!h[0].innerText.contains(t)||spancheck.innerText.contains(c)&&!h[0].innerText.contains(c)||spancheck.innerText.contains(a)&&!h[0].innerText.contains(a))&&(!o.innerText.contains(n)||0!=o.offsetTop||o.innerText.contains(t)||o.innerText.contains(c)||o.innerText.contains(a))?!spancheck.innerText.contains(t)||0!=spancheck.offsetTop||spancheck.innerText.contains(n)||spancheck.innerText.contains(c)||spancheck.innerText.contains(a)?!spancheck.innerText.contains(c)||0!=spancheck.offsetTop||spancheck.innerText.contains(t)||spancheck.innerText.contains(n)||spancheck.innerText.contains(a)?!spancheck.innerText.contains(a)||0!=spancheck.offsetTop||spancheck.innerText.contains(t)||spancheck.innerText.contains(c)||spancheck.innerText.contains(n)||(u=["1"],i=1):(d=["1"],r=1):(p=["1"],l=1):s=1)}}}function c(e,n,t,c,a){u=0<m.length?(h=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span span[data-content=\'+n+"]"),p=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span span[data-content=\'+t+"]"),d=e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span span[data-content=\'+c+"]"),e.querySelectorAll(\'div[role="article"] span[dir="auto"] > a > span span[data-content=\'+a+"]")):(h=e.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content="+n+"]"),p=e.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content="+t+"]"),d=e.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content="+c+"]"),e.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content="+a+"]"))}var s=0,l=0,r=0,i=0,h=0,p=0,d=0,u=0,a=e.querySelectorAll("div[style=\'width: 100%\'] > a[href*=\'oculus.com/quest\'] > div"),o=document.querySelector("[lang]"),k=document.querySelectorAll("link[rel=\'preload\'][href*=\'/l/\']");o=o?document.querySelector("[lang]").lang:"en";var y,g=e.querySelectorAll(\'a[ajaxify*="ad_id"] > span\'),f=e.querySelectorAll(\'a[href*="ads/about"]\'),S=e.querySelectorAll(\'a[href*="https://www.facebook.com/business/help"]\');if("display: none !important;"!=e.getAttribute("style")&&!e.classList.contains("hidden_elem")&&(0<g.length||0<f.length||0<S.length?(T+=1,0<m.length?(""==(y=e.querySelectorAll("a[href]")[0].innerText)&&(y=e.querySelectorAll("a[href]")[1].innerText),""==y&&(y=e.querySelectorAll("a[href]")[0].querySelectorAll("a[aria-label]")[0].getAttribute("aria-label"))):y=e.querySelectorAll("a[href]")[2].innerText,console.log("--------"),console.log("Ad hidden from: "+y),console.log("Total ads hidden: "+T),console.log("F length: "+g.length),console.log("H length: "+f.length),console.log("I length (Paid partnership): "+S.length),console.log("--------"),e.style="display:none!important;"):0<a.length?(T+=1,y="Facebook",console.log("--------"),console.log("Ad hidden from: "+y),console.log("Total ads hidden: "+T),console.log("Non-declared ad"),console.log("--------"),e.style="display:none!important;"):"af"==o?n(e,"Geborg"):"de"==o||"nl"==o?c(e,"G","e","s","n"):"am"==o?n(e,"የተከፈለበት ማስታወቂያ"):"ar"==o?n(e,"مُموَّل"):"as"==o?n(e,"পৃষ্ঠপোষকতা কৰা"):"az"==o?n(e,"Sponsor dəstəkli"):"co"==o?n(e,"Spunsurizatu"):"bs"==o||"sl"==o||"cs"==o?c(e,"S","p","z","n"):"da"==o||"en"==o||"et"==o||"fy"==o||"it"==o||"ku"==o||"nb"==o||"nn"==o||"pl"==o||"sq"==o||"sv"==o||"zz"==o?0<m.length?k[0].href.contains("en_UD")?n(e,"pəɹosuodS"):k[0].href.contains("ja_KS")?n(e,"広告"):k[0].href.contains("tz_MA")?n(e,"ⵉⴷⵍ"):k[0].href.contains("sy_SY")?n(e,"ܒܘܕܩܐ ܡܡܘܘܢܐ"):k[0].href.contains("cb_IQ")?n(e,"پاڵپشتیکراو"):k[0].href.contains("ar_AR")?n(e,"مُموَّل"):k[0].href.contains("sz_PL")?n(e,"Szpōnzorowane"):k[0].href.contains("eo_EO")?n(e,"Reklamo"):k[0].href.contains("es_LA")?c(e,"P","u","c","d"):(c(e,"S","p","s","n"),"0"==h.length&&t(e,"S","p","s","n"),"0"==h.length&&n(e,"Sponsored")):document.querySelector("body").className.includes("Locale_en_UD")?n(e,"pəɹosuodS"):document.querySelector("body").className.includes("ja_KS")?n(e,"広告"):document.querySelector("body").className.includes("tz_MA")?n(e,"ⵉⴷⵍ"):document.querySelector("body").className.includes("sy_SY")?n(e,"ܒܘܕܩܐ ܡܡܘܘܢܐ"):document.querySelector("body").className.includes("cb_IQ")?n(e,"پاڵپشتیکراو"):document.querySelector("body").className.includes("ar_AR")?n(e,"مُموَّل"):document.querySelector("body").className.includes("sz_PL")?n(e,"Szpōnzorowane"):document.querySelector("body").className.includes("eo_EO")?n(e,"Reklamo"):document.querySelector("body").className.includes("es_LA")?c(e,"P","u","c","d"):(c(e,"S","p","s","n"),"0"==h.length&&t(e,"S","p","s","n")):"be"==o?n(e,"Рэклама"):"bg"==o?n(e,"Спонсорирано"):"mk"==o?n(e,"Спонзорирано"):"br"==o?n(e,"Paeroniet"):"ca"==o?n(e,"Patrocinat"):"gl"==o||"pt"==o?(n(e,"Patrocinado"),"0"==l&&c(e,"P","a","c","o")):"bn"==o?n(e,"সৌজন্যে"):"cb"==o?n(e,"پاڵپشتیکراو"):"cx"==o?c(e,"G","i","s","n"):"cy"==o?n(e,"Noddwyd"):"el"==o?n(e,"Χορηγούμενη"):"eo"==o?n(e,"Reklamo"):"es"==o?c(e,"P","u","c","d"):"eu"==o?n(e,"Babestua"):"fa"==o?n(e,"دارای پشتیبانی مالی"):"ff"==o?n(e,"Yoɓanaama"):"fi"==o?n(e,"Sponsoroitu"):"fo"==o?n(e,"Stuðlað"):"fr"==o?0<m.length?k[0].href.contains("fr_FR")?c(e,"S","p","s","n"):c(e,"C","o","m","n"):document.querySelector("body").className.includes("Locale_fr_FR")?c(e,"S","p","s","n"):c(e,"C","o","m","n"):"ga"==o?n(e,"Urraithe"):"gn"==o?n(e,"Oñepatrosinapyre"):"gu"==o?n(e,"પ્રાયોજિત"):"ha"==o?n(e,"Daukar Nauyi"):"he"==o?n(e,"ממומן"):"hr"==o?n(e,"Plaćeni oglas"):"ht"==o?n(e,"Peye"):"ne"==o||"mr"==o||"hi"==o?n(e,"प्रायोजित"):"hu"==o?c(e,"H","i","r","d"):"hy"==o?n(e,"Գովազդային"):"id"==o?c(e,"B","e","p","n"):"is"==o?n(e,"Kostað"):"ja"==o?n(e,"広告"):"ms"==o?n(e,"Ditaja"):"jv"==o?n(e,"Disponsori"):"ka"==o?n(e,"რეკლამა"):"kk"==o?n(e,"Демеушілік көрсеткен"):"km"==o?n(e,"បានឧបត្ថម្ភ"):"kn"==o?n(e,"ಪ್ರಾಯೋಜಿತ"):"ko"==o?n(e,"Sponsored"):"ky"==o?n(e,"Демөөрчүлөнгөн"):"lo"==o?n(e,"ຜູ້ສະໜັບສະໜູນ"):"lt"==o?n(e,"Remiama"):"lv"==o?n(e,"Apmaksāta reklāma"):"mg"==o?n(e,"Misy Mpiantoka"):"ml"==o?n(e,"സ്പോൺസർ ചെയ്തത്"):"mn"==o?n(e,"Ивээн тэтгэсэн"):"mt"==o?n(e,"Sponsorjat"):"my"==o?(n(e,"ပံ့ပိုးထားသည်"),"0"==l&&n(e,"အခပေးကြော်ငြာ")):"or"==o?n(e,"ପ୍ରଯୋଜିତ"):"pa"==o?n(e,"ਸਰਪ੍ਰਸਤੀ ਪ੍ਰਾਪਤ"):"ps"==o?n(e,"تمويل شوي"):"ro"==o?n(e,"Sponsorizat"):"ru"==o||"uk"==o?n(e,"Реклама"):"rw"==o?n(e,"Icyamamaza ndasukirwaho"):"sc"==o?n(e,"Patronadu de"):"si"==o?n(e,"අනුග්රාහක"):"sk"==o?n(e,"Sponzorované"):"sn"==o?n(e,"Zvabhadharirwa"):"so"==o?n(e,"La maalgeliyey"):"sr"==o?n(e,"Спонзорисано"):"sw"==o?n(e,"Imedhaminiwa"):"sy"==o?n(e,"ܒܘܕܩܐ ܡܡܘܘܢܐ"):"sz"==o?n(e,"Szpōnzorowane"):"ta"==o?n(e,"விளம்பரம்"):"te"==o?n(e,"ప్రాయోజితం చేయబడింది"):"tg"==o?n(e,"Бо сарпарастӣ"):"th"==o?n(e,"ได้รับการสนับสนุน"):"tl"==o?n(e,"May Sponsor"):"tr"==o?n(e,"Sponsorlu"):"tt"==o?n(e,"Хәйрияче"):"tz"==o?n(e,"ⵉⴷⵍ"):"ur"==o?n(e,"سپانسرڈ"):"uz"==o?n(e,"Reklama"):"vi"==o?n(e,"Được tài trợ"):"zh-Hans"==o?n(e,"赞助内容"):"zh-Hant"==o&&n(e,"贊助"),0<h.length&&0<p.length&&0<d.length&&0<u.length)){for(cont=0;cont<h.length;cont++)0<h[cont].offsetHeight&&(cont=h.length,s=1);for(cont1=0;cont1<p.length;cont1++)0<p[cont1].offsetHeight&&(cont1=p.length,l=1);for(cont2=0;cont2<d.length;cont2++)0<d[cont2].offsetHeight&&(cont2=d.length,r=1);for(cont3=0;cont3<u.length;cont3++)0<u[cont3].offsetHeight&&(cont3=u.length,i=1);1==s&&1==l&&1==r&&1==i&&(0<m.length&&""!=(y=e.querySelectorAll("a[href]")[1].innerText)||(y=e.querySelectorAll("a[href]")[2].innerText),T+=1,console.log("--------"),console.log("Ad hidden from: "+y),console.log("Total ads hidden: "+T),console.log("--------"),e.style="display:none!important;")}})}),T=0;e.observe(document,{childList:!0,subtree:!0})}();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString.cb487be2d2edd22f1a9ce90cd6ffe9cf === e) return;
-            !function() {
-                var e = new MutationObserver((function() {
-                    var e = document.querySelectorAll("div[id^='mount_']");
-                    (0 < e.length ? document.querySelectorAll('div[role="feed"] > div[data-pagelet^="FeedUnit"] > div[class]:not([style*="height"])') : document.querySelectorAll('[id^="substream"] > div:not(.hidden_elem) div[id^="hyperfeed_story_id"]')).forEach((function(t) {
-                        function c(n, t) {
-                            for (0 < e.length ? "0" == (h = n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span > span > span[data-content]')).length && (h = n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span[aria-label]')) : h = n.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [class] [class]"), 
-                            socheck = 0; socheck < h.length; socheck++) h[socheck].innerText.contains(t) && (d = [ "1" ], 
-                            p = [ "1" ], u = [ "1" ], i = l = r = 1, socheck = h.length);
-                        }
-                        function o(n, t, c, o, a) {
-                            for (0 < e.length ? "0" == (h = n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span > span > span[data-content]')).length && (h = n.querySelectorAll('div[role="article"] span[dir="auto"] div[role="button"][tabindex]')) : h = n.querySelectorAll(".userContentWrapper h5 + div[data-testid] > span a > [class] [class]"), 
-                            "0" == h.length && (h = n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span[aria-label]')), 
-                            socheck = 0; socheck < h.length; socheck++) {
-                                spancheck = 0, 1 < h.length ? (spancheck = h[socheck].querySelectorAll("span")[0], 
-                                0 == spancheck && (spancheck = h[socheck].querySelectorAll("b")[0])) : (spancheck = h[0].querySelectorAll("span")[socheck], 
-                                0 == spancheck && (spancheck = h[0].querySelectorAll("b")[socheck]));
-                                var k = h[0];
-                                if (0 != spancheck && spancheck) {
-                                    if (2 == spancheck.children.length && 0 < e.length) for (spancheck = spancheck.querySelectorAll("span:not([style])"), 
-                                    spcheck = 0; spcheck < spancheck.length; spcheck++) spancheck[spcheck].innerText.contains(t) ? s = 1 : !spancheck[spcheck].innerText.contains(c) || 0 != spancheck[spcheck].offsetTop || spancheck[spcheck].innerText.contains(t) || spancheck[spcheck].innerText.contains(o) || spancheck[spcheck].innerText.contains(a) ? !spancheck[spcheck].innerText.contains(o) || 0 != spancheck[spcheck].offsetTop || spancheck[spcheck].innerText.contains(c) || spancheck[spcheck].innerText.contains(t) || spancheck[spcheck].innerText.contains(a) ? !spancheck[spcheck].innerText.contains(a) || 0 != spancheck[spcheck].offsetTop || spancheck[spcheck].innerText.contains(c) || spancheck[spcheck].innerText.contains(o) || spancheck[spcheck].innerText.contains(t) || (u = [ "1" ], 
-                                    i = 1) : (p = [ "1" ], l = 1) : (d = [ "1" ], r = 1);
-                                    0 == e.length && ((!(spancheck.innerText.contains(t) && 0 == spancheck.offsetTop || h[0].innerText.contains(t) && 0 == h[0].offsetTop) || spancheck.innerText.contains(c) && !h[0].innerText.contains(c) || spancheck.innerText.contains(o) && !h[0].innerText.contains(o) || spancheck.innerText.contains(a) && !h[0].innerText.contains(a)) && (!k.innerText.contains(t) || 0 != k.offsetTop || k.innerText.contains(c) || k.innerText.contains(o) || k.innerText.contains(a)) ? !spancheck.innerText.contains(c) || 0 != spancheck.offsetTop || spancheck.innerText.contains(t) || spancheck.innerText.contains(o) || spancheck.innerText.contains(a) ? !spancheck.innerText.contains(o) || 0 != spancheck.offsetTop || spancheck.innerText.contains(c) || spancheck.innerText.contains(t) || spancheck.innerText.contains(a) ? !spancheck.innerText.contains(a) || 0 != spancheck.offsetTop || spancheck.innerText.contains(c) || spancheck.innerText.contains(o) || spancheck.innerText.contains(t) || (u = [ "1" ], 
-                                    i = 1) : (p = [ "1" ], l = 1) : (d = [ "1" ], r = 1) : s = 1);
-                                }
-                            }
-                        }
-                        function a(n, t, c, o, a) {
-                            u = 0 < e.length ? (h = n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span span[data-content=' + t + "]"), 
-                            d = n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span span[data-content=' + c + "]"), 
-                            p = n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span span[data-content=' + o + "]"), 
-                            n.querySelectorAll('div[role="article"] span[dir="auto"] > a > span span[data-content=' + a + "]")) : (h = n.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content=" + t + "]"), 
-                            d = n.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content=" + c + "]"), 
-                            p = n.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content=" + o + "]"), 
-                            n.querySelectorAll(".userContentWrapper h5 + div[data-testid] a [data-content=" + a + "]"));
-                        }
-                        var s = 0, r = 0, l = 0, i = 0, h = 0, d = 0, p = 0, u = 0, k = t.querySelectorAll("div[style='width: 100%'] > a[href*='oculus.com/quest'] > div"), f = document.querySelector("[lang]"), y = document.querySelectorAll("link[rel='preload'][href*='/l/']");
-                        f = f ? document.querySelector("[lang]").lang : "en";
-                        var g, S = t.querySelectorAll('a[ajaxify*="ad_id"] > span'), m = t.querySelectorAll('a[href*="ads/about"]'), T = t.querySelectorAll('a[href*="https://www.facebook.com/business/help"]');
-                        if ("display: none !important;" != t.getAttribute("style") && !t.classList.contains("hidden_elem") && (0 < S.length || 0 < m.length || 0 < T.length ? (n += 1, 
-                        0 < e.length ? ("" == (g = t.querySelectorAll("a[href]")[0].innerText) && (g = t.querySelectorAll("a[href]")[1].innerText), 
-                        "" == g && (g = t.querySelectorAll("a[href]")[0].querySelectorAll("a[aria-label]")[0].getAttribute("aria-label"))) : g = t.querySelectorAll("a[href]")[2].innerText, 
-                        console.log("--------"), console.log("Ad hidden from: " + g), console.log("Total ads hidden: " + n), 
-                        console.log("F length: " + S.length), console.log("H length: " + m.length), console.log("I length (Paid partnership): " + T.length), 
-                        console.log("--------"), t.style = "display:none!important;") : 0 < k.length ? (n += 1, 
-                        g = "Facebook", console.log("--------"), console.log("Ad hidden from: " + g), console.log("Total ads hidden: " + n), 
-                        console.log("Non-declared ad"), console.log("--------"), t.style = "display:none!important;") : "af" == f ? c(t, "Geborg") : "de" == f || "nl" == f ? a(t, "G", "e", "s", "n") : "am" == f ? c(t, "የተከፈለበት ማስታወቂያ") : "ar" == f ? c(t, "مُموَّل") : "as" == f ? c(t, "পৃষ্ঠপোষকতা কৰা") : "az" == f ? c(t, "Sponsor dəstəkli") : "co" == f ? c(t, "Spunsurizatu") : "bs" == f || "sl" == f || "cs" == f ? a(t, "S", "p", "z", "n") : "da" == f || "en" == f || "et" == f || "fy" == f || "it" == f || "ku" == f || "nb" == f || "nn" == f || "pl" == f || "sq" == f || "sv" == f || "zz" == f ? 0 < e.length ? y[0].href.contains("en_UD") ? c(t, "pəɹosuodS") : y[0].href.contains("ja_KS") ? c(t, "広告") : y[0].href.contains("tz_MA") ? c(t, "ⵉⴷⵍ") : y[0].href.contains("sy_SY") ? c(t, "ܒܘܕܩܐ ܡܡܘܘܢܐ") : y[0].href.contains("cb_IQ") ? c(t, "پاڵپشتیکراو") : y[0].href.contains("ar_AR") ? c(t, "مُموَّل") : y[0].href.contains("sz_PL") ? c(t, "Szpōnzorowane") : y[0].href.contains("eo_EO") ? c(t, "Reklamo") : y[0].href.contains("es_LA") ? a(t, "P", "u", "c", "d") : (a(t, "S", "p", "s", "n"), 
-                        "0" == h.length && o(t, "S", "p", "s", "n"), "0" == h.length && c(t, "Sponsored")) : document.querySelector("body").className.includes("Locale_en_UD") ? c(t, "pəɹosuodS") : document.querySelector("body").className.includes("ja_KS") ? c(t, "広告") : document.querySelector("body").className.includes("tz_MA") ? c(t, "ⵉⴷⵍ") : document.querySelector("body").className.includes("sy_SY") ? c(t, "ܒܘܕܩܐ ܡܡܘܘܢܐ") : document.querySelector("body").className.includes("cb_IQ") ? c(t, "پاڵپشتیکراو") : document.querySelector("body").className.includes("ar_AR") ? c(t, "مُموَّل") : document.querySelector("body").className.includes("sz_PL") ? c(t, "Szpōnzorowane") : document.querySelector("body").className.includes("eo_EO") ? c(t, "Reklamo") : document.querySelector("body").className.includes("es_LA") ? a(t, "P", "u", "c", "d") : (a(t, "S", "p", "s", "n"), 
-                        "0" == h.length && o(t, "S", "p", "s", "n")) : "be" == f ? c(t, "Рэклама") : "bg" == f ? c(t, "Спонсорирано") : "mk" == f ? c(t, "Спонзорирано") : "br" == f ? c(t, "Paeroniet") : "ca" == f ? c(t, "Patrocinat") : "gl" == f || "pt" == f ? (c(t, "Patrocinado"), 
-                        "0" == r && a(t, "P", "a", "c", "o")) : "bn" == f ? c(t, "সৌজন্যে") : "cb" == f ? c(t, "پاڵپشتیکراو") : "cx" == f ? a(t, "G", "i", "s", "n") : "cy" == f ? c(t, "Noddwyd") : "el" == f ? c(t, "Χορηγούμενη") : "eo" == f ? c(t, "Reklamo") : "es" == f ? a(t, "P", "u", "c", "d") : "eu" == f ? c(t, "Babestua") : "fa" == f ? c(t, "دارای پشتیبانی مالی") : "ff" == f ? c(t, "Yoɓanaama") : "fi" == f ? c(t, "Sponsoroitu") : "fo" == f ? c(t, "Stuðlað") : "fr" == f ? 0 < e.length ? y[0].href.contains("fr_FR") ? a(t, "S", "p", "s", "n") : a(t, "C", "o", "m", "n") : document.querySelector("body").className.includes("Locale_fr_FR") ? a(t, "S", "p", "s", "n") : a(t, "C", "o", "m", "n") : "ga" == f ? c(t, "Urraithe") : "gn" == f ? c(t, "Oñepatrosinapyre") : "gu" == f ? c(t, "પ્રાયોજિત") : "ha" == f ? c(t, "Daukar Nauyi") : "he" == f ? c(t, "ממומן") : "hr" == f ? c(t, "Plaćeni oglas") : "ht" == f ? c(t, "Peye") : "ne" == f || "mr" == f || "hi" == f ? c(t, "प्रायोजित") : "hu" == f ? a(t, "H", "i", "r", "d") : "hy" == f ? c(t, "Գովազդային") : "id" == f ? a(t, "B", "e", "p", "n") : "is" == f ? c(t, "Kostað") : "ja" == f ? c(t, "広告") : "ms" == f ? c(t, "Ditaja") : "jv" == f ? c(t, "Disponsori") : "ka" == f ? c(t, "რეკლამა") : "kk" == f ? c(t, "Демеушілік көрсеткен") : "km" == f ? c(t, "បានឧបត្ថម្ភ") : "kn" == f ? c(t, "ಪ್ರಾಯೋಜಿತ") : "ko" == f ? c(t, "Sponsored") : "ky" == f ? c(t, "Демөөрчүлөнгөн") : "lo" == f ? c(t, "ຜູ້ສະໜັບສະໜູນ") : "lt" == f ? c(t, "Remiama") : "lv" == f ? c(t, "Apmaksāta reklāma") : "mg" == f ? c(t, "Misy Mpiantoka") : "ml" == f ? c(t, "സ്പോൺസർ ചെയ്തത്") : "mn" == f ? c(t, "Ивээн тэтгэсэн") : "mt" == f ? c(t, "Sponsorjat") : "my" == f ? (c(t, "ပံ့ပိုးထားသည်"), 
-                        "0" == r && c(t, "အခပေးကြော်ငြာ")) : "or" == f ? c(t, "ପ୍ରଯୋଜିତ") : "pa" == f ? c(t, "ਸਰਪ੍ਰਸਤੀ ਪ੍ਰਾਪਤ") : "ps" == f ? c(t, "تمويل شوي") : "ro" == f ? c(t, "Sponsorizat") : "ru" == f || "uk" == f ? c(t, "Реклама") : "rw" == f ? c(t, "Icyamamaza ndasukirwaho") : "sc" == f ? c(t, "Patronadu de") : "si" == f ? c(t, "අනුග්රාහක") : "sk" == f ? c(t, "Sponzorované") : "sn" == f ? c(t, "Zvabhadharirwa") : "so" == f ? c(t, "La maalgeliyey") : "sr" == f ? c(t, "Спонзорисано") : "sw" == f ? c(t, "Imedhaminiwa") : "sy" == f ? c(t, "ܒܘܕܩܐ ܡܡܘܘܢܐ") : "sz" == f ? c(t, "Szpōnzorowane") : "ta" == f ? c(t, "விளம்பரம்") : "te" == f ? c(t, "ప్రాయోజితం చేయబడింది") : "tg" == f ? c(t, "Бо сарпарастӣ") : "th" == f ? c(t, "ได้รับการสนับสนุน") : "tl" == f ? c(t, "May Sponsor") : "tr" == f ? c(t, "Sponsorlu") : "tt" == f ? c(t, "Хәйрияче") : "tz" == f ? c(t, "ⵉⴷⵍ") : "ur" == f ? c(t, "سپانسرڈ") : "uz" == f ? c(t, "Reklama") : "vi" == f ? c(t, "Được tài trợ") : "zh-Hans" == f ? c(t, "赞助内容") : "zh-Hant" == f && c(t, "贊助"), 
-                        0 < h.length && 0 < d.length && 0 < p.length && 0 < u.length)) {
-                            for (cont = 0; cont < h.length; cont++) 0 < h[cont].offsetHeight && (cont = h.length, 
-                            s = 1);
-                            for (cont1 = 0; cont1 < d.length; cont1++) 0 < d[cont1].offsetHeight && (cont1 = d.length, 
-                            r = 1);
-                            for (cont2 = 0; cont2 < p.length; cont2++) 0 < p[cont2].offsetHeight && (cont2 = p.length, 
-                            l = 1);
-                            for (cont3 = 0; cont3 < u.length; cont3++) 0 < u[cont3].offsetHeight && (cont3 = u.length, 
-                            i = 1);
-                            1 == s && 1 == r && 1 == l && 1 == i && (0 < e.length && "" != (g = t.querySelectorAll("a[href]")[1].innerText) || (g = t.querySelectorAll("a[href]")[2].innerText), 
-                            n += 1, console.log("--------"), console.log("Ad hidden from: " + g), console.log("Total ads hidden: " + n), 
-                            console.log("--------"), t.style = "display:none!important;");
-                        }
-                    }));
-                })), n = 0;
-                e.observe(document, {
-                    childList: !0,
-                    subtree: !0
-                });
-            }();
-            Object.defineProperty(Window.prototype.toString, "cb487be2d2edd22f1a9ce90cd6ffe9cf", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "cb487be2d2edd22f1a9ce90cd6ffe9cf" due to: ' + e);
-        }
-    },
-    '!function(){var b=0,d=[];new MutationObserver(function(){document.querySelectorAll("div[data-pagelet^=\\"FeedUnit\\"]:not([style*=\\"display: none\\"]), div[role=\\"feed\\"] > div:not([style*=\\"display: none\\"]), div[role=\\"feed\\"] > span:not([style*=\\"display: none\\"]), #ssrb_feed_start + div > div[class]:not([style*=\\"display: none\\"]), #ssrb_feed_start + div span > h3 ~ div[class]:not([style*=\\"display: none\\"]), #ssrb_feed_start + div h3~ div[class]:not([style*=\\"display: none\\"]), #ssrb_feed_start + div h3 ~ div > div[class]:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div[class] > #ssrb_feed_start ~ div > h3 ~ div > div[class]:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div:not([aria-label=\\"Stories\\"]) > h3 ~ div:not([role]) > div[class]:not([style*=\\"display: none\\"]), #ssrb_feed_start + div > div > div[class]:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > h2 ~ div > div[class]:not([style*=\\"display: none\\"]), #ssrb_feed_start + div > div > div[class] > div:not([class], [id]) div:not([class], [id]):not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > h3 ~ div > div[class] > div:not([class], [id]) div:not([class], [id], [dir], [data-0], [style]), div[role=\\"main\\"] div > h2 ~ div > div[class] > div > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] h3[dir=\\"auto\\"] + div > div[class]:not([aria-hidden], [style*=\\"display: none\\"]), div[role=\\"main\\"] div > h2 ~ div > div[class] > div > div:not([style*=\\"display: none\\"]) > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > h2 ~ div > div > div > div:not([style*=\\"display: none\\"]) > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > h3 ~ div > div > div > div:not([role=\\"row\\"], [style*=\\"display: none\\"]) > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div:not([aria-label=\\"Stories\\"]) > :is(h2, h3) ~ div:not([role=\\"button\\"]) > * div[class]:not(.html-div, [role=\\"row\\"]) > div:not([role=\\"row\\"], [data-type=\\"hscroll-child\\"]) > div:not([data-type=\\"hscroll-child\\"], [style*=\\"display: none\\"]), div[role=\\"main\\"] div:not([aria-label=\\"Stories\\"]) > :is(h2, h3) ~ div > *:not(.html-span) > div > div[class]:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div:not([aria-label=\\"Stories\\"]) > :is(h2, h3) ~ div > * > div > div > span > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div:not([aria-label=\\"Stories\\"] > :is(h2, h3) ~ div > * > div div span > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > :is(h2, h3) ~ div > * > div div span > div > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > :is(h2, h3) ~ div > * > div span > div:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > :is(h2, h3) ~ div > * > div span div[class=\\"\\"]:not([style*=\\"display: none\\"]), div:not([class],[id]) div:not([class],[id]) > [class]:not([style*=\\"display: none\\"],img,div,h3,span,a), div[role=\\"main\\"] h3 + div[aria-hidden] + div > * > *:not(div,[style*=\\"display: none\\"]), div[role=\\"main\\"] h3 + div[aria-hidden] + div > div:not([style*=\\"display: none\\"])").forEach(function(e){Object.keys(e).forEach(function(a){if(a.includes?.("__reactEvents")||a.includes?.("__reactProps")){a=e[a];try{if(a.children?.props?.category?.includes("SPONSORED")||a.children?.props?.children?.props?.category?.includes("SPONSORED")||a.children?.props?.feedEdge?.category?.includes("SPONSORED")||a.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.feed_story_category?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_category?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_cat?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category_sensitive?.cat?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.feedUnit?.lbl_sp_data?.ad_id||a.children?.props?.children?.props?.minGapType?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.spons_data?.brs_filter_setting||a.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes("SPONSORED")||a.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.minGapType?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED")||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.__fragments?.useCometFeedUnitReordering_newsFeedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.new_sponsorw_distn_aucton_of||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.da_the_spons?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsore_da?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.spons_the_dat?.brs_filter_setting||a.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.th_dat_spo?.brs_filter_setting){b++,e.style="display: none !important;";var f=e.querySelector("a[href][aria-label]:not([aria-hidden])");f&&(d.push(["Ad blocked based on property ["+b+"] -> "+f.ariaLabel]),console.table(d))}}catch(a){}}})})}).observe(document,{childList:!0,subtree:!0})}();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["5348b236a5a07dc9d425cabee106fa41"] === e) return;
-            !function() {
-                var e = 0, d = [];
-                new MutationObserver((function() {
-                    document.querySelectorAll('div[data-pagelet^="FeedUnit"]:not([style*="display: none"]), div[role="feed"] > div:not([style*="display: none"]), div[role="feed"] > span:not([style*="display: none"]), #ssrb_feed_start + div > div[class]:not([style*="display: none"]), #ssrb_feed_start + div span > h3 ~ div[class]:not([style*="display: none"]), #ssrb_feed_start + div h3~ div[class]:not([style*="display: none"]), #ssrb_feed_start + div h3 ~ div > div[class]:not([style*="display: none"]), div[role="main"] div[class] > #ssrb_feed_start ~ div > h3 ~ div > div[class]:not([style*="display: none"]), div[role="main"] div:not([aria-label="Stories"]) > h3 ~ div:not([role]) > div[class]:not([style*="display: none"]), #ssrb_feed_start + div > div > div[class]:not([style*="display: none"]), div[role="main"] div > h2 ~ div > div[class]:not([style*="display: none"]), #ssrb_feed_start + div > div > div[class] > div:not([class], [id]) div:not([class], [id]):not([style*="display: none"]), div[role="main"] div > h3 ~ div > div[class] > div:not([class], [id]) div:not([class], [id], [dir], [data-0], [style]), div[role="main"] div > h2 ~ div > div[class] > div > div:not([style*="display: none"]), div[role="main"] h3[dir="auto"] + div > div[class]:not([aria-hidden], [style*="display: none"]), div[role="main"] div > h2 ~ div > div[class] > div > div:not([style*="display: none"]) > div:not([style*="display: none"]), div[role="main"] div > h2 ~ div > div > div > div:not([style*="display: none"]) > div:not([style*="display: none"]), div[role="main"] div > h3 ~ div > div > div > div:not([role="row"], [style*="display: none"]) > div:not([style*="display: none"]), div[role="main"] div:not([aria-label="Stories"]) > :is(h2, h3) ~ div:not([role="button"]) > * div[class]:not(.html-div, [role="row"]) > div:not([role="row"], [data-type="hscroll-child"]) > div:not([data-type="hscroll-child"], [style*="display: none"]), div[role="main"] div:not([aria-label="Stories"]) > :is(h2, h3) ~ div > *:not(.html-span) > div > div[class]:not([style*="display: none"]), div[role="main"] div:not([aria-label="Stories"]) > :is(h2, h3) ~ div > * > div > div > span > div:not([style*="display: none"]), div[role="main"] div:not([aria-label="Stories"] > :is(h2, h3) ~ div > * > div div span > div:not([style*="display: none"]), div[role="main"] div > :is(h2, h3) ~ div > * > div div span > div > div:not([style*="display: none"]), div[role="main"] div > :is(h2, h3) ~ div > * > div span > div:not([style*="display: none"]), div[role="main"] div > :is(h2, h3) ~ div > * > div span div[class=""]:not([style*="display: none"]), div:not([class],[id]) div:not([class],[id]) > [class]:not([style*="display: none"],img,div,h3,span,a), div[role="main"] h3 + div[aria-hidden] + div > * > *:not(div,[style*="display: none"]), div[role="main"] h3 + div[aria-hidden] + div > div:not([style*="display: none"])').forEach((function(i) {
-                        Object.keys(i).forEach((function(r) {
-                            if (r.includes?.("__reactEvents") || r.includes?.("__reactProps")) {
-                                r = i[r];
-                                try {
-                                    if (r.children?.props?.category?.includes("SPONSORED") || r.children?.props?.children?.props?.category?.includes("SPONSORED") || r.children?.props?.feedEdge?.category?.includes("SPONSORED") || r.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.feed_story_category?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_category?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.story_cat?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category_sensitive?.cat?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.feedUnit?.lbl_sp_data?.ad_id || r.children?.props?.children?.props?.minGapType?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsored_data?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.spons_data?.brs_filter_setting || r.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes("SPONSORED") || r.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponso_dat_flag?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.minGapType?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.cat_sensitive?.cat?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.category?.includes("SPONSORED") || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.__fragments?.useCometFeedUnitReordering_newsFeedEdge?.node?.daspo_sto?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.new_sponsorw_distn_aucton_of || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.daspo_sto?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.da_the_spons?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.sponsore_da?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.spons_the_dat?.brs_filter_setting || r.children?.props?.children?.props?.children?.props?.children?.props?.children?.props?.feedEdge?.node?.th_dat_spo?.brs_filter_setting) {
-                                        e++, i.style = "display: none !important;";
-                                        var s = i.querySelector("a[href][aria-label]:not([aria-hidden])");
-                                        s && (d.push([ "Ad blocked based on property [" + e + "] -> " + s.ariaLabel ]), 
-                                        console.table(d));
-                                    }
-                                } catch (r) {}
-                            }
-                        }));
-                    }));
-                })).observe(document, {
-                    childList: !0,
-                    subtree: !0
-                });
-            }();
-            Object.defineProperty(Window.prototype.toString, "5348b236a5a07dc9d425cabee106fa41", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "5348b236a5a07dc9d425cabee106fa41" due to: ' + e);
-        }
-    },
-    '(()=>{const e=new MutationObserver((()=>{const n=document.querySelectorAll(\'div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > div:not([class], [style*="display: none"]), div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > span[class] > div[class]:not([style*="display: none"]), div[role="complementary"] div:has(+ div[data-visualcompletion]) > div:not([style*="display: none"]), div[role="complementary"] > div[class] > div[class] > div[class] > div[class] > div > div:not([style*="display: none"]),div[role="complementary"] > div[class] > div[class] > div[class] > div[class] > div > div > div:not([style*="display: none"])\');for(const s of n){const n=Object.keys(s).find((e=>e.includes("__reactFiber")));if(n){const t=s[n];if(t?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes("adsSideFeedUnit"))return s.style.display="none",void e.disconnect()}}}));e.observe(document.documentElement,{childList:!0,subtree:!0})})();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString.d7bdccff18fe1619323480eaa54a0ae2 === e) return;
-            (() => {
-                const e = new MutationObserver((() => {
-                    const s = document.querySelectorAll('div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > div:not([class], [style*="display: none"]), div[role="complementary"] div[class*=" "] > div[class] > div:not([class]) > span[class] > div[class]:not([style*="display: none"]), div[role="complementary"] div:has(+ div[data-visualcompletion]) > div:not([style*="display: none"]), div[role="complementary"] > div[class] > div[class] > div[class] > div[class] > div > div:not([style*="display: none"]),div[role="complementary"] > div[class] > div[class] > div[class] > div[class] > div > div > div:not([style*="display: none"])');
-                    for (const i of s) {
-                        const s = Object.keys(i).find((e => e.includes("__reactFiber")));
-                        if (s) {
-                            const d = i[s];
-                            if (d?.pendingProps?.children?.props?.match?.__fragmentPropName?.includes("adsSideFeedUnit")) return i.style.display = "none", 
-                            void e.disconnect();
-                        }
-                    }
-                }));
-                e.observe(document.documentElement, {
-                    childList: !0,
-                    subtree: !0
-                });
-            })();
-            Object.defineProperty(Window.prototype.toString, "d7bdccff18fe1619323480eaa54a0ae2", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "d7bdccff18fe1619323480eaa54a0ae2" due to: ' + e);
-        }
-    },
-    '!function(){(new MutationObserver(function(){window.location.href.includes("/watch")&&document.querySelectorAll(\'#watch_feed div:not([class]):not([id]) > div[class*=" "]:not([style*="display: none !important"]) div[class^="_"] > div[class*=" "]\').forEach(function(b){Object.keys(b).forEach(function(a){if(a.includes("__reactFiber")){a=b[a];try{var c,d,e,f;if(null==(c=a)?0:null==(d=c["return"])?0:null==(e=d.memoizedProps)?0:null==(f=e.story)?0:f.sponsored_data){var g=b.closest(\'#watch_feed div[class*=" "] div:not([class]):not([id]) > div[class*=" "]:not([style*="display: none !important"])\');g.style="display: none !important;"}}catch(h){}}})})})).observe(document,{childList:!0,subtree:!0,attributeFilter:["style"]})}();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["21d8e78f9157f1f1188b26cd68182732"] === e) return;
-            new MutationObserver((function() {
-                window.location.href.includes("/watch") && document.querySelectorAll('#watch_feed div:not([class]):not([id]) > div[class*=" "]:not([style*="display: none !important"]) div[class^="_"] > div[class*=" "]').forEach((function(e) {
-                    Object.keys(e).forEach((function(t) {
-                        if (t.includes("__reactFiber")) {
-                            t = e[t];
-                            try {
-                                var n, o, r, i;
-                                null != (n = t) && null != (o = n.return) && null != (r = o.memoizedProps) && null != (i = r.story) && i.sponsored_data && (e.closest('#watch_feed div[class*=" "] div:not([class]):not([id]) > div[class*=" "]:not([style*="display: none !important"])').style = "display: none !important;");
-                            } catch (e) {}
-                        }
-                    }));
-                }));
-            })).observe(document, {
-                childList: !0,
-                subtree: !0,
-                attributeFilter: [ "style" ]
-            });
-            Object.defineProperty(Window.prototype.toString, "21d8e78f9157f1f1188b26cd68182732", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "21d8e78f9157f1f1188b26cd68182732" due to: ' + e);
-        }
-    },
-    '!function(){if(location.href.includes("marketplace/item")){var b=0,d=[];new MutationObserver(function(){document.querySelectorAll("div[aria-label=\'Marketplace listing viewer\'] > div div + div + span:not([style*=\'display: none\']), #ssrb_feed_start + div > div div + div + span:not([style*=\'display: none\'])").forEach(function(e){Object.keys(e).forEach(function(a){if(a.includes("__reactEvents")||a.includes("__reactProps")){a=e[a];try{if(a.children?.props?.children?.props?.adId){b++,e.style="display: none !important;";var f=e.querySelector("a[href][aria-label]:not([aria-hidden])");f&&(d.push(["Ad blocked based on property ["+b+"] -> "+f.ariaLabel]),console.table(d))}}catch(a){}}})})}).observe(document,{childList:!0,subtree:!0})}}();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString.b5ee651ceb5b17d69e521c7d45d2dc1f === e) return;
-            !function() {
-                if (location.href.includes("marketplace/item")) {
-                    var e = 0, r = [];
-                    new MutationObserver((function() {
-                        document.querySelectorAll("div[aria-label='Marketplace listing viewer'] > div div + div + span:not([style*='display: none']), #ssrb_feed_start + div > div div + div + span:not([style*='display: none'])").forEach((function(t) {
-                            Object.keys(t).forEach((function(i) {
-                                if (i.includes("__reactEvents") || i.includes("__reactProps")) {
-                                    i = t[i];
-                                    try {
-                                        if (i.children?.props?.children?.props?.adId) {
-                                            e++, t.style = "display: none !important;";
-                                            var n = t.querySelector("a[href][aria-label]:not([aria-hidden])");
-                                            n && (r.push([ "Ad blocked based on property [" + e + "] -> " + n.ariaLabel ]), 
-                                            console.table(r));
-                                        }
-                                    } catch (i) {}
-                                }
-                            }));
-                        }));
-                    })).observe(document, {
-                        childList: !0,
-                        subtree: !0
-                    });
-                }
-            }();
-            Object.defineProperty(Window.prototype.toString, "b5ee651ceb5b17d69e521c7d45d2dc1f", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "b5ee651ceb5b17d69e521c7d45d2dc1f" due to: ' + e);
-        }
-    },
-    '!function(){var e=new MutationObserver(function(){document.querySelectorAll(\'[id^="substream"] > div:not(.hidden_elem) div[id^="hyperfeed_story_id"]\').forEach(function(e){function t(e,t){for(s=e.querySelectorAll(\'.userContentWrapper h5 + div[data-testid*="sub"] a [class] [class]\'),socheck=0;socheck<s.length;socheck++)s[socheck].innerText.contains(t)&&(c=["1"],d=["1"],i=["1"],r=l=a=1,socheck=s.length)}function o(e,t,o,n,a){s=e.querySelectorAll(\'.userContentWrapper h5 + div[data-testid*="sub"] a [data-content=\'+t+"]"),c=e.querySelectorAll(\'.userContentWrapper h5 + div[data-testid*="sub"] a [data-content=\'+o+"]"),d=e.querySelectorAll(\'.userContentWrapper h5 + div[data-testid*="sub"] a [data-content=\'+n+"]"),i=e.querySelectorAll(\'.userContentWrapper h5 + div[data-testid*="sub"] a [data-content=\'+a+"]"),0==s.length&&(s=e.querySelectorAll(\'.userContentWrapper h5 + div[data-testid*="label"] a [data-content=\'+t+"]"),c=e.querySelectorAll(\'.userContentWrapper h5 + div[data-testid*="label"] a [data-content=\'+o+"]"),d=e.querySelectorAll(\'.userContentWrapper h5 + div[data-testid*="label"] a [data-content=\'+n+"]"),i=e.querySelectorAll(\'.userContentWrapper h5 + div[data-testid*="label"] a [data-content=\'+a+"]"))}var n=0,a=0,l=0,r=0,s=0,c=0,d=0,i=0,u=e.querySelectorAll("div[style=\'width: 100%\'] > a[href*=\'oculus.com/quest\'] > div"),h=document.querySelector("[lang]").lang,g=e.querySelectorAll(\'a[ajaxify*="ad_id"] > span\'),p=e.querySelectorAll(\'a[href*="ads/about"]\');if("display: none !important;"!=e.getAttribute("style")&&!e.classList.contains("hidden_elem")){if(0<g.length||0<p.length){f+=1;var y=e.querySelectorAll("a[href]")[2].innerText;console.log("--------"),console.log("Ad hidden from: "+y),console.log("Total ads hidden: "+f),console.log("F length: "+g.length),console.log("H length: "+p.length),console.log("--------"),e.style="display:none!important;"}else if(0<u.length){f+=1;y="Facebook";console.log("--------"),console.log("Ad hidden from: "+y),console.log("Total ads hidden: "+f),console.log("Non-declared ad"),console.log("--------"),e.style="display:none!important;"}else"af"==h?t(e,"Geborg"):"de"==h||"nl"==h?o(e,"G","e","s","n"):"am"==h?t(e,"የተከፈለበት ማስታወቂያ"):"ar"==h?t(e,"مُموَّل"):"as"==h?t(e,"পৃষ্ঠপোষকতা কৰা"):"az"==h?t(e,"Sponsor dəstəkli"):"co"==h?t(e,"Spunsurizatu"):"bs"==h||"sl"==h||"cs"==h?o(e,"S","p","z","n"):"da"==h||"en"==h||"et"==h||"fy"==h||"it"==h||"ku"==h||"nb"==h||"nn"==h||"pl"==h||"sq"==h||"sv"==h||"zz"==h?document.querySelector("body").className.includes("Locale_en_UD")?t(e,"pəɹosuodS"):o(e,"S","p","s","n"):"be"==h?t(e,"Рэклама"):"bg"==h?t(e,"Спонсорирано"):"mk"==h?t(e,"Спонзорирано"):"br"==h?t(e,"Paeroniet"):"ca"==h?t(e,"Patrocinat"):"gl"==h||"pt"==h?t(e,"Patrocinado"):"bn"==h?t(e,"সৌজন্যে"):"cb"==h?t(e,"پاڵپشتیکراو"):"cx"==h?o(e,"G","i","s","n"):"cy"==h?t(e,"Noddwyd"):"el"==h?t(e,"Χορηγούμενη"):"eo"==h?t(e,"Reklamo"):"es"==h?o(e,"P","u","c","d"):"eu"==h?t(e,"Babestua"):"fa"==h?t(e,"دارای پشتیبانی مالی"):"ff"==h?t(e,"Yoɓanaama"):"fi"==h?t(e,"Sponsoroitu"):"fo"==h?t(e,"Stuðlað"):"fr"==h?document.querySelector("body").className.includes("Locale_fr_FR")?o(e,"S","p","s","n"):o(e,"C","o","m","n"):"ga"==h?t(e,"Urraithe"):"gn"==h?t(e,"Oñepatrosinapyre"):"gu"==h?t(e,"પ્રાયોજિત"):"ha"==h?t(e,"Daukar Nauyi"):"he"==h?t(e,"ממומן"):"hr"==h?t(e,"Plaćeni oglas"):"ht"==h?t(e,"Peye"):"ne"==h||"mr"==h||"hi"==h?t(e,"प्रायोजित"):"hu"==h?o(e,"H","i","r","d"):"hy"==h?t(e,"Գովազդային"):"id"==h?o(e,"B","e","p","n"):"is"==h?t(e,"Kostað"):"ja"==h?t(e,"広告"):"ms"==h?t(e,"Ditaja"):"jv"==h?t(e,"Disponsori"):"ka"==h?t(e,"რეკლამა"):"kk"==h?t(e,"Демеушілік көрсеткен"):"km"==h?t(e,"បានឧបត្ថម្ភ"):"kn"==h?t(e,"ಪ್ರಾಯೋಜಿತ"):"ko"==h?t(e,"Sponsored"):"ky"==h?t(e,"Демөөрчүлөнгөн"):"lo"==h?t(e,"ຜູ້ສະໜັບສະໜູນ"):"lt"==h?t(e,"Remiama"):"lv"==h?t(e,"Apmaksāta reklāma"):"mg"==h?t(e,"Misy Mpiantoka"):"ml"==h?t(e,"സ്പോൺസർ ചെയ്തത്"):"mn"==h?t(e,"Ивээн тэтгэсэн"):"mt"==h?t(e,"Sponsorjat"):"my"==h?t(e,"ပံ့ပိုးထားသည်"):"or"==h?t(e,"ପ୍ରଯୋଜିତ"):"pa"==h?t(e,"ਸਰਪ੍ਰਸਤੀ ਪ੍ਰਾਪਤ"):"ps"==h?t(e,"تمويل شوي"):"ro"==h?t(e,"Sponsorizat"):"ru"==h||"uk"==h?t(e,"Реклама"):"rw"==h?t(e,"Icyamamaza ndasukirwaho"):"sc"==h?t(e,"Patronadu de"):"si"==h?t(e,"අනුග්‍රාහක"):"sk"==h?t(e,"Sponzorované"):"sn"==h?t(e,"Zvabhadharirwa"):"so"==h?t(e,"La maalgeliyey"):"sr"==h?t(e,"Спонзорисано"):"sw"==h?t(e,"Imedhaminiwa"):"sy"==h?t(e,"ܒܘܕܩܐ ܡܡܘܘܢܐ"):"sz"==h?t(e,"Szpōnzorowane"):"ta"==h?t(e,"விளம்பரம்"):"te"==h?t(e,"ప్రాయోజితం చేయబడింది"):"tg"==h?t(e,"Бо сарпарастӣ"):"th"==h?t(e,"ได้รับการสนับสนุน"):"tl"==h?t(e,"May Sponsor"):"tr"==h?t(e,"Sponsorlu"):"tt"==h?t(e,"Хәйрияче"):"tz"==h?t(e,"ⵉⴷⵍ"):"ur"==h?t(e,"سپانسرڈ"):"uz"==h?t(e,"Reklama"):"vi"==h?t(e,"Được tài trợ"):"zh-Hans"==h?t(e,"赞助内容"):"zh-Hant"==h&&t(e,"贊助");if(0<s.length&&0<c.length&&0<d.length&&0<i.length){for(cont=0;cont<s.length;cont++)0<s[cont].offsetHeight&&(cont=s.length,n=1);for(cont1=0;cont1<c.length;cont1++)0<c[cont1].offsetHeight&&(cont1=c.length,a=1);for(cont2=0;cont2<d.length;cont2++)0<d[cont2].offsetHeight&&(cont2=d.length,l=1);for(cont3=0;cont3<i.length;cont3++)0<i[cont3].offsetHeight&&(cont3=i.length,r=1);if(1==n&&1==a&&1==l&&1==r){y=e.querySelectorAll("a[href]")[2].innerText;f+=1,console.log("--------"),console.log("Ad hidden from: "+y),console.log("Total ads hidden: "+f),console.log("--------"),e.style="display:none!important;"}}}})}),f=0;e.observe(document,{childList:!0,subtree:!0,characterData:!0,attributes:!0})}();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString.c20e5794d5ff5adb72bad3179e0fd5f5 === e) return;
-            !function() {
-                var e = new MutationObserver((function() {
-                    document.querySelectorAll('[id^="substream"] > div:not(.hidden_elem) div[id^="hyperfeed_story_id"]').forEach((function(e) {
-                        function o(e, t) {
-                            for (c = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="sub"] a [class] [class]'), 
-                            socheck = 0; socheck < c.length; socheck++) c[socheck].innerText.contains(t) && (d = [ "1" ], 
-                            i = [ "1" ], u = [ "1" ], s = r = l = 1, socheck = c.length);
-                        }
-                        function n(e, t, o, n, a) {
-                            c = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="sub"] a [data-content=' + t + "]"), 
-                            d = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="sub"] a [data-content=' + o + "]"), 
-                            i = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="sub"] a [data-content=' + n + "]"), 
-                            u = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="sub"] a [data-content=' + a + "]"), 
-                            0 == c.length && (c = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="label"] a [data-content=' + t + "]"), 
-                            d = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="label"] a [data-content=' + o + "]"), 
-                            i = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="label"] a [data-content=' + n + "]"), 
-                            u = e.querySelectorAll('.userContentWrapper h5 + div[data-testid*="label"] a [data-content=' + a + "]"));
-                        }
-                        var a = 0, l = 0, r = 0, s = 0, c = 0, d = 0, i = 0, u = 0, h = e.querySelectorAll("div[style='width: 100%'] > a[href*='oculus.com/quest'] > div"), g = document.querySelector("[lang]").lang, f = e.querySelectorAll('a[ajaxify*="ad_id"] > span'), p = e.querySelectorAll('a[href*="ads/about"]');
-                        if ("display: none !important;" != e.getAttribute("style") && !e.classList.contains("hidden_elem")) {
-                            if (0 < f.length || 0 < p.length) {
-                                t += 1;
-                                var y = e.querySelectorAll("a[href]")[2].innerText;
-                                console.log("--------"), console.log("Ad hidden from: " + y), console.log("Total ads hidden: " + t), 
-                                console.log("F length: " + f.length), console.log("H length: " + p.length), console.log("--------"), 
-                                e.style = "display:none!important;";
-                            } else if (0 < h.length) {
-                                t += 1;
-                                y = "Facebook";
-                                console.log("--------"), console.log("Ad hidden from: " + y), console.log("Total ads hidden: " + t), 
-                                console.log("Non-declared ad"), console.log("--------"), e.style = "display:none!important;";
-                            } else "af" == g ? o(e, "Geborg") : "de" == g || "nl" == g ? n(e, "G", "e", "s", "n") : "am" == g ? o(e, "የተከፈለበት ማስታወቂያ") : "ar" == g ? o(e, "مُموَّل") : "as" == g ? o(e, "পৃষ্ঠপোষকতা কৰা") : "az" == g ? o(e, "Sponsor dəstəkli") : "co" == g ? o(e, "Spunsurizatu") : "bs" == g || "sl" == g || "cs" == g ? n(e, "S", "p", "z", "n") : "da" == g || "en" == g || "et" == g || "fy" == g || "it" == g || "ku" == g || "nb" == g || "nn" == g || "pl" == g || "sq" == g || "sv" == g || "zz" == g ? document.querySelector("body").className.includes("Locale_en_UD") ? o(e, "pəɹosuodS") : n(e, "S", "p", "s", "n") : "be" == g ? o(e, "Рэклама") : "bg" == g ? o(e, "Спонсорирано") : "mk" == g ? o(e, "Спонзорирано") : "br" == g ? o(e, "Paeroniet") : "ca" == g ? o(e, "Patrocinat") : "gl" == g || "pt" == g ? o(e, "Patrocinado") : "bn" == g ? o(e, "সৌজন্যে") : "cb" == g ? o(e, "پاڵپشتیکراو") : "cx" == g ? n(e, "G", "i", "s", "n") : "cy" == g ? o(e, "Noddwyd") : "el" == g ? o(e, "Χορηγούμενη") : "eo" == g ? o(e, "Reklamo") : "es" == g ? n(e, "P", "u", "c", "d") : "eu" == g ? o(e, "Babestua") : "fa" == g ? o(e, "دارای پشتیبانی مالی") : "ff" == g ? o(e, "Yoɓanaama") : "fi" == g ? o(e, "Sponsoroitu") : "fo" == g ? o(e, "Stuðlað") : "fr" == g ? document.querySelector("body").className.includes("Locale_fr_FR") ? n(e, "S", "p", "s", "n") : n(e, "C", "o", "m", "n") : "ga" == g ? o(e, "Urraithe") : "gn" == g ? o(e, "Oñepatrosinapyre") : "gu" == g ? o(e, "પ્રાયોજિત") : "ha" == g ? o(e, "Daukar Nauyi") : "he" == g ? o(e, "ממומן") : "hr" == g ? o(e, "Plaćeni oglas") : "ht" == g ? o(e, "Peye") : "ne" == g || "mr" == g || "hi" == g ? o(e, "प्रायोजित") : "hu" == g ? n(e, "H", "i", "r", "d") : "hy" == g ? o(e, "Գովազդային") : "id" == g ? n(e, "B", "e", "p", "n") : "is" == g ? o(e, "Kostað") : "ja" == g ? o(e, "広告") : "ms" == g ? o(e, "Ditaja") : "jv" == g ? o(e, "Disponsori") : "ka" == g ? o(e, "რეკლამა") : "kk" == g ? o(e, "Демеушілік көрсеткен") : "km" == g ? o(e, "បានឧបត្ថម្ភ") : "kn" == g ? o(e, "ಪ್ರಾಯೋಜಿತ") : "ko" == g ? o(e, "Sponsored") : "ky" == g ? o(e, "Демөөрчүлөнгөн") : "lo" == g ? o(e, "ຜູ້ສະໜັບສະໜູນ") : "lt" == g ? o(e, "Remiama") : "lv" == g ? o(e, "Apmaksāta reklāma") : "mg" == g ? o(e, "Misy Mpiantoka") : "ml" == g ? o(e, "സ്പോൺസർ ചെയ്തത്") : "mn" == g ? o(e, "Ивээн тэтгэсэн") : "mt" == g ? o(e, "Sponsorjat") : "my" == g ? o(e, "ပံ့ပိုးထားသည်") : "or" == g ? o(e, "ପ୍ରଯୋଜିତ") : "pa" == g ? o(e, "ਸਰਪ੍ਰਸਤੀ ਪ੍ਰਾਪਤ") : "ps" == g ? o(e, "تمويل شوي") : "ro" == g ? o(e, "Sponsorizat") : "ru" == g || "uk" == g ? o(e, "Реклама") : "rw" == g ? o(e, "Icyamamaza ndasukirwaho") : "sc" == g ? o(e, "Patronadu de") : "si" == g ? o(e, "අනුග්‍රාහක") : "sk" == g ? o(e, "Sponzorované") : "sn" == g ? o(e, "Zvabhadharirwa") : "so" == g ? o(e, "La maalgeliyey") : "sr" == g ? o(e, "Спонзорисано") : "sw" == g ? o(e, "Imedhaminiwa") : "sy" == g ? o(e, "ܒܘܕܩܐ ܡܡܘܘܢܐ") : "sz" == g ? o(e, "Szpōnzorowane") : "ta" == g ? o(e, "விளம்பரம்") : "te" == g ? o(e, "ప్రాయోజితం చేయబడింది") : "tg" == g ? o(e, "Бо сарпарастӣ") : "th" == g ? o(e, "ได้รับการสนับสนุน") : "tl" == g ? o(e, "May Sponsor") : "tr" == g ? o(e, "Sponsorlu") : "tt" == g ? o(e, "Хәйрияче") : "tz" == g ? o(e, "ⵉⴷⵍ") : "ur" == g ? o(e, "سپانسرڈ") : "uz" == g ? o(e, "Reklama") : "vi" == g ? o(e, "Được tài trợ") : "zh-Hans" == g ? o(e, "赞助内容") : "zh-Hant" == g && o(e, "贊助");
-                            if (0 < c.length && 0 < d.length && 0 < i.length && 0 < u.length) {
-                                for (cont = 0; cont < c.length; cont++) 0 < c[cont].offsetHeight && (cont = c.length, 
-                                a = 1);
-                                for (cont1 = 0; cont1 < d.length; cont1++) 0 < d[cont1].offsetHeight && (cont1 = d.length, 
-                                l = 1);
-                                for (cont2 = 0; cont2 < i.length; cont2++) 0 < i[cont2].offsetHeight && (cont2 = i.length, 
-                                r = 1);
-                                for (cont3 = 0; cont3 < u.length; cont3++) 0 < u[cont3].offsetHeight && (cont3 = u.length, 
-                                s = 1);
-                                if (1 == a && 1 == l && 1 == r && 1 == s) {
-                                    y = e.querySelectorAll("a[href]")[2].innerText;
-                                    t += 1, console.log("--------"), console.log("Ad hidden from: " + y), console.log("Total ads hidden: " + t), 
-                                    console.log("--------"), e.style = "display:none!important;";
-                                }
-                            }
-                        }
-                    }));
-                })), t = 0;
-                e.observe(document, {
-                    childList: !0,
-                    subtree: !0,
-                    characterData: !0,
-                    attributes: !0
-                });
-            }();
-            Object.defineProperty(Window.prototype.toString, "c20e5794d5ff5adb72bad3179e0fd5f5", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "c20e5794d5ff5adb72bad3179e0fd5f5" due to: ' + e);
-        }
-    },
-    '!function(){var e,o;0<window.location.href.indexOf("marketplace")&&(e=new MutationObserver(function(){document.querySelectorAll(\'div[role="main"] div[class][style^="max-width:"] div[class][style^="max-width:"]\').forEach(function(e){var l,t=e.querySelectorAll(\'a[href*="ads/about"]\');"display: none !important;"==e.getAttribute("style")||e.classList.contains("hidden_elem")||0<t.length&&(o+=1,""==(l=e.querySelectorAll("a[href]")[0].innerText)&&(l=e.querySelectorAll("a[href]")[1].innerText),""==l&&(l=e.querySelectorAll("a[href]")[0].querySelectorAll("a[aria-label]")[0]?.getAttribute("aria-label")),console.log("--------"),console.log("Ad hidden from: "+l),console.log("Total ads hidden: "+o),console.log("H length: "+t.length),console.log("--------"),e.style="display:none!important;")})}),o=0,e.observe(document,{childList:!0,subtree:!0}))}();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString.e6189b04febc53c553beba1616cdd078 === e) return;
-            !function() {
-                var e, t;
-                0 < window.location.href.indexOf("marketplace") && (e = new MutationObserver((function() {
-                    document.querySelectorAll('div[role="main"] div[class][style^="max-width:"] div[class][style^="max-width:"]').forEach((function(e) {
-                        var o, l = e.querySelectorAll('a[href*="ads/about"]');
-                        "display: none !important;" == e.getAttribute("style") || e.classList.contains("hidden_elem") || 0 < l.length && (t += 1, 
-                        "" == (o = e.querySelectorAll("a[href]")[0].innerText) && (o = e.querySelectorAll("a[href]")[1].innerText), 
-                        "" == o && (o = e.querySelectorAll("a[href]")[0].querySelectorAll("a[aria-label]")[0]?.getAttribute("aria-label")), 
-                        console.log("--------"), console.log("Ad hidden from: " + o), console.log("Total ads hidden: " + t), 
-                        console.log("H length: " + l.length), console.log("--------"), e.style = "display:none!important;");
-                    }));
-                })), t = 0, e.observe(document, {
-                    childList: !0,
-                    subtree: !0
-                }));
-            }();
-            Object.defineProperty(Window.prototype.toString, "e6189b04febc53c553beba1616cdd078", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "e6189b04febc53c553beba1616cdd078" due to: ' + e);
-        }
-    },
-    '!function(){new MutationObserver(function(){document.querySelectorAll("div[role=\\"main\\"] div[class][style^=\\"max-width:\\"] div[class][style*=\\"max-width:\\"]:not([style*=\\"display: none\\"])").forEach(function(c){Object.keys(c).forEach(function(a){if(a.includes("__reactEvents")||a.includes("__reactProps")){a=c[a];try{a.children?.props?.adSurface?.startsWith("Marketplace")&&(c.style="display: none !important;")}catch(a){}}})})}).observe(document,{childList:!0,subtree:!0})}();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["9201edecacad19e52ef0fb416ec8c902"] === e) return;
-            new MutationObserver((function() {
-                document.querySelectorAll('div[role="main"] div[class][style^="max-width:"] div[class][style*="max-width:"]:not([style*="display: none"])').forEach((function(e) {
-                    Object.keys(e).forEach((function(t) {
-                        if (t.includes("__reactEvents") || t.includes("__reactProps")) {
-                            t = e[t];
-                            try {
-                                t.children?.props?.adSurface?.startsWith("Marketplace") && (e.style = "display: none !important;");
-                            } catch (t) {}
-                        }
-                    }));
-                }));
-            })).observe(document, {
-                childList: !0,
-                subtree: !0
-            });
-            Object.defineProperty(Window.prototype.toString, "9201edecacad19e52ef0fb416ec8c902", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "9201edecacad19e52ef0fb416ec8c902" due to: ' + e);
-        }
-    },
-    '!function(){if(window.location.href.includes("/marketplace/")){new MutationObserver(function(){document.querySelectorAll(\'div[data-testid="marketplace_home_feed"] div[class][data-testid^="MarketplaceUpsell-"] > div > div\').forEach(function(e){var t=e.outerHTML;t&&void 0!==t&&!0===t.includes("/ads/about/")&&(e.style="display:none!important;")})}).observe(document,{childList:!0,subtree:!0})}}();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["53a0bb610abe908070c9b157e3ec2214"] === e) return;
-            window.location.href.includes("/marketplace/") && new MutationObserver((function() {
-                document.querySelectorAll('div[data-testid="marketplace_home_feed"] div[class][data-testid^="MarketplaceUpsell-"] > div > div').forEach((function(e) {
-                    var t = e.outerHTML;
-                    t && void 0 !== t && !0 === t.includes("/ads/about/") && (e.style = "display:none!important;");
-                }));
-            })).observe(document, {
-                childList: !0,
-                subtree: !0
-            });
-            Object.defineProperty(Window.prototype.toString, "53a0bb610abe908070c9b157e3ec2214", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "53a0bb610abe908070c9b157e3ec2214" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "9088d5c32f1674c33e89d23b0bf2b144" due to: ' + e);
         }
     },
     "(function(){var c=document.addEventListener;document.addEventListener=function(a,b,d,e){\"click\"!=a&&-1==b.toString().indexOf('about:blank')&&c(a,b,d,e)}.bind(document);})();": () => {
@@ -11574,126 +11250,6 @@ export const localScriptRules = {
             });
         } catch (t) {
             console.error('Error executing AG js rule with uniqueId "1042964cb83bcd640195f230a152da77" due to: ' + t);
-        }
-    },
-    '!function(){var e=new MutationObserver(function(){document.querySelectorAll(\'div[id^="substream_"] div[id^="hyperfeed_story_id"]\').forEach(function(e){var n=e.querySelectorAll(".userContentWrapper > div[class] > div[class] > div[class]"),o=e.querySelectorAll(".userContentWrapper > div[class] > div > div span");if("display: none !important;"!=e.getAttribute("style")){if(0<n.length&&n[0].innerText.contains("Suggested")){console.log("--------"),t+=1;var l=e.querySelectorAll("a[href]")[2].innerText;console.log("Annoyance hidden from: "+l),console.log("Total annoyances Hidden: "+t),console.log("F length: "+n.length),console.log("--------"),e.style="display:none!important;"}if(0<o.length&&o[0].innerText.contains("People you may know"))console.log("--------"),t+=1,""==(l=e.querySelectorAll("a[href]")[2].innerText)&&(l="Facebook"),console.log("Annoyance hidden from: "+l),console.log("Total annoyances Hidden: "+t),console.log("F length: "+n.length),console.log("--------"),e.style="display:none!important;"}})}),t=0;e.observe(document,{childList:!0,subtree:!0})}();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["2d5a4b03ebe219d77f997c0a788b2eed"] === e) return;
-            !function() {
-                var e = new MutationObserver((function() {
-                    document.querySelectorAll('div[id^="substream_"] div[id^="hyperfeed_story_id"]').forEach((function(e) {
-                        var n = e.querySelectorAll(".userContentWrapper > div[class] > div[class] > div[class]"), t = e.querySelectorAll(".userContentWrapper > div[class] > div > div span");
-                        if ("display: none !important;" != e.getAttribute("style")) {
-                            if (0 < n.length && n[0].innerText.contains("Suggested")) {
-                                console.log("--------"), o += 1;
-                                var l = e.querySelectorAll("a[href]")[2].innerText;
-                                console.log("Annoyance hidden from: " + l), console.log("Total annoyances Hidden: " + o), 
-                                console.log("F length: " + n.length), console.log("--------"), e.style = "display:none!important;";
-                            }
-                            0 < t.length && t[0].innerText.contains("People you may know") && (console.log("--------"), 
-                            o += 1, "" == (l = e.querySelectorAll("a[href]")[2].innerText) && (l = "Facebook"), 
-                            console.log("Annoyance hidden from: " + l), console.log("Total annoyances Hidden: " + o), 
-                            console.log("F length: " + n.length), console.log("--------"), e.style = "display:none!important;");
-                        }
-                    }));
-                })), o = 0;
-                e.observe(document, {
-                    childList: !0,
-                    subtree: !0
-                });
-            }();
-            Object.defineProperty(Window.prototype.toString, "2d5a4b03ebe219d77f997c0a788b2eed", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "2d5a4b03ebe219d77f997c0a788b2eed" due to: ' + e);
-        }
-    },
-    'new MutationObserver(function(){document.querySelectorAll(\'div[role="feed"] > div[data-pagelet^="FeedUnit"] > div[class]:not([style*="height"])\').forEach(function(e){"display: none !important;"==e.getAttribute("style")||e.classList.contains("hidden_elem")||e.querySelectorAll("div[aria-posinset] div[style] div[class] > div[class] > div[class] > div[class] > span")[0].innerText.contains("Suggested for you")&&(console.log("--------"),console.log("Annoyances hidden (Suggested for you)"),e.style="display:none!important;")})}).observe(document,{childList:!0,subtree:!0});': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["03e8fcb55c09dc00ea2c8fbc43ccc9ac"] === e) return;
-            new MutationObserver((function() {
-                document.querySelectorAll('div[role="feed"] > div[data-pagelet^="FeedUnit"] > div[class]:not([style*="height"])').forEach((function(e) {
-                    "display: none !important;" == e.getAttribute("style") || e.classList.contains("hidden_elem") || e.querySelectorAll("div[aria-posinset] div[style] div[class] > div[class] > div[class] > div[class] > span")[0].innerText.contains("Suggested for you") && (console.log("--------"), 
-                    console.log("Annoyances hidden (Suggested for you)"), e.style = "display:none!important;");
-                }));
-            })).observe(document, {
-                childList: !0,
-                subtree: !0
-            });
-            Object.defineProperty(Window.prototype.toString, "03e8fcb55c09dc00ea2c8fbc43ccc9ac", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "03e8fcb55c09dc00ea2c8fbc43ccc9ac" due to: ' + e);
-        }
-    },
-    'new MutationObserver(function(){document.querySelectorAll(\'div[role="feed"] > span\').forEach(function(e){"display: none !important;"==e.getAttribute("style")||e.classList.contains("hidden_elem")||e.querySelectorAll("div[aria-posinset] div[style] div[class] > div[class] > div[class] > div[class] > span")[0].innerText.contains("Suggested for you")&&(console.log("--------"),console.log("Annoyances hidden (Suggested for you)"),e.style="display:none!important;")})}).observe(document,{childList:!0,subtree:!0});': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["7658e09af099cd1524b0fba53dd1cb1c"] === e) return;
-            new MutationObserver((function() {
-                document.querySelectorAll('div[role="feed"] > span').forEach((function(e) {
-                    "display: none !important;" == e.getAttribute("style") || e.classList.contains("hidden_elem") || e.querySelectorAll("div[aria-posinset] div[style] div[class] > div[class] > div[class] > div[class] > span")[0].innerText.contains("Suggested for you") && (console.log("--------"), 
-                    console.log("Annoyances hidden (Suggested for you)"), e.style = "display:none!important;");
-                }));
-            })).observe(document, {
-                childList: !0,
-                subtree: !0
-            });
-            Object.defineProperty(Window.prototype.toString, "7658e09af099cd1524b0fba53dd1cb1c", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "7658e09af099cd1524b0fba53dd1cb1c" due to: ' + e);
-        }
-    },
-    '!function(){var b=0,d=[];new MutationObserver(function(){document.querySelectorAll("#ssrb_feed_start + div > div[class]:not([style*=\\"display: none\\"]), #ssrb_feed_start + div span > h3 ~ div[class]:not([style*=\\"display: none\\"]), #ssrb_feed_start + div h3~ div[class]:not([style*=\\"display: none\\"]), #ssrb_feed_start + div h3 ~ div > div[class]:not([style*=\\"display: none\\"]), div[role=\\"main\\"] div > h3 ~ div > div[class]:not([style*=\\"display: none\\"])").forEach(function(e){Object.keys(e).forEach(function(a){if(a.includes("__reactEvents")||a.includes("__reactProps")){a=e[a];try{if(a.children?.props?.category?.includes("SHOWCASE")||a.children?.props?.children?.props?.category?.includes("SHOWCASE")||a.children?.props?.children?.props?.feedEdge?.category?.includes("SHOWCASE")||a.children?.props?.category?.includes("FB_SHORTS")||a.children?.props?.children?.props?.category?.includes("FB_SHORTS")||a.children?.props?.children?.props?.feedEdge?.category?.includes("FB_SHORTS")){b++,e.style="display: none !important;";var f=e.querySelector("a[href][aria-label]:not([aria-hidden])");f&&(d.push(["SHOWCASE post blocked based on property ["+b+"] -> "+f.ariaLabel]),console.table(d))}}catch(a){}}})})}).observe(document,{childList:!0,subtree:!0})}();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString.b1df923a63194358ca6f0ed1143474e5 === e) return;
-            !function() {
-                var e = 0, r = [];
-                new MutationObserver((function() {
-                    document.querySelectorAll('#ssrb_feed_start + div > div[class]:not([style*="display: none"]), #ssrb_feed_start + div span > h3 ~ div[class]:not([style*="display: none"]), #ssrb_feed_start + div h3~ div[class]:not([style*="display: none"]), #ssrb_feed_start + div h3 ~ div > div[class]:not([style*="display: none"]), div[role="main"] div > h3 ~ div > div[class]:not([style*="display: none"])').forEach((function(n) {
-                        Object.keys(n).forEach((function(s) {
-                            if (s.includes("__reactEvents") || s.includes("__reactProps")) {
-                                s = n[s];
-                                try {
-                                    if (s.children?.props?.category?.includes("SHOWCASE") || s.children?.props?.children?.props?.category?.includes("SHOWCASE") || s.children?.props?.children?.props?.feedEdge?.category?.includes("SHOWCASE") || s.children?.props?.category?.includes("FB_SHORTS") || s.children?.props?.children?.props?.category?.includes("FB_SHORTS") || s.children?.props?.children?.props?.feedEdge?.category?.includes("FB_SHORTS")) {
-                                        e++, n.style = "display: none !important;";
-                                        var t = n.querySelector("a[href][aria-label]:not([aria-hidden])");
-                                        t && (r.push([ "SHOWCASE post blocked based on property [" + e + "] -> " + t.ariaLabel ]), 
-                                        console.table(r));
-                                    }
-                                } catch (s) {}
-                            }
-                        }));
-                    }));
-                })).observe(document, {
-                    childList: !0,
-                    subtree: !0
-                });
-            }();
-            Object.defineProperty(Window.prototype.toString, "b1df923a63194358ca6f0ed1143474e5", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "b1df923a63194358ca6f0ed1143474e5" due to: ' + e);
         }
     },
     "setInterval(function() { var el = document.querySelector('.howto-video video'); if (el) { el.pause(); el.src = ''; }}, 100);": () => {

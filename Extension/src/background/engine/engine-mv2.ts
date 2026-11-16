@@ -41,6 +41,8 @@ import {
     SettingsApi,
     DocumentBlockApi,
     network,
+    CanvasProtectionApi,
+    CanvasProtectionResultSource,
 } from '../api';
 import { NotifierType } from '../../common/constants';
 
@@ -87,9 +89,10 @@ export class Engine implements TsWebExtensionEngine {
         const configuration = await Engine.getConfiguration();
 
         logger.info('[ext.Engine.start]: Start tswebextension...');
-        const { conversionErrors } = await this.api.start(configuration);
+        const { conversionErrors, canvasProtection } = await this.api.start(configuration);
 
         Engine.logConversionErrors(conversionErrors);
+        CanvasProtectionApi.logResult(CanvasProtectionResultSource.Start, canvasProtection);
 
         const rulesCount = this.api.getRulesCount();
         logger.info(`[ext.Engine.start]: tswebextension is started. Rules count: ${rulesCount}`);
@@ -105,9 +108,10 @@ export class Engine implements TsWebExtensionEngine {
         const configuration = await Engine.getConfiguration();
 
         logger.info('[ext.Engine.update]: Update tswebextension configuration...');
-        const { conversionErrors } = await this.api.configure(configuration);
+        const { conversionErrors, canvasProtection } = await this.api.configure(configuration);
 
         Engine.logConversionErrors(conversionErrors);
+        CanvasProtectionApi.logResult(CanvasProtectionResultSource.Configure, canvasProtection);
 
         const rulesCount = this.api.getRulesCount();
         logger.info(`[ext.Engine.update]: tswebextension configuration is updated. Rules count: ${rulesCount}`);

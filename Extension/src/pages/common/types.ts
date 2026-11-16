@@ -38,6 +38,11 @@ export enum NotificationType {
      * Notification type for error state.
      */
     Error = 'error',
+
+    /**
+     * Notification type for a warning with an information icon.
+     */
+    Warning = 'warning',
 }
 
 /**
@@ -92,6 +97,12 @@ export type NotificationParams = {
      * Otherwise, the notification will be closed automatically (on timeout).
      */
     closeManually?: boolean;
+
+    /**
+     * Called when the user closes the notification with the close button.
+     * Not called when a notification button or the timeout closes it.
+     */
+    onClose?: () => void;
 };
 
 /**

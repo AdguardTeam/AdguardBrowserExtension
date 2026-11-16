@@ -741,6 +741,69 @@ describe('ConfigurationImportApi.applyConfig — full-replace semantics', () => 
         });
     });
 
+    describe('stealth.block_fingerprinting', () => {
+        it('parses stealth.block_fingerprinting=1 (v4) as true', () => {
+            const config = UrlParamParser.parse('scheme_version=4&stealth.block_fingerprinting=1');
+
+            expect(config.stealth.blockFingerprinting).toBe(true);
+        });
+
+        it('parses v3 stealth.block_fingerprinting=false as false', () => {
+            const config = UrlParamParser.parse('stealth.block_fingerprinting=false');
+
+            expect(config.stealth.blockFingerprinting).toBe(false);
+        });
+
+        it('leaves blockFingerprinting undefined when stealth.block_fingerprinting is absent', () => {
+            const config = UrlParamParser.parse('scheme_version=4&stealth.enabled=1');
+
+            expect(config.stealth.blockFingerprinting).toBeUndefined();
+        });
+
+        it('sets stealth-block-fingerprinting=true in built config for v3 true', async () => {
+            const config = UrlParamParser.parse('stealth.block_fingerprinting=true');
+            await configurationImportApi.applyConfig(config);
+
+            const imported = getImportedConfig();
+
+            expect(imported['stealth']['stealth-block-fingerprinting']).toBe(true);
+        });
+
+        it('sets stealth-block-fingerprinting=false in built config when stealth.block_fingerprinting=0', async () => {
+            const config = UrlParamParser.parse('scheme_version=4&stealth.block_fingerprinting=0');
+            await configurationImportApi.applyConfig(config);
+
+            const imported = getImportedConfig();
+
+            expect(imported['stealth']['stealth-block-fingerprinting']).toBe(false);
+        });
+
+        it('sets stealth-block-fingerprinting=false in built config when the param is absent', async () => {
+            const config = UrlParamParser.parse('scheme_version=4&stealth.enabled=1');
+            await configurationImportApi.applyConfig(config);
+
+            const imported = getImportedConfig();
+
+            expect(imported['stealth']['stealth-block-fingerprinting']).toBe(false);
+        });
+
+        describe.skipIf(!__IS_MV3__)('MV3 — user scripts API is unavailable', () => {
+            afterEach(() => {
+                mockIsUserScriptsApiSupported.mockReturnValue(true);
+            });
+
+            it('still imports stealth.block_fingerprinting=1', async () => {
+                mockIsUserScriptsApiSupported.mockReturnValue(false);
+                const config = UrlParamParser.parse('scheme_version=4&stealth.block_fingerprinting=1');
+                await configurationImportApi.applyConfig(config);
+
+                const imported = getImportedConfig();
+
+                expect(imported['stealth']['stealth-block-fingerprinting']).toBe(true);
+            });
+        });
+    });
+
     describe('browsing security — full replace', () => {
         it.skipIf(__IS_MV3__)('sets safebrowsing-enabled=false when absent from URL (MV2 only)', async () => {
             const config = UrlParamParser.parse('scheme_version=4&stealth.enabled=1');

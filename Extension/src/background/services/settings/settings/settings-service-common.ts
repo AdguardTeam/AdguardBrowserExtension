@@ -28,9 +28,12 @@ import {
 import { SettingOption } from '../../../schema';
 import { messageHandler } from '../../../message-handler';
 import { UserAgent } from '../../../../common/user-agent';
+import { logger } from '../../../../common/logger';
 import { engine } from '../../../engine';
 import {
     Categories,
+    CanvasProtectionApi,
+    CanvasProtectionResultSource,
     HitStatsApi,
     SettingsApi,
 } from '../../../api';
@@ -40,6 +43,7 @@ import {
     ForwardFrom,
 } from '../../../../common/forward';
 import { Prefs } from '../../../prefs';
+import { appContext, AppContextKey } from '../../../storages/app';
 import {
     ContextMenuAction,
     contextMenuEvents,
@@ -49,12 +53,10 @@ import { fullscreenUserRulesEditor } from '../../fullscreen-user-rules-editor';
 import { type ExportMessageResponse } from '../types';
 import { type GetOptionsDataResponseCommon } from '../types/types-common';
 import {
-    ABTestManager,
     Telemetry,
     TelemetryEventName,
     TelemetryScreenName,
 } from '../../telemetry';
-import { AG_52740_RULE_LIMITS_B } from '../../telemetry/abtest/constants';
 import { UpdateCheckService } from '../../update-check/update-check-service';
 
 /**
@@ -79,8 +81,16 @@ export abstract class SettingsServiceCommon {
 
         messageHandler.addListener(MessageType.LoadSettingsJson, SettingsServiceCommon.export);
         messageHandler.addListener(MessageType.GenerateShareUrl, SettingsServiceCommon.generateShareUrl);
+        messageHandler.addListener(
+            MessageType.ReapplyCanvasProtection,
+            SettingsServiceCommon.reapplyCanvasProtection,
+        );
 
         settingsEvents.addListener(SettingOption.DisableCollectHits, SettingsServiceCommon.onDisableCollectHitsChange);
+        settingsEvents.addListener(
+            SettingOption.BlockFingerprinting,
+            SettingsServiceCommon.onBlockFingerprintingChange,
+        );
         contextMenuEvents.addListener(ContextMenuAction.EnableProtection, SettingsServiceCommon.enableFiltering);
         contextMenuEvents.addListener(ContextMenuAction.DisableProtection, SettingsServiceCommon.disableFiltering);
     }
@@ -105,7 +115,6 @@ export abstract class SettingsServiceCommon {
             },
             filtersMetadata: Categories.getCategories(),
             fullscreenUserRulesEditorIsOpen: fullscreenUserRulesEditor.isOpen(),
-            showRuleLimitsVariantB: await ABTestManager.hasVariant(AG_52740_RULE_LIMITS_B),
         };
     }
 
@@ -190,6 +199,40 @@ export abstract class SettingsServiceCommon {
         if (disableCollectHitsStats) {
             HitStatsApi.cleanup();
         }
+    }
+
+    /**
+     * Called when {@link SettingOption.BlockFingerprinting} changes.
+     *
+     * The setting is kept as is whatever the result is: the engine gates the
+     * protection itself and the user fixes the environment when needed.
+     *
+     * @param isEnabled New {@link SettingOption.BlockFingerprinting} setting value.
+     */
+    static async onBlockFingerprintingChange(isEnabled: boolean): Promise<void> {
+        try {
+            const result = await engine.api.setCanvasProtectionEnabled(isEnabled);
+
+            CanvasProtectionApi.logResult(CanvasProtectionResultSource.SetEnabled, result);
+        } catch (e) {
+            logger.error('[ext.SettingsServiceCommon.onBlockFingerprintingChange]: failed to change canvas protection state', e);
+        }
+    }
+
+    /**
+     * Re-applies the stored {@link SettingOption.BlockFingerprinting} setting.
+     *
+     * Does nothing before the engine starts: `engine.start()` applies the stored
+     * setting itself.
+     */
+    static async reapplyCanvasProtection(): Promise<void> {
+        if (!appContext.get(AppContextKey.IsInit)) {
+            return;
+        }
+
+        await SettingsServiceCommon.onBlockFingerprintingChange(
+            SettingsApi.getSetting(SettingOption.BlockFingerprinting),
+        );
     }
 
     /**

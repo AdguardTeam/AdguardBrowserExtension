@@ -68,6 +68,44 @@ export const UNDO_BUTTON_SELECTOR = '.notification__content button[role="link"]'
 export const DELETE_BUTTON_SELECTOR = 'button[aria-label="Delete rule"]';
 
 /**
+ * Selector for the row Edit (pencil) action button.
+ * The aria-label is the translated i18n message for
+ * `options_user_rules_edit_rule`, which is "Edit rule" in English.
+ */
+export const EDIT_BUTTON_SELECTOR = 'button[aria-label="Edit rule"]';
+
+/**
+ * Marker prefixed to a rule line when it is toggled off in the list view.
+ * Mirrors DISABLED_RULE_MARKER in
+ * Extension/src/pages/options/components/UserRules/rule-parser.ts.
+ */
+export const DISABLED_RULE_MARKER = '!off ';
+
+/**
+ * Selector for the inline editor's content element (rules and comments).
+ */
+export const INLINE_EDITOR_SELECTOR = '.editor--inline .cm-content';
+
+/**
+ * Selector for the inline comment editor's content element.
+ */
+export const INLINE_COMMENT_EDITOR_SELECTOR = '.editor--inline-multiline .cm-content';
+
+/**
+ * Selector for the inline Save (tick) button.
+ * The aria-label is the translated i18n message for
+ * `options_user_rules_save_rule`, which is "Save rule" in English.
+ */
+export const INLINE_SAVE_BUTTON_SELECTOR = 'button[aria-label="Save rule"]';
+
+/**
+ * Selector for the inline Cancel (cross) button.
+ * The aria-label is the translated i18n message for
+ * `options_user_rules_cancel_rule_editing`, which is "Cancel rule editing" in English.
+ */
+export const INLINE_CANCEL_BUTTON_SELECTOR = 'button[aria-label="Cancel rule editing"]';
+
+/**
  * Browser-context: saves user rules via the extension messaging API.
  * Must be evaluated on an extension page (e.g. options), NOT on the
  * background service worker — the SW cannot send messages to itself.
@@ -87,10 +125,21 @@ export const saveUserRules = async (args: unknown) => {
                 type: messageType,
                 data: { value: rules },
             },
-            () => {
+            (response: unknown) => {
                 const runtimeError = chrome.runtime.lastError;
                 if (runtimeError) {
                     reject(new Error(runtimeError.message));
+                    return;
+                }
+                // A throwing background handler comes back through
+                // webextension-polyfill as a normal reply carrying this flag,
+                // so it must be treated as a rejection too.
+                const rejection = response as {
+                    __mozWebExtensionPolyfillReject__?: boolean;
+                    message?: string;
+                } | undefined;
+                if (rejection?.__mozWebExtensionPolyfillReject__) {
+                    reject(new Error(rejection.message ?? 'Background handler rejected the message'));
                     return;
                 }
                 resolve();
@@ -123,6 +172,16 @@ export const getUserRules = async (args: unknown): Promise<string> => {
                 const runtimeError = chrome.runtime.lastError;
                 if (runtimeError) {
                     reject(new Error(runtimeError.message));
+                    return;
+                }
+                // See `saveUserRules`: webextension-polyfill delivers a
+                // throwing background handler as a flagged reply.
+                const rejection = response as {
+                    __mozWebExtensionPolyfillReject__?: boolean;
+                    message?: string;
+                } | undefined;
+                if (rejection?.__mozWebExtensionPolyfillReject__) {
+                    reject(new Error(rejection.message ?? 'Background handler rejected the message'));
                     return;
                 }
                 resolve(response?.userRules ?? '');
@@ -177,6 +236,265 @@ export const clickDeleteButtonByIndex = async (
         return { clicked: true, wasDisabled: true, buttonsFound: buttons.length };
     }
     return { clicked: false, wasDisabled: false, buttonsFound: buttons.length };
+};
+
+/**
+ * Polls until the inline editor content element is present.
+ *
+ * @param page E2E page handle (must be an extension page).
+ * @param selector CSS selector of the editor content element.
+ * @param timeoutMs Timeout in milliseconds.
+ */
+export const waitForInlineEditor = async (
+    page: E2EPageHandle,
+    selector = INLINE_EDITOR_SELECTOR,
+    timeoutMs = SELECTOR_WAIT_TIMEOUT_MS,
+): Promise<void> => {
+    await page.waitForSelector(selector, timeoutMs);
+};
+
+/**
+ * Browser-context: polls until the target element is present and enabled, then
+ * clicks it. The target is either the element matching `selector` at `index`,
+ * or the `<button>` whose trimmed text equals `text`.
+ *
+ * Must stay self-contained: `page.evaluate` serializes only this function's
+ * source, so it cannot reference Node-scope constants — the timeout and the
+ * polling interval are passed via `args`.
+ *
+ * @param args Object with the target (`selector`, optional `index`, optional
+ * `text`), `timeoutMs` and `intervalMs`.
+ *
+ * @returns Diagnostic info about the click outcome.
+ */
+export const clickElementWhenEnabled = async (args: unknown): Promise<{
+    clicked: boolean;
+    found: boolean;
+    wasDisabled: boolean;
+}> => {
+    const {
+        selector,
+        index,
+        text,
+        timeoutMs,
+        intervalMs,
+    } = args as {
+        selector?: string;
+        index?: number;
+        text?: string;
+        timeoutMs: number;
+        intervalMs: number;
+    };
+
+    /**
+     * Finds the current target element among the mounted elements.
+     */
+    const findTarget = (): HTMLButtonElement | undefined => {
+        if (text !== undefined) {
+            return Array.from(document.querySelectorAll('button'))
+                .find((candidate) => candidate.textContent?.trim() === text);
+        }
+
+        return document.querySelectorAll<HTMLButtonElement>(selector ?? '')[index ?? 0];
+    };
+
+    const startedAt = Date.now();
+    while (Date.now() - startedAt < timeoutMs) {
+        const target = findTarget();
+        if (target && !target.disabled) {
+            target.click();
+            return { clicked: true, found: true, wasDisabled: false };
+        }
+
+        await new Promise((resolve) => {
+            setTimeout(resolve, intervalMs);
+        });
+    }
+
+    const target = findTarget();
+    return { clicked: false, found: target !== undefined, wasDisabled: target?.disabled ?? false };
+};
+
+/**
+ * Clicks the Edit (pencil) button at the given index among the mounted rows.
+ * Polls until the button exists and is enabled (it is disabled briefly while a
+ * mutation is saving).
+ *
+ * @param page E2E page handle (must be an extension page).
+ * @param index Zero-based index among mounted edit buttons.
+ *
+ * @returns Whether the button was found and clicked.
+ */
+export const clickEditButtonByIndex = async (page: E2EPageHandle, index: number): Promise<boolean> => {
+    const outcome = await page.evaluate(clickElementWhenEnabled, {
+        selector: EDIT_BUTTON_SELECTOR,
+        index,
+        timeoutMs: MUTATION_TIMEOUT_MS,
+        intervalMs: POLL_INTERVAL_MS,
+    });
+
+    return outcome.clicked;
+};
+
+/**
+ * Browser-context: returns the current text content of the inline editor.
+ *
+ * @param arg CSS selector of the editor content element.
+ *
+ * @returns The editor's text content (empty string when absent).
+ */
+export const getInlineEditorText = (arg: unknown): string => {
+    const selector = arg as string;
+    return document.querySelector(selector)?.textContent ?? '';
+};
+
+/**
+ * Browser-context: whether the caret drawn by the inline editor lies inside
+ * the editor's box. The editor clips its content, so a caret outside the box
+ * is not painted.
+ *
+ * Must stay self-contained: `page.evaluate` serializes only this function's
+ * source.
+ *
+ * @param arg Selector of the inline editor's content element.
+ *
+ * @returns True when the caret is displayed and inside the editor's box.
+ */
+export const isInlineEditorCaretInsideEditor = (arg: unknown): boolean => {
+    const selector = arg as string;
+    const editor = document.querySelector(selector)?.closest('.editor--inline');
+    const caret = editor?.querySelector('.cm-cursor');
+    if (!editor || !caret) {
+        return false;
+    }
+
+    const editorRect = editor.getBoundingClientRect();
+    const caretRect = caret.getBoundingClientRect();
+
+    // A hidden caret (the editor is not focused) has an empty rect.
+    return caretRect.height > 0
+        && caretRect.left >= editorRect.left
+        && caretRect.right <= editorRect.right;
+};
+
+/**
+ * Browser-context: whether the inline editor shows its line of text at full
+ * height. A horizontal scrollbar that takes space inside the editor leaves
+ * less than a line for the text.
+ *
+ * Must stay self-contained: `page.evaluate` serializes only this function's
+ * source.
+ *
+ * @param arg Selector of the inline editor's content element.
+ *
+ * @returns True when the editor's visible area is at least one line tall.
+ */
+export const isInlineEditorLineFullyVisible = (arg: unknown): boolean => {
+    const selector = arg as string;
+    const content = document.querySelector(selector);
+    const scroller = content?.closest('.cm-scroller');
+    const line = content?.querySelector('.cm-line');
+    if (!scroller || !line) {
+        return false;
+    }
+
+    return scroller.clientHeight >= line.getBoundingClientRect().height;
+};
+
+/**
+ * Vertical centres of the parts of a rule row, in CSS pixels from the top of
+ * the page.
+ */
+export type RuleRowPartCentres = {
+    /**
+     * Centre of the checkbox.
+     */
+    checkbox: number;
+
+    /**
+     * Centre of the rule type icon.
+     */
+    icon: number;
+
+    /**
+     * Centre of the line of rule text.
+     */
+    text: number;
+};
+
+/**
+ * Browser-context: measures where the checkbox, the type icon and the text of
+ * the first rule row sit vertically.
+ *
+ * Must stay self-contained: `page.evaluate` serializes only this function's
+ * source.
+ *
+ * @returns Centres of the row's parts, or null when the row is not rendered.
+ */
+export const getFirstRuleRowPartCentres = (): RuleRowPartCentres | null => {
+    const checkbox = document.querySelector('div[data-index] input[type="checkbox"]');
+    const container = checkbox?.parentElement;
+    const icon = container?.querySelector('svg');
+    const text = container?.querySelector('span');
+    if (!checkbox || !icon || !text) {
+        return null;
+    }
+
+    const centre = (element: Element): number => {
+        const rect = element.getBoundingClientRect();
+        return rect.top + rect.height / 2;
+    };
+
+    return {
+        checkbox: centre(checkbox),
+        icon: centre(icon),
+        text: centre(text),
+    };
+};
+
+/**
+ * Visible label of the "Create rule" button. It has no stable aria-label, so
+ * the browser-context helper matches it by text.
+ */
+const CREATE_RULE_BUTTON_TEXT = 'Create rule';
+
+/**
+ * Clicks the "Create rule" button (matched by its visible label) once it is
+ * enabled. Polls because the button is disabled until the rules are loaded and
+ * while user rules are off.
+ *
+ * @param page E2E page handle (must be an extension page).
+ *
+ * @returns Whether the button was found and clicked.
+ */
+export const clickCreateRuleButton = async (page: E2EPageHandle): Promise<boolean> => {
+    const outcome = await page.evaluate(clickElementWhenEnabled, {
+        text: CREATE_RULE_BUTTON_TEXT,
+        timeoutMs: MUTATION_TIMEOUT_MS,
+        intervalMs: POLL_INTERVAL_MS,
+    });
+
+    return outcome.clicked;
+};
+
+/**
+ * Clicks the first enabled element matching the selector via JS. Unlike a
+ * WebDriver click, a JS click is not intercepted by transient overlays (e.g.
+ * the saving loader) that briefly cover the element.
+ *
+ * @param page E2E page handle (must be an extension page).
+ * @param selector CSS selector of the element to click.
+ *
+ * @returns Whether the element was found and clicked.
+ */
+export const clickBySelector = async (page: E2EPageHandle, selector: string): Promise<boolean> => {
+    const outcome = await page.evaluate(clickElementWhenEnabled, {
+        selector,
+        timeoutMs: MUTATION_TIMEOUT_MS,
+        intervalMs: POLL_INTERVAL_MS,
+    });
+
+    return outcome.clicked;
 };
 
 /**

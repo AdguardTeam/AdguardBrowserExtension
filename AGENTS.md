@@ -27,6 +27,7 @@ working on the AdGuard Browser Extension codebase.
         - [Memory Management](#memory-management)
     - [Code Quality](#code-quality)
         - [Import Rules](#import-rules)
+        - [Dates And Time](#dates-and-time)
         - [Manifest-Version Branching](#manifest-version-branching)
         - [JSDoc Style](#jsdoc-style)
         - [Logging](#logging)
@@ -140,8 +141,14 @@ pnpm release                   # Release build (all browsers)
 pnpm release <browser>         # Release build for one browser
 ```
 
-Supported `<browser>` values: `chrome`, `chrome-mv3`, `edge`, `edge-mv3`, `opera`,
-`opera-mv3`, `firefox-amo`, `firefox-standalone`.
+Supported `<browser>` values: `chrome-mv2`, `chrome-mv3`, `edge-mv2`, `edge-mv3`,
+`opera-mv2`, `opera-mv3`, `firefox-amo`, `firefox-standalone`.
+
+Use `chrome-mv2-crx` for Chrome MV2 CRX builds (dev/beta). Legacy commands
+`chrome`, `edge`, `opera`, and `chrome-crx` remain aliases, but output files and
+directories use canonical names. Preserve static filenames and store workflow
+input names when staging deployment artifacts; see
+[artifact naming and compatibility](DEPLOYMENT.md#artifact-naming-and-compatibility).
 
 ### Test
 
@@ -187,6 +194,18 @@ pnpm increment                           # Increment build version
 8. Check memory cleanup (dispose timers, listeners, observers)
 9. Confirm TypeScript types are correct (no `any` without justification)
 10. If adding or updating asset images, run `svgo` on them to optimize file size
+
+- Before every `pnpm locales upload`, you MUST save local base-locale
+  changes and download the current base locale with
+  `pnpm locales download -l en`.
+- You MUST compare the downloaded `Extension/_locales/en/messages.json`
+  with the saved local version and reconcile them before uploading. Preserve
+  new local keys and current service messages, descriptions, and placeholders;
+  apply only the intended edits and verify that no unrelated data is lost.
+- You MUST review the complete upload diff and validate the base locale with
+  `pnpm locales validate -l en` before uploading. After uploading, download
+  the base locale again and verify that the intended changes were saved and
+  all unrelated data was preserved.
 
 ### Copyright Header
 
@@ -281,6 +300,18 @@ async updateSetting(id: number, enabled: boolean): Promise<void> {
 - Exception: Test files (`*.test.ts`) and MV2/MV3-specific files can import
   directly
 
+#### Dates And Time
+
+- Prefer the existing `date-fns` dependency for date formatting and calendar
+  operations instead of manual string slicing or custom date arithmetic.
+- Make the time zone explicit. For UTC operations, use `UTCDate` from the
+  existing `@date-fns/utc` dependency with `date-fns`; formatting a plain `Date`
+  uses the system time zone.
+- Reuse and extend `Extension/src/background/utils/date-utils.ts` for shared
+  background date helpers instead of defining them inside storages or services.
+  Keep feature-specific state transitions in their owning module.
+- Simple timestamp reads such as `Date.now()` do not need a library wrapper.
+
 #### Manifest-Version Branching
 
 - **DO NOT** use the `__IS_MV3__` global constant in shared/common source files
@@ -296,7 +327,8 @@ async updateSetting(id: number, enabled: boolean): Promise<void> {
 #### JSDoc Style
 
 Use standard JSDoc format **without** `" - "` separator in `@param` and
-`@returns` tags. Tags must be separated by blank lines:
+`@returns` tags. Tag groups must be separated by blank lines; consecutive tags
+of the same kind (e.g. several `@param` entries) stay together:
 
 ```typescript
 /**
@@ -344,8 +376,10 @@ Descriptions must be complete sentences.
   (e.g., `Options.tsx`), and manifest-version suffixes follow the
   `-mv2`/`-mv3` convention (e.g., `engine-mv2.ts`)
 - Avoid magic strings and numbers for repeated or domain-specific values. Use
-  named constants, enums, or existing shared types instead. Local one-off UI
-  text, log messages, and test fixture values may stay inline when clearer.
+  named constants, enums, or existing shared types instead; model modes and
+  states as enums (e.g., `EditorMode`) rather than string-literal unions. Local
+  one-off UI text, log messages, and test fixture values may stay inline when
+  clearer.
 - Use `classnames` (`cn`) for dynamic class names instead of template literals
 
 

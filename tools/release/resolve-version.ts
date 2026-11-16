@@ -25,7 +25,7 @@ import { fileURLToPath } from 'node:url';
 
 import { getFormattedVersion } from '../helpers';
 
-import { extractLatestEntry } from './changelog';
+import { appendStandaloneBuildLinks, extractLatestEntry } from './changelog';
 import {
     formatManifestVersion,
     formatTag,
@@ -84,7 +84,7 @@ const main = (): void => {
         );
     }
 
-    appendNotesToGitHubOutput(entry.section);
+    appendNotesToGitHubOutput(appendStandaloneBuildLinks(entry.section, version.channel));
 
     console.log(`tag=${formatTag(version)}`);
     console.log(`channel=${version.channel}`);

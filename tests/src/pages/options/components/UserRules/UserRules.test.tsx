@@ -75,23 +75,23 @@ vi.mock('../../../../../../Extension/src/pages/common/components/Editor', () => 
 }));
 
 vi.mock('../../../../../../Extension/src/pages/options/components/UserRules/UserRulesList', () => ({
+    USER_RULES_VIEW_MODE_TOGGLE_CLASS: 'user-rules__switch-editor',
     /* eslint-disable react/require-default-props */
-    UserRulesList: ({
-        disabled,
-        onCreateRule,
-    }: { disabled?: boolean; onCreateRule?: () => void }) => React.createElement(
+    UserRulesList: ({ filterOff, onUnsavedDraftChange }: {
+        filterOff?: boolean;
+        onUnsavedDraftChange?: (hasUnsavedDraft: boolean) => void;
+    }) => React.createElement(
         'div',
         {
             'data-testid': 'user-rules-list',
-            'data-disabled': disabled ? 'true' : 'false',
+            'data-filter-off': filterOff ? 'true' : 'false',
         },
-        onCreateRule
-            ? React.createElement('button', {
-                type: 'button',
-                'data-testid': 'create-rule',
-                onClick: onCreateRule,
-            }, 'create-rule')
-            : null,
+        // Lets tests arm the dirty state the real list reports.
+        React.createElement('button', {
+            type: 'button',
+            'data-testid': 'dirty-inline-draft',
+            onClick: () => onUnsavedDraftChange?.(true),
+        }),
     ),
     /* eslint-enable react/require-default-props */
 }));
@@ -134,7 +134,6 @@ vi.mock('../../../../../../Extension/src/pages/services/messenger', () => ({
         openFullscreenUserRules: vi.fn(),
         closeFullscreenUserRules: vi.fn(),
         setEditorStorageContent: vi.fn().mockResolvedValue(undefined),
-        getUserRules: vi.fn().mockResolvedValue({ content: '' }),
     },
 }));
 
@@ -240,7 +239,6 @@ const createEditorStore = ({
         editorValue,
         savingService,
         setUserRulesEditorContentChangedState: vi.fn(),
-        setCursorPosition: vi.fn(),
         // Real XState saves are async (messenger.saveUserRules in the
         // background), so emit on a microtask to allow React renders between
         // transitions — matching production behaviour.
@@ -268,7 +266,6 @@ const mountUserRules = (
 
 const viewButton = () => screen.getByRole('button', { name: 'options_user_rules_switch_to_editor' });
 const editButton = () => screen.getByRole('button', { name: 'options_user_rules_switch_to_list' });
-const createRuleButton = () => screen.getByTestId('create-rule');
 
 describe('UserRules view/edit toggle', () => {
     beforeEach(() => {
@@ -289,6 +286,29 @@ describe('UserRules view/edit toggle', () => {
     it('switches to edit mode (editor) on toggle click', () => {
         mountUserRules();
         fireEvent.click(viewButton());
+        expect(screen.getByTestId('user-rules-editor')).toBeTruthy();
+        expect(screen.queryByTestId('user-rules-list')).toBeNull();
+    });
+
+    it('asks before switching to the editor with an unsaved inline draft', () => {
+        mountUserRules();
+        fireEvent.click(screen.getByTestId('dirty-inline-draft'));
+
+        // The switch unmounts the list, so the draft would be lost without a
+        // route change: neither `beforeunload` nor the route blocker fires.
+        fireEvent.click(viewButton());
+        expect(screen.getByTestId('editor-leave-modal')).toBeTruthy();
+        expect(screen.getByTestId('user-rules-list')).toBeTruthy();
+        expect(screen.queryByTestId('user-rules-editor')).toBeNull();
+
+        // Cancelling keeps the list and the draft.
+        fireEvent.click(screen.getByTestId('leave-cancel'));
+        expect(screen.getByTestId('user-rules-list')).toBeTruthy();
+        expect(screen.queryByTestId('user-rules-editor')).toBeNull();
+
+        // Confirming leaves and discards the draft.
+        fireEvent.click(viewButton());
+        fireEvent.click(screen.getByTestId('leave-confirm'));
         expect(screen.getByTestId('user-rules-editor')).toBeTruthy();
         expect(screen.queryByTestId('user-rules-list')).toBeNull();
     });
@@ -406,99 +426,6 @@ describe('UserRules view/edit toggle', () => {
     });
 });
 
-describe('UserRules create rule', () => {
-    beforeEach(() => {
-        localStorage.clear();
-        localStorage.setItem(VIEW_MODE_STORAGE_KEY, ViewMode.List);
-        vi.clearAllMocks();
-    });
-
-    afterEach(() => {
-        cleanup();
-    });
-
-    /**
-     * Returns the stored content and cursor that handleCreateRule produced:
-     * the last non-empty `setEditorStorageContent` call is the seeded rules,
-     * and the `setCursorPosition` call is where the editor will open.
-     *
-     * Must be called after awaiting the editor to appear, which guarantees
-     * the async handler has run to completion (`setViewMode` is its last step).
-     */
-    const captureSeededAndCursor = (editorStore: ReturnType<typeof createEditorStore>) => {
-        const setContents = (messenger.setEditorStorageContent as ReturnType<typeof vi.fn>)
-            .mock.calls.map(([value]) => value);
-        const seeded = setContents.filter((value) => value !== '').at(-1);
-        const setCursor = editorStore.setCursorPosition as ReturnType<typeof vi.fn>;
-        return {
-            seeded,
-            cursor: setCursor.mock.calls.at(-1)?.[0],
-        };
-    };
-
-    it('seeds a trailing empty line and opens the editor on it (no existing terminator)', async () => {
-        (messenger.getUserRules as ReturnType<typeof vi.fn>)
-            .mockResolvedValue({ content: '||example.org^' });
-        const editorStore = createEditorStore();
-        mountUserRules(createRootStoreValue(), editorStore);
-
-        fireEvent.click(createRuleButton());
-        await screen.findByTestId('user-rules-editor');
-
-        const { seeded, cursor } = captureSeededAndCursor(editorStore);
-        expect(seeded).toBe('||example.org^\n');
-        expect(cursor).toEqual({ line: 2, ch: 0 });
-        expect(screen.getByTestId('user-rules-editor')).toBeTruthy();
-    });
-
-    it('does not duplicate the trailing newline when content already ends with one', async () => {
-        (messenger.getUserRules as ReturnType<typeof vi.fn>)
-            .mockResolvedValue({ content: '||a.com^\n||b.com^\n' });
-        const editorStore = createEditorStore();
-        mountUserRules(createRootStoreValue(), editorStore);
-
-        fireEvent.click(createRuleButton());
-        await screen.findByTestId('user-rules-editor');
-
-        const { seeded, cursor } = captureSeededAndCursor(editorStore);
-        expect(seeded).toBe('||a.com^\n||b.com^\n');
-        expect(cursor).toEqual({ line: 3, ch: 0 });
-    });
-
-    it('collapses multiple trailing newlines into a single empty line before placing the cursor', async () => {
-        (messenger.getUserRules as ReturnType<typeof vi.fn>)
-            .mockResolvedValue({ content: '||a.com^\n||b.com^\n\n\n' });
-        const editorStore = createEditorStore();
-        mountUserRules(createRootStoreValue(), editorStore);
-
-        fireEvent.click(createRuleButton());
-        await screen.findByTestId('user-rules-editor');
-
-        const { seeded, cursor } = captureSeededAndCursor(editorStore);
-        expect(seeded).toBe('||a.com^\n||b.com^\n');
-        expect(cursor).toEqual({ line: 3, ch: 0 });
-    });
-
-    it('handles empty rules by opening on the single blank line (line 1)', async () => {
-        (messenger.getUserRules as ReturnType<typeof vi.fn>)
-            .mockResolvedValue({ content: '' });
-        const editorStore = createEditorStore();
-        mountUserRules(createRootStoreValue(), editorStore);
-
-        fireEvent.click(createRuleButton());
-        await screen.findByTestId('user-rules-editor');
-
-        const setContents = (messenger.setEditorStorageContent as ReturnType<typeof vi.fn>)
-            .mock.calls.map(([value]) => value);
-        // Storage is cleared ('') then seeded: for empty content it stays empty,
-        // which the editor renders as a single blank line.
-        expect(setContents.filter((value) => value === '')).toHaveLength(2);
-        const setCursor = editorStore.setCursorPosition as ReturnType<typeof vi.fn>;
-        expect(setCursor.mock.calls.at(-1)?.[0]).toEqual({ line: 1, ch: 0 });
-        expect(screen.getByTestId('user-rules-editor')).toBeTruthy();
-    });
-});
-
 describe('UserRules telemetry', () => {
     beforeEach(() => {
         localStorage.clear();
@@ -540,22 +467,6 @@ describe('UserRules telemetry', () => {
         const telemetryStore = getTelemetryStore(rootValue);
         expect(telemetryStore.sendCustomEvent).toHaveBeenCalledWith(
             'switch_to_list_click',
-            'user_rules_screen',
-        );
-    });
-
-    it('fires create_rule_click when the Create rule button is clicked', async () => {
-        (messenger.getUserRules as ReturnType<typeof vi.fn>)
-            .mockResolvedValue({ content: '||example.org^' });
-        const rootValue = createRootStoreValue();
-        mountUserRules(rootValue);
-
-        fireEvent.click(createRuleButton());
-        await screen.findByTestId('user-rules-editor');
-
-        const telemetryStore = getTelemetryStore(rootValue);
-        expect(telemetryStore.sendCustomEvent).toHaveBeenCalledWith(
-            'create_rule_click',
             'user_rules_screen',
         );
     });

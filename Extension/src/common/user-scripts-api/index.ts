@@ -18,4 +18,7 @@
  * along with AdGuard Browser Extension. If not, see <http://www.gnu.org/licenses/>.
  */
 
-export { shouldShowUserScriptsApiWarning } from 'user-scripts-api';
+export {
+    shouldShowUserScriptsApiWarning,
+    shouldShowCanvasProtectionUserScriptsWarning,
+} from 'user-scripts-api';

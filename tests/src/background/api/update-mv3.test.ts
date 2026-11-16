@@ -42,7 +42,7 @@ import {
 } from '../../../../Extension/src/background/storages/filters-adapter/filters-adapter-mv3';
 import { hybridStorage } from '../../../../Extension/src/background/storages';
 import { getRunInfo } from '../../../../Extension/src/background/utils';
-import { getStorageFixturesV15, mockLocalStorage } from '../../../helpers';
+import { getStorageFixturesV16, mockLocalStorage } from '../../../helpers';
 
 vi.mock('../../../../Extension/src/background/engine');
 vi.mock('../../../../Extension/src/background/api/ui/icons');
@@ -55,8 +55,8 @@ afterEach(async () => {
 
 describe.skipIf(!__IS_MV3__)('MV2 to MV3 update with the same schema', () => {
     it('preserves user data and reads static filters from the bundled MV3 store', async () => {
-        // V15 fixtures represent the MV2 storage format, including custom filters and group states.
-        const data = getStorageFixturesV15(12345)[1]!;
+        // V16 fixtures represent the MV2 storage format, including custom filters and group states.
+        const data = getStorageFixturesV16(12345)[1]!;
         data['app-version'] = '5.5.0';
         const expected = structuredClone(data);
         expected['app-version'] = '5.6.0';
