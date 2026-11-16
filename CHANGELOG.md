@@ -5,7 +5,9 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Unreleased 5.6
+## [Unreleased]
+
+## [5.6.0.1-beta] - 2026-11-16
 
 ### Added
 
@@ -130,6 +132,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 [#3560]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3560
 [#3605]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3605
 [#3615]: https://github.com/AdguardTeam/AdguardBrowserExtension/issues/3615
+
+[5.6.0.1-beta]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.5.4...v5.6.0-beta.1
 
 ## [5.5.4.55] - 2026-11-09
 
