@@ -28,6 +28,11 @@ runner. Release/deploy flows:
 | Publish (beta + release) | `publish-release.yml` | merged `release-bump/*` PR / manual |
 | Filters auto-update + CWS/Edge auto-publish | `auto-build.yml` | schedule 12:00/17:00 UTC + manual |
 
+A manual run of `prepare-release.yml` now shows the workflow name and the
+dispatch values in the Actions run list, e.g.
+`Prepare release v5.6.0-beta.7 build 7, rollout percentage 1%`. A skipped build
+override shows `build auto`, and an empty rollout field shows `1`.
+
 Release flow:
 
 1. Run `prepare-release.yml` with the target semver tag (e.g. `v5.6.0-beta.7`).

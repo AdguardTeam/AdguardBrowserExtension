@@ -1,5 +1,12 @@
 name: Prepare release
 
+# The run list shows the requested tag, build and rollout percentage together
+# with the workflow name. `github.workflow` repeats the `name` value from one
+# place, so a rename of the workflow also updates the run name. Both optional
+# inputs can be left empty: `build` shows `auto` and the rollout shows `1`,
+# matching what the job does with an empty value.
+run-name: "${{ github.workflow }} ${{ inputs.tag }} build ${{ inputs.build || 'auto' }}, rollout percentage ${{ inputs.rollout-percentage || '1' }}%"
+
 # Opens a release-bump PR that sets package.json to the requested version and
 # finalizes CHANGELOG.md. After the PR is merged, publish-release.yml takes
 # over. The tag is semver: "-beta.N" (e.g. v5.6.0-beta.7) deploys only to the
