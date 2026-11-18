@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "סנן תגיות"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "הושבת בשל אי-שימוש",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "חזור"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "מזהה את שפת האתר ומפעיל מסננים מתאימים"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% הושבת בשל אי-שימוש. כך מתפנה מקום למסננים שבהם אתה משתמש לעתים קרובות יותר",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% מסנן שפה הושבת בשל אי-שימוש. כך מתפנה מקום למסננים שבהם אתה משתמש לעתים קרובות יותר | %count% מסנני שפה הושבתו בשל אי-שימוש. כך מתפנה מקום למסננים שבהם אתה משתמש לעתים קרובות יותר",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "סקירה",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "ערכת נושא"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "נכשל בייבוא כללי משתמש. אנא נסה שוב"
     },
+    "options_user_rules_load_error": {
+        "message": "טעינת כללי המשתמש נכשלה. אנא נסה שוב"
+    },
     "options_user_rules_menu": {
         "message": "פעולות כללי משתמש"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "מחק כלל"
+    },
+    "options_user_rules_save_rule": {
+        "message": "שמור כלל"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "בטל עריכת כלל"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "בטל יצירת כלל"
     },
     "options_user_rules_deleted_notification": {
         "message": "כלל משתמש נמחק:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% מתוך %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "הדפדפן שינה את רשימת המסננים הפעילים"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "מה קרה?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "חריגה מהמגבלה של כללים מובנים פעילים לאחר עדכון או הוספת תוסף חדש. לפי Manifest V3, דפדפן Chrome שלך הגיב על ידי השבתת כל המסננים המובנים של התוסף מלבד אלה המוגדרים כברירת מחדל."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "מסננים מאופשרים לפני העדכון"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "מסננים מאופשרים כעת"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "הפעולות האפשריות שלך"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "אפשרות 1. מחק תוספי חסימת מודעות מיותרים מהדפדפן שלך. להפעלת המסננים המוזכרים בסעיף \"המסננים שהופעלו לפני העדכון\", לחץ על <a>הפעל מסננים מחדש.<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "אפשרות 2. התקן את אפליקציית חוסם הפרסומות של AdGuard: אין לה מגבלות על כללי הסינון. <a>קבל את אפליקציית AdGuard<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "אפשרות 3. אם אתה מרוצה מהמסנן המוגדר כברירת מחדל שהופעל, <a>סגור את האזהרה הזו<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "אפשרות 3. אם אתה מרוצה מהמסנרים המוגדרים כברירת מחדל שהופעלו, <a>סגור את האזהרה הזו<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "הגעת למגבלה — חלק מהמסננים הושבתו"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "הסרת פרמטרי מעקב מכתובות URL של דפים באמצעות מסנן מעקב כתובות URL של AdGuard"
     },
+    "options_block_fingerprinting_title": {
+        "message": "חסימת טביעת אצבע דיגיטלית"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "מונע מאתרים לזהות את הדפדפן והמכשיר שלך על ידי שינוי קל של תמונות מוסתרות"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "חסימת טביעת אצבע דיגיטלית דורשת הרשאה של הדפדפן. הפעל <b>מצב מפתח<\/b> ב<settings-link>הגדרות התוסף<\/settings-link> של הדפדפן שלך",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "חסימת טביעת אצבע דיגיטלית דורשת הרשאה של הדפדפן. הפעל <b>אפשר סקריפטים של משתמשים<\/b> ב<settings-link>הגדרות התוסף<\/settings-link> של הדפדפן שלך",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "חסום עוקבנים"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "אודות"
+    },
+    "options_adguard_products": {
+        "message": "מוצרי AdGuard"
     },
     "options_privacy_policy": {
         "message": "מדיניות פרטיות"

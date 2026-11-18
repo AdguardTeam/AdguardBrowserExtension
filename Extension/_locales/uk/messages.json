@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "Теги фільтра"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Вимкнено як невикористане",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "Назад"
     },
@@ -395,7 +399,7 @@
         "message": "CDN"
     },
     "popup_statistics_category_other": {
-        "message": "Інші"
+        "message": "Інше"
     },
     "popup_statistics_week_days_mon": {
         "message": "ПН"
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Визначає мову сайту та активує відповідні фільтри"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% було вимкнено як невикористане. Це звільняє місце для фільтрів, які ви використовуєте частіше",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% мовний фільтр було вимкнено як невикористаний. Це звільняє місце для фільтрів, які ви використовуєте частіше | %count% мовні фільтри було вимкнено як невикористані. Це звільняє місце для фільтрів, які ви використовуєте частіше | %count% мовних фільтрів було вимкнено як невикористані. Це звільняє місце для фільтрів, які ви використовуєте частіше",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Переглянути",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Тема"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Не вдалося імпортувати правила користувача. Спробуйте ще раз"
     },
+    "options_user_rules_load_error": {
+        "message": "Не вдалося завантажити правила користувача. Спробуйте ще раз"
+    },
     "options_user_rules_menu": {
         "message": "Дії правил користувача"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Вилучити правило"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Зберегти правило"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Скасувати редагування правила"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Скасувати створення правила"
     },
     "options_user_rules_deleted_notification": {
         "message": "Правило користувача видалено:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% з %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "Браузер змінив список активних фільтрів"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "Що трапилось?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "Після оновлення або додавання нового розширення було перевищено ліміт активних вбудованих правил. Відповідно до Маніфесту V3, браузер Chrome вимкнув усі вбудовані фільтри розширення, окрім усталених."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Фільтри, що були увімкнені перед оновленням"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Фільтри, що увімкнено зараз"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "Ваші можливі дії"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "Варіант 1. Видаліть з браузера непотрібні розширення для блокування реклами. Щоб спробувати ще раз увімкнути фільтри, зазначені у розділі «Фільтри, що були увімкнені перед оновленням», <a>увімкніть фільтри повторно.<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "Варіант 2. Встановіть повноцінну програму AdGuard — вона не має обмежень на правила фільтрування. <a>Отримати програму AdGuard<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "Варіант 3. Якщо вас влаштовує увімкнений зараз усталений фільтр, <a>закрийте це попередження<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "Варіант 3. Якщо вас влаштовують увімкнені зараз усталені фільтри, <a>закрийте це попередження<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Досягнуто ліміту — деякі фільтри вимкнено"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Видалення параметрів відстеження з URL-адрес сторінок за допомогою фільтра відстеження URL-адрес AdGuard"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Блокувати фінгерпринтинг"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Запобігає ідентифікації вашого браузера та пристрою сайтами шляхом незначної зміни прихованих зображень"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Блокування фінгерпринтингу потребує дозволу браузера. Увімкніть <b>Режим розробника<\/b> у <settings-link>налаштуваннях розширення<\/settings-link> вашого браузера",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Блокування фінгерпринтингу потребує дозволу браузера. Увімкніть <b>Дозволити користувацькі скрипти<\/b> у <settings-link>налаштуваннях розширення<\/settings-link> вашого браузера",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Блокувати елементи стеження"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "Про розширення"
+    },
+    "options_adguard_products": {
+        "message": "Продукти AdGuard"
     },
     "options_privacy_policy": {
         "message": "Політика конфіденційності"

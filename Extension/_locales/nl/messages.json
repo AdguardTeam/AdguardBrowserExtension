@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "Tags filteren"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Uitgeschakeld als ongebruikt",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "Ga terug"
     },
@@ -136,7 +140,7 @@
         "message": "Sommige filterregels kunnen je browse-ervaring aanzienlijk veranderen en jouw privacy in gevaar brengen. Zorg ervoor dat je alleen filters gebruikt van ontwikkelaars die je vertrouwt"
     },
     "options_popup_try_again_button": {
-        "message": "Probeer opnieuw"
+        "message": "Opnieuw proberen"
     },
     "options_popup_filter_title": {
         "message": "Titel:"
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Detecteert de taal van de website en activeert de juiste filters"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% is uitgeschakeld omdat het niet wordt gebruikt. Zo komt er ruimte vrij voor filters die je vaker gebruikt",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% taalfilter is uitgeschakeld omdat het niet werd gebruikt. Zo komt er ruimte vrij voor filters die je vaker gebruikt | %count% taalfilters zijn uitgeschakeld omdat ze niet werden gebruikt. Zo komt er ruimte vrij voor filters die je vaker gebruikt",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Beoordeling",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Thema"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Importeren van gebruikersregels mislukt. Probeer het opnieuw"
     },
+    "options_user_rules_load_error": {
+        "message": "Laden gebruikersregels mislukt. Probeer het opnieuw"
+    },
     "options_user_rules_menu": {
         "message": "Gebruikersregels acties"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Regel verwijderen"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Regel opslaan"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Bewerken regel annuleren"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Aanmaken regel annuleren"
     },
     "options_user_rules_deleted_notification": {
         "message": "Gebruikersregel verwijderd:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% van %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "De browser heeft de lijst met actieve filters gewijzigd"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "Wat is er gebeurd?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "De limiet van actieve ingebouwde regels is overschreden na een update of het toevoegen van een nieuwe uitbreiding. Volgens Manifest V3 reageerde je Chrome-browser door alle ingebouwde filters van de uitbreiding uit te schakelen, behalve de standaardfilters."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Ingeschakelde filters vóór de update"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Filters nu ingeschakeld"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "Je mogelijke acties"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "Optie 1. Verwijder onnodige advertentieblokkerende uitbreidingen uit je browser. Om de filters die worden genoemd in het gedeelte 'Filters ingeschakeld vóór de update' opnieuw te activeren, klik je op <a>filters opnieuw activeren.<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "Optie 2. Installeer de AdGuard Advertentieblokker-app: deze heeft geen beperkingen op filterregels. <a>de AdGuard-app downloaden<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "Optie 3. Als je tevreden bent met het momenteel ingeschakelde standaardfilter, sluit dan <a>deze waarschuwing.<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "Optie 3. Als je tevreden bent met de momenteel ingeschakelde standaardfilters, sluit dan <a>deze waarschuwing.<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Limiet bereikt — sommige filters zijn uitgeschakeld"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Verwijdert parameters voor volgen uit pagina-URL's met behulp van AdGuard URL Tracking filter"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Fingerprinting blokkeren"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Voorkomt dat websites je browser en apparaat identificeren door verborgen afbeeldingen enigszins te wijzigen"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Het blokkeren van fingerprinting vereist een browsertoestemming. Schakel <b>Ontwikkelaarsmodus<\/b> in via de <settings-link>uitbreidingsinstellingen<\/settings-link> van je browser",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Voor het blokkeren van fingerprinting is toestemming van de browser nodig. Schakel <b>Gebruikersscripts toestaan<\/b> in bij de <settings-link>Uitbreiding instellingen<\/settings-link> van je browser.",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Volgers blokkeren"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "Over"
+    },
+    "options_adguard_products": {
+        "message": "AdGuard producten"
     },
     "options_privacy_policy": {
         "message": "Privacybeleid"

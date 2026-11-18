@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "Filtrer tagger"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Slått av som ubrukt",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "Gå tilbake"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Registrerer språket på nettsiden og aktiverer passende filtre"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% ble slått av som ubrukt. Dette frigjør plass til filtre du bruker oftere",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% språkfilter ble slått av som ubrukt. Dette frigjør plass til filtre du bruker oftere | %count% språkfiltre ble slått av som ubrukt. Dette frigjør plass til filtre du bruker oftere",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Gjennomgå",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Theme"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Kunne ikke importere brukerregler. Vennligst prøv igjen"
     },
+    "options_user_rules_load_error": {
+        "message": "Kunne ikke laste inn brukerregler. Vennligst prøv igjen"
+    },
     "options_user_rules_menu": {
         "message": "Handlinger for brukerregler"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Slett regel"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Lagre regel"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Avbryt redigering av regel"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Avbryt oppretting av regel"
     },
     "options_user_rules_deleted_notification": {
         "message": "Brukerregel slettet:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% av %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "Nettleseren har modifisert listen over aktive filtre"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "Hva skjedde?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "Grensen for aktive innebygde regler ble overskredet etter en oppdatering eller ved å legge til en ny utvidelse. I henhold til Manifest V3 reagerte Chrome-nettleseren din ved å deaktivere alle utvidelsens innebygde filtre, unntatt de standardene."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Filtre aktivert før oppdateringen"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Filtre aktivert nå"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "Dine mulige handlinger"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "Alternativ 1. Slett unødvendige annonseblokkering-utvidelser fra nettleseren din. For å reaktivere filtrene nevnt i \"Filtre aktivert før oppdatering\", klikk <a>reaktiver filtre.<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "Alternativ 2. Installer AdGuard Ad Blocker-appen: den har ingen restriksjoner på filtreringsregler. <a>Få AdGuard-appen<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "Alternativ 3. Hvis du er fornøyd med det for øyeblikket aktiverte standardfilteret, <a>lukk denne advarselen.<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "Alternativ 3. Hvis du er fornøyd med de for øyeblikket aktiverte standardfiltrene, <a>lukk denne advarselen.<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Grense nådd — noen filtre ble deaktivert"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Fjerner sporingsparametere fra sidens URL-er ved hjelp av AdGuard URL-sporingsfilter"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Blokker fingeravtrykksporing"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Hindrer nettsteder i å identifisere nettleseren og enheten din ved å endre skjulte bilder litt"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Blokkering av fingeravtrykksporing krever tillatelse fra nettleseren. Aktiver <b>Utviklermodus<\/b> i nettleserens <settings-link>utvidelsesinnstillinger<\/settings-link>",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Blokkering av fingeravtrykksporing krever tillatelse fra nettleseren. Aktiver <b>Tillat brukerskript<\/b> i nettleserens <settings-link>utvidelsesinnstillinger<\/settings-link>",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Blokker sporere"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "Om"
+    },
+    "options_adguard_products": {
+        "message": "AdGuard-produkter"
     },
     "options_privacy_policy": {
         "message": "Personvernretningslinjer"

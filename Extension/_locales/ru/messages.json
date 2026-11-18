@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "Теги фильтров"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Отключён как неиспользуемый",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "Назад"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Определяет язык сайта и активирует соответствующие фильтры"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% отключён как неиспользуемый. Это освобождает место для фильтров, которые вы используете чаще",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% языковой фильтр отключён как неиспользуемый. Это освобождает место для фильтров, которые вы используете чаще | %count% языковых фильтра были отключены как неиспользуемые. Это освобождает место для фильтров, которые вы используете чаще | %count% языковых фильтров были отключены как неиспользуемые. Это освобождает место для фильтров, которые вы используете чаще",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Посмотреть",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Тема"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Не удалось импортировать пользовательские правила. Попробуйте ещё раз"
     },
+    "options_user_rules_load_error": {
+        "message": "Не удалось загрузить пользовательские правила. Попробуйте ещё раз"
+    },
     "options_user_rules_menu": {
         "message": "Действия с Пользовательскими правилами"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Удалить правило"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Сохранить правило"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Отменить редактирование правила"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Отменить создание правила"
     },
     "options_user_rules_deleted_notification": {
         "message": "Пользовательское правило удалено:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% из %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "Браузер изменил список активных фильтров"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "Что произошло?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "Лимит активных встроенных правил был превышен: возможно, обновилось расширение AdGuard или вы установили новое расширение. Согласно Manifest V3 Chrome отключил все фильтры, кроме фильтров по умолчанию."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Фильтры до обновления"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Фильтры сейчас"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "Что можно сделать"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "Вариант 1. Удалите ненужные расширения, блокирующие рекламу. Чтобы заново включить фильтры из раздела «Фильтры до обновления», нажмите <a>включить<\/a>."
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "Вариант 2. Установите приложение AdGuard: у него нет ограничений по правилам фильтрации. <a>Скачать AdGuard<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "Вариант 3. Если текущие фильтры вас устраивают, <a>закройте это предупреждение<\/a>."
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "Вариант 3. Если текущие фильтры вас устраивают, <a>закройте это предупреждение<\/a>."
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Достигнут лимит — некоторые фильтры отключены"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Удаляет трекинговые параметры из URL-адресов с помощью Фильтра отслеживания по URL"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Блокировать фингерпринтинг"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Не позволяет сайтам идентифицировать ваш браузер и устройство, немного изменяя скрытые изображения"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Для блокировки фингерпринтинга требуется разрешение браузера. Включите <b>Режим разработчика<\/b> <settings-link>в настройках расширений<\/settings-link> браузера",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Для блокировки фингерпринтинга требуется разрешение браузера. Включите <b>Разрешить пользовательские скрипты<\/b> <settings-link>в настройках расширений<\/settings-link> браузера",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Блокировать трекеры"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "О программе"
+    },
+    "options_adguard_products": {
+        "message": "Продукты AdGuard"
     },
     "options_privacy_policy": {
         "message": "Политика конфиденциальности"

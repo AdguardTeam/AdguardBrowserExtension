@@ -45,7 +45,7 @@
         "message": "Ako zvýšiť ochranu"
     },
     "popup_get_system_wide_protection": {
-        "message": "Chráňte celý systém",
+        "message": "Získajte systémovú ochranu",
         "description": "TEXT MAX LENGTH: 27"
     },
     "popup_header_update_filters": {
@@ -74,6 +74,10 @@
     },
     "options_filters_filter_tags": {
         "message": "Značky filtra"
+    },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Vypnuté, pretože sa nepoužíva",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
     },
     "options_filters_back_button": {
         "message": "Návrat späť"
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Zistí jazyk webovej stránky a aktivuje príslušné filtre"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% bol vypnutý ako nepoužívaný. Uvoľní sa tým miesto pre filtre, ktoré používate častejšie",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% jazykový filter bol vypnutý ako nepoužívaný. Tým sa uvoľní miesto pre filtre, ktoré používate častejšie | %count% jazykové filtre boli vypnuté ako nepoužívané. Tým sa uvoľní miesto pre filtre, ktoré používate častejšie | %count% jazykových filtrov bolo vypnutých ako nepoužívaných. Tým sa uvoľní miesto pre filtre, ktoré používate častejšie",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Recenzia",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Téma"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Nepodarilo sa importovať pravidlá pre používateľov. Skúste to znova"
     },
+    "options_user_rules_load_error": {
+        "message": "Nepodarilo sa načítať používateľské pravidlá. Skúste to znova"
+    },
     "options_user_rules_menu": {
         "message": "Akcie pravidiel pre používateľov"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Odstrániť pravidlo"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Uložiť pravidlo"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Zrušiť úpravu pravidla"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Zrušiť vytvorenie pravidla"
     },
     "options_user_rules_deleted_notification": {
         "message": "Používateľské pravidlo bolo vymazané:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% z %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "Prehliadač upravil zoznam aktívnych filtrov"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "Čo sa stalo?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "Po aktualizácii alebo pridaní nového rozšírenia bol prekročený limit počtu aktívnych vstavaných pravidiel. Podľa Manifestu V3 Váš prehliadač Chrome reagoval vypnutím všetkých vstavaných filtrov rozšírenia okrem predvolených."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Filtre zapnuté pred aktualizáciou"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Filtre zapnuté teraz"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "Vaše možné akcie"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "Možnosť 1. Odstráňte z prehliadača nepotrebné rozšírenia na blokovanie reklamy. Ak chcete opätovne aktivovať filtre uvedené v časti \"Filtre povolené pred aktualizáciou\", kliknite na tlačidlo <a>opätovne aktivovať filtre.<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "Možnosť 2. Nainštalujte si aplikáciu AdGuard: nemá žiadne obmedzenia pravidiel filtrácie. <a>Získajte aplikáciu AdGuard<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "Možnosť 3. Ak ste spokojní s aktuálne povoleným predvoleným filtrom, <a>zatvorte toto upozornenie.<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "Možnosť 3. Ak ste spokojní s aktuálne povolenými predvolenými filtrami, <a>zatvorte toto upozornenie.<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Dosiahol sa limit — niektoré filtre boli deaktivované"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Odstráni parametre sledovania z adries URL stránok pomocou filtra sledovania adries URL AdGuard"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Blokovanie identifikácie na základe odtlačkov prstov"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Zabraňuje webovým stránkam v identifikácii Vášho prehliadača a zariadenia miernou zmenou skrytých obrázkov"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Na blokovanie identifikácie podľa odtlačkov prstov je potrebné povolenie prehliadača. V <settings-link>nastaveniach rozšírenia<\/settings-link> prehliadača aktivujte <b>režim pre vývojárov<\/b>",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Blokovanie odtlačkov prstov vyžaduje povolenie prehliadača. V <settings-link>nastaveniach rozšírenia<\/settings-link> prehliadača povoľte možnosť <b>Povoliť používateľské skripty<\/b>",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Blokuje známe sledovače"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "O"
+    },
+    "options_adguard_products": {
+        "message": "Produkty AdGuard"
     },
     "options_privacy_policy": {
         "message": "Pravidlá ochrany súkromia"

@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "Filtruoti žymas"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Išjungtas kaip nenaudojamas",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "Grįžti"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Nustato svetainės kalbą ir įjungia atitinkamus filtrus"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% buvo išjungtas kaip nenaudojamas. Taip atsilaisvina vietos dažniau naudojamiems filtrams",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% kalbos filtras buvo išjungtas kaip nenaudojamas. Taip atsilaisvina vietos dažniau naudojamiems filtrams | %count% kalbos filtrai buvo išjungti kaip nenaudojami. Taip atsilaisvina vietos dažniau naudojamiems filtrams | Išjungta %count% kalbos filtrų kaip nenaudojamų. Taip atsilaisvina vietos dažniau naudojamiems filtrams",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Peržiūrėti",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Tema"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Nepavyko importuoti naudotojo taisyklių. Prašome bandyti dar kartą"
     },
+    "options_user_rules_load_error": {
+        "message": "Nepavyko įkelti naudotojo taisyklių. Prašome bandyti dar kartą"
+    },
     "options_user_rules_menu": {
         "message": "Naudotojo taisyklių veiksmai"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Pašalinti iš naudotojo filtrų"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Išsaugoti taisyklę"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Atšaukti taisyklės redagavimą"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Atšaukti taisyklės kūrimą"
     },
     "options_user_rules_deleted_notification": {
         "message": "Naudotojo taisyklė ištrinta:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% iš %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "Naršyklė pakeitė aktyvių filtrų sąrašą"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "Kas nutiko?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "Po atnaujinimo arba pridėjus naują plėtinį buvo viršytas aktyvių integruotų taisyklių limitas. Pagal Manifest v3 jūsų „Chrome“ naršyklė sureagavo išjungdama visus plėtinio integruotus filtrus, išskyrus numatytuosius."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Prieš atnaujinimą įjungti filtrai"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Filtrai dabar įjungti"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "Jūsų galimi veiksmai"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "1 parinktis. Iš naršyklės ištrinkite nereikalingus reklamas blokuojančius plėtinius. Norėdami iš naujo suaktyvinti filtrus, nurodytus skiltyje \"Filtrai įjungti prieš naujinimą\", spustelėkite <a>iš naujo suaktyvinti filtrus.<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "2 parinktis. Įdiekite „AdGuard“ skelbimų blokavimo programą: joje nėra jokių filtravimo taisyklių apribojimų. <a>Gaukite AdGuard programą<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "3 parinktis. Jei esate patenkinti šiuo metu įgalintu numatytuoju filtru, <a>uždarykite šį įspėjimą.<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "3 parinktis. Jei esate patenkinti šiuo metu įgalintais numatytaisiais filtrais, <a>uždarykite šį įspėjimą.<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Pasiektas limitas — kai kurie filtrai buvo išjungti"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Pašalina sekimo parametrus iš puslapio URL naudodamas AdGuard URL sekimo filtrą"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Blokuoti pirštų atspaudų rinkimą"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Neleidžia svetainėms atpažinti jūsų naršyklės ir įrenginio šiek tiek keičiant paslėptus vaizdus"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Pirštų atspaudų rinkimo blokavimui reikia naršyklės leidimo. Įjunkite <b>Programuotojo režimą<\/b> savo naršyklės <settings-link>plėtinio nustatymuose<\/settings-link>",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Pirštų atspaudų rinkimo blokavimui reikia naršyklės leidimo. Įjunkite <b>Leisti naudotojo scenarijus<\/b> savo naršyklės <settings-link>plėtinio nustatymuose<\/settings-link>",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Blokuoti stebėjimo priemones"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "Apie"
+    },
+    "options_adguard_products": {
+        "message": "AdGuard produktai"
     },
     "options_privacy_policy": {
         "message": "Privatumo politika"

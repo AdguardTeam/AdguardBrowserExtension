@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "필터 태그"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "사용되지 않아 비활성화됨",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "뒤로가기"
     },
@@ -272,7 +276,7 @@
         "message": "사용자 정의 필터"
     },
     "options_antibanner_custom_group_description": {
-        "message": "파일 또는 URL에서 필터를 추가할 수 있습니다."
+        "message": "파일이나 URL에서 필터를 추가할 수 있습니다."
     },
     "options_filters_enabled_per_group": {
         "message": "활성화됨: %current%\/%total%"
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "웹사이트의 언어를 감지하여 적절한 필터를 활성화합니다."
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "사용하지 않는 %filter_name% 필터가 꺼졌습니다. 자주 사용하는 필터를 위한 공간이 확보됩니다.",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| 사용하지 않는 언어 필터 %count%개가 꺼졌습니다. 자주 사용하는 필터를 위한 공간이 확보됩니다.",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "검토",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "테마"
     },
@@ -815,13 +831,13 @@
         "message": "설정 내보내기"
     },
     "options_share_settings": {
-        "message": "설정 공유하기"
+        "message": "설정 공유"
     },
     "options_import_settings": {
         "message": "설정 불러오기"
     },
     "options_report_bug": {
-        "message": "버그 제보"
+        "message": "버그 신고"
     },
     "options_leave_feedback": {
         "message": "피드백 남기기"
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "사용자 규칙을 가져오지 못했습니다. 다시 시도해 주세요."
     },
+    "options_user_rules_load_error": {
+        "message": "사용자 규칙을 불러오지 못했습니다. 다시 시도해 주세요."
+    },
     "options_user_rules_menu": {
         "message": "사용자 규칙 동작"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "규칙 제거"
+    },
+    "options_user_rules_save_rule": {
+        "message": "규칙 저장"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "규칙 편집 취소"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "규칙 생성 취소"
     },
     "options_user_rules_deleted_notification": {
         "message": "사용자 규칙 삭제됨:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%maximum%개 중 %current%개"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "브라우저에서 활성화된 필터 목록을 수정했습니다"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "무슨 일이 발생했나요?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "새 확장 프로그램을 추가 또는 업데이트한 뒤 활성화된 내장 규칙 수의 제한을 초과했습니다. Chrome 브라우저가 Manifest V3에 따라 기본 필터를 제외한 확장 프로그램의 모든 내장 필터를 비활성화했습니다."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "업데이트 전 활성화되었던 필터"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "현재 활성화된 필터"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "할 수 있는 동작"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "옵션 1. 브라우저에서 불필요한 광고 차단 확장 프로그램을 삭제하세요. '업데이트 전 활성화되었던 필터' 섹션에 언급된 필터를 다시 활성화하려면 <a>필터 다시 활성화<\/a>를 클릭하세요."
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "옵션 2. AdGuard 광고 차단기 앱을 설치하세요. 필터링 규칙에 제한이 없습니다. <a>AdGuard 앱 다운로드<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "옵션 3. 현재 활성화된 기본 필터에 만족하는 경우 <a>이 경고를 닫습니다.<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "옵션 3. 현재 활성화된 기본 필터에 만족하는 경우 <a>이 경고를 닫습니다.<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "제한 도달 — 일부 필터가 비활성화되었습니다"
@@ -1169,7 +1167,7 @@
         "message": "추적 보호"
     },
     "options_privacy_desc": {
-        "message": "웹 트래커로부터 온라인 활동 및 개인 데이터를 보호합니다."
+        "message": "웹 트래커로부터 온라인 활동과 개인 데이터를 보호합니다."
     },
     "options_hide_referrer_title": {
         "message": "제 3자로부터 리퍼러 숨기기"
@@ -1221,6 +1219,20 @@
     },
     "options_strip_tracking_params_description": {
         "message": "AdGuard URL 추적 필터를 사용하여 페이지 URL에서 추적 매개변수를 제거합니다."
+    },
+    "options_block_fingerprinting_title": {
+        "message": "핑거프린팅 차단"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "숨겨진 이미지를 미세하게 변경하여 웹사이트가 브라우저와 기기를 식별하지 못하도록 차단합니다."
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "핑거프린팅을 차단하려면 브라우저 권한이 필요합니다. 브라우저의 <settings-link>확장 프로그램 설정<\/settings-link>에서 <b>개발자 모드<\/b>를 활성화하세요.",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "핑거프린팅을 차단하려면 브라우저 권한이 필요합니다. 브라우저의 <settings-link>확장 프로그램 설정<\/settings-link>에서 <b>사용자 스크립트 허용<\/b>을 활성화하세요.",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
     },
     "options_block_known_trackers_title": {
         "message": "추적기 차단"
@@ -1327,8 +1339,11 @@
     "options_about": {
         "message": "정보"
     },
+    "options_adguard_products": {
+        "message": "AdGuard 제품"
+    },
     "options_privacy_policy": {
-        "message": "개인정보취급방침"
+        "message": "개인정보처리방침"
     },
     "options_acknowledgment": {
         "message": "감사의 말"

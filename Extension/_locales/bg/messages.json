@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "Тагове за филтриране"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Изключен като неизползван",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "Назад"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Открива езика на уебсайта и активира подходящите филтри"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% беше изключен като неизползван. Така се освобождава място за филтри, които използвате по-често",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% езиков филтър беше изключен като неизползван. Така се освобождава място за филтри, които използвате по-често | %count% езикови филтъра бяха изключени като неизползвани. Така се освобождава място за филтри, които използвате по-често",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Преглед",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Тема"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Неуспешно импортиране на потребителски правила. Моля, опитайте отново"
     },
+    "options_user_rules_load_error": {
+        "message": "Неуспешно зареждане на потребителските правила. Моля, опитайте отново"
+    },
     "options_user_rules_menu": {
         "message": "Действия с потребителските правила"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Премахни от потребителските филтри"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Запази правилото"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Отказ от редактиране на правило"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Отказ от създаване на правило"
     },
     "options_user_rules_deleted_notification": {
         "message": "Правилото на потребителя е изтрито:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% от %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "Браузърът е променил списъка с активните филтри"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "Какво се случи?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "Лимитът на активните вградени правила е надхвърлен след актуализация или добавяне на ново разширение. Според Manifest V3 браузърът Chrome реагира, като деактивира всички вградени филтри на разширението, освен тези по подразбиране."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Филтри, активирани преди актуализацията"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Филтрите са активирани сега"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "твоите възможни действия"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "Вариант 1. Изтрийте ненужните разширения за блокиране на реклами от браузъра си. За да активирате отново филтрите, посочени в раздела \"Филтри, активирани преди актуализацията\", щракнете <a>повторно активиране на филтрите.<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "Вариант 2. Инсталирайте приложението AdGuard Ad Blocker: то няма ограничения за правилата за филтриране. <a>Вземете AdGuard Ad Blocker<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "Вариант 3. Ако сте доволни от текущо активирания филтър, <a>затворете това предупреждение.<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "Вариант 3. Ако сте доволни от текущо активираните филтри, <a>затворете това предупреждение.<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Достигнат е лимитът — някои филтри бяха деактивирани"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Премахва параметрите за проследяване от URL адресите на страниците с помощта на филтъра за проследяване на URL на AdGuard"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Блокиране на фингърпринтинг"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Предотвратява идентифицирането на вашия браузър и устройство от сайтовете чрез лека промяна на скрити изображения"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Блокирането на фингърпринтинга изисква разрешение от браузъра. Разрешете <b>режима за разработчици<\/b> в <settings-link>настройките на разширението<\/settings-link> на браузъра",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Блокирането на фингърпринтинга изисква разрешение от браузъра. Разрешете <b>Разрешаване на потребителски скриптове<\/b> в <settings-link>настройките на разширението<\/settings-link> на браузъра",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Блокиране на тракери"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "За нас"
+    },
+    "options_adguard_products": {
+        "message": "Продукти на AdGuard"
     },
     "options_privacy_policy": {
         "message": "Политика за поверителност"

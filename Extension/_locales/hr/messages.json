@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "Oznake filtra"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Isključen jer se ne koristi",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "Natrag"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Otkriva jezik web stranice i aktivira odgovarajuće filtre"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% je isključen jer se ne koristi. Time se oslobađa prostor za filtre koje češće koristite",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| Isključen je %count% jezični filtar jer se ne koristi. Time se oslobađa prostor za filtre koje češće koristite | Isključena su %count% jezična filtra jer se ne koriste. Time se oslobađa prostor za filtre koje češće koristite | Isključeno je %count% jezičnih filtara jer se ne koriste. Time se oslobađa prostor za filtre koje češće koristite",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Pregledaj",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Tema"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Neuspjelo uvoz korisničkih pravila. Pokušajte ponovo"
     },
+    "options_user_rules_load_error": {
+        "message": "Nije uspjelo učitavanje korisničkih pravila. Pokušajte ponovno"
+    },
     "options_user_rules_menu": {
         "message": "Radnje korisničkih pravila"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Ukloni pravilo"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Spremi pravilo"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Otkaži uređivanje pravila"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Otkaži stvaranje pravila"
     },
     "options_user_rules_deleted_notification": {
         "message": "Korisničko pravilo uklonjeno:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% od %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "Preglednik je izmijenio popis aktivnih filtera"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "Što se dogodilo?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "Ograničenje aktivnih ugrađenih pravila premašeno je nakon ažuriranja ili dodavanja novog proširenja. Prema Manifestu V3, vaš preglednik Chrome reagirao je onemogućivanjem svih ugrađenih filtara proširenja osim zadanih."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Filtri omogućeni prije ažuriranja"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Filtri su sada omogućeni"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "Vaše moguće radnje"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "Opcija 1. Uklonite nepotrebna proširenja za blokiranje oglasa iz svog preglednika. Da biste ponovno aktivirali filtru navedenu u odjeljku \"Filtri omogućeni prije ažuriranja\", kliknite <a>reaktivirajte filtre.<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "Opcija 2. Instalirajte AdGuard Ad Blocker aplikaciju: nema ograničenja za pravila filtriranja. <a>Nabavite aplikaciju AdGuard<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "Opcija 3. Ako ste zadovoljni s trenutno omogućenim zadanim filtrima, <a>Zatvorite ovo upozorenje.<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "Opcija 3. Ako ste zadovoljni s trenutno omogućenim filtrima, <a>zatvorite ovo upozorenje.<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Dosegnuto ograničenje — neki filtri su onemogućeni"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Uklanja parametre praćenja iz URL-ova stranica pomoću AdGuard filtra za praćenje URL-ova"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Blokiraj fingerprinting"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Sprječava web-stranice da identificiraju vaš preglednik i uređaj laganom izmjenom skrivenih slika"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Blokiranje fingerprintinga zahtijeva dopuštenje preglednika. Omogućite <b>Način rada za razvojne programere<\/b> u <settings-link>postavkama proširenja<\/settings-link> preglednika",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Blokiranje fingerprintinga zahtijeva dopuštenje preglednika. Omogućite <b>Dopusti korisničke skripte<\/b> u <settings-link>postavkama proširenja<\/settings-link> preglednika",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Blokiranje poznatih alata za praćenje"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "O programu"
+    },
+    "options_adguard_products": {
+        "message": "AdGuard proizvodi"
     },
     "options_privacy_policy": {
         "message": "Politika privatnosti"

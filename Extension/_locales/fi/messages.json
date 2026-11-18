@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "Suodatin tunnisteet"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Poistettu käytöstä, koska sitä ei käytetä",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "Palaa takaisin"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Tunnistaa verkkosivuston kielen ja aktivoi asianmukaiset suodattimet"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% poistettiin käytöstä, koska sitä ei käytetty. Tämä vapauttaa tilaa suodattimille, joita käytät useammin",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% kielisuodatin poistettiin käytöstä, koska sitä ei käytetty. Tämä vapauttaa tilaa suodattimille, joita käytät useammin | %count% kielisuodattimet poistettiin käytöstä, koska niitä ei käytetty. Tämä vapauttaa tilaa suodattimille, joita käytät useammin",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Tarkastele",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Teema"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Käyttäjäsääntöjen tuonti epäonnistui. Yritä uudelleen"
     },
+    "options_user_rules_load_error": {
+        "message": "Käyttäjäsääntöjen lataaminen epäonnistui. Yritä uudelleen"
+    },
     "options_user_rules_menu": {
         "message": "Käyttäjäsääntöjen toiminnot"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Poista sääntö"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Tallenna sääntö"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Peruuta säännön muokkaus"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Peruuta säännön luominen"
     },
     "options_user_rules_deleted_notification": {
         "message": "Käyttäjäsääntö poistettu:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current%\/%maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "Selain on muokannut aktiivisten suodattimien luetteloa"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "Mitä tapahtui?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "Aktiivisten sisäänrakennettujen sääntöjen raja ylittyi päivityksen tai uuden laajennuksen asennuksen jälkeen. Manifest V3 -määritysten mukaisesti Chrome-selaimesi reagoi poistamalla käytöstä oletussuodattimia lukuun ottamatta kaikki laajennuksen sisäänrakennetut suodattimet."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Suodattimet, jotka olivat käytössä ennen päivitystä"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Suodattimet, jotka ovat nyt käytössä"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "Mahdolliset toiminnot"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "Vaihtoehto 1. Poista tarpeettomat mainosestolaajennukset selaimestasi. Jos haluat palauttaa \"Suodattimet, jotka olivat käytössä ennen päivitystä\" -kohdassa mainitut suodattimet käyttöön, paina <a>aktivoi suodattimet uudelleen<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "Vaihtoehto 2. Asenna AdGuard Ad Blocker -sovellus: sillä ei ole rajoituksia suodatussäännöille. <a>Hanki AdGuard-sovellus<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "Vaihtoehto 3. Jos olet tyytyväinen tällä hetkellä käytössä oleviin oletussuodattimiin, <a>sulje tämä varoitus<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "Vaihtoehto 3. Jos olet tyytyväinen tällä hetkellä käytössä oleviin oletussuodattimiin, <a>sulje tämä varoitus<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Raja saavutettu — jotkut suodattimet poistettiin käytöstä"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Poistaa seurantaparametrit sivujen URL-osoitteista AdGuardin URL-seurannanestosuodattimella."
     },
+    "options_block_fingerprinting_title": {
+        "message": "Estä sormenjälkien ottaminen"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Estää verkkosivustoja tunnistamasta selaimesi ja laitettasi muuttamalla piilokuvia hieman"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Sormenjälkien ottamisen estäminen vaatii selaimen käyttöoikeuden. Ota <b>kehittäjätila<\/b> käyttöön selaimesi <settings-link>laajennusasetuksissa<\/settings-link>",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Sormenjälkien ottamisen estäminen vaatii selaimen käyttöoikeuden. Ota käyttöön <b>Salli käyttäjän komentosarjat<\/b> selaimesi <settings-link>laajennusasetuksissa<\/settings-link>",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Estä seurannat"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "Tietoja"
+    },
+    "options_adguard_products": {
+        "message": "AdGuard-tuotteet"
     },
     "options_privacy_policy": {
         "message": "Tietosuojakäytäntö"

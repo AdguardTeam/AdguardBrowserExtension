@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "แท็กฟิลเตอร์"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "ปิดเนื่องจากไม่ได้ใช้งาน",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "กลับไป"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "ตรวจจับภาษาของเว็บไซต์และเปิดใช้งานตัวกรองที่เหมาะสม"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% ถูกปิดเนื่องจากไม่ได้ใช้งาน เพื่อคืนพื้นที่ให้กับตัวกรองที่คุณใช้งานบ่อยกว่า",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% ตัวกรองภาษาถูกปิดใช้งานเนื่องจากไม่ได้ใช้งาน การดำเนินการนี้จะเพิ่มพื้นที่สำหรับตัวกรองที่คุณใช้งานบ่อยกว่า",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "ทบทวน",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "ธีม"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "นำเข้ากฎของผู้ใช้ไม่สำเร็จ โปรดลองอีกครั้ง"
     },
+    "options_user_rules_load_error": {
+        "message": "โหลดกฎของผู้ใช้ไม่สำเร็จ โปรดลองอีกครั้ง"
+    },
     "options_user_rules_menu": {
         "message": "การดำเนินการกฎของผู้ใช้"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "ลบออกจากตัวกรองผู้ใช้"
+    },
+    "options_user_rules_save_rule": {
+        "message": "บันทึกกฎ"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "ยกเลิกการแก้ไขกฎ"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "ยกเลิกการสร้างกฎ"
     },
     "options_user_rules_deleted_notification": {
         "message": "ลบกฎของผู้ใช้แล้ว:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% ของ %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "เบราว์เซอร์ได้ปรับเปลี่ยนรายการตัวกรองที่ใช้งานอยู่"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "เกิดอะไรขึ้น?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "ขีดจำกัดของกฎภายในที่ใช้งานอยู่เกินขีดจำกัดหลังจากการอัปเดตหรือการเพิ่มส่วนขยายใหม่ ตาม Manifest V3 เบราว์เซอร์ Chrome ของคุณตอบสนองโดยปิดการใช้งานตัวกรองภายในของส่วนขยายทั้งหมด ยกเว้นตัวกรองเริ่มต้น"
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "ตัวกรองที่เปิดใช้งานก่อนการอัปเดต"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "เปิดใช้งานตัวกรองแล้ว"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "การกระทำที่เป็นไปได้ของคุณ"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "ตัวเลือกที่ 1. ลบส่วนขยายการบล็อกโฆษณาที่ไม่จำเป็นออกจากเบราว์เซอร์ของคุณ หากต้องการเปิดใช้งานตัวกรองที่ระบุไว้ในหัวข้อ \"ตัวกรองที่เปิดใช้งานก่อนการอัปเดต\" อีกครั้ง ให้คลิก <a>เปิดใช้งานตัวกรองอีกครั้ง<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "ตัวเลือกที่ 2 ติดตั้งแอป AdGuard Ad Blocker: ไม่มีข้อจำกัดในกฎการกรอง <a>ดาวน์โหลดแอป AdGuard<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "ตัวเลือกที่ 3 หากคุณพอใจกับตัวกรองเริ่มต้นที่เปิดใช้งานในปัจจุบัน <a>ให้ปิดคำเตือนนี้<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "ตัวเลือกที่ 3 หากคุณพอใจกับฟิลเตอร์เริ่มต้นที่เปิดใช้งานในปัจจุบัน <a>ให้ปิดคำเตือนนี้<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "ถึงขีดจำกัดแล้ว — ตัวกรองบางรายการถูกปิดการใช้งาน"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "ลบพารามิเตอร์การติดตามจาก URL ของหน้าโดยใช้ตัวกรองการติดตาม URL ของ AdGuard"
     },
+    "options_block_fingerprinting_title": {
+        "message": "บล็อกการเก็บลายนิ้วมือดิจิทัล"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "ป้องกันไม่ให้เว็บไซต์ระบุเบราว์เซอร์และอุปกรณ์ของคุณโดยการเปลี่ยนรูปภาพที่ซ่อนอยู่เล็กน้อย"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "การบล็อกการเก็บลายนิ้วมือดิจิทัลต้องใช้สิทธิ์ของเบราว์เซอร์ เปิดใช้งาน <b>โหมดนักพัฒนา<\/b> ใน<settings-link>การตั้งค่าส่วนขยาย<\/settings-link>ของเบราว์เซอร์คุณ",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "การบล็อกการเก็บลายนิ้วมือดิจิทัลต้องใช้สิทธิ์ของเบราว์เซอร์ เปิดใช้งาน <b>อนุญาตสคริปต์ผู้ใช้<\/b> ใน<settings-link>การตั้งค่าส่วนขยาย<\/settings-link>ของเบราว์เซอร์คุณ",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "ปิดกั้นตัวติดตามที่รู้จัก"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "เกี่ยวกับ"
+    },
+    "options_adguard_products": {
+        "message": "ผลิตภัณฑ์ AdGuard"
     },
     "options_privacy_policy": {
         "message": "นโยบายความเป็นส่วนตัว"

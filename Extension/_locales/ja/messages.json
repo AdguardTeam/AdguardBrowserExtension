@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "フィルタタグ"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "未使用のためオフになりました",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "戻る"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "ウェブサイトの言語を検出し、適切なフィルタを有効にします。"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% は未使用のためオフになりました。これにより、よく使うフィルタ用の空きが確保されます",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% 個の言語フィルタが未使用のためオフになりました。これにより、よく使うフィルタ用の空きが確保されます",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "確認する",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "カラーテーマ"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "ユーザールールのインポートに失敗しました。もう一度お試しください"
     },
+    "options_user_rules_load_error": {
+        "message": "ユーザールールの読み込みに失敗しました。もう一度お試しください"
+    },
     "options_user_rules_menu": {
         "message": "ユーザールールのアクションメニュー"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "ルールを削除する"
+    },
+    "options_user_rules_save_rule": {
+        "message": "ルールを保存"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "ルールの編集をキャンセル"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "ルールの作成をキャンセル"
     },
     "options_user_rules_deleted_notification": {
         "message": "以下のユーザールールが削除されました:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current%\/%maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "ブラウザが、有効な組み込みフィルタのリストを変更しました。"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "何が起きたのか"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "アップデートまたは新しい拡張機能を追加した後に、有効な組み込みルール数の上限を超えました。Manifest V3 に従って、お使いのChromeブラウザは、拡張機能の組み込みフィルタ（デフォルトのフィルタを除く）を全て無効にすることで反応しました。"
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "更新前に有効化されたフィルタ"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "現在有効になっているフィルタ"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "あなたにできること"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "オプション 1. ブラウザから不要な広告ブロック拡張機能を削除します。 「更新前に有効化されたフィルタ」セクションに記載されているフィルタを再度有効化するには、「<a>フィルタを再有効化<\/a>」をクリックします。"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "オプション 2. AdGuard アプリをインストールすることで、フィルタリングルールは無制限になります。。 <a>AdGuard アプリを入手する<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "オプション 3. 現在有効になっているデフォルトフィルタで十分な場合は、 <a>この警告を閉じ<\/a>て結構です。"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "オプション 3. 現在有効になっているデフォルトフィルタで十分な場合は、 <a>この警告を閉じ<\/a>て結構です。"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "上限に達したため、一部のフィルターが無効になりました"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "「AdGuard URL追跡防止フィルタ」を使ってページのURLから追跡パラメーターを取り除きます。"
     },
+    "options_block_fingerprinting_title": {
+        "message": "フィンガープリントをブロック"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "隠し画像をわずかに変更することで、ウェブサイトがお使いのブラウザやデバイスを特定するのを防ぎます"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "フィンガープリントのブロックにはブラウザの権限が必要です。<b>デベロッパモード<\/b>をオンにするには、ブラウザの<settings-link>拡張機能設定<\/settings-link>を開いてください",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "フィンガープリントのブロックにはブラウザの権限が必要です。<b>ユーザースクリプトを許可する<\/b>をオンにするには、ブラウザの<settings-link>拡張機能設定<\/settings-link>を開いてください",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "トラッカー（個人情報追跡）をブロックする"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "AdGuardについて"
+    },
+    "options_adguard_products": {
+        "message": "他のAdGuard製品"
     },
     "options_privacy_policy": {
         "message": "プライバシーポリシー"
@@ -1688,15 +1703,15 @@
         "message": "AdGuard拡張機能がManifest V3に移行しました"
     },
     "edge_mv3_migration_popup_description": {
-        "message": "設定、フィルター、ルールは保持されます。現在、ブラウザは広告ブロッカーができることを制限しています。広告やトラッカーは引き続きブロックされますが、適用できるルールの数が少なくなります。"
+        "message": "ご利用の設定、フィルタ、ルールは保持されています。この新仕様へのやむない移行の影響で、ブラウザは広告ブロッカーの性能を制限しています。広告やトラッカーは引き続きブロックされますが、適用できるルールの数が少なくなります。"
     },
     "edge_mv3_migration_popup_user_scripts": {
-        "message": "カスタムフィルターやユーザールールをお使いですか？引き続き機能させるには、ブラウザの<a>拡張機能設定<\/a>で<b>ユーザースクリプトを許可する<\/b>をオンにしてください。"
+        "message": "【カスタムフィルタやユーザールールをお使いの場合】引き続き機能させるには、ブラウザの<a>拡張機能設定<\/a>で「<b>ユーザースクリプトを許可する<\/b>」をオンにしてください。"
     },
     "edge_mv3_migration_popup_offer_title": {
-        "message": "制限を解除 — デスクトップアプリを入手"
+        "message": "デスクトップアプリ版なら制限なしです"
     },
     "edge_mv3_migration_popup_offer_button": {
-        "message": "30%%オフで購入"
+        "message": "30%%OFFで手に入れる"
     }
 }

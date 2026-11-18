@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "Etichete filtru"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Dezactivat ca nefolosit",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "Înapoi"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Detectează limba site-ului web și activează filtrele corespunzătoare"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% a fost dezactivat ca nefolosit. Astfel se eliberează spațiu pentru filtrele pe care le folosiți mai des",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% filtru de limbă a fost dezactivat ca nefolosit. Astfel se eliberează spațiu pentru filtrele pe care le folosiți mai des | %count% filtre de limbă au fost dezactivate ca nefolosite. Astfel se eliberează spațiu pentru filtrele pe care le folosiți mai des | %count% de filtre de limbă au fost dezactivate ca nefolosite. Astfel se eliberează spațiu pentru filtrele pe care le folosiți mai des",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Verificați",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Temă"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Importul regulilor utilizatorului a eșuat. Vă rugăm să încercați din nou"
     },
+    "options_user_rules_load_error": {
+        "message": "Încărcarea regulilor utilizatorului a eșuat. Vă rugăm să încercați din nou"
+    },
     "options_user_rules_menu": {
         "message": "Acțiuni reguli utilizator"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Ștergeți regula"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Salvează regula"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Anulează editarea regulii"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Anulează crearea regulii"
     },
     "options_user_rules_deleted_notification": {
         "message": "Regulă utilizator ștearsă:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% din %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "Browserul a modificat lista de filtre active"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "Ce s-a întâmplat?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "Limita de reguli încorporate active a fost depășită după o actualizare sau după adăugarea unei noi extensii. Potrivit Manifest V3, browserul Chrome a reacționat prin dezactivarea tuturor filtrelor încorporate ale extensiei, cu excepția celor implicite."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Filtrele activate înainte de actualizare"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Filtre activate acum"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "Acțiuni posibile"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "Opțiunea 1. Ștergeți extensiile în plus de blocare a reclamelor din browser. Pentru a reactiva filtrele menționate în secțiunea „Filtre activate înainte de actualizare”, faceți clic pe <a>reactivați filtrele<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "Opțiunea 2. Instalați aplicația AdGuard Ad Blocker: aceasta nu are restricții în ceea ce privește regulile de filtrare. <a>Obțineți AdGuard Ad Blocker<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "Opțiunea 3. Dacă sunteți mulțumit de filtrul implicit activat curent, <a>închideți acest avertisment<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "Opțiunea 3. Dacă sunteți mulțumit de filtrele implicite activate curent, <a>închideți acest avertisment<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Limita a fost atinsă — unele filtre au fost dezactivate"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Elimină parametrii de urmărire din adresele URL ale paginilor utilizând filtrul de urmărire URL AdGuard"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Blochează amprentarea digitală"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Împiedică site-urile să îți identifice browserul și dispozitivul modificând ușor imaginile ascunse"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Blocarea amprentării digitale necesită o permisiune a browserului. Activați <b>modul Dezvoltator<\/b> în <settings-link>setările extensiei<\/settings-link> din browserul dumneavoastră",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Blocarea amprentării digitale necesită o permisiune a browserului. Activați <b>Permiteți scripturi utilizator<\/b> în <settings-link>setările extensiei<\/settings-link> din browserul dumneavoastră",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Blocați trackerele"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "Despre"
+    },
+    "options_adguard_products": {
+        "message": "Produse AdGuard"
     },
     "options_privacy_policy": {
         "message": "Politică Intimitate"

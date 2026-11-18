@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "過濾標籤"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "因未使用已關閉",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "返回"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "檢測網站的語言並啟動對應的過濾器"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% 因未使用已關閉，藉此為更常用的過濾器騰出空間",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% 個語言過濾器因未使用已關閉，藉此為更常用的過濾器騰出空間",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "檢視",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "主題"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "使用者規則匯入失敗。請重試。"
     },
+    "options_user_rules_load_error": {
+        "message": "無法載入使用者規則。請重試"
+    },
     "options_user_rules_menu": {
         "message": "使用者規則操作"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "刪除規則"
+    },
+    "options_user_rules_save_rule": {
+        "message": "儲存規則"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "取消規則編輯"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "取消規則建立"
     },
     "options_user_rules_deleted_notification": {
         "message": "使用者規則已刪除："
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% 個，共 %maximum% 個"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "瀏覽器已修改啟用的過濾器清單"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "出現了什麼問題？"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "根據 Manifest V3，在更新或新增新擴充功能後，已超過內建規則的啟用上限。根據 Chrome 瀏覽器的反應，除了預設規則，它停用了該擴充功能的所有內建過濾器。"
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "更新前已啟用的過濾器"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "已啟用的過濾器"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "您可以執行的操作"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "選項 1：從瀏覽器中刪除不必要的廣告封鎖擴充套件。要重新啟用「更新前已啟用的過濾器」部分中提到的過濾器，請點選「<a>重新啟用過濾器<\/a>」。"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "選項 2：安裝 AdGuard 廣告封鎖程式。該應用程式沒有過濾規則的數量限制。<a>取得 AdGuard 廣告封鎖程式<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "選項 3：如果您對已啟用的預設過濾器感到滿意，請「<a>關閉此警告<\/a>」。"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "選項 3：如果您對已啟用的預設過濾器感到滿意，請「<a>關閉此警告<\/a>」。"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "已達上限，部分過濾器已停用。"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "使用 AdGuard 網址追蹤過濾器從網頁網址中移除追蹤參數"
     },
+    "options_block_fingerprinting_title": {
+        "message": "封鎖指紋辨識"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "透過稍微變更隱藏的圖片，防止網站辨識瀏覽器和裝置"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "封鎖指紋辨識需要瀏覽器權限。請在瀏覽器的<settings-link>擴充功能設定<\/settings-link>中啟用<b>開發人員模式<\/b>。",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "封鎖指紋辨識需要瀏覽器權限。請在瀏覽器的<settings-link>擴充功能設定<\/settings-link>中啟用<b>允許使用者指令碼<\/b>。",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "封鎖追蹤器"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "關於"
+    },
+    "options_adguard_products": {
+        "message": "AdGuard 產品"
     },
     "options_privacy_policy": {
         "message": "隱私政策"

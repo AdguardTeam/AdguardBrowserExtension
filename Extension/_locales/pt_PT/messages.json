@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "Tags de filtro"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Desligado por falta de utilização",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "Voltar"
     },
@@ -395,7 +399,7 @@
         "message": "CDN"
     },
     "popup_statistics_category_other": {
-        "message": "Noutro"
+        "message": "Outros"
     },
     "popup_statistics_week_days_mon": {
         "message": "Seg"
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Detecta o idioma do sítio Web e ativa os filtros adequados"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "O filtro %filter_name% foi desativado por não ser utilizado. Isto liberta espaço para filtros que usa com mais frequência",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% filtro de idioma foi desativado por não estar a ser utilizado. Isto liberta espaço para filtros que usa com mais frequência | %count% filtros de idioma foram desativados por não estarem a ser utilizados. Isto liberta espaço para filtros que usa com mais frequência",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Revisão",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Tema"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Falha ao importar as regras do usuário. Por favor, tente novamente"
     },
+    "options_user_rules_load_error": {
+        "message": "Falha ao carregar as regras do utilizador. Tente novamente"
+    },
     "options_user_rules_menu": {
         "message": "Ações de regras do usuário"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Apagar regra"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Guardar regra"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Cancelar edição da regra"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Cancelar criação de regra"
     },
     "options_user_rules_deleted_notification": {
         "message": "Regra do usuário excluída:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% de %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "O navegador modificou a lista de filtros ativos"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "O que aconteceu?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "O limite de regras internas ativas foi excedido após uma atualização ou adição de uma nova extensão. De acordo com o Manifest V3, seu navegador Chrome reagiu a desativar todos os filtros internos da extensão, exceto os padrões."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Filtros ativados antes da atualização"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Filtros ativados agora"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "Suas possíveis ações"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "Opção 1. Elimine as extensões de bloqueio de anúncios desnecessárias do seu navegador. Para reativar os filtros mencionados na secção \"Filtros ativados antes da atualização\", clique em <a>reativar filtros.<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "Opção 2. Instalar a aplicação AdGuard Bloqueador de publicidade: não tem restrições quanto às regras de filtragem. <a>Obter a aplicação AdGuard<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "Opção 3. Se estiver satisfeito com o filtro predefinidos ativo atualmente, <a>feche este aviso.<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "Opção 3. Se estiver satisfeito com os filtros predefinidos ativos atualmente, <a>feche este aviso.<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Limite atingido — alguns filtros foram desativados"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Remove os parâmetros de monitorizamento dos URLs da página usando o filtro de monitorizamento de URL do AdGuard"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Bloquear fingerprinting"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Impede que os sítios Web identifiquem o seu navegador e dispositivo alterando ligeiramente imagens ocultas"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "O bloqueio da recolha de impressões digitais requer uma permissão do navegador. Ative <b>o Modo de Programador<\/b> nas <settings-link>definições de extensões<\/settings-link> do seu browser",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Bloquear o fingerprinting necessita de uma permissão do navegador. Active a opção <b>Permitir scripts do utilizador<\/b> nas <settings-link>definições de extensão<\/settings-link> do seu navegador",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Bloquear monitorizadores"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "Acerca de"
+    },
+    "options_adguard_products": {
+        "message": "Produtos do AdGuard"
     },
     "options_privacy_policy": {
         "message": "Política de privacidade"

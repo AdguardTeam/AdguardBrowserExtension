@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "Címkék szűrése"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Nem használtként kikapcsolva",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "Vissza"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Érzékeli a webhely nyelvét, és aktiválja a megfelelő szűrőket"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% nem használtként lett kikapcsolva. Ez helyet szabadít fel a gyakrabban használt szűrők számára",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% nyelvi szűrő nem használtként lett kikapcsolva. Ez helyet szabadít fel a gyakrabban használt szűrők számára| %count% nyelvi szűrő nem használtként lett kikapcsolva. Ez helyet szabadít fel a gyakrabban használt szűrők számára",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Áttekintés",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Téma"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Nem sikerült importálni a felhasználói szabályokat. Kérjük, próbálja újra"
     },
+    "options_user_rules_load_error": {
+        "message": "Nem sikerült betölteni a felhasználói szabályokat. Kérjük, próbálja újra"
+    },
     "options_user_rules_menu": {
         "message": "Felhasználói szabályok műveletei"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Szabály törlése"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Szabály mentése"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Szabály szerkesztésének megszakítása"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Szabály létrehozásának megszakítása"
     },
     "options_user_rules_deleted_notification": {
         "message": "Felhasználói szabály törölve:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% \/ %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "A böngésző módosította az aktív szűrők listáját"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "Mi történt?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "Az aktív beépített szabályok korlátját frissítés vagy új bővítmény hozzáadása után túllépték. A Manifest V3 szerint a Chrome böngészője úgy reagált, hogy letiltotta a bővítmény összes beépített szűrőjét, kivéve az alapértelmezetteket."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "A frissítés előtt engedélyezve vannak a szűrők"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "A szűrők mostantól engedélyezve vannak"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "Az Ön lehetséges lépései"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "1. lehetőség: Törölje a szükségtelen hirdetésblokkoló bővítményeket a böngészőből. A „Frissítés előtt engedélyezett szűrők” részben említett szűrők újraaktiválásához kattintson a <a>szűrők újraaktiválása lehetőségre.<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "2. lehetőség. Telepítse az AdGuard Ad Blocker alkalmazást: abban nincs korlátozása a szűrési szabályokra vonatkozóan. <a>Töltse le az AdGuard alkalmazást<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "3. Ha elégedett a jelenleg engedélyezett alapértelmezett szűrővel, <a>zárja be ezt a figyelmeztetést<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "3. lehetőség. Ha elégedett a jelenleg engedélyezett alapértelmezett szűrőkkel, <a>zárja be ezt a figyelmeztetést.<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Elérte a korlátot — néhány szűrő le lett tiltva"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Eltávolítja a nyomkövetési paramétereket az oldal URL-jéből az AdGuard URL-követő szűrő használatával"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Ujjlenyomat-készítés blokkolása"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Megakadályozza, hogy a webhelyek azonosítsák a böngészőjét és eszközét a rejtett képek kismértékű módosításával"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Az ujjlenyomat-készítés blokkolásához böngészőengedély szükséges. Engedélyezze a <b>fejlesztői módot<\/b> a böngésző <settings-link>bővítménybeállításaiban<\/settings-link>",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Az ujjlenyomat-készítés blokkolásához böngészőengedély szükséges. Engedélyezze a <b>felhasználói szkriptek engedélyezését<\/b> a böngésző <settings-link>bővítménybeállításaiban<\/settings-link>",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Nyomkövetők blokkolása"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "Névjegy"
+    },
+    "options_adguard_products": {
+        "message": "AdGuard termékek"
     },
     "options_privacy_policy": {
         "message": "Adatvédelmi irányelvek"

@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "Tag filter"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Dimatikan karena tidak digunakan",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "Kembali"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Mendeteksi bahasa pada situs web dan mengaktifkan filter yang sesuai"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% telah dinonaktifkan karena tidak digunakan. Hal ini membebaskan ruang untuk filter yang lebih sering Anda gunakan",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% filter bahasa telah dinonaktifkan karena tidak digunakan. Hal ini membebaskan ruang untuk filter yang lebih sering Anda gunakan",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Tinjau",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Tema"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Gagal mengimpor aturan pengguna. Silakan coba lagi"
     },
+    "options_user_rules_load_error": {
+        "message": "Gagal memuat aturan pengguna. Silakan coba lagi"
+    },
     "options_user_rules_menu": {
         "message": "Tindakan aturan pengguna"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Hapus aturan"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Simpan aturan"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Batalkan pengeditan aturan"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Batalkan pembuatan aturan"
     },
     "options_user_rules_deleted_notification": {
         "message": "Aturan pengguna dihapus:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% dari %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "Peramban telah memodifikasi daftar filter aktif"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "Apa yang terjadi?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "Batas aturan bawaan aktif terlampaui setelah pembaruan atau penambahan ekstensi baru. Sesuai Manifest V3, peramban Chrome Anda bereaksi dengan menonaktifkan semua filter bawaan ekstensi kecuali filter standar."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Filter diaktifkan sebelum pembaruan"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Filter diaktifkan sekarang"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "Kemungkinan tindakan Anda"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "Opsi 1. Hapus ekstensi pemblokiran iklan yang tidak perlu dari peramban Anda. Untuk mengaktifkan kembali filter yang disebutkan di bagian \"Filter diaktifkan sebelum pembaruan\", klik <a>aktifkan kembali filter.<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "Opsi 2. Pasang aplikasi Pemblokir Iklan AdGuard: aplikasi ini tidak memiliki batasan pada aturan pemfilteran. <a>Dapatkan aplikasi AdGuard<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "Opsi 3. Jika Anda puas dengan filter standar yang aktif saat ini, <a>tutup peringatan ini.<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "Opsi 3. Jika Anda puas dengan filter standar yang aktif saat ini, <a>tutup peringatan ini.<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Batas tercapai — beberapa filter dinonaktifkan"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Menghapus parameter pelacakan dari halaman URL menggunakan filter Pelacakan URL AdGuard"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Blokir pengambilan sidik jari"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Mencegah situs web mengidentifikasi browser dan perangkat Anda dengan sedikit mengubah gambar-gambar tersembunyi"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Untuk memblokir pengambilan sidik jari, diperlukan izin dari browser. Aktifkan <b>Mode Pengembang<\/b> di <settings-link>pengaturan ekstensi<\/settings-link> browser Anda",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Untuk memblokir pengambilan sidik jari, diperlukan izin dari browser. Aktifkan <b>Izinkan skrip pengguna<\/b> di <settings-link>pengaturan ekstensi<\/settings-link> browser Anda",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Blokir pelacak"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "Tentang"
+    },
+    "options_adguard_products": {
+        "message": "Produk AdGuard"
     },
     "options_privacy_policy": {
         "message": "Kebijakan privasi"

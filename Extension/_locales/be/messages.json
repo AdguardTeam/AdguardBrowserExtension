@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "Тэгі фільтра"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Адключаныя, бо не выкарыстоўваліся",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "Вярнуцца"
     },
@@ -395,7 +399,7 @@
         "message": "CDN"
     },
     "popup_statistics_category_other": {
-        "message": "Іншыя"
+        "message": "Іншае"
     },
     "popup_statistics_week_days_mon": {
         "message": "Пан"
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Вызначае мову вэб-сайта і актывуе адпаведныя фільтры"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "Фільтр %filter_name% быў адключаны, бо ім не карысталіся. Гэта вызваліла месца для фільтраў, якімі вы карыстаецеся часцей",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% моўны фільтр быў адключаны, бо не выкарыстоўваўся. Гэта вызваліла месца для фільтраў, якімі вы карыстаецеся часцей | %count% моўныя фільтры былі адключаны, бо не выкарыстоўваліся. Гэта вызваліла месца для фільтраў, якімі вы карыстаецеся часцей | %count% моўных фільтраў былі адключаны, бо не выкарыстоўваліся. Гэта вызваліла месца для фільтраў, якімі вы карыстаецеся часцей",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Праглядзець",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Тэма"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Не ўдалося імпартаваць правілы карыстальніка. Паспрабуйце яшчэ раз"
     },
+    "options_user_rules_load_error": {
+        "message": "Не ўдалося загрузіць правілы карыстальніка. Паспрабуйце яшчэ раз"
+    },
     "options_user_rules_menu": {
         "message": "Дзеянні правіл карыстальніка"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Выдаліць правіла"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Захаваць правіла"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Скасаваць рэдагаванне правіла"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Скасаваць стварэнне правіла"
     },
     "options_user_rules_deleted_notification": {
         "message": "Правіла карыстальніка выдалена:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% з %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "Браўзер змяніў спіс актыўных фільтраў"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "Што здарылася?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "Абмежаванне актыўных убудаваных правіл было перавышана пасля абнаўлення або дадавання новага пашырэння. Браўзер Chrome адрэагаваў і адключыў ўсе ўбудаваныя фільтры пашырэння, акрамя стандартных. Гэта зроблена ў адпаведнасці з Manifest V3."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Фільтры, якія былі ўключаны перад абнаўленнем"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Фільтры, якія былі ўключаны цяпер"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "Вашы магчымыя дзеянні"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "Варыянт 1. Выдаліце з браўзера непатрэбныя пашырэнні, якія блакіруюць рэкламу. Каб паўторна актываваць фільтры, згаданыя ў раздзеле \"Фільтры, уключаныя перад абнаўленнем\", націсніце <a>паўторна актываваць фільтры.<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "Варыянт 2. Усталюйце праграму AdGuard Ad Blocker: яна не мае абмежаванняў па правілах фільтрацыі. <a>Атрымайце праграму AdGuard<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "Варыянт 3. Калі вы задаволены ўключаным у цяперашні час фільтрам, <a>закрыйце гэтае папярэджанне.<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "Варыянт 3. Калі вы задаволены ўключанымі ў цяперашні час фільтрамі, <a>закрыйце гэтае папярэджанне.<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Дасягнуты ліміт — некаторыя фільтры былі адключана"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Выдаляе параметры адсочвання з URL-адрасоў старонак з дапамогай функцыі «Фільтр адсочвання па URL-адрасе AdGuard»"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Блакаваць фінгерпрынтынг"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Перашкаджае сайтам ідэнтыфікаваць ваш браўзер і прыладу шляхам нязначнага змянення схаваных выяў"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Блакаванне фінгерпрынтынгу патрабуе дазволу браўзера. Уключыце <b>Рэжым распрацоўшчыка<\/b> у <settings-link>наладах пашырэння<\/settings-link> вашага браўзера",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Блакаванне фінгерпрынтынгу патрабуе дазволу браўзера. Уключыце <b>Дазволіць карыстальніцкія сцэнары<\/b> у <settings-link>наладах пашырэння<\/settings-link> вашага браўзера",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Блакіраваць праграмы сачэння"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "Аб праграме"
+    },
+    "options_adguard_products": {
+        "message": "Прадукты AdGuard"
     },
     "options_privacy_policy": {
         "message": "Палітыка прыватнасці"

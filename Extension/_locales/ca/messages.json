@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "Etiquetes de filtre"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Desactivat per no utilitzar-se",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "Torna enrere"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Detecta l'idioma del lloc web i activa els filtres adequats"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% s'ha desactivat per no utilitzar-se. Això allibera espai per a filtres que feu servir més sovint",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% filtre d'idioma s'ha desactivat per no utilitzar-se. Això allibera espai per a filtres que feu servir més sovint | %count% filtres d'idioma s'han desactivat per no utilitzar-se. Això allibera espai per a filtres que feu servir més sovint",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Revisa",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Tema"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "No s'han pogut importar les regles d'usuari. Si us plau, torneu-ho a intentar"
     },
+    "options_user_rules_load_error": {
+        "message": "No s'han pogut carregar les regles d'usuari. Torneu-ho a intentar"
+    },
     "options_user_rules_menu": {
         "message": "Accions de les regles d'usuari"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Elimineu-lo dels filtres d'usuari"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Desa la regla"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Cancel·la l'edició de la regla"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Cancel·la la creació de la regla"
     },
     "options_user_rules_deleted_notification": {
         "message": "Regla d'usuari eliminada:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% de %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "El navegador ha modificat la llista de filtres actius"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "Què ha passat?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "El límit de regles integrades actives es va superar després d'una actualització o d'afegir una nova extensió. D'acord amb Manifest V3, el teu navegador Chrome va reaccionar desactivant tots els filtres integrats de l'extensió excepte els predeterminats."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Filtres activats abans de l'actualització"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Filtres activats ara"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "Les teves possibles accions"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "Opció 1. Elimineu extensions de bloqueig d'anuncis innecessàries del vostre navegador. Per reactivar els filtres esmentats a la secció \"Filtres habilitats abans de l'actualització\", feu clic <a>reactivar filtres.<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "Opció 2. Instal·leu l'aplicació AdGuard Ad Blocker: no té restriccions sobre les regles de filtratge. <a>Obteniu l'aplicació AdGuard<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "Opció 3. Si esteu satisfets amb el filtre predeterminat actualment habilitat, <a>tanca aquesta advertència.<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "Opció 3. Si esteu satisfets amb els filtres predeterminats actualment habilitats, <a>tanca aquesta advertència.<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "S'ha assolit el límit — alguns filtres s'han deshabilitat"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Elimina els paràmetres de seguiment de les URLs de les pàgines mitjançant el filtre de seguiment d'URL d'AdGuard"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Bloqueja la petjada digital"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Impedeix que els llocs web identifiquin el vostre navegador i dispositiu canviant lleugerament les imatges ocultes"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Bloquejar la petjada digital requereix un permís del navegador. Activeu el <b>Mode desenvolupador<\/b> a la <settings-link>configuració de l'extensió<\/settings-link> del navegador",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Bloquejar la petjada digital requereix un permís del navegador. Activeu <b>Permet scripts d'usuari<\/b> a la <settings-link>configuració de l'extensió<\/settings-link> del navegador",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Bloquejar rastrejadors"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "Quant a"
+    },
+    "options_adguard_products": {
+        "message": "Productes d'AdGuard"
     },
     "options_privacy_policy": {
         "message": "Política de privacitat"

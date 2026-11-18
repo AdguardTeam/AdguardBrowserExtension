@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "过滤标签"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "因未使用已关闭",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "返回"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "检测网站的语言并激活对应的过滤器"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% 因未使用已关闭，从而为更常用的过滤器腾出空间",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% 个语言过滤器因未使用已关闭，从而为更常用的过滤器腾出空间",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "查看",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "主题"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "用户规则导入失败。请重试。"
     },
+    "options_user_rules_load_error": {
+        "message": "无法加载用户规则。请重试"
+    },
     "options_user_rules_menu": {
         "message": "用户规则操作"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "移除规则"
+    },
+    "options_user_rules_save_rule": {
+        "message": "保存规则"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "取消规则编辑"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "取消规则创建"
     },
     "options_user_rules_deleted_notification": {
         "message": "用户规则已删除："
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% 个，共 %maximum% 个"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "浏览器已修改活跃过滤器列表"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "出现了什么问题？"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "在更新或添加新扩展后，活跃的内置规则已超出限制。根据 Manifest V3，Chrome 浏览器已禁用除默认过滤器之外的所有扩展程序的内置过滤器。"
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "更新前启用的过滤器"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "当前已启用的过滤器"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "您可以进行的操作"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "选项 1：从浏览器中删除不必要的广告拦截扩展。要重新激活「更新前启用的过滤器」部分中提到的过滤器，请单击「<a>重新激活过滤器<\/a>」。"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "选项 2：安装 AdGuard 广告拦截程序。该应用程序没有过滤规则的数量限制。<a>获取 AdGuard 广告拦截程序<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "选项 3：如果您可以接受当前启用的默认过滤器，即可<a>关闭此警告<\/a>。"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "选项 3：如果您可以接受当前启用的默认过滤器，即可<a>关闭此警告<\/a>。"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "已达上限，部分过滤器已停用。"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "使用「AdGuard URL 跟踪过滤器」删除页面 URL 中的跟踪参数"
     },
+    "options_block_fingerprinting_title": {
+        "message": "拦截指纹识别"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "通过轻微改变隐藏的图片，防止网站识别浏览器和设备"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "拦截指纹识别需要浏览器权限。请在浏览器的<settings-link>扩展设置<\/settings-link>中启用<b>开发者模式<\/b>。",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "拦截指纹识别需要浏览器权限。请在浏览器的<settings-link>扩展设置<\/settings-link>中启用<b>允许用户脚本<\/b>。",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "拦截跟踪器"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "关于"
+    },
+    "options_adguard_products": {
+        "message": "AdGuard 产品"
     },
     "options_privacy_policy": {
         "message": "隐私政策"

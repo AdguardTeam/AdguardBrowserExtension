@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "Filter-tags"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Slået fra som ubrugt",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "Gå tilbage"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Registrerer sproget på webstedet og aktiverer passende filtre"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% er slået fra som ubrugt. Dette frigør plads til filtre, som bruges oftere",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% sprogfilter er slået fra som ubrugt. Dette frigør plads til filtre, om bruges oftere | %count% sprogfiltre er slået fra som ubrugte. Dette frigør plads til filtre, som brugers oftere",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Gennemgå",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Tema"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Import af brugerregler mislykkedes. Forsøg igen"
     },
+    "options_user_rules_load_error": {
+        "message": "Indlæsning af prævisning mislykkedes. Forsøg igen"
+    },
     "options_user_rules_menu": {
         "message": "Brugerregelhandlinger"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Slet regel"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Gem regel"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Afbryd regelredigering"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Afbryd regeloprettelse"
     },
     "options_user_rules_deleted_notification": {
         "message": "Brugerregel slettet:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% af %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "Browseren har ændret listen over aktive filtre"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "Hvad skete der?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "Grænsen for aktive indbyggede regler blev overskredet efter en opdatering eller tilføjelse af en ny udvidelse. Iht. Manifest V3 reagerede Chrome-browseren ved at deaktivere alle udvidelsens indbyggede filtre undtagen standardfiltrene."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Aktive filtre før opdateringen"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Aktive filtre nu"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "De mulige handlinger"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "Mulighed 1. Slet unødvendige adblockudvidelser fra webbrowseren. For at genaktivere filtre nævnt i afsnittet \"Filtre aktiveret før opdateringen\", klik på <a>Genaktivér filtre<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "Mulighed 2. Installér AdGuard Ad Blocker-appen: Den har ingen filtreringsregelrestriktioner. <a>Hent AdGuard-appen<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "Mulighed 3. Er det aktuelt aktiverede standardfilter tilfredsstillende, <a>luk denne advarsel<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "Mulighed 3. Er de aktuelt aktiverede standardfiltre tilfredsstillende, <a>luk denne advarsel<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Kvote opbrugt — nogle filtre er blevet deaktiveret"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Fjerner sporingsparametre fra side-URL'er vha. AdGuard URL Tracking-filter"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Blokér fingerprinting"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Forhindrer websteder i at identificere webbrowseren og enheden ved at ændre skjulte billeder en smule"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Blokering af fingerprinting kræver en webbrowsertilladelse. Aktivér <b>Udviklertilstand<\/b> i webbrowserens <settings-link>udvidelsesindstillinger<\/settings-link>",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Blokering af fingerprinting kræver en webbrowsertilladelse. Aktivér <b>Tillad userscripts<\/b> i webbrowserens <settings-link>udvidelsesindstillinger<\/settings-link>",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Blokér trackere"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "Om"
+    },
+    "options_adguard_products": {
+        "message": "AdGuard-produkter"
     },
     "options_privacy_policy": {
         "message": "Fortrolighedspolitik"

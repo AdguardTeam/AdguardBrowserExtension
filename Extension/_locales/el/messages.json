@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "Ετικέτες φίλτρων"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Απενεργοποιήθηκε ως αχρησιμοποίητο",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "Πηγαίνετε πίσω"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Ανιχνεύει τη γλώσσα της ιστοσελίδας και ενεργοποιεί τα κατάλληλα φίλτρα"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "Το %filter_name% απενεργοποιήθηκε ως αχρησιμοποίητο. Αυτό ελευθερώνει χώρο για φίλτρα που χρησιμοποιείτε συχνότερα",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| Το %count% φίλτρο γλώσσας απενεργοποιήθηκε ως αχρησιμοποίητο. Αυτό ελευθερώνει χώρο για φίλτρα που χρησιμοποιείτε συχνότερα | Τα %count% φίλτρα γλώσσας απενεργοποιήθηκαν ως αχρησιμοποίητα. Αυτό ελευθερώνει χώρο για φίλτρα που χρησιμοποιείτε συχνότερα",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Προβολή",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Θέμα"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Αποτυχία στο εισαγωγή κανόνων χρήστης. Παρακαλώ προσπαθήστε ξανά"
     },
+    "options_user_rules_load_error": {
+        "message": "Αποτυχία φόρτωσης κανόνων χρήστη. Δοκιμάστε ξανά"
+    },
     "options_user_rules_menu": {
         "message": "Ενέργειες κανόνων χρήστη"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Διαγραφή κανόνα"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Αποθήκευση κανόνα"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Ακύρωση επεξεργασίας κανόνα"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Ακύρωση δημιουργίας κανόνα"
     },
     "options_user_rules_deleted_notification": {
         "message": "Ο κανόνας χρήστη διαγράφηκε:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% από %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "Το πρόγραμμα περιήγησης έχει τροποποιήσει τη λίστα των ενεργών φίλτρων"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "Τι συνέβη;"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "Έγινε υπέρβαση του ορίου των ενεργών ενσωματωμένων κανόνων μετά από μια ενημέρωση ή την προσθήκη μιας νέας επέκτασης. Σύμφωνα με το Manifest V3, το πρόγραμμα περιήγησης Chrome αντέδρασε απενεργοποιώντας όλα τα ενσωματωμένα φίλτρα της επέκτασης εκτός από τα προεπιλεγμένα."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Φίλτρα που ενεργοποιήθηκαν πριν από την ενημέρωση"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Τα φίλτρα ενεργοποιήθηκαν"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "Οι πιθανές σας ενέργειες"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "Επιλογή 1. Διαγράψτε τις περιττές επεκτάσεις αποκλεισμού διαφημίσεων από το πρόγραμμα περιήγησής σας. Για να επανενεργοποιήσετε τα φίλτρα που αναφέρθηκαν στην ενότητα \"Φίλτρα που ενεργοποιήθηκαν πριν από την ενημέρωση\", κάντε κλικ <a>επανενεργοποιήστε τα φίλτρα.<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "Επιλογή 2. Εγκαταστήστε την εφαρμογή AdGuard Ad Blocker: δεν έχει περιορισμούς στους κανόνες φιλτραρίσματος. <a>Αποκτήστε την εφαρμογή AdGuard<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "Επιλογή 3. Εάν είστε ικανοποιημένοι με το ενεργοποιημένο προεπιλεγμένο φίλτρο, <a>κλείστε αυτή την προειδοποίηση.<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "Επιλογή 3. Εάν είστε ικανοποιημένοι με τα ενεργοποιημένα προεπιλεγμένα φίλτρα, <a>κλείστε αυτή την προειδοποίηση.<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Το όριο επιτεύχθηκε — ορισμένα φίλτρα απενεργοποιήθηκαν"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Αφαιρεί τις παραμέτρους παρακολούθησης από τις διευθύνσεις URL των σελίδων χρησιμοποιώντας το φίλτρο παρακολούθησης URL AdGuard"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Αποκλεισμός δακτυλικού αποτυπώματος"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Εμποδίζει τους ιστότοπους να αναγνωρίζουν το πρόγραμμα περιήγησης και τη συσκευή σας αλλάζοντας ελαφρώς κρυφές εικόνες"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Ο αποκλεισμός του δακτυλικού αποτυπώματος απαιτεί άδεια του προγράμματος περιήγησης. Ενεργοποιήστε τη <b>Λειτουργία προγραμματιστή<\/b> στις <settings-link>ρυθμίσεις επέκτασης<\/settings-link> του προγράμματος περιήγησής σας",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Ο αποκλεισμός του δακτυλικού αποτυπώματος απαιτεί άδεια του προγράμματος περιήγησης. Ενεργοποιήστε την <b>Επίτρεψη σεναρίων χρήστη<\/b> στις <settings-link>ρυθμίσεις επέκτασης<\/settings-link> του προγράμματος περιήγησής σας",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Αποκλεισμός γνωστών ιχνηλατών"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "Σχετικά με"
+    },
+    "options_adguard_products": {
+        "message": "Προϊόντα AdGuard"
     },
     "options_privacy_policy": {
         "message": "Πολιτική απορρήτου"

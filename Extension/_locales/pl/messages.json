@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "Tagi filtrów"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Wyłączono jako nieużywany",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "Wróć"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Wykrywa język strony i aktywuje odpowiednie filtry"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% został wyłączony jako nieużywany. Zwalnia to miejsce na filtry, których używasz częściej",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% filtr językowy został wyłączony jako nieużywany. Zwalnia to miejsce na filtry, których używasz częściej | %count% filtry językowe zostały wyłączone jako nieużywane. Zwalnia to miejsce na filtry, których używasz częściej | %count% filtrów językowych zostało wyłączonych jako nieużywane. Zwalnia to miejsce na filtry, których używasz częściej",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Przejrzyj",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Motyw"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Nie udało się zaimportować reguł użytkownika. Spróbuj ponownie"
     },
+    "options_user_rules_load_error": {
+        "message": "Nie udało się wczytać reguł użytkownika. Spróbuj ponownie"
+    },
     "options_user_rules_menu": {
         "message": "Działania reguł użytkownika"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Usuń regułę"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Zapisz regułę"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Anuluj edytowanie reguły"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Anuluj tworzenie reguły"
     },
     "options_user_rules_deleted_notification": {
         "message": "Reguła użytkownika usunięta:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% z %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "Przeglądarka zmodyfikowała listę aktywnych filtrów"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "Co się stało?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "Limit aktywnych reguł wbudowanych został przekroczony po aktualizacji lub dodaniu nowego rozszerzenia. Zgodnie z Manifest V3 Twoja przeglądarka Chrome zareagowała, wyłączając wszystkie wbudowane filtry rozszerzenia oprócz domyślnych."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Filtry włączone przed aktualizacją"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Filtry są teraz włączone"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "Twoje możliwe działania"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "Opcja 1. Usuń niepotrzebne rozszerzenia blokujące reklamy z przeglądarki. Aby ponownie aktywować filtry wymienione w sekcji „Filtry włączone przed aktualizacją”, kliknij <a>reaktywuj filtry.<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "Opcja 2. Zainstaluj aplikację AdGuard Ad Blocker: nie ma ona ograniczeń pod względem reguł filtrowania. <a>Pobierz aplikację AdGuard<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "Opcja 3. Jeśli odpowiadają Ci obecnie włączony filtr, <a>zamknij to ostrzeżenie.<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "Opcja 3. Jeśli odpowiadają Ci obecnie włączone filtry, <a>zamknij to ostrzeżenie.<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Osiągnięto limit — niektóre filtry zostały wyłączone"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Usuwa parametry śledzenia z adresów URL stron za pomocą filtra AdGuard URL Tracking"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Blokuj fingerprinting"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Uniemożliwia witrynom identyfikację przeglądarki i urządzenia poprzez nieznaczne zmienianie ukrytych obrazów"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Blokowanie fingerprintingu wymaga uprawnień przeglądarki. Włącz <b>tryb programisty<\/b> w <settings-link>ustawieniach rozszerzeń<\/settings-link> przeglądarki",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Blokowanie fingerprintingu wymaga uprawnień przeglądarki. Włącz <b>Zezwalaj na skrypty użytkownika<\/b> w <settings-link>ustawieniach rozszerzeń<\/settings-link> przeglądarki",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Blokuj moduły śledzące"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "O rozszerzeniu"
+    },
+    "options_adguard_products": {
+        "message": "Produkty AdGuard"
     },
     "options_privacy_policy": {
         "message": "Polityka prywatności"

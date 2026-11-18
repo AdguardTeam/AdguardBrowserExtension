@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "Filtre etiketleri"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Kullanılmadığı için kapatıldı",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "Geri dön"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Sitenin dilini algılar ve uygun filtreleri etkinleştirir"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% kullanılmadığı için kapatıldı. Bu, daha sık kullandığınız filtreler için yer açar",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% dil filtresi kullanılmadığı için kapatıldı. Bu, daha sık kullandığınız filtreler için yer açar",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "İncele",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Tema"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Kullanıcı kuralları içe aktarımı başarısız. Lütfen tekrar dene"
     },
+    "options_user_rules_load_error": {
+        "message": "Kullanıcı kuralları yüklenemedi. Lütfen tekrar deneyin"
+    },
     "options_user_rules_menu": {
         "message": "Kullanıcı kuralları eylemleri"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Kuralı sil"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Kuralı kaydet"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Kural düzenlemeyi iptal et"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Kural oluşturmayı iptal et"
     },
     "options_user_rules_deleted_notification": {
         "message": "Kullanıcı kuralı silindi:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%maximum% \/ %current%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "Tarayıcı, etkin filtreler listesini değiştirdi"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "Ne oldu?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "Bir güncelleme veya yeni bir uzantı eklendikten sonra etkin yerleşik kuralların sınırı aşıldı. Manifest V3'e göre Chrome tarayıcınız, varsayılanlar dışında uzantının tüm yerleşik filtrelerini devre dışı bırakarak yanıt verdi."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Güncellemeden önce etkinleştirilen filtreler"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Filtreler şimdi etkinleştirildi"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "Olası eylemleriniz"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "1. Seçenek: Gereksiz reklam engelleme uzantılarını tarayıcınızdan silin. \"Güncellemeden önce etkin olan filtreler\" bölümünde belirtilen filtreleri yeniden etkinleştirmek için <a>filtreleri yeniden etkinleştir<\/a> öğesine tıklayın"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "2. Seçenek: AdGuard Reklam Engelleyici uygulamasını yükleyin: filtreleme kurallarında herhangi bir kısıtlama yoktur. <a>AdGuard uygulamasını edinin<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "3. Seçenek: Şu anda etkin olan varsayılan filtreden memnunsanız, <a>bu uyarıyı kapatın<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "3. Seçenek: Şu anda etkin olan varsayılan filtrelerden memnunsanız, <a>bu uyarıyı kapatın<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Sınıra ulaşıldı — bazı filtreler devre dışı bırakıldı"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "AdGuard URL İzleme filtresini kullanarak izleme parametrelerini sayfa URL'lerinden kaldırır"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Parmak izi toplamayı engelle"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Gizli görselleri hafifçe değiştirerek web sitelerinin tarayıcınızı ve cihazınızı tanımlamasını önler"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Parmak izi toplamayı engellemek tarayıcı izni gerektirir. <b>Geliştirici modu<\/b> öğesini açmak için tarayıcınızın <settings-link>uzantı ayarlarına<\/settings-link> gidin",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Parmak izi toplamayı engellemek tarayıcı izni gerektirir. <b>Kullanıcı komut dosyalarına izin ver<\/b> öğesini etkinleştirmek için tarayıcınızın <settings-link>uzantı ayarlarına<\/settings-link> gidin",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "İzleyicileri engelle"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "Hakkında"
+    },
+    "options_adguard_products": {
+        "message": "AdGuard ürünleri"
     },
     "options_privacy_policy": {
         "message": "Gizlilik politikası"

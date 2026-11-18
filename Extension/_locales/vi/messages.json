@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "Thẻ lọc"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Đã tắt vì không sử dụng",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "Quay lại"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Phát hiện ngôn ngữ của trang web và kích hoạt các bộ lọc thích hợp"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% đã bị tắt vì không sử dụng. Điều này giúp giải phóng chỗ cho các bộ lọc bạn dùng thường xuyên hơn",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% bộ lọc ngôn ngữ đã bị tắt vì không sử dụng. Điều này giúp giải phóng chỗ cho các bộ lọc bạn dùng thường xuyên hơn",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Xem lại",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Chủ đề"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Không thể nhập quy tắc người dùng. Vui lòng thử lại."
     },
+    "options_user_rules_load_error": {
+        "message": "Không thể tải quy tắc người dùng. Vui lòng thử lại"
+    },
     "options_user_rules_menu": {
         "message": "Hành động theo quy tắc của người dùng"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Xóa quy tắc"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Lưu quy tắc"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Huỷ chỉnh sửa quy tắc"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Huỷ tạo quy tắc"
     },
     "options_user_rules_deleted_notification": {
         "message": "Quy tắc người dùng đã bị xóa:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% trong số %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "Trình duyệt đã sửa đổi danh sách các bộ lọc đang hoạt động"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "Điều gì đã xảy ra?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "Giới hạn của các quy tắc tích hợp đang hoạt động đã bị vượt quá sau khi cập nhật hoặc thêm tiện ích mở rộng mới. Theo Manifest V3, trình duyệt Chrome của bạn đã phản ứng bằng cách tắt tất cả các bộ lọc tích hợp của tiện ích mở rộng ngoại trừ các bộ lọc mặc định."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Bộ lọc được bật trước khi cập nhật"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Bộ lọc được bật ngay bây giờ"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "Các hành động có thể của bạn"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "Tùy chọn 1. Xóa các tiện ích mở rộng chặn quảng cáo không cần thiết khỏi trình duyệt của bạn. Để kích hoạt lại các bộ lọc được đề cập trong phần \"Bộ lọc được bật trước khi cập nhật\", hãy nhấp vào <a>kích hoạt lại bộ lọc.<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "Tùy chọn 2. Cài đặt ứng dụng AdGuard Ad Blocker: ứng dụng này không có giới hạn về quy tắc lọc. <a>Tải ứng dụng AdGuard<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "Tùy chọn 3. Nếu bạn hài lòng với bộ lọc mặc định hiện đang được bật, <a>hãy đóng cảnh báo này.<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "Tùy chọn 3. Nếu bạn hài lòng với các bộ lọc mặc định hiện đang được bật, <a>hãy đóng cảnh báo này.<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Đã đạt giới hạn — một số bộ lọc đã bị vô hiệu hóa"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Xóa tham số theo dõi khỏi URL trang bằng bộ lọc Theo dõi URL của AdGuard"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Chặn thu thập dấu vân tay"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Ngăn các trang web nhận diện trình duyệt và thiết bị của bạn bằng cách thay đổi nhẹ các hình ảnh ẩn"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Chặn thu thập dấu vân tay cần quyền của trình duyệt. Bật <b>Chế độ nhà phát triển<\/b> trong <settings-link>cài đặt tiện ích mở rộng<\/settings-link> của trình duyệt",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Chặn thu thập dấu vân tay cần quyền của trình duyệt. Bật <b>Cho phép tập lệnh người dùng<\/b> trong <settings-link>cài đặt tiện ích mở rộng<\/settings-link> của trình duyệt",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Chặn trình theo dõi"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "Giới thiệu"
+    },
+    "options_adguard_products": {
+        "message": "Sản phẩm AdGuard"
     },
     "options_privacy_policy": {
         "message": "Chính sách bảo mật"

@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "برچسب های فیلتر"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "به دلیل عدم استفاده خاموش شد",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "برگرد"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "زبان وب سایت را تشخیص می دهد و فیلترهای مناسب را فعال می کند"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% به دلیل عدم استفاده خاموش شد. این کار فضای بیشتری برای فیلترهایی که بیشتر استفاده می‌کنید آزاد می‌کند",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% فیلتر زبانی به دلیل عدم استفاده خاموش شد. این کار فضای بیشتری برای فیلترهایی که بیشتر استفاده می‌کنید آزاد می‌کند | %count% فیلتر زبانی به دلیل عدم استفاده خاموش شدند. این کار فضای بیشتری برای فیلترهایی که بیشتر استفاده می‌کنید آزاد می‌کند",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "بررسی",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "تم"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "وارد کردن رویه‌های کاربر انجام نشد. لطفاً دوباره تلاش کنید"
     },
+    "options_user_rules_load_error": {
+        "message": "بارگذاری قواعد کاربر ناموفق بود. لطفاً دوباره تلاش کنید"
+    },
     "options_user_rules_menu": {
         "message": "اقدامات رویه‌های کاربر"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "حذف قانون"
+    },
+    "options_user_rules_save_rule": {
+        "message": "ذخیره قاعده"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "لغو ویرایش قاعده"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "لغو ایجاد قاعده"
     },
     "options_user_rules_deleted_notification": {
         "message": "رویه کاربر حذف شد:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% از %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "مرورگر فهرست فیلتر های فعال را اصلاح کرده است"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "چه اتفاقی افتاد؟"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "پس از به روز رسانی یا افزودن یک افزونه جدید، از حد مجاز قوانین داخلی فعال فراتر رفت. طبق Manifest V3، مرورگر کروم شما با غیرفعال کردن تمام فیلترهای داخلی برنامه افزودنی به جز فیلترهای پیش فرض، واکنش نشان داد."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "پالایه‌ها قبل از به‌روزرسانی فعال شدند"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "پالایه‌ها اکنون فعال شدند"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "اقدامات احتمالی شما"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "گزینه 1. افزونه های غیرضروری مسدودکننده تبلیغات را از مرورگر خود حذف کنید. برای فعال سازی مجدد فیلترهای ذکر شده در بخش «فیلترها قبل از به روز رسانی فعال شده اند»، روی <a>فیلترها را دوباره فعال کنید.<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "گزینه ۲. نصب برنامه AdGuard Ad Blocker: هیچ محدودیتی برای قواعد فیلترینگ ندارد. <a>برنامه AdGuard را دریافت کنید<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "گزینه ۳. اگر از فیلتر پیش‌فرض فعلی راضی هستید، <a>این هشدار را ببندید.<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "گزینه ۳. اگر از فیلترهای پیش‌فرض فعلی راضی هستید، <a>این هشدار را ببندید.<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "به حد رسید — برخی فیلترها غیر فعال شدند"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "با استفاده از فیلتر AdGuard URL Tracking، پارامترهای ردیابی را از URL های صفحه حذف می کند"
     },
+    "options_block_fingerprinting_title": {
+        "message": "مسدود کردن اثر انگشت دیجیتال"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "از شناسایی مرورگر و دستگاه شما توسط وب‌سایت‌ها با تغییر جزئی تصاویر پنهان جلوگیری می‌کند"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "مسدود کردن اثر انگشت دیجیتال نیازمند مجوز مرورگر است. <b>حالت توسعه‌دهنده<\/b> را در <settings-link>تنظیمات افزونه<\/settings-link> مرورگر خود فعال کنید",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "مسدود کردن اثر انگشت دیجیتال نیازمند مجوز مرورگر است. <b>اجازه دسترسی به اسکریپت‌های کاربر<\/b> را در <settings-link>تنظیمات افزونه<\/settings-link> مرورگر خود فعال کنید",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "مسدودسازی ردیاب های شناخته شده"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "درباره"
+    },
+    "options_adguard_products": {
+        "message": "محصولات AdGuard"
     },
     "options_privacy_policy": {
         "message": "سیاست حریم خصوصی"

@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "टैग फ़िल्टर करें"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "अप्रयुक्त होने के कारण बंद कर दिया गया",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "पस जाओ"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "वेबसाइट की भाषा का पता लगाता है और उपयुक्त फ़िल्टर सक्रिय करता है"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% को अप्रयुक्त होने के कारण बंद कर दिया गया। इससे उन फ़िल्टर के लिए जगह बनती है जिन्हें आप अधिक बार उपयोग करते हैं",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% भाषा फ़िल्टर को अप्रयुक्त के रूप में बंद कर दिया गया था. यह आपके द्वारा अधिक बार उपयोग किए जाने वाले फ़िल्टर के लिए जगह खाली करता है",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "समीक्षा करें",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "थीम"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "उपयोगकर्ता नियम आयात करने में विफल। पुनः प्रयास करें"
     },
+    "options_user_rules_load_error": {
+        "message": "उपयोगकर्ता नियम लोड करने में विफल। कृपया पुनः प्रयास करें"
+    },
     "options_user_rules_menu": {
         "message": "उपयोगकर्ता नियम क्रिया"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "नियम हटाएं"
+    },
+    "options_user_rules_save_rule": {
+        "message": "नियम सहेजें"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "नियम संपादन रद्द करें"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "नियम निर्माण रद्द करें"
     },
     "options_user_rules_deleted_notification": {
         "message": "उपयोगकर्ता नियम हटा दिया गया:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% का %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "ब्राउज़र ने सक्रिय फ़िल्टर की सूची संशोधित कर दी है"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "क्या हुआ?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "अद्यतन या नया एक्सटेंशन जोड़ने के बाद सक्रिय अंतर्निहित नियमों की सीमा पार हो गई थी। मेनिफेस्ट V3 के अनुसार, आपके क्रोम ब्राउज़र ने डिफ़ॉल्ट एक्सटेंशन को छोड़कर सभी एक्सटेंशन के बिल्ट-इन फ़िल्टर को अक्षम करके प्रतिक्रिया दी।"
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "अद्यतन से पहले फ़िल्टर सक्षम किए गए"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "फ़िल्टर अब सक्षम हैं"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "आपके संभावित कार्य"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "विकल्प 1. अपने ब्राउज़र से अनावश्यक विज्ञापन-अवरोधक एक्सटेंशन हटाएं। \"अपडेट से पहले सक्षम फ़िल्टर\" अनुभाग में उल्लिखित फ़िल्टर को पुनः सक्रिय करने के लिए, क्लिक करें <a>फ़िल्टर पुनः सक्रिय करें<\/a>।"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "विकल्प 2. एडगार्ड एड ब्लॉकर ऐप इंस्टॉल करें: इसमें फ़िल्टरिंग नियमों पर कोई प्रतिबंध नहीं है। <a>एडगार्ड ऐप प्राप्त करें<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "विकल्प 3. यदि आप वर्तमान में सक्षम डिफ़ॉल्ट फ़िल्टर से संतुष्ट हैं, तो <a>इस चेतावनी को बंद करें<\/a>।"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "विकल्प 3. यदि आप वर्तमान में सक्षम डिफ़ॉल्ट फ़िल्टर से संतुष्ट हैं, तो <a>इस चेतावनी को बंद करें<\/a>।"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "सीमा तक पहुँच गए — कुछ फ़िल्टर निष्क्रिय कर दिए गए"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "AdGuard URL ट्रैकिंग फ़िल्टर के साथ पृष्ठ URL से ट्रैकिंग पैरामीटर निकालें।"
     },
+    "options_block_fingerprinting_title": {
+        "message": "फ़िंगरप्रिंटिंग ब्लॉक करें"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "छिपी हुई छवियों को थोड़ा बदलकर वेबसाइटों को आपके ब्राउज़र और डिवाइस की पहचान करने से रोकता है"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "फ़िंगरप्रिंटिंग ब्लॉक करने के लिए ब्राउज़र अनुमति आवश्यक है। <b>डेवलपर मोड<\/b> सक्षम करने के लिए अपने ब्राउज़र की <settings-link>एक्सटेंशन सेटिंग्स<\/settings-link> पर जाएँ",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "फ़िंगरप्रिंटिंग ब्लॉक करने के लिए ब्राउज़र अनुमति आवश्यक है। <b>उपयोगकर्ता स्क्रिप्ट की अनुमति दें<\/b> सक्षम करने के लिए अपने ब्राउज़र की <settings-link>एक्सटेंशन सेटिंग्स<\/settings-link> पर जाएँ",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "ट्रैकर्स को ब्लॉक करें"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "के बारे में"
+    },
+    "options_adguard_products": {
+        "message": "AdGuard उत्पाद"
     },
     "options_privacy_policy": {
         "message": "गोपनीयता नीति"

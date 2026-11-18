@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "Ֆիլտրել թեգերը"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Անջատված է որպես չօգտագործվող",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "Վերադառնալ"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Նախշում է կայքի լեզուն և ակտիվացնում համապատասխան ֆիլտրեր"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name%-ն անջատվել է որպես չօգտագործվող։ Սա տեղ է ազատում ավելի հաճախ օգտագործվող զտիչների համար",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% լեզվական զտիչներ անջատվել են որպես չօգտագործվող։ Սա տեղ է ազատում ավելի հաճախ օգտագործվող զտիչների համար",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Դիտել",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Ֆոն"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Չհաջողվեց ներմուծել օգտատիրոջ կանոնները։ Խնդրում ենք կրկին փորձել"
     },
+    "options_user_rules_load_error": {
+        "message": "Չհաջողվեց բեռնել օգտատիրոջ կանոնները։ Խնդրում ենք կրկին փորձել"
+    },
     "options_user_rules_menu": {
         "message": "Օգտատիրոջ կանոնների գործողություններ"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Ջնջել կանոնը"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Պահպանել կանոնը"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Չեղարկել կանոնի խմբագրումը"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Չեղարկել կանոնի ստեղծումը"
     },
     "options_user_rules_deleted_notification": {
         "message": "Օգտվողի կանոնը ջնջվել է:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current% \/ %maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "Բրաուզերը փոփոխել է ակտիվ ֆիլտրերի ցուցակը"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "Ի՞նչ է պատահել։"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "Ակտիվ կառուցված կանոնների սահմանը գերազանցվել է թարմացումից կամ նոր ընդլայնում ավելացնելուց հետո։ Մասնավորապես Manifest V3-ի համաձայն, ձեր Chrome բրաուզերը արձագանքեց՝ անջատելով ընդլայնողի բոլոր կառուցված ֆիլտրերը, բացառությամբ ինքնաբերաբար ընտրածների:"
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Զտիչները միացված են թարմացումից առաջ"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Ֆիլտրերը գործող են այժմ"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "Ձեր հնարավոր գործողությունները"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "Ընտրություն 1: Խնդրում ենք հեռացնել անփորձ \"գովազդ արգելափակման\" ընդարձակումը ձեր բրաուզերից:  Վերականգնելու համար <a>վերականգնել ֆիլտրերը:<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "Ընտրություն 2: Տեղադրեք AdGuard Ad Blocker հավելվածը՝ այն չունի ֆիլտրացման կանոնների սահմանափակումներ։ <a>Ստեղծեք AdGuard հավելվածը<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "Տվյալ 3։ Եթե Դուք գոհ եք ներկայիս ակտիվ ֆիլտրից, <a>փակեք այս զգուշացումը:<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "Տվյալ 3։ Եթե Դուք գոհ եք ներկայիս ակտիվ ֆիլտրերից, <a>փակեք այս զգուշացումը:<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Սահմանը հասել է — որոշ ֆիլտրներ անջատվել են"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Հեռացնում է հետևող պարամետրերը էջերի URL-ներից՝ օգտագործելով AdGuard URL Tracking ֆիլտր"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Արգելափակել մատնահետքավորումը"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Կանխում է կայքերին ճանաչել ձեր դիտարկիչը և սարքը՝ թաքնված պատկերները փոքր-ինչ փոխելով"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Մատնահետքավորման արգելափակումը պահանջում է դիտարկիչի թույլտվություն։ Միացրեք <b>Մշակողի ռեժիմը<\/b> ձեր դիտարկիչի <settings-link>ընդլայնման կարգավորումներում<\/settings-link>",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Մատնահետքավորման արգելափակումը պահանջում է դիտարկիչի թույլտվություն։ Միացրեք <b>Թույլատրել օգտատեր սկրիպտներ<\/b> ձեր դիտարկիչի <settings-link>ընդլայնման կարգավորումներում<\/settings-link>",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Արգելափակել հետագծողները"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "Ծրագրի մասին"
+    },
+    "options_adguard_products": {
+        "message": "AdGuard արտադրանքներ"
     },
     "options_privacy_policy": {
         "message": "Գաղտնիության քաղաքականություն"

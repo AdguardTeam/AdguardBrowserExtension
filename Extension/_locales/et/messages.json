@@ -75,6 +75,10 @@
     "options_filters_filter_tags": {
         "message": "Filtreeri sildid"
     },
+    "options_filters_filter_disabled_as_unused": {
+        "message": "Kasutuse puudumise tõttu välja lülitatud",
+        "description": "Status under a language filter in the filter list: the extension turned the filter off automatically because no websites in its languages were visited for a long time."
+    },
     "options_filters_back_button": {
         "message": "Mine tagasi"
     },
@@ -799,6 +803,18 @@
     "options_enable_autodetect_filter_desc": {
         "message": "Tuletab veebisaidi keele tuvastab ja aktiveerib sobivad filtrid"
     },
+    "options_auto_disabled_one_filter_notification": {
+        "message": "%filter_name% lülitati kasutuse puudumise tõttu välja. See vabastab ruumi filtritele, mida kasutad sagedamini",
+        "description": "Snackbar shown for one language filter automatically disabled as unused. %filter_name% is its display name."
+    },
+    "options_auto_disabled_multiple_filters_notification": {
+        "message": "| %count% keelefilter lülitati kasutuse puudumise tõttu välja. See vabastab ruumi filtritele, mida kasutad sagedamini | %count% keelefiltrit lülitati kasutuse puudumise tõttu välja. See vabastab ruumi filtritele, mida kasutad sagedamini",
+        "description": "Aggregated snackbar for automatically disabled language filters. %count% is the number of distinct filters. WARNING: correct number of plural forms is required. Plural forms are separated by pipes."
+    },
+    "options_auto_disabled_filters_review": {
+        "message": "Vaata üle",
+        "description": "Snackbar action opening the Language-specific filters section."
+    },
     "options_select_theme": {
         "message": "Välimus"
     },
@@ -877,6 +893,9 @@
     "options_user_rules_import_error": {
         "message": "Kasutajareeglite importimine ebaõnnestus. Palun proovi uuesti"
     },
+    "options_user_rules_load_error": {
+        "message": "Kasutajareeglite laadimine ebaõnnestus. Palun proovi uuesti"
+    },
     "options_user_rules_menu": {
         "message": "Kasutajareeglite toimingud"
     },
@@ -909,6 +928,15 @@
     },
     "options_user_rules_delete_rule": {
         "message": "Kustuta reegel"
+    },
+    "options_user_rules_save_rule": {
+        "message": "Salvesta reegel"
+    },
+    "options_user_rules_cancel_rule_editing": {
+        "message": "Tühista reegli muutmine"
+    },
+    "options_user_rules_cancel_rule_creation": {
+        "message": "Tühista reegli loomine"
     },
     "options_user_rules_deleted_notification": {
         "message": "Kasutajareegel kustutati:"
@@ -1007,36 +1035,6 @@
     },
     "options_rule_limits_numbers": {
         "message": "%current%\/%maximum%"
-    },
-    "options_rule_limits_warning_title": {
-        "message": "Brauser on muutnud aktiivsete filtrite nimekirja"
-    },
-    "options_rule_limits_warning_explanation_title": {
-        "message": "Mis juhtus?"
-    },
-    "options_rule_limits_warning_explanation_description": {
-        "message": "Aktiivsete sisseehitatud reeglite arv ületati pärast uuendamist või uue laienduse lisamist. Manifest V3 kohaselt reageeris teie Chrome'i brauser, lülitades välja kõik laienduse sisseehitatud filtrid, välja arvatud vaikimisi filtrid."
-    },
-    "options_rule_limits_warning_list_enabled_before_title": {
-        "message": "Enne uuendamist aktiveeritud filtrid"
-    },
-    "options_rule_limits_warning_list_enabled_now_title": {
-        "message": "Filtrid on nüüd lubatud"
-    },
-    "options_rule_limits_warning_actions_title": {
-        "message": "Teie võimalikud tegevused"
-    },
-    "options_rule_limits_warning_actions_delete_filters": {
-        "message": "Võimalus 1. Kustutage oma brauserist mittevajalikud reklaami blokeerivad laiendused. Punktis \"Enne uuendust lubatud filtrid\" nimetatud filtrite taasaktiveerimiseks klõpsake <a>filtrite taasaktiveerimisele.<\/a>"
-    },
-    "options_rule_limits_warning_actions_install_app": {
-        "message": "Võimalus 2. Paigaldage AdGuard Ad Blocker rakendus: sellel ei ole filtreerimisreeglitele piiranguid. <a>Hankige AdGuard Ad Blocker rakendus<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_one_filter": {
-        "message": "Võimalus 3. Kui olete rahul hetkel aktiveeritud vaikimisi filtriga, <a>sulgege see hoiatus.<\/a>"
-    },
-    "options_rule_limits_warning_actions_close_warning_multiple_filters": {
-        "message": "Valik 3. Kui olete rahul hetkel aktiveeritud vaikimisi filtritega, <a>sulgege see hoiatus.<\/a>"
     },
     "options_rule_limits_warning_variant_b_title_limit_reached": {
         "message": "Piirang saavutatud — mõned filtrid on keelatud"
@@ -1222,6 +1220,20 @@
     "options_strip_tracking_params_description": {
         "message": "Eemaldab AdGuardi URL-i jälgimise filtri abil jälgimisparameetrid lehe URLidest"
     },
+    "options_block_fingerprinting_title": {
+        "message": "Blokeeri sõrmejäljestamine"
+    },
+    "options_block_fingerprinting_desc": {
+        "message": "Takistab veebisaitidel teie brauseri ja seadme tuvastamist, muutes peidetud pilte veidi"
+    },
+    "options_block_fingerprinting_developer_mode_required": {
+        "message": "Sõrmejäljestamise blokeerimine vajab brauseri luba. Lülita sisse <b>Arendaja režiim<\/b> brauseri <settings-link>laienduse seadetes<\/settings-link>",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
+    "options_block_fingerprinting_allow_user_scripts_required": {
+        "message": "Sõrmejäljestamise blokeerimine vajab brauseri luba. Lülita sisse <b>Luba kasutajaskriptid<\/b> brauseri <settings-link>laienduse seadetes<\/settings-link>",
+        "description": "Note: <settings-link> is just an <a> tag, so it would be rendered as a link."
+    },
     "options_block_known_trackers_title": {
         "message": "Blokeeri tuntud jälitajad"
     },
@@ -1326,6 +1338,9 @@
     },
     "options_about": {
         "message": "Teave"
+    },
+    "options_adguard_products": {
+        "message": "AdGuardi tooted"
     },
     "options_privacy_policy": {
         "message": "Privaatsuspoliitika"
