@@ -3517,75 +3517,39 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "c7605ee2684a2146beda3b04ccfa8bec" due to: ' + e);
         }
     },
-    '(()=>{window.vhit=!0;const t=/free-download-form|\'\\),_0x|\\)\\]\\(function\\(_0x|,Array\\[_0x|function\\(_0x.*\\){const _0x.*\\[_0x|adblock|function Boolean\\(\\) \\{\\s*\\[native code\\]|=>\\{const _0x|undefined\\?new\\.target:|detectAdblock|===!0\\}/,e={apply:async(t,e,o)=>{const n=o[0];return"boolean"==typeof n&&!0===n&&(o[0]=!1),"string"==typeof n&&"blocked"===n&&(o[0]=""),await new Promise((t=>setTimeout(t,2e3))),Reflect.apply(t,e,o)}},o={apply:(o,n,r)=>{const i=r[0];return"function"==typeof i&&t.test(i.toString())&&(r[0]=new Proxy(r[0],e)),Reflect.apply(o,n,r)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,o);const n=async t=>{t.preventDefault();const e=t.currentTarget;"function"==typeof window.vhit?.report&&await window.vhit.report(),e.form.requestSubmit(e)};window.addEventListener("load",(()=>{const t=document.querySelector("form#submit-form button#submit-button");if(t){const e=t.cloneNode(!0);t.parentNode.replaceChild(e,t),e.removeAttribute("disabled"),e.textContent="Continue",e.addEventListener("click",n)}}))})();': () => {
+    '(()=>{try{const f={detectAdblock:()=>Promise.resolve(false)},a=x=>{if(x&&(typeof x==="object"||typeof x==="function")){try{x.detectAdblock=f.detectAdblock;return x}catch(e){}}return f},k=x=>typeof x?.detectAdblock==="function";let v=k(window.vhit)?a(window.vhit):null;Object.defineProperty(window,"vhit",{configurable:true,get(){return v||f},set(x){v=k(x)?a(x):f}})}catch(e){}})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.f85025076e463ddc0dfe66ff2a54b9cf === e) return;
+            if (Window.prototype.toString["28ad10cec49524720f013a75e0c7731d"] === e) return;
             (() => {
-                window.vhit = !0;
-                const e = /free-download-form|'\),_0x|\)\]\(function\(_0x|,Array\[_0x|function\(_0x.*\){const _0x.*\[_0x|adblock|function Boolean\(\) \{\s*\[native code\]|=>\{const _0x|undefined\?new\.target:|detectAdblock|===!0\}/, t = {
-                    apply: async (e, t, o) => {
-                        const n = o[0];
-                        return "boolean" == typeof n && !0 === n && (o[0] = !1), "string" == typeof n && "blocked" === n && (o[0] = ""), 
-                        await new Promise((e => setTimeout(e, 2e3))), Reflect.apply(e, t, o);
-                    }
-                }, o = {
-                    apply: (o, n, r) => {
-                        const i = r[0];
-                        return "function" == typeof i && e.test(i.toString()) && (r[0] = new Proxy(r[0], t)), 
-                        Reflect.apply(o, n, r);
-                    }
-                };
-                window.Promise.prototype.then = new Proxy(window.Promise.prototype.then, o);
-                const n = async e => {
-                    e.preventDefault();
-                    const t = e.currentTarget;
-                    "function" == typeof window.vhit?.report && await window.vhit.report(), t.form.requestSubmit(t);
-                };
-                window.addEventListener("load", (() => {
-                    const e = document.querySelector("form#submit-form button#submit-button");
-                    if (e) {
-                        const t = e.cloneNode(!0);
-                        e.parentNode.replaceChild(t, e), t.removeAttribute("disabled"), t.textContent = "Continue", 
-                        t.addEventListener("click", n);
-                    }
-                }));
-            })();
-            Object.defineProperty(Window.prototype.toString, "f85025076e463ddc0dfe66ff2a54b9cf", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "f85025076e463ddc0dfe66ff2a54b9cf" due to: ' + e);
-        }
-    },
-    '(()=>{const t={apply:(t,o,e)=>{try{const t=e[0];t&&"object"==typeof t&&Object.prototype.hasOwnProperty.call(t,"failed_hosts")&&Object.prototype.hasOwnProperty.call(t,"blocked")&&(t.failed_hosts="",t.blocked=!1)}catch(t){}return Reflect.apply(t,o,e)}};window.JSON.stringify=new Proxy(window.JSON.stringify,t)})();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["1503dc258e7809ec4d938941a16df979"] === e) return;
-            (() => {
-                const e = {
-                    apply: (e, t, o) => {
-                        try {
-                            const e = o[0];
-                            e && "object" == typeof e && Object.prototype.hasOwnProperty.call(e, "failed_hosts") && Object.prototype.hasOwnProperty.call(e, "blocked") && (e.failed_hosts = "", 
-                            e.blocked = !1);
+                try {
+                    const e = {
+                        detectAdblock: () => Promise.resolve(!1)
+                    }, t = t => {
+                        if (t && ("object" == typeof t || "function" == typeof t)) try {
+                            t.detectAdblock = e.detectAdblock;
+                            return t;
                         } catch (e) {}
-                        return Reflect.apply(e, t, o);
-                    }
-                };
-                window.JSON.stringify = new Proxy(window.JSON.stringify, e);
+                        return e;
+                    }, o = e => "function" == typeof e?.detectAdblock;
+                    let c = o(window.vhit) ? t(window.vhit) : null;
+                    Object.defineProperty(window, "vhit", {
+                        configurable: !0,
+                        get: () => c || e,
+                        set(r) {
+                            c = o(r) ? t(r) : e;
+                        }
+                    });
+                } catch (e) {}
             })();
-            Object.defineProperty(Window.prototype.toString, "1503dc258e7809ec4d938941a16df979", {
+            Object.defineProperty(Window.prototype.toString, "28ad10cec49524720f013a75e0c7731d", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "1503dc258e7809ec4d938941a16df979" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "28ad10cec49524720f013a75e0c7731d" due to: ' + e);
         }
     },
     '(()=>{const o=!1,t=Reflect.apply,e=Object.hasOwn,r=Array.isArray,n=Promise.prototype.then,l=Boolean,i=JSON.stringify,s=new Proxy(l,{apply:(o,e,r)=>(!0===r[0]&&(r[0]=!1),t(o,e,r))});window.Promise.prototype.then=new Proxy(n,{apply:(o,e,r)=>(r[0]===l&&(r[0]=s),t(o,e,r))}),window.JSON.stringify=new Proxy(i,{apply:(n,l,i)=>{try{const o=i[0];null!==o&&"object"==typeof o&&!r(o)&&e(o,"blocked")&&e(o,"failed_hosts")&&(i[0]={...o,blocked:!1,path:"clean",dom_hits:0,dom_control_blocked:!1,target_hits:0,target_timeouts:0,control_hits:0,control_timeouts:0,network_control_blocked:!1,forged_hits:0,forgery_voided:!1,tamper:"",failed_hosts:""})}catch(t){o}return t(n,l,i)}})})();': () => {
@@ -3802,72 +3766,6 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "75be2f053259701edcb277b5ff24cd28" due to: ' + e);
-        }
-    },
-    '(()=>{const e=Object.getOwnPropertyDescriptor(Element.prototype,"innerHTML").set,t=Object.getOwnPropertyDescriptor(Element.prototype,"innerHTML").get;Object.defineProperty(Element.prototype,"innerHTML",{get(){return t.call(this)},set(t){if(t?.includes?.("disable Adblock"))return;e.call(this,t)}})})();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["272813737cd339fd9b635273bcbc7485"] === e) return;
-            (() => {
-                const e = Object.getOwnPropertyDescriptor(Element.prototype, "innerHTML").set, t = Object.getOwnPropertyDescriptor(Element.prototype, "innerHTML").get;
-                Object.defineProperty(Element.prototype, "innerHTML", {
-                    get() {
-                        return t.call(this);
-                    },
-                    set(t) {
-                        t?.includes?.("disable Adblock") || e.call(this, t);
-                    }
-                });
-            })();
-            Object.defineProperty(Window.prototype.toString, "272813737cd339fd9b635273bcbc7485", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "272813737cd339fd9b635273bcbc7485" due to: ' + e);
-        }
-    },
-    '(()=>{const t=/free-download-form|\'\\),_0x|\\)\\]\\(function\\(_0x|=>\\{return/,e={apply:(t,e,o)=>{const n=o[0];"boolean"==typeof n&&!0===n&&(o[0]=!1),setTimeout((()=>Reflect.apply(t,e,o)),2e3)}},o={apply:(o,n,r)=>{const i=r[0];return"function"==typeof i&&t.test(i.toString())&&(r[0]=new Proxy(r[0],e)),Reflect.apply(o,n,r)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,o);const n=async t=>{t.preventDefault();const e=t.currentTarget;"function"==typeof window.vhit?.report&&await window.vhit.report(),e.form.requestSubmit(e)};window.addEventListener("load",(()=>{const t=document.querySelector("form#go-link button#link-button");if(t){const e=t.cloneNode(!0);t.parentNode.replaceChild(e,t),e.removeAttribute("disabled"),e.addEventListener("click",n)}}))})();': () => {
-        try {
-            const e = "done";
-            if (Window.prototype.toString["352a8e829f13921ee700e5e67451dada"] === e) return;
-            (() => {
-                const e = /free-download-form|'\),_0x|\)\]\(function\(_0x|=>\{return/, t = {
-                    apply: (e, t, o) => {
-                        const n = o[0];
-                        "boolean" == typeof n && !0 === n && (o[0] = !1), setTimeout((() => Reflect.apply(e, t, o)), 2e3);
-                    }
-                }, o = {
-                    apply: (o, n, r) => {
-                        const i = r[0];
-                        return "function" == typeof i && e.test(i.toString()) && (r[0] = new Proxy(r[0], t)), 
-                        Reflect.apply(o, n, r);
-                    }
-                };
-                window.Promise.prototype.then = new Proxy(window.Promise.prototype.then, o);
-                const n = async e => {
-                    e.preventDefault();
-                    const t = e.currentTarget;
-                    "function" == typeof window.vhit?.report && await window.vhit.report(), t.form.requestSubmit(t);
-                };
-                window.addEventListener("load", (() => {
-                    const e = document.querySelector("form#go-link button#link-button");
-                    if (e) {
-                        const t = e.cloneNode(!0);
-                        e.parentNode.replaceChild(t, e), t.removeAttribute("disabled"), t.addEventListener("click", n);
-                    }
-                }));
-            })();
-            Object.defineProperty(Window.prototype.toString, "352a8e829f13921ee700e5e67451dada", {
-                value: e,
-                enumerable: !1,
-                writable: !1,
-                configurable: !1
-            });
-        } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "352a8e829f13921ee700e5e67451dada" due to: ' + e);
         }
     },
     '(()=>{let e=!0;const t=()=>{e=!0},r={apply:(r,s,n)=>{if(!e)return Reflect.apply(r,s,n);try{const o=n[0];if(o?.request?.body){let e=o.request.body;if(e?.includes(\'"event_type":"end"\')&&e?.includes(\'"client_timestamp":\'))return e=e.replace(/"client_timestamp":\\d+/,`"client_timestamp":${Date.now()+6e4}`),o.request.body=e,void setTimeout(()=>{Reflect.apply(r,s,n)},2e3);if(e?.includes(\'"event_type":"error"\'))return}if(o?.request?.url?.includes("/stream/v1/channels/"))return void setTimeout(()=>{Reflect.apply(r,s,n),e=!1,setTimeout(t,6e5)},4e3)}catch(e){}return Reflect.apply(r,s,n)}};window.Worker.prototype.postMessage=new Proxy(window.Worker.prototype.postMessage,r)})();': () => {
@@ -7697,10 +7595,10 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "f108a248579190d52136e6e135a4d6c9" due to: ' + e);
         }
     },
-    '(()=>{const e="SPONSORED",t="SponsoredData",r="AdsSideFeedUnit",n=["sponsored_data","th_dat_spo","qrz_ctx_seg","pso_tad_rens"],o="MarketplaceFeedAdStory",a=new WeakMap,i=[e,t,r,...n],s=[t,o,...n],p=window.String.prototype.split,l=window.String.prototype.trim,d=new WeakMap,c=new WeakMap,y=new WeakSet,f=(e,t,r=Proxy)=>{const n=c.get(e)??Reflect.apply(window.Function.prototype.toString,e,[]),o=new r(e,t);return d.set(o,d.get(e)??e),c.set(o,n),o},w=(e,t)=>e?.length>300&&t.some(t=>e?.includes?.(t)),u=e=>w(e,i),h=e=>Boolean(e?.startsWith?.("{")&&e?.endsWith?.("}")||e?.startsWith?.("[")&&e?.endsWith?.("]")),g=e=>h(e)&&u(e),_=e=>{try{e.JSON.parse=f(e.JSON.parse,J,e.Proxy),e.String.prototype.split=f(e.String.prototype.split,V,e.Proxy),e.String=f(e.String,Y,e.Proxy),e.String.prototype.constructor=e.String,e.Function.prototype.call=f(e.Function.prototype.call,ce,e.Proxy),e.Function.prototype.toString=f(e.Function.prototype.toString,fe,e.Proxy)}catch(e){}},m=e=>Boolean(e instanceof HTMLIFrameElement&&(""===e.src||e?.src?.startsWith("about:blank"))&&e.contentWindow),S=new Set(["append","prepend","before","after","insertNode","replaceWith","replaceChild","replaceChildren"]),{apply:b}={apply(e,t,r){const n=Reflect.apply(e,t,r);try{m(n)?_(n.contentWindow):S.has(e.name)&&r.forEach(e=>{m(e)&&_(e.contentWindow)})}catch(e){}return n}},A={apply:b};window.Node.prototype.appendChild=f(window.Node.prototype.appendChild,A),window.Node.prototype.insertBefore=f(window.Node.prototype.insertBefore,A),window.Node.prototype.replaceChild=f(window.Node.prototype.replaceChild,A),window.Element.prototype.append=f(window.Element.prototype.append,A),window.Element.prototype.prepend=f(window.Element.prototype.prepend,A),window.Element.prototype.replaceChildren=f(window.Element.prototype.replaceChildren,A),window.Element.prototype.replaceWith=f(window.Element.prototype.replaceWith,A),window.Element.prototype.before=f(window.Element.prototype.before,A),window.Element.prototype.after=f(window.Element.prototype.after,A),window.Element.prototype.insertAdjacentElement=f(window.Element.prototype.insertAdjacentElement,A),window.Range.prototype.insertNode=f(window.Range.prototype.insertNode,A),window.CharacterData.prototype.replaceWith=f(window.CharacterData.prototype.replaceWith,A);const x=["item_collection","ads"],E=["auxColumnUnits","sdieFede","sideFeed"],v=e=>Boolean(e)&&(Object.values(e).some(e=>e?.__typename===t)||n.some(t=>{const r=e[t];return r&&"object"==typeof r&&!Array.isArray(r)&&[r.ad_id,r.lbl_adv_iden].some(e=>"string"==typeof e&&e.length>0)})),O=(e,t)=>{if(!e||"object"!=typeof e||Array.isArray(e))return!1;const r=Object.keys(e);return r.length===t.length&&t.every(e=>r.includes(e))},N=e=>O(e,["node"])&&O(e.node,["s"])&&O(e.node.s,["__typename"])&&e.node.s.__typename===t,j=["p","z9","k4","w7","q8","n3","v6","j5","t8","m6","h4","r2","b3","d2"],B=new Set(["h4","r2","b3","d2"]),P=e=>{const t=Array.isArray(e)&&1===e.length?e[0]:e;if(!t||"object"!=typeof t||Array.isArray(t))return!1;const r=j.find(e=>"string"==typeof t[e]);if(void 0===r)return!1;const n=["data","edges","require",r];if(Object.hasOwn(t,"extensions")){if(!(O(t.extensions,[])||O(t.extensions,["is_final"])&&!0===t.extensions.is_final))return!1;n.push("extensions")}if(Object.hasOwn(t,"__bbox")){if(!(B.has(r)&&O(t.extensions,["is_final"])&&!0===t.extensions.is_final&&(o=t.__bbox,O(o,["result"])&&O(o.result,["data"])&&O(o.result.data,["node"])&&O(o.result.data.node,["s","th_dat_spo"])&&O(o.result.data.node.s,["__typename"])&&"CometStorySponsoredLabelStrategy"===o.result.data.node.s.__typename&&O(o.result.data.node.th_dat_spo,["s"])&&1===o.result.data.node.th_dat_spo.s)))return!1;n.push("__bbox")}var o;return O(t,n)&&N(t.data)&&Array.isArray(t.edges)&&1===t.edges.length&&N(t.edges[0])&&Array.isArray(t.require)&&1===t.require.length&&N(t.require[0])},W=(e,t,n,o)=>{if(!e||"object"!=typeof e||n<0)return!1;let a=!1;if(Array.isArray(e.nodes)){const t=e.nodes.filter(e=>!(e=>e?.__typename===r||x.some(t=>{const r=e?.[t]?.nodes;return Array.isArray(r)&&r.some(e=>e?.sponsored_data?.ad_id)}))(e));e.nodes.length-t.length>0&&(e.nodes=t,a=!0)}return Object.entries(e).forEach(([e,r])=>{a=W(r,`${t}.${e}`,n-1,o)||a}),a},k=(e,t=10)=>{const r=e?.data?.viewer,n=r??e?.[3]?.[1]?.__bbox?.result?.data?.viewer;if(!n)return!1;return W(n,r?"data.viewer":"item[3][1].__bbox.result.data.viewer",t,e)},F=(t,r=10,n=new WeakMap)=>{if(!t||"object"!=typeof t||r<0)return!1;const o=n.get(t);if(void 0!==o&&o>=r)return!1;if(n.set(t,r),P(t))return!1;let a=((t,r)=>{if(!t||"object"!=typeof t)return!1;let n=!1;try{if(r){if(Array.isArray(t.require?.[0]?.[3]?.[0]?.__bbox?.require)&&t.require[0][3][0].__bbox.require.forEach(t=>{t[3]?.[1]?.__bbox?.result?.data?.category===e&&(delete t[3][1].__bbox.result.data.node,n=!0),v(t[3]?.[1]?.__bbox?.result?.data?.node)&&(delete t[3][1].__bbox.result.data.node,n=!0),n=k(t)||n}),E.some(e=>Array.isArray(t.data?.viewer?.[e]?.nodes))&&(n=k(t)||n),Array.isArray(t.data?.viewer?.news_feed?.edges)){const r=t.data.viewer.news_feed.edges.length;t.data.viewer.news_feed.edges=t.data.viewer.news_feed.edges.filter(t=>!v(t.node)&&t.category!==e),n=n||t.data.viewer.news_feed.edges.length!==r}v(t.data?.node)&&(delete t.data.node,n=!0),t.data?.category===e&&(delete t.data.node,n=!0)}}catch(e){}return n})(t,!0);return 0===r||Object.values(t).forEach(e=>{a=F(e,r-1,n)||a}),a},R=(e,t)=>{try{const r="string"==typeof t;if(r&&!u(t))return e;if(P(e))return e;if(!r&&!u(JSON.stringify(e)))return e;F(e)&&e&&"object"==typeof e&&y.add(e)}catch(e){}return e},{apply:q}={apply(e,t,r){K();const n=Reflect.apply(e,t,r);return R(n,r[0])}},J={apply:q};window.JSON.parse=f(window.JSON.parse,J);const C=(e,t,r)=>{if(!e||"object"!=typeof e&&"function"!=typeof e)return;let n=a.get(e);if(!t.some(t=>"function"==typeof e[t]&&!d.has(e[t])&&(n?.get(t)??0)<10))return;n||(n=new Map,a.set(e,n));const o=new Map;t.forEach(t=>{const r=e[t];"function"==typeof r&&d.has(r)&&o.set(d.get(r),r)}),t.forEach(t=>{const a=e[t],i=n.get(t)??0;if("function"!=typeof a||d.has(a)||i>=10)return;n.set(t,i+1);let s=o.get(a);if(!s){const{apply:e}={apply(e,t,n){const o=Reflect.apply(e,t,n);return r?R(o,n[0]):R(o)}};s=f(a,{apply:e}),o.set(a,s)}e[t]=s})},M=["parse","parseText","readText","fromText","fromSource","fromChunk","fromBlock","fromSlice","fromPiece","fromSection","fromSegment","fromExcerpt","fromFragment","fromScrap"],$=["ghlParseServerJSPayload","readBootPayload","decodeBootScript","hydrateBootData","inflateBootPayload","expandBootPayload","unpackBootPayload","openBootPayload","loadBootPayload","readBootState","readBootRecord","readBootEntry","takeBootFrame","grabBootSlice"],z=[[["json5"],e=>C(e,M,!0)],[["GHLServerJSParse"],e=>C(e,$,!1)]],D=e=>{Array.isArray(e)&&z.forEach(t=>{e.some(e=>e?.[1]===t[1])||e.push(t)})};let L=null,T=!1,H=!1;const U=new Map,G=z.map(([[e],t])=>r=>{U.set(e,r),t(r)}),I=()=>{if(!T&&"function"==typeof window.require){T=!0;const e=window.require("ifRequired");"function"==typeof e&&(L=e)}return L},K=()=>{if(!H)try{for(let e=0;e<z.length;e+=1){const[[t],r]=z[e],n=U.get(t);if(void 0===n){if(null===I())return;L(t,G[e])}else r(n)}}catch(e){H=!0}},{apply:Q}={apply(e,t,r){let n;K();try{if(h(t),g(t)){const e=JSON.parse(t);y.has(e)&&(n=JSON.stringify(e))}}catch(e){}return Reflect.apply(e,n??t,r)}},V={apply:Q};window.String.prototype.split=f(window.String.prototype.split,V),window.String.prototype.substring=f(window.String.prototype.substring,V);const{apply:X}={apply(e,t,r){K();const n=Reflect.apply(e,t,r);try{if(g(n)){const e=JSON.parse(n);if(y.has(e)){return JSON.stringify(e)}}}catch(e){}return n}},Y={apply:X};window.String=f(window.String,Y),window.String.prototype.constructor=window.String;const Z=new Map,ee=/^[\\t\\r\\n \\v\\u00a0\\ufeff]*[\\v\\u00a0\\ufeff][\\t\\r\\n ]*/,te=/^(?:[\\t\\r\\n ]*(?:\\/\\/[^\\r\\n]*(?:\\r\\n?|\\n)|\\/\\*[\\s\\S]*?\\*\\/))+/,re=/"(?:[^"\\\\]|\\\\[\\s\\S])*"|((?:(?:\\/\\*[\\s\\S]*?\\*\\/|\\/\\/[^\\r\\n]*(?:\\r\\n?|\\n|$))[\\t\\r\\n ]*)+)/g,ne=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:/,oe=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"|[[{]|true|false|null|-?[\\d.eE+-]+)/,ae=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"|[[{]|true|false|null|-?[\\d.eE+-]+)[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:|[,[{\\]}])/,ie=e=>{const t=Z.get(e);if(void 0!==t)return t;let r=e;try{const t=u(e),n=e.match(ee)?.[0]??"",o=e.slice(n.length),a=o.match(te)?.[0]??"",i=o.slice(a.length);let s=i,p="";if(t&&(/\\*\\/[\\t\\r\\n ]*$/.test(i)||/(?:\\r\\n?|\\n)[\\t ]*\\/\\/[^\\r\\n]*(?:[\\r\\n][\\t ]*)*$/.test(i)))for(const e of i.matchAll(re))if(e[1]&&e.index+e[0].length===i.length){const t=i.slice(0,e.index).search(/[\\t\\r\\n ]*$/);s=i.slice(0,t),p=i.slice(t);break}const d=Reflect.apply(l,s,[]);if(h(d)&&t){const e=d.slice(1).match(te)?.[0]??"";let t=""===e?s:s.replace(e,"");const o=t.match(ne)?.[0]??"",i=""===o?"":t.slice(o.length).match(te)?.[0]??"";""!==i&&(t=o+t.slice(o.length+i.length));const l=t.match(oe)?.[0]??"",c=""===l?"":t.slice(l.length).match(te)?.[0]??"";""!==c&&(t=l+" "+t.slice(l.length+c.length));const f=t.match(ae)?.[0]??"",w=""===f?"":t.slice(f.length).match(te)?.[0]??"";""!==w&&(t=f+" "+t.slice(f.length+w.length));let u="";if(t.includes("/*")||t.includes("//"))for(const e of t.matchAll(re))if(e[1]&&/^[\\]}][\\t\\r\\n ]*$/.test(t.slice(e.index+e[0].length))){u=e[1],t=t.slice(0,e.index)+" "+t.slice(e.index+u.length);break}const h=JSON.parse(t);if(y.has(h)){let t=JSON.stringify(h);""!==w&&(t=t.replace(ae,e=>e+w)),""!==c&&(t=t.replace(oe,e=>e+c)),""!==i&&(t=t.replace(ne,e=>e+i)),""!==u&&(t=t.slice(0,-1)+u+t.slice(-1)),r=n+a+t[0]+e+t.slice(1)+p}}}catch(e){}return((e,t)=>{if(Z.size>=2){const e=Z.keys().next().value;Z.delete(e)}return Z.set(e,t),t})(e,r)},{apply:se}={apply(e,t,r){let n=t;try{"string"==typeof t&&t.length>300&&(n=ie(t))}catch(e){}return Reflect.apply(e,n,r)}},pe={apply:se};window.String.prototype.charAt=f(window.String.prototype.charAt,pe);const le=e=>{const t=e?.data?.viewer?.marketplace_feed_stories;if(!Array.isArray(t?.edges))return!1;const r=t.edges.filter(e=>!(e=>{const t=e?.__typename;return"string"==typeof t&&t.includes(o)})(e?.node));return r.length!==t.edges.length&&(t.edges=r,!0)},{apply:de}={apply(e,t,r){const n=r[2]?.[0];if(w(n,s))try{const e=(e=>{let t=!1;const r=Reflect.apply(p,e,[/\\r?\\n|\\r/]).map(e=>{if(""===e.trim())return e;let r;try{r=JSON.parse(e)}catch{return e}const n=y.has(r),o=le(r);return n||o?(t=!0,JSON.stringify(r)):e});return t?r.join("\\r\\n"):e})(n);if(e!==n){const t=r[2].slice();t[0]=e,r[2]=t}}catch(e){}return Reflect.apply(e,t,r)}},ce={apply:de};window.Function.prototype.call=f(window.Function.prototype.call,ce);const{apply:ye}={apply:(e,t,r)=>c.has(t)?c.get(t):Reflect.apply(e,t,r)},fe={apply:ye};window.Function.prototype.toString=f(window.Function.prototype.toString,fe),(()=>{const e=window.__rl_stub;if("function"==typeof window.requireLazy&&!Array.isArray(e))return void z.forEach(([e,t])=>{window.requireLazy(e,t)});let t=Array.isArray(e)?e:[];D(t);try{Object.defineProperty(window,"__rl_stub",{configurable:!0,enumerable:!0,get:()=>t,set(e){t=e,D(e)}})}catch(e){window.__rl_stub=t}})()})();': () => {
+    '(()=>{const e="SPONSORED",t="SponsoredData",r="AdsSideFeedUnit",n=["sponsored_data","th_dat_spo","qrz_ctx_seg","pso_tad_rens"],o="MarketplaceFeedAdStory",a=new WeakMap,i=[e,t,r,...n],s=[t,o,...n],p=window.String.prototype.split,l=window.String.prototype.trim,d=new WeakMap,c=new WeakMap,y=new WeakSet,f=(e,t,r=Proxy)=>{const n=c.get(e)??Reflect.apply(window.Function.prototype.toString,e,[]),o=new r(e,t);return d.set(o,d.get(e)??e),c.set(o,n),o},w=(e,t)=>e?.length>300&&t.some(t=>e?.includes?.(t)),u=e=>w(e,i),h=e=>Boolean(e?.startsWith?.("{")&&e?.endsWith?.("}")||e?.startsWith?.("[")&&e?.endsWith?.("]")),g=e=>h(e)&&u(e),_=e=>{try{e.JSON.parse=f(e.JSON.parse,J,e.Proxy),e.String.prototype.split=f(e.String.prototype.split,V,e.Proxy),e.String=f(e.String,Y,e.Proxy),e.String.prototype.constructor=e.String,e.Function.prototype.call=f(e.Function.prototype.call,ce,e.Proxy),e.Function.prototype.toString=f(e.Function.prototype.toString,fe,e.Proxy)}catch(e){}},m=e=>Boolean(e instanceof HTMLIFrameElement&&(""===e.src||e?.src?.startsWith("about:blank"))&&e.contentWindow),S=new Set(["append","prepend","before","after","insertNode","replaceWith","replaceChild","replaceChildren"]),{apply:b}={apply(e,t,r){const n=Reflect.apply(e,t,r);try{m(n)?_(n.contentWindow):S.has(e.name)&&r.forEach(e=>{m(e)&&_(e.contentWindow)})}catch(e){}return n}},x={apply:b};window.Node.prototype.appendChild=f(window.Node.prototype.appendChild,x),window.Node.prototype.insertBefore=f(window.Node.prototype.insertBefore,x),window.Node.prototype.replaceChild=f(window.Node.prototype.replaceChild,x),window.Element.prototype.append=f(window.Element.prototype.append,x),window.Element.prototype.prepend=f(window.Element.prototype.prepend,x),window.Element.prototype.replaceChildren=f(window.Element.prototype.replaceChildren,x),window.Element.prototype.replaceWith=f(window.Element.prototype.replaceWith,x),window.Element.prototype.before=f(window.Element.prototype.before,x),window.Element.prototype.after=f(window.Element.prototype.after,x),window.Element.prototype.insertAdjacentElement=f(window.Element.prototype.insertAdjacentElement,x),window.Range.prototype.insertNode=f(window.Range.prototype.insertNode,x),window.CharacterData.prototype.replaceWith=f(window.CharacterData.prototype.replaceWith,x);const A=["item_collection","ads"],E=["auxColumnUnits","sdieFede","sideFeed"],v=e=>Boolean(e)&&(Object.values(e).some(e=>e?.__typename===t)||n.some(t=>{const r=e[t];return r&&"object"==typeof r&&!Array.isArray(r)&&[r.ad_id,r.lbl_adv_iden].some(e=>"string"==typeof e&&e.length>0)})),O=(e,t)=>{if(!e||"object"!=typeof e||Array.isArray(e))return!1;const r=Object.keys(e);return r.length===t.length&&t.every(e=>r.includes(e))},N=e=>O(e,["node"])&&O(e.node,["s"])&&O(e.node.s,["__typename"])&&e.node.s.__typename===t,j=["p","z9","k4","w7","q8","n3","v6","j5","t8","m6","h4","r2","b3","d2","x5"],B=new Set(["h4","r2","b3","d2","x5"]),k=e=>{const t=Array.isArray(e)&&1===e.length?e[0]:e;if(!t||"object"!=typeof t||Array.isArray(t))return!1;const r=j.find(e=>"string"==typeof t[e]);if(void 0===r)return!1;const n=["data","edges","require",r];if(Object.hasOwn(t,"extensions")){if(!(O(t.extensions,[])||O(t.extensions,["is_final"])&&!0===t.extensions.is_final))return!1;n.push("extensions")}if(Object.hasOwn(t,"__bbox")){if(!(B.has(r)&&O(t.extensions,["is_final"])&&!0===t.extensions.is_final&&(o=t.__bbox,O(o,["result"])&&O(o.result,["data"])&&O(o.result.data,["node"])&&O(o.result.data.node,["s","th_dat_spo"])&&O(o.result.data.node.s,["__typename"])&&"CometStorySponsoredLabelStrategy"===o.result.data.node.s.__typename&&O(o.result.data.node.th_dat_spo,["s"])&&1===o.result.data.node.th_dat_spo.s)))return!1;n.push("__bbox")}var o;return O(t,n)&&N(t.data)&&Array.isArray(t.edges)&&1===t.edges.length&&N(t.edges[0])&&Array.isArray(t.require)&&1===t.require.length&&N(t.require[0])},P=(e,t,n,o)=>{if(!e||"object"!=typeof e||n<0)return!1;let a=!1;if(Array.isArray(e.nodes)){const t=e.nodes.filter(e=>!(e=>e?.__typename===r||A.some(t=>{const r=e?.[t]?.nodes;return Array.isArray(r)&&r.some(e=>e?.sponsored_data?.ad_id)}))(e));e.nodes.length-t.length>0&&(e.nodes=t,a=!0)}return Object.entries(e).forEach(([e,r])=>{a=P(r,`${t}.${e}`,n-1,o)||a}),a},W=(e,t=10)=>{const r=e?.data?.viewer,n=r??e?.[3]?.[1]?.__bbox?.result?.data?.viewer;if(!n)return!1;return P(n,r?"data.viewer":"item[3][1].__bbox.result.data.viewer",t,e)},F=(t,r=10,n=new WeakMap)=>{if(!t||"object"!=typeof t||r<0)return!1;const o=n.get(t);if(void 0!==o&&o>=r)return!1;if(n.set(t,r),k(t))return!1;let a=((t,r)=>{if(!t||"object"!=typeof t)return!1;let n=!1;try{if(r){if(Array.isArray(t.require?.[0]?.[3]?.[0]?.__bbox?.require)&&t.require[0][3][0].__bbox.require.forEach(t=>{t[3]?.[1]?.__bbox?.result?.data?.category===e&&(delete t[3][1].__bbox.result.data.node,n=!0),v(t[3]?.[1]?.__bbox?.result?.data?.node)&&(delete t[3][1].__bbox.result.data.node,n=!0),n=W(t)||n}),E.some(e=>Array.isArray(t.data?.viewer?.[e]?.nodes))&&(n=W(t)||n),Array.isArray(t.data?.viewer?.news_feed?.edges)){const r=t.data.viewer.news_feed.edges.length;t.data.viewer.news_feed.edges=t.data.viewer.news_feed.edges.filter(t=>!v(t.node)&&t.category!==e),n=n||t.data.viewer.news_feed.edges.length!==r}v(t.data?.node)&&(delete t.data.node,n=!0),t.data?.category===e&&(delete t.data.node,n=!0)}}catch(e){}return n})(t,!0);return 0===r||Object.values(t).forEach(e=>{a=F(e,r-1,n)||a}),a},R=(e,t)=>{try{const r="string"==typeof t;if(r&&!u(t))return e;if(k(e))return e;if(!r&&!u(JSON.stringify(e)))return e;F(e)&&e&&"object"==typeof e&&y.add(e)}catch(e){}return e},{apply:q}={apply(e,t,r){K();const n=Reflect.apply(e,t,r);return R(n,r[0])}},J={apply:q};window.JSON.parse=f(window.JSON.parse,J);const C=(e,t,r)=>{if(!e||"object"!=typeof e&&"function"!=typeof e)return;let n=a.get(e);if(!t.some(t=>"function"==typeof e[t]&&!d.has(e[t])&&(n?.get(t)??0)<10))return;n||(n=new Map,a.set(e,n));const o=new Map;t.forEach(t=>{const r=e[t];"function"==typeof r&&d.has(r)&&o.set(d.get(r),r)}),t.forEach(t=>{const a=e[t],i=n.get(t)??0;if("function"!=typeof a||d.has(a)||i>=10)return;n.set(t,i+1);let s=o.get(a);if(!s){const{apply:e}={apply(e,t,n){const o=Reflect.apply(e,t,n);return r?R(o,n[0]):R(o)}};s=f(a,{apply:e}),o.set(a,s)}e[t]=s})},M=["parse","parseText","readText","fromText","fromSource","fromChunk","fromBlock","fromSlice","fromPiece","fromSection","fromSegment","fromExcerpt","fromFragment","fromScrap","fromSliver"],$=["ghlParseServerJSPayload","readBootPayload","decodeBootScript","hydrateBootData","inflateBootPayload","expandBootPayload","unpackBootPayload","openBootPayload","loadBootPayload","readBootState","readBootRecord","readBootEntry","takeBootFrame","grabBootSlice","pullBootChunk"],z=[[["json5"],e=>C(e,M,!0)],[["GHLServerJSParse"],e=>C(e,$,!1)]],D=e=>{Array.isArray(e)&&z.forEach(t=>{e.some(e=>e?.[1]===t[1])||e.push(t)})};let L=null,T=!1,H=!1;const U=new Map,G=z.map(([[e],t])=>r=>{U.set(e,r),t(r)}),I=()=>{if(!T&&"function"==typeof window.require){T=!0;const e=window.require("ifRequired");"function"==typeof e&&(L=e)}return L},K=()=>{if(!H)try{for(let e=0;e<z.length;e+=1){const[[t],r]=z[e],n=U.get(t);if(void 0===n){if(null===I())return;L(t,G[e])}else r(n)}}catch(e){H=!0}},{apply:Q}={apply(e,t,r){let n;K();try{if(h(t),g(t)){const e=JSON.parse(t);y.has(e)&&(n=JSON.stringify(e))}}catch(e){}return Reflect.apply(e,n??t,r)}},V={apply:Q};window.String.prototype.split=f(window.String.prototype.split,V),window.String.prototype.substring=f(window.String.prototype.substring,V);const{apply:X}={apply(e,t,r){K();const n=Reflect.apply(e,t,r);try{if(g(n)){const e=JSON.parse(n);if(y.has(e)){return JSON.stringify(e)}}}catch(e){}return n}},Y={apply:X};window.String=f(window.String,Y),window.String.prototype.constructor=window.String;const Z=new Map,ee=/^[\\t\\r\\n \\v\\f\\u00a0\\ufeff]*[\\v\\f\\u00a0\\ufeff][\\t\\r\\n ]*/,te=/^(?:[\\t\\r\\n ]*(?:\\/\\/[^\\r\\n]*(?:\\r\\n?|\\n)|\\/\\*[\\s\\S]*?\\*\\/))+/,re=/"(?:[^"\\\\]|\\\\[\\s\\S])*"|((?:(?:\\/\\*[\\s\\S]*?\\*\\/|\\/\\/[^\\r\\n]*(?:\\r\\n?|\\n|$))[\\t\\r\\n ]*)+)/g,ne=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:/,oe=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"|[[{]|true|false|null|-?[\\d.eE+-]+)/,ae=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"|[[{]|true|false|null|-?[\\d.eE+-]+)[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:|[,[{\\]}])/,ie=e=>{const t=Z.get(e);if(void 0!==t)return t;let r=e;try{const t=u(e),n=e.match(ee)?.[0]??"",o=e.slice(n.length),a=o.match(te)?.[0]??"",i=o.slice(a.length);let s=i,p="";if(t&&(/\\*\\/[\\t\\r\\n ]*$/.test(i)||/(?:\\r\\n?|\\n)[\\t ]*\\/\\/[^\\r\\n]*(?:[\\r\\n][\\t ]*)*$/.test(i)))for(const e of i.matchAll(re))if(e[1]&&e.index+e[0].length===i.length){const t=i.slice(0,e.index).search(/[\\t\\r\\n ]*$/);s=i.slice(0,t),p=i.slice(t);break}const d=Reflect.apply(l,s,[]);if(h(d)&&t){const e=d.slice(1).match(te)?.[0]??"";let t=""===e?s:s.replace(e,"");const o=t.match(ne)?.[0]??"",i=""===o?"":t.slice(o.length).match(te)?.[0]??"";""!==i&&(t=o+t.slice(o.length+i.length));const l=t.match(oe)?.[0]??"",c=""===l?"":t.slice(l.length).match(te)?.[0]??"";""!==c&&(t=l+" "+t.slice(l.length+c.length));const f=t.match(ae)?.[0]??"",w=""===f?"":t.slice(f.length).match(te)?.[0]??"";""!==w&&(t=f+" "+t.slice(f.length+w.length));let u="";if(t.includes("/*")||t.includes("//"))for(const e of t.matchAll(re))if(e[1]&&/^[\\]}][\\t\\r\\n ]*$/.test(t.slice(e.index+e[0].length))){u=e[1],t=t.slice(0,e.index)+" "+t.slice(e.index+u.length);break}const h=JSON.parse(t);if(y.has(h)){let t=JSON.stringify(h);""!==w&&(t=t.replace(ae,e=>e+w)),""!==c&&(t=t.replace(oe,e=>e+c)),""!==i&&(t=t.replace(ne,e=>e+i)),""!==u&&(t=t.slice(0,-1)+u+t.slice(-1)),r=n+a+t[0]+e+t.slice(1)+p}}}catch(e){}return((e,t)=>{if(Z.size>=2){const e=Z.keys().next().value;Z.delete(e)}return Z.set(e,t),t})(e,r)},{apply:se}={apply(e,t,r){let n=t;try{"string"==typeof t&&t.length>300&&(n=ie(t))}catch(e){}return Reflect.apply(e,n,r)}},pe={apply:se};window.String.prototype.charAt=f(window.String.prototype.charAt,pe);const le=e=>{const t=e?.data?.viewer?.marketplace_feed_stories;if(!Array.isArray(t?.edges))return!1;const r=t.edges.filter(e=>!(e=>{const t=e?.__typename;return"string"==typeof t&&t.includes(o)})(e?.node));return r.length!==t.edges.length&&(t.edges=r,!0)},{apply:de}={apply(e,t,r){const n=r[2]?.[0];if(w(n,s))try{const e=(e=>{let t=!1;const r=Reflect.apply(p,e,[/\\r?\\n|\\r/]).map(e=>{if(""===e.trim())return e;let r;try{r=JSON.parse(e)}catch{return e}const n=y.has(r),o=le(r);return n||o?(t=!0,JSON.stringify(r)):e});return t?r.join("\\r\\n"):e})(n);if(e!==n){const t=r[2].slice();t[0]=e,r[2]=t}}catch(e){}return Reflect.apply(e,t,r)}},ce={apply:de};window.Function.prototype.call=f(window.Function.prototype.call,ce);const{apply:ye}={apply:(e,t,r)=>c.has(t)?c.get(t):Reflect.apply(e,t,r)},fe={apply:ye};window.Function.prototype.toString=f(window.Function.prototype.toString,fe),(()=>{const e=window.__rl_stub;if("function"==typeof window.requireLazy&&!Array.isArray(e))return void z.forEach(([e,t])=>{window.requireLazy(e,t)});let t=Array.isArray(e)?e:[];D(t);try{Object.defineProperty(window,"__rl_stub",{configurable:!0,enumerable:!0,get:()=>t,set(e){t=e,D(e)}})}catch(e){window.__rl_stub=t}})()})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["9088d5c32f1674c33e89d23b0bf2b144"] === e) return;
+            if (Window.prototype.toString["409feb7be197e0920512dae6f2640990"] === e) return;
             (() => {
                 const e = "SPONSORED", t = "SponsoredData", r = "AdsSideFeedUnit", n = [ "sponsored_data", "th_dat_spo", "qrz_ctx_seg", "pso_tad_rens" ], o = "MarketplaceFeedAdStory", a = new WeakMap, i = [ e, t, r, ...n ], s = [ t, o, ...n ], p = window.String.prototype.split, l = window.String.prototype.trim, d = new WeakMap, c = new WeakMap, y = new WeakSet, f = (e, t, r = Proxy) => {
                     const n = c.get(e) ?? Reflect.apply(window.Function.prototype.toString, e, []), o = new r(e, t);
@@ -7721,24 +7619,24 @@ export const localScriptRules = {
                         } catch (e) {}
                         return n;
                     }
-                }, A = {
+                }, x = {
                     apply: S
                 };
-                window.Node.prototype.appendChild = f(window.Node.prototype.appendChild, A), window.Node.prototype.insertBefore = f(window.Node.prototype.insertBefore, A), 
-                window.Node.prototype.replaceChild = f(window.Node.prototype.replaceChild, A), window.Element.prototype.append = f(window.Element.prototype.append, A), 
-                window.Element.prototype.prepend = f(window.Element.prototype.prepend, A), window.Element.prototype.replaceChildren = f(window.Element.prototype.replaceChildren, A), 
-                window.Element.prototype.replaceWith = f(window.Element.prototype.replaceWith, A), 
-                window.Element.prototype.before = f(window.Element.prototype.before, A), window.Element.prototype.after = f(window.Element.prototype.after, A), 
-                window.Element.prototype.insertAdjacentElement = f(window.Element.prototype.insertAdjacentElement, A), 
-                window.Range.prototype.insertNode = f(window.Range.prototype.insertNode, A), window.CharacterData.prototype.replaceWith = f(window.CharacterData.prototype.replaceWith, A);
-                const x = [ "item_collection", "ads" ], E = [ "auxColumnUnits", "sdieFede", "sideFeed" ], v = e => Boolean(e) && (Object.values(e).some((e => e?.__typename === t)) || n.some((t => {
+                window.Node.prototype.appendChild = f(window.Node.prototype.appendChild, x), window.Node.prototype.insertBefore = f(window.Node.prototype.insertBefore, x), 
+                window.Node.prototype.replaceChild = f(window.Node.prototype.replaceChild, x), window.Element.prototype.append = f(window.Element.prototype.append, x), 
+                window.Element.prototype.prepend = f(window.Element.prototype.prepend, x), window.Element.prototype.replaceChildren = f(window.Element.prototype.replaceChildren, x), 
+                window.Element.prototype.replaceWith = f(window.Element.prototype.replaceWith, x), 
+                window.Element.prototype.before = f(window.Element.prototype.before, x), window.Element.prototype.after = f(window.Element.prototype.after, x), 
+                window.Element.prototype.insertAdjacentElement = f(window.Element.prototype.insertAdjacentElement, x), 
+                window.Range.prototype.insertNode = f(window.Range.prototype.insertNode, x), window.CharacterData.prototype.replaceWith = f(window.CharacterData.prototype.replaceWith, x);
+                const A = [ "item_collection", "ads" ], E = [ "auxColumnUnits", "sdieFede", "sideFeed" ], v = e => Boolean(e) && (Object.values(e).some((e => e?.__typename === t)) || n.some((t => {
                     const r = e[t];
                     return r && "object" == typeof r && !Array.isArray(r) && [ r.ad_id, r.lbl_adv_iden ].some((e => "string" == typeof e && e.length > 0));
                 }))), O = (e, t) => {
                     if (!e || "object" != typeof e || Array.isArray(e)) return !1;
                     const r = Object.keys(e);
                     return r.length === t.length && t.every((e => r.includes(e)));
-                }, N = e => O(e, [ "node" ]) && O(e.node, [ "s" ]) && O(e.node.s, [ "__typename" ]) && e.node.s.__typename === t, j = [ "p", "z9", "k4", "w7", "q8", "n3", "v6", "j5", "t8", "m6", "h4", "r2", "b3", "d2" ], W = new Set([ "h4", "r2", "b3", "d2" ]), B = e => {
+                }, N = e => O(e, [ "node" ]) && O(e.node, [ "s" ]) && O(e.node.s, [ "__typename" ]) && e.node.s.__typename === t, j = [ "p", "z9", "k4", "w7", "q8", "n3", "v6", "j5", "t8", "m6", "h4", "r2", "b3", "d2", "x5" ], B = new Set([ "h4", "r2", "b3", "d2", "x5" ]), W = e => {
                     const t = Array.isArray(e) && 1 === e.length ? e[0] : e;
                     if (!t || "object" != typeof t || Array.isArray(t)) return !1;
                     const r = j.find((e => "string" == typeof t[e]));
@@ -7749,7 +7647,7 @@ export const localScriptRules = {
                         n.push("extensions");
                     }
                     if (Object.hasOwn(t, "__bbox")) {
-                        if (!(W.has(r) && O(t.extensions, [ "is_final" ]) && !0 === t.extensions.is_final && (o = t.__bbox, 
+                        if (!(B.has(r) && O(t.extensions, [ "is_final" ]) && !0 === t.extensions.is_final && (o = t.__bbox, 
                         O(o, [ "result" ]) && O(o.result, [ "data" ]) && O(o.result.data, [ "node" ]) && O(o.result.data.node, [ "s", "th_dat_spo" ]) && O(o.result.data.node.s, [ "__typename" ]) && "CometStorySponsoredLabelStrategy" === o.result.data.node.s.__typename && O(o.result.data.node.th_dat_spo, [ "s" ]) && 1 === o.result.data.node.th_dat_spo.s))) return !1;
                         n.push("__bbox");
                     }
@@ -7759,7 +7657,7 @@ export const localScriptRules = {
                     if (!e || "object" != typeof e || n < 0) return !1;
                     let a = !1;
                     if (Array.isArray(e.nodes)) {
-                        const t = e.nodes.filter((e => !(e => e?.__typename === r || x.some((t => {
+                        const t = e.nodes.filter((e => !(e => e?.__typename === r || A.some((t => {
                             const r = e?.[t]?.nodes;
                             return Array.isArray(r) && r.some((e => e?.sponsored_data?.ad_id));
                         })))(e)));
@@ -7775,7 +7673,7 @@ export const localScriptRules = {
                     if (!t || "object" != typeof t || r < 0) return !1;
                     const o = n.get(t);
                     if (void 0 !== o && o >= r) return !1;
-                    if (n.set(t, r), B(t)) return !1;
+                    if (n.set(t, r), W(t)) return !1;
                     let a = (t => {
                         if (!t || "object" != typeof t) return !1;
                         let r = !1;
@@ -7802,7 +7700,7 @@ export const localScriptRules = {
                     try {
                         const r = "string" == typeof t;
                         if (r && !u(t)) return e;
-                        if (B(e)) return e;
+                        if (W(e)) return e;
                         if (!r && !u(JSON.stringify(e))) return e;
                         q(e) && e && "object" == typeof e && y.add(e);
                     } catch (e) {}
@@ -7844,7 +7742,7 @@ export const localScriptRules = {
                         }
                         e[t] = s;
                     }));
-                }, M = [ "parse", "parseText", "readText", "fromText", "fromSource", "fromChunk", "fromBlock", "fromSlice", "fromPiece", "fromSection", "fromSegment", "fromExcerpt", "fromFragment", "fromScrap" ], $ = [ "ghlParseServerJSPayload", "readBootPayload", "decodeBootScript", "hydrateBootData", "inflateBootPayload", "expandBootPayload", "unpackBootPayload", "openBootPayload", "loadBootPayload", "readBootState", "readBootRecord", "readBootEntry", "takeBootFrame", "grabBootSlice" ], z = [ [ [ "json5" ], e => C(e, M, !0) ], [ [ "GHLServerJSParse" ], e => C(e, $, !1) ] ], D = e => {
+                }, M = [ "parse", "parseText", "readText", "fromText", "fromSource", "fromChunk", "fromBlock", "fromSlice", "fromPiece", "fromSection", "fromSegment", "fromExcerpt", "fromFragment", "fromScrap", "fromSliver" ], $ = [ "ghlParseServerJSPayload", "readBootPayload", "decodeBootScript", "hydrateBootData", "inflateBootPayload", "expandBootPayload", "unpackBootPayload", "openBootPayload", "loadBootPayload", "readBootState", "readBootRecord", "readBootEntry", "takeBootFrame", "grabBootSlice", "pullBootChunk" ], z = [ [ [ "json5" ], e => C(e, M, !0) ], [ [ "GHLServerJSParse" ], e => C(e, $, !1) ] ], D = e => {
                     Array.isArray(e) && z.forEach((t => {
                         e.some((e => e?.[1] === t[1])) || e.push(t);
                     }));
@@ -7903,7 +7801,7 @@ export const localScriptRules = {
                     apply: X
                 };
                 window.String = f(window.String, Y), window.String.prototype.constructor = window.String;
-                const Z = new Map, ee = /^[\t\r\n \v\u00a0\ufeff]*[\v\u00a0\ufeff][\t\r\n ]*/, te = /^(?:[\t\r\n ]*(?:\/\/[^\r\n]*(?:\r\n?|\n)|\/\*[\s\S]*?\*\/))+/, re = /"(?:[^"\\]|\\[\s\S])*"|((?:(?:\/\*[\s\S]*?\*\/|\/\/[^\r\n]*(?:\r\n?|\n|$))[\t\r\n ]*)+)/g, ne = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:/, oe = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"|[[{]|true|false|null|-?[\d.eE+-]+)/, ae = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"|[[{]|true|false|null|-?[\d.eE+-]+)[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"[\t\r\n ]*:|[,[{\]}])/, {apply: ie} = {
+                const Z = new Map, ee = /^[\t\r\n \v\f\u00a0\ufeff]*[\v\f\u00a0\ufeff][\t\r\n ]*/, te = /^(?:[\t\r\n ]*(?:\/\/[^\r\n]*(?:\r\n?|\n)|\/\*[\s\S]*?\*\/))+/, re = /"(?:[^"\\]|\\[\s\S])*"|((?:(?:\/\*[\s\S]*?\*\/|\/\/[^\r\n]*(?:\r\n?|\n|$))[\t\r\n ]*)+)/g, ne = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:/, oe = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"|[[{]|true|false|null|-?[\d.eE+-]+)/, ae = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"|[[{]|true|false|null|-?[\d.eE+-]+)[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"[\t\r\n ]*:|[,[{\]}])/, {apply: ie} = {
                     apply(e, t, r) {
                         let n = t;
                         try {
@@ -8023,14 +7921,14 @@ export const localScriptRules = {
                     }
                 })();
             })();
-            Object.defineProperty(Window.prototype.toString, "9088d5c32f1674c33e89d23b0bf2b144", {
+            Object.defineProperty(Window.prototype.toString, "409feb7be197e0920512dae6f2640990", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "9088d5c32f1674c33e89d23b0bf2b144" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "409feb7be197e0920512dae6f2640990" due to: ' + e);
         }
     },
     "(function(){var c=document.addEventListener;document.addEventListener=function(a,b,d,e){\"click\"!=a&&-1==b.toString().indexOf('about:blank')&&c(a,b,d,e)}.bind(document);})();": () => {
@@ -10711,41 +10609,32 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "f8726a98e9ee7f87afd7c9376374eb99" due to: ' + e);
         }
     },
-    "(()=>{try{const a=window.adsbygoogle=window.adsbygoogle||[];a.loaded=!0;const r=/(^|\\s)(api-ad-footer|web-ad-footer|intro-ad-footer|ad-rail|example-ad-sidebar)(\\s|$)/;const m=()=>{const l=document.querySelectorAll('ins.adsbygoogle');for(let i=0;i<l.length;i++){const s=l[i],p=s.parentElement;if(!p)continue;const c=typeof p.className==='string'?p.className:'';if(!r.test(c))continue;if((s.textContent||'').replace(/\\s+/g,''))continue;s.textContent='\\u200d'}};m();document.addEventListener('DOMContentLoaded',m,{once:true});window.addEventListener('load',m,{once:true});setTimeout(m,1500);setTimeout(m,4000)}catch(e){}})();": () => {
+    "(()=>{try{Object.defineProperty(window,'somZv1k180',{value:true,writable:true,configurable:true});setInterval(()=>{try{if(window.somZv1k180!==true)window.somZv1k180=true}catch(e){}},50)}catch(e){}})();": () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["632198e61773e9ac04d3744748a03cd3"] === e) return;
+            if (Window.prototype.toString["3ba2a7c1c0393fdd5a5c0b71c4b2cf33"] === e) return;
             (() => {
                 try {
-                    (window.adsbygoogle = window.adsbygoogle || []).loaded = !0;
-                    const e = /(^|\s)(api-ad-footer|web-ad-footer|intro-ad-footer|ad-rail|example-ad-sidebar)(\s|$)/, t = () => {
-                        const t = document.querySelectorAll("ins.adsbygoogle");
-                        for (let o = 0; o < t.length; o++) {
-                            const n = t[o], a = n.parentElement;
-                            if (!a) continue;
-                            const d = "string" == typeof a.className ? a.className : "";
-                            e.test(d) && ((n.textContent || "").replace(/\s+/g, "") || (n.textContent = "‍"));
-                        }
-                    };
-                    t();
-                    document.addEventListener("DOMContentLoaded", t, {
-                        once: !0
+                    Object.defineProperty(window, "somZv1k180", {
+                        value: !0,
+                        writable: !0,
+                        configurable: !0
                     });
-                    window.addEventListener("load", t, {
-                        once: !0
-                    });
-                    setTimeout(t, 1500);
-                    setTimeout(t, 4e3);
+                    setInterval((() => {
+                        try {
+                            !0 !== window.somZv1k180 && (window.somZv1k180 = !0);
+                        } catch (e) {}
+                    }), 50);
                 } catch (e) {}
             })();
-            Object.defineProperty(Window.prototype.toString, "632198e61773e9ac04d3744748a03cd3", {
+            Object.defineProperty(Window.prototype.toString, "3ba2a7c1c0393fdd5a5c0b71c4b2cf33", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "632198e61773e9ac04d3744748a03cd3" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "3ba2a7c1c0393fdd5a5c0b71c4b2cf33" due to: ' + e);
         }
     },
     "document.addEventListener('DOMContentLoaded',function(){const o=new MutationObserver(function(m,b){const e=document.querySelector('.gtp-wrap.gtp-open button.gtp-decline');e&&e.click()});setTimeout(function(){o.disconnect()},60000);o.observe(document.body,{childList:!0,subtree:!0})})": () => {
