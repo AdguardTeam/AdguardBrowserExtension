@@ -38,16 +38,15 @@ import { handleFileUpload } from '../../../helpers';
 import { exportData, ExportTypes } from '../../../common/utils/export';
 import { rootStore } from '../../stores/RootStore';
 import { userRulesEditorStore } from '../../../common/components/UserRulesEditor/UserRulesEditorStore';
-import { HOW_TO_CREATE_RULES_URL } from '../../constants';
 import { mergeImportedRules } from '../../../../common/utils/user-rules';
 
 import styles from './UserRulesMenu.module.pcss';
 import menuStyles from '../../../common/components/ui/MenuDropDown/MenuDropDown.module.pcss';
 
 /**
- * Header dropdown menu for the User Rules screen. Provides Rule syntax, Import,
- * Export, and Delete all. Rendered once in the shared header so it is available
- * in both the list view and the editor view.
+ * Header dropdown menu for the User Rules screen. Provides Import, Export, and
+ * Delete all. Rendered once in the shared header so it is available in both the
+ * list view and the editor view.
  *
  * @returns Dropdown menu element.
  */
@@ -173,15 +172,6 @@ export const UserRulesMenu = observer(() => {
                     );
                 }}
             >
-                <a
-                    className={menuStyles.menuItem}
-                    href={HOW_TO_CREATE_RULES_URL}
-                    target="_blank"
-                    rel="noreferrer"
-                    role="menuitem"
-                >
-                    {translator.getMessage('options_rule_syntax')}
-                </a>
                 <button
                     type="button"
                     className={menuStyles.menuItem}

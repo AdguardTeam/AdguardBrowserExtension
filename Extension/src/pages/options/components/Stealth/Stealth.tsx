@@ -20,6 +20,8 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react';
 
+import cn from 'classnames';
+
 import { useTelemetryPageViewEvent } from '../../../common/telemetry';
 import { TelemetryEventName, TelemetryScreenName } from '../../../../common/telemetry';
 import { SettingsSection } from '../Settings/SettingsSection';
@@ -37,6 +39,8 @@ import {
 } from '../../../../common/settings';
 import { type SettingHandler } from '../../types';
 import { ensurePermission } from '../../ensure-permission';
+import { shouldShowCanvasProtectionUserScriptsWarning } from '../../../../common/user-scripts-api';
+import { useVisibilityCheck } from '../../../common/hooks/useVisibilityCheck';
 
 import { DescriptionWithWarning } from './DescriptionWithWarning';
 import { BlockFingerprintingWarning } from './BlockFingerprintingWarning';
@@ -50,6 +54,21 @@ const Stealth = observer(() => {
     const { settingsStore, uiStore, telemetryStore } = useContext(rootStore);
 
     useTelemetryPageViewEvent(telemetryStore, TelemetryScreenName.TrackingProtectionScreen);
+
+    /**
+     * Whether the User Scripts API is unavailable, e.g. the permission is not
+     * granted yet. Canvas protection needs this API, so while it is
+     * unavailable the row shows the permission instructions.
+     *
+     * The setting can still be switched on: the stored value is kept and the
+     * engine gates the protection itself. A switched-on toggle uses the
+     * inactive color from the design until the permission is granted.
+     *
+     * The hook is called before the early return to keep the hook order
+     * stable.
+     */
+    const isUserScriptsApiUnavailable = useVisibilityCheck(shouldShowCanvasProtectionUserScriptsWarning);
+
     const { settings, blockKnownTrackers, stripTrackingParameters }: any = settingsStore;
 
     if (!settings) {
@@ -232,11 +251,15 @@ const Stealth = observer(() => {
                     description={(
                         <>
                             {translator.getMessage('options_block_fingerprinting_desc')}
-                            {isBlockFingerprintingEnabled && <BlockFingerprintingWarning />}
+                            <BlockFingerprintingWarning
+                                isUnavailable={isUserScriptsApiUnavailable}
+                                isBlockFingerprintingEnabled={isBlockFingerprintingEnabled}
+                            />
                         </>
                     )}
                     disabled={!isBlockFingerprintingEnabled}
                     sectionDisabled={isStealthModeDisabled}
+                    className={cn({ 'stealth__fingerprinting--unavailable': isUserScriptsApiUnavailable })}
                     id={BlockFingerprinting}
                     label={translator.getMessage('options_block_fingerprinting_title')}
                     value={isBlockFingerprintingEnabled}

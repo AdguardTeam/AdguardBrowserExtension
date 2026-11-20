@@ -22,7 +22,6 @@ import React from 'react';
 
 import {
     cleanup,
-    fireEvent,
     render,
     screen,
 } from '@testing-library/react';
@@ -40,12 +39,7 @@ import {
 } from '../../../../../../Extension/src/pages/options/components/Stealth/BlockFingerprintingWarning';
 
 const mocks = vi.hoisted(() => ({
-    shouldShowCanvasProtectionUserScriptsWarning: vi.fn(),
     reapplyCanvasProtection: vi.fn(),
-}));
-
-vi.mock('../../../../../../Extension/src/common/user-scripts-api', () => ({
-    shouldShowCanvasProtectionUserScriptsWarning: mocks.shouldShowCanvasProtectionUserScriptsWarning,
 }));
 
 vi.mock('../../../../../../Extension/src/pages/services/messenger', () => ({
@@ -78,43 +72,48 @@ describe('BlockFingerprintingWarning', () => {
         cleanup();
     });
 
-    it('shows the user scripts message while the check is true', () => {
-        mocks.shouldShowCanvasProtectionUserScriptsWarning.mockReturnValue(true);
-
-        render(<BlockFingerprintingWarning />);
+    it('shows the user scripts message while the API is unavailable', () => {
+        render(<BlockFingerprintingWarning isUnavailable isBlockFingerprintingEnabled />);
 
         expect(screen.queryByTestId('user-scripts-api-required-message')).not.toBeNull();
     });
 
-    it('does not send reapplyCanvasProtection while the check is true', () => {
-        mocks.shouldShowCanvasProtectionUserScriptsWarning.mockReturnValue(true);
+    it('shows the user scripts message even when the setting is off', () => {
+        render(<BlockFingerprintingWarning isUnavailable isBlockFingerprintingEnabled={false} />);
 
-        render(<BlockFingerprintingWarning />);
-        fireEvent.focus(window);
+        expect(screen.queryByTestId('user-scripts-api-required-message')).not.toBeNull();
+    });
+
+    it('does not send reapplyCanvasProtection while the API is unavailable', () => {
+        render(<BlockFingerprintingWarning isUnavailable isBlockFingerprintingEnabled />);
 
         expect(mocks.reapplyCanvasProtection).not.toHaveBeenCalled();
     });
 
-    it('sends reapplyCanvasProtection once and hides the message when the check turns false', () => {
-        mocks.shouldShowCanvasProtectionUserScriptsWarning.mockReturnValue(true);
-        render(<BlockFingerprintingWarning />);
+    it('hides the message and sends reapplyCanvasProtection when the API becomes available', () => {
+        const { rerender } = render(
+            <BlockFingerprintingWarning isUnavailable isBlockFingerprintingEnabled />,
+        );
         expect(screen.queryByTestId('user-scripts-api-required-message')).not.toBeNull();
 
-        mocks.shouldShowCanvasProtectionUserScriptsWarning.mockReturnValue(false);
-        fireEvent.focus(window);
-        fireEvent.focus(window);
+        rerender(<BlockFingerprintingWarning isUnavailable={false} isBlockFingerprintingEnabled />);
 
         expect(mocks.reapplyCanvasProtection).toHaveBeenCalledTimes(1);
         expect(screen.queryByTestId('user-scripts-api-required-message')).toBeNull();
     });
 
-    it('sends reapplyCanvasProtection once on mount when the check is false', () => {
-        mocks.shouldShowCanvasProtectionUserScriptsWarning.mockReturnValue(false);
-        const { container } = render(<BlockFingerprintingWarning />);
+    it('sends reapplyCanvasProtection once on mount when the API is available and the setting is on', () => {
+        const { container } = render(
+            <BlockFingerprintingWarning isUnavailable={false} isBlockFingerprintingEnabled />,
+        );
         expect(container.innerHTML).toBe('');
 
-        fireEvent.focus(window);
-
         expect(mocks.reapplyCanvasProtection).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not send reapplyCanvasProtection when the API is available and the setting is off', () => {
+        render(<BlockFingerprintingWarning isUnavailable={false} isBlockFingerprintingEnabled={false} />);
+
+        expect(mocks.reapplyCanvasProtection).not.toHaveBeenCalled();
     });
 });

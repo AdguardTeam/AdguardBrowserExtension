@@ -141,21 +141,13 @@ describe('UserRulesMenu', () => {
         cleanup();
     });
 
-    it('renders four items in order after opening', async () => {
+    it('renders three items in order after opening', async () => {
         mountMenu();
         openMenu();
-        expect(screen.getByText('options_rule_syntax')).toBeTruthy();
         expect(screen.getByText('options_userfilter_import')).toBeTruthy();
         expect(screen.getByText('options_userfilter_export')).toBeTruthy();
         expect(screen.getByText('options_user_rules_delete_all')).toBeTruthy();
-    });
-
-    it('rule syntax item is an external link', async () => {
-        mountMenu();
-        openMenu();
-        const link = screen.getByText('options_rule_syntax').closest('a');
-        expect(link).not.toBeNull();
-        expect(link?.getAttribute('target')).toBe('_blank');
+        expect(screen.queryByText('options_rule_syntax')).toBeNull();
     });
 
     it('appends only genuinely-new rules and deduplicates existing ones', async () => {

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- In MV3, *Block fingerprinting* can be turned on without the user scripts
+  permission. While the permission is missing, the option shows how to grant
+  it, and the switched-on toggle uses the inactive gray style.
+- Restored the *Rule syntax* link below the *User rules* toggle in both the
+  list and the editor views.
+
 ## [5.6.0.3-beta] - 2026-11-18
 
 [5.6.0.3-beta]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.6.0-beta.2...v5.6.0-beta.3

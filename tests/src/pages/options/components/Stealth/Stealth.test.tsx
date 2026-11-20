@@ -43,6 +43,7 @@ import { TelemetryStore } from '../../../../../../Extension/src/pages/common/tel
 const mocks = vi.hoisted(() => ({
     sendTelemetryCustomEvent: vi.fn(),
     updateSetting: vi.fn(),
+    isUserScriptsApiUnavailable: { value: false },
 }));
 
 vi.mock('../../../../../../Extension/src/common/logger', () => ({
@@ -77,10 +78,16 @@ vi.mock('../../../../../../Extension/src/pages/options/ensure-permission', () =>
     ensurePermission: vi.fn(),
 }));
 
+vi.mock('../../../../../../Extension/src/common/user-scripts-api', () => ({
+    shouldShowCanvasProtectionUserScriptsWarning: () => mocks.isUserScriptsApiUnavailable.value,
+}));
+
 const BLOCK_FINGERPRINTING_WARNING_TEST_ID = 'block-fingerprinting-warning';
 
 vi.mock('../../../../../../Extension/src/pages/options/components/Stealth/BlockFingerprintingWarning', () => ({
-    BlockFingerprintingWarning: () => <div data-testid={BLOCK_FINGERPRINTING_WARNING_TEST_ID} />,
+    BlockFingerprintingWarning: ({ isUnavailable }: { isUnavailable: boolean }) => (
+        isUnavailable ? <div data-testid={BLOCK_FINGERPRINTING_WARNING_TEST_ID} /> : null
+    ),
 }));
 
 const renderStealth = async (isBlockFingerprintingEnabled: boolean, allowTelemetry = true) => {
@@ -120,9 +127,13 @@ const getBlockFingerprintingToggle = () => {
     return screen.getByRole('checkbox', { name: 'options_block_fingerprinting_title' });
 };
 
+beforeEach(() => {
+    vi.resetModules();
+    mocks.isUserScriptsApiUnavailable.value = false;
+});
+
 describe('Stealth Block fingerprinting toggle telemetry', () => {
     beforeEach(() => {
-        vi.resetModules();
         mocks.sendTelemetryCustomEvent.mockReset();
         mocks.sendTelemetryCustomEvent.mockResolvedValue(undefined);
         mocks.updateSetting.mockReset();
@@ -176,23 +187,89 @@ describe('Stealth Block fingerprinting toggle telemetry', () => {
 });
 
 describe('Stealth Block fingerprinting warning', () => {
-    beforeEach(() => {
-        vi.resetModules();
-    });
-
     afterEach(() => {
         cleanup();
     });
 
     it('shows the warning when the toggle is on', async () => {
+        mocks.isUserScriptsApiUnavailable.value = true;
+
         await renderStealth(true);
 
         expect(screen.getByTestId(BLOCK_FINGERPRINTING_WARNING_TEST_ID)).toBeDefined();
     });
 
-    it('hides the warning when the toggle is off', async () => {
+    it('shows the warning when the toggle is off but the User Scripts API is unavailable', async () => {
+        mocks.isUserScriptsApiUnavailable.value = true;
+
+        await renderStealth(false);
+
+        expect(screen.getByTestId(BLOCK_FINGERPRINTING_WARNING_TEST_ID)).toBeDefined();
+    });
+
+    it('hides the warning when the User Scripts API is available', async () => {
         await renderStealth(false);
 
         expect(screen.queryByTestId(BLOCK_FINGERPRINTING_WARNING_TEST_ID)).toBeNull();
+    });
+
+    it('keeps the toggle enabled while the User Scripts API is unavailable', async () => {
+        mocks.isUserScriptsApiUnavailable.value = true;
+
+        await renderStealth(false);
+
+        expect((getBlockFingerprintingToggle() as HTMLInputElement).disabled).toBe(false);
+    });
+
+    it('keeps the toggle enabled when it is on without the User Scripts API', async () => {
+        mocks.isUserScriptsApiUnavailable.value = true;
+
+        await renderStealth(true);
+
+        expect((getBlockFingerprintingToggle() as HTMLInputElement).disabled).toBe(false);
+    });
+
+    it('updates the setting when the toggle is turned on without the API', async () => {
+        mocks.isUserScriptsApiUnavailable.value = true;
+        mocks.updateSetting.mockReset();
+        mocks.updateSetting.mockResolvedValue(undefined);
+
+        await renderStealth(false);
+        fireEvent.click(getBlockFingerprintingToggle());
+
+        await waitFor(() => {
+            expect(mocks.updateSetting).toHaveBeenCalledWith(SettingOption.BlockFingerprinting, true, false);
+        });
+    });
+
+    it('marks the row while the User Scripts API is unavailable', async () => {
+        mocks.isUserScriptsApiUnavailable.value = true;
+
+        await renderStealth(false);
+
+        const row = getBlockFingerprintingToggle().closest('.setting-checkbox');
+        expect(row).not.toBeNull();
+        expect(row?.classList.contains('stealth__fingerprinting--unavailable')).toBe(true);
+    });
+
+    it('does not mark the row when the User Scripts API is available', async () => {
+        await renderStealth(false);
+
+        const row = getBlockFingerprintingToggle().closest('.setting-checkbox');
+        expect(row?.classList.contains('stealth__fingerprinting--unavailable')).toBe(false);
+    });
+
+    it('hides the warning after the permission is granted', async () => {
+        mocks.isUserScriptsApiUnavailable.value = true;
+
+        await renderStealth(false);
+        expect(screen.getByTestId(BLOCK_FINGERPRINTING_WARNING_TEST_ID)).toBeDefined();
+
+        mocks.isUserScriptsApiUnavailable.value = false;
+        fireEvent.focus(window);
+
+        await waitFor(() => {
+            expect(screen.queryByTestId(BLOCK_FINGERPRINTING_WARNING_TEST_ID)).toBeNull();
+        });
     });
 });

@@ -102,8 +102,8 @@ vi.mock('../../../../../../Extension/src/pages/options/components/UserRules/User
 
 vi.mock('../../../../../../Extension/src/pages/options/components/Settings/SettingsSection', () => ({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    SettingsSection: ({ actions, children }: any) => (
-        React.createElement('div', null, actions, children)
+    SettingsSection: ({ actions, children, className }: any) => (
+        React.createElement('div', { className }, actions, children)
     ),
 }));
 
@@ -469,5 +469,46 @@ describe('UserRules telemetry', () => {
             'switch_to_list_click',
             'user_rules_screen',
         );
+    });
+});
+
+describe('UserRules rule syntax link', () => {
+    beforeEach(() => {
+        localStorage.clear();
+        vi.clearAllMocks();
+    });
+
+    afterEach(() => {
+        cleanup();
+    });
+
+    it('shows the rule syntax link in the list view', () => {
+        mountUserRules();
+
+        expect(screen.getByText('options_rule_syntax')).toBeTruthy();
+        expect(screen.getByTestId('user-rules-list')).toBeTruthy();
+    });
+
+    it('shows the rule syntax link in the editor view', () => {
+        localStorage.setItem(VIEW_MODE_STORAGE_KEY, ViewMode.Editor);
+        mountUserRules();
+
+        expect(screen.getByText('options_rule_syntax')).toBeTruthy();
+        expect(screen.getByTestId('user-rules-editor')).toBeTruthy();
+    });
+
+    it('places the rule syntax link below the User rules toggle', () => {
+        mountUserRules();
+
+        const toggleSection = document.querySelector('.settings__group--editor-switch');
+        const linkWrapper = screen.getByText('options_rule_syntax').closest('.settings__group__links');
+
+        expect(toggleSection).not.toBeNull();
+        expect(linkWrapper).not.toBeNull();
+
+        if (toggleSection && linkWrapper) {
+            const position = toggleSection.compareDocumentPosition(linkWrapper);
+            expect(position & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+        }
     });
 });

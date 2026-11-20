@@ -28,3 +28,36 @@
         }
     }
 }
+
+/**
+ * Links inside an attention message keep the attention color: the design shows
+ * the whole message in orange, while `setting__desc a` would turn the link
+ * green.
+ */
+.setting__desc .stealth__attention a {
+    color: inherit;
+}
+
+/**
+ * Block fingerprinting row while the User Scripts API is unavailable.
+ *
+ * The setting can still be switched on without the permission: the stored value
+ * is kept and the engine gates the protection itself. A switched-on toggle then
+ * uses the inactive track color from the design (gray-50), so it does not look
+ * active. The knob stays white.
+ *
+ * The rule applies only outside a disabled group: when Stealth mode itself is
+ * off, `.settings__group--disabled` already dims the whole group.
+ *
+ * Skipped in forced-colors mode: there the checked track keeps the system
+ * `Highlight` color from `checkbox.pcss`, which this selector would override.
+ */
+@media (forced-colors: none) {
+    .settings__group:not(.settings__group--disabled) {
+        & .setting-checkbox.stealth__fingerprinting--unavailable {
+            & .checkbox__in:checked + .checkbox__label:after {
+                background-color: var(--gray-50);
+            }
+        }
+    }
+}

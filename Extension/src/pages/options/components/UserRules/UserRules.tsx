@@ -45,6 +45,7 @@ import { UserRulesSwitcher } from './UserRulesSwitcher';
 import { UserScriptsApiWarningForUserRules } from './UserScriptsApiWarningForUserRules';
 import { USER_RULES_VIEW_MODE_TOGGLE_CLASS, UserRulesList } from './UserRulesList';
 import { UserRulesMenu } from './UserRulesMenu';
+import { RuleSyntaxLink } from './RuleSyntaxLink';
 
 import './styles.pcss';
 
@@ -263,6 +264,9 @@ const UserRules = observer(() => {
                 className="settings__group--editor-switch"
                 inlineControl={(<UserRulesSwitcher labelId={switchTitleId} />)}
             />
+            <div className="settings__group__links">
+                <RuleSyntaxLink />
+            </div>
             <DynamicRulesLimitsWarning />
             <UserScriptsApiWarningForUserRules />
             {UserAgent.isFirefoxMobile && <ClipboardPermissionWarning />}

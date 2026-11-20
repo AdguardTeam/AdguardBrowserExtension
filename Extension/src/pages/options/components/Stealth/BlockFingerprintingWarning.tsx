@@ -21,36 +21,53 @@
 import React, { useEffect } from 'react';
 
 import { logger } from '../../../../common/logger';
-import { shouldShowCanvasProtectionUserScriptsWarning } from '../../../../common/user-scripts-api';
-import { useVisibilityCheck } from '../../../common/hooks/useVisibilityCheck';
 import { messenger } from '../../../services/messenger';
 import { UserScriptsApiRequiredMessage } from '../Warnings';
+
+/**
+ * Props for the BlockFingerprintingWarning component.
+ */
+type BlockFingerprintingWarningProps = {
+    /**
+     * Whether the User Scripts API is unavailable.
+     */
+    isUnavailable: boolean;
+
+    /**
+     * Whether the Block fingerprinting setting is enabled.
+     */
+    isBlockFingerprintingEnabled: boolean;
+};
 
 /**
  * Warning about the missing user scripts API permission, shown under the
  * Block fingerprinting setting.
  *
- * Whenever the API is available, on mount or when the warning disappears, the
- * background is asked to re-apply the stored setting, so protection starts
- * without toggling the setting again even if the permission was granted while
- * the options page was closed.
+ * When the API is available and the setting is on, the background is asked to
+ * re-apply the stored setting, so protection starts without toggling the
+ * setting again — including when the permission was granted while the options
+ * page was closed. This is the only reason the component needs
+ * `isBlockFingerprintingEnabled`: `Stealth` owns the API check itself.
+ *
+ * @param props Component props.
  *
  * @returns Warning element or null when the permission is granted.
  */
-export const BlockFingerprintingWarning = () => {
-    const showWarning = useVisibilityCheck(shouldShowCanvasProtectionUserScriptsWarning);
-
+export const BlockFingerprintingWarning = ({
+    isUnavailable,
+    isBlockFingerprintingEnabled,
+}: BlockFingerprintingWarningProps) => {
     useEffect(() => {
-        if (showWarning) {
+        if (isUnavailable || !isBlockFingerprintingEnabled) {
             return;
         }
 
         messenger.reapplyCanvasProtection().catch((e) => {
             logger.error('[ext.BlockFingerprintingWarning]: failed to re-apply canvas protection:', e);
         });
-    }, [showWarning]);
+    }, [isUnavailable, isBlockFingerprintingEnabled]);
 
-    if (!showWarning) {
+    if (!isUnavailable) {
         return null;
     }
 
