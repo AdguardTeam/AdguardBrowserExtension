@@ -36,7 +36,11 @@ import {
     MV3_BROWSERS,
     type Mv3Browser,
 } from './constants';
-import { LOCALES_ABSOLUTE_PATH, LOCALE_DATA_FILENAME } from './locales/locales-constants';
+import {
+    BASE_LOCALE,
+    LOCALES_ABSOLUTE_PATH,
+    LOCALE_DATA_FILENAME,
+} from './locales/locales-constants';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 const __filename = fileURLToPath(import.meta.url);
@@ -340,19 +344,40 @@ const getNameSuffix = (buildEnv: BuildTargetEnv, browser: Browser) => {
 };
 
 /**
- * Updates the locales message name with environment-specific suffix.
+ * English description for the Chrome Web Store build.
+ * The store shows it as the short description and limits it to 132 characters.
+ *
+ * It names Chrome, so it is not stored in the locale files, which are shared
+ * by all browsers: the other builds and the other languages keep
+ * the description from `_locales`.
+ */
+const CWS_DESCRIPTION = 'Free lightweight Adblock & privacy extension for Chrome. '
+    + 'Blocks ads on YouTube, Facebook & other social media. Removes pop-ups.';
+
+/**
+ * Updates the locale messages for the build target: adds the environment-specific
+ * suffix to the extension name and sets the Chrome Web Store description
+ * in the base locale of the Chrome MV3 build.
  *
  * @param content The content buffer containing locale messages.
+ * @param locale The locale of the messages, e.g. `en`.
  * @param env The build environment.
  * @param browser The target browser.
  *
- * @returns The updated JSON string with modified name message.
+ * @returns The updated JSON string with modified messages.
  */
-export const updateLocalesMSGName = (content: Buffer, env: BuildTargetEnv, browser: Browser) => {
-    const suffix = getNameSuffix(env, browser);
-
+export const updateLocaleMessages = (
+    content: Buffer,
+    locale: string,
+    env: BuildTargetEnv,
+    browser: Browser,
+) => {
     const messages = JSON.parse(content.toString());
-    messages.name.message += suffix;
+    messages.name.message += getNameSuffix(env, browser);
+
+    if (browser === Browser.ChromeMv3 && locale === BASE_LOCALE) {
+        messages.description.message = CWS_DESCRIPTION;
+    }
 
     return JSON.stringify(messages, null, 4);
 };

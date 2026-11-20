@@ -34,7 +34,7 @@ import {
     Browser,
     BUILD_ENV,
 } from '../constants';
-import { updateLocalesMSGName } from '../helpers';
+import { updateLocaleMessages } from '../helpers';
 import {
     WEB_ACCESSIBLE_RESOURCES_OUTPUT,
     CONTENT_SCRIPT_END_OUTPUT,
@@ -679,8 +679,11 @@ export const genCommonConfig = (
                         context: 'Extension',
                         from: '_locales',
                         to: '_locales',
-                        transform: (content) => {
-                            return updateLocalesMSGName(content, BUILD_ENV, browserConfig.browser);
+                        transform: (content, absoluteFilename) => {
+                            // Locale files are stored as `_locales/<locale>/messages.json`.
+                            const locale = path.basename(path.dirname(absoluteFilename));
+
+                            return updateLocaleMessages(content, locale, BUILD_ENV, browserConfig.browser);
                         },
                     },
                     {
