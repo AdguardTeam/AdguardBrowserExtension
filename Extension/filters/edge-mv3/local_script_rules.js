@@ -10733,6 +10733,61 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "671bbc53b2753ab1de38c607e44cff6b" due to: ' + e);
         }
     },
+    '(()=>{const noop=()=>{},callbacks=[];let player,ready=false,head=0;const invoke=callback=>{try{callback([]);}catch{}};const flush=()=>{ready=true;while(head<callbacks.length)invoke(callbacks[head++]);callbacks.length=0;head=0;};const requestBids=(_,callback)=>{if(typeof callback!=="function")return;if(ready||player){ready=true;invoke(callback);}else callbacks.push(callback);};try{Object.defineProperty(window,"PWT",{configurable:true,get:()=>({requestBids,generateConfForGPT:noop,addKeyValuePairsToGPTSlots:noop,generateDFPURL:noop}),set:noop});}catch{}try{Object.defineProperty(window,"KalturaPlayer",{configurable:true,get:()=>player,set:value=>{player=value;if(value)flush();}});}catch{}})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.e2654e2f6bba6a98679334479fd7c83e === e) return;
+            (() => {
+                const e = () => {}, t = [];
+                let r, o = !1, n = 0;
+                const a = e => {
+                    try {
+                        e([]);
+                    } catch {}
+                }, c = (e, n) => {
+                    if ("function" == typeof n) if (o || r) {
+                        o = !0;
+                        a(n);
+                    } else t.push(n);
+                };
+                try {
+                    Object.defineProperty(window, "PWT", {
+                        configurable: !0,
+                        get: () => ({
+                            requestBids: c,
+                            generateConfForGPT: e,
+                            addKeyValuePairsToGPTSlots: e,
+                            generateDFPURL: e
+                        }),
+                        set: e
+                    });
+                } catch {}
+                try {
+                    Object.defineProperty(window, "KalturaPlayer", {
+                        configurable: !0,
+                        get: () => r,
+                        set: e => {
+                            r = e;
+                            e && (() => {
+                                o = !0;
+                                for (;n < t.length; ) a(t[n++]);
+                                t.length = 0;
+                                n = 0;
+                            })();
+                        }
+                    });
+                } catch {}
+            })();
+            Object.defineProperty(Window.prototype.toString, "e2654e2f6bba6a98679334479fd7c83e", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "e2654e2f6bba6a98679334479fd7c83e" due to: ' + e);
+        }
+    },
     '(()=>{window.valstream=window.valstream||{},window.valstream.queue=window.valstream.queue||[],window.valstream.queue.push=e=>{if("function"==typeof e)try{e()}catch(e){}};})();': () => {
         try {
             const e = "done";
