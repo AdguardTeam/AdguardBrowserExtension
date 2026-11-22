@@ -58,6 +58,7 @@ import {
     TelemetryScreenName,
 } from '../../telemetry';
 import { UpdateCheckService } from '../../update-check/update-check-service';
+import { initCloudPreferences } from '../cloud-preferences';
 
 /**
  * SettingsService handles all setting-related messages and
@@ -74,6 +75,7 @@ export abstract class SettingsServiceCommon {
      * Adds a listener to enable or disable protection from the context menu.
      */
     static init(): void {
+        initCloudPreferences();
         messageHandler.addListener(MessageType.ApplySettingsJson, SettingsServiceCommon.import);
 
         messageHandler.addListener(MessageType.ResetSettings, SettingsServiceCommon.reset);

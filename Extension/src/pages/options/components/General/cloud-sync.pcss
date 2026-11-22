@@ -1,0 +1,53 @@
+.cloud-sync {
+    p {
+        margin-block: 12px;
+        max-width: 72ch;
+    }
+
+    fieldset {
+        display: grid;
+        gap: 8px;
+        border: 0;
+        padding: 0;
+        margin-block: 16px;
+        min-width: 0;
+    }
+
+    input:not([type="checkbox"]) {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 8px 12px;
+        color: inherit;
+        background: var(--fills-inputs-input-background-disabled);
+        border: 1px solid var(--stroke-inputs-active-input-stroke-default);
+        border-radius: 4px;
+    }
+
+    :focus-visible {
+        outline: 2px solid currentColor;
+        outline-offset: 2px;
+    }
+
+    &__actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-block: 16px;
+    }
+
+    &__preview {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+        margin-block: 16px;
+
+        dt {
+            font-weight: 600;
+        }
+
+        dd {
+            margin: 4px 0;
+            overflow-wrap: anywhere;
+        }
+    }
+}

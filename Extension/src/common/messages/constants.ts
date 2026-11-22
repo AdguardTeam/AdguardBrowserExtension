@@ -26,6 +26,8 @@
  * other that types.
  */
 
+import { type CloudPreferences } from '../cloud-sync';
+import { type CloudApplyResult } from '../cloud-preferences-apply';
 import { type AutoDisabledFilter } from '../auto-disable-notification';
 import { type ForwardFrom } from '../forward';
 import { type SettingOption, type Settings } from '../../background/schema/settings';
@@ -72,6 +74,8 @@ export enum MessageType {
     OpenExtensionStore = 'openExtensionStore',
     AddAndEnableFilter = 'addAndEnableFilter',
     ApplySettingsJson = 'applySettingsJson',
+    GetCloudPreferences = 'getCloudPreferences',
+    ApplyCloudPreferences = 'applyCloudPreferences',
     OpenFilteringLog = 'openFilteringLog',
     OpenFullscreenUserRules = 'openFullscreenUserRules',
     CloseFullscreenUserRules = 'closeFullscreenUserRules',
@@ -172,6 +176,14 @@ export enum MessageType {
     GenerateShareUrl = 'generateShareUrl',
     ReapplyCanvasProtection = 'reapplyCanvasProtection',
 }
+
+export type ApplyCloudPreferencesMessage = {
+    type: MessageType.ApplyCloudPreferences;
+    data: {
+        expected: CloudPreferences;
+        incoming: CloudPreferences;
+    };
+};
 
 export type ApplySettingsJsonMessage = {
     type: MessageType.ApplySettingsJson;
@@ -794,6 +806,14 @@ export type MessageMap = {
     [MessageType.AddLongLivedConnection]: {
         message: AddLongLivedConnectionMessage;
         response: void;
+    };
+    [MessageType.GetCloudPreferences]: {
+        message: { type: MessageType.GetCloudPreferences };
+        response: CloudPreferences | null;
+    };
+    [MessageType.ApplyCloudPreferences]: {
+        message: ApplyCloudPreferencesMessage;
+        response: CloudApplyResult;
     };
     [MessageType.ApplySettingsJson]: {
         message: ApplySettingsJsonMessage;

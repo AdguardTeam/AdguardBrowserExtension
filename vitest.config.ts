@@ -67,7 +67,7 @@ const createProjectForManifestVersion = (
         // passed. A small worker pool keeps peak memory within bounds at a
         // modest cost in wall-clock time.
         maxWorkers: 4,
-        exclude: ['**/node_modules/**', '**/vendor/**'],
+        exclude: ['**/node_modules/**', '**/vendor/**', '**/*.node.test.ts'],
         server: {
             deps: {
                 // `@adguard/rules-editor` is ESM but imports named exports from

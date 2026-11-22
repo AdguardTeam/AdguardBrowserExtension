@@ -127,6 +127,18 @@ class SettingsStorage implements StorageInterface<SettingOption, Settings[Settin
     }
 
     /**
+     * Persists current settings with an observable result for explicit cloud import.
+     * Unlike the ordinary debounce, this lets the caller report storage failures.
+     *
+     * @throws Error if settings are not initialized or storage fails.
+     */
+    public async persist(): Promise<void> {
+        const settings = this.getData();
+        this.save.cancel();
+        await browserStorage.set(ADGUARD_SETTINGS_KEY, settings);
+    }
+
+    /**
      * Helper function to create a basic {@link Error} with a custom message.
      *
      * @returns A basic {@link Error} with a custom message.

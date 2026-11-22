@@ -61,6 +61,7 @@ import { ExtensionUsageDataModal } from '../Miscellaneous/ExtensionUsageDataModa
 import { Permissions } from '../../../../common/permissions';
 
 import { DesktopAppPromo } from './DesktopAppPromo';
+import { CloudSync } from './CloudSync';
 
 const filtersUpdatePeriodOptions = [
     {
@@ -468,6 +469,7 @@ export const General = observer(() => {
                     {translator.getMessage('options_leave_feedback')}
                 </button>
             </div>
+            <CloudSync />
             <DesktopAppPromo />
         </>
     );

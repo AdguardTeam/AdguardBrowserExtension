@@ -32,6 +32,7 @@ import {
     type AddAndEnableFilterMessage,
     type DisableFilterMessage,
     type ApplySettingsJsonMessage,
+    type ApplyCloudPreferencesMessage,
     type SaveUserRulesMessage,
     type SetConsentedFiltersMessage,
     type GetIsConsentedFilterMessage,
@@ -409,6 +410,24 @@ export abstract class MessengerCommon {
         filterId: DisableFilterMessage['data']['filterId'],
     ): Promise<ExtractMessageResponse<MessageType.DisableFilter>> => {
         return this.sendMessage(MessageType.DisableFilter, { filterId });
+    };
+
+    /** Reads only the portable preferences, without exporting filters or credentials. */
+    getCloudPreferences = async (): Promise<ExtractMessageResponse<MessageType.GetCloudPreferences>> => {
+        return this.sendMessage(MessageType.GetCloudPreferences);
+    };
+
+    /**
+     * Applies a validated preferences preview if the local baseline still matches.
+     *
+     * @param data Expected local preferences and proposed replacement.
+     *
+     * @returns Explicit success or failure, including partial application.
+     */
+    applyCloudPreferences = async (
+        data: ApplyCloudPreferencesMessage['data'],
+    ): Promise<ExtractMessageResponse<MessageType.ApplyCloudPreferences>> => {
+        return this.sendMessage(MessageType.ApplyCloudPreferences, data);
     };
 
     /**
