@@ -26,6 +26,7 @@
  * other that types.
  */
 
+import { type BrowserSyncRequest, type BrowserSyncResponse } from '../browser-sync';
 import { type AutoDisabledFilter } from '../auto-disable-notification';
 import { type ForwardFrom } from '../forward';
 import { type SettingOption, type Settings } from '../../background/schema/settings';
@@ -169,6 +170,7 @@ export enum MessageType {
     GetPendingImportBlockWebrtc = 'getPendingImportBlockWebrtc',
     ApplyImportConfiguration = 'applyImportConfiguration',
     CancelImportConfiguration = 'cancelImportConfiguration',
+    BrowserSync = 'browserSync',
     GenerateShareUrl = 'generateShareUrl',
     ReapplyCanvasProtection = 'reapplyCanvasProtection',
 }
@@ -777,6 +779,11 @@ export type CancelImportConfigurationMessage = {
     type: MessageType.CancelImportConfiguration;
 };
 
+export type BrowserSyncMessage = {
+    type: MessageType.BrowserSync;
+    data: BrowserSyncRequest;
+};
+
 export type GenerateShareUrlMessage = {
     type: MessageType.GenerateShareUrl;
 };
@@ -1170,6 +1177,10 @@ export type MessageMap = {
     [MessageType.CancelImportConfiguration]: {
         message: CancelImportConfigurationMessage;
         response: void;
+    };
+    [MessageType.BrowserSync]: {
+        message: BrowserSyncMessage;
+        response: BrowserSyncResponse;
     };
     [MessageType.GenerateShareUrl]: {
         message: GenerateShareUrlMessage;

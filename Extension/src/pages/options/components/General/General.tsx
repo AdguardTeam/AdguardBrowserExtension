@@ -61,6 +61,7 @@ import { ExtensionUsageDataModal } from '../Miscellaneous/ExtensionUsageDataModa
 import { Permissions } from '../../../../common/permissions';
 
 import { DesktopAppPromo } from './DesktopAppPromo';
+import { BrowserSync } from './BrowserSync';
 
 const filtersUpdatePeriodOptions = [
     {
@@ -405,6 +406,7 @@ export const General = observer(() => {
                     />
                 )}
             </SettingsSection>
+            <BrowserSync />
             <ExtensionUsageDataModal
                 closeModalHandler={() => setIsUsageDataModalOpen(false)}
                 isOpen={isUsageDataModalOpen}

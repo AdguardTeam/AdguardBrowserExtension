@@ -41,6 +41,17 @@ class SettingsStorage implements StorageInterface<SettingOption, Settings[Settin
     private settings: Settings | undefined;
 
     /**
+     * Persists pending settings now and propagates storage errors to manual operations.
+     */
+    public async flush(): Promise<void> {
+        if (!this.settings) {
+            throw SettingsStorage.createNotInitializedError();
+        }
+        this.save.cancel();
+        await browserStorage.set(ADGUARD_SETTINGS_KEY, this.settings);
+    }
+
+    /**
      * Sets setting to storage.
      *
      * @param key Setting key.

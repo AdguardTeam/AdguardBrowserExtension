@@ -66,6 +66,7 @@ import {
     type SendTelemetryCustomEventMessage,
     type FilteringLogWindowState,
 } from '../../../common/messages';
+import { type BrowserSyncRequest, type BrowserSyncResponse } from '../../../common/browser-sync';
 import { type NotifierType } from '../../../common/constants';
 import { type CreateEventListenerResponse } from '../../../background/services/event';
 
@@ -117,6 +118,17 @@ export type LongLivedConnectionResult = {
  */
 export abstract class MessengerCommon {
     onMessage = browser.runtime.onMessage;
+
+    /**
+     * Reviews or confirms an explicitly requested browser sync operation.
+     *
+     * @param request Manual sync action and consent.
+     *
+     * @returns A preview or the confirmed operation result.
+     */
+    browserSync = async (request: BrowserSyncRequest): Promise<BrowserSyncResponse> => {
+        return this.sendMessage(MessageType.BrowserSync, request);
+    };
 
     /**
      * Sends a message to the background page.

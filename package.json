@@ -13,6 +13,7 @@
         "update-bundle-size": "tsx tools/bundle-size/update.ts",
         "adguard-api": "cross-env BUILD_ENV=dev tsx tools/bundle.ts adguard-api",
         "test": "vitest run",
+        "test:browser-sync": "tsx --test tests/src/background/services/settings/browser-sync.node-test.ts",
         "test:mv2": "vitest run --project mv2",
         "test:mv3": "vitest run --project mv3",
         "test:ci": "pnpm run test:mv2 --reporter default --reporter junit --outputFile=./tests-reports/unit-tests-mv2.xml && pnpm run test:mv3 --reporter default --reporter junit --outputFile=./tests-reports/unit-tests-mv3.xml && tsx tools/merge-junit.ts ./tests-reports/unit-tests-mv2.xml ./tests-reports/unit-tests-mv3.xml ./tests-reports/unit-tests.xml",
