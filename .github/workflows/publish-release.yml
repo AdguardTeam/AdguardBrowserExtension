@@ -146,14 +146,7 @@ jobs:
             --target bundle-size-check-output \
             --output type=local,dest=output/bundle-size .
 
-      # Beta channel only: 13 new v5.6 strings are not translated yet, so the 12
-      # required locales sit at 99.3-99.5% against the 100% threshold and
-      # `pnpm locales validate --min` fails. The beta build is needed for QA now,
-      # so for beta the step still runs and reports but no longer blocks the
-      # publish. Release keeps the hard gate, so a forgotten revert cannot ship
-      # an untranslated stable release — see AG-61993.
       - name: Validate locales via Docker
-        continue-on-error: ${{ needs.resolve-version.outputs.channel == 'beta' }}
         run: |
           DOCKER_BUILDKIT=1 docker build --progress plain \
             --build-arg TEST_RUN_ID="${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" \
