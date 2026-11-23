@@ -1,9 +1,9 @@
-! Checksum: s4ocV+qqngu/OEiB0CtC6A
-! Diff-Path: ../patches/13/13-s-1794597116-3600.patch
+! Checksum: pCw66duG3/b0RlYZAWcdCg
+! Diff-Path: ../patches/13/13-s-1795400111-3600.patch
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.69.88
-! TimeUpdated: 2026-11-13T19:07:57+00:00
+! Version: 2.0.70.10
+! TimeUpdated: 2026-11-23T02:12:20+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -20,6 +20,7 @@
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
 !
+||popzu-srv.live^
 ||certainlywhen.com^
 ||apk-2.online^$third-party
 ||geniusclickad.cc^
@@ -276,9 +277,8 @@
 ankarakampkafasi.com,zamaninvarken.com,kriptoradar.com,bakimlikadin.net,korsanedebiyat.com,genelpara.com,azbuz.org,mustafabukulmez.com#%#//scriptlet("prevent-setTimeout", "0===o.offsetLeft&&0===o.offsetTop")
 teknop.net,ozgunbilgi.com#%#//scriptlet("set-constant", "adblock.check", "noopFunc")
 !
-! https://github.com/AdguardTeam/AdguardFilters/issues/246975
-dramadizilerim1.com#%#//scriptlet('remove-attr', 'inert')
-dramadizilerim1.com#$#.access-screen { display: none !important; }
+! https://github.com/AdguardTeam/AdguardFilters/issues/247577
+dramadizilerim1.com#%#//scriptlet('set-constant', 'navigator.onLine', 'false')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/246957
 bilgisayarbilisim.net#%#//scriptlet('abort-current-inline-script', 'document.getElementById', '/adblock/i')
 bilgisayarbilisim.net#@#ins.adsbygoogle[data-ad-client]
@@ -289,8 +289,8 @@ bilgisayarbilisim.net#@#.ad-slot
 dramadunyam.com##.engel-duvar
 ! https://github.com/AdguardTeam/AdguardFilters/issues/243039
 kanunyolu.com.tr#%#//scriptlet('prevent-addEventListener', 'DOMContentLoaded', 'run')
-! https://github.com/AdguardTeam/AdguardFilters/issues/242830
-[$domain=/turkifsa\d+\.best$/]#%#//scriptlet('trusted-replace-node-text', 'script', 'showModal', 'showModal', 'close')
+! https://github.com/AdguardTeam/AdguardFilters/issues/246266
+[$domain=/turkifsa\d+\.best$/]#%#//scriptlet('prevent-fetch', '/pecannerous\.com|octo25\.me|brigsgunster\.com/')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/241340
 ictihatlar.com.tr#@#.ad-unit:not(.textads)
 ! https://github.com/AdguardTeam/AdguardFilters/issues/240680
@@ -298,14 +298,6 @@ ortacizgi.com#@#.sponsored-ad
 ortacizgi.com#@#.ad_unit
 ! https://github.com/uBlockOrigin/uAssets/issues/33867
 summertoons.net#%#//scriptlet('prevent-addEventListener', 'load', 'checkAdblock')
-! https://github.com/AdguardTeam/AdguardFilters/issues/234427
-dramadizilerim1.com#@#.ad-slot
-dramadizilerim1.com#$#body { overflow: auto !important; }
-dramadizilerim1.com#$##sysOverlay99 { display: none !important; }
-dramadizilerim1.com#%#//scriptlet('abort-current-inline-script', 'EventTarget.prototype.addEventListener', '/\.offsetHeight[\s]*?===[\s]*?0|pagead2\.googlesyndication\.com/')
-dramadizilerim1.com#%#//scriptlet('prevent-fetch', 'llvpn.com/tag.min.js')
-@@||dramadizilerim.com/assets/js/admanager.js$~third-party
-@@||dramadizilerim1.com^$generichide
 ! https://github.com/AdguardTeam/AdguardFilters/issues/233080
 paradoxscans.com#%#//scriptlet('abort-on-property-write', 'detectAdBlock')
 ! https://github.com/AdguardTeam/AdguardFilters/issues/233068
@@ -1601,6 +1593,16 @@ dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdas
 !
 ! NOTE: Specific rules
 !
+asyaanimeleri.top###u5ub8bzte40
+evrimagaci.org##div[data-ad-type]
+teknoblog.com##.tbis-masthead-wrap
+teknoblog.com##div[id^="taboola-below-article-widget"]
+teknoblog.com##.e-con-boxed:has(> .e-con-inner > .elementor-widget-shortcode > .elementor-shortcode > .tb-ad-placement)
+teknoblog.com##.tbn-rail-ad
+korkusuz.com.tr##.kkz-video-box
+n11.com##.sponsored-products-carousel
+kayseriolay.com##div.max-w-full:has(> div.text-center > a > img[src^="https://ads.kulga.com.tr/"])
+kayseriolay.com##div[id^="ra-adsense-"]
 tureng.com##div[class*="tureng-searchresults-ad"]
 ||tongucvideo.com/kamp/reklam/
 ||apkindir.com/yonver7777.js
@@ -1608,7 +1610,7 @@ ceptemod.com#%#//scriptlet('remove-attr', 'href', 'div.flex > a.inline-flex[targ
 ||yenisafak.com/_astro/AdsRuntime.*.js
 emlakjet.com##section[aria-label="Sponsorlu"]
 emlakjet.com##div[data-listing-ad-host]
-yenisafak.com##aside[aria-label="Reklam"]
+gzt.com,yenisafak.com##aside[aria-label="Reklam"]
 tribuntv.online##div[style^="position: fixed; top: 0px; left: 0px; width: 100vw; height: 100vh; z-index: 2147483647; background-color:"]
 tribuntv.online##.tenant-player-poster-loading
 ||tribuntv.online/media/tenants/$image
@@ -1685,7 +1687,7 @@ yemek.com##.affiliate-end-of-detail-banner
 ||donanimhaber.com/ads/
 donanimhaber.com##.dh-inline-ad
 donanimhaber.com##.dh-comments-ad
-donanimhaber.com##.dh-embed:has(> div.dh-embed__inner > div.empower-ad)
+donanimhaber.com##.dh-embed:has(> div.dh-embed__inner)
 tranimeizle.io,tranimeizle.*#$#.videoSource-playlist { display: block !important; }
 tranimeizle.io,tranimeizle.*#$#.videoSource-video { display: block !important; }
 tranimeizle.io,tranimeizle.*#$#.df-ad-ovrly { display: none !important; }
@@ -2633,6 +2635,7 @@ sporx.com#?##manset div[class]:has(> div[id^="taboola-home-thumbnails"])
 ||macellan.online/allads/
 unutulmazfilmler4.com##.flex-col > div.ambilight:has(> div.backdrop-blur > a > img[src^="https://images.macellan.online/allads/"])
 ||1win-cdn.com/promo-files-uploads/$domain=dizirella.com
+birgun.net##div[data-section^="ad-slot-"]
 birgun.net##.adsmasthead
 tekfullfilmizle5.com##a[href="https://www.dizdize.com/"]
 efullizle.com#%#//scriptlet('remove-node-text', 'script', 'openRandomSite')
@@ -7022,11 +7025,11 @@ justintvizle736.top,justintvizle737.top,justintvizle738.top,justintvizle739.top,
 ! aglint-enable no-invalid-modifiers
 [$domain=/selcuksports\d+\.com/]##img[id^="top-ads-"]
 ! CASE 3 - probably fake
-||video.bsky.app/watch/*/playlist.m3u8$domain=taraftarium24bjk28.com
-||blogger.googleusercontent.com/img/$domain=taraftarium24bjk28.com
-taraftarium24bjk28.com,taraftarium24tvizle.com#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', '/prerollEnabled\s*:\s*true/g', 'prerollEnabled: false')
-taraftarium24bjk28.com,taraftarium24tvizle.com###ad-pageskin
-taraftarium24bjk28.com,taraftarium24tvizle.com##.playerStrip
+||video.bsky.app/watch/*/playlist.m3u8$domain=taraftarium24bjk30.com
+||blogger.googleusercontent.com/img/$domain=taraftarium24bjk30.com
+taraftarium24bjk30.com,taraftarium24tvizle.com#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', '/prerollEnabled\s*:\s*true/g', 'prerollEnabled: false')
+taraftarium24bjk30.com,taraftarium24tvizle.com###ad-pageskin
+taraftarium24bjk30.com,taraftarium24tvizle.com##.playerStrip
 taraftarium24tvizle.com##.listAd
 24taraftarium12.xyz##.betcio-banner
 24taraftarium12.xyz##.modal-overlay

@@ -1,9 +1,9 @@
-! Checksum: R0z3qKp7InxmZDsl4Xq2xQ
-! Diff-Path: ../patches/17_optimized/17_optimized-s-1794568332-3600.patch
+! Checksum: Ix8jOpY/iC1m61GuIHe5BQ
+! Diff-Path: ../patches/17_optimized/17_optimized-s-1794996735-3600.patch
 ! Title: AdGuard URL Tracking filter (Optimized)
 ! Description: Filter that enhances privacy by removing tracking parameters from URLs.
-! Version: 2.0.14.84
-! TimeUpdated: 2026-11-13T11:08:24+00:00
+! Version: 2.0.14.87
+! TimeUpdated: 2026-11-18T10:09:15+00:00
 ! Expires: 10 days (update frequency)
 $removeparam=pjclid
 $removeparam=/^weekend-reading-link-\d{6}$/
@@ -340,6 +340,13 @@ $removeparam=erid
 $removeparam=oly_enc_id
 $removeparam=_ga
 $removeparam=tduid
+||flugladen.de/checkout/metalanding$removeparam=subch
+||flugladen.de/checkout/metalanding$removeparam=flow
+||flugladen.de/checkout/metalanding$removeparam=upsell
+||flugladen.de/checkout/metalanding$removeparam=ecmp
+||flugladen.de/checkout/metalanding$removeparam=cmp
+||flugladen.de/checkout/metalanding$removeparam=af
+||flugladen.de/checkout/metalanding$removeparam=ci
 ||speedtest.ru^$removeparam=from
 ||zhihu.com^$removeparam=share_code
 ||zhihu.com^$removeparam=utm_psn
@@ -932,7 +939,6 @@ $removeparam=xmt,domain=threads.com|threads.net
 ||assetstore.unity.com^$removeparam=aid
 ||airvpn.org^$removeparam=referred_by
 ||protonvpn.com^$removeparam=url_id
-||protonvpn.com^$removeparam=plan
 ||protonvpn.com^$removeparam=ref
 ||go.getproton.me^$removeparam=aff_c
 ||proton.me^$removeparam=url_id
@@ -2408,7 +2414,6 @@ $removeparam=search_domain,domain=ya.ru|yandex.*
 ||google.*/search$removeparam=sca_esv
 ||google.*/search$removeparam=sclient
 ||google.*/search$removeparam=ved
-||google.*/search$removeparam=oq
 ||google.*/search$removeparam=oe
 ||google.*/websearch$removeparam=visit_id
 ||google.*/search$removeparam=sa

@@ -1,9 +1,9 @@
-! Checksum: HrdFJcMJjSjX60NrRKQi2w
-! Diff-Path: ../patches/20/20-s-1794597128-3600.patch
+! Checksum: Fy7uWdMqRf9HgqUxX3tnYQ
+! Diff-Path: ../patches/20/20-s-1795407183-3600.patch
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.34.25
-! TimeUpdated: 2026-11-13T19:08:15+00:00
+! Version: 2.0.34.44
+! TimeUpdated: 2026-11-23T04:10:29+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -60,6 +60,25 @@ rxgo.com,alfastrah.ru,turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepe
 !
 !
 !
+shop.com##aside[data-testid="download-app-prompt"]
+hb-nippon.com##.appPromo
+hb-nippon.com##.side_appBnr
+cdek.ru###root > div.flex:has(> a[href="market://details?id=com.logistic.sdek"])
+sheepesports.com##aside[aria-label="Mobile app"]
+kurashiru.com##.browsi_spaside_to_app_banner
+zeta-ai.io##.relative > div.flex:has(> a[data-sentry-component="AppDownloadBanner"])
+context.reverso.net##a[id^="home-"][id$="app-banner"]
+pornsack.com##.footer-community-button--app
+pn.ru##.Footer__banner
+||anime-go.org/theme/assets/js/app-banner.js
+antaranews.com##.footer-download-bg
+kayseriolay.com##div[id^="pwa-install-banner"]
+goodnews.eu###app-info-home
+thestandard.com.hk##.article-detail__footer
+shiftdelete.net##body > div.uys:has(> a[href^="https://play.google.com/store/apps/"])
+bibliatodo.com##.td-post-content > div[class^="code-block code-block-"][style="margin: 8px 0; clear: both;"]:has(a[href="https://play.google.com/store/apps/details?id=dfj.developer.bibliatodo"])
+r.gnavi.co.jp##.appFlowHeader
+maharashtratimes.com##.news-app
 opentable.com##div[data-test="apps-banner-container"]
 stockanalysis.com##body > div > div.items-center.flex:has(> div.min-w-0 + a[href^="https://play.google.com/store/apps/details?id=com.stockanalysis.app"])
 stockanalysis.com##body > div > div.inset-x-0.fixed:has(> button[aria-label="Close"])
@@ -381,7 +400,7 @@ kcra.com,wlwt.com##div.two-cols > div[class^="css-"]:has(> a[href="/apps"])
 kcra.com,wlwt.com,wisn.com,wjcl.com##div[aria-label=" App Promo"] > div[class^="css-"] > div[class^="css-"]:has(a[href="/apps"])
 meduza.io##.GeneralMaterial-module-article > p:has(> a[href^="https://onelink.to/appication"])
 trf1.net##.kan-banner
-xprimehub.bond,rogmovies.cv,vegamovies.lease,xprimehub.*,rogmovies.*,vegamovies.*##a[class="btn-pill"]
+xprimehub.bond,rogmovies.cv,vegamovies.latino,xprimehub.*,rogmovies.*,vegamovies.*##a[class="btn-pill"]
 pluang.com##div[class^="BottomDownloadWidget_toast-chip"]
 anidb.app##div[x-init*="anilab_promo"]
 livescore.com##div.bottom:is(.android, .ios)
@@ -4578,6 +4597,7 @@ m.tokopedia.com#$#div[data-testid="divOverlay"] { display: none!important; }
 ! Limit it to mobile versions only
 ! causes some issues: https://github.com/AdguardTeam/AdguardForMac/issues/550
 !
+chouseisan.com###open_app_banner
 17.live#$#div[data-testid="mobileBlock"]:has(> div > div > button[data-ga-event-label="download_app_msite"]) { display: none !important; }
 17.live#$#div[data-testid="mobileBlock"]:has(> div > div > button[data-ga-event-label="download_app_msite"]) + div { min-height: 100% !important; }
 17.live#$#div[data-testid="mobileBlock"]:has(> div > div > button[data-ga-event-label="download_app_msite"]) + div > div > nav { top: 0 !important; }
@@ -5091,7 +5111,7 @@ bubilet.com.tr#%#//scriptlet('set-cookie', 'download-popup-shown', 'true')
 gidadedektifi.net##div[class^="XDownloadApp"]
 amarujala.com###open_au_app
 navbharattimes.indiatimes.com##.app_donwload
-samayam.com,navbharattimes.indiatimes.com###app_floating_btn
+iamgujarat.com,vijaykarnataka.com,maharashtratimes.com,samayam.com,indiatimes.com###app_floating_btn
 navbharattimes.indiatimes.com###app_small_bottomsheet
 knews.com.tw##a[href="https://event.knews.com.tw/app"]
 moovitapp.com#$#body { overflow: auto !important; }

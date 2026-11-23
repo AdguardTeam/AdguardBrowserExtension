@@ -1,9 +1,9 @@
-! Checksum: QImySnwQBiLK4elwwkzxTQ
-! Diff-Path: ../patches/22/22-s-1794564746-3600.patch
+! Checksum: mMeA2X39NiBsEVgIR2Z1Yg
+! Diff-Path: ../patches/22/22-s-1795417906-3600.patch
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.15.54
-! TimeUpdated: 2026-11-13T10:09:03+00:00
+! Version: 2.0.15.65
+! TimeUpdated: 2026-11-23T07:09:48+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -26,6 +26,7 @@
 ! SECTION: Widgets (sougo RSS) - Blogroll
 !
 ! NOTE: Blogroll generic
+||byo-soku.com/parts/$third-party
 ||api.moudamepo.com/pbanner/
 ||ar-cdn.net^$third-party
 ||gamelog.apexlegends-leaksnews.com/api/widget/$third-party
@@ -91,6 +92,7 @@ kasemato.net,itsoku.org,nizimoenews.livedoor.blog,butumori.com,netizen-voice.blo
 !
 ! NOTE: Blogroll specific rules
 !
+kasemato.net##.rsbox
 ||enoge.org/js/blogroll_
 enoge.org###body-0-rss
 lovelive-ss.com##.blogroll-container
@@ -131,7 +133,6 @@ h1g.jp#?#.mobile-main-content > div.mw-parser-output:has(> h2:contains(関連記
 femmedoll.jp###popupCard
 femmedoll.jp###before_footer_widget
 femmedoll.jp##article.l-mainContent__inner > .w-singleTop
-panchira-tube.com###home-top-widget
 bikyonyu-bijo-zukan.com,channel-jk.com##.rss2-iframe
 bakuwaro.com##div[id^="top_body"]
 bakuwaro.com##div[id^="new-rss-p"]
@@ -1578,6 +1579,9 @@ blog.livedoor.jp##div[id^="shitarss_title_"]
 !
 !   SECTION: Widgets - Marketing (specific)
 !
+msn.com###feedback-link-button
+||cdn.uxfeedback.ru/widget.js
+sportcal.com###Sgpollsputhere
 cupraofficial.com.tr##chat-bot-button
 araskargo.com.tr##button[aria-label="Chatbot"]
 golem.de##iframe[data-tally-src]
@@ -2077,6 +2081,11 @@ daddyhd.com##.sidebar__inner
 ||static.zdassets.com/web_widget/messenger/$domain=op.gg|p2pb2b.com|revouninstaller.com
 litres.ru###call_support
 !
+bulgaronline.com##div[data-hook="minimizedChat"]
+||apigw.vakifbank.com.tr/vibi/bot/js/widget/cbot-vakifbank-generator.min.js
+cronista.com##.embeddedMessagingConversationButton
+||chat.pinspb.ru/widget.js
+maps.roadtrippers.com###rt-support-root
 489.fm###botbonnie-chatbox
 ||mobileapi.n11.com/chatbot/
 mercedes-benz.com.tr##.ocm-floating-cta
@@ -2627,6 +2636,8 @@ subbota.ua##aside.sidebar > div[id^="custom_html-"]
 !   NOTE: Donation widgets
 !   Really annoying only
 !
+korben.info##.patreon-support-banner
+korben.info###patreon-support-card
 united24media.com##article[data-donation-article]
 united24media.com##.gtm-article-small
 appstorrent.ru##.boosty-block
