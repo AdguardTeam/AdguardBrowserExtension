@@ -10733,22 +10733,46 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "671bbc53b2753ab1de38c607e44cff6b" due to: ' + e);
         }
     },
-    '(()=>{const noop=()=>{},callbacks=[];let player,ready=false,head=0;const invoke=callback=>{try{callback([]);}catch{}};const flush=()=>{ready=true;while(head<callbacks.length)invoke(callbacks[head++]);callbacks.length=0;head=0;};const requestBids=(_,callback)=>{if(typeof callback!=="function")return;if(ready||player){ready=true;invoke(callback);}else callbacks.push(callback);};try{Object.defineProperty(window,"PWT",{configurable:true,get:()=>({requestBids,generateConfForGPT:noop,addKeyValuePairsToGPTSlots:noop,generateDFPURL:noop}),set:noop});}catch{}try{Object.defineProperty(window,"KalturaPlayer",{configurable:true,get:()=>player,set:value=>{player=value;if(value)flush();}});}catch{}})();': () => {
+    '(()=>{const noop=()=>{},callbacks=[];let player=window.KalturaPlayer||null,ready=false,head=0,flushTimer=null,fallbackTimer=null;const invoke=callback=>{try{callback([]);}catch{}};const flush=()=>{if(ready)return;ready=true;if(flushTimer!==null){clearTimeout(flushTimer);flushTimer=null;}if(fallbackTimer!==null){clearTimeout(fallbackTimer);fallbackTimer=null;}while(head<callbacks.length)invoke(callbacks[head++]);callbacks.length=0;head=0;};const scheduleFlush=()=>{if(ready||flushTimer!==null||callbacks.length===0)return;flushTimer=setTimeout(()=>{flushTimer=null;flush();},150);};const requestBids=(_,callback)=>{if(typeof callback!=="function")return;if(ready){invoke(callback);return;}callbacks.push(callback);if(fallbackTimer===null)fallbackTimer=setTimeout(()=>{fallbackTimer=null;flush();},4000);if(player)scheduleFlush();};try{Object.defineProperty(window,"PWT",{configurable:true,get:()=>({requestBids,generateConfForGPT:noop,addKeyValuePairsToGPTSlots:noop,generateDFPURL:noop}),set:noop});}catch{}try{Object.defineProperty(window,"KalturaPlayer",{configurable:true,get:()=>player,set:value=>{player=value;if(value)scheduleFlush();}});}catch{}})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.e2654e2f6bba6a98679334479fd7c83e === e) return;
+            if (Window.prototype.toString["3f397f368bcb4e8868719fa70f673598"] === e) return;
             (() => {
                 const e = () => {}, t = [];
-                let r, o = !1, n = 0;
-                const a = e => {
+                let l = window.KalturaPlayer || null, n = !1, r = 0, o = null, u = null;
+                const i = e => {
                     try {
                         e([]);
                     } catch {}
-                }, c = (e, n) => {
-                    if ("function" == typeof n) if (o || r) {
-                        o = !0;
-                        a(n);
-                    } else t.push(n);
+                }, f = () => {
+                    if (!n) {
+                        n = !0;
+                        if (null !== o) {
+                            clearTimeout(o);
+                            o = null;
+                        }
+                        if (null !== u) {
+                            clearTimeout(u);
+                            u = null;
+                        }
+                        for (;r < t.length; ) i(t[r++]);
+                        t.length = 0;
+                        r = 0;
+                    }
+                }, a = () => {
+                    n || null !== o || 0 === t.length || (o = setTimeout((() => {
+                        o = null;
+                        f();
+                    }), 150));
+                }, c = (e, r) => {
+                    if ("function" == typeof r) if (n) i(r); else {
+                        t.push(r);
+                        null === u && (u = setTimeout((() => {
+                            u = null;
+                            f();
+                        }), 4e3));
+                        l && a();
+                    }
                 };
                 try {
                     Object.defineProperty(window, "PWT", {
@@ -10765,27 +10789,22 @@ export const localScriptRules = {
                 try {
                     Object.defineProperty(window, "KalturaPlayer", {
                         configurable: !0,
-                        get: () => r,
+                        get: () => l,
                         set: e => {
-                            r = e;
-                            e && (() => {
-                                o = !0;
-                                for (;n < t.length; ) a(t[n++]);
-                                t.length = 0;
-                                n = 0;
-                            })();
+                            l = e;
+                            e && a();
                         }
                     });
                 } catch {}
             })();
-            Object.defineProperty(Window.prototype.toString, "e2654e2f6bba6a98679334479fd7c83e", {
+            Object.defineProperty(Window.prototype.toString, "3f397f368bcb4e8868719fa70f673598", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "e2654e2f6bba6a98679334479fd7c83e" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "3f397f368bcb4e8868719fa70f673598" due to: ' + e);
         }
     },
     '(()=>{window.valstream=window.valstream||{},window.valstream.queue=window.valstream.queue||[],window.valstream.queue.push=e=>{if("function"==typeof e)try{e()}catch(e){}};})();': () => {
