@@ -314,4 +314,48 @@ describe('network', () => {
         await Promise.all([oldRequest, newRequest]);
         expect(vi.getTimerCount()).toBe(0);
     });
+
+    describe('sendHitStats', () => {
+        const stats = {
+            filters: {
+                2: { '||example.com^': 1 },
+            },
+        };
+
+        afterEach(() => {
+            vi.unstubAllGlobals();
+        });
+
+        it('throws when the server answers with a non-2xx status', async () => {
+            const fetchMock = vi.fn().mockResolvedValue({
+                ok: false,
+                status: 400,
+                statusText: 'Bad Request',
+            });
+            vi.stubGlobal('fetch', fetchMock);
+
+            const error = await network.sendHitStats(stats).catch((e: Error) => e);
+
+            expect(error).toBeInstanceOf(Error);
+            expect((error as Error).message).toContain('unexpected status 400 Bad Request');
+            expect((error as Error).message).toContain('/api/1.0/rulestats.html');
+
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+            expect(fetchMock).toHaveBeenCalledWith(
+                expect.stringContaining('/api/1.0/rulestats.html'),
+                expect.objectContaining({ method: 'POST' }),
+            );
+        });
+
+        it('resolves when the server accepts the payload', async () => {
+            const fetchMock = vi.fn().mockResolvedValue({
+                ok: true,
+                status: 200,
+                statusText: 'OK',
+            });
+            vi.stubGlobal('fetch', fetchMock);
+
+            await expect(network.sendHitStats(stats)).resolves.toBeUndefined();
+        });
+    });
 });

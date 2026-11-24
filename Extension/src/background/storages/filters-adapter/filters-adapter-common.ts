@@ -78,10 +78,14 @@ export class FiltersStoragesAdapterCommon {
      * @returns Preprocessed filter list or `undefined` if the filter list does not exist.
      */
     public static async get(filterId: number): Promise<FilterList | undefined> {
+        // Use `this` instead of the class name so that the manifest-specific
+        // subclass resolves the filter content and the conversion data from the
+        // correct storage. In MV3, static filters are stored by TSWebExtension,
+        // and only the subclass knows about that storage.
         // eslint-disable-next-line prefer-const
         let [filterContent, conversionData] = await Promise.all([
-            FiltersStoragesAdapterCommon.getFilterContent(filterId),
-            FiltersStoragesAdapterCommon.getConversionData(filterId),
+            this.getFilterContent(filterId),
+            this.getConversionData(filterId),
         ]);
 
         if (filterContent === undefined) {
@@ -164,7 +168,7 @@ export class FiltersStoragesAdapterCommon {
      * @returns Promise, resolved with original user rules strings.
      */
     static async getOriginalFilterList(filterId: number): Promise<string | undefined> {
-        const filterList = await FiltersStoragesAdapterCommon.get(filterId);
+        const filterList = await this.get(filterId);
 
         if (filterList === undefined) {
             return undefined;

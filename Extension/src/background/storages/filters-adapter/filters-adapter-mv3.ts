@@ -121,29 +121,39 @@ export class FiltersStoragesAdapter extends FiltersStoragesAdapterCommon {
     /**
      * Gets the preprocessed filter list content for the specified filter ID.
      *
+     * @note The content of a static filter is read from the storage managed by
+     * TSWebExtension. The content of other filters is read from the extension
+     * storage.
+     *
      * @param filterId Filter id.
      *
      * @returns Preprocessed filter list content or `undefined` if the filter list does not exist.
      */
     public static override async getFilterContent(filterId: number): Promise<string | undefined> {
-        const staticFilterIds = FiltersStoragesAdapter.getStaticFilterIds();
-        if (staticFilterIds !== null && staticFilterIds.has(filterId)) {
+        if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
             return TsWebExtensionFiltersStorage.getRawFilterList(filterId);
         }
+
+        return FiltersStoragesAdapterCommon.getFilterContent(filterId);
     }
 
     /**
      * Gets the conversion map for the specified filter ID.
+     *
+     * @note The conversion map of a static filter is read from the storage
+     * managed by TSWebExtension. The conversion map of other filters is read
+     * from the extension storage.
      *
      * @param filterId Filter id.
      *
      * @returns Conversion map or `undefined` if the filter list does not exist.
      */
     public static override async getConversionData(filterId: number): Promise<ConversionData | undefined> {
-        const staticFilterIds = FiltersStoragesAdapter.getStaticFilterIds();
-        if (staticFilterIds !== null && staticFilterIds.has(filterId)) {
+        if (FiltersStoragesAdapter.isStaticFilterId(filterId)) {
             return TsWebExtensionFiltersStorage.getConversionData(filterId);
         }
+
+        return FiltersStoragesAdapterCommon.getConversionData(filterId);
     }
 
     /**

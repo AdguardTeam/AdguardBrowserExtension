@@ -66,12 +66,8 @@ describe.skipIf(__IS_MV3__)('FiltersStoragesAdapter (MV2)', () => {
     it('set, get', async () => {
         await FiltersStoragesAdapter.set(1, filter);
 
-        // Note: `get` method internally uses these methods:
-        // - FiltersStorage.getRawFilterList
-        // - FiltersStorage.getFilterList
-        // - FiltersStorage.getConversionMap
-        // - FiltersStorage.getSourceMap
-        // So, we don't need to test them separately
+        // Note: `get` reads the filter through `getFilterContent` and
+        // `getConversionData`, so we don't need to test them separately
         const filterFromStorage = await FiltersStoragesAdapter.get(1);
 
         expect(filterFromStorage).not.toBeUndefined();
@@ -115,6 +111,8 @@ describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
     let browserExtensionFiltersStorageSetSpy: MockInstance;
     let browserExtensionFiltersStorageRemoveSpy: MockInstance;
     let tsWebExtensionFiltersStorageHasSpy: MockInstance;
+    let tsWebExtensionFiltersStorageGetRawFilterListSpy: MockInstance;
+    let tsWebExtensionFiltersStorageGetConversionDataSpy: MockInstance;
     let rawFiltersStorageSetSpy: MockInstance;
 
     beforeEach(() => {
@@ -124,6 +122,9 @@ describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
         browserExtensionFiltersStorageRemoveSpy = vi.spyOn(BrowserExtensionFiltersStorage, 'remove');
 
         tsWebExtensionFiltersStorageHasSpy = vi.spyOn(TsWebExtensionFiltersStorage, 'has');
+
+        tsWebExtensionFiltersStorageGetRawFilterListSpy = vi.spyOn(TsWebExtensionFiltersStorage, 'getRawFilterList');
+        tsWebExtensionFiltersStorageGetConversionDataSpy = vi.spyOn(TsWebExtensionFiltersStorage, 'getConversionData');
 
         rawFiltersStorageSetSpy = vi.spyOn(RawFiltersStorage, 'set');
 
@@ -149,6 +150,9 @@ describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
 
         tsWebExtensionFiltersStorageHasSpy.mockRestore();
 
+        tsWebExtensionFiltersStorageGetRawFilterListSpy.mockRestore();
+        tsWebExtensionFiltersStorageGetConversionDataSpy.mockRestore();
+
         rawFiltersStorageSetSpy.mockRestore();
 
         getManifestSpy.mockRestore();
@@ -159,27 +163,40 @@ describe.skipIf(!__IS_MV3__)('FiltersStoragesAdapter (MV3)', () => {
         await FiltersStoragesAdapter.set(1, filter);
 
         const staticFilterIdsDescriptor = Object.getOwnPropertyDescriptor(FiltersStoragesAdapter, 'staticFilterIds');
-        const staticFilterIds = staticFilterIdsDescriptor?.value;
+        const cachedStaticFilterIds = staticFilterIdsDescriptor?.value;
 
-        expect(staticFilterIds).toBeInstanceOf(Set);
-        expect(staticFilterIds).toEqual(new Set(staticFilterIds));
+        expect(cachedStaticFilterIds).toBeInstanceOf(Set);
+        expect(cachedStaticFilterIds).toEqual(new Set(staticFilterIds));
     });
 
     it('set, get', async () => {
         await FiltersStoragesAdapter.set(1, filter);
 
-        // Note: `get` method internally uses these methods:
-        // - FiltersStorage.getRawFilterList
-        // - FiltersStorage.getFilterList
-        // - FiltersStorage.getConversionMap
-        // - FiltersStorage.getSourceMap
-        // So, we don't need to test them separately
+        // Note: `get` reads the filter through `getFilterContent` and
+        // `getConversionData`, so we don't need to test them separately
         const filterFromStorage = await FiltersStoragesAdapter.get(1);
 
         expect(filterFromStorage).not.toBeUndefined();
 
         expect(filterFromStorage?.getContent()).toEqual(filter.getContent());
         expect(filterFromStorage?.getConversionData()).toEqual(filter.getConversionData());
+    });
+
+    it('get should read static filters from the tswebextension storage', async () => {
+        const staticFilterId = 2;
+
+        tsWebExtensionFiltersStorageGetRawFilterListSpy.mockResolvedValue(filter.getContent());
+        tsWebExtensionFiltersStorageGetConversionDataSpy.mockResolvedValue(filter.getConversionData());
+
+        const filterFromStorage = await FiltersStoragesAdapter.get(staticFilterId);
+
+        expect(tsWebExtensionFiltersStorageGetRawFilterListSpy).toHaveBeenCalledWith(staticFilterId);
+        expect(tsWebExtensionFiltersStorageGetConversionDataSpy).toHaveBeenCalledWith(staticFilterId);
+
+        expect(filterFromStorage).not.toBeUndefined();
+        expect(filterFromStorage?.getContent()).toEqual(filter.getContent());
+        expect(filterFromStorage?.getConversionData()).toEqual(filter.getConversionData());
+        expect(filterFromStorage?.getOriginalRuleText(0)).toEqual('! Title: Test filter');
     });
 
     it('set should not save static filters', async () => {

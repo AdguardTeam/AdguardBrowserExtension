@@ -400,17 +400,26 @@ export abstract class NetworkCommon {
      * http://adguard.com/en/filter-rules-statistics.html.
      *
      * @param stats Sent stats.
+     *
+     * @throws Error if the server response status is not 2xx.
      */
     public async sendHitStats(stats: HitStats): Promise<void> {
         const statsString = JSON.stringify(stats);
 
-        await fetch(this.settings.ruleStatsUrl, {
+        const response = await fetch(this.settings.ruleStatsUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: statsString,
         });
+
+        if (!response.ok) {
+            throw NetworkCommon.createError(
+                `unexpected status ${response.status} ${response.statusText}`,
+                this.settings.ruleStatsUrl,
+            );
+        }
     }
 
     /**

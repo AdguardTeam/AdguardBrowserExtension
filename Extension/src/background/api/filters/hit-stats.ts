@@ -163,25 +163,39 @@ export class HitStatsApi {
             return [filterId, Object.fromEntries(ruleTexts)];
         };
 
-        const hitStatsData: FiltersHitStats = Object.fromEntries(
-            (await Promise.all(
-                affectedFilterIds.map(async (filterId) => {
-                    const stats = hitStats.stats?.filters?.[filterId] || {};
-                    return transformFilterHits(filterId, stats);
-                }),
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            )).filter(([_, stats]) => !isEmpty(stats)),
-        );
-
         try {
+            // Take the collected batch out of the storage before sending it.
+            // Hits that come while the request is pending go to the next batch,
+            // and the total hits counter drops below the threshold, so the next
+            // flush does not send the same batch again. The batch is dropped
+            // even when it cannot be sent: keeping it would resend the whole
+            // payload on every next hit while the collector is unavailable.
+            await HitStatsApi.cleanup();
+
+            const hitStatsData: FiltersHitStats = Object.fromEntries(
+                (await Promise.all(
+                    affectedFilterIds.map(async (filterId) => {
+                        const stats = hitStats.stats?.filters?.[filterId] || {};
+                        return transformFilterHits(filterId, stats);
+                    }),
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                )).filter(([_, stats]) => !isEmpty(stats)),
+            );
+
+            // Do not send an empty payload. The collector answers it with HTTP 400,
+            // and there is nothing to add to the statistics. This happens when all
+            // collected filters are outdated or their data is not available.
+            if (isEmpty(hitStatsData)) {
+                logger.debug('[ext.HitStatsApi.sendStats]: no filter data to send, drop the collected hit stats');
+                return;
+            }
+
             await network.sendHitStats({
                 filters: hitStatsData,
             });
         } catch (e) {
             logger.error('[ext.HitStatsApi.sendStats]: cannot send hit stats, origin error:', e);
         }
-
-        await HitStatsApi.cleanup();
     }
 
     /**

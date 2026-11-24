@@ -19,19 +19,18 @@
  */
 
 import browser, { type Storage } from 'webextension-polyfill';
-import { merge } from 'lodash-es';
 import {
     afterEach,
     beforeEach,
     describe,
     expect,
     it,
-    type MockInstance,
     vi,
 } from 'vitest';
 import waitForExpect from 'wait-for-expect';
 
 import { FilterList } from '@adguard/tswebextension';
+import { FiltersStorage as TsWebExtensionFiltersStorage } from '@adguard/tswebextension/filters-storage';
 import { getRulesetId, getRulesetPath } from '@adguard/dnr-converter';
 
 import { network } from '../../../../../Extension/src/background/api/network';
@@ -43,8 +42,9 @@ import {
     HIT_STATISTIC_KEY,
 } from '../../../../../Extension/src/common/constants';
 import { mockLocalStorage } from '../../../../helpers';
-import { FiltersStorage, filterVersionStorage } from '../../../../../Extension/src/background/storages';
+import { filterVersionStorage, hybridStorage } from '../../../../../Extension/src/background/storages';
 import { FiltersStoragesAdapter } from '../../../../../Extension/src/background/storages/filters-adapter';
+import { logger } from '../../../../../Extension/src/common/logger';
 
 const filter = new FilterList([
     'example.com##h1',
@@ -57,6 +57,16 @@ describe('Hit Stats Api', () => {
     const filterId = AntiBannerFiltersId.EnglishFilterId;
     const ruleIndex = 4;
 
+    /**
+     * Ids of the filters used in the tests. In MV3, own filters are static
+     * rulesets, so the mocked manifest declares all of them.
+     */
+    const staticFilterIds = [
+        1,
+        AntiBannerFiltersId.EnglishFilterId,
+        AntiBannerFiltersId.TrackingFilterId,
+    ];
+
     const currentDate = Date.now();
     const filterVersionDataMock: FilterVersionData = {
         version: '1',
@@ -66,35 +76,101 @@ describe('Hit Stats Api', () => {
         lastCheckTime: currentDate,
     };
 
-    let getFilterSpy: MockInstance;
-    let getManifestSpy: MockInstance | undefined;
+    /**
+     * Ids of the MV3 static filters whose data the TSWebExtension storage returns.
+     */
+    const seededStaticFilterIds = new Set<number>();
+
+    /**
+     * Save-and-send runs started during a test. The debounce is a no-op in
+     * tests, so `addRuleHit` starts a run without awaiting it, and the run can
+     * still be in flight when the test ends.
+     */
+    let pendingFlushes: Promise<void>[] = [];
+
+    /**
+     * Private members of {@link HitStatsApi} that the tests override.
+     */
+    const hitStatsApiInternals = HitStatsApi as unknown as {
+        maxTotalHits: number;
+        saveAndSendHitStats: () => Promise<void>;
+    };
+
+    const defaultMaxTotalHits = hitStatsApiInternals.maxTotalHits;
+
+    /**
+     * Overrides the hits threshold for one test. `afterEach` restores it.
+     *
+     * @param value Number of hits after which the stats are sent.
+     */
+    const setMaxTotalHits = (value: number): void => {
+        hitStatsApiInternals.maxTotalHits = value;
+    };
+
+    /**
+     * Puts the test filter into the storage, from which the real
+     * {@link FiltersStoragesAdapter} reads it. The adapter itself is not mocked,
+     * so the tests fail when it reads a filter from the wrong storage.
+     *
+     * MV2 keeps the filter in the extension storage. In MV3, the TSWebExtension
+     * storage owns static filters and exposes only read methods, so these
+     * methods are the lowest point to substitute.
+     *
+     * @param id Filter id.
+     */
+    const seedFilter = async (id: number): Promise<void> => {
+        if (__IS_MV3__) {
+            seededStaticFilterIds.add(id);
+            return;
+        }
+
+        await FiltersStoragesAdapter.set(id, filter);
+    };
 
     beforeEach(async () => {
         storage = mockLocalStorage();
-        getFilterSpy = vi.spyOn(FiltersStoragesAdapter, 'get').mockResolvedValue(filter);
+
+        const saveAndSendHitStats = hitStatsApiInternals.saveAndSendHitStats.bind(HitStatsApi);
+
+        vi.spyOn(hitStatsApiInternals, 'saveAndSendHitStats').mockImplementation(() => {
+            const flush = saveAndSendHitStats();
+            pendingFlushes.push(flush);
+
+            return flush;
+        });
 
         if (__IS_MV3__) {
-            getManifestSpy = vi.spyOn(browser.runtime, 'getManifest').mockReturnValue({
+            vi.spyOn(browser.runtime, 'getManifest').mockReturnValue({
                 ...browser.runtime.getManifest(),
                 declarative_net_request: {
-                    rule_resources: [
-                        {
-                            id: getRulesetId(filterId),
-                            enabled: true,
-                            path: getRulesetPath(filterId),
-                        },
-                    ],
+                    rule_resources: staticFilterIds.map((id) => ({
+                        id: getRulesetId(id),
+                        enabled: true,
+                        path: getRulesetPath(id),
+                    })),
                 },
+            });
+            vi.spyOn(TsWebExtensionFiltersStorage, 'getRawFilterList').mockImplementation(async (id) => {
+                return seededStaticFilterIds.has(id) ? filter.getContent() : undefined;
+            });
+            vi.spyOn(TsWebExtensionFiltersStorage, 'getConversionData').mockImplementation(async (id) => {
+                return seededStaticFilterIds.has(id) ? filter.getConversionData() : undefined;
             });
         }
     });
 
-    afterEach(() => {
-        getFilterSpy.mockRestore();
+    afterEach(async () => {
+        // Wait for the runs started by the test, then remove all spies with
+        // their call history. Otherwise a late send of one test is counted by
+        // the spies of the next test.
+        await Promise.allSettled(pendingFlushes);
+        pendingFlushes = [];
+        vi.restoreAllMocks();
+        setMaxTotalHits(defaultMaxTotalHits);
 
-        if (__IS_MV3__ && getManifestSpy) {
-            getManifestSpy.mockRestore();
-        }
+        seededStaticFilterIds.clear();
+
+        await hybridStorage.clear();
     });
 
     it('inits', async () => {
@@ -176,16 +252,11 @@ describe('Hit Stats Api', () => {
         const FIRST_FILTER_ID = 1;
         const SECOND_FILTER_ID = 2;
 
-        // Save the original value
-        const originalMaxTotalHits = Object.getOwnPropertyDescriptor(HitStatsApi, 'maxTotalHits');
-
-        if (!originalMaxTotalHits) {
-            throw new Error('maxTotalHits is not defined');
-        }
-
         const sendHitStatsSpy = vi.spyOn(network, 'sendHitStats').mockImplementation(async () => {});
         const cleanupSpy = vi.spyOn(HitStatsApi, 'cleanup');
-        vi.spyOn(FiltersStorage, 'get').mockResolvedValue(filter);
+
+        await seedFilter(FIRST_FILTER_ID);
+        await seedFilter(SECOND_FILTER_ID);
 
         // lodash debounce is a no-op in tests (see vitest.setup.ts), so each
         // addRuleHit would otherwise fire saveAndSendHitStats immediately and race
@@ -223,7 +294,7 @@ describe('Hit Stats Api', () => {
             // Record one more hit so the first filter stays in the cache, then flush.
             HitStatsApi.addRuleHit(FIRST_FILTER_ID, ruleIndex);
 
-            Object.defineProperty(HitStatsApi, 'maxTotalHits', merge(originalMaxTotalHits, { value: 1 }));
+            setMaxTotalHits(1);
 
             await (HitStatsApi as unknown as {
                 saveAndSendHitStats: () => Promise<void>;
@@ -242,7 +313,6 @@ describe('Hit Stats Api', () => {
             expect(cleanupSpy).toHaveBeenCalled();
         } finally {
             scheduleSpy.mockRestore();
-            Object.defineProperty(HitStatsApi, 'maxTotalHits', originalMaxTotalHits);
             vi.clearAllMocks();
         }
     });
@@ -256,15 +326,11 @@ describe('Hit Stats Api', () => {
         const SECOND_RULE_TEXT = '||example.org^$document';
         const UNKNOWN_RULE_INDEX = 999;
 
-        // Save the original value
-        const originalMaxTotalHits = Object.getOwnPropertyDescriptor(HitStatsApi, 'maxTotalHits');
-
-        if (!originalMaxTotalHits) {
-            throw new Error('maxTotalHits is not defined');
-        }
-
         const sendHitStatsSpy = vi.spyOn(network, 'sendHitStats').mockImplementation(async () => {});
         const cleanupSpy = vi.spyOn(HitStatsApi, 'cleanup');
+
+        await seedFilter(FIRST_FILTER_ID);
+        await seedFilter(SECOND_FILTER_ID);
 
         // lodash debounce is a no-op in tests (see vitest.setup.ts), so each
         // addRuleHit would otherwise fire saveAndSendHitStats immediately and race
@@ -300,7 +366,7 @@ describe('Hit Stats Api', () => {
             };
 
             // Allow send on the single controlled flush below
-            Object.defineProperty(HitStatsApi, 'maxTotalHits', merge(originalMaxTotalHits, { value: 1 }));
+            setMaxTotalHits(1);
 
             await (HitStatsApi as unknown as {
                 saveAndSendHitStats: () => Promise<void>;
@@ -342,12 +408,11 @@ describe('Hit Stats Api', () => {
             });
         } finally {
             scheduleSpy.mockRestore();
-            Object.defineProperty(HitStatsApi, 'maxTotalHits', originalMaxTotalHits);
             vi.clearAllMocks();
         }
     });
 
-    it('Sends valid collected hit stats content to backend', async () => {
+    it('Sends collected hit stats after reaching the max total hits threshold', async () => {
         const FIRST_FILTER_ID = AntiBannerFiltersId.EnglishFilterId;
         const SECOND_FILTER_ID = AntiBannerFiltersId.TrackingFilterId;
         const FIRST_RULE_INDEX = 0;
@@ -356,20 +421,16 @@ describe('Hit Stats Api', () => {
         const SECOND_RULE_TEXT = '||example.org^$document';
         const UNKNOWN_RULE_INDEX = 999;
 
-        // Save the original value
-        const originalMaxTotalHits = Object.getOwnPropertyDescriptor(HitStatsApi, 'maxTotalHits');
-
-        if (!originalMaxTotalHits) {
-            throw new Error('maxTotalHits is not defined');
-        }
-
         // Note: lodash debounce is a no-op in tests (see vitest.setup.ts), so each
         // addRuleHit schedules save/send immediately. Keep the threshold equal to the
         // number of hits below so sending is triggered after the batch is collected.
-        Object.defineProperty(HitStatsApi, 'maxTotalHits', merge(originalMaxTotalHits, { value: 5 }));
+        setMaxTotalHits(5);
 
         const sendHitStatsSpy = vi.spyOn(network, 'sendHitStats').mockImplementation(async () => {});
         const cleanupSpy = vi.spyOn(HitStatsApi, 'cleanup');
+
+        await seedFilter(FIRST_FILTER_ID);
+        await seedFilter(SECOND_FILTER_ID);
 
         await HitStatsApi.init();
 
@@ -445,8 +506,171 @@ describe('Hit Stats Api', () => {
         }, 500);
 
         vi.clearAllMocks();
+    });
 
-        // Restore the original value
-        Object.defineProperty(HitStatsApi, 'maxTotalHits', originalMaxTotalHits);
+    it('does not send stats and drops them when no filter data can be transformed', async () => {
+        const sendHitStatsSpy = vi.spyOn(network, 'sendHitStats').mockImplementation(async () => {});
+        const cleanupSpy = vi.spyOn(HitStatsApi, 'cleanup');
+        const scheduleSpy = vi.spyOn(
+            HitStatsApi as unknown as { debounceSaveAndSendHitStats: () => void },
+            'debounceSaveAndSendHitStats',
+        ).mockImplementation(() => {});
+
+        // The filter is not put into the storage, so its data is not available
+        // and every filter is skipped.
+
+        try {
+            await HitStatsApi.init();
+
+            vi.spyOn(filterVersionStorage, 'get').mockReturnValue(filterVersionDataMock);
+            HitStatsApi.addRuleHit(filterId, ruleIndex);
+
+            setMaxTotalHits(1);
+
+            await (HitStatsApi as unknown as {
+                saveAndSendHitStats: () => Promise<void>;
+            }).saveAndSendHitStats();
+
+            // The collector answers an empty payload with HTTP 400, so do not send it.
+            expect(sendHitStatsSpy).not.toHaveBeenCalled();
+
+            // Nothing can be delivered, so the collected stats are dropped.
+            expect(cleanupSpy).toHaveBeenCalledTimes(1);
+            expect(await storage.get(HIT_STATISTIC_KEY)).toStrictEqual({
+                [HIT_STATISTIC_KEY]: JSON.stringify({}),
+            });
+        } finally {
+            scheduleSpy.mockRestore();
+        }
+    });
+
+    it('drops collected hit stats when the send fails', async () => {
+        const sendHitStatsSpy = vi.spyOn(network, 'sendHitStats')
+            .mockRejectedValue(new Error('Received unexpected status 400 Bad Request'));
+        const cleanupSpy = vi.spyOn(HitStatsApi, 'cleanup');
+
+        await seedFilter(filterId);
+
+        const scheduleSpy = vi.spyOn(
+            HitStatsApi as unknown as { debounceSaveAndSendHitStats: () => void },
+            'debounceSaveAndSendHitStats',
+        ).mockImplementation(() => {});
+
+        try {
+            await HitStatsApi.init();
+
+            vi.spyOn(filterVersionStorage, 'get').mockReturnValue(filterVersionDataMock);
+            HitStatsApi.addRuleHit(filterId, ruleIndex);
+
+            setMaxTotalHits(1);
+
+            await (HitStatsApi as unknown as {
+                saveAndSendHitStats: () => Promise<void>;
+            }).saveAndSendHitStats();
+
+            expect(sendHitStatsSpy).toHaveBeenCalledTimes(1);
+
+            // The statistics are dropped, so the next hit does not resend them.
+            expect(cleanupSpy).toHaveBeenCalledTimes(1);
+            expect(await storage.get(HIT_STATISTIC_KEY)).toStrictEqual({
+                [HIT_STATISTIC_KEY]: JSON.stringify({}),
+            });
+        } finally {
+            scheduleSpy.mockRestore();
+        }
+    });
+
+    it('keeps hits collected during a pending send and does not send the batch twice', async () => {
+        let finishSend = (): void => {};
+        const sendHitStatsSpy = vi.spyOn(network, 'sendHitStats').mockImplementation(() => {
+            return new Promise<void>((resolve) => {
+                finishSend = resolve;
+            });
+        });
+
+        await seedFilter(filterId);
+
+        vi.spyOn(
+            HitStatsApi as unknown as { debounceSaveAndSendHitStats: () => void },
+            'debounceSaveAndSendHitStats',
+        ).mockImplementation(() => {});
+
+        await HitStatsApi.init();
+
+        vi.spyOn(filterVersionStorage, 'get').mockReturnValue(filterVersionDataMock);
+        setMaxTotalHits(2);
+
+        HitStatsApi.addRuleHit(filterId, 0);
+        HitStatsApi.addRuleHit(filterId, 0);
+
+        const firstFlush = hitStatsApiInternals.saveAndSendHitStats();
+
+        await waitForExpect(() => {
+            expect(sendHitStatsSpy).toHaveBeenCalledTimes(1);
+        }, 500);
+
+        // One more hit comes while the request is pending.
+        HitStatsApi.addRuleHit(filterId, 16);
+        await hitStatsApiInternals.saveAndSendHitStats();
+
+        finishSend();
+        await firstFlush;
+
+        // The pending batch is not sent again.
+        expect(sendHitStatsSpy).toHaveBeenCalledTimes(1);
+        expect(sendHitStatsSpy).toHaveBeenCalledWith({
+            filters: {
+                [filterId]: {
+                    'example.com##h1': 2,
+                },
+            },
+        });
+
+        // The new hit stays in the storage for the next batch.
+        const expected: HitStatsStorageData = {
+            stats: {
+                filters: {
+                    [filterId]: {
+                        16: 1,
+                    },
+                },
+            },
+            versions: {
+                [filterId]: filterVersionDataMock.version,
+            },
+            totalHits: 1,
+        };
+
+        expect(await storage.get(HIT_STATISTIC_KEY)).toStrictEqual({
+            [HIT_STATISTIC_KEY]: JSON.stringify(expected),
+        });
+    });
+
+    it('drops the batch and does not reject when the filter data cannot be read', async () => {
+        const sendHitStatsSpy = vi.spyOn(network, 'sendHitStats').mockImplementation(async () => {});
+        const readError = new Error('storage is not available');
+
+        vi.spyOn(FiltersStoragesAdapter, 'get').mockRejectedValue(readError);
+        vi.spyOn(
+            HitStatsApi as unknown as { debounceSaveAndSendHitStats: () => void },
+            'debounceSaveAndSendHitStats',
+        ).mockImplementation(() => {});
+
+        await HitStatsApi.init();
+
+        vi.spyOn(filterVersionStorage, 'get').mockReturnValue(filterVersionDataMock);
+        HitStatsApi.addRuleHit(filterId, 0);
+
+        setMaxTotalHits(1);
+
+        await expect(hitStatsApiInternals.saveAndSendHitStats()).resolves.toBeUndefined();
+
+        expect(sendHitStatsSpy).not.toHaveBeenCalled();
+        expect(logger.error).toHaveBeenCalledWith(expect.any(String), readError);
+
+        // The batch is dropped, so the next hit does not read the filter again.
+        expect(await storage.get(HIT_STATISTIC_KEY)).toStrictEqual({
+            [HIT_STATISTIC_KEY]: JSON.stringify({}),
+        });
     });
 });
