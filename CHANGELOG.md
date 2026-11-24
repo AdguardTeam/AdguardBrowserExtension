@@ -7,11 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.6.1.6-beta] - 2026-11-24
+
 ### Fixed
 
 - In MV3, filter hit statistics were not sent while *Help develop AdGuard
   filters* was on: the collector received an empty payload. The extension now
   sends the collected statistics from MV3 builds.
+
+[5.6.1.6-beta]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.6.0...v5.6.1-beta.6
 
 ## [5.6.0.5] - 2026-11-23
 
