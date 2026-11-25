@@ -11315,32 +11315,92 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "f8726a98e9ee7f87afd7c9376374eb99" due to: ' + e);
         }
     },
-    "(()=>{try{Object.defineProperty(window,'somZv1k180',{value:true,writable:true,configurable:true});setInterval(()=>{try{if(window.somZv1k180!==true)window.somZv1k180=true}catch(e){}},50)}catch(e){}})();": () => {
+    "(()=>{try{const m=()=>{const l=document.querySelectorAll('ins.adsbygoogle');for(let i=0;i<l.length;i++){const s=l[i],p=s.parentElement;if(!p)continue;const c=typeof p.className==='string'?p.className:'';if(c.indexOf('api-ad-footer')<0&&c.indexOf('web-ad-footer')<0&&c.indexOf('intro-ad-footer')<0&&c.indexOf('ad-rail')<0&&c.indexOf('example-ad-sidebar')<0)continue;if(s.querySelector('[data-som-marker]'))continue;const cv=document.createElement('canvas');cv.setAttribute('data-som-marker','1');cv.style.cssText='width:1px;height:1px;display:block';s.appendChild(cv)}};m();document.addEventListener('DOMContentLoaded',m,{once:true});setInterval(m,500)}catch(e){}})();": () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["3ba2a7c1c0393fdd5a5c0b71c4b2cf33"] === e) return;
+            if (Window.prototype.toString["97232721beed251cc466e86558b33c90"] === e) return;
             (() => {
                 try {
-                    Object.defineProperty(window, "somZv1k180", {
-                        value: !0,
-                        writable: !0,
-                        configurable: !0
+                    const e = () => {
+                        const e = document.querySelectorAll("ins.adsbygoogle");
+                        for (let t = 0; t < e.length; t++) {
+                            const n = e[t], o = n.parentElement;
+                            if (!o) continue;
+                            const r = "string" == typeof o.className ? o.className : "";
+                            if (r.indexOf("api-ad-footer") < 0 && r.indexOf("web-ad-footer") < 0 && r.indexOf("intro-ad-footer") < 0 && r.indexOf("ad-rail") < 0 && r.indexOf("example-ad-sidebar") < 0) continue;
+                            if (n.querySelector("[data-som-marker]")) continue;
+                            const c = document.createElement("canvas");
+                            c.setAttribute("data-som-marker", "1");
+                            c.style.cssText = "width:1px;height:1px;display:block";
+                            n.appendChild(c);
+                        }
+                    };
+                    e();
+                    document.addEventListener("DOMContentLoaded", e, {
+                        once: !0
                     });
-                    setInterval((() => {
-                        try {
-                            !0 !== window.somZv1k180 && (window.somZv1k180 = !0);
-                        } catch (e) {}
-                    }), 50);
+                    setInterval(e, 500);
                 } catch (e) {}
             })();
-            Object.defineProperty(Window.prototype.toString, "3ba2a7c1c0393fdd5a5c0b71c4b2cf33", {
+            Object.defineProperty(Window.prototype.toString, "97232721beed251cc466e86558b33c90", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "3ba2a7c1c0393fdd5a5c0b71c4b2cf33" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "97232721beed251cc466e86558b33c90" due to: ' + e);
+        }
+    },
+    "(()=>{try{const hide=()=>{try{if(!document.body)return;const d=Object.getOwnPropertyDescriptor(document.body,'yk7xw7x-stage');const s=d&&typeof d.value==='function'?d.value():null;if(!s)return;for(const el of s.querySelectorAll('section,div,span')){const r=el.getBoundingClientRect();if(r.width>=80&&r.height>=100&&getComputedStyle(el).position==='fixed')el.style.setProperty('display','none','important')}}catch(e){}};const start=()=>{try{if(!document.body){setTimeout(start,100);return}const d=Object.getOwnPropertyDescriptor(document.body,'yk7xw7x-stage');const s=d&&typeof d.value==='function'?d.value():null;if(!s){setTimeout(start,100);return}hide();new MutationObserver(hide).observe(s,{childList:true,subtree:true})}catch(e){setTimeout(start,100)}};hide();start();setInterval(hide,500)}catch(e){}})();": () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.b66c2f6e19db676c5ebc9204c825c548 === e) return;
+            (() => {
+                try {
+                    const e = () => {
+                        try {
+                            if (!document.body) return;
+                            const e = Object.getOwnPropertyDescriptor(document.body, "yk7xw7x-stage"), t = e && "function" == typeof e.value ? e.value() : null;
+                            if (!t) return;
+                            for (const e of t.querySelectorAll("section,div,span")) {
+                                const t = e.getBoundingClientRect();
+                                t.width >= 80 && t.height >= 100 && "fixed" === getComputedStyle(e).position && e.style.setProperty("display", "none", "important");
+                            }
+                        } catch (e) {}
+                    }, t = () => {
+                        try {
+                            if (!document.body) {
+                                setTimeout(t, 100);
+                                return;
+                            }
+                            const o = Object.getOwnPropertyDescriptor(document.body, "yk7xw7x-stage"), r = o && "function" == typeof o.value ? o.value() : null;
+                            if (!r) {
+                                setTimeout(t, 100);
+                                return;
+                            }
+                            e();
+                            new MutationObserver(e).observe(r, {
+                                childList: !0,
+                                subtree: !0
+                            });
+                        } catch (e) {
+                            setTimeout(t, 100);
+                        }
+                    };
+                    e();
+                    t();
+                    setInterval(e, 500);
+                } catch (e) {}
+            })();
+            Object.defineProperty(Window.prototype.toString, "b66c2f6e19db676c5ebc9204c825c548", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "b66c2f6e19db676c5ebc9204c825c548" due to: ' + e);
         }
     },
     "document.addEventListener('DOMContentLoaded',function(){const o=new MutationObserver(function(m,b){const e=document.querySelector('.gtp-wrap.gtp-open button.gtp-decline');e&&e.click()});setTimeout(function(){o.disconnect()},60000);o.observe(document.body,{childList:!0,subtree:!0})})": () => {
