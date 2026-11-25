@@ -42,7 +42,11 @@ const COMMON_OUTPUTS = {
     'static-chrome': ['chrome.zip', 'chrome-mv3.zip', 'build.txt'],
     'static-edge': ['edge-mv3.zip'],
     'cws-mv3': ['chrome.zip'],
-    'gh-assets': ['chrome-mv2.zip', 'chrome-mv3.zip', 'edge-mv2.zip', 'edge-mv3.zip', 'build.txt'],
+    'gh-assets': [
+        'chrome-mv2.zip', 'chrome-mv3.zip', 'edge-mv2.zip', 'edge-mv3.zip',
+        'opera-mv2.zip', 'opera-mv3.zip', 'build.txt',
+    ],
+    opera: ['opera-mv2.zip', 'opera-mv3.zip'],
 };
 
 let workspace: string;
@@ -77,7 +81,7 @@ describe('Deploy artifact staging', () => {
             'static-firefox': ['firefox.zip', 'build.txt'],
             amo: ['firefox.zip', 'source.zip', 'approval-notes.txt'],
             edge: ['edge.zip'],
-            'gh-assets': [...COMMON_OUTPUTS['gh-assets'], 'opera-mv2.zip', 'opera-mv3.zip', 'firefox.zip'],
+            'gh-assets': [...COMMON_OUTPUTS['gh-assets'], 'firefox.zip'],
         };
         const staged = path.join(workspace, 'staged');
         expect(fs.readdirSync(staged).sort()).toEqual(Object.keys(expected).sort());

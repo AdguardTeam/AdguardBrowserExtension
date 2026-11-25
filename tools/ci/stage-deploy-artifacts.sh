@@ -16,7 +16,7 @@ case "${1:-}" in
     *) echo 'Expected channel: beta or release'; exit 1 ;;
 esac
 
-mkdir -p staged/static-chrome staged/static-edge staged/cws-mv3 staged/gh-assets
+mkdir -p staged/static-chrome staged/static-edge staged/cws-mv3 staged/gh-assets staged/opera
 
 # Static filenames are stable public download URLs. Keep them unchanged when
 # internal packages are renamed, including chrome.crx referenced by update.xml.
@@ -34,6 +34,13 @@ cp output/build/artifacts/chrome-mv2.zip output/build/artifacts/chrome-mv3.zip \
    output/build/artifacts/edge-mv2.zip output/build/artifacts/edge-mv3.zip \
    output/build/artifacts/build.txt staged/gh-assets/
 
+# Opera has no public store API, so its packages serve manual submission only
+# and ship as GitHub Release assets on both channels.
+cp output/build/artifacts/opera-mv2.zip output/build/artifacts/opera-mv3.zip \
+   staged/opera/
+cp output/build/artifacts/opera-mv2.zip output/build/artifacts/opera-mv3.zip \
+   staged/gh-assets/
+
 if [ "$CHANNEL" = beta ]; then
     cp output/crx/artifacts/chrome-mv2.crx staged/static-chrome/chrome.crx
     cp output/crx/artifacts/update.xml staged/static-chrome/
@@ -48,6 +55,5 @@ else
     # The Edge Add-ons listing receives the Edge MV3 package; the Edge MV2
     # package ships only as a GitHub Release asset.
     cp output/build/artifacts/edge-mv3.zip staged/edge/edge.zip
-    cp output/build/artifacts/opera-mv2.zip output/build/artifacts/opera-mv3.zip \
-       output/build/artifacts/firefox.zip staged/gh-assets/
+    cp output/build/artifacts/firefox.zip staged/gh-assets/
 fi

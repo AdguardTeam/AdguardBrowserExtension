@@ -183,6 +183,116 @@ const getJobBlock = (workflow: string, jobId: string): string[] => {
 };
 
 /**
+ * One `upload-artifact` step: the artifact name and the paths it uploads.
+ */
+type UploadStep = {
+    name: string;
+    paths: string[];
+};
+
+/**
+ * Matches the `uses:` line of an `upload-artifact` step.
+ */
+const UPLOAD_ARTIFACT_USE_RE = /^\s+uses: actions\/upload-artifact@\S+$/;
+
+/**
+ * Matches the first line of a step, which ends the step above it.
+ */
+const STEP_START_RE = /^ {6}- /;
+
+/**
+ * Matches a `name:` or `path:` input of a step. A step's own title is not
+ * matched because it follows a `- ` list marker.
+ */
+const STEP_INPUT_RE = /^(\s+)(name|path): (.*)$/;
+
+/**
+ * Matches the header of a block-scalar value, e.g. `|` or `>-`.
+ */
+const BLOCK_SCALAR_VALUE_RE = /^[>|][+-]?$/;
+
+/**
+ * Reads one `upload-artifact` step. A block-scalar `path: |` lists one file per
+ * more-indented line, so it becomes the whole list of uploaded paths.
+ *
+ * @param lines Source lines of the step.
+ *
+ * @returns Artifact name and uploaded paths of the step.
+ */
+const parseUploadStep = (lines: string[]): UploadStep => {
+    const upload: UploadStep = { name: '', paths: [] };
+
+    for (let index = 0; index < lines.length; index += 1) {
+        const [, indentation = '', key, value = ''] = STEP_INPUT_RE.exec(lines[index] ?? '') ?? [];
+
+        if (key === 'name') {
+            upload.name = unquote(value);
+            continue;
+        }
+
+        if (key !== 'path') {
+            continue;
+        }
+
+        if (!BLOCK_SCALAR_VALUE_RE.test(unquote(value))) {
+            upload.paths.push(unquote(value));
+            continue;
+        }
+
+        for (const entry of lines.slice(index + 1)) {
+            if (entry.trim() === '') {
+                continue;
+            }
+
+            // The block scalar ends at the first line indented no deeper than
+            // its header.
+            if (!entry.startsWith(`${indentation}  `)) {
+                break;
+            }
+
+            upload.paths.push(entry.trim());
+        }
+    }
+
+    return upload;
+};
+
+/**
+ * Extracts the `upload-artifact` steps of a single job in declaration order,
+ * without a YAML parser: each step is the run of lines between two `- ` list
+ * markers around the `uses:` line.
+ *
+ * @param workflow Workflow YAML source.
+ * @param jobId Job id to look up.
+ *
+ * @returns Artifact name and uploaded paths of every upload step.
+ */
+const getUploadSteps = (workflow: string, jobId: string): UploadStep[] => {
+    const lines = getJobBlock(workflow, jobId);
+    const uploads: UploadStep[] = [];
+
+    for (let index = 0; index < lines.length; index += 1) {
+        if (!UPLOAD_ARTIFACT_USE_RE.test(lines[index] ?? '')) {
+            continue;
+        }
+
+        let start = index;
+        while (start > 0 && !STEP_START_RE.test(lines[start] ?? '')) {
+            start -= 1;
+        }
+
+        let end = index + 1;
+        while (end < lines.length && !STEP_START_RE.test(lines[end] ?? '')) {
+            end += 1;
+        }
+
+        uploads.push(parseUploadStep(lines.slice(start, end)));
+    }
+
+    return uploads;
+};
+
+/**
  * Extracts the `needs` list of a single job.
  *
  * `needs` arrays in these workflows are single-line, so line-based parsing is
@@ -209,9 +319,10 @@ const parseJobNeeds = (workflow: string, jobId: string): string[] => {
 };
 
 /**
- * Matches a named `with:` input of a reusable-workflow call job.
+ * Matches a named `with:` input of a reusable-workflow call job. The shared
+ * `create-gh-release.yml` takes its inputs in snake_case, hence the underscore.
  */
-const JOB_WITH_INPUT_RE = /^\s+([a-z0-9-]+): (.+)$/;
+const JOB_WITH_INPUT_RE = /^\s+([a-z0-9_-]+): (.+)$/;
 
 /**
  * Matches the channel expression interpolated into a `with:` input value. The
@@ -390,13 +501,13 @@ const STATIC_DEPLOY_GATES: Record<string, StaticDeployGate[]> = {
     'deploy-static-chrome': [
         {
             channel: 'beta',
-            artifactName: 'static-chrome-beta',
+            artifactName: 'chrome-standalone-beta',
             deployerModule: 'adblocker-webext-chrome-beta',
             environment: 'chrome-static-beta',
         },
         {
             channel: 'release',
-            artifactName: 'static-chrome-release',
+            artifactName: 'chrome-standalone-release',
             deployerModule: 'adblocker-webext-chrome-release',
             environment: 'chrome-static-release',
         },
@@ -404,13 +515,13 @@ const STATIC_DEPLOY_GATES: Record<string, StaticDeployGate[]> = {
     'deploy-static-edge': [
         {
             channel: 'beta',
-            artifactName: 'static-edge-beta',
+            artifactName: 'edge-standalone-beta',
             deployerModule: 'adblocker-webext-edge-beta',
             environment: 'edge-static-beta',
         },
         {
             channel: 'release',
-            artifactName: 'static-edge-release',
+            artifactName: 'edge-standalone-release',
             deployerModule: 'adblocker-webext-edge-release',
             environment: 'edge-static-release',
         },
@@ -418,7 +529,7 @@ const STATIC_DEPLOY_GATES: Record<string, StaticDeployGate[]> = {
     'deploy-static-firefox-beta': [
         {
             channel: 'beta',
-            artifactName: 'static-firefox-beta',
+            artifactName: 'firefox-standalone-beta',
             deployerModule: 'adblocker-webext-firefox-beta',
             environment: 'firefox-static-beta',
         },
@@ -426,7 +537,7 @@ const STATIC_DEPLOY_GATES: Record<string, StaticDeployGate[]> = {
     'deploy-static-firefox-release': [
         {
             channel: 'release',
-            artifactName: 'static-firefox-release',
+            artifactName: 'firefox-standalone-release',
             deployerModule: 'adblocker-webext-firefox-release',
             environment: 'firefox-static-release',
         },
@@ -754,5 +865,78 @@ describe('Static deploy approval gates', () => {
             expect(source, `shared static environment in ${fileName}`)
                 .not.toMatch(SHARED_STATIC_ENVIRONMENT_RE);
         }
+    });
+});
+
+/**
+ * A job that consumes a build artifact: the job that must upload it and the
+ * `with:` input that names it.
+ */
+type ArtifactConsumer = {
+    producerJobId: string;
+    inputName: string;
+};
+
+/**
+ * Jobs that consume a build artifact and the job that must upload it.
+ *
+ * The static deploys are also pinned by `STATIC_DEPLOY_GATES`; the store and
+ * GitHub Release consumers had no check that their artifact name matches an
+ * upload step, so a rename on either side failed only at publish time.
+ */
+const ARTIFACT_CONSUMERS: Record<string, ArtifactConsumer> = {
+    'deploy-static-chrome': { producerJobId: 'build', inputName: 'artifact-name' },
+    'deploy-static-edge': { producerJobId: 'build', inputName: 'artifact-name' },
+    'deploy-static-firefox-beta': { producerJobId: 'build-firefox-standalone', inputName: 'artifact-name' },
+    'deploy-static-firefox-release': { producerJobId: 'build', inputName: 'artifact-name' },
+    'publish-cws-mv3-beta': { producerJobId: 'build', inputName: 'artifact-name' },
+    'publish-cws-mv3-release': { producerJobId: 'build', inputName: 'artifact-name' },
+    'publish-amo-release': { producerJobId: 'build', inputName: 'artifact-name' },
+    'publish-amo-beta': { producerJobId: 'build-firefox-amo-beta', inputName: 'artifact-name' },
+    'publish-edge-release': { producerJobId: 'build', inputName: 'artifact-name' },
+    'create-release': { producerJobId: 'build', inputName: 'artifact_name' },
+    'attach-firefox-assets-beta': { producerJobId: 'build-firefox-standalone', inputName: 'artifact_name' },
+};
+
+describe('Release artifact uploads', () => {
+    it('the build job uploads the Opera artifact for both channels', () => {
+        const workflow = getWorkflow('publish-release.yml');
+        const operaUploads = getUploadSteps(workflow, 'build')
+            .filter((upload) => upload.name.startsWith('opera-'));
+
+        // One channel-parameterized step, not one literal name per channel.
+        expect(operaUploads).toHaveLength(1);
+        const operaUpload = operaUploads[0];
+        expect(operaUpload?.paths).toEqual(['staged/opera/']);
+        expect(resolveChannel(operaUpload?.name ?? '', 'beta')).toBe('opera-beta');
+        expect(resolveChannel(operaUpload?.name ?? '', 'release')).toBe('opera-release');
+    });
+
+    it('every artifact consumer references an upload step', () => {
+        const workflow = getWorkflow('publish-release.yml');
+
+        for (const [jobId, consumer] of Object.entries(ARTIFACT_CONSUMERS)) {
+            const artifactName = getWithInput(workflow, jobId, consumer.inputName);
+            const uploads = getUploadSteps(workflow, consumer.producerJobId);
+
+            for (const channel of getJobChannels(workflow, jobId)) {
+                const expected = resolveChannel(artifactName, channel);
+                const produced = uploads.map((upload) => resolveChannel(upload.name, channel));
+
+                expect(produced, `${jobId} on ${channel} must consume ${expected}`)
+                    .toContain(expected);
+            }
+        }
+    });
+
+    it('reads a block-scalar upload path as its file list', () => {
+        const workflow = getWorkflow('auto-build.yml');
+        const report = getUploadSteps(workflow, 'integration-tests')
+            .find((upload) => upload.name === 'auto-build-integration-tests-report');
+
+        expect(report?.paths).toEqual([
+            'output/integration-release/tests-reports/',
+            'output/integration-beta/tests-reports/',
+        ]);
     });
 });

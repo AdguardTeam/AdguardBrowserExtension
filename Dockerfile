@@ -403,6 +403,8 @@ RUN --mount=type=secret,id=CHROME_CERT,required=true \
     mv build/beta/chrome-mv3.zip /out/artifacts/ && \
     mv build/beta/edge-mv2.zip /out/artifacts/ && \
     mv build/beta/edge-mv3.zip /out/artifacts/ && \
+    mv build/beta/opera-mv2.zip /out/artifacts/ && \
+    mv build/beta/opera-mv3.zip /out/artifacts/ && \
     # Leave no trace of the private key in this image layer.
     rm -rf /extension/private
 

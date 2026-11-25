@@ -238,7 +238,7 @@ jobs:
       - name: Upload static Chrome artifact
         uses: actions/upload-artifact@v7
         with:
-          name: static-chrome-${{ needs.resolve-version.outputs.channel }}
+          name: chrome-standalone-${{ needs.resolve-version.outputs.channel }}
           path: staged/static-chrome/
           if-no-files-found: error
           retention-days: 7
@@ -246,7 +246,7 @@ jobs:
       - name: Upload static Edge artifact
         uses: actions/upload-artifact@v7
         with:
-          name: static-edge-${{ needs.resolve-version.outputs.channel }}
+          name: edge-standalone-${{ needs.resolve-version.outputs.channel }}
           path: staged/static-edge/
           if-no-files-found: error
           retention-days: 7
@@ -255,7 +255,7 @@ jobs:
         if: needs.resolve-version.outputs.channel == 'release'
         uses: actions/upload-artifact@v7
         with:
-          name: static-firefox-release
+          name: firefox-standalone-release
           path: staged/static-firefox/
           if-no-files-found: error
           retention-days: 7
@@ -263,7 +263,7 @@ jobs:
       - name: Upload Chrome Web Store MV3 artifact
         uses: actions/upload-artifact@v7
         with:
-          name: cws-mv3-${{ needs.resolve-version.outputs.channel }}
+          name: chrome-${{ needs.resolve-version.outputs.channel }}
           path: staged/cws-mv3/
           if-no-files-found: error
           retention-days: 7
@@ -272,7 +272,7 @@ jobs:
         if: needs.resolve-version.outputs.channel == 'release'
         uses: actions/upload-artifact@v7
         with:
-          name: amo-release
+          name: firefox-release
           path: staged/amo/
           if-no-files-found: error
           retention-days: 7
@@ -283,6 +283,14 @@ jobs:
         with:
           name: edge-release
           path: staged/edge/
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload Opera artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: opera-${{ needs.resolve-version.outputs.channel }}
+          path: staged/opera/
           if-no-files-found: error
           retention-days: 7
 
@@ -413,7 +421,7 @@ jobs:
       - name: Upload static Firefox artifact
         uses: actions/upload-artifact@v7
         with:
-          name: static-firefox-beta
+          name: firefox-standalone-beta
           path: staged/static-firefox/
           if-no-files-found: error
           retention-days: 7
@@ -475,7 +483,7 @@ jobs:
       - name: Upload AMO beta artifact
         uses: actions/upload-artifact@v7
         with:
-          name: amo-beta
+          name: firefox-beta
           path: staged/amo-beta/
           if-no-files-found: error
           retention-days: 7
@@ -507,7 +515,7 @@ jobs:
     with:
       team: extensions
       deployer-module: adblocker-webext-chrome-${{ needs.build.outputs.channel }}
-      artifact-name: static-chrome-${{ needs.build.outputs.channel }}
+      artifact-name: chrome-standalone-${{ needs.build.outputs.channel }}
       environment: chrome-static-${{ needs.build.outputs.channel }}
     permissions:
       contents: read
@@ -520,7 +528,7 @@ jobs:
     with:
       team: extensions
       deployer-module: adblocker-webext-edge-${{ needs.build.outputs.channel }}
-      artifact-name: static-edge-${{ needs.build.outputs.channel }}
+      artifact-name: edge-standalone-${{ needs.build.outputs.channel }}
       environment: edge-static-${{ needs.build.outputs.channel }}
     permissions:
       contents: read
@@ -534,8 +542,8 @@ jobs:
     with:
       team: extensions
       deployer-module: adblocker-webext-firefox-beta
-      artifact-name: static-firefox-beta
-      environment: firefox-static-beta
+      artifact-name: firefox-standalone-beta
+      environment: firefox-static-${{ needs.resolve-version.outputs.channel }}
     permissions:
       contents: read
       id-token: write
@@ -548,8 +556,8 @@ jobs:
     with:
       team: extensions
       deployer-module: adblocker-webext-firefox-release
-      artifact-name: static-firefox-release
-      environment: firefox-static-release
+      artifact-name: firefox-standalone-release
+      environment: firefox-static-${{ needs.resolve-version.outputs.channel }}
     permissions:
       contents: read
       id-token: write
@@ -562,7 +570,7 @@ jobs:
     with:
       team: extensions
       environment: chrome-webstore-beta
-      artifact-name: cws-mv3-beta
+      artifact-name: chrome-beta
       item-id: ${{ vars.CHROME_WEBSTORE_MV3_BETA_ITEM_ID || 'apjcbfpjihpedihablmalmbbhjpklbdf' }}
       api-version: v2
       # Wait for a manual publish in the CWS dashboard after review.
@@ -582,7 +590,7 @@ jobs:
     with:
       team: extensions
       environment: chrome-webstore-release
-      artifact-name: cws-mv3-release
+      artifact-name: chrome-release
       item-id: ${{ vars.CHROME_WEBSTORE_MV3_ITEM_ID || 'bgnkhhnnamicmpeenaelnjfhikgbkllg' }}
       api-version: v2
       # Wait for a manual publish in the CWS dashboard after review. The
@@ -605,7 +613,7 @@ jobs:
     with:
       team: extensions
       environment: firefox-amo-release
-      artifact-name: amo-release
+      artifact-name: firefox-release
       channel-type: listed
       approval-notes: ${{ needs.build.outputs.approval-notes }}
       slack-channel: ''
@@ -624,7 +632,7 @@ jobs:
     with:
       team: extensions
       environment: firefox-amo-beta
-      artifact-name: amo-beta
+      artifact-name: firefox-beta
       channel-type: listed
       approval-notes: ${{ needs.build-firefox-amo-beta.outputs.approval-notes }}
       slack-channel: ''
@@ -656,8 +664,9 @@ jobs:
       contents: read
       id-token: write
 
-  # Opera has no public store API — opera zips ship only as GitHub Release
-  # assets (same as Bamboo; store submission stays manual).
+  # Opera has no public store API — the opera zips ship as GitHub Release
+  # assets and as the opera-<channel> workflow artifacts (same as Bamboo; store
+  # submission stays manual).
 
   create-release:
     name: Create GitHub Release draft (public repo)

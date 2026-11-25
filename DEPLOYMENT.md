@@ -60,7 +60,8 @@ Release flow:
    - release: static.adtidy.org (chromium + Edge MV3 + Firefox), Chrome Web
      Store MV3, Firefox AMO, Edge Add-ons (draft upload; submission is manual),
      GitHub Release draft (public repo)
-   - Opera zips ship as GitHub Release assets only (store submission is manual).
+   - Opera zips ship as GitHub Release assets and as the `opera-<channel>`
+     workflow artifacts only (store submission is manual).
    - Chrome Web Store versions are staged on both channels: after review,
      publish them manually from the Developer Dashboard.
    - Chrome Web Store release channel: the version is submitted with the
@@ -159,8 +160,12 @@ or its release commit and repeat the rollout percentage in the
 `rollout-percentage` input: a dispatch has no release PR body, so an empty
 input gives the default 1%. A ref that predates
 `tools/release/resolve-rollout.ts` cannot read the input: such a dispatch
-warns and submits the release at 1%. Otherwise bump the patch instead of
-re-releasing.
+warns and submits the release at 1%. Retry a tag cut before the current
+`publish-release.yml` with the workflow from that tag (**Use workflow from** in
+the dispatch dialog): the run checks out the tag's own
+`tools/ci/stage-deploy-artifacts.sh`, which may not stage every path the newer
+workflow uploads, and a failed upload skips tagging and deployment. Otherwise
+bump the patch instead of re-releasing.
 
 - Beta tags (`v5.6.0-beta.7`) build the signed CRX (cert delivered as the
   `CHROME_CERT` BuildKit secret from Vault, never written to the workspace or an
@@ -179,8 +184,10 @@ re-releasing.
 ## Artifact naming and compatibility
 
 Internal build targets, output directories, CI downloads, and new GitHub
-Release assets explicitly distinguish Chromium MV2 and MV3. The set of
-packages published per channel is unchanged; existing releases are not renamed.
+Release assets explicitly distinguish Chromium MV2 and MV3. The packages
+published to static.adtidy.org and the stores are unchanged, but the beta
+GitHub Release draft now also carries the Opera packages. Existing releases are
+not renamed.
 
 | Internal / GitHub package | Static filename | Store workflow filename |
 | --- | --- | --- |
@@ -189,8 +196,19 @@ packages published per channel is unchanged; existing releases are not renamed.
 | `chrome-mv2.crx` (beta) | `chrome.crx` | Not submitted |
 | `edge-mv2.zip` | Not published | Not submitted (GitHub Release asset only) |
 | `edge-mv3.zip` | `edge-mv3.zip` | `edge.zip` |
-| `opera-mv2.zip`, `opera-mv3.zip` (release) | Not published | Manual submission |
+| `opera-mv2.zip`, `opera-mv3.zip` (beta and release) | Not published | Manual submission |
 | `firefox.zip`, `firefox.xpi` | Unchanged | Existing AMO package layout |
+
+Each upload becomes a workflow artifact named after its distribution path, not
+the manifest version: `chrome-<channel>` carries the MV3 package as
+`chrome.zip` to the Chrome Web Store, `edge-release` carries `edge-mv3.zip` as
+`edge.zip` to Edge Add-ons, and `chrome-standalone-<channel>` carries
+`chrome.zip` (MV2) and `chrome-mv3.zip` (MV3) to static.adtidy.org. The other
+artifacts are `edge-standalone-<channel>` for the Edge static deploy,
+`firefox-<channel>` for AMO, `firefox-standalone-<channel>` for the Firefox
+static deploy, `opera-<channel>` with `opera-mv2.zip` and `opera-mv3.zip` for
+manual Opera submission, and `gh-assets-<channel>` / `gh-assets-firefox-beta`
+for the GitHub Release draft.
 
 `tools/ci/stage-deploy-artifacts.sh` copies the Docker outputs into separate
 deployment directories without repacking them. Static filenames are permanent
@@ -231,9 +249,9 @@ Job `build-firefox-standalone` in `publish-release.yml` (beta channel only):
 1. Builds `firefox.zip` via Docker target `firefox-beta-build-output`.
 2. Signs with `go-webext`, producing `firefox.xpi` and `update.json` via
    Docker target `firefox-beta-sign-output` (AMO credentials from Vault).
-3. Uploads the artifact to static.adtidy.org (`static-firefox-beta`) and as a
-   GitHub Release asset (`gh-assets-firefox-beta`, attached after the release
-   exists so the two never race).
+3. Uploads the artifact to static.adtidy.org (`firefox-standalone-beta`) and
+   as a GitHub Release asset (`gh-assets-firefox-beta`, attached after the
+   release exists so the two never race).
 
 Signing may hit the job's 15-minute timeout while waiting for Mozilla. If so,
 re-run the **same** `publish-release.yml` run after Mozilla finishes signing to
