@@ -7595,85 +7595,90 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "f108a248579190d52136e6e135a4d6c9" due to: ' + e);
         }
     },
-    '(()=>{const e="SPONSORED",t="SponsoredData",r="AdsSideFeedUnit",n=["sponsored_data","th_dat_spo","qrz_ctx_seg","pso_tad_rens"],o="MarketplaceFeedAdStory",a=new WeakMap,i=[e,t,r,...n],s=[t,o,...n],p=window.String.prototype.split,l=window.String.prototype.trim,d=new WeakMap,c=new WeakMap,y=new WeakSet,f=(e,t,r=Proxy)=>{const n=c.get(e)??Reflect.apply(window.Function.prototype.toString,e,[]),o=new r(e,t);return d.set(o,d.get(e)??e),c.set(o,n),o},w=(e,t)=>e?.length>300&&t.some(t=>e?.includes?.(t)),u=e=>w(e,i),h=e=>Boolean(e?.startsWith?.("{")&&e?.endsWith?.("}")||e?.startsWith?.("[")&&e?.endsWith?.("]")),g=e=>h(e)&&u(e),_=e=>{try{e.JSON.parse=f(e.JSON.parse,J,e.Proxy),e.String.prototype.split=f(e.String.prototype.split,V,e.Proxy),e.String=f(e.String,Y,e.Proxy),e.String.prototype.constructor=e.String,e.Function.prototype.call=f(e.Function.prototype.call,ce,e.Proxy),e.Function.prototype.toString=f(e.Function.prototype.toString,fe,e.Proxy)}catch(e){}},m=e=>Boolean(e instanceof HTMLIFrameElement&&(""===e.src||e?.src?.startsWith("about:blank"))&&e.contentWindow),S=new Set(["append","prepend","before","after","insertNode","replaceWith","replaceChild","replaceChildren"]),{apply:b}={apply(e,t,r){const n=Reflect.apply(e,t,r);try{m(n)?_(n.contentWindow):S.has(e.name)&&r.forEach(e=>{m(e)&&_(e.contentWindow)})}catch(e){}return n}},x={apply:b};window.Node.prototype.appendChild=f(window.Node.prototype.appendChild,x),window.Node.prototype.insertBefore=f(window.Node.prototype.insertBefore,x),window.Node.prototype.replaceChild=f(window.Node.prototype.replaceChild,x),window.Element.prototype.append=f(window.Element.prototype.append,x),window.Element.prototype.prepend=f(window.Element.prototype.prepend,x),window.Element.prototype.replaceChildren=f(window.Element.prototype.replaceChildren,x),window.Element.prototype.replaceWith=f(window.Element.prototype.replaceWith,x),window.Element.prototype.before=f(window.Element.prototype.before,x),window.Element.prototype.after=f(window.Element.prototype.after,x),window.Element.prototype.insertAdjacentElement=f(window.Element.prototype.insertAdjacentElement,x),window.Range.prototype.insertNode=f(window.Range.prototype.insertNode,x),window.CharacterData.prototype.replaceWith=f(window.CharacterData.prototype.replaceWith,x);const A=["item_collection","ads"],E=["auxColumnUnits","sdieFede","sideFeed"],v=e=>Boolean(e)&&(Object.values(e).some(e=>e?.__typename===t)||n.some(t=>{const r=e[t];return r&&"object"==typeof r&&!Array.isArray(r)&&[r.ad_id,r.lbl_adv_iden].some(e=>"string"==typeof e&&e.length>0)})),O=(e,t)=>{if(!e||"object"!=typeof e||Array.isArray(e))return!1;const r=Object.keys(e);return r.length===t.length&&t.every(e=>r.includes(e))},N=e=>O(e,["node"])&&O(e.node,["s"])&&O(e.node.s,["__typename"])&&e.node.s.__typename===t,B=new Set(["h4","r2","b3","d2","x5","g8"]),j=["p","z9","k4","w7","q8","n3","v6","j5","t8","m6",...B],k=e=>{const t=Array.isArray(e)&&1===e.length?e[0]:e;if(!t||"object"!=typeof t||Array.isArray(t))return!1;const r=j.find(e=>"string"==typeof t[e]);if(void 0===r)return!1;const n=["data","edges","require",r];if(Object.hasOwn(t,"extensions")){if(!(O(t.extensions,[])||O(t.extensions,["is_final"])&&!0===t.extensions.is_final))return!1;n.push("extensions")}if(Object.hasOwn(t,"__bbox")){if(!(B.has(r)&&O(t.extensions,["is_final"])&&!0===t.extensions.is_final&&(o=t.__bbox,O(o,["result"])&&O(o.result,["data"])&&O(o.result.data,["node"])&&O(o.result.data.node,["s","th_dat_spo"])&&O(o.result.data.node.s,["__typename"])&&"CometStorySponsoredLabelStrategy"===o.result.data.node.s.__typename&&O(o.result.data.node.th_dat_spo,["s"])&&1===o.result.data.node.th_dat_spo.s)))return!1;n.push("__bbox")}var o;return O(t,n)&&N(t.data)&&Array.isArray(t.edges)&&1===t.edges.length&&N(t.edges[0])&&Array.isArray(t.require)&&1===t.require.length&&N(t.require[0])},P=(e,t,n,o)=>{if(!e||"object"!=typeof e||n<0)return!1;let a=!1;if(Array.isArray(e.nodes)){const t=e.nodes.filter(e=>!(e=>e?.__typename===r||A.some(t=>{const r=e?.[t]?.nodes;return Array.isArray(r)&&r.some(e=>e?.sponsored_data?.ad_id)}))(e));e.nodes.length-t.length>0&&(e.nodes=t,a=!0)}return Object.entries(e).forEach(([e,r])=>{a=P(r,`${t}.${e}`,n-1,o)||a}),a},W=(e,t=10)=>{const r=e?.data?.viewer,n=r??e?.[3]?.[1]?.__bbox?.result?.data?.viewer;if(!n)return!1;return P(n,r?"data.viewer":"item[3][1].__bbox.result.data.viewer",t,e)},F=(t,r=10,n=new WeakMap)=>{if(!t||"object"!=typeof t||r<0)return!1;const o=n.get(t);if(void 0!==o&&o>=r)return!1;if(n.set(t,r),k(t))return!1;let a=((t,r)=>{if(!t||"object"!=typeof t)return!1;let n=!1;try{if(r){if(Array.isArray(t.require?.[0]?.[3]?.[0]?.__bbox?.require)&&t.require[0][3][0].__bbox.require.forEach(t=>{t[3]?.[1]?.__bbox?.result?.data?.category===e&&(delete t[3][1].__bbox.result.data.node,n=!0),v(t[3]?.[1]?.__bbox?.result?.data?.node)&&(delete t[3][1].__bbox.result.data.node,n=!0),n=W(t)||n}),E.some(e=>Array.isArray(t.data?.viewer?.[e]?.nodes))&&(n=W(t)||n),Array.isArray(t.data?.viewer?.news_feed?.edges)){const r=t.data.viewer.news_feed.edges.length;t.data.viewer.news_feed.edges=t.data.viewer.news_feed.edges.filter(t=>!v(t.node)&&t.category!==e),n=n||t.data.viewer.news_feed.edges.length!==r}v(t.data?.node)&&(delete t.data.node,n=!0),t.data?.category===e&&(delete t.data.node,n=!0)}}catch(e){}return n})(t,!0);return 0===r||Object.values(t).forEach(e=>{a=F(e,r-1,n)||a}),a},R=(e,t)=>{try{const r="string"==typeof t;if(r&&!u(t))return e;if(k(e))return e;if(!r&&!u(JSON.stringify(e)))return e;F(e)&&e&&"object"==typeof e&&y.add(e)}catch(e){}return e},{apply:q}={apply(e,t,r){K();const n=Reflect.apply(e,t,r);return R(n,r[0])}},J={apply:q};window.JSON.parse=f(window.JSON.parse,J);const C=(e,t,r)=>{if(!e||"object"!=typeof e&&"function"!=typeof e)return;let n=a.get(e);if(!t.some(t=>"function"==typeof e[t]&&!d.has(e[t])&&(n?.get(t)??0)<10))return;n||(n=new Map,a.set(e,n));const o=new Map;t.forEach(t=>{const r=e[t];"function"==typeof r&&d.has(r)&&o.set(d.get(r),r)}),t.forEach(t=>{const a=e[t],i=n.get(t)??0;if("function"!=typeof a||d.has(a)||i>=10)return;n.set(t,i+1);let s=o.get(a);if(!s){const{apply:e}={apply(e,t,n){const o=Reflect.apply(e,t,n);return r?R(o,n[0]):R(o)}};s=f(a,{apply:e}),o.set(a,s)}e[t]=s})},M=["parse","parseText","readText","fromText","fromSource","fromChunk","fromBlock","fromSlice","fromPiece","fromSection","fromSegment","fromExcerpt","fromFragment","fromScrap","fromSliver","fromMorsel"],$=["ghlParseServerJSPayload","readBootPayload","decodeBootScript","hydrateBootData","inflateBootPayload","expandBootPayload","unpackBootPayload","openBootPayload","loadBootPayload","readBootState","readBootRecord","readBootEntry","takeBootFrame","grabBootSlice","pullBootChunk","peelBootLayer"],L=[[["json5"],e=>C(e,M,!0)],[["GHLServerJSParse"],e=>C(e,$,!1)]],z=e=>{Array.isArray(e)&&L.forEach(t=>{e.some(e=>e?.[1]===t[1])||e.push(t)})};let D=null,T=!1,H=!1;const U=new Map,G=L.map(([[e],t])=>r=>{U.set(e,r),t(r)}),I=()=>{if(!T&&"function"==typeof window.require){T=!0;const e=window.require("ifRequired");"function"==typeof e&&(D=e)}return D},K=()=>{if(!H)try{for(let e=0;e<L.length;e+=1){const[[t],r]=L[e],n=U.get(t);if(void 0===n){if(null===I())return;D(t,G[e])}else r(n)}}catch(e){H=!0}},{apply:Q}={apply(e,t,r){let n;K();try{if(h(t),g(t)){const e=JSON.parse(t);y.has(e)&&(n=JSON.stringify(e))}}catch(e){}return Reflect.apply(e,n??t,r)}},V={apply:Q};window.String.prototype.split=f(window.String.prototype.split,V),window.String.prototype.substring=f(window.String.prototype.substring,V);const{apply:X}={apply(e,t,r){K();const n=Reflect.apply(e,t,r);try{if(g(n)){const e=JSON.parse(n);if(y.has(e)){return JSON.stringify(e)}}}catch(e){}return n}},Y={apply:X};window.String=f(window.String,Y),window.String.prototype.constructor=window.String;const Z=new Map,ee=/^[\\t\\r\\n \\v\\f\\u00a0\\ufeff\\u3000]*[\\v\\f\\u00a0\\ufeff\\u3000][\\t\\r\\n ]*/,te=/^(?:[\\t\\r\\n ]*(?:\\/\\/[^\\r\\n]*(?:\\r\\n?|\\n)|\\/\\*[\\s\\S]*?\\*\\/))+/,re=/"(?:[^"\\\\]|\\\\[\\s\\S])*"|((?:(?:\\/\\*[\\s\\S]*?\\*\\/|\\/\\/[^\\r\\n]*(?:\\r\\n?|\\n|$))[\\t\\r\\n ]*)+)/g,ne=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:/,oe=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"|[[{]|true|false|null|-?[\\d.eE+-]+)/,ae=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"|[[{]|true|false|null|-?[\\d.eE+-]+)[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:|[,[{\\]}])/,ie=e=>{const t=Z.get(e);if(void 0!==t)return t;let r=e;try{const t=u(e),n=e.match(ee)?.[0]??"",o=e.slice(n.length),a=o.match(te)?.[0]??"",i=o.slice(a.length);let s=i,p="";if(t&&(/\\*\\/[\\t\\r\\n ]*$/.test(i)||/(?:\\r\\n?|\\n)[\\t ]*\\/\\/[^\\r\\n]*(?:[\\r\\n][\\t ]*)*$/.test(i)))for(const e of i.matchAll(re))if(e[1]&&e.index+e[0].length===i.length){const t=i.slice(0,e.index).search(/[\\t\\r\\n ]*$/);s=i.slice(0,t),p=i.slice(t);break}const d=Reflect.apply(l,s,[]);if(h(d)&&t){const e=d.slice(1).match(te)?.[0]??"";let t=""===e?s:s.replace(e,"");const o=t.match(ne)?.[0]??"",i=""===o?"":t.slice(o.length).match(te)?.[0]??"";""!==i&&(t=o+t.slice(o.length+i.length));const l=t.match(oe)?.[0]??"",c=""===l?"":t.slice(l.length).match(te)?.[0]??"";""!==c&&(t=l+" "+t.slice(l.length+c.length));const f=t.match(ae)?.[0]??"",w=""===f?"":t.slice(f.length).match(te)?.[0]??"";""!==w&&(t=f+" "+t.slice(f.length+w.length));let u="";if(t.includes("/*")||t.includes("//"))for(const e of t.matchAll(re))if(e[1]&&/^[\\]}][\\t\\r\\n ]*$/.test(t.slice(e.index+e[0].length))){u=e[1],t=t.slice(0,e.index)+" "+t.slice(e.index+u.length);break}const h=JSON.parse(t);if(y.has(h)){let t=JSON.stringify(h);""!==w&&(t=t.replace(ae,e=>e+w)),""!==c&&(t=t.replace(oe,e=>e+c)),""!==i&&(t=t.replace(ne,e=>e+i)),""!==u&&(t=t.slice(0,-1)+u+t.slice(-1)),r=n+a+t[0]+e+t.slice(1)+p}}}catch(e){}return((e,t)=>{if(Z.size>=2){const e=Z.keys().next().value;Z.delete(e)}return Z.set(e,t),t})(e,r)},{apply:se}={apply(e,t,r){let n=t;try{"string"==typeof t&&t.length>300&&(n=ie(t))}catch(e){}return Reflect.apply(e,n,r)}},pe={apply:se};window.String.prototype.charAt=f(window.String.prototype.charAt,pe);const le=e=>{const t=e?.data?.viewer?.marketplace_feed_stories;if(!Array.isArray(t?.edges))return!1;const r=t.edges.filter(e=>!(e=>{const t=e?.__typename;return"string"==typeof t&&t.includes(o)})(e?.node));return r.length!==t.edges.length&&(t.edges=r,!0)},{apply:de}={apply(e,t,r){const n=r[2]?.[0];if(w(n,s))try{const e=(e=>{let t=!1;const r=Reflect.apply(p,e,[/\\r?\\n|\\r/]).map(e=>{if(""===e.trim())return e;let r;try{r=JSON.parse(e)}catch{return e}const n=y.has(r),o=le(r);return n||o?(t=!0,JSON.stringify(r)):e});return t?r.join("\\r\\n"):e})(n);if(e!==n){const t=r[2].slice();t[0]=e,r[2]=t}}catch(e){}return Reflect.apply(e,t,r)}},ce={apply:de};window.Function.prototype.call=f(window.Function.prototype.call,ce);const{apply:ye}={apply:(e,t,r)=>c.has(t)?c.get(t):Reflect.apply(e,t,r)},fe={apply:ye};window.Function.prototype.toString=f(window.Function.prototype.toString,fe),(()=>{const e=window.__rl_stub;if("function"==typeof window.requireLazy&&!Array.isArray(e))return void L.forEach(([e,t])=>{window.requireLazy(e,t)});let t=Array.isArray(e)?e:[];z(t);try{Object.defineProperty(window,"__rl_stub",{configurable:!0,enumerable:!0,get:()=>t,set(e){t=e,z(e)}})}catch(e){window.__rl_stub=t}})()})();': () => {
+    '(()=>{const e="SPONSORED",t="SponsoredData",r="AdsSideFeedUnit",n=["sponsored_data","th_dat_spo","qrz_ctx_seg","pso_tad_rens"],o="MarketplaceFeedAdStory",a=new WeakMap,i=[e,t,r,...n],s=[t,o,...n],p=window.String.prototype.split,l=window.String.prototype.trim,d=new WeakMap,c=new WeakMap,y=new WeakSet,f=(e,t,r=Proxy)=>{const n=c.get(e)??Reflect.apply(window.Function.prototype.toString,e,[]),o=new r(e,t);return d.set(o,d.get(e)??e),c.set(o,n),o},u=(e,t)=>e?.length>300&&t.some(t=>e?.includes?.(t)),w=e=>u(e,i),h=e=>Boolean(e?.startsWith?.("{")&&e?.endsWith?.("}")||e?.startsWith?.("[")&&e?.endsWith?.("]")),g=e=>h(e)&&w(e),_=e=>{try{e.JSON.parse=f(e.JSON.parse,M,e.Proxy),e.String.prototype.split=f(e.String.prototype.split,Z,e.Proxy),e.String=f(e.String,te,e.Proxy),e.String.prototype.constructor=e.String,e.Function.prototype.call=f(e.Function.prototype.call,ue,e.Proxy),e.Function.prototype.toString=f(e.Function.prototype.toString,he,e.Proxy)}catch(e){}},m=e=>Boolean(e instanceof HTMLIFrameElement&&(""===e.src||e?.src?.startsWith("about:blank"))&&e.contentWindow),S=new Set(["append","prepend","before","after","insertNode","replaceWith","replaceChild","replaceChildren"]),{apply:b}={apply(e,t,r){const n=Reflect.apply(e,t,r);try{m(n)?_(n.contentWindow):S.has(e.name)&&r.forEach(e=>{m(e)&&_(e.contentWindow)})}catch(e){}return n}},A={apply:b};window.Node.prototype.appendChild=f(window.Node.prototype.appendChild,A),window.Node.prototype.insertBefore=f(window.Node.prototype.insertBefore,A),window.Node.prototype.replaceChild=f(window.Node.prototype.replaceChild,A),window.Element.prototype.append=f(window.Element.prototype.append,A),window.Element.prototype.prepend=f(window.Element.prototype.prepend,A),window.Element.prototype.replaceChildren=f(window.Element.prototype.replaceChildren,A),window.Element.prototype.replaceWith=f(window.Element.prototype.replaceWith,A),window.Element.prototype.before=f(window.Element.prototype.before,A),window.Element.prototype.after=f(window.Element.prototype.after,A),window.Element.prototype.insertAdjacentElement=f(window.Element.prototype.insertAdjacentElement,A),window.Range.prototype.insertNode=f(window.Range.prototype.insertNode,A),window.CharacterData.prototype.replaceWith=f(window.CharacterData.prototype.replaceWith,A);const x=["item_collection","ads"],E=["auxColumnUnits","sdieFede","sideFeed"],v=e=>Boolean(e)&&(Object.values(e).some(e=>e?.__typename===t)||n.some(t=>{const r=e[t];return r&&"object"==typeof r&&!Array.isArray(r)&&[r.ad_id,r.lbl_adv_iden].some(e=>"string"==typeof e&&e.length>0)})),O=(e,t)=>{if(!e||"object"!=typeof e||Array.isArray(e))return!1;const r=Object.keys(e);return r.length===t.length&&t.every(e=>r.includes(e))},j=e=>O(e,["node"])&&O(e.node,["s"])&&O(e.node.s,["__typename"])&&e.node.s.__typename===t,B=new Set(["h4","r2","b3","d2","x5","g8","c7"]),N=["p","z9","k4","w7","q8","n3","v6","j5","t8","m6",...B],k=/^[a-z]\\d$/,P=["data","edges","require","extensions","__bbox"],W=e=>{const t=Array.isArray(e)&&1===e.length?e[0]:e;if(!t||"object"!=typeof t||Array.isArray(t))return!1;let r=N.find(e=>"string"==typeof t[e]);if(void 0===r){if(!Array.isArray(t.edges)||!Array.isArray(t.require))return!1;const e=Object.keys(t).filter(e=>!P.includes(e));if(1!==e.length||!k.test(e[0])||"string"!=typeof t[e[0]])return!1;r=e[0]}const n=["data","edges","require",r];if(Object.hasOwn(t,"extensions")){if(!(O(t.extensions,[])||O(t.extensions,["is_final"])&&!0===t.extensions.is_final))return!1;n.push("extensions")}if(Object.hasOwn(t,"__bbox")){if(!B.has(r)&&N.includes(r)||!O(t.extensions,["is_final"])||!0!==t.extensions.is_final||(o=t.__bbox,!(O(o,["result"])&&O(o.result,["data"])&&O(o.result.data,["node"])&&O(o.result.data.node,["s","th_dat_spo"])&&O(o.result.data.node.s,["__typename"])&&"CometStorySponsoredLabelStrategy"===o.result.data.node.s.__typename&&O(o.result.data.node.th_dat_spo,["s"])&&1===o.result.data.node.th_dat_spo.s)))return!1;n.push("__bbox")}var o;return O(t,n)&&j(t.data)&&Array.isArray(t.edges)&&1===t.edges.length&&j(t.edges[0])&&Array.isArray(t.require)&&1===t.require.length&&j(t.require[0])},q=(e,t,n,o)=>{if(!e||"object"!=typeof e||n<0)return!1;let a=!1;if(Array.isArray(e.nodes)){const t=e.nodes.filter(e=>!(e=>e?.__typename===r||x.some(t=>{const r=e?.[t]?.nodes;return Array.isArray(r)&&r.some(e=>e?.sponsored_data?.ad_id)}))(e));e.nodes.length-t.length>0&&(e.nodes=t,a=!0)}return Object.entries(e).forEach(([e,r])=>{a=q(r,`${t}.${e}`,n-1,o)||a}),a},F=(e,t=10)=>{const r=e?.data?.viewer,n=r??e?.[3]?.[1]?.__bbox?.result?.data?.viewer;if(!n)return!1;return q(n,r?"data.viewer":"item[3][1].__bbox.result.data.viewer",t,e)},R=(t,r=10,n=new WeakMap)=>{if(!t||"object"!=typeof t||r<0)return!1;const o=n.get(t);if(void 0!==o&&o>=r)return!1;if(n.set(t,r),W(t))return!1;let a=((t,r)=>{if(!t||"object"!=typeof t)return!1;let n=!1;try{if(r){if(Array.isArray(t.require?.[0]?.[3]?.[0]?.__bbox?.require)&&t.require[0][3][0].__bbox.require.forEach(t=>{t[3]?.[1]?.__bbox?.result?.data?.category===e&&(delete t[3][1].__bbox.result.data.node,n=!0),v(t[3]?.[1]?.__bbox?.result?.data?.node)&&(delete t[3][1].__bbox.result.data.node,n=!0),n=F(t)||n}),E.some(e=>Array.isArray(t.data?.viewer?.[e]?.nodes))&&(n=F(t)||n),Array.isArray(t.data?.viewer?.news_feed?.edges)){const r=t.data.viewer.news_feed.edges.length;t.data.viewer.news_feed.edges=t.data.viewer.news_feed.edges.filter(t=>!v(t.node)&&t.category!==e),n=n||t.data.viewer.news_feed.edges.length!==r}v(t.data?.node)&&(delete t.data.node,n=!0),t.data?.category===e&&(delete t.data.node,n=!0)}}catch(e){}return n})(t,!0);return 0===r||Object.values(t).forEach(e=>{a=R(e,r-1,n)||a}),a},C=(e,t)=>{try{const r="string"==typeof t;if(r&&!w(t))return e;if(W(e))return e;if(!r&&!w(JSON.stringify(e)))return e;R(e)&&e&&"object"==typeof e&&y.add(e)}catch(e){}return e},{apply:J}={apply(e,t,r){X();const n=Reflect.apply(e,t,r);return C(n,r[0])}},M={apply:J};window.JSON.parse=f(window.JSON.parse,M);const $=new WeakMap,z=(e,t,r,n)=>{if(!e||"object"!=typeof e&&"function"!=typeof e)return;let o=$.get(e);o||(o=[...t],Object.keys(e).forEach(t=>{const r=Object.getOwnPropertyDescriptor(e,t)?.value;!o.includes(t)&&"function"==typeof r&&n(e,r)&&o.push(t)}),$.set(e,o));let i=a.get(e);if(!o.some(t=>"function"==typeof e[t]&&!d.has(e[t])&&(i?.get(t)??0)<10))return;i||(i=new Map,a.set(e,i));const s=new Map;o.forEach(t=>{const r=e[t];"function"==typeof r&&d.has(r)&&s.set(d.get(r),r)}),o.forEach(t=>{const n=e[t],o=i.get(t)??0;if("function"!=typeof n||d.has(n)||o>=10)return;i.set(t,o+1);let a=s.get(n);if(!a){const{apply:e}={apply(e,t,n){const o=Reflect.apply(e,t,n);return r?C(o,n[0]):C(o)}};a=f(n,{apply:e}),s.set(n,a)}e[t]=a})},D=["parse","parseText","readText","fromText","fromSource","fromChunk","fromBlock","fromSlice","fromPiece","fromSection","fromSegment","fromExcerpt","fromFragment","fromScrap","fromSliver","fromMorsel","fromCrumb"],L=["ghlParseServerJSPayload","readBootPayload","decodeBootScript","hydrateBootData","inflateBootPayload","expandBootPayload","unpackBootPayload","openBootPayload","loadBootPayload","readBootState","readBootRecord","readBootEntry","takeBootFrame","grabBootSlice","pullBootChunk","peelBootLayer","skimBootBatch"],T=[[["json5"],e=>z(e,D,!0,(e,t)=>t===e.parse||t===d.get(e.parse))],[["GHLServerJSParse"],e=>z(e,L,!1,()=>!0)]],H=e=>{Array.isArray(e)&&T.forEach(t=>{e.some(e=>e?.[1]===t[1])||e.push(t)})};let U=null,G=!1,I=!1;const K=new Map,Q=T.map(([[e],t])=>r=>{K.set(e,r),t(r)}),V=()=>{if(!G&&"function"==typeof window.require){G=!0;const e=window.require("ifRequired");"function"==typeof e&&(U=e)}return U},X=()=>{if(!I)try{for(let e=0;e<T.length;e+=1){const[[t],r]=T[e],n=K.get(t);if(void 0===n){if(null===V())return;U(t,Q[e])}else r(n)}}catch(e){I=!0}},{apply:Y}={apply(e,t,r){let n;X();try{if(h(t),g(t)){const e=JSON.parse(t);y.has(e)&&(n=JSON.stringify(e))}}catch(e){}return Reflect.apply(e,n??t,r)}},Z={apply:Y};window.String.prototype.split=f(window.String.prototype.split,Z),window.String.prototype.substring=f(window.String.prototype.substring,Z);const{apply:ee}={apply(e,t,r){X();const n=Reflect.apply(e,t,r);try{if(g(n)){const e=JSON.parse(n);if(y.has(e)){return JSON.stringify(e)}}}catch(e){}return n}},te={apply:ee};window.String=f(window.String,te),window.String.prototype.constructor=window.String;const re=new Map,ne=/^[\\t\\r\\n \\v\\f\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff]*[\\v\\f\\u00a0\\u1680\\u2000-\\u200a\\u2028\\u2029\\u202f\\u205f\\u3000\\ufeff][\\t\\r\\n ]*/,oe=/^(?:[\\t\\r\\n ]*(?:\\/\\/[^\\r\\n]*(?:\\r\\n?|\\n)|\\/\\*[\\s\\S]*?\\*\\/))+/,ae=/"(?:[^"\\\\]|\\\\[\\s\\S])*"|((?:(?:\\/\\*[\\s\\S]*?\\*\\/|\\/\\/[^\\r\\n]*(?:\\r\\n?|\\n|$))[\\t\\r\\n ]*)+)/g,ie=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:/,se=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"|[[{]|true|false|null|-?[\\d.eE+-]+)/,pe=/^[\\t\\r\\n ]*(?:\\[[\\t\\r\\n ]*)?\\{[\\t\\r\\n ]*"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"|[[{]|true|false|null|-?[\\d.eE+-]+)[\\t\\r\\n ]*(?:"(?:[^"\\\\]|\\\\.)*"[\\t\\r\\n ]*:|[,[{\\]}])/,le=e=>{const t=re.get(e);if(void 0!==t)return t;let r=e;try{const t=w(e),n=e.match(ne)?.[0]??"",o=e.slice(n.length),a=o.match(oe)?.[0]??"",i=o.slice(a.length);let s=i,p="";if(t&&(/\\*\\/[\\t\\r\\n ]*$/.test(i)||/(?:\\r\\n?|\\n)[\\t ]*\\/\\/[^\\r\\n]*(?:[\\r\\n][\\t ]*)*$/.test(i)))for(const e of i.matchAll(ae))if(e[1]&&e.index+e[0].length===i.length){const t=i.slice(0,e.index).search(/[\\t\\r\\n ]*$/);s=i.slice(0,t),p=i.slice(t);break}const d=Reflect.apply(l,s,[]);if(h(d)&&t){const e=d.slice(1).match(oe)?.[0]??"";let t=""===e?s:s.replace(e,"");const o=t.match(ie)?.[0]??"",i=""===o?"":t.slice(o.length).match(oe)?.[0]??"";""!==i&&(t=o+t.slice(o.length+i.length));const l=t.match(se)?.[0]??"",c=""===l?"":t.slice(l.length).match(oe)?.[0]??"";""!==c&&(t=l+" "+t.slice(l.length+c.length));const f=t.match(pe)?.[0]??"",u=""===f?"":t.slice(f.length).match(oe)?.[0]??"";""!==u&&(t=f+" "+t.slice(f.length+u.length));let w="";if(t.includes("/*")||t.includes("//"))for(const e of t.matchAll(ae))if(e[1]&&/^[\\]}][\\t\\r\\n ]*$/.test(t.slice(e.index+e[0].length))){w=e[1],t=t.slice(0,e.index)+" "+t.slice(e.index+w.length);break}const h=JSON.parse(t);if(y.has(h)){let t=JSON.stringify(h);""!==u&&(t=t.replace(pe,e=>e+u)),""!==c&&(t=t.replace(se,e=>e+c)),""!==i&&(t=t.replace(ie,e=>e+i)),""!==w&&(t=t.slice(0,-1)+w+t.slice(-1)),r=n+a+t[0]+e+t.slice(1)+p}}}catch(e){}return((e,t)=>{if(re.size>=2){const e=re.keys().next().value;re.delete(e)}return re.set(e,t),t})(e,r)},{apply:de}={apply(e,t,r){let n=t;try{"string"==typeof t&&t.length>300&&(n=le(t))}catch(e){}return Reflect.apply(e,n,r)}},ce={apply:de};window.String.prototype.charAt=f(window.String.prototype.charAt,ce);const ye=e=>{const t=e?.data?.viewer?.marketplace_feed_stories;if(!Array.isArray(t?.edges))return!1;const r=t.edges.filter(e=>!(e=>{const t=e?.__typename;return"string"==typeof t&&t.includes(o)})(e?.node));return r.length!==t.edges.length&&(t.edges=r,!0)},{apply:fe}={apply(e,t,r){const n=r[2]?.[0];if(u(n,s))try{const e=(e=>{let t=!1;const r=Reflect.apply(p,e,[/\\r?\\n|\\r/]).map(e=>{if(""===e.trim())return e;let r;try{r=JSON.parse(e)}catch{return e}const n=y.has(r),o=ye(r);return n||o?(t=!0,JSON.stringify(r)):e});return t?r.join("\\r\\n"):e})(n);if(e!==n){const t=r[2].slice();t[0]=e,r[2]=t}}catch(e){}return Reflect.apply(e,t,r)}},ue={apply:fe};window.Function.prototype.call=f(window.Function.prototype.call,ue);const{apply:we}={apply:(e,t,r)=>c.has(t)?c.get(t):Reflect.apply(e,t,r)},he={apply:we};window.Function.prototype.toString=f(window.Function.prototype.toString,he),(()=>{const e=window.__rl_stub;if("function"==typeof window.requireLazy&&!Array.isArray(e))return void T.forEach(([e,t])=>{window.requireLazy(e,t)});let t=Array.isArray(e)?e:[];H(t);try{Object.defineProperty(window,"__rl_stub",{configurable:!0,enumerable:!0,get:()=>t,set(e){t=e,H(e)}})}catch(e){window.__rl_stub=t}})()})();': () => {
         try {
             const e = "done";
-            if (Window.prototype.toString.c44b923c2899cbce3f770e316742ea35 === e) return;
+            if (Window.prototype.toString.ed30f0d31fb1e9efed5f683cd3dc8c34 === e) return;
             (() => {
-                const e = "SPONSORED", t = "SponsoredData", r = "AdsSideFeedUnit", n = [ "sponsored_data", "th_dat_spo", "qrz_ctx_seg", "pso_tad_rens" ], o = "MarketplaceFeedAdStory", a = new WeakMap, i = [ e, t, r, ...n ], s = [ t, o, ...n ], p = window.String.prototype.split, l = window.String.prototype.trim, c = new WeakMap, d = new WeakMap, y = new WeakSet, f = (e, t, r = Proxy) => {
-                    const n = d.get(e) ?? Reflect.apply(window.Function.prototype.toString, e, []), o = new r(e, t);
-                    return c.set(o, c.get(e) ?? e), d.set(o, n), o;
-                }, u = (e, t) => e?.length > 300 && t.some((t => e?.includes?.(t))), w = e => u(e, i), h = e => Boolean(e?.startsWith?.("{") && e?.endsWith?.("}") || e?.startsWith?.("[") && e?.endsWith?.("]")), g = e => h(e) && w(e), _ = e => {
+                const e = "SPONSORED", t = "SponsoredData", r = "AdsSideFeedUnit", n = [ "sponsored_data", "th_dat_spo", "qrz_ctx_seg", "pso_tad_rens" ], o = "MarketplaceFeedAdStory", a = new WeakMap, i = [ e, t, r, ...n ], s = [ t, o, ...n ], p = window.String.prototype.split, l = window.String.prototype.trim, d = new WeakMap, c = new WeakMap, y = new WeakSet, f = (e, t, r = Proxy) => {
+                    const n = c.get(e) ?? Reflect.apply(window.Function.prototype.toString, e, []), o = new r(e, t);
+                    return d.set(o, d.get(e) ?? e), c.set(o, n), o;
+                }, u = (e, t) => e?.length > 300 && t.some((t => e?.includes?.(t))), w = e => u(e, i), g = e => Boolean(e?.startsWith?.("{") && e?.endsWith?.("}") || e?.startsWith?.("[") && e?.endsWith?.("]")), h = e => g(e) && w(e), m = e => {
                     try {
-                        e.JSON.parse = f(e.JSON.parse, J, e.Proxy), e.String.prototype.split = f(e.String.prototype.split, V, e.Proxy), 
-                        e.String = f(e.String, Y, e.Proxy), e.String.prototype.constructor = e.String, e.Function.prototype.call = f(e.Function.prototype.call, ce, e.Proxy), 
-                        e.Function.prototype.toString = f(e.Function.prototype.toString, ye, e.Proxy);
+                        e.JSON.parse = f(e.JSON.parse, M, e.Proxy), e.String.prototype.split = f(e.String.prototype.split, Z, e.Proxy), 
+                        e.String = f(e.String, te, e.Proxy), e.String.prototype.constructor = e.String, 
+                        e.Function.prototype.call = f(e.Function.prototype.call, fe, e.Proxy), e.Function.prototype.toString = f(e.Function.prototype.toString, we, e.Proxy);
                     } catch (e) {}
-                }, m = e => Boolean(e instanceof HTMLIFrameElement && ("" === e.src || e?.src?.startsWith("about:blank")) && e.contentWindow), b = new Set([ "append", "prepend", "before", "after", "insertNode", "replaceWith", "replaceChild", "replaceChildren" ]), {apply: S} = {
+                }, _ = e => Boolean(e instanceof HTMLIFrameElement && ("" === e.src || e?.src?.startsWith("about:blank")) && e.contentWindow), b = new Set([ "append", "prepend", "before", "after", "insertNode", "replaceWith", "replaceChild", "replaceChildren" ]), {apply: S} = {
                     apply(e, t, r) {
                         const n = Reflect.apply(e, t, r);
                         try {
-                            m(n) ? _(n.contentWindow) : b.has(e.name) && r.forEach((e => {
-                                m(e) && _(e.contentWindow);
+                            _(n) ? m(n.contentWindow) : b.has(e.name) && r.forEach((e => {
+                                _(e) && m(e.contentWindow);
                             }));
                         } catch (e) {}
                         return n;
                     }
-                }, x = {
+                }, A = {
                     apply: S
                 };
-                window.Node.prototype.appendChild = f(window.Node.prototype.appendChild, x), window.Node.prototype.insertBefore = f(window.Node.prototype.insertBefore, x), 
-                window.Node.prototype.replaceChild = f(window.Node.prototype.replaceChild, x), window.Element.prototype.append = f(window.Element.prototype.append, x), 
-                window.Element.prototype.prepend = f(window.Element.prototype.prepend, x), window.Element.prototype.replaceChildren = f(window.Element.prototype.replaceChildren, x), 
-                window.Element.prototype.replaceWith = f(window.Element.prototype.replaceWith, x), 
-                window.Element.prototype.before = f(window.Element.prototype.before, x), window.Element.prototype.after = f(window.Element.prototype.after, x), 
-                window.Element.prototype.insertAdjacentElement = f(window.Element.prototype.insertAdjacentElement, x), 
-                window.Range.prototype.insertNode = f(window.Range.prototype.insertNode, x), window.CharacterData.prototype.replaceWith = f(window.CharacterData.prototype.replaceWith, x);
-                const A = [ "item_collection", "ads" ], E = [ "auxColumnUnits", "sdieFede", "sideFeed" ], v = e => Boolean(e) && (Object.values(e).some((e => e?.__typename === t)) || n.some((t => {
+                window.Node.prototype.appendChild = f(window.Node.prototype.appendChild, A), window.Node.prototype.insertBefore = f(window.Node.prototype.insertBefore, A), 
+                window.Node.prototype.replaceChild = f(window.Node.prototype.replaceChild, A), window.Element.prototype.append = f(window.Element.prototype.append, A), 
+                window.Element.prototype.prepend = f(window.Element.prototype.prepend, A), window.Element.prototype.replaceChildren = f(window.Element.prototype.replaceChildren, A), 
+                window.Element.prototype.replaceWith = f(window.Element.prototype.replaceWith, A), 
+                window.Element.prototype.before = f(window.Element.prototype.before, A), window.Element.prototype.after = f(window.Element.prototype.after, A), 
+                window.Element.prototype.insertAdjacentElement = f(window.Element.prototype.insertAdjacentElement, A), 
+                window.Range.prototype.insertNode = f(window.Range.prototype.insertNode, A), window.CharacterData.prototype.replaceWith = f(window.CharacterData.prototype.replaceWith, A);
+                const x = [ "item_collection", "ads" ], E = [ "auxColumnUnits", "sdieFede", "sideFeed" ], v = e => Boolean(e) && (Object.values(e).some((e => e?.__typename === t)) || n.some((t => {
                     const r = e[t];
                     return r && "object" == typeof r && !Array.isArray(r) && [ r.ad_id, r.lbl_adv_iden ].some((e => "string" == typeof e && e.length > 0));
                 }))), O = (e, t) => {
                     if (!e || "object" != typeof e || Array.isArray(e)) return !1;
                     const r = Object.keys(e);
                     return r.length === t.length && t.every((e => r.includes(e)));
-                }, N = e => O(e, [ "node" ]) && O(e.node, [ "s" ]) && O(e.node.s, [ "__typename" ]) && e.node.s.__typename === t, j = new Set([ "h4", "r2", "b3", "d2", "x5", "g8" ]), B = [ "p", "z9", "k4", "w7", "q8", "n3", "v6", "j5", "t8", "m6", ...j ], W = e => {
+                }, j = e => O(e, [ "node" ]) && O(e.node, [ "s" ]) && O(e.node.s, [ "__typename" ]) && e.node.s.__typename === t, B = new Set([ "h4", "r2", "b3", "d2", "x5", "g8", "c7" ]), N = [ "p", "z9", "k4", "w7", "q8", "n3", "v6", "j5", "t8", "m6", ...B ], k = /^[a-z]\d$/, W = [ "data", "edges", "require", "extensions", "__bbox" ], P = e => {
                     const t = Array.isArray(e) && 1 === e.length ? e[0] : e;
                     if (!t || "object" != typeof t || Array.isArray(t)) return !1;
-                    const r = B.find((e => "string" == typeof t[e]));
-                    if (void 0 === r) return !1;
+                    let r = N.find((e => "string" == typeof t[e]));
+                    if (void 0 === r) {
+                        if (!Array.isArray(t.edges) || !Array.isArray(t.require)) return !1;
+                        const e = Object.keys(t).filter((e => !W.includes(e)));
+                        if (1 !== e.length || !k.test(e[0]) || "string" != typeof t[e[0]]) return !1;
+                        r = e[0];
+                    }
                     const n = [ "data", "edges", "require", r ];
                     if (Object.hasOwn(t, "extensions")) {
                         if (!(O(t.extensions, []) || O(t.extensions, [ "is_final" ]) && !0 === t.extensions.is_final)) return !1;
                         n.push("extensions");
                     }
                     if (Object.hasOwn(t, "__bbox")) {
-                        if (!(j.has(r) && O(t.extensions, [ "is_final" ]) && !0 === t.extensions.is_final && (o = t.__bbox, 
-                        O(o, [ "result" ]) && O(o.result, [ "data" ]) && O(o.result.data, [ "node" ]) && O(o.result.data.node, [ "s", "th_dat_spo" ]) && O(o.result.data.node.s, [ "__typename" ]) && "CometStorySponsoredLabelStrategy" === o.result.data.node.s.__typename && O(o.result.data.node.th_dat_spo, [ "s" ]) && 1 === o.result.data.node.th_dat_spo.s))) return !1;
+                        if (!B.has(r) && N.includes(r) || !O(t.extensions, [ "is_final" ]) || !0 !== t.extensions.is_final || (o = t.__bbox, 
+                        !(O(o, [ "result" ]) && O(o.result, [ "data" ]) && O(o.result.data, [ "node" ]) && O(o.result.data.node, [ "s", "th_dat_spo" ]) && O(o.result.data.node.s, [ "__typename" ]) && "CometStorySponsoredLabelStrategy" === o.result.data.node.s.__typename && O(o.result.data.node.th_dat_spo, [ "s" ]) && 1 === o.result.data.node.th_dat_spo.s))) return !1;
                         n.push("__bbox");
                     }
                     var o;
-                    return O(t, n) && N(t.data) && Array.isArray(t.edges) && 1 === t.edges.length && N(t.edges[0]) && Array.isArray(t.require) && 1 === t.require.length && N(t.require[0]);
-                }, P = (e, t, n, o) => {
+                    return O(t, n) && j(t.data) && Array.isArray(t.edges) && 1 === t.edges.length && j(t.edges[0]) && Array.isArray(t.require) && 1 === t.require.length && j(t.require[0]);
+                }, q = (e, t, n, o) => {
                     if (!e || "object" != typeof e || n < 0) return !1;
                     let a = !1;
                     if (Array.isArray(e.nodes)) {
-                        const t = e.nodes.filter((e => !(e => e?.__typename === r || A.some((t => {
+                        const t = e.nodes.filter((e => !(e => e?.__typename === r || x.some((t => {
                             const r = e?.[t]?.nodes;
                             return Array.isArray(r) && r.some((e => e?.sponsored_data?.ad_id));
                         })))(e)));
                         e.nodes.length - t.length > 0 && (e.nodes = t, a = !0);
                     }
                     return Object.entries(e).forEach((([e, r]) => {
-                        a = P(r, `${t}.${e}`, n - 1, o) || a;
+                        a = q(r, `${t}.${e}`, n - 1, o) || a;
                     })), a;
-                }, k = (e, t = 10) => {
+                }, F = (e, t = 10) => {
                     const r = e?.data?.viewer, n = r ?? e?.[3]?.[1]?.__bbox?.result?.data?.viewer;
-                    return !!n && P(n, r ? "data.viewer" : "item[3][1].__bbox.result.data.viewer", t, e);
-                }, q = (t, r = 10, n = new WeakMap) => {
+                    return !!n && q(n, r ? "data.viewer" : "item[3][1].__bbox.result.data.viewer", t, e);
+                }, R = (t, r = 10, n = new WeakMap) => {
                     if (!t || "object" != typeof t || r < 0) return !1;
                     const o = n.get(t);
                     if (void 0 !== o && o >= r) return !1;
-                    if (n.set(t, r), W(t)) return !1;
+                    if (n.set(t, r), P(t)) return !1;
                     let a = (t => {
                         if (!t || "object" != typeof t) return !1;
                         let r = !1;
@@ -7681,8 +7686,8 @@ export const localScriptRules = {
                             if (Array.isArray(t.require?.[0]?.[3]?.[0]?.__bbox?.require) && t.require[0][3][0].__bbox.require.forEach((t => {
                                 t[3]?.[1]?.__bbox?.result?.data?.category === e && (delete t[3][1].__bbox.result.data.node, 
                                 r = !0), v(t[3]?.[1]?.__bbox?.result?.data?.node) && (delete t[3][1].__bbox.result.data.node, 
-                                r = !0), r = k(t) || r;
-                            })), E.some((e => Array.isArray(t.data?.viewer?.[e]?.nodes))) && (r = k(t) || r), 
+                                r = !0), r = F(t) || r;
+                            })), E.some((e => Array.isArray(t.data?.viewer?.[e]?.nodes))) && (r = F(t) || r), 
                             Array.isArray(t.data?.viewer?.news_feed?.edges)) {
                                 const n = t.data.viewer.news_feed.edges.length;
                                 t.data.viewer.news_feed.edges = t.data.viewer.news_feed.edges.filter((t => !v(t.node) && t.category !== e)), 
@@ -7694,169 +7699,174 @@ export const localScriptRules = {
                         return r;
                     })(t);
                     return 0 === r || Object.values(t).forEach((e => {
-                        a = q(e, r - 1, n) || a;
+                        a = R(e, r - 1, n) || a;
                     })), a;
-                }, F = (e, t) => {
+                }, C = (e, t) => {
                     try {
                         const r = "string" == typeof t;
                         if (r && !w(t)) return e;
-                        if (W(e)) return e;
+                        if (P(e)) return e;
                         if (!r && !w(JSON.stringify(e))) return e;
-                        q(e) && e && "object" == typeof e && y.add(e);
+                        R(e) && e && "object" == typeof e && y.add(e);
                     } catch (e) {}
                     return e;
-                }, {apply: R} = {
+                }, {apply: J} = {
                     apply(e, t, r) {
-                        K();
+                        X();
                         const n = Reflect.apply(e, t, r);
-                        return F(n, r[0]);
+                        return C(n, r[0]);
                     }
-                }, J = {
-                    apply: R
+                }, M = {
+                    apply: J
                 };
-                window.JSON.parse = f(window.JSON.parse, J);
-                const C = (e, t, r) => {
+                window.JSON.parse = f(window.JSON.parse, M);
+                const $ = new WeakMap, z = (e, t, r, n) => {
                     if (!e || "object" != typeof e && "function" != typeof e) return;
-                    let n = a.get(e);
-                    if (!t.some((t => "function" == typeof e[t] && !c.has(e[t]) && (n?.get(t) ?? 0) < 10))) return;
-                    n || (n = new Map, a.set(e, n));
-                    const o = new Map;
-                    t.forEach((t => {
+                    let o = $.get(e);
+                    o || (o = [ ...t ], Object.keys(e).forEach((t => {
+                        const r = Object.getOwnPropertyDescriptor(e, t)?.value;
+                        !o.includes(t) && "function" == typeof r && n(e, r) && o.push(t);
+                    })), $.set(e, o));
+                    let i = a.get(e);
+                    if (!o.some((t => "function" == typeof e[t] && !d.has(e[t]) && (i?.get(t) ?? 0) < 10))) return;
+                    i || (i = new Map, a.set(e, i));
+                    const s = new Map;
+                    o.forEach((t => {
                         const r = e[t];
-                        "function" == typeof r && c.has(r) && o.set(c.get(r), r);
-                    })), t.forEach((t => {
-                        const a = e[t], i = n.get(t) ?? 0;
-                        if ("function" != typeof a || c.has(a) || i >= 10) return;
-                        n.set(t, i + 1);
-                        let s = o.get(a);
-                        if (!s) {
+                        "function" == typeof r && d.has(r) && s.set(d.get(r), r);
+                    })), o.forEach((t => {
+                        const n = e[t], o = i.get(t) ?? 0;
+                        if ("function" != typeof n || d.has(n) || o >= 10) return;
+                        i.set(t, o + 1);
+                        let a = s.get(n);
+                        if (!a) {
                             const {apply: e} = {
                                 apply(e, t, n) {
                                     const o = Reflect.apply(e, t, n);
-                                    return r ? F(o, n[0]) : F(o);
+                                    return r ? C(o, n[0]) : C(o);
                                 }
                             };
-                            s = f(a, {
+                            a = f(n, {
                                 apply: e
-                            }), o.set(a, s);
+                            }), s.set(n, a);
                         }
-                        e[t] = s;
+                        e[t] = a;
                     }));
-                }, M = [ "parse", "parseText", "readText", "fromText", "fromSource", "fromChunk", "fromBlock", "fromSlice", "fromPiece", "fromSection", "fromSegment", "fromExcerpt", "fromFragment", "fromScrap", "fromSliver", "fromMorsel" ], $ = [ "ghlParseServerJSPayload", "readBootPayload", "decodeBootScript", "hydrateBootData", "inflateBootPayload", "expandBootPayload", "unpackBootPayload", "openBootPayload", "loadBootPayload", "readBootState", "readBootRecord", "readBootEntry", "takeBootFrame", "grabBootSlice", "pullBootChunk", "peelBootLayer" ], L = [ [ [ "json5" ], e => C(e, M, !0) ], [ [ "GHLServerJSParse" ], e => C(e, $, !1) ] ], z = e => {
-                    Array.isArray(e) && L.forEach((t => {
+                }, D = [ "parse", "parseText", "readText", "fromText", "fromSource", "fromChunk", "fromBlock", "fromSlice", "fromPiece", "fromSection", "fromSegment", "fromExcerpt", "fromFragment", "fromScrap", "fromSliver", "fromMorsel", "fromCrumb" ], L = [ "ghlParseServerJSPayload", "readBootPayload", "decodeBootScript", "hydrateBootData", "inflateBootPayload", "expandBootPayload", "unpackBootPayload", "openBootPayload", "loadBootPayload", "readBootState", "readBootRecord", "readBootEntry", "takeBootFrame", "grabBootSlice", "pullBootChunk", "peelBootLayer", "skimBootBatch" ], T = [ [ [ "json5" ], e => z(e, D, !0, ((e, t) => t === e.parse || t === d.get(e.parse))) ], [ [ "GHLServerJSParse" ], e => z(e, L, !1, (() => !0)) ] ], G = e => {
+                    Array.isArray(e) && T.forEach((t => {
                         e.some((e => e?.[1] === t[1])) || e.push(t);
                     }));
                 };
-                let D = null, T = !1, G = !1;
-                const H = new Map, I = L.map((([[e], t]) => r => {
-                    H.set(e, r), t(r);
-                })), U = () => {
-                    if (!T && "function" == typeof window.require) {
-                        T = !0;
+                let H = null, I = !1, U = !1;
+                const K = new Map, Q = T.map((([[e], t]) => r => {
+                    K.set(e, r), t(r);
+                })), V = () => {
+                    if (!I && "function" == typeof window.require) {
+                        I = !0;
                         const e = window.require("ifRequired");
-                        "function" == typeof e && (D = e);
+                        "function" == typeof e && (H = e);
                     }
-                    return D;
-                }, K = () => {
-                    if (!G) try {
-                        for (let e = 0; e < L.length; e += 1) {
-                            const [[t], r] = L[e], n = H.get(t);
+                    return H;
+                }, X = () => {
+                    if (!U) try {
+                        for (let e = 0; e < T.length; e += 1) {
+                            const [[t], r] = T[e], n = K.get(t);
                             if (void 0 === n) {
-                                if (null === U()) return;
-                                D(t, I[e]);
+                                if (null === V()) return;
+                                H(t, Q[e]);
                             } else r(n);
                         }
                     } catch (e) {
-                        G = !0;
+                        U = !0;
                     }
-                }, {apply: Q} = {
+                }, {apply: Y} = {
                     apply(e, t, r) {
                         let n;
-                        K();
+                        X();
                         try {
-                            if (h(t), g(t)) {
+                            if (g(t), h(t)) {
                                 const e = JSON.parse(t);
                                 y.has(e) && (n = JSON.stringify(e));
                             }
                         } catch (e) {}
                         return Reflect.apply(e, n ?? t, r);
                     }
-                }, V = {
-                    apply: Q
+                }, Z = {
+                    apply: Y
                 };
-                window.String.prototype.split = f(window.String.prototype.split, V), window.String.prototype.substring = f(window.String.prototype.substring, V);
-                const {apply: X} = {
+                window.String.prototype.split = f(window.String.prototype.split, Z), window.String.prototype.substring = f(window.String.prototype.substring, Z);
+                const {apply: ee} = {
                     apply(e, t, r) {
-                        K();
+                        X();
                         const n = Reflect.apply(e, t, r);
                         try {
-                            if (g(n)) {
+                            if (h(n)) {
                                 const e = JSON.parse(n);
                                 if (y.has(e)) return JSON.stringify(e);
                             }
                         } catch (e) {}
                         return n;
                     }
-                }, Y = {
-                    apply: X
+                }, te = {
+                    apply: ee
                 };
-                window.String = f(window.String, Y), window.String.prototype.constructor = window.String;
-                const Z = new Map, ee = /^[\t\r\n \v\f\u00a0\ufeff\u3000]*[\v\f\u00a0\ufeff\u3000][\t\r\n ]*/, te = /^(?:[\t\r\n ]*(?:\/\/[^\r\n]*(?:\r\n?|\n)|\/\*[\s\S]*?\*\/))+/, re = /"(?:[^"\\]|\\[\s\S])*"|((?:(?:\/\*[\s\S]*?\*\/|\/\/[^\r\n]*(?:\r\n?|\n|$))[\t\r\n ]*)+)/g, ne = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:/, oe = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"|[[{]|true|false|null|-?[\d.eE+-]+)/, ae = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"|[[{]|true|false|null|-?[\d.eE+-]+)[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"[\t\r\n ]*:|[,[{\]}])/, {apply: ie} = {
+                window.String = f(window.String, te), window.String.prototype.constructor = window.String;
+                const re = new Map, ne = /^[\t\r\n \v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff]*[\v\f\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000\ufeff][\t\r\n ]*/, oe = /^(?:[\t\r\n ]*(?:\/\/[^\r\n]*(?:\r\n?|\n)|\/\*[\s\S]*?\*\/))+/, ae = /"(?:[^"\\]|\\[\s\S])*"|((?:(?:\/\*[\s\S]*?\*\/|\/\/[^\r\n]*(?:\r\n?|\n|$))[\t\r\n ]*)+)/g, ie = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:/, se = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"|[[{]|true|false|null|-?[\d.eE+-]+)/, pe = /^[\t\r\n ]*(?:\[[\t\r\n ]*)?\{[\t\r\n ]*"(?:[^"\\]|\\.)*"[\t\r\n ]*:[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"|[[{]|true|false|null|-?[\d.eE+-]+)[\t\r\n ]*(?:"(?:[^"\\]|\\.)*"[\t\r\n ]*:|[,[{\]}])/, {apply: le} = {
                     apply(e, t, r) {
                         let n = t;
                         try {
                             "string" == typeof t && t.length > 300 && (n = (e => {
-                                const t = Z.get(e);
+                                const t = re.get(e);
                                 if (void 0 !== t) return t;
                                 let r = e;
                                 try {
-                                    const t = w(e), n = e.match(ee)?.[0] ?? "", o = e.slice(n.length), a = o.match(te)?.[0] ?? "", i = o.slice(a.length);
+                                    const t = w(e), n = e.match(ne)?.[0] ?? "", o = e.slice(n.length), a = o.match(oe)?.[0] ?? "", i = o.slice(a.length);
                                     let s = i, p = "";
-                                    if (t && (/\*\/[\t\r\n ]*$/.test(i) || /(?:\r\n?|\n)[\t ]*\/\/[^\r\n]*(?:[\r\n][\t ]*)*$/.test(i))) for (const e of i.matchAll(re)) if (e[1] && e.index + e[0].length === i.length) {
+                                    if (t && (/\*\/[\t\r\n ]*$/.test(i) || /(?:\r\n?|\n)[\t ]*\/\/[^\r\n]*(?:[\r\n][\t ]*)*$/.test(i))) for (const e of i.matchAll(ae)) if (e[1] && e.index + e[0].length === i.length) {
                                         const t = i.slice(0, e.index).search(/[\t\r\n ]*$/);
                                         s = i.slice(0, t), p = i.slice(t);
                                         break;
                                     }
-                                    const c = Reflect.apply(l, s, []);
-                                    if (h(c) && t) {
-                                        const e = c.slice(1).match(te)?.[0] ?? "";
+                                    const d = Reflect.apply(l, s, []);
+                                    if (g(d) && t) {
+                                        const e = d.slice(1).match(oe)?.[0] ?? "";
                                         let t = "" === e ? s : s.replace(e, "");
-                                        const o = t.match(ne)?.[0] ?? "", i = "" === o ? "" : t.slice(o.length).match(te)?.[0] ?? "";
+                                        const o = t.match(ie)?.[0] ?? "", i = "" === o ? "" : t.slice(o.length).match(oe)?.[0] ?? "";
                                         "" !== i && (t = o + t.slice(o.length + i.length));
-                                        const l = t.match(oe)?.[0] ?? "", d = "" === l ? "" : t.slice(l.length).match(te)?.[0] ?? "";
-                                        "" !== d && (t = l + " " + t.slice(l.length + d.length));
-                                        const f = t.match(ae)?.[0] ?? "", u = "" === f ? "" : t.slice(f.length).match(te)?.[0] ?? "";
+                                        const l = t.match(se)?.[0] ?? "", c = "" === l ? "" : t.slice(l.length).match(oe)?.[0] ?? "";
+                                        "" !== c && (t = l + " " + t.slice(l.length + c.length));
+                                        const f = t.match(pe)?.[0] ?? "", u = "" === f ? "" : t.slice(f.length).match(oe)?.[0] ?? "";
                                         "" !== u && (t = f + " " + t.slice(f.length + u.length));
                                         let w = "";
-                                        if (t.includes("/*") || t.includes("//")) for (const e of t.matchAll(re)) if (e[1] && /^[\]}][\t\r\n ]*$/.test(t.slice(e.index + e[0].length))) {
+                                        if (t.includes("/*") || t.includes("//")) for (const e of t.matchAll(ae)) if (e[1] && /^[\]}][\t\r\n ]*$/.test(t.slice(e.index + e[0].length))) {
                                             w = e[1], t = t.slice(0, e.index) + " " + t.slice(e.index + w.length);
                                             break;
                                         }
-                                        const h = JSON.parse(t);
-                                        if (y.has(h)) {
-                                            let t = JSON.stringify(h);
-                                            "" !== u && (t = t.replace(ae, (e => e + u))), "" !== d && (t = t.replace(oe, (e => e + d))), 
-                                            "" !== i && (t = t.replace(ne, (e => e + i))), "" !== w && (t = t.slice(0, -1) + w + t.slice(-1)), 
+                                        const g = JSON.parse(t);
+                                        if (y.has(g)) {
+                                            let t = JSON.stringify(g);
+                                            "" !== u && (t = t.replace(pe, (e => e + u))), "" !== c && (t = t.replace(se, (e => e + c))), 
+                                            "" !== i && (t = t.replace(ie, (e => e + i))), "" !== w && (t = t.slice(0, -1) + w + t.slice(-1)), 
                                             r = n + a + t[0] + e + t.slice(1) + p;
                                         }
                                     }
                                 } catch (e) {}
                                 return ((e, t) => {
-                                    if (Z.size >= 2) {
-                                        const e = Z.keys().next().value;
-                                        Z.delete(e);
+                                    if (re.size >= 2) {
+                                        const e = re.keys().next().value;
+                                        re.delete(e);
                                     }
-                                    return Z.set(e, t), t;
+                                    return re.set(e, t), t;
                                 })(e, r);
                             })(t));
                         } catch (e) {}
                         return Reflect.apply(e, n, r);
                     }
-                }, se = {
-                    apply: ie
+                }, de = {
+                    apply: le
                 };
-                window.String.prototype.charAt = f(window.String.prototype.charAt, se);
-                const pe = e => {
+                window.String.prototype.charAt = f(window.String.prototype.charAt, de);
+                const ce = e => {
                     const t = e?.data?.viewer?.marketplace_feed_stories;
                     if (!Array.isArray(t?.edges)) return !1;
                     const r = t.edges.filter((e => !(e => {
@@ -7864,7 +7874,7 @@ export const localScriptRules = {
                         return "string" == typeof t && t.includes(o);
                     })(e?.node)));
                     return r.length !== t.edges.length && (t.edges = r, !0);
-                }, {apply: le} = {
+                }, {apply: ye} = {
                     apply(e, t, r) {
                         const n = r[2]?.[0];
                         if (u(n, s)) try {
@@ -7878,7 +7888,7 @@ export const localScriptRules = {
                                     } catch {
                                         return e;
                                     }
-                                    const n = y.has(r), o = pe(r);
+                                    const n = y.has(r), o = ce(r);
                                     return n || o ? (t = !0, JSON.stringify(r)) : e;
                                 }));
                                 return t ? r.join("\r\n") : e;
@@ -7890,30 +7900,30 @@ export const localScriptRules = {
                         } catch (e) {}
                         return Reflect.apply(e, t, r);
                     }
-                }, ce = {
-                    apply: le
+                }, fe = {
+                    apply: ye
                 };
-                window.Function.prototype.call = f(window.Function.prototype.call, ce);
-                const {apply: de} = {
-                    apply: (e, t, r) => d.has(t) ? d.get(t) : Reflect.apply(e, t, r)
-                }, ye = {
-                    apply: de
+                window.Function.prototype.call = f(window.Function.prototype.call, fe);
+                const {apply: ue} = {
+                    apply: (e, t, r) => c.has(t) ? c.get(t) : Reflect.apply(e, t, r)
+                }, we = {
+                    apply: ue
                 };
-                window.Function.prototype.toString = f(window.Function.prototype.toString, ye), 
+                window.Function.prototype.toString = f(window.Function.prototype.toString, we), 
                 (() => {
                     const e = window.__rl_stub;
-                    if ("function" == typeof window.requireLazy && !Array.isArray(e)) return void L.forEach((([e, t]) => {
+                    if ("function" == typeof window.requireLazy && !Array.isArray(e)) return void T.forEach((([e, t]) => {
                         window.requireLazy(e, t);
                     }));
                     let t = Array.isArray(e) ? e : [];
-                    z(t);
+                    G(t);
                     try {
                         Object.defineProperty(window, "__rl_stub", {
                             configurable: !0,
                             enumerable: !0,
                             get: () => t,
                             set(e) {
-                                t = e, z(e);
+                                t = e, G(e);
                             }
                         });
                     } catch (e) {
@@ -7921,14 +7931,14 @@ export const localScriptRules = {
                     }
                 })();
             })();
-            Object.defineProperty(Window.prototype.toString, "c44b923c2899cbce3f770e316742ea35", {
+            Object.defineProperty(Window.prototype.toString, "ed30f0d31fb1e9efed5f683cd3dc8c34", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "c44b923c2899cbce3f770e316742ea35" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "ed30f0d31fb1e9efed5f683cd3dc8c34" due to: ' + e);
         }
     },
     "(function(){var c=document.addEventListener;document.addEventListener=function(a,b,d,e){\"click\"!=a&&-1==b.toString().indexOf('about:blank')&&c(a,b,d,e)}.bind(document);})();": () => {
@@ -8539,6 +8549,33 @@ export const localScriptRules = {
             });
         } catch (e) {
             console.error('Error executing AG js rule with uniqueId "603eae5adb03f4c7cd347c941efff0ef" due to: ' + e);
+        }
+    },
+    '(()=>{const e=Object.getOwnPropertyDescriptor(Element.prototype,"innerHTML");if(!e||"function"!=typeof e.set)return;const t={apply:(e,t,n)=>{if(""!==n[0]||t!==document.head&&t!==document.body)return Reflect.apply(e,t,n)}};Object.defineProperty(Element.prototype,"innerHTML",{...e,set:new Proxy(e.set,t)})})();': () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString["5e69e2a3c1711fb584b74475b50d351c"] === e) return;
+            (() => {
+                const e = Object.getOwnPropertyDescriptor(Element.prototype, "innerHTML");
+                if (!e || "function" != typeof e.set) return;
+                const t = {
+                    apply: (e, t, r) => {
+                        if ("" !== r[0] || t !== document.head && t !== document.body) return Reflect.apply(e, t, r);
+                    }
+                };
+                Object.defineProperty(Element.prototype, "innerHTML", {
+                    ...e,
+                    set: new Proxy(e.set, t)
+                });
+            })();
+            Object.defineProperty(Window.prototype.toString, "5e69e2a3c1711fb584b74475b50d351c", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "5e69e2a3c1711fb584b74475b50d351c" due to: ' + e);
         }
     },
     '(()=>{const A={apply:(A,B,Q)=>{try{const A=Q[0];A&&A._uri&&A._uri.startsWith("spotify:ad:")&&A._url&&(A._url="data:video/mp4;base64,AAAAHGZ0eXBNNFYgAAACAGlzb21pc28yYXZjMQAAAAhmcmVlAAAGF21kYXTeBAAAbGliZmFhYyAxLjI4AABCAJMgBDIARwAAArEGBf//rdxF6b3m2Ui3lizYINkj7u94MjY0IC0gY29yZSAxNDIgcjIgOTU2YzhkOCAtIEguMjY0L01QRUctNCBBVkMgY29kZWMgLSBDb3B5bGVmdCAyMDAzLTIwMTQgLSBodHRwOi8vd3d3LnZpZGVvbGFuLm9yZy94MjY0Lmh0bWwgLSBvcHRpb25zOiBjYWJhYz0wIHJlZj0zIGRlYmxvY2s9MTowOjAgYW5hbHlzZT0weDE6MHgxMTEgbWU9aGV4IHN1Ym1lPTcgcHN5PTEgcHN5X3JkPTEuMDA6MC4wMCBtaXhlZF9yZWY9MSBtZV9yYW5nZT0xNiBjaHJvbWFfbWU9MSB0cmVsbGlzPTEgOHg4ZGN0PTAgY3FtPTAgZGVhZHpvbmU9MjEsMTEgZmFzdF9wc2tpcD0xIGNocm9tYV9xcF9vZmZzZXQ9LTIgdGhyZWFkcz02IGxvb2thaGVhZF90aHJlYWRzPTEgc2xpY2VkX3RocmVhZHM9MCBucj0wIGRlY2ltYXRlPTEgaW50ZXJsYWNlZD0wIGJsdXJheV9jb21wYXQ9MCBjb25zdHJhaW5lZF9pbnRyYT0wIGJmcmFtZXM9MCB3ZWlnaHRwPTAga2V5aW50PTI1MCBrZXlpbnRfbWluPTI1IHNjZW5lY3V0PTQwIGludHJhX3JlZnJlc2g9MCByY19sb29rYWhlYWQ9NDAgcmM9Y3JmIG1idHJlZT0xIGNyZj0yMy4wIHFjb21wPTAuNjAgcXBtaW49MCBxcG1heD02OSBxcHN0ZXA9NCB2YnZfbWF4cmF0ZT03NjggdmJ2X2J1ZnNpemU9MzAwMCBjcmZfbWF4PTAuMCBuYWxfaHJkPW5vbmUgZmlsbGVyPTAgaXBfcmF0aW89MS40MCBhcT0xOjEuMDAAgAAAAFZliIQL8mKAAKvMnJycnJycnJycnXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXiEASZACGQAjgCEASZACGQAjgAAAAAdBmjgX4GSAIQBJkAIZACOAAAAAB0GaVAX4GSAhAEmQAhkAI4AhAEmQAhkAI4AAAAAGQZpgL8DJIQBJkAIZACOAIQBJkAIZACOAAAAABkGagC/AySEASZACGQAjgAAAAAZBmqAvwMkhAEmQAhkAI4AhAEmQAhkAI4AAAAAGQZrAL8DJIQBJkAIZACOAAAAABkGa4C/AySEASZACGQAjgCEASZACGQAjgAAAAAZBmwAvwMkhAEmQAhkAI4AAAAAGQZsgL8DJIQBJkAIZACOAIQBJkAIZACOAAAAABkGbQC/AySEASZACGQAjgCEASZACGQAjgAAAAAZBm2AvwMkhAEmQAhkAI4AAAAAGQZuAL8DJIQBJkAIZACOAIQBJkAIZACOAAAAABkGboC/AySEASZACGQAjgAAAAAZBm8AvwMkhAEmQAhkAI4AhAEmQAhkAI4AAAAAGQZvgL8DJIQBJkAIZACOAAAAABkGaAC/AySEASZACGQAjgCEASZACGQAjgAAAAAZBmiAvwMkhAEmQAhkAI4AhAEmQAhkAI4AAAAAGQZpAL8DJIQBJkAIZACOAAAAABkGaYC/AySEASZACGQAjgCEASZACGQAjgAAAAAZBmoAvwMkhAEmQAhkAI4AAAAAGQZqgL8DJIQBJkAIZACOAIQBJkAIZACOAAAAABkGawC/AySEASZACGQAjgAAAAAZBmuAvwMkhAEmQAhkAI4AhAEmQAhkAI4AAAAAGQZsAL8DJIQBJkAIZACOAAAAABkGbIC/AySEASZACGQAjgCEASZACGQAjgAAAAAZBm0AvwMkhAEmQAhkAI4AhAEmQAhkAI4AAAAAGQZtgL8DJIQBJkAIZACOAAAAABkGbgCvAySEASZACGQAjgCEASZACGQAjgAAAAAZBm6AnwMkhAEmQAhkAI4AhAEmQAhkAI4AhAEmQAhkAI4AhAEmQAhkAI4AAAAhubW9vdgAAAGxtdmhkAAAAAAAAAAAAAAAAAAAD6AAABDcAAQAAAQAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAzB0cmFrAAAAXHRraGQAAAADAAAAAAAAAAAAAAABAAAAAAAAA+kAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAALAAAACQAAAAAAAkZWR0cwAAABxlbHN0AAAAAAAAAAEAAAPpAAAAAAABAAAAAAKobWRpYQAAACBtZGhkAAAAAAAAAAAAAAAAAAB1MAAAdU5VxAAAAAAALWhkbHIAAAAAAAAAAHZpZGUAAAAAAAAAAAAAAABWaWRlb0hhbmRsZXIAAAACU21pbmYAAAAUdm1oZAAAAAEAAAAAAAAAAAAAACRkaW5mAAAAHGRyZWYAAAAAAAAAAQAAAAx1cmwgAAAAAQAAAhNzdGJsAAAAr3N0c2QAAAAAAAAAAQAAAJ9hdmMxAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAALAAkABIAAAASAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGP//AAAALWF2Y0MBQsAN/+EAFWdCwA3ZAsTsBEAAAPpAADqYA8UKkgEABWjLg8sgAAAAHHV1aWRraEDyXyRPxbo5pRvPAyPzAAAAAAAAABhzdHRzAAAAAAAAAAEAAAAeAAAD6QAAABRzdHNzAAAAAAAAAAEAAAABAAAAHHN0c2MAAAAAAAAAAQAAAAEAAAABAAAAAQAAAIxzdHN6AAAAAAAAAAAAAAAeAAADDwAAAAsAAAALAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAACgAAAAoAAAAKAAAAiHN0Y28AAAAAAAAAHgAAAEYAAANnAAADewAAA5gAAAO0AAADxwAAA+MAAAP2AAAEEgAABCUAAARBAAAEXQAABHAAAASMAAAEnwAABLsAAATOAAAE6gAABQYAAAUZAAAFNQAABUgAAAVkAAAFdwAABZMAAAWmAAAFwgAABd4AAAXxAAAGDQAABGh0cmFrAAAAXHRraGQAAAADAAAAAAAAAAAAAAACAAAAAAAABDcAAAAAAAAAAAAAAAEBAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAkZWR0cwAAABxlbHN0AAAAAAAAAAEAAAQkAAADcAABAAAAAAPgbWRpYQAAACBtZGhkAAAAAAAAAAAAAAAAAAC7gAAAykBVxAAAAAAALWhkbHIAAAAAAAAAAHNvdW4AAAAAAAAAAAAAAABTb3VuZEhhbmRsZXIAAAADi21pbmYAAAAQc21oZAAAAAAAAAAAAAAAJGRpbmYAAAAcZHJlZgAAAAAAAAABAAAADHVybCAAAAABAAADT3N0YmwAAABnc3RzZAAAAAAAAAABAAAAV21wNGEAAAAAAAAAAQAAAAAAAAAAAAIAEAAAAAC7gAAAAAAAM2VzZHMAAAAAA4CAgCIAAgAEgICAFEAVBbjYAAu4AAAADcoFgICAAhGQBoCAgAECAAAAIHN0dHMAAAAAAAAAAgAAADIAAAQAAAAAAQAAAkAAAAFUc3RzYwAAAAAAAAAbAAAAAQAAAAEAAAABAAAAAgAAAAIAAAABAAAAAwAAAAEAAAABAAAABAAAAAIAAAABAAAABgAAAAEAAAABAAAABwAAAAIAAAABAAAACAAAAAEAAAABAAAACQAAAAIAAAABAAAACgAAAAEAAAABAAAACwAAAAIAAAABAAAADQAAAAEAAAABAAAADgAAAAIAAAABAAAADwAAAAEAAAABAAAAEAAAAAIAAAABAAAAEQAAAAEAAAABAAAAEgAAAAIAAAABAAAAFAAAAAEAAAABAAAAFQAAAAIAAAABAAAAFgAAAAEAAAABAAAAFwAAAAIAAAABAAAAGAAAAAEAAAABAAAAGQAAAAIAAAABAAAAGgAAAAEAAAABAAAAGwAAAAIAAAABAAAAHQAAAAEAAAABAAAAHgAAAAIAAAABAAAAHwAAAAQAAAABAAAA4HN0c3oAAAAAAAAAAAAAADMAAAAaAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAAAJAAAACQAAAAkAAACMc3RjbwAAAAAAAAAfAAAALAAAA1UAAANyAAADhgAAA6IAAAO+AAAD0QAAA+0AAAQAAAAEHAAABC8AAARLAAAEZwAABHoAAASWAAAEqQAABMUAAATYAAAE9AAABRAAAAUjAAAFPwAABVIAAAVuAAAFgQAABZ0AAAWwAAAFzAAABegAAAX7AAAGFwAAAGJ1ZHRhAAAAWm1ldGEAAAAAAAAAIWhkbHIAAAAAAAAAAG1kaXJhcHBsAAAAAAAAAAAAAAAALWlsc3QAAAAlqXRvbwAAAB1kYXRhAAAAAQAAAABMYXZmNTUuMzMuMTAw")}catch(A){}return Reflect.apply(A,B,Q)}},B={apply:(B,Q,X)=>{try{const B=X[0]?.toString?.();B?.includes("this._getCacheKey")&&(X[0]=new Proxy(X[0],A))}catch(A){}return Reflect.apply(B,Q,X)}};window.Promise.prototype.then=new Proxy(window.Promise.prototype.then,B)})();': () => {
@@ -10683,32 +10720,92 @@ export const localScriptRules = {
             console.error('Error executing AG js rule with uniqueId "f8726a98e9ee7f87afd7c9376374eb99" due to: ' + e);
         }
     },
-    "(()=>{try{Object.defineProperty(window,'somZv1k180',{value:true,writable:true,configurable:true});setInterval(()=>{try{if(window.somZv1k180!==true)window.somZv1k180=true}catch(e){}},50)}catch(e){}})();": () => {
+    "(()=>{try{const m=()=>{const l=document.querySelectorAll('ins.adsbygoogle');for(let i=0;i<l.length;i++){const s=l[i],p=s.parentElement;if(!p)continue;const c=typeof p.className==='string'?p.className:'';if(c.indexOf('api-ad-footer')<0&&c.indexOf('web-ad-footer')<0&&c.indexOf('intro-ad-footer')<0&&c.indexOf('ad-rail')<0&&c.indexOf('example-ad-sidebar')<0)continue;if(s.querySelector('[data-som-marker]'))continue;const cv=document.createElement('canvas');cv.setAttribute('data-som-marker','1');cv.style.cssText='width:1px;height:1px;display:block';s.appendChild(cv)}};m();document.addEventListener('DOMContentLoaded',m,{once:true});setInterval(m,500)}catch(e){}})();": () => {
         try {
             const e = "done";
-            if (Window.prototype.toString["3ba2a7c1c0393fdd5a5c0b71c4b2cf33"] === e) return;
+            if (Window.prototype.toString["97232721beed251cc466e86558b33c90"] === e) return;
             (() => {
                 try {
-                    Object.defineProperty(window, "somZv1k180", {
-                        value: !0,
-                        writable: !0,
-                        configurable: !0
+                    const e = () => {
+                        const e = document.querySelectorAll("ins.adsbygoogle");
+                        for (let t = 0; t < e.length; t++) {
+                            const n = e[t], o = n.parentElement;
+                            if (!o) continue;
+                            const r = "string" == typeof o.className ? o.className : "";
+                            if (r.indexOf("api-ad-footer") < 0 && r.indexOf("web-ad-footer") < 0 && r.indexOf("intro-ad-footer") < 0 && r.indexOf("ad-rail") < 0 && r.indexOf("example-ad-sidebar") < 0) continue;
+                            if (n.querySelector("[data-som-marker]")) continue;
+                            const c = document.createElement("canvas");
+                            c.setAttribute("data-som-marker", "1");
+                            c.style.cssText = "width:1px;height:1px;display:block";
+                            n.appendChild(c);
+                        }
+                    };
+                    e();
+                    document.addEventListener("DOMContentLoaded", e, {
+                        once: !0
                     });
-                    setInterval((() => {
-                        try {
-                            !0 !== window.somZv1k180 && (window.somZv1k180 = !0);
-                        } catch (e) {}
-                    }), 50);
+                    setInterval(e, 500);
                 } catch (e) {}
             })();
-            Object.defineProperty(Window.prototype.toString, "3ba2a7c1c0393fdd5a5c0b71c4b2cf33", {
+            Object.defineProperty(Window.prototype.toString, "97232721beed251cc466e86558b33c90", {
                 value: e,
                 enumerable: !1,
                 writable: !1,
                 configurable: !1
             });
         } catch (e) {
-            console.error('Error executing AG js rule with uniqueId "3ba2a7c1c0393fdd5a5c0b71c4b2cf33" due to: ' + e);
+            console.error('Error executing AG js rule with uniqueId "97232721beed251cc466e86558b33c90" due to: ' + e);
+        }
+    },
+    "(()=>{try{const hide=()=>{try{if(!document.body)return;const d=Object.getOwnPropertyDescriptor(document.body,'yk7xw7x-stage');const s=d&&typeof d.value==='function'?d.value():null;if(!s)return;for(const el of s.querySelectorAll('section,div,span')){const r=el.getBoundingClientRect();if(r.width>=80&&r.height>=100&&getComputedStyle(el).position==='fixed')el.style.setProperty('display','none','important')}}catch(e){}};const start=()=>{try{if(!document.body){setTimeout(start,100);return}const d=Object.getOwnPropertyDescriptor(document.body,'yk7xw7x-stage');const s=d&&typeof d.value==='function'?d.value():null;if(!s){setTimeout(start,100);return}hide();new MutationObserver(hide).observe(s,{childList:true,subtree:true})}catch(e){setTimeout(start,100)}};hide();start();setInterval(hide,500)}catch(e){}})();": () => {
+        try {
+            const e = "done";
+            if (Window.prototype.toString.b66c2f6e19db676c5ebc9204c825c548 === e) return;
+            (() => {
+                try {
+                    const e = () => {
+                        try {
+                            if (!document.body) return;
+                            const e = Object.getOwnPropertyDescriptor(document.body, "yk7xw7x-stage"), t = e && "function" == typeof e.value ? e.value() : null;
+                            if (!t) return;
+                            for (const e of t.querySelectorAll("section,div,span")) {
+                                const t = e.getBoundingClientRect();
+                                t.width >= 80 && t.height >= 100 && "fixed" === getComputedStyle(e).position && e.style.setProperty("display", "none", "important");
+                            }
+                        } catch (e) {}
+                    }, t = () => {
+                        try {
+                            if (!document.body) {
+                                setTimeout(t, 100);
+                                return;
+                            }
+                            const o = Object.getOwnPropertyDescriptor(document.body, "yk7xw7x-stage"), r = o && "function" == typeof o.value ? o.value() : null;
+                            if (!r) {
+                                setTimeout(t, 100);
+                                return;
+                            }
+                            e();
+                            new MutationObserver(e).observe(r, {
+                                childList: !0,
+                                subtree: !0
+                            });
+                        } catch (e) {
+                            setTimeout(t, 100);
+                        }
+                    };
+                    e();
+                    t();
+                    setInterval(e, 500);
+                } catch (e) {}
+            })();
+            Object.defineProperty(Window.prototype.toString, "b66c2f6e19db676c5ebc9204c825c548", {
+                value: e,
+                enumerable: !1,
+                writable: !1,
+                configurable: !1
+            });
+        } catch (e) {
+            console.error('Error executing AG js rule with uniqueId "b66c2f6e19db676c5ebc9204c825c548" due to: ' + e);
         }
     },
     "document.addEventListener('DOMContentLoaded',function(){const o=new MutationObserver(function(m,b){const e=document.querySelector('.gtp-wrap.gtp-open button.gtp-decline');e&&e.click()});setTimeout(function(){o.disconnect()},60000);o.observe(document.body,{childList:!0,subtree:!0})})": () => {
