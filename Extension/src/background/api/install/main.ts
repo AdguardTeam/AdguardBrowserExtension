@@ -23,6 +23,7 @@ import {
     ADGUARD_SETTINGS_KEY,
     APP_VERSION_KEY,
     CLIENT_ID_KEY,
+    INSTALL_TIME_KEY,
     SCHEMA_VERSION_KEY,
 } from '../../../common/constants';
 import { defaultSettings } from '../../../common/settings';
@@ -54,13 +55,19 @@ export class InstallApi {
         const clientId = InstallApi.genClientId();
         await browserStorage.set(CLIENT_ID_KEY, clientId);
 
+        // An interrupted first run goes through the install again on the next
+        // start, so the time of the first attempt is kept.
+        if (!await browserStorage.has(INSTALL_TIME_KEY)) {
+            await browserStorage.set(INSTALL_TIME_KEY, Date.now());
+        }
+
         await browserStorage.set(SCHEMA_VERSION_KEY, currentSchemaVersion);
 
         await browserStorage.set(ADGUARD_SETTINGS_KEY, defaultSettings);
     }
 
     /**
-     * This method is called after a successful update of the extension.
+     * This method is called at the end of a successful first install of the extension.
      * If the extension installation is interrupted for some reason,
      * for example, if the user runs the extension in private mode and the initiation stops,
      * this method is not called. This ensures that actions needed upon

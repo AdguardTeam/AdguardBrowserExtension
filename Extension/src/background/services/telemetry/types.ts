@@ -25,6 +25,7 @@ import {
     type TelemetryScreenName,
     type TelemetryTheme,
     type TelemetryActionToScreenMap,
+    type TelemetryRetentionCohort,
 } from '../../../common/telemetry';
 
 /**
@@ -126,6 +127,11 @@ export type TelemetryProps = {
     theme: TelemetryTheme;
 
     /**
+     * Retention cohort based on the time elapsed since installation.
+     */
+    retention_cohort: TelemetryRetentionCohort;
+
+    /**
      * Filter update interval source.
      */
     update_interval?: TelemetryFilterUpdateIntervalMode | null;
@@ -211,7 +217,7 @@ export type TelemetryBaseData = {
     /**
      * {@link TelemetryProps}.
      */
-    props?: TelemetryProps;
+    props: TelemetryProps;
 };
 
 export type TelemetryEventData = TelemetryPageViewData | TelemetryCustomEventData;

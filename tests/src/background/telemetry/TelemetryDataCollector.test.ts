@@ -34,10 +34,11 @@ import { TelemetryFilterUpdateIntervalMode } from '../../../../Extension/src/com
 import { DEFAULT_FILTERS_UPDATE_PERIOD } from '../../../../Extension/src/common/settings';
 import { UserAgent } from '../../../../Extension/src/common/user-agent';
 import { SettingOption } from '../../../../Extension/src/background/schema/settings/enum';
-import { AppearanceTheme } from '../../../../Extension/src/common/constants';
+import { AppearanceTheme, INSTALL_TIME_KEY } from '../../../../Extension/src/common/constants';
 
-const { mockSettingsStorageGet } = vi.hoisted(() => ({
+const { mockSettingsStorageGet, mockBrowserStorageGet } = vi.hoisted(() => ({
     mockSettingsStorageGet: vi.fn(),
+    mockBrowserStorageGet: vi.fn(),
 }));
 
 vi.mock('../../../../Extension/src/common/user-agent', () => ({
@@ -60,7 +61,7 @@ vi.mock('../../../../Extension/src/background/prefs', () => ({
 
 vi.mock('../../../../Extension/src/background/storages', () => ({
     browserStorage: {
-        get: vi.fn(),
+        get: mockBrowserStorageGet,
         set: vi.fn(),
     },
     settingsStorage: {
@@ -107,6 +108,8 @@ describe('TelemetryDataCollector', () => {
 
         vi.mocked(SyntheticIdGenerator.gainSyntheticId).mockResolvedValue('abc12345');
 
+        mockBrowserStorageGet.mockResolvedValue(undefined);
+
         Object.defineProperty(navigator, 'language', {
             value: 'en-US',
             configurable: true,
@@ -142,6 +145,7 @@ describe('TelemetryDataCollector', () => {
                 app_locale: 'en',
                 system_locale: 'en-US',
                 theme: Theme.Light,
+                retention_cohort: 'LONGTIME',
                 update_interval: TelemetryFilterUpdateIntervalMode.SystemDefault,
             },
         });
@@ -153,6 +157,56 @@ describe('TelemetryDataCollector', () => {
         expect(UserAgent.parser.getDevice).toHaveBeenCalled();
         expect(UserAgent.parser.getBrowser).toHaveBeenCalled();
         expect(mockSettingsStorageGet).toHaveBeenCalledWith(SettingOption.AppearanceTheme);
+        expect(mockBrowserStorageGet).toHaveBeenCalledWith(INSTALL_TIME_KEY);
+    });
+
+    test('recomputes retention cohort as time passes without re-initialization', async () => {
+        const installTime = 1_000_000;
+        const dayMs = 24 * 60 * 60 * 1000;
+
+        mockBrowserStorageGet.mockResolvedValue(installTime);
+
+        const nowSpy = vi.spyOn(Date, 'now').mockReturnValue(installTime);
+
+        await TelemetryDataCollector.init();
+
+        expect((await TelemetryDataCollector.getBaseData()).props.retention_cohort)
+            .toBe('DAY_1');
+
+        nowSpy.mockReturnValue(installTime + dayMs);
+
+        expect((await TelemetryDataCollector.getBaseData()).props.retention_cohort)
+            .toBe('WEEK_1');
+
+        nowSpy.mockRestore();
+    });
+
+    test('gives the longtime cohort when the stored install time is missing', async () => {
+        mockBrowserStorageGet.mockResolvedValue(undefined);
+
+        await TelemetryDataCollector.init();
+
+        const baseData = await TelemetryDataCollector.getBaseData();
+
+        expect(baseData.props.retention_cohort).toBe('LONGTIME');
+    });
+
+    test('follows a theme change without re-initialization', async () => {
+        await TelemetryDataCollector.init();
+
+        expect((await TelemetryDataCollector.getBaseData()).props.theme).toBe(Theme.Light);
+
+        mockSettingsStorageGet.mockImplementation((key: SettingOption): any => {
+            if (key === SettingOption.AppearanceTheme) {
+                return AppearanceTheme.Dark;
+            }
+            if (key === SettingOption.FiltersUpdatePeriod) {
+                return DEFAULT_FILTERS_UPDATE_PERIOD;
+            }
+            return undefined;
+        });
+
+        expect((await TelemetryDataCollector.getBaseData()).props.theme).toBe(Theme.Dark);
     });
 });
 

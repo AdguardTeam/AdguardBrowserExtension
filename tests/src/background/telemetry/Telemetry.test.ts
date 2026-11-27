@@ -38,6 +38,7 @@ import { SettingsApi, TelemetryApi } from '../../../../Extension/src/background/
 import { MessageType, type SendTelemetryCustomEventMessage } from '../../../../Extension/src/common/messages';
 import { ABTestManager } from '../../../../Extension/src/background/services/telemetry';
 import { NotifierType } from '../../../../Extension/src/common/constants';
+import { TelemetryRetentionCohort } from '../../../../Extension/src/common/telemetry';
 
 vi.mock('../../../../Extension/src/background/message-handler', () => ({
     messageHandler: {
@@ -73,6 +74,14 @@ vi.mock('../../../../Extension/src/background/services/telemetry/abtest/ABTestMa
     },
 }));
 
+const BASE_PROPS = {
+    app_locale: 'en-US',
+    system_locale: 'en-US',
+    theme: Theme.Light,
+    retention_cohort: TelemetryRetentionCohort.Longtime,
+    update_interval: null,
+};
+
 describe('Telemetry', () => {
     beforeEach(async () => {
         vi.clearAllMocks();
@@ -95,12 +104,7 @@ describe('Telemetry', () => {
                 os: { name: 'macOS', version: '14.0.0' },
                 browser: { name: 'Chrome', version: '120.0' },
             },
-            props: {
-                app_locale: 'en-US',
-                system_locale: 'en-US',
-                theme: Theme.Light,
-                update_interval: null,
-            },
+            props: BASE_PROPS,
         });
 
         // Reset session start state so each test starts fresh
@@ -138,7 +142,7 @@ describe('Telemetry', () => {
                 app_type: 'EXTENSION',
                 version: '5.0.0',
                 user_agent: expect.any(Object),
-                props: expect.any(Object),
+                props: BASE_PROPS,
                 pageview: {
                     name: TelemetryScreenName.MainPage,
                     ref_name: undefined,
@@ -174,7 +178,7 @@ describe('Telemetry', () => {
                 app_type: 'EXTENSION',
                 version: '5.0.0',
                 user_agent: expect.any(Object),
-                props: expect.any(Object),
+                props: BASE_PROPS,
                 event: {
                     name: TelemetryEventName.CheckUpdatesClick,
                     ref_name: TelemetryScreenName.MainPage,

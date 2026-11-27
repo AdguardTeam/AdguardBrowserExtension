@@ -28,6 +28,16 @@ export enum TelemetryTheme {
 }
 
 /**
+ * Retention cohort based on the time elapsed since installation.
+ */
+export enum TelemetryRetentionCohort {
+    Day1 = 'DAY_1',
+    Week1 = 'WEEK_1',
+    Month1 = 'MONTH_1',
+    Longtime = 'LONGTIME',
+}
+
+/**
  * Filter update interval mode.
  */
 export enum TelemetryFilterUpdateIntervalMode {

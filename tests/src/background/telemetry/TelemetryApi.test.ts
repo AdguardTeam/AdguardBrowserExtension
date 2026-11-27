@@ -32,6 +32,7 @@ import {
     type TelemetryApiEventData,
 } from '../../../../Extension/src/background/services';
 import { TelemetryApi } from '../../../../Extension/src/background/api';
+import { TelemetryRetentionCohort } from '../../../../Extension/src/common/telemetry';
 
 describe('TelemetryApi', () => {
     let fetchMock: ReturnType<typeof vi.fn<typeof fetch>>;
@@ -55,6 +56,7 @@ describe('TelemetryApi', () => {
             app_locale: 'en-US',
             system_locale: 'en-US',
             theme: Theme.Light,
+            retention_cohort: TelemetryRetentionCohort.Longtime,
             update_interval: null,
         },
     });

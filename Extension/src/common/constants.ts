@@ -36,6 +36,12 @@ export const DAYS_PER_WEEK = 7;
 
 export const CLIENT_ID_KEY = 'client-id';
 export const APP_VERSION_KEY = 'app-version';
+
+/**
+ * Storage key for the extension install time in milliseconds.
+ */
+export const INSTALL_TIME_KEY = 'install-time';
+
 export const SCHEMA_VERSION_KEY = 'schema-version';
 export const ADGUARD_SETTINGS_KEY = 'adguard-settings';
 export const PAGE_STATISTIC_KEY = 'page-statistic';

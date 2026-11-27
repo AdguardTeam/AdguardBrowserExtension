@@ -24,8 +24,9 @@ import { DEFAULT_FILTERS_UPDATE_PERIOD } from '../../../common/settings';
 import { Prefs } from '../../prefs';
 import { SettingsApi } from '../../api';
 import { SettingOption } from '../../schema';
-import { AppearanceTheme } from '../../../common/constants';
+import { AppearanceTheme, INSTALL_TIME_KEY } from '../../../common/constants';
 import { TelemetryFilterUpdateIntervalMode, TelemetryTheme } from '../../../common/telemetry';
+import { browserStorage } from '../../storages';
 
 import {
     type TelemetryBaseData,
@@ -33,6 +34,7 @@ import {
     type TelemetryUserAgent,
 } from './types';
 import { SyntheticIdGenerator } from './SyntheticIdGenerator';
+import { getRetentionCohort } from './retention-cohort';
 
 /**
  * Collects and manages telemetry data including synthetic ID, user agent, and application props.
@@ -56,9 +58,9 @@ export class TelemetryDataCollector {
     private static userAgent: TelemetryUserAgent | undefined;
 
     /**
-     * Application properties including locales, theme, and filter update interval.
+     * Extension install time in milliseconds, read once during initialization.
      */
-    private static props: TelemetryProps | undefined;
+    private static installTime: number | undefined;
 
     /**
      * AppearanceTheme to TelemetryTheme mapper.
@@ -72,12 +74,12 @@ export class TelemetryDataCollector {
     /**
      * Initializes the telemetry data collector.
      *
-     * Generates synthetic ID, collects user agent information, and gathers application props.
+     * Generates synthetic ID, collects user agent information, and reads the install time.
      */
     public static async init(): Promise<void> {
         TelemetryDataCollector.syntheticId = await SyntheticIdGenerator.gainSyntheticId();
         TelemetryDataCollector.userAgent = await this.getUserAgent();
-        TelemetryDataCollector.props = this.getProps();
+        TelemetryDataCollector.installTime = await browserStorage.get(INSTALL_TIME_KEY) as number | undefined;
     }
 
     /**
@@ -122,7 +124,10 @@ export class TelemetryDataCollector {
     /**
      * Collects application properties for telemetry.
      *
-     * @returns Props including locales, theme and update interval.
+     * Called for every event, so the props follow settings changes and the
+     * time passed since the install.
+     *
+     * @returns Props including locales, theme, retention cohort and update interval.
      */
     private static getProps(): TelemetryProps {
         const appLocale = browser.i18n.getUILanguage();
@@ -137,6 +142,7 @@ export class TelemetryDataCollector {
             app_locale: appLocale,
             system_locale: systemLocale,
             theme,
+            retention_cohort: getRetentionCohort(TelemetryDataCollector.installTime, Date.now()),
             update_interval: updateInterval,
         };
     }
@@ -152,7 +158,6 @@ export class TelemetryDataCollector {
         if (
             !TelemetryDataCollector.syntheticId
             || !TelemetryDataCollector.userAgent
-            || !TelemetryDataCollector.props
         ) {
             throw new Error('Telemetry is not initialized');
         }
@@ -162,7 +167,7 @@ export class TelemetryDataCollector {
             app_type: TelemetryDataCollector.APP_TYPE,
             version: Prefs.version,
             user_agent: TelemetryDataCollector.userAgent,
-            props: TelemetryDataCollector.props,
+            props: TelemetryDataCollector.getProps(),
         };
     }
 

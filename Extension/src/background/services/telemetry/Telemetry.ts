@@ -80,7 +80,7 @@ export class Telemetry {
     /**
      * Initializes telemetry service.
      *
-     * Generates or retrieves synthetic ID, collects user agent and props,
+     * Generates or retrieves the synthetic ID, collects user agent information,
      * removes retired A/B test variants before starting the session, and sets
      * up message listeners for telemetry events.
      */
@@ -238,12 +238,12 @@ export class Telemetry {
 
             // Merge experiment variants into props (only include non-empty values)
             const experimentVariants = await ABTestManager.getVariantsForProps();
-            const propsWithExperiments = baseData.props ? {
+            const propsWithExperiments = {
                 ...baseData.props,
                 ...(experimentVariants.experiment_1 && { experiment_1: experimentVariants.experiment_1 }),
                 ...(experimentVariants.experiment_2 && { experiment_2: experimentVariants.experiment_2 }),
                 ...(experimentVariants.experiment_3 && { experiment_3: experimentVariants.experiment_3 }),
-            } : undefined;
+            };
 
             const apiData: TelemetryApiEventData = {
                 ...baseData,

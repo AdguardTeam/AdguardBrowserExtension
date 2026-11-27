@@ -21,6 +21,7 @@
 import type zod from 'zod';
 
 import { type experimentSlotSchema } from '../../../schema/telemetry/sessionStartResponse';
+import { type TelemetryProps } from '../types';
 
 /**
  * Fixed Plausible Analytics custom property slot identifier for A/B experiments.
@@ -101,12 +102,7 @@ export interface SessionStartRequest {
     /**
      * Common telemetry props (locale, theme, etc.).
      */
-    props?: {
-        app_locale: string;
-        system_locale: string;
-        theme?: string;
-        update_interval?: string | null;
-    };
+    props?: TelemetryProps;
 
     /**
      * Map of experiment slots to experiment IDs for which no variant is currently cached.
