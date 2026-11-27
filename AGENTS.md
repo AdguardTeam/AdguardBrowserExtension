@@ -195,6 +195,12 @@ pnpm increment                           # Increment build version
 9. Confirm TypeScript types are correct (no `any` without justification)
 10. If adding or updating asset images, run `svgo` on them to optimize file size
 
+- Write each `CHANGELOG.md` entry for a user: one or two sentences about what
+  changes for them, about as long as the neighboring entries, one bullet per
+  user-visible effect. Do not narrate the old behavior or what did not change,
+  and leave out internal mechanics and follow-up tickets. When an example needs
+  a domain, use `example.com` or `example.org`.
+
 - Before every `pnpm locales upload`, you MUST save local base-locale
   changes and download the current base locale with
   `pnpm locales download -l en`.
