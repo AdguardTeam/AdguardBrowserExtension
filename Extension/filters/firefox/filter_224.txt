@@ -1,9 +1,9 @@
-! Checksum: G3N9scfw6fMgEbKpdfLPLQ
-! Diff-Path: ../patches/224/224-s-1795410775-3600.patch
+! Checksum: aT2hGS9twjQgAh5P7keViA
+! Diff-Path: ../patches/224/224-s-1795749100-3600.patch
 ! Title: AdGuard Chinese filter
 ! Description: EasyList China + AdGuard Chinese filter. Filter list that specifically removes ads on websites in Chinese language.
-! Version: 2.1.70.8
-! TimeUpdated: 2026-11-23T05:10:40+00:00
+! Version: 2.1.70.33
+! TimeUpdated: 2026-11-27T03:09:42+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -19,6 +19,8 @@
 ! Bad: /banner.jpg (should be in general_url.txt)
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
+||ry6wy3dr62usd0fnicfk.com^
+||hxgnwrwslhzgrmjsfvdevrjpn.com^
 ||artjnley.com^
 ||ezze0ct.com^
 ||hokkid5.com^
@@ -1181,6 +1183,10 @@ ipv6.baidu.com,www.baidu.com,www1.baidu.com,xueshu.baidu.com###content_left > .r
 !
 ! NOTE: Specific rules
 !
+map.baidu.com###message-center-panel:has(> span.message-ad-tag)
+comic18j-susu.com,jmcomic-zzz.one,18comic.vip##.web-right-float-button
+comic18j-susu.com,jmcomic-zzz.one,18comic.vip##.top-a2db
+blog.csdn.net##.simple-ad-slot
 pa1151.top##a[href="https://dagexxx.com"]
 pa1151.top##a[href="https://dage.top/"]
 nnyy.in#%#//scriptlet('m3u-prune', 'adjump', '.m3u8')
@@ -5187,12 +5193,54 @@ newduba.cn###jq_youxi
 ||cnzz.trafficmanager.net^
 ||hash.trafficmanager.net^
 ||trafficmanager.net/o.js
+||s2glduwz1.com^
+||quadrant59.com^
+||ve9gs6j44.com^
+||xh2ei17sy.com^
+||ygcmsecmzzhaup.com^
+||jixgkxfhfp.icu^
+||quotient68.com^
+||jqzck6m0vv.com^
+||tu6boqunqq.com^
+||sdgugmgkcwtaij.com^
+||nq2b2hvkni.com^
+||riilabmhzs.icu^
+||7a9m8uas28.com^
+||mjf6aq4jua.com^
+||ahfhmvd0vf.com^
+||sfajs30mmk.com^
+||coty7m14cr.com^
+||noxtzixkdg.com^
+||0jbyj9d2l.com^
+||umd8dz8x9.com^
+||uaazwczowtfswj.com^
+||mn3hdpe1y.com^
+||9xxne23lm.com^
+||j5gv7t9sv.com^
+||zitdymshto.icu^
+||nah9b3ag8.com^
+||j31pozck4v.com^
+||remainder22.com^
+||a6j9wqsyq6.com^
+||dyv86qq19o.com^
+||fps3xggxro.com^
+||fqfhznr3qn.com^
+||49ivw88hj9.com^
+||d9zkof.com^
+||4hg1oddm34.com^
+||ajc1d0k4nr.com^
+||rectangle20.com^
 ||4eyn3s9wj.com^
 ||semicircle59.com^
 ||4vzi54g47.com^
 ||kmbvclcac.com^
 ||lmhx6w4tm.com^
 ||4rlqjv5c5.com^
+||3twgodwqu.com^
+||533upqfg6.com^
+||h1tv22icy.com^
+||wcx3gf.site^
+||59j22m33n.com^
 ||ambifpskje.com^
 ||93cwt9hr8s.com^
 ||dw3wytlo38.com^
@@ -18243,7 +18291,6 @@ chinacsbs.com##a[href^="/plus/view.php?aid="]
 supercloudsms.com##a[href^="/redirect?"]
 96weixin.com##a[href^="/show/ads/"]
 fx112.com##a[href^="/union."]
-joyacg.top##a[href^="http"] > .img-fluid
 boniu123.cc##a[href^="http"] > img[src*="/bn_"]
 yigujin.cn##a[href^="http"]:not([href$=".html"]) > img[src*="/tp/"]
 90oo.com##a[href^="http"]:not([href*=".90oo."]) > img[src*="/tp/"]

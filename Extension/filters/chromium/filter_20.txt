@@ -1,9 +1,9 @@
-! Checksum: lBb5+tTDcXMCouQ1IXeF1A
-! Diff-Path: ../patches/20/20-s-1795407169-3600.patch
+! Checksum: S+n+7oc4Jv6aGEhwNJ9iow
+! Diff-Path: ../patches/20/20-s-1795756261-3600.patch
 ! Title: AdGuard Mobile App Banners filter
 ! Description: Blocks irritating banners that promote mobile apps of websites.
-! Version: 2.0.34.44
-! TimeUpdated: 2026-11-23T04:10:29+00:00
+! Version: 2.0.34.53
+! TimeUpdated: 2026-11-27T05:08:50+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -60,6 +60,16 @@ rxgo.com,alfastrah.ru,turkishairlines.com,atmos-tokyo.com,radarbox.com,ciceksepe
 !
 !
 !
+cozycozy.com##joli-phone-smartbanner
+mall.kinarino.jp###app-features-band
+bird.rent#%#//scriptlet('trusted-click-element', 'div.redirector > dialog.modal button.svelte-ccmpno')
+way.com##app-mobile-top-banner
+blog.etoto.pl##.sidebar-vip
+vide-greniers.org###content > div.flex-col > div.flex-col > div.justify-center:has(dialog[aria-label="Fenêtre présentation Application"])
+||vide-greniers.org/v*/compo_app_dialog.
+mamari.jp##.p-web-to-app
+baby-calendar.jp##.l-footer-app-parts
+baby-calendar.jp##a[href^="https://baby-calendar.onelink.me/"] > img
 shop.com##aside[data-testid="download-app-prompt"]
 hb-nippon.com##.appPromo
 hb-nippon.com##.side_appBnr
@@ -156,7 +166,6 @@ memic.at#%#//scriptlet('trusted-set-local-storage-item', 'hide-recommend-using-a
 m.mapianist.com#%#//scriptlet('trusted-click-element', '.cdk-overlay-container web2app-else-bottom-sheet .promotion-dismiss', '!localStorage:web2app_hidden_today_else_bottom_sheet')
 m.mapianist.com#%#//scriptlet('set-session-storage-item', 'web2app_strip_dismissed', 'true')
 x.com##button.bg-modal:has(> span.text-secondary + img[width="160"][height="160"])
-superharber.com##.detail-app-banner
 wired.com##div[data-testid="promotion-banner"]
 votebeat.org##.newsletter-composer
 ouedkniss.dz#$#.o-app-bar:has(> .v-toolbar__content > button) { display: none !important; }
@@ -1012,7 +1021,7 @@ korona.ru###__next > div[data-testid="Banner"]:has(> div > a[data-testid="Downlo
 kimbino.*##.affix
 op.gg##.items-center.gap-3.px-4:has(> .overflow-hidden ~ div a[href^="https://play.google.com/store/apps/details"])
 gidadedektifi.com##div[class^="XAppDownload_type_sidebar__"]
-cargurus.com###app-download-banner
+m.doviz.com,cargurus.com###app-download-banner
 noz.de###piano_footer_layer
 noz.de##.smartbanner--holder
 saveonfoods.com##div[class^="SmartBanner"]
@@ -1629,7 +1638,7 @@ quotidiano.net#%#//scriptlet('set-local-storage-item', 'pwa_show', 'true')
 savett.cc##body > section.container:has(> div.card > div.row > div[class] > a[href="https://play.google.com/store/apps/details?id=com.savett"])
 news10.com###custom_html-22
 news10.com##a[href="https://www.news10.com/news/say-hello-to-the-new-news10-abc-mobile-app/"]
-yourweather.co.uk,theweather.net,tempo.pt,tempo.com,tiempo.com,meteored.*##.descarga-app
+yourweather.co.uk,theweather.net,tempo.pt,tiempo.com,meteored.*##.descarga-app
 pokebattler.com##.container > div.row:has(> div[class^="col-"] > a[href^="https://play.google.com/store/apps/details?id=com.pokebattler.raidParty"])
 news.tvbs.com.tw##.guangxuan > a[rel="nofollow"][href^="https://bit.ly/"]
 genius.com#$?#.android_interstitial { remove: true; }
@@ -3075,7 +3084,7 @@ delishkitchen.tv##.delish-recipe-app-launch-button
 delishkitchen.tv#$#aside[class^="footer-app-banner-wrap"] { margin: 1em 0 0 !important; visibility: hidden !important; height: 0 !important; }
 nana-music.com##.app_sec
 nana-music.com##.base-top
-imdb.com,nana-music.com##.footer__app
+liquipedia.net,imdb.com,nana-music.com##.footer__app
 nana-music.com##.sidebar__app
 eway.in.ua,kikkoman.co.jp##.application-banner
 napbizblog.jp##.napbizapp
@@ -4302,6 +4311,8 @@ wear.jp#%#//scriptlet('trusted-set-session-storage-item', 'status_of_app_redirec
 ! Misc rules, removed during optimization. If some rules are in groups, no need to move them here
 !
 !
+!+ NOT_OPTIMIZED
+superharber.com##.detail-app-banner
 !+ NOT_OPTIMIZED
 finance.ua##.mobile-app-top-banner
 !+ NOT_OPTIMIZED

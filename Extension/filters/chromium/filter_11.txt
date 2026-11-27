@@ -1,9 +1,9 @@
-! Checksum: 66X9y0IzOsFGROPuw3hv1w
-! Diff-Path: ../patches/11/11-s-1795410764-3600.patch
+! Checksum: +8iDy5AkubzqZHtAmLucAw
+! Diff-Path: ../patches/11/11-s-1795687912-3600.patch
 ! Title: AdGuard Mobile Ads filter
 ! Description: Filter for all known mobile ad networks. Useful for mobile devices.
-! Version: 2.0.73.59
-! TimeUpdated: 2026-11-23T05:10:10+00:00
+! Version: 2.0.73.68
+! TimeUpdated: 2026-11-26T10:09:11+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -2512,6 +2512,11 @@ sp.manga.nicovideo.jp##div[style^="--ads-width:"]
 !
 ! SECTION: Regular rules
 !
+||forward.ekitan.com/tags
+ekitan.com##.member-pass-ad
+famitsu.com##div[class$="_articleDetailJackBanner"]
+startitup.sk##.siu-taboola-anchor
+dengekionline.com##main[class$="_maincolumn"] div[class*="_wrapper"]:has(> div[class$="_banner"])
 zeebiz.com##div[class^="ads_adsBlock_"]
 ncaa.com##.mobile-persistent-bottom
 ncaa.com##.footer-ad
@@ -2552,8 +2557,7 @@ po-kaki-to.com###supplementary
 po-kaki-to.com###tertiary
 kitco.com###in-content-1
 kitco.com###in-content-2
-famitsu.com##div[class^="ArticleDetailMiddleRectangle-"]
-famitsu.com##div[class^="HeaderBannerForSp-"]
+famitsu.com##div[class*="_container"]:has(> div[class$="_banner"] > div[id$="_gam"])
 metasrc.com##div[data-ad-disabled]
 goal.com##div[class*="-mpu-mobile_"]
 techspot.com##.product-wrapper > div[style]:has(> .tsadinc)
@@ -3293,7 +3297,7 @@ h1g.jp##div[style^="width:300px;height:280px"]
 futbolperuano.com#$#header.sticky-top { top: 0 !important; }
 sxyprn.net,sxyprn.com##.tbd
 mydramalist.com##div:has(> div[style="min-height:327px;"]:only-child)
-hoopshype.com,coloradoan.com##.gnt_x__bvc:has(> aside[aria-label="advertisement"])
+usatoday.com,hoopshype.com,coloradoan.com##.gnt_x__bvc:has(> aside[aria-label="advertisement"])
 detroitnews.com,hoopshype.com,coloradoan.com##aside[aria-label="advertisement"]
 capetownetc.com##.mobile-advertisements
 famitsu.com##section[class^="Top_topHeaderBanner"]
@@ -3481,7 +3485,7 @@ pornhits.com##.sites__item--hl
 modernliving.jp##div[class^="css-"]:has(> div.ad-disclaimer)
 moovitapp.com#$#.header-sticky-ad-test { top: 0 !important; }
 missavtv.com##iframe[src^="https://creative.rmhfrtnd.com/"]
-cielotv.it##main > div[type="skin"][class^="sc-"]
+cielotv.it##div[class^="AdvBanner_"]
 tu93.org#%#//scriptlet('abort-current-inline-script', 'document.createElement', '')
 ||tu93.org/mobile/w/*.min.js|$script
 ||tj.com.day/js/*.js|$script,third-party
@@ -4140,7 +4144,7 @@ przegladsportowy.onet.pl###fixtures-slot:has(> .relative:only-child > .onet-ad:o
 news.m.pchome.com.tw##div[class^="showad_"]
 newsphere.jp##div[style="height: 210px;"]
 shogis.com##.adv300_250
-yourweather.co.uk,theweather.net,tempo.pt,tempo.com,tiempo.com,meteored.*#$#.pie-pagina { margin-bottom: 0 !important; }
+yourweather.co.uk,theweather.net,tempo.pt,tiempo.com,meteored.*#$#.pie-pagina { margin-bottom: 0 !important; }
 s.kakaku.com##.u-bt_ad
 s.kakaku.com##.p-box-foot_item
 dengekionline.com##.gAdBanner
@@ -4346,7 +4350,6 @@ filmvandaag.nl##body #preload-ad-billboard.is-preload-ad
 s.minkabu.jp##.relative.justify-center.overflow-hidden
 figsoku.net###comment-form > a[target="_blank"] > img
 fontech.startitup.sk##div[id^="MOB_fon_art_"]
-fontech.startitup.sk##div[class^="code-block code-block-"][style]
 sp.macour.jp##.ad_macour
 jomo-news.co.jp##.top-genre-articles-item:has(> div[id^="div-gpt-"])
 toyokeizai.net###latest > div.articles-lists__item:has(> div[id^="div-gpt-ad-"])
@@ -6347,7 +6350,7 @@ freesoft-100.com##.banner_block
 048.ua,0629.com.ua##.f-banner
 starhit.ru##.promo-wrap
 bollywoodshaadis.com##div[style="min-height:330px;"]
-44.ua,056.ua,032.ua,04868.com.ua,karelia.news,0629.com.ua,0154.by,0472.ua,048.ua,0512.com.ua,0522.ua,0532.ua,0552.ua,056.ua,0564.ua,061.ua,06153.com.ua,0642.ua,62.ua,7152.kz,7232.kz,city04.kz,inaktau.kz,inalmaty.kz,inastana.kz,inatyrau.kz,inkaragandy.kz,inshymkent.kz,kaskelenec.kz,qapshagai-city.kz,uralskcity.kz##app-main-popup-banner
+4881.pl,032.ua,048.ua,0512.com.ua,056.ua,0564.ua,057.ua,061.ua,44.ua,0629.com.ua,0642.ua,62.ua,0312.ua,03244.com.ua,03247.com.ua,0332.ua,0342.ua,0352.ua,0362.ua,0372.ua,0382.ua,04141.com.ua,0412.ua,0432.ua,04563.com.ua,04566.com.ua,04597.com.ua,04598.com.ua,0462.ua,04637.com.ua,0472.ua,04868.com.ua,05134.com.ua,05136.com.ua,0522.ua,0532.ua,05361.com.ua,05366.com.ua,05447.com.ua,0542.ua,0552.ua,05537.com.ua,0566.com.ua,0569.com.ua,05745.com.ua,05763.com.ua,0619.com.ua,06137.com.ua,06153.com.ua,06178.com.ua,06236.com.ua,06237.com.ua,06239.com.ua,06242.ua,06252.com.ua,06267.com.ua,06272.com.ua,06274.com.ua,06278.com.ua,06452.com.ua,3434.com.ua,3849.com.ua,4594.com.ua,4595.com.ua,4733.com.ua,5692.com.ua,6131.com.ua,6262.com.ua,6264.com.ua,6451.com.ua,7232.kz,inaktau.kz,city04.kz,inatyrau.kz,inastana.kz,inkaragandy.kz,kaskelenec.kz,inalmaty.kz,7152.kz,qonaev-gorod.kz,inshymkent.kz,uralskcity.kz##app-main-page-popup-banners-place
 zn-ua.cdn.ampproject.org,zn.ua##div[class^="mix_advert_ads_"]
 eromanga001.com,hentai-books.com##.sp-mieru
 mi-mollet.com###MM_SP_Billboard
@@ -8879,6 +8882,8 @@ livejournal.com##div[id^="billboard_mobile_"]
 ! END: Livejournal.com
 !
 !
+!+ NOT_OPTIMIZED
+deltiasgaming.com,soapcentral.com,sportskeeda.com##.vidazoo-player-container
 !+ NOT_OPTIMIZED
 iamgujarat.com,vijaykarnataka.com,maharashtratimes.com,indiatimes.com,samayam.com##.fbnad
 !+ NOT_OPTIMIZED

@@ -1,9 +1,9 @@
-! Checksum: 9GOFliYhbA0HLnsK/LgbBg
-! Diff-Path: ../patches/6/6-s-1795198380-3600.patch
+! Checksum: YVHxNPiNxES3VllPCSYE0A
+! Diff-Path: ../patches/6/6-s-1795760134-3600.patch
 ! Title: AdGuard German filter
 ! Description: EasyList Germany + AdGuard German filter. Filter list that specifically removes ads on websites in German language.
-! Version: 2.0.54.89
-! TimeUpdated: 2026-11-20T18:10:14+00:00
+! Version: 2.0.54.95
+! TimeUpdated: 2026-11-27T06:13:06+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -129,8 +129,6 @@ n-tv.de#%#//scriptlet("set-constant", "embedAddefend", "noopFunc")
 @@||web.de/image
 !+ NOT_OPTIMIZED
 @@||pcgames.de/screenshots
-!+ NOT_OPTIMIZED
-@@||ruhr24.de/bilder
 !+ NOT_OPTIMIZED
 @@||ais.wetter.de/masters
 !+ NOT_OPTIMIZED
@@ -1624,11 +1622,20 @@ ratgeber.bunte.de,horizont.net,vergleich.focus.de,chip.de,gutefrage.net,reisefra
 stern.de,monopol-magazin.de,krone.at,cleverdialer.de,sueddeutsche.de,geo.de,northdata.de,losungencodycross.com,spieletipps.de,heise.de,netdoktor.de,aachener-zeitung.de,wissen.de##.ad-container
 ! ##.adsbygoogle
 winfuture.de,netzwelt.de,quoka.de,farmeramania.de,bravofly.de,computerbild.de,digitalfernsehen.de,hl-live.de,chinamobilemag.de,focus.de,pcwelt.de##.adsbygoogle
-! ##.billboard
+! ##.billboard.ad-wrapper { remove: true; }
 it-administrator.de,formel1.de,krautundrueben.de,motorsport-total.com,traktorpool.de,fnweb.de,laborjournal.de,deraktionaer.tv,morgenweb.de##.billboard
 !
 ! NOTE: Specific rules
 !
+moinvolkspark.de##.shop-box
+moinvolkspark.de##.bw-strip
+nordbayern.de##.modul:has(> .row:only-child > div:only-child > div[id^="traffective-ad"])
+bild.de#$?#.ad-wrapper { remove: true; }
+daskochrezept.de##div.justify-center:has(> div.uppercase + div.slot-mediumRectangle)
+daskochrezept.de##.container > div[style^="min-height:"]:has(> div.OUTBRAIN)
+cash-online.de##.promo-area
+echo24.de##.id-TBeepSlot--billboard
+echo24.de##article > div.idjs-StoryElements > div.id-TBeepSlot--content:has(> div[id^="trf_ad_"])
 windows-faq.de###block-42
 windows-faq.de###block-45
 windows-faq.de###block-44
@@ -2064,7 +2071,7 @@ hartware.de##div[style="width:300px; height:600px; margin: 0 auto;"]
 ||hartware.de/wp-content/uploads/2015/04/Recaro_komplett.webp
 knx-user-forum.de##a[href^="https://knx-user-forum.de/sdirect.php?"]
 motor-talk.de##.MainContent div:not([class]) > div[class$="_v"]:has(> #motortalk_header)
-einfachkochen.de,einfachbacken.de##.stf-slot
+daskochrezept.de,einfachkochen.de,einfachbacken.de##.stf-slot
 einfachkochen.de,einfachbacken.de##.paragraph--ParagraphSuggestionBox
 einfachkochen.de,einfachbacken.de##div[style^="min-height:"][style*="600px"]:has(> .OUTBRAIN:only-child)
 freundin.de##li:has(> meta:first-child + div[style="display: none !important;"])
@@ -3033,7 +3040,7 @@ tech-story.net###custom_html-54
 playcentral.de###news-content-block > .wp-block-buttons
 playcentral.de###news-content-block > div[style="width:100%;text-align: center;margin-bottom:20px;"]
 playcentral.de##div[id^="sas_"]
-/bilder/*/*.jpg$script,domain=24garten.de|hna.de|buzzfeed.de|costanachrichten.com|24rhein.de|24vita.de|brokser-heiratsmarkt.de|echo24.de|in-muenchen.de|ludwigshafen24.de|sauerlandkurier.de
+/bilder/*/*.jpg$script,domain=24garten.de|hna.de|buzzfeed.de|costanachrichten.com|24rhein.de|24vita.de|brokser-heiratsmarkt.de|echo24.de|in-muenchen.de|ludwigshafen24.de|sauerlandkurier.de|ruhr24.de
 vorname.com,gala.de,stern.de,brigitte.de,urbia.de##.group--adtag-with-fallbackcontent
 gamestar.de##a[data-category="homebanner"]
 bild.de##.article-ad-link
@@ -6177,6 +6184,11 @@ amateurbusters.com#?#.sb_area > .sb_area_headline:contains(Urlaub)
 ! https://github.com/AdguardTeam/AdguardForMac/issues/1752
 !
 !
+! infranken.de - allowing to show deals on deals page
+[$path=/ratgeber/verbraucher/]infranken.de#@?#.listing > .listing-item:has(> article > div[class] > div[class] > .post-location > span:contains(ANZEIGE))
+[$path=/ratgeber/verbraucher/]infranken.de#@?#.listing > .listing-item:has(> article > .teaser-inner > .post-content > .post-location:contains(ANZEIGE))
+! nordbayern.de - allowing to show deals on deals page
+[$path=/schnaeppchen]nordbayern.de#@#a[href^="/schnaeppchen/"]
 ! https://github.com/AdguardTeam/AdguardFilters/issues/247543
 @@||cdn.vorsprung-online.de/files/images/*/Werbung/logo.webp$domain=vorsprung-online.de
 ! https://github.com/AdguardTeam/AdguardFilters/issues/246474

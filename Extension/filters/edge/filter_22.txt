@@ -1,9 +1,9 @@
-! Checksum: ZEXtMZzRYjX8zmkBKFsUxg
-! Diff-Path: ../patches/22/22-s-1795417903-3600.patch
+! Checksum: MqK1mo+/Xwam/f1KIKY3Vg
+! Diff-Path: ../patches/22/22-s-1795716729-3600.patch
 ! Title: AdGuard Widgets filter
 ! Description: Blocks annoying third-party widgets: online assistants, live support chats, etc.
-! Version: 2.0.15.65
-! TimeUpdated: 2026-11-23T07:09:48+00:00
+! Version: 2.0.15.72
+! TimeUpdated: 2026-11-26T18:10:10+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -985,8 +985,6 @@ gfoodd.com#?#h4.menu_underh2:contains(画像RSS)
 marasoku.info##.rss_ninja_title
 ||marasoku.info/rss_
 marasoku.info##iframe[src^="http://marasoku.info/rss_"]
-2-carat.net##div[class^="toprss"]
-2-carat.net##div[class^="yos"]
 toychan.blog.jp,shouginews.blog.jp,fireflyframer.blog.jp##.message-board-outer
 news4wide.net##.box-antenna
 vipnews.jp##.custom-rss-container
@@ -1579,6 +1577,7 @@ blog.livedoor.jp##div[id^="shitarss_title_"]
 !
 !   SECTION: Widgets - Marketing (specific)
 !
+or24.de###helpWidgetContainer
 msn.com###feedback-link-button
 ||cdn.uxfeedback.ru/widget.js
 sportcal.com###Sgpollsputhere
@@ -2081,6 +2080,11 @@ daddyhd.com##.sidebar__inner
 ||static.zdassets.com/web_widget/messenger/$domain=op.gg|p2pb2b.com|revouninstaller.com
 litres.ru###call_support
 !
+suntago.com##zowie-widget
+ikea.com###isx-chatbot-render-root
+about.me##iframe[data-webchat-frame]
+cisco.com##.fw-u-modal-chat-container
+ninjaone.com###qualified-multimodal-host
 bulgaronline.com##div[data-hook="minimizedChat"]
 ||apigw.vakifbank.com.tr/vibi/bot/js/widget/cbot-vakifbank-generator.min.js
 cronista.com##.embeddedMessagingConversationButton
@@ -2636,6 +2640,7 @@ subbota.ua##aside.sidebar > div[id^="custom_html-"]
 !   NOTE: Donation widgets
 !   Really annoying only
 !
+24ores.gr##.don
 korben.info##.patreon-support-banner
 korben.info###patreon-support-card
 united24media.com##article[data-donation-article]

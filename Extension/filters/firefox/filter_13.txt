@@ -1,9 +1,9 @@
-! Checksum: w3e3QS0crzxMcn/CAMYnkA
-! Diff-Path: ../patches/13/13-s-1795400118-3600.patch
+! Checksum: edjJxfJVA+LPL6n9MF3ZmQ
+! Diff-Path: ../patches/13/13-s-1795734640-3600.patch
 ! Title: AdGuard Turkish filter
 ! Description: Filter list that specifically removes ads on websites in Turkish language.
-! Version: 2.0.70.10
-! TimeUpdated: 2026-11-23T02:12:20+00:00
+! Version: 2.0.70.25
+! TimeUpdated: 2026-11-26T23:08:04+00:00
 ! Expires: 10 days (update frequency)
 ! Homepage: https://github.com/AdguardTeam/AdGuardFilters
 ! License: https://github.com/AdguardTeam/AdguardFilters/blob/master/LICENSE
@@ -20,6 +20,9 @@
 ! Bad: ||adssubdomain.legitwebsite.com^ (should be in adservers_firstparty.txt)
 !
 !
+||stads.cfd^
+||nawobsophta.cyou^
+||algarotfixated.com^
 ||popzu-srv.live^
 ||certainlywhen.com^
 ||apk-2.online^$third-party
@@ -709,6 +712,8 @@ r10.net#%#//scriptlet('abort-on-property-write', 'rInt')
 ! Good: ##.adv
 ! Bad: example.org##.adv (should be in specific.txt)
 !
+! ArdaSpor TV ardaspor*.top + mirrors
+##div[class$="-reklam-satir"]
 ! Streaming sites with casino ads
 ##.header-nav > a[href="/"] ~ a[href][target="_blank"]
 ##.background-link > a[target="_blank"]
@@ -1600,7 +1605,7 @@ indirin.co,maksatbilgi.com,bedavainternet.com.tr,turkedebiyati.org,frpnet.net,te
 ! ##body .code-block
 techolay.net,havadiskibris.com,oyunindir.club,armoniscans.com,teknobh.com,yoldaolmak.com,aof.tc,sorumatik.co,andronova.net,koinfinans.com,hwp.com.tr,konupara.com,lafmacun.net,oyundunyasi.net,bilgenc.com,teknodiot.com,ruyashoujo.com,pchocasi.com.tr,dusuncekatalogu.com##body .code-block
 ! #%#//scriptlet('prevent-window-open')
-superfilmizle.*,plusizle.com,filmkuzusu.vip,hboxcdn.xyz,keplersociety.com,vegoltv981.com,sierato.com,dizigom.love,cehennemizle.cc,cdnvexo.site,bingozade.com,ifsaciturksex99.site,99turkifsaizle.site,trkifsalariz.site,escobarvip.blog,dizipal.website,videojs.online,epikplayer.xyz,animeler.me,player.filmizle.in,tranimaci.com,izlekolik.org,4kfilmizlesene.*#%#//scriptlet('prevent-window-open')
+selcuksporthd.net,superfilmizle.*,plusizle.com,filmkuzusu.vip,hboxcdn.xyz,keplersociety.com,vegoltv981.com,sierato.com,dizigom.love,cehennemizle.cc,cdnvexo.site,bingozade.com,ifsaciturksex99.site,99turkifsaizle.site,trkifsalariz.site,escobarvip.blog,dizipal.website,videojs.online,epikplayer.xyz,animeler.me,player.filmizle.in,tranimaci.com,izlekolik.org,4kfilmizlesene.*#%#//scriptlet('prevent-window-open')
 !
 !
 ! For URL shorteners or simple sites with frequently changed ad servers.
@@ -1609,7 +1614,7 @@ superfilmizle.*,plusizle.com,filmkuzusu.vip,hboxcdn.xyz,keplersociety.com,vegolt
 !
 ! Similar to regexp above, but using the denyallow modifier
 ! Be careful, if a site uses third-party resources (players etc.) and the rule applied in AdGuard for Safari/iOS
-*$script,third-party,denyallow=mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.li|bytecdntp.com|doodcdn.io|intensedebate.com|vixcloud.co|cdn.plyr.io|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|imgsmail.ru|cloudflare.net|rabbitstream.net|x.com|alicdn.com,_____,domain=pollos.cyou|fullindirsene.net|ehliyetsinavsorulari.org|dizigom1.tv|mp3semti.com|jiangzaitoon.one
+*$script,third-party,denyallow=mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.li|bytecdntp.com|doodcdn.io|intensedebate.com|vixcloud.co|cdn.plyr.io|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|imgsmail.ru|cloudflare.net|rabbitstream.net|x.com|alicdn.com,_____,domain=pollos.cyou|fullindirsene.net|ehliyetsinavsorulari.org|dizigom1.tv|mp3semti.com|jiangzaitoon.one|vanlett1.net
 ! Similar to regexp above, but using the denyallow modifier and for xmlhttprequest
 $xmlhttprequest,third-party,denyallow=mega.co.nz|mega.nz|libs.baidu.com|ilfcdn.li|bytecdntp.com|doodcdn.io|intensedebate.com|vixcloud.co|cdn.plyr.io|rsc.cdn77.org|linkvertise.com|fastly.net|statically.io|sharecast.ws|b-cdn.net|bunnycdn.ru|bootstrapcdn.com|cdn.ampproject.org|cloudflare.com|cdn.staticfile.org|disqus.com|disquscdn.com|dmca.com|ebacdn.com|facebook.net|fastlylb.net|fbcdn.net|fluidplayer.com|fontawesome.com|github.io|google.com|googleapis.com|googletagmanager.com|gstatic.com|jquery.com|jsdelivr.net|jwpcdn.com|jwplatform.com|recaptcha.net|shrink.pe|twitter.com|ulogin.ru|unpkg.com|userapi.com|vidazoo.com|vk.com|yastatic.net|ytimg.com|zencdn.net|youtube.com|cackle.me|googleoptimize.com|vuukle.com|chatango.com|twimg.com|google-analytics.com|hcaptcha.com|media-imdb.com|blogger.com|hwcdn.net|instagram.com|wp.com|fastcomments.com|plyr.io|imgsmail.ru|cloudflare.net|rabbitstream.net|x.com,_____,domain=ruya-manga.com|hayalistic.com.tr|koreliscans.com
 !
@@ -1621,6 +1626,10 @@ dirilispostasi.com,turkuazgazetesi.net,yenialanya.com,bugunkocaeli.com.tr,cagdas
 !
 ! NOTE: Specific rules
 !
+||fullhdfilmizle.fit/wp-content/themes/filmplus/ads-data.php
+shiftdelete.net##.sd-ad
+justintv-canli.online##video ~ div[class^="absolute inset-0 z-50 grid place-items-center bg-black"]
+||justintv-canli.online/media/*.mp4
 asyaanimeleri.top###u5ub8bzte40
 evrimagaci.org##div[data-ad-type]
 teknoblog.com##.tbis-masthead-wrap
@@ -1859,7 +1868,7 @@ eurosport.com.tr##div[data-testid="marketing-banner"]
 eurosport.com.tr###batchsdk-ui-banner
 ||izlefilm.cc/canavar.js
 sozcu.com.tr##.post-inline-content-block
-sozcu.com.tr##a[rel="noopener sponsored"]
+justintv-canli.online,sozcu.com.tr##a[rel="noopener sponsored"]
 trhaber.com.tr##div.relative:has(> div[id^="div-gpt-ad"])
 trhaber.com.tr##div[style^="min-height:"][style*="250px"]
 ensonhaber.com##.ad-wrap-home
@@ -3314,6 +3323,8 @@ mynet.com##div[issponsored]
 anizle.*,anizm.*,puffytr.com#%#//scriptlet('abort-current-inline-script', 'document.createElement', '.parentNode.insertBefore(')
 anizle.*,anizm.*,puffytr.com##a[target="_blank"] > img.img-responsive[src^="/images/"][alt]
 anizle.*,anizm.*,puffytr.com##div[class^="aramas"] > a[target="_blank"]
+anizle.*,anizm.*,puffytr.com##a[rel*="sponsored"]
+/upload/assets/feature-01.gif$domain=anizle.*|anizle.com|anizle.net|anizm.*|anizm.net|anizm.com.tr|anizm.pro|puffytr.com
 /js/pund*.js$domain=anizle.*|anizle.com|anizle.net|anizm.*|anizm.net|anizm.com.tr|anizm.pro|puffytr.com
 /amon-3011-gnsazc.js$domain=anizle.*|anizle.com|anizle.net|anizm.*|anizm.net|anizm.com.tr|anizm.pro|puffytr.com
 /aclb.js$domain=anizle.*|anizle.com|anizle.net|anizm.*|anizm.net|anizm.com.tr|anizm.pro|puffytr.com
@@ -4453,7 +4464,7 @@ acikradyo.com.tr##.reklam-item
 cimri.com###__next > div > div[class*="-"] > a[rel^="nofollow"][target="_blank"]
 ||tourismtoday.net/rys.php$domain=turizmaktuel.com
 nefisyemektarifleri.com,hastane.com.tr##div[data-nokta-zone]
-ifhaber.com,borsanasiloynanir.co##a[rel*="sponsored"]
+paraanaliz.com,ifhaber.com,borsanasiloynanir.co##a[rel*="sponsored"]
 borsanasiloynanir.co##a.yazisonu_banner
 borsanasiloynanir.co##.desktopHeaderBanner
 gazetevatan.com##.hResim > a[href*="&utm_campaign"] > img
@@ -7054,11 +7065,11 @@ justintvizle736.top,justintvizle737.top,justintvizle738.top,justintvizle739.top,
 ! aglint-enable no-invalid-modifiers
 [$domain=/selcuksports\d+\.com/]##img[id^="top-ads-"]
 ! CASE 3 - probably fake
-||video.bsky.app/watch/*/playlist.m3u8$domain=taraftarium24bjk30.com
-||blogger.googleusercontent.com/img/$domain=taraftarium24bjk30.com
-taraftarium24bjk30.com,taraftarium24tvizle.com#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', '/prerollEnabled\s*:\s*true/g', 'prerollEnabled: false')
-taraftarium24bjk30.com,taraftarium24tvizle.com###ad-pageskin
-taraftarium24bjk30.com,taraftarium24tvizle.com##.playerStrip
+||video.bsky.app/watch/*/playlist.m3u8$domain=taraftarium24bjk32.com
+||blogger.googleusercontent.com/img/$domain=taraftarium24bjk32.com
+taraftarium24bjk32.com,taraftarium24tvizle.com#%#//scriptlet('trusted-replace-node-text', 'script', 'prerollEnabled', '/prerollEnabled\s*:\s*true/g', 'prerollEnabled: false')
+taraftarium24bjk32.com,taraftarium24tvizle.com###ad-pageskin
+taraftarium24bjk32.com,taraftarium24tvizle.com##.playerStrip
 taraftarium24tvizle.com##.listAd
 24taraftarium12.xyz##.betcio-banner
 24taraftarium12.xyz##.modal-overlay
