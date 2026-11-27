@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.6.2.9] - 2026-11-27
+
+[5.6.2.9]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.6.1...v5.6.2
+
 ## [5.6.2.8-beta] - 2026-11-27
 
 [5.6.2.8-beta]: https://github.com/AdguardTeam/AdguardBrowserExtension/compare/v5.6.1...v5.6.2-beta.8
